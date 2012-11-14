@@ -31,7 +31,7 @@
  */
 package javax.time.chrono;
 
-import static javax.time.calendrical.LocalDateTimeField.YEAR;
+import static javax.time.calendrical.ChronoField.YEAR;
 import static javax.time.chrono.ThaiBuddhistChrono.YEARS_DIFFERENCE;
 
 import java.io.Serializable;
@@ -39,10 +39,10 @@ import java.util.Objects;
 
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
 
 /**
  * A date in the Thai Buddhist calendar system.
@@ -155,9 +155,9 @@ final class ThaiBuddhistDate
 
     @Override
     public DateTimeValueRange range(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             if (isSupported(field)) {
-                LocalDateTimeField f = (LocalDateTimeField) field;
+                ChronoField f = (ChronoField) field;
                 switch (f) {
                     case DAY_OF_MONTH:
                     case DAY_OF_YEAR:
@@ -178,8 +178,8 @@ final class ThaiBuddhistDate
 
     @Override
     public long getLong(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            switch ((LocalDateTimeField) field) {
+        if (field instanceof ChronoField) {
+            switch ((ChronoField) field) {
                 case YEAR_OF_ERA: return getYear();
                 case YEAR: return getProlepticYear();
                 case ERA: return getEra().getValue();
@@ -217,8 +217,8 @@ final class ThaiBuddhistDate
     //-----------------------------------------------------------------------
     @Override
     public ThaiBuddhistDate with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField f = (ChronoField) field;
             if (getLong(f) == newValue) {
                 return this;
             }
@@ -246,7 +246,7 @@ final class ThaiBuddhistDate
     //-----------------------------------------------------------------------
     @Override
     public boolean isLeapYear() {
-        return getChrono().isLeapYear(get(LocalDateTimeField.YEAR));
+        return getChrono().isLeapYear(get(ChronoField.YEAR));
     }
 
     @Override

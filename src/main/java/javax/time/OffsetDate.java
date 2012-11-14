@@ -32,20 +32,20 @@
 package javax.time;
 
 import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
-import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
+import static javax.time.calendrical.ChronoField.EPOCH_DAY;
+import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
 
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.time.calendrical.ChronoField;
+import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.ISOChrono;
 import javax.time.format.CalendricalFormatter;
@@ -253,15 +253,15 @@ public final class OffsetDate
     //-----------------------------------------------------------------------
     @Override
     public boolean isSupported(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            return ((LocalDateTimeField) field).isDateField() || field == OFFSET_SECONDS;
+        if (field instanceof ChronoField) {
+            return ((ChronoField) field).isDateField() || field == OFFSET_SECONDS;
         }
         return field != null && field.doIsSupported(this);
     }
 
     @Override
     public DateTimeValueRange range(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             if (field == OFFSET_SECONDS) {
                 return field.range();
             }
@@ -272,7 +272,7 @@ public final class OffsetDate
 
     @Override
     public long getLong(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             if (field == OFFSET_SECONDS) {
                 return getOffset().getTotalSeconds();
             }
@@ -448,9 +448,9 @@ public final class OffsetDate
      * @throws DateTimeException if the value is invalid
      */
     public OffsetDate with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             if (field == OFFSET_SECONDS) {
-                LocalDateTimeField f = (LocalDateTimeField) field;
+                ChronoField f = (ChronoField) field;
                 return with(date, ZoneOffset.ofTotalSeconds(f.checkValidIntValue(newValue)));
             }
             return with(date.with(field, newValue), offset);
@@ -559,7 +559,7 @@ public final class OffsetDate
      * @throws DateTimeException if the unit cannot be added to this type
      */
     public OffsetDate plus(long amountToAdd, PeriodUnit unit) {
-        if (unit instanceof LocalPeriodUnit) {
+        if (unit instanceof ChronoUnit) {
             return with(date.plus(amountToAdd, unit), offset);
         }
         return unit.doAdd(this, amountToAdd);
@@ -916,7 +916,7 @@ public final class OffsetDate
         if (endDateTime instanceof OffsetDate == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
-        if (unit instanceof LocalPeriodUnit) {
+        if (unit instanceof ChronoUnit) {
             OffsetDate end = (OffsetDate) endDateTime;
             long offsetDiff = end.offset.getTotalSeconds() - offset.getTotalSeconds();
             LocalDate endLocal = end.date.plusDays(Jdk8Methods.floorDiv(-offsetDiff, SECONDS_PER_DAY));
@@ -966,7 +966,7 @@ public final class OffsetDate
      * consistent with {@code equals()}.
      * <p>
      * To compare the underlying local date of two {@code DateTimeAccessor} instances,
-     * use {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
+     * use {@link ChronoField#EPOCH_DAY} as a comparator.
      *
      * @param other  the other date to compare to, not null
      * @return the comparator value, negative if less, positive if greater
@@ -1037,7 +1037,7 @@ public final class OffsetDate
      * <p>
      * Only objects of type {@code OffsetDate} are compared, other types return false.
      * To compare the underlying local date of two {@code DateTimeAccessor} instances,
-     * use {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
+     * use {@link ChronoField#EPOCH_DAY} as a comparator.
      *
      * @param obj  the object to check, null returns false
      * @return true if this is equal to the other date

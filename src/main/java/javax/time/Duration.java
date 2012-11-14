@@ -32,9 +32,9 @@
 package javax.time;
 
 import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
-import static javax.time.calendrical.LocalDateTimeField.INSTANT_SECONDS;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
-import static javax.time.calendrical.LocalPeriodUnit.DAYS;
+import static javax.time.calendrical.ChronoField.INSTANT_SECONDS;
+import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
+import static javax.time.calendrical.ChronoUnit.DAYS;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -42,11 +42,11 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Objects;
 
+import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.MinusAdjuster;
 import javax.time.calendrical.DateTime.PlusAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.DateTimeParseException;
 import javax.time.jdk8.Jdk8Methods;
@@ -238,7 +238,7 @@ public final class Duration
      * </pre>
      * Only a subset of units are accepted by this method.
      * The unit must either have an {@link PeriodUnit#isDurationEstimated() exact duration} or
-     * be {@link LocalPeriodUnit#DAYS} which is treated as 24 hours. Other units throw an exception.
+     * be {@link ChronoUnit#DAYS} which is treated as 24 hours. Other units throw an exception.
      *
      * @param amount  the amount of the duration, measured in terms of the unit, positive or negative
      * @param unit  the unit that the duration is measured in, must have an exact duration, not null
@@ -490,7 +490,7 @@ public final class Duration
      * The duration amount is measured in terms of the specified unit.
      * Only a subset of units are accepted by this method.
      * The unit must either have an {@link PeriodUnit#isDurationEstimated() exact duration} or
-     * be {@link LocalPeriodUnit#DAYS} which is treated as 24 hours. Other units throw an exception.
+     * be {@link ChronoUnit#DAYS} which is treated as 24 hours. Other units throw an exception.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -510,8 +510,8 @@ public final class Duration
         if (amountToAdd == 0) {
             return this;
         }
-        if (unit instanceof LocalPeriodUnit) {
-            switch ((LocalPeriodUnit) unit) {
+        if (unit instanceof ChronoUnit) {
+            switch ((ChronoUnit) unit) {
                 case NANOS: return plusNanos(amountToAdd);
                 case MICROS: return plusSeconds((amountToAdd / (1000_000L * 1000)) * 1000).plusNanos((amountToAdd % (1000_000L * 1000)) * 1000);
                 case MILLIS: return plusMillis(amountToAdd);
@@ -609,7 +609,7 @@ public final class Duration
      * The duration amount is measured in terms of the specified unit.
      * Only a subset of units are accepted by this method.
      * The unit must either have an {@link PeriodUnit#isDurationEstimated() exact duration} or
-     * be {@link LocalPeriodUnit#DAYS} which is treated as 24 hours. Other units throw an exception.
+     * be {@link ChronoUnit#DAYS} which is treated as 24 hours. Other units throw an exception.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *

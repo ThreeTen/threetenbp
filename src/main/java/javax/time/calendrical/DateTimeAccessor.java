@@ -64,7 +64,7 @@ public interface DateTimeAccessor {
      * methods will throw an exception.
      *
      * <h4>Implementation notes</h4>
-     * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
+     * Implementations must check and handle any fields defined in {@link ChronoField} before
      * delegating on to the {@link DateTimeField#doRange(DateTimeAccessor) doRange method} on the specified field.
      *
      * @param field  the field to check, null returns false
@@ -85,7 +85,7 @@ public interface DateTimeAccessor {
      * could be values within the range that are invalid for the field.
      *
      * <h4>Implementation notes</h4>
-     * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
+     * Implementations must check and handle any fields defined in {@link ChronoField} before
      * delegating on to the {@link DateTimeField#doRange(DateTimeAccessor) doRange method} on the specified field.
      *
      * @param field  the field to get, not null
@@ -93,14 +93,6 @@ public interface DateTimeAccessor {
      * @throws DateTimeException if the range for the field cannot be obtained
      */
     DateTimeValueRange range(DateTimeField field);
-    // JAVA8
-    // default {
-    //     if (field instanceof LocalDateTimeField) {
-    //         if (!supported) throw
-    //         return field.range();
-    //     }
-    //     return field.doRange(this);
-    // }
 
     /**
      * Gets the value of the specified date-time field as an {@code int}.
@@ -111,7 +103,7 @@ public interface DateTimeAccessor {
      * some other reason, an exception will be thrown.
      *
      * <h4>Implementation notes</h4>
-     * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
+     * Implementations must check and handle any fields defined in {@link ChronoField} before
      * delegating on to the {@link DateTimeField#doGet(DateTimeAccessor) doGet method} on the specified field.
      *
      * @param field  the field to get, not null
@@ -122,10 +114,6 @@ public interface DateTimeAccessor {
      * @throws ArithmeticException if numeric overflow occurs
      */
     int get(DateTimeField field);
-    // JAVA 8
-    // default {
-    //     return range(field).checkValidIntValue(getLong(field), field);
-    // }
 
     /**
      * Gets the value of the specified date-time field as a {@code Long}.
@@ -136,7 +124,7 @@ public interface DateTimeAccessor {
      * some other reason, an exception will be thrown.
      *
      * <h4>Implementation notes</h4>
-     * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
+     * Implementations must check and handle any fields defined in {@link ChronoField} before
      * delegating on to the {@link DateTimeField#doGet(DateTimeAccessor) doGet method} on the specified field.
      *
      * @param field  the field to get, not null
@@ -159,7 +147,7 @@ public interface DateTimeAccessor {
      * the previous valid date, which would be the last valid day of February in this example.
      *
      * <h4>Implementation notes</h4>
-     * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
+     * Implementations must check and handle any fields defined in {@link ChronoField} before
      * delegating on to the {@link DateTimeField#doSet(DateTimeAccessor, long) doSet method} on the specified field.
      * If the implementing class is immutable, then this method must return an updated copy of the original.
      * If the class is mutable, then this method must update the original and return it.

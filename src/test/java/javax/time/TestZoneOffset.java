@@ -31,29 +31,19 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
+import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.JulianDayField;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.MockFieldNoValue;
 
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
@@ -79,7 +69,7 @@ public class TestZoneOffset extends AbstractDateTimeTest {
 
     @Override
     protected List<DateTimeField> invalidFields() {
-        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(LocalDateTimeField.values()));
+        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(ChronoField.values()));
         list.removeAll(validFields());
         list.add(JulianDayField.JULIAN_DAY);
         list.add(JulianDayField.MODIFIED_JULIAN_DAY);

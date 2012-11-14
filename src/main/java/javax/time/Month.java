@@ -31,16 +31,16 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
+import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
 
 import java.util.Locale;
 
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
 import javax.time.chrono.Chrono;
 import javax.time.chrono.ISOChrono;
 import javax.time.format.DateTimeFormatterBuilder;
@@ -205,7 +205,7 @@ public enum Month implements DateTimeAccessor, WithAdjuster {
     //-----------------------------------------------------------------------
     @Override
     public boolean isSupported(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             return field == MONTH_OF_YEAR;
         }
         return field != null && field.doIsSupported(this);
@@ -215,7 +215,7 @@ public enum Month implements DateTimeAccessor, WithAdjuster {
     public DateTimeValueRange range(DateTimeField field) {
         if (field == MONTH_OF_YEAR) {
             return field.range();
-        } else if (field instanceof LocalDateTimeField) {
+        } else if (field instanceof ChronoField) {
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doRange(this);
@@ -233,7 +233,7 @@ public enum Month implements DateTimeAccessor, WithAdjuster {
     public long getLong(DateTimeField field) {
         if (field == MONTH_OF_YEAR) {
             return getValue();
-        } else if (field instanceof LocalDateTimeField) {
+        } else if (field instanceof ChronoField) {
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doGet(this);
@@ -242,9 +242,9 @@ public enum Month implements DateTimeAccessor, WithAdjuster {
     @Override
     public Month with(DateTimeField field, long newValue) {
         if (field == MONTH_OF_YEAR) {
-            ((LocalDateTimeField) field).checkValidValue(newValue);
+            ((ChronoField) field).checkValidValue(newValue);
             return Month.of((int) newValue);
-        } else if (field instanceof LocalDateTimeField) {
+        } else if (field instanceof ChronoField) {
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doSet(this, newValue);

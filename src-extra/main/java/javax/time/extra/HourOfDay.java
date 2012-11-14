@@ -31,18 +31,18 @@
  */
 package javax.time.extra;
 
-import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
+import static javax.time.calendrical.ChronoField.HOUR_OF_DAY;
 
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.DateTimeException;
 import javax.time.LocalTime;
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.LocalDateTimeField;
 
 /**
  * A representation of a hour-of-day in the ISO-8601 calendar system.
@@ -104,7 +104,7 @@ public final class HourOfDay
      * @throws DateTimeException if the input is invalid
      */
     public static HourOfDay of(AmPm amPm, int hourOfAmPm) {
-        LocalDateTimeField.HOUR_OF_AMPM.checkValidValue(hourOfAmPm);
+        ChronoField.HOUR_OF_AMPM.checkValidValue(hourOfAmPm);
         int hourOfDay = amPm.getValue() * 12 + hourOfAmPm;
         return HourOfDay.of(hourOfDay);
     }
@@ -154,7 +154,7 @@ public final class HourOfDay
      * @return the hour-of-day field, never null
      */
     public DateTimeField getField() {
-        return LocalDateTimeField.HOUR_OF_DAY;
+        return ChronoField.HOUR_OF_DAY;
     }
 
     /**

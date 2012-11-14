@@ -31,7 +31,7 @@
  */
 package javax.time.chrono;
 
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
+import static javax.time.calendrical.ChronoField.EPOCH_DAY;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -43,11 +43,11 @@ import javax.time.LocalDateTime;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
+import javax.time.calendrical.ChronoField;
+import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.jdk8.DefaultInterfaceChronoZonedDateTime;
 import javax.time.zone.ZoneOffsetInfo;
@@ -228,7 +228,7 @@ import javax.time.zone.ZoneRules;
     //-----------------------------------------------------------------------
     @Override
     public boolean isSupported(DateTimeField field) {
-        return field instanceof LocalDateTimeField || (field != null && field.doIsSupported(this));
+        return field instanceof ChronoField || (field != null && field.doIsSupported(this));
     }
 
     //-----------------------------------------------------------------------
@@ -515,8 +515,8 @@ import javax.time.zone.ZoneRules;
      */
     @Override
     public ChronoZonedDateTime<C> with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField f = (ChronoField) field;
             switch (f) {
                 case INSTANT_SECONDS:
                     //return ofEpochSecond(newValue, zone);
@@ -727,7 +727,7 @@ import javax.time.zone.ZoneRules;
     //-----------------------------------------------------------------------
     @Override
     public ChronoZonedDateTime<C> plus(long amountToAdd, PeriodUnit unit) {
-        if (unit instanceof LocalPeriodUnit) {
+        if (unit instanceof ChronoUnit) {
             return with(dateTime.plus(amountToAdd, unit));
         }
         return unit.doAdd(this, amountToAdd);
@@ -1110,8 +1110,8 @@ import javax.time.zone.ZoneRules;
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
 //        ChronoZonedDateTimeImpl<?> end = (ChronoZonedDateTimeImpl<?>) endDateTime;
-        if (unit instanceof LocalPeriodUnit) {
-//            LocalPeriodUnit f = (LocalPeriodUnit) unit;
+        if (unit instanceof ChronoUnit) {
+//            ChronoUnit f = (ChronoUnit) unit;
 //            long until = dateTime.periodUntil(end.dateTime, unit);
             // NYI Adjust for offsets
             throw new DateTimeException("nyi: ChronoZonedDateTime.periodUntil");

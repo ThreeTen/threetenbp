@@ -31,8 +31,8 @@
  */
 package javax.time.format;
 
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
-import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
+import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
+import static javax.time.calendrical.ChronoField.SECOND_OF_MINUTE;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 

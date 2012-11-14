@@ -31,7 +31,7 @@
  */
 package javax.time.extra;
 
-import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
+import static javax.time.calendrical.ChronoUnit.WEEKS;
 
 import java.io.Serializable;
 

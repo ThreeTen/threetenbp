@@ -31,13 +31,11 @@
  */
 package javax.time.calendrical;
 
-import static javax.time.calendrical.LocalDateTimeField.ERA;
-import static javax.time.calendrical.LocalDateTimeField.YEAR;
-import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
-import static org.testng.Assert.assertEquals;
+import static javax.time.calendrical.ChronoField.ERA;
+import static javax.time.calendrical.ChronoField.YEAR;
+import static javax.time.calendrical.ChronoField.YEAR_OF_ERA;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -45,24 +43,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.time.AbstractDateTimeTest;
-import javax.time.Clock;
-import javax.time.DateTimeException;
-import javax.time.Instant;
-import javax.time.LocalDate;
-import javax.time.LocalTime;
-import javax.time.Month;
-import javax.time.MonthDay;
-import javax.time.OffsetDateTime;
 import javax.time.Year;
-import javax.time.YearMonth;
-import javax.time.ZoneId;
-import javax.time.ZoneOffset;
 import javax.time.calendrical.DateTime.WithAdjuster;
-import javax.time.format.CalendricalFormatter;
-import javax.time.format.DateTimeParseException;
 
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
@@ -96,7 +80,7 @@ public class TestYear extends AbstractDateTimeTest {
 
     @Override
     protected List<DateTimeField> invalidFields() {
-        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(LocalDateTimeField.values()));
+        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(ChronoField.values()));
         list.removeAll(validFields());
         list.add(JulianDayField.JULIAN_DAY);
         list.add(JulianDayField.MODIFIED_JULIAN_DAY);

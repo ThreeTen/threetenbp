@@ -32,20 +32,20 @@
 package javax.time.jdk8;
 
 import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
-import static javax.time.calendrical.LocalDateTimeField.INSTANT_SECONDS;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
+import static javax.time.calendrical.ChronoField.EPOCH_DAY;
+import static javax.time.calendrical.ChronoField.INSTANT_SECONDS;
+import static javax.time.calendrical.ChronoField.NANO_OF_DAY;
+import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
 
 import java.util.Objects;
 
 import javax.time.DateTimeException;
 import javax.time.Instant;
 import javax.time.LocalTime;
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.Chrono;
 import javax.time.chrono.ChronoLocalDate;
@@ -64,7 +64,7 @@ public abstract class DefaultInterfaceChronoOffsetDateTime<C extends Chrono<C>>
 
     @Override
     public DateTimeValueRange range(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             if (field == INSTANT_SECONDS || field == OFFSET_SECONDS) {
                 return field.range();
             }
@@ -75,8 +75,8 @@ public abstract class DefaultInterfaceChronoOffsetDateTime<C extends Chrono<C>>
 
     @Override
     public int get(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            switch ((LocalDateTimeField) field) {
+        if (field instanceof ChronoField) {
+            switch ((ChronoField) field) {
                 case INSTANT_SECONDS: throw new DateTimeException("Field too large for an int: " + field);
                 case OFFSET_SECONDS: return getOffset().getTotalSeconds();
             }
@@ -87,8 +87,8 @@ public abstract class DefaultInterfaceChronoOffsetDateTime<C extends Chrono<C>>
 
     @Override
     public long getLong(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            switch ((LocalDateTimeField) field) {
+        if (field instanceof ChronoField) {
+            switch ((ChronoField) field) {
                 case INSTANT_SECONDS: return toEpochSecond();
                 case OFFSET_SECONDS: return getOffset().getTotalSeconds();
             }

@@ -31,15 +31,15 @@
  */
 package javax.time.chrono;
 
-import static javax.time.calendrical.LocalDateTimeField.ERA;
+import static javax.time.calendrical.ChronoField.ERA;
 
 import java.util.Locale;
 
 import javax.time.DateTimeException;
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
 import javax.time.format.DateTimeFormatterBuilder;
 import javax.time.format.TextStyle;
 
@@ -123,7 +123,7 @@ enum MinguoEra implements Era<MinguoChrono>  {
     //-----------------------------------------------------------------------
     @Override
     public boolean isSupported(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             return field == ERA;
         }
         return field != null && field.doIsSupported(this);
@@ -133,7 +133,7 @@ enum MinguoEra implements Era<MinguoChrono>  {
     public DateTimeValueRange range(DateTimeField field) {
         if (field == ERA) {
             return field.range();
-        } else if (field instanceof LocalDateTimeField) {
+        } else if (field instanceof ChronoField) {
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doRange(this);
@@ -151,7 +151,7 @@ enum MinguoEra implements Era<MinguoChrono>  {
     public long getLong(DateTimeField field) {
         if (field == ERA) {
             return getValue();
-        } else if (field instanceof LocalDateTimeField) {
+        } else if (field instanceof ChronoField) {
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doGet(this);
@@ -160,9 +160,9 @@ enum MinguoEra implements Era<MinguoChrono>  {
     @Override
     public Era<MinguoChrono> with(DateTimeField field, long newValue) {
         if (field == ERA) {
-            int eravalue = ((LocalDateTimeField) field).checkValidIntValue(newValue);
+            int eravalue = ((ChronoField) field).checkValidIntValue(newValue);
             return getChrono().eraOf(eravalue);
-        } else if (field instanceof LocalDateTimeField) {
+        } else if (field instanceof ChronoField) {
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doSet(this, newValue);

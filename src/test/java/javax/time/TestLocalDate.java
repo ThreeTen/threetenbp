@@ -31,23 +31,23 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.ERA;
-import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.WEEK_BASED_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_WEEK_BASED_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.YEAR;
-import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
+import static javax.time.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
+import static javax.time.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
+import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_MONTH;
+import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_YEAR;
+import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
+import static javax.time.calendrical.ChronoField.DAY_OF_WEEK;
+import static javax.time.calendrical.ChronoField.DAY_OF_YEAR;
+import static javax.time.calendrical.ChronoField.EPOCH_DAY;
+import static javax.time.calendrical.ChronoField.EPOCH_MONTH;
+import static javax.time.calendrical.ChronoField.ERA;
+import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
+import static javax.time.calendrical.ChronoField.WEEK_BASED_YEAR;
+import static javax.time.calendrical.ChronoField.WEEK_OF_MONTH;
+import static javax.time.calendrical.ChronoField.WEEK_OF_WEEK_BASED_YEAR;
+import static javax.time.calendrical.ChronoField.WEEK_OF_YEAR;
+import static javax.time.calendrical.ChronoField.YEAR;
+import static javax.time.calendrical.ChronoField.YEAR_OF_ERA;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -57,11 +57,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.time.calendrical.ChronoField;
+import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.JulianDayField;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -136,7 +136,7 @@ public class TestLocalDate extends AbstractDateTimeTest {
 
     @Override
     protected List<DateTimeField> invalidFields() {
-        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(LocalDateTimeField.values()));
+        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(ChronoField.values()));
         list.removeAll(validFields());
         return list;
     }
@@ -232,7 +232,7 @@ public class TestLocalDate extends AbstractDateTimeTest {
 
     @Test(groups={"implementation"})
     public void test_plus_longPeriodUnit_zero() {
-        LocalDate t = TEST_2007_07_15.plus(0, LocalPeriodUnit.DAYS);
+        LocalDate t = TEST_2007_07_15.plus(0, ChronoUnit.DAYS);
         assertSame(t, TEST_2007_07_15);
     }
 
@@ -360,7 +360,7 @@ public class TestLocalDate extends AbstractDateTimeTest {
 
     @Test(groups={"implementation"})
     public void test_minus_longPeriodUnit_zero() {
-        LocalDate t = TEST_2007_07_15.minus(0, LocalPeriodUnit.DAYS);
+        LocalDate t = TEST_2007_07_15.minus(0, ChronoUnit.DAYS);
         assertSame(t, TEST_2007_07_15);
     }
 

@@ -165,7 +165,7 @@ public interface DateTime extends DateTimeAccessor {
      * For example, {@code LocalTime} must accept {@code DAYS} but not {@code WEEKS} or {@code MONTHS}.
      *
      * <h4>Implementation notes</h4>
-     * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
+     * Implementations must check and handle any fields defined in {@link ChronoField} before
      * delegating on to the {@link PeriodUnit#doAdd(DateTime, long) doAdd method} on the specified unit.
      * If the implementing class is immutable, then this method must return an updated copy of the original.
      * If the class is mutable, then this method must update the original and return it.
@@ -227,7 +227,7 @@ public interface DateTime extends DateTimeAccessor {
      * For example, {@code LocalTime} must accept {@code DAYS} but not {@code WEEKS} or {@code MONTHS}.
      *
      * <h4>Implementation notes</h4>
-     * Implementations must check and handle any fields defined in {@link LocalDateTimeField} before
+     * Implementations must check and handle any fields defined in {@link ChronoField} before
      * delegating on to the {@link PeriodUnit#doAdd(DateTime, long) doAdd method} on the specified unit.
      * If the implementing class is immutable, then this method must return an updated copy of the original.
      * If the class is mutable, then this method must update the original and return it.

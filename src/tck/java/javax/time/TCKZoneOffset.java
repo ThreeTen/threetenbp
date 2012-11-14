@@ -31,7 +31,7 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
+import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -47,10 +47,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.JulianDayField;
-import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.MockFieldNoValue;
 
 import org.testng.annotations.DataProvider;
@@ -79,7 +79,7 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
 
     @Override
     protected List<DateTimeField> invalidFields() {
-        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(LocalDateTimeField.values()));
+        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(ChronoField.values()));
         list.removeAll(validFields());
         list.add(JulianDayField.JULIAN_DAY);
         list.add(JulianDayField.MODIFIED_JULIAN_DAY);
@@ -430,9 +430,9 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
     @DataProvider(name="invalidFields")
     Object[][] data_invalidFields() {
         return new Object[][] {
-            {LocalDateTimeField.NANO_OF_DAY},
-            {LocalDateTimeField.HOUR_OF_DAY},
-            {LocalDateTimeField.INSTANT_SECONDS},
+            {ChronoField.NANO_OF_DAY},
+            {ChronoField.HOUR_OF_DAY},
+            {ChronoField.INSTANT_SECONDS},
             {MockFieldNoValue.INSTANCE},
         };
     }

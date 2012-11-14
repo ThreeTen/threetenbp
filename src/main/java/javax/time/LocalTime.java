@@ -43,25 +43,25 @@ import static javax.time.DateTimeConstants.NANOS_PER_SECOND;
 import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
 import static javax.time.DateTimeConstants.SECONDS_PER_HOUR;
 import static javax.time.DateTimeConstants.SECONDS_PER_MINUTE;
-import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.MICRO_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_HOUR;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
-import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
+import static javax.time.calendrical.ChronoField.HOUR_OF_DAY;
+import static javax.time.calendrical.ChronoField.MICRO_OF_DAY;
+import static javax.time.calendrical.ChronoField.MINUTE_OF_HOUR;
+import static javax.time.calendrical.ChronoField.NANO_OF_DAY;
+import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
+import static javax.time.calendrical.ChronoField.SECOND_OF_DAY;
+import static javax.time.calendrical.ChronoField.SECOND_OF_MINUTE;
 
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.time.calendrical.ChronoField;
+import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
@@ -415,16 +415,16 @@ public final class LocalTime
     //-----------------------------------------------------------------------
     @Override
     public boolean isSupported(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            return ((LocalDateTimeField) field).isTimeField();
+        if (field instanceof ChronoField) {
+            return ((ChronoField) field).isTimeField();
         }
         return field != null && field.doIsSupported(this);
     }
 
     @Override
     public DateTimeValueRange range(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            if (((LocalDateTimeField) field).isTimeField()) {
+        if (field instanceof ChronoField) {
+            if (((ChronoField) field).isTimeField()) {
                 return field.range();
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
@@ -434,7 +434,7 @@ public final class LocalTime
 
     @Override
     public int get(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             return get0(field);
         }
         return super.get(field);
@@ -442,7 +442,7 @@ public final class LocalTime
 
     @Override
     public long getLong(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             if (field == NANO_OF_DAY) {
                 return toNanoOfDay();
             }
@@ -455,7 +455,7 @@ public final class LocalTime
     }
 
     private int get0(DateTimeField field) {
-        switch ((LocalDateTimeField) field) {
+        switch ((ChronoField) field) {
             case NANO_OF_SECOND: return nano;
             case NANO_OF_DAY: throw new DateTimeException("Field too large for an int: " + field);
             case MICRO_OF_SECOND: return nano / 1000;
@@ -552,8 +552,8 @@ public final class LocalTime
      * @throws DateTimeException if the value is invalid
      */
     public LocalTime with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField f = (ChronoField) field;
             f.checkValidValue(newValue);
             switch (f) {
                 case NANO_OF_SECOND: return withNano((int) newValue);
@@ -683,8 +683,8 @@ public final class LocalTime
      * @throws DateTimeException if the unit cannot be added to this type
      */
     public LocalTime plus(long amountToAdd, PeriodUnit unit) {
-        if (unit instanceof LocalPeriodUnit) {
-            LocalPeriodUnit f = (LocalPeriodUnit) unit;
+        if (unit instanceof ChronoUnit) {
+            ChronoUnit f = (ChronoUnit) unit;
             switch (f) {
                 case NANOS: return plusNanos(amountToAdd);
                 case MICROS: return plusNanos((amountToAdd % MICROS_PER_DAY) * 1000);
@@ -928,9 +928,9 @@ public final class LocalTime
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
         LocalTime end = (LocalTime) endDateTime;
-        if (unit instanceof LocalPeriodUnit) {
+        if (unit instanceof ChronoUnit) {
             long nanosUntil = end.toNanoOfDay() - toNanoOfDay();  // no overflow
-            switch ((LocalPeriodUnit) unit) {
+            switch ((ChronoUnit) unit) {
                 case NANOS: return nanosUntil;
                 case MICROS: return nanosUntil / 1000;
                 case MILLIS: return nanosUntil / 1000_000;
@@ -1031,7 +1031,7 @@ public final class LocalTime
      * <p>
      * Only objects of type {@code LocalTime} are compared, other types return false.
      * To compare the date of two {@code DateTimeAccessor} instances, use
-     * {@link LocalDateTimeField#NANO_OF_DAY} as a comparator.
+     * {@link ChronoField#NANO_OF_DAY} as a comparator.
      *
      * @param obj  the object to check, null returns false
      * @return true if this is equal to the other time

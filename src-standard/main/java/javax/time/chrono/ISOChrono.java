@@ -31,7 +31,7 @@
  */
 package javax.time.chrono;
 
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
+import static javax.time.calendrical.ChronoField.EPOCH_DAY;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -40,9 +40,9 @@ import java.util.Locale;
 
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
 
 /**
  * The ISO calendar system.
@@ -207,7 +207,7 @@ public final class ISOChrono extends Chrono<ISOChrono> implements Serializable {
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeValueRange range(LocalDateTimeField field) {
+    public DateTimeValueRange range(ChronoField field) {
         return field.range();
     }
 

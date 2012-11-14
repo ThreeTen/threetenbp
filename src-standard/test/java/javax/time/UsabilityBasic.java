@@ -31,18 +31,18 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
 import static javax.time.calendrical.DateTimeAdjusters.previousOrCurrent;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javax.time.calendrical.ChronoField;
+import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
 
@@ -108,13 +108,13 @@ public final class UsabilityBasic {
 //        System.out.println(QuarterYearField.MONTH_OF_QUARTER.getDateRules().get(date));
 //        System.out.println(QuarterYearField.DAY_OF_QUARTER.getDateRules().get(date));
 
-        output(date, LocalDateTimeField.DAY_OF_MONTH);
-        output(date, LocalDateTimeField.MONTH_OF_YEAR);
-        output(date, LocalDateTimeField.YEAR);
+        output(date, ChronoField.DAY_OF_MONTH);
+        output(date, ChronoField.MONTH_OF_YEAR);
+        output(date, ChronoField.YEAR);
 
-        output(dateTime, LocalDateTimeField.DAY_OF_MONTH);
-        output(time, LocalDateTimeField.HOUR_OF_DAY);
-        output(time, LocalDateTimeField.MINUTE_OF_HOUR);
+        output(dateTime, ChronoField.DAY_OF_MONTH);
+        output(time, ChronoField.HOUR_OF_DAY);
+        output(time, ChronoField.MINUTE_OF_HOUR);
 
         DateTimeAccessor cal = date;
         System.out.println("DoM: " + cal.get(DAY_OF_MONTH));
@@ -135,32 +135,32 @@ public final class UsabilityBasic {
     private static void period() {
         LocalDate date1 = LocalDate.now();
         LocalDate date2 = LocalDate.now().plusDays(25367);
-        System.out.println(LocalPeriodUnit.DAYS.between(date1, date2));
-        System.out.println(LocalPeriodUnit.YEARS.between(date1, date2));
+        System.out.println(ChronoUnit.DAYS.between(date1, date2));
+        System.out.println(ChronoUnit.YEARS.between(date1, date2));
 
         date1 = LocalDate.of(2012, 2, 20);
         date2 = LocalDate.of(2014, 2, 19);
-        System.out.println(LocalPeriodUnit.YEARS.between(date1, date2));
+        System.out.println(ChronoUnit.YEARS.between(date1, date2));
         date2 = LocalDate.of(2014, 2, 20);
-        System.out.println(LocalPeriodUnit.YEARS.between(date1, date2));
+        System.out.println(ChronoUnit.YEARS.between(date1, date2));
         date2 = LocalDate.of(2014, 2, 21);
-        System.out.println(LocalPeriodUnit.YEARS.between(date1, date2));
+        System.out.println(ChronoUnit.YEARS.between(date1, date2));
         date2 = LocalDate.of(2010, 2, 19);
-        System.out.println(LocalPeriodUnit.YEARS.between(date1, date2));
+        System.out.println(ChronoUnit.YEARS.between(date1, date2));
         date2 = LocalDate.of(2010, 2, 20);
-        System.out.println(LocalPeriodUnit.YEARS.between(date1, date2));
+        System.out.println(ChronoUnit.YEARS.between(date1, date2));
         date2 = LocalDate.of(2010, 2, 21);
-        System.out.println(LocalPeriodUnit.YEARS.between(date1, date2));
+        System.out.println(ChronoUnit.YEARS.between(date1, date2));
 
-        LocalDate date3 = LocalDate.now().plus(3, LocalPeriodUnit.DAYS);
+        LocalDate date3 = LocalDate.now().plus(3, ChronoUnit.DAYS);
         System.out.println("3 days later " + date3);
     }
 
     private static void resolve1() {
         DateTimeBuilder builder = new DateTimeBuilder();
-        builder.addFieldValue(LocalDateTimeField.YEAR, 2012);
-        builder.addFieldValue(LocalDateTimeField.MONTH_OF_YEAR, 4);
-        builder.addFieldValue(LocalDateTimeField.DAY_OF_MONTH, 18);
+        builder.addFieldValue(ChronoField.YEAR, 2012);
+        builder.addFieldValue(ChronoField.MONTH_OF_YEAR, 4);
+        builder.addFieldValue(ChronoField.DAY_OF_MONTH, 18);
         System.out.println("Setup: " + builder);
         System.out.println("Resolved: " + builder.resolve());
         System.out.println("Date: " + LocalDate.from(builder));
@@ -168,10 +168,10 @@ public final class UsabilityBasic {
 
     private static void resolve2() {
         DateTimeBuilder builder = new DateTimeBuilder();
-        builder.addFieldValue(LocalDateTimeField.YEAR, 2012);
-        builder.addFieldValue(LocalDateTimeField.MONTH_OF_YEAR, 4);
-        builder.addFieldValue(LocalDateTimeField.DAY_OF_MONTH, 18);
-        builder.addFieldValue(LocalDateTimeField.DAY_OF_WEEK, 1);
+        builder.addFieldValue(ChronoField.YEAR, 2012);
+        builder.addFieldValue(ChronoField.MONTH_OF_YEAR, 4);
+        builder.addFieldValue(ChronoField.DAY_OF_MONTH, 18);
+        builder.addFieldValue(ChronoField.DAY_OF_WEEK, 1);
         System.out.println("Setup: " + builder);
         try {
             builder.resolve();
@@ -194,24 +194,24 @@ public final class UsabilityBasic {
 
     private static void resolve4() {
         DateTimeBuilder builder = new DateTimeBuilder();
-        builder.addFieldValue(LocalDateTimeField.YEAR, 2012);
-        builder.addFieldValue(LocalDateTimeField.MONTH_OF_YEAR, 5);
-        builder.addFieldValue(LocalDateTimeField.DAY_OF_MONTH, 3);
+        builder.addFieldValue(ChronoField.YEAR, 2012);
+        builder.addFieldValue(ChronoField.MONTH_OF_YEAR, 5);
+        builder.addFieldValue(ChronoField.DAY_OF_MONTH, 3);
         System.out.println("Setup: " + builder);
         System.out.println("Resolved: " + builder.resolve());
         System.out.println("Date: " + LocalDate.from(builder));
     }
 
     private static void print1() {
-        DateTimeFormatter f = new DateTimeFormatterBuilder().appendText(LocalDateTimeField.AMPM_OF_DAY)
-                .appendLiteral(' ').appendValue(LocalDateTimeField.AMPM_OF_DAY).toFormatter();
+        DateTimeFormatter f = new DateTimeFormatterBuilder().appendText(ChronoField.AMPM_OF_DAY)
+                .appendLiteral(' ').appendValue(ChronoField.AMPM_OF_DAY).toFormatter();
         System.out.println(f.print(LocalTime.of(12, 30)));
         System.out.println(f.print(ZonedDateTime.now()));
     }
 
     private static void print2() {
-        DateTimeFormatter f = new DateTimeFormatterBuilder().appendText(LocalDateTimeField.MONTH_OF_YEAR)
-                .appendLiteral(' ').appendValue(LocalDateTimeField.YEAR).toFormatter();
+        DateTimeFormatter f = new DateTimeFormatterBuilder().appendText(ChronoField.MONTH_OF_YEAR)
+                .appendLiteral(' ').appendValue(ChronoField.YEAR).toFormatter();
         System.out.println(f.print(LocalDate.now()));
         System.out.println(f.print(YearMonth.now()));
         System.out.println(f.print(ZonedDateTime.now()));
@@ -219,7 +219,7 @@ public final class UsabilityBasic {
 
     private static void sort() {
         List<DateTimeAccessor> list = Arrays.<DateTimeAccessor>asList(LocalDate.now().plusMonths(3), LocalDate.now().minusMonths(3), LocalDateTime.now());
-        Collections.sort(list, LocalDateTimeField.MONTH_OF_YEAR);
+        Collections.sort(list, ChronoField.MONTH_OF_YEAR);
         System.out.println(list);
     }
 

@@ -31,41 +31,28 @@
  */
 package javax.time.format;
 
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_HOUR;
-import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
-import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
-import static javax.time.calendrical.LocalDateTimeField.YEAR;
+import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
+import static javax.time.calendrical.ChronoField.HOUR_OF_DAY;
+import static javax.time.calendrical.ChronoField.MINUTE_OF_HOUR;
+import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
+import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
+import static javax.time.calendrical.ChronoField.SECOND_OF_MINUTE;
+import static javax.time.calendrical.ChronoField.YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
-import java.text.ParsePosition;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
-import javax.time.DateTimeException;
-import javax.time.LocalDate;
-import javax.time.LocalDateTime;
-import javax.time.OffsetDateTime;
-import javax.time.Year;
-import javax.time.YearMonth;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
-import javax.time.ZonedDateTime;
-import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**

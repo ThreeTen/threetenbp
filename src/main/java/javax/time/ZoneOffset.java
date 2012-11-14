@@ -31,19 +31,19 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
+import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
 
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
 import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
 import javax.time.zone.ZoneOffsetInfo;
 
@@ -438,7 +438,7 @@ public final class ZoneOffset
     //-----------------------------------------------------------------------
     @Override
     public boolean isSupported(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             return field == OFFSET_SECONDS;
         }
         return field != null && field.doIsSupported(this);
@@ -462,8 +462,8 @@ public final class ZoneOffset
 
     @Override
     public long getLong(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            switch ((LocalDateTimeField) field) {
+        if (field instanceof ChronoField) {
+            switch ((ChronoField) field) {
                 case OFFSET_SECONDS: return totalSeconds;
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
@@ -473,8 +473,8 @@ public final class ZoneOffset
 
     @Override
     public ZoneOffset with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField f = (ChronoField) field;
             switch (f) {
                 case OFFSET_SECONDS: return ZoneOffset.ofTotalSeconds(f.checkValidIntValue(newValue));
             }

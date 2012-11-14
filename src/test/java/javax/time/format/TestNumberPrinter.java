@@ -31,8 +31,8 @@
  */
 package javax.time.format;
 
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
+import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
+import static javax.time.calendrical.ChronoField.HOUR_OF_DAY;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 

@@ -57,7 +57,7 @@ import javax.time.ZonedDateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
+import javax.time.calendrical.ChronoField;
 import javax.time.jdk8.Jdk8Methods;
 
 import sun.util.calendar.BaseCalendar;
@@ -3352,12 +3352,12 @@ public class GregorianCalendar extends Calendar implements DateTimeAccessor {
 
     @Override
     public boolean isSupported(DateTimeField field) {
-        return field instanceof LocalDateTimeField || (field != null && field.doIsSupported(this));
+        return field instanceof ChronoField || (field != null && field.doIsSupported(this));
     }
 
     @Override
     public DateTimeValueRange range(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             return toOffsetDateTime().range(field);
         }
         return field.doRange(this);
@@ -3370,7 +3370,7 @@ public class GregorianCalendar extends Calendar implements DateTimeAccessor {
 
     @Override
     public long getLong(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             return toZonedDateTime().getLong(field);
         }
         return field.doGet(this);
@@ -3378,8 +3378,8 @@ public class GregorianCalendar extends Calendar implements DateTimeAccessor {
 
     @Override
     public DateTimeAccessor with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField f = (ChronoField) field;
             f.checkValidValue(newValue);
             int nval = (int) newValue;
             switch (f) {
@@ -3399,7 +3399,7 @@ public class GregorianCalendar extends Calendar implements DateTimeAccessor {
                 case DAY_OF_WEEK: set(DAY_OF_WEEK, nval == 7 ? 0 : nval); break;
                 case DAY_OF_MONTH: set(DAY_OF_MONTH, nval); break;
                 case DAY_OF_YEAR: set(DAY_OF_YEAR, nval); break;
-                case EPOCH_DAY: add(DATE, safeToInt(safeSubtract(newValue, this.getLong(LocalDateTimeField.EPOCH_DAY)))); break;
+                case EPOCH_DAY: add(DATE, safeToInt(safeSubtract(newValue, this.getLong(ChronoField.EPOCH_DAY)))); break;
                 case MONTH_OF_YEAR: set(MONTH, nval - 1); break;
                 case EPOCH_MONTH: set(YEAR, floorDiv(nval, 12)); set(MONTH, floorMod(nval, 12)); break;  // TODO: lenient year setting?
                 case YEAR_OF_ERA: set(YEAR, nval); break;

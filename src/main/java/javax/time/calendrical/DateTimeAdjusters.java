@@ -31,12 +31,12 @@
  */
 package javax.time.calendrical;
 
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
-import static javax.time.calendrical.LocalPeriodUnit.DAYS;
-import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
-import static javax.time.calendrical.LocalPeriodUnit.YEARS;
+import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
+import static javax.time.calendrical.ChronoField.DAY_OF_WEEK;
+import static javax.time.calendrical.ChronoField.DAY_OF_YEAR;
+import static javax.time.calendrical.ChronoUnit.DAYS;
+import static javax.time.calendrical.ChronoUnit.MONTHS;
+import static javax.time.calendrical.ChronoUnit.YEARS;
 
 import java.util.Objects;
 

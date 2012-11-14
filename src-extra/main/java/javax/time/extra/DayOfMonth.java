@@ -31,18 +31,18 @@
  */
 package javax.time.extra;
 
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
+import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
 
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.LocalDateTimeField;
 
 /**
  * A representation of a day-of-month in the ISO-8601 calendar system.
@@ -144,7 +144,7 @@ public final class DayOfMonth
      * @return the day-of-month field, never null
      */
     public DateTimeField getField() {
-        return LocalDateTimeField.DAY_OF_MONTH;
+        return ChronoField.DAY_OF_MONTH;
     }
 
     /**

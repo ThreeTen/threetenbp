@@ -37,10 +37,10 @@ import javax.time.LocalTime;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
 import javax.time.zone.ZoneResolver;
@@ -56,7 +56,7 @@ import javax.time.zone.ZoneResolvers;
  * A {@code ChronoOffsetDateTime} is the abstract representation of an offset date-time
  * where the {@code Chrono chronology}, or calendar system, is pluggable.
  * The date-time is defined in terms of fields expressed by {@link DateTimeField},
- * where most common implementations are defined in {@link LocalDateTimeField}.
+ * where most common implementations are defined in {@link ChronoField}.
  * The chronology defines how the calendar system operates and the meaning of
  * the standard fields.
  *

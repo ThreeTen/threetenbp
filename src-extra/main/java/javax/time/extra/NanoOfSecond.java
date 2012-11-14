@@ -31,17 +31,17 @@
  */
 package javax.time.extra;
 
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
+import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
 
 import java.io.Serializable;
 
 import javax.time.DateTimeException;
 import javax.time.LocalTime;
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.LocalDateTimeField;
 
 /**
  * A representation of a nano-of-second in the ISO-8601 calendar system.
@@ -82,7 +82,7 @@ public final class NanoOfSecond
      * @throws DateTimeException if the nano-of-second is invalid
      */
     public static NanoOfSecond of(int nanoOfSecond) {
-        LocalDateTimeField.NANO_OF_SECOND.checkValidValue(nanoOfSecond);
+        ChronoField.NANO_OF_SECOND.checkValidValue(nanoOfSecond);
         if (nanoOfSecond == 0) {
             return ZERO;
         }
@@ -125,7 +125,7 @@ public final class NanoOfSecond
      * @return the nano-of-second field, never null
      */
     public DateTimeField getField() {
-        return LocalDateTimeField.NANO_OF_SECOND;
+        return ChronoField.NANO_OF_SECOND;
     }
 
     /**

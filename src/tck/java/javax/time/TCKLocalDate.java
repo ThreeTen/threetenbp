@@ -31,23 +31,23 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.ERA;
-import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.WEEK_BASED_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_WEEK_BASED_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.YEAR;
-import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
+import static javax.time.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
+import static javax.time.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
+import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_MONTH;
+import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_YEAR;
+import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
+import static javax.time.calendrical.ChronoField.DAY_OF_WEEK;
+import static javax.time.calendrical.ChronoField.DAY_OF_YEAR;
+import static javax.time.calendrical.ChronoField.EPOCH_DAY;
+import static javax.time.calendrical.ChronoField.EPOCH_MONTH;
+import static javax.time.calendrical.ChronoField.ERA;
+import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
+import static javax.time.calendrical.ChronoField.WEEK_BASED_YEAR;
+import static javax.time.calendrical.ChronoField.WEEK_OF_MONTH;
+import static javax.time.calendrical.ChronoField.WEEK_OF_WEEK_BASED_YEAR;
+import static javax.time.calendrical.ChronoField.WEEK_OF_YEAR;
+import static javax.time.calendrical.ChronoField.YEAR;
+import static javax.time.calendrical.ChronoField.YEAR_OF_ERA;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
@@ -65,13 +65,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.time.calendrical.ChronoField;
+import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.JulianDayField;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.MockFieldNoValue;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
@@ -150,7 +150,7 @@ public class TCKLocalDate extends AbstractDateTimeTest {
 
     @Override
     protected List<DateTimeField> invalidFields() {
-        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(LocalDateTimeField.values()));
+        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(ChronoField.values()));
         list.removeAll(validFields());
         return list;
     }
@@ -598,11 +598,11 @@ public class TCKLocalDate extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_get_DateTimeField() {
         LocalDate test = LocalDate.of(2008, 6, 30);
-        assertEquals(test.getLong(LocalDateTimeField.YEAR), 2008);
-        assertEquals(test.getLong(LocalDateTimeField.MONTH_OF_YEAR), 6);
-        assertEquals(test.getLong(LocalDateTimeField.DAY_OF_MONTH), 30);
-        assertEquals(test.getLong(LocalDateTimeField.DAY_OF_WEEK), 1);
-        assertEquals(test.getLong(LocalDateTimeField.DAY_OF_YEAR), 182);
+        assertEquals(test.getLong(ChronoField.YEAR), 2008);
+        assertEquals(test.getLong(ChronoField.MONTH_OF_YEAR), 6);
+        assertEquals(test.getLong(ChronoField.DAY_OF_MONTH), 30);
+        assertEquals(test.getLong(ChronoField.DAY_OF_WEEK), 1);
+        assertEquals(test.getLong(ChronoField.DAY_OF_YEAR), 182);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
@@ -617,7 +617,7 @@ public class TCKLocalDate extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
     public void test_get_DateTimeField_timeField() {
-        TEST_2007_07_15.getLong(LocalDateTimeField.AMPM_OF_DAY);
+        TEST_2007_07_15.getLong(ChronoField.AMPM_OF_DAY);
     }
 
     //-----------------------------------------------------------------------
@@ -781,12 +781,12 @@ public class TCKLocalDate extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
     public void test_with_DateTimeField_long_timeField() {
-        TEST_2007_07_15.with(LocalDateTimeField.AMPM_OF_DAY, 1);
+        TEST_2007_07_15.with(ChronoField.AMPM_OF_DAY, 1);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
     public void test_with_DateTimeField_long_invalidValue() {
-        TEST_2007_07_15.with(LocalDateTimeField.DAY_OF_WEEK, -1);
+        TEST_2007_07_15.with(ChronoField.DAY_OF_WEEK, -1);
     }
 
     //-----------------------------------------------------------------------
@@ -874,21 +874,21 @@ public class TCKLocalDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_plus_Period_positiveMonths() {
-        MockSimplePeriod period = MockSimplePeriod.of(7, LocalPeriodUnit.MONTHS);
+        MockSimplePeriod period = MockSimplePeriod.of(7, ChronoUnit.MONTHS);
         LocalDate t = TEST_2007_07_15.plus(period);
         assertEquals(t, LocalDate.of(2008, 2, 15));
     }
 
     @Test(groups={"tck"})
     public void test_plus_Period_negativeDays() {
-        MockSimplePeriod period = MockSimplePeriod.of(-25, LocalPeriodUnit.DAYS);
+        MockSimplePeriod period = MockSimplePeriod.of(-25, ChronoUnit.DAYS);
         LocalDate t = TEST_2007_07_15.plus(period);
         assertEquals(t, LocalDate.of(2007, 6, 20));
     }
 
     @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
     public void test_plus_Period_timeNotAllowed() {
-        MockSimplePeriod period = MockSimplePeriod.of(7, LocalPeriodUnit.HOURS);
+        MockSimplePeriod period = MockSimplePeriod.of(7, ChronoUnit.HOURS);
         TEST_2007_07_15.plus(period);
     }
 
@@ -899,13 +899,13 @@ public class TCKLocalDate extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plus_Period_invalidTooLarge() {
-        MockSimplePeriod period = MockSimplePeriod.of(1, LocalPeriodUnit.YEARS);
+        MockSimplePeriod period = MockSimplePeriod.of(1, ChronoUnit.YEARS);
         LocalDate.of(Year.MAX_YEAR, 1, 1).plus(period);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plus_Period_invalidTooSmall() {
-        MockSimplePeriod period = MockSimplePeriod.of(-1, LocalPeriodUnit.YEARS);
+        MockSimplePeriod period = MockSimplePeriod.of(-1, ChronoUnit.YEARS);
         LocalDate.of(Year.MIN_YEAR, 1, 1).plus(period);
     }
 
@@ -914,19 +914,19 @@ public class TCKLocalDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_plus_longPeriodUnit_positiveMonths() {
-        LocalDate t = TEST_2007_07_15.plus(7, LocalPeriodUnit.MONTHS);
+        LocalDate t = TEST_2007_07_15.plus(7, ChronoUnit.MONTHS);
         assertEquals(t, LocalDate.of(2008, 2, 15));
     }
 
     @Test(groups={"tck"})
     public void test_plus_longPeriodUnit_negativeDays() {
-        LocalDate t = TEST_2007_07_15.plus(-25, LocalPeriodUnit.DAYS);
+        LocalDate t = TEST_2007_07_15.plus(-25, ChronoUnit.DAYS);
         assertEquals(t, LocalDate.of(2007, 6, 20));
     }
 
     @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
     public void test_plus_longPeriodUnit_timeNotAllowed() {
-        TEST_2007_07_15.plus(7, LocalPeriodUnit.HOURS);
+        TEST_2007_07_15.plus(7, ChronoUnit.HOURS);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
@@ -936,12 +936,12 @@ public class TCKLocalDate extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plus_longPeriodUnit_invalidTooLarge() {
-        LocalDate.of(Year.MAX_YEAR, 1, 1).plus(1, LocalPeriodUnit.YEARS);
+        LocalDate.of(Year.MAX_YEAR, 1, 1).plus(1, ChronoUnit.YEARS);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plus_longPeriodUnit_invalidTooSmall() {
-        LocalDate.of(Year.MIN_YEAR, 1, 1).plus(-1, LocalPeriodUnit.YEARS);
+        LocalDate.of(Year.MIN_YEAR, 1, 1).plus(-1, ChronoUnit.YEARS);
     }
 
     //-----------------------------------------------------------------------
@@ -1234,21 +1234,21 @@ public class TCKLocalDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_minus_Period_positiveMonths() {
-        MockSimplePeriod period = MockSimplePeriod.of(7, LocalPeriodUnit.MONTHS);
+        MockSimplePeriod period = MockSimplePeriod.of(7, ChronoUnit.MONTHS);
         LocalDate t = TEST_2007_07_15.minus(period);
         assertEquals(t, LocalDate.of(2006, 12, 15));
     }
 
     @Test(groups={"tck"})
     public void test_minus_Period_negativeDays() {
-        MockSimplePeriod period = MockSimplePeriod.of(-25, LocalPeriodUnit.DAYS);
+        MockSimplePeriod period = MockSimplePeriod.of(-25, ChronoUnit.DAYS);
         LocalDate t = TEST_2007_07_15.minus(period);
         assertEquals(t, LocalDate.of(2007, 8, 9));
     }
 
     @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
     public void test_minus_Period_timeNotAllowed() {
-        MockSimplePeriod period = MockSimplePeriod.of(7, LocalPeriodUnit.HOURS);
+        MockSimplePeriod period = MockSimplePeriod.of(7, ChronoUnit.HOURS);
         TEST_2007_07_15.minus(period);
     }
 
@@ -1259,13 +1259,13 @@ public class TCKLocalDate extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minus_Period_invalidTooLarge() {
-        MockSimplePeriod period = MockSimplePeriod.of(-1, LocalPeriodUnit.YEARS);
+        MockSimplePeriod period = MockSimplePeriod.of(-1, ChronoUnit.YEARS);
         LocalDate.of(Year.MAX_YEAR, 1, 1).minus(period);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minus_Period_invalidTooSmall() {
-        MockSimplePeriod period = MockSimplePeriod.of(1, LocalPeriodUnit.YEARS);
+        MockSimplePeriod period = MockSimplePeriod.of(1, ChronoUnit.YEARS);
         LocalDate.of(Year.MIN_YEAR, 1, 1).minus(period);
     }
 
@@ -1274,19 +1274,19 @@ public class TCKLocalDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_minus_longPeriodUnit_positiveMonths() {
-        LocalDate t = TEST_2007_07_15.minus(7, LocalPeriodUnit.MONTHS);
+        LocalDate t = TEST_2007_07_15.minus(7, ChronoUnit.MONTHS);
         assertEquals(t, LocalDate.of(2006, 12, 15));
     }
 
     @Test(groups={"tck"})
     public void test_minus_longPeriodUnit_negativeDays() {
-        LocalDate t = TEST_2007_07_15.minus(-25, LocalPeriodUnit.DAYS);
+        LocalDate t = TEST_2007_07_15.minus(-25, ChronoUnit.DAYS);
         assertEquals(t, LocalDate.of(2007, 8, 9));
     }
 
     @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
     public void test_minus_longPeriodUnit_timeNotAllowed() {
-        TEST_2007_07_15.minus(7, LocalPeriodUnit.HOURS);
+        TEST_2007_07_15.minus(7, ChronoUnit.HOURS);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
@@ -1296,12 +1296,12 @@ public class TCKLocalDate extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minus_longPeriodUnit_invalidTooLarge() {
-        LocalDate.of(Year.MAX_YEAR, 1, 1).minus(-1, LocalPeriodUnit.YEARS);
+        LocalDate.of(Year.MAX_YEAR, 1, 1).minus(-1, ChronoUnit.YEARS);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minus_longPeriodUnit_invalidTooSmall() {
-        LocalDate.of(Year.MIN_YEAR, 1, 1).minus(1, LocalPeriodUnit.YEARS);
+        LocalDate.of(Year.MIN_YEAR, 1, 1).minus(1, ChronoUnit.YEARS);
     }
 
     //-----------------------------------------------------------------------

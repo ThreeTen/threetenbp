@@ -31,73 +31,53 @@
  */
 package javax.time;
 
-import static javax.time.Month.DECEMBER;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.AMPM_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.CLOCK_HOUR_OF_AMPM;
-import static javax.time.calendrical.LocalDateTimeField.CLOCK_HOUR_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.ERA;
-import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_AMPM;
-import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.INSTANT_SECONDS;
-import static javax.time.calendrical.LocalDateTimeField.MICRO_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.MICRO_OF_SECOND;
-import static javax.time.calendrical.LocalDateTimeField.MILLI_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.MILLI_OF_SECOND;
-import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_HOUR;
-import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
-import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
-import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
-import static javax.time.calendrical.LocalDateTimeField.WEEK_BASED_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_WEEK_BASED_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.YEAR;
-import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
+import static javax.time.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
+import static javax.time.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
+import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_MONTH;
+import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_YEAR;
+import static javax.time.calendrical.ChronoField.AMPM_OF_DAY;
+import static javax.time.calendrical.ChronoField.CLOCK_HOUR_OF_AMPM;
+import static javax.time.calendrical.ChronoField.CLOCK_HOUR_OF_DAY;
+import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
+import static javax.time.calendrical.ChronoField.DAY_OF_WEEK;
+import static javax.time.calendrical.ChronoField.DAY_OF_YEAR;
+import static javax.time.calendrical.ChronoField.EPOCH_DAY;
+import static javax.time.calendrical.ChronoField.EPOCH_MONTH;
+import static javax.time.calendrical.ChronoField.ERA;
+import static javax.time.calendrical.ChronoField.HOUR_OF_AMPM;
+import static javax.time.calendrical.ChronoField.HOUR_OF_DAY;
+import static javax.time.calendrical.ChronoField.INSTANT_SECONDS;
+import static javax.time.calendrical.ChronoField.MICRO_OF_DAY;
+import static javax.time.calendrical.ChronoField.MICRO_OF_SECOND;
+import static javax.time.calendrical.ChronoField.MILLI_OF_DAY;
+import static javax.time.calendrical.ChronoField.MILLI_OF_SECOND;
+import static javax.time.calendrical.ChronoField.MINUTE_OF_DAY;
+import static javax.time.calendrical.ChronoField.MINUTE_OF_HOUR;
+import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
+import static javax.time.calendrical.ChronoField.NANO_OF_DAY;
+import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
+import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
+import static javax.time.calendrical.ChronoField.SECOND_OF_DAY;
+import static javax.time.calendrical.ChronoField.SECOND_OF_MINUTE;
+import static javax.time.calendrical.ChronoField.WEEK_BASED_YEAR;
+import static javax.time.calendrical.ChronoField.WEEK_OF_MONTH;
+import static javax.time.calendrical.ChronoField.WEEK_OF_WEEK_BASED_YEAR;
+import static javax.time.calendrical.ChronoField.WEEK_OF_YEAR;
+import static javax.time.calendrical.ChronoField.YEAR;
+import static javax.time.calendrical.ChronoField.YEAR_OF_ERA;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTime.WithAdjuster;
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.JulianDayField;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
-import javax.time.calendrical.MockFieldNoValue;
-import javax.time.calendrical.MockZoneResolverReturnsNull;
-import javax.time.format.CalendricalFormatter;
-import javax.time.format.DateTimeParseException;
-import javax.time.zone.ZoneResolver;
-import javax.time.zone.ZoneResolvers;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -175,7 +155,7 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
 
     @Override
     protected List<DateTimeField> invalidFields() {
-        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(LocalDateTimeField.values()));
+        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(ChronoField.values()));
         list.removeAll(validFields());
         return list;
     }

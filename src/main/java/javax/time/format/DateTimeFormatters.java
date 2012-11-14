@@ -31,17 +31,17 @@
  */
 package javax.time.format;
 
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_HOUR;
-import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
-import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
-import static javax.time.calendrical.LocalDateTimeField.WEEK_BASED_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_WEEK_BASED_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.YEAR;
+import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
+import static javax.time.calendrical.ChronoField.DAY_OF_WEEK;
+import static javax.time.calendrical.ChronoField.DAY_OF_YEAR;
+import static javax.time.calendrical.ChronoField.HOUR_OF_DAY;
+import static javax.time.calendrical.ChronoField.MINUTE_OF_HOUR;
+import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
+import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
+import static javax.time.calendrical.ChronoField.SECOND_OF_MINUTE;
+import static javax.time.calendrical.ChronoField.WEEK_BASED_YEAR;
+import static javax.time.calendrical.ChronoField.WEEK_OF_WEEK_BASED_YEAR;
+import static javax.time.calendrical.ChronoField.YEAR;
 
 import java.util.Locale;
 import java.util.Objects;

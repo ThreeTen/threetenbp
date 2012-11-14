@@ -37,14 +37,14 @@ import static javax.time.DateTimeConstants.SECONDS_PER_MINUTE;
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.time.calendrical.ChronoField;
+import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.ChronoZonedDateTime;
 import javax.time.chrono.ISOChrono;
@@ -579,12 +579,12 @@ public final class ZonedDateTime
     //-----------------------------------------------------------------------
     @Override
     public boolean isSupported(DateTimeField field) {
-        return field instanceof LocalDateTimeField || (field != null && field.doIsSupported(this));
+        return field instanceof ChronoField || (field != null && field.doIsSupported(this));
     }
 
     @Override
     public DateTimeValueRange range(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             return dateTime.range(field);
         }
         return field.doRange(this);
@@ -592,8 +592,8 @@ public final class ZonedDateTime
 
     @Override
     public int get(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            switch ((LocalDateTimeField) field) {
+        if (field instanceof ChronoField) {
+            switch ((ChronoField) field) {
                 case INSTANT_SECONDS: throw new DateTimeException("Field too large for an int: " + field);
                 case OFFSET_SECONDS: return getOffset().getTotalSeconds();
             }
@@ -604,8 +604,8 @@ public final class ZonedDateTime
 
     @Override
     public long getLong(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            switch ((LocalDateTimeField) field) {
+        if (field instanceof ChronoField) {
+            switch ((ChronoField) field) {
                 case INSTANT_SECONDS: return toEpochSecond();
                 case OFFSET_SECONDS: return getOffset().getTotalSeconds();
             }
@@ -1063,8 +1063,8 @@ public final class ZonedDateTime
      */
     @Override
     public ZonedDateTime with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField f = (ChronoField) field;
             switch (f) {
                 case INSTANT_SECONDS: return create(newValue, getNano(), zone);
                 case OFFSET_SECONDS: {
@@ -1362,7 +1362,7 @@ public final class ZonedDateTime
      * @throws DateTimeException if the unit cannot be added to this type
      */
     public ZonedDateTime plus(long amountToAdd, PeriodUnit unit) {
-        if (unit instanceof LocalPeriodUnit) {
+        if (unit instanceof ChronoUnit) {
             return withDateTime(getDateTime().plus(amountToAdd, unit));
         }
         return unit.doAdd(this, amountToAdd);
@@ -1851,7 +1851,7 @@ public final class ZonedDateTime
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
         ZonedDateTime end = (ZonedDateTime) endDateTime;
-        if (unit instanceof LocalPeriodUnit) {
+        if (unit instanceof ChronoUnit) {
             OffsetDateTime endODT = end.dateTime.withOffsetSameInstant(dateTime.getOffset());
             return dateTime.periodUntil(endODT, unit);
         }

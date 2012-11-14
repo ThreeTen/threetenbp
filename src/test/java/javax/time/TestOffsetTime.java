@@ -31,52 +31,35 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.LocalDateTimeField.AMPM_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.CLOCK_HOUR_OF_AMPM;
-import static javax.time.calendrical.LocalDateTimeField.CLOCK_HOUR_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_AMPM;
-import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.MICRO_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.MICRO_OF_SECOND;
-import static javax.time.calendrical.LocalDateTimeField.MILLI_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.MILLI_OF_SECOND;
-import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_HOUR;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
-import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
-import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
+import static javax.time.calendrical.ChronoField.AMPM_OF_DAY;
+import static javax.time.calendrical.ChronoField.CLOCK_HOUR_OF_AMPM;
+import static javax.time.calendrical.ChronoField.CLOCK_HOUR_OF_DAY;
+import static javax.time.calendrical.ChronoField.HOUR_OF_AMPM;
+import static javax.time.calendrical.ChronoField.HOUR_OF_DAY;
+import static javax.time.calendrical.ChronoField.MICRO_OF_DAY;
+import static javax.time.calendrical.ChronoField.MICRO_OF_SECOND;
+import static javax.time.calendrical.ChronoField.MILLI_OF_DAY;
+import static javax.time.calendrical.ChronoField.MILLI_OF_SECOND;
+import static javax.time.calendrical.ChronoField.MINUTE_OF_DAY;
+import static javax.time.calendrical.ChronoField.MINUTE_OF_HOUR;
+import static javax.time.calendrical.ChronoField.NANO_OF_DAY;
+import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
+import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
+import static javax.time.calendrical.ChronoField.SECOND_OF_DAY;
+import static javax.time.calendrical.ChronoField.SECOND_OF_MINUTE;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTime.WithAdjuster;
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.JulianDayField;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
-import javax.time.calendrical.MockFieldNoValue;
-import javax.time.format.CalendricalFormatter;
-import javax.time.format.DateTimeParseException;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -130,7 +113,7 @@ public class TestOffsetTime extends AbstractDateTimeTest {
 
     @Override
     protected List<DateTimeField> invalidFields() {
-        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(LocalDateTimeField.values()));
+        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(ChronoField.values()));
         list.removeAll(validFields());
         list.add(JulianDayField.JULIAN_DAY);
         list.add(JulianDayField.MODIFIED_JULIAN_DAY);

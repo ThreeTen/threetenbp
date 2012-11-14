@@ -31,35 +31,35 @@
  */
 package javax.time.calendrical;
 
+import static javax.time.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
+import static javax.time.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
+import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_MONTH;
+import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_YEAR;
+import static javax.time.calendrical.ChronoField.AMPM_OF_DAY;
+import static javax.time.calendrical.ChronoField.CLOCK_HOUR_OF_AMPM;
+import static javax.time.calendrical.ChronoField.CLOCK_HOUR_OF_DAY;
+import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
+import static javax.time.calendrical.ChronoField.DAY_OF_WEEK;
+import static javax.time.calendrical.ChronoField.DAY_OF_YEAR;
+import static javax.time.calendrical.ChronoField.EPOCH_DAY;
+import static javax.time.calendrical.ChronoField.EPOCH_MONTH;
+import static javax.time.calendrical.ChronoField.HOUR_OF_AMPM;
+import static javax.time.calendrical.ChronoField.HOUR_OF_DAY;
+import static javax.time.calendrical.ChronoField.INSTANT_SECONDS;
+import static javax.time.calendrical.ChronoField.MICRO_OF_DAY;
+import static javax.time.calendrical.ChronoField.MICRO_OF_SECOND;
+import static javax.time.calendrical.ChronoField.MILLI_OF_DAY;
+import static javax.time.calendrical.ChronoField.MILLI_OF_SECOND;
+import static javax.time.calendrical.ChronoField.MINUTE_OF_DAY;
+import static javax.time.calendrical.ChronoField.MINUTE_OF_HOUR;
+import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
+import static javax.time.calendrical.ChronoField.NANO_OF_DAY;
+import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
+import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
+import static javax.time.calendrical.ChronoField.SECOND_OF_DAY;
+import static javax.time.calendrical.ChronoField.SECOND_OF_MINUTE;
+import static javax.time.calendrical.ChronoField.YEAR;
 import static javax.time.calendrical.DateTimeAdjusters.nextOrCurrent;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.AMPM_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.CLOCK_HOUR_OF_AMPM;
-import static javax.time.calendrical.LocalDateTimeField.CLOCK_HOUR_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_AMPM;
-import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.INSTANT_SECONDS;
-import static javax.time.calendrical.LocalDateTimeField.MICRO_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.MICRO_OF_SECOND;
-import static javax.time.calendrical.LocalDateTimeField.MILLI_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.MILLI_OF_SECOND;
-import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_HOUR;
-import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
-import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
-import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
-import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -109,7 +109,7 @@ public final class DateTimeBuilder
     /**
      * The map of date-time fields.
      */
-    private final EnumMap<LocalDateTimeField, Long> standardFields = new EnumMap<LocalDateTimeField, Long>(LocalDateTimeField.class);
+    private final EnumMap<ChronoField, Long> standardFields = new EnumMap<ChronoField, Long>(ChronoField.class);
     /**
      * The list of complete date-time objects.
      */
@@ -191,7 +191,7 @@ public final class DateTimeBuilder
     }
 
     private Long getFieldValue0(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             return standardFields.get(field);
         } else if (otherFields != null) {
             return otherFields.get(field);
@@ -235,8 +235,8 @@ public final class DateTimeBuilder
     }
 
     private DateTimeBuilder putFieldValue0(DateTimeField field, long value) {
-        if (field instanceof LocalDateTimeField) {
-            standardFields.put((LocalDateTimeField) field, value);
+        if (field instanceof ChronoField) {
+            standardFields.put((ChronoField) field, value);
         } else {
             if (otherFields == null) {
                 otherFields = new LinkedHashMap<DateTimeField, Long>();
@@ -259,7 +259,7 @@ public final class DateTimeBuilder
     public long removeFieldValue(DateTimeField field) {
         Objects.requireNonNull(field, "field");
         Long value = null;
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             value = standardFields.remove(field);
         } else if (otherFields != null) {
             value = otherFields.remove(field);
@@ -281,7 +281,7 @@ public final class DateTimeBuilder
      */
     public void removeFieldValues(DateTimeField... fields) {
         for (DateTimeField field : fields) {
-            if (field instanceof LocalDateTimeField) {
+            if (field instanceof ChronoField) {
                 standardFields.remove(field);
             } else if (otherFields != null) {
                 otherFields.remove(field);
@@ -471,7 +471,7 @@ public final class DateTimeBuilder
         // TODO: this doesn't handle aligned weeks over into next month which would otherwise be valid
 
         addCalendrical(date);
-        for (LocalDateTimeField field : standardFields.keySet()) {
+        for (ChronoField field : standardFields.keySet()) {
             long val1;
             try {
                 val1 = date.getLong(field);

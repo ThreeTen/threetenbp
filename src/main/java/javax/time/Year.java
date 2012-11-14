@@ -31,20 +31,20 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.LocalDateTimeField.ERA;
-import static javax.time.calendrical.LocalDateTimeField.YEAR;
-import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
+import static javax.time.calendrical.ChronoField.ERA;
+import static javax.time.calendrical.ChronoField.YEAR;
+import static javax.time.calendrical.ChronoField.YEAR_OF_ERA;
 
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.time.calendrical.ChronoField;
+import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.Chrono;
 import javax.time.chrono.ISOChrono;
@@ -274,7 +274,7 @@ public final class Year
     //-----------------------------------------------------------------------
     @Override
     public boolean isSupported(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             return field == YEAR || field == YEAR_OF_ERA || field == ERA;
         }
         return field != null && field.doIsSupported(this);
@@ -290,8 +290,8 @@ public final class Year
 
     @Override
     public long getLong(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            switch ((LocalDateTimeField) field) {
+        if (field instanceof ChronoField) {
+            switch ((ChronoField) field) {
                 case YEAR_OF_ERA: return (year < 1 ? 1 - year : year);
                 case YEAR: return year;
                 case ERA: return (year < 1 ? 0 : 1);
@@ -354,8 +354,8 @@ public final class Year
 
     @Override
     public Year with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField f = (ChronoField) field;
             f.checkValidValue(newValue);
             switch (f) {
                 case YEAR_OF_ERA: return Year.of((int) (year < 1 ? 1 - newValue : newValue));
@@ -390,8 +390,8 @@ public final class Year
 
     @Override
     public Year plus(long amountToAdd, PeriodUnit unit) {
-        if (unit instanceof LocalPeriodUnit) {
-            switch ((LocalPeriodUnit) unit) {
+        if (unit instanceof ChronoUnit) {
+            switch ((ChronoUnit) unit) {
                 case YEARS: return plusYears(amountToAdd);
                 case DECADES: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 10));
                 case CENTURIES: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 100));
@@ -591,9 +591,9 @@ public final class Year
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
         Year end = (Year) endDateTime;
-        if (unit instanceof LocalPeriodUnit) {
+        if (unit instanceof ChronoUnit) {
             long yearsUntil = ((long) end.year) - year;  // no overflow
-            switch ((LocalPeriodUnit) unit) {
+            switch ((ChronoUnit) unit) {
                 case YEARS: return yearsUntil;
                 case DECADES: return yearsUntil / 10;
                 case CENTURIES: return yearsUntil / 100;

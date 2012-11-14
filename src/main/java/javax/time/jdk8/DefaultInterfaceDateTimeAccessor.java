@@ -32,10 +32,10 @@
 package javax.time.jdk8;
 
 import javax.time.DateTimeException;
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
 
 /**
  * A temporary class providing implementations that will become default interface
@@ -45,7 +45,7 @@ public abstract class DefaultInterfaceDateTimeAccessor implements DateTimeAccess
 
     @Override
     public DateTimeValueRange range(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             if (isSupported(field)) {
                 return field.range();
             }

@@ -31,9 +31,9 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.LocalPeriodUnit.DAYS;
-import static javax.time.calendrical.LocalPeriodUnit.FOREVER;
-import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
+import static javax.time.calendrical.ChronoUnit.DAYS;
+import static javax.time.calendrical.ChronoUnit.FOREVER;
+import static javax.time.calendrical.ChronoUnit.SECONDS;
 
 import java.util.Objects;
 
@@ -74,7 +74,7 @@ public final class MockSimplePeriod
      * @param amount  the amount of the period, measured in terms of the unit, positive or negative
      * @param unit  the unit that the period is measured in, must not be the 'Forever' unit, not null
      * @return the {@code MockSimplePeriod} instance, not null
-     * @throws DateTimeException if the period unit is {@link javax.time.calendrical.LocalPeriodUnit#FOREVER}.
+     * @throws DateTimeException if the period unit is {@link javax.time.calendrical.ChronoUnit#FOREVER}.
      */
     public static MockSimplePeriod of(long amount, PeriodUnit unit) {
         return new MockSimplePeriod(amount, unit);

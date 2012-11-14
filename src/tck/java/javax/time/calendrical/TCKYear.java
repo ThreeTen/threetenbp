@@ -31,9 +31,9 @@
  */
 package javax.time.calendrical;
 
-import static javax.time.calendrical.LocalDateTimeField.ERA;
-import static javax.time.calendrical.LocalDateTimeField.YEAR;
-import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
+import static javax.time.calendrical.ChronoField.ERA;
+import static javax.time.calendrical.ChronoField.YEAR;
+import static javax.time.calendrical.ChronoField.YEAR_OF_ERA;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
@@ -92,7 +92,7 @@ public class TCKYear extends AbstractDateTimeTest {
 
     @Override
     protected List<DateTimeField> invalidFields() {
-        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(LocalDateTimeField.values()));
+        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(ChronoField.values()));
         list.removeAll(validFields());
         list.add(JulianDayField.JULIAN_DAY);
         list.add(JulianDayField.MODIFIED_JULIAN_DAY);
@@ -304,9 +304,9 @@ public class TCKYear extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_get_DateTimeField() {
-        assertEquals(TEST_2008.getLong(LocalDateTimeField.YEAR), 2008);
-        assertEquals(TEST_2008.getLong(LocalDateTimeField.YEAR_OF_ERA), 2008);
-        assertEquals(TEST_2008.getLong(LocalDateTimeField.ERA), 1);
+        assertEquals(TEST_2008.getLong(ChronoField.YEAR), 2008);
+        assertEquals(TEST_2008.getLong(ChronoField.YEAR_OF_ERA), 2008);
+        assertEquals(TEST_2008.getLong(ChronoField.ERA), 1);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
@@ -321,7 +321,7 @@ public class TCKYear extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
     public void test_get_DateTimeField_timeField() {
-        TEST_2008.getLong(LocalDateTimeField.AMPM_OF_DAY);
+        TEST_2008.getLong(ChronoField.AMPM_OF_DAY);
     }
 
     //-----------------------------------------------------------------------

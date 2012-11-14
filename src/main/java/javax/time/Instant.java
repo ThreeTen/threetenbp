@@ -34,20 +34,20 @@ package javax.time;
 import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
 import static javax.time.DateTimeConstants.SECONDS_PER_HOUR;
 import static javax.time.DateTimeConstants.SECONDS_PER_MINUTE;
-import static javax.time.calendrical.LocalDateTimeField.INSTANT_SECONDS;
-import static javax.time.calendrical.LocalDateTimeField.MICRO_OF_SECOND;
-import static javax.time.calendrical.LocalDateTimeField.MILLI_OF_SECOND;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
+import static javax.time.calendrical.ChronoField.INSTANT_SECONDS;
+import static javax.time.calendrical.ChronoField.MICRO_OF_SECOND;
+import static javax.time.calendrical.ChronoField.MILLI_OF_SECOND;
+import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
 
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.time.calendrical.ChronoField;
+import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
@@ -331,7 +331,7 @@ public final class Instant
     //-----------------------------------------------------------------------
     @Override
     public boolean isSupported(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             return field == INSTANT_SECONDS || field == NANO_OF_SECOND || field == MICRO_OF_SECOND || field == MILLI_OF_SECOND;
         }
         return field != null && field.doIsSupported(this);
@@ -339,8 +339,8 @@ public final class Instant
 
     @Override
     public long getLong(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            switch ((LocalDateTimeField) field) {
+        if (field instanceof ChronoField) {
+            switch ((ChronoField) field) {
                 case NANO_OF_SECOND: return nanos;
                 case MICRO_OF_SECOND: return nanos / 1000;
                 case MILLI_OF_SECOND: return nanos / 1000_000;
@@ -386,8 +386,8 @@ public final class Instant
 
     @Override
     public Instant with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField f = (ChronoField) field;
             f.checkValidValue(newValue);
             switch (f) {
                 case MILLI_OF_SECOND: {
@@ -414,8 +414,8 @@ public final class Instant
 
     @Override
     public Instant plus(long amountToAdd, PeriodUnit unit) {
-        if (unit instanceof LocalPeriodUnit) {
-            switch ((LocalPeriodUnit) unit) {
+        if (unit instanceof ChronoUnit) {
+            switch ((ChronoUnit) unit) {
                 case NANOS: return plusNanos(amountToAdd);
                 case MICROS: return plus(amountToAdd / 1000_000, (amountToAdd % 1000_000) * 1000);
                 case MILLIS: return plusMillis(amountToAdd);
@@ -567,8 +567,8 @@ public final class Instant
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
         Instant end = (Instant) endDateTime;
-        if (unit instanceof LocalPeriodUnit) {
-            LocalPeriodUnit f = (LocalPeriodUnit) unit;
+        if (unit instanceof ChronoUnit) {
+            ChronoUnit f = (ChronoUnit) unit;
             switch (f) {
                 case NANOS: return nanosUntil(end);
                 case MICROS: return nanosUntil(end) / 1000;

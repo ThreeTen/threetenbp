@@ -31,7 +31,7 @@
  */
 package javax.time.extra;
 
-import static javax.time.calendrical.LocalPeriodUnit.HOURS;
+import static javax.time.calendrical.ChronoUnit.HOURS;
 
 import java.io.Serializable;
 

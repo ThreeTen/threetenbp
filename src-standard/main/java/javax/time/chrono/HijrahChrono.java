@@ -32,7 +32,7 @@
 
 package javax.time.chrono;
 
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
+import static javax.time.calendrical.ChronoField.EPOCH_DAY;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -41,9 +41,9 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.time.DateTimeException;
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
 
 /**
  * The Hijrah calendar system.
@@ -292,7 +292,7 @@ public final class HijrahChrono extends Chrono<HijrahChrono> implements Serializ
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeValueRange range(LocalDateTimeField field) {
+    public DateTimeValueRange range(ChronoField field) {
         return field.range();
     }
 

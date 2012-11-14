@@ -31,9 +31,9 @@
  */
 package javax.time.extra;
 
-import static javax.time.calendrical.LocalPeriodUnit.HALF_YEARS;
-import static javax.time.calendrical.LocalPeriodUnit.QUARTER_YEARS;
-import static javax.time.calendrical.LocalPeriodUnit.YEARS;
+import static javax.time.calendrical.ChronoUnit.HALF_YEARS;
+import static javax.time.calendrical.ChronoUnit.QUARTER_YEARS;
+import static javax.time.calendrical.ChronoUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -47,10 +47,10 @@ import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.Month;
+import javax.time.calendrical.ChronoField;
+import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.MockFieldNoValue;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.TextStyle;
@@ -67,7 +67,7 @@ public class TestQuarterOfYear {
 
     private static final PeriodUnit[] INVALID_UNITS;
     static {
-        EnumSet<LocalPeriodUnit> set = EnumSet.allOf(LocalPeriodUnit.class);
+        EnumSet<ChronoUnit> set = EnumSet.allOf(ChronoUnit.class);
         set.remove(QUARTER_YEARS);
         set.remove(HALF_YEARS);
         set.remove(YEARS);
@@ -168,11 +168,11 @@ public class TestQuarterOfYear {
     @DataProvider(name="invalidFields")
     Object[][] data_invalidFields() {
         return new Object[][] {
-            {LocalDateTimeField.NANO_OF_DAY},
-            {LocalDateTimeField.HOUR_OF_DAY},
-            {LocalDateTimeField.DAY_OF_MONTH},
-            {LocalDateTimeField.MONTH_OF_YEAR},
-            {LocalDateTimeField.INSTANT_SECONDS},
+            {ChronoField.NANO_OF_DAY},
+            {ChronoField.HOUR_OF_DAY},
+            {ChronoField.DAY_OF_MONTH},
+            {ChronoField.MONTH_OF_YEAR},
+            {ChronoField.INSTANT_SECONDS},
             {MockFieldNoValue.INSTANCE},
         };
     }

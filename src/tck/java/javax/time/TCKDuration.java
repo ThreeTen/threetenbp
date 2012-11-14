@@ -31,15 +31,15 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.LocalPeriodUnit.DAYS;
-import static javax.time.calendrical.LocalPeriodUnit.HALF_DAYS;
-import static javax.time.calendrical.LocalPeriodUnit.HOURS;
-import static javax.time.calendrical.LocalPeriodUnit.MICROS;
-import static javax.time.calendrical.LocalPeriodUnit.MILLIS;
-import static javax.time.calendrical.LocalPeriodUnit.MINUTES;
-import static javax.time.calendrical.LocalPeriodUnit.NANOS;
-import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
-import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
+import static javax.time.calendrical.ChronoUnit.DAYS;
+import static javax.time.calendrical.ChronoUnit.HALF_DAYS;
+import static javax.time.calendrical.ChronoUnit.HOURS;
+import static javax.time.calendrical.ChronoUnit.MICROS;
+import static javax.time.calendrical.ChronoUnit.MILLIS;
+import static javax.time.calendrical.ChronoUnit.MINUTES;
+import static javax.time.calendrical.ChronoUnit.NANOS;
+import static javax.time.calendrical.ChronoUnit.SECONDS;
+import static javax.time.calendrical.ChronoUnit.WEEKS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 

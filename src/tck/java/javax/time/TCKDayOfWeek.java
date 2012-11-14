@@ -34,9 +34,9 @@ package javax.time;
 import static javax.time.DayOfWeek.MONDAY;
 import static javax.time.DayOfWeek.SUNDAY;
 import static javax.time.DayOfWeek.WEDNESDAY;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
-import static javax.time.calendrical.LocalPeriodUnit.DAYS;
-import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
+import static javax.time.calendrical.ChronoField.DAY_OF_WEEK;
+import static javax.time.calendrical.ChronoUnit.DAYS;
+import static javax.time.calendrical.ChronoUnit.WEEKS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 
@@ -46,12 +46,12 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
 
+import javax.time.calendrical.ChronoField;
+import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.JulianDayField;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.TextStyle;
 
@@ -67,7 +67,7 @@ public class TCKDayOfWeek extends AbstractDateTimeTest {
 
     private static final PeriodUnit[] INVALID_UNITS;
     static {
-        EnumSet<LocalPeriodUnit> set = EnumSet.allOf(LocalPeriodUnit.class);
+        EnumSet<ChronoUnit> set = EnumSet.allOf(ChronoUnit.class);
         set.remove(DAYS);
         set.remove(WEEKS);
         INVALID_UNITS = (PeriodUnit[]) set.toArray(new PeriodUnit[set.size()]);
@@ -94,7 +94,7 @@ public class TCKDayOfWeek extends AbstractDateTimeTest {
 
     @Override
     protected List<DateTimeField> invalidFields() {
-        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(LocalDateTimeField.values()));
+        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(ChronoField.values()));
         list.removeAll(validFields());
         list.add(JulianDayField.JULIAN_DAY);
         list.add(JulianDayField.MODIFIED_JULIAN_DAY);

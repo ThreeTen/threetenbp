@@ -31,9 +31,9 @@
  */
 package javax.time.format;
 
-import static javax.time.calendrical.LocalDateTimeField.AMPM_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
-import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
+import static javax.time.calendrical.ChronoField.AMPM_OF_DAY;
+import static javax.time.calendrical.ChronoField.DAY_OF_WEEK;
+import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
 
 import java.text.DateFormatSymbols;
 import java.util.AbstractMap.SimpleImmutableEntry;

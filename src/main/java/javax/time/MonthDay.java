@@ -31,18 +31,18 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
+import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
+import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
 
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
 import javax.time.chrono.Chrono;
 import javax.time.chrono.ISOChrono;
 import javax.time.format.CalendricalFormatter;
@@ -262,7 +262,7 @@ public final class MonthDay
     //-----------------------------------------------------------------------
     @Override
     public boolean isSupported(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             return field == MONTH_OF_YEAR || field == DAY_OF_MONTH;
         }
         return field != null && field.doIsSupported(this);
@@ -280,8 +280,8 @@ public final class MonthDay
 
     @Override
     public long getLong(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            switch ((LocalDateTimeField) field) {
+        if (field instanceof ChronoField) {
+            switch ((ChronoField) field) {
                 // alignedDOW and alignedWOM not supported because they cannot be set in with()
                 case DAY_OF_MONTH: return day;
                 case MONTH_OF_YEAR: return month;
@@ -320,8 +320,8 @@ public final class MonthDay
     //-----------------------------------------------------------------------
     @Override
     public MonthDay with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField f = (ChronoField) field;
             f.checkValidValue(newValue);
             switch (f) {
                 // alignedDOW and alignedWOM not supported because they require plus/minus to next month

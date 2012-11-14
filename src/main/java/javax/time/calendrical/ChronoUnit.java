@@ -46,7 +46,7 @@ import javax.time.ZonedDateTime;
  * <h4>Implementation notes</h4>
  * This is a final, immutable and thread-safe enum.
  */
-public enum LocalPeriodUnit implements PeriodUnit {
+public enum ChronoUnit implements PeriodUnit {
 
     /**
      * Unit that represents the concept of a nanosecond, the smallest supported unit of time.
@@ -191,7 +191,7 @@ public enum LocalPeriodUnit implements PeriodUnit {
     private final String name;
     private final Duration duration;
 
-    private LocalPeriodUnit(String name, Duration estimatedDuration) {
+    private ChronoUnit(String name, Duration estimatedDuration) {
         this.name = name;
         this.duration = estimatedDuration;
     }

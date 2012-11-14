@@ -31,7 +31,7 @@
  */
 package javax.time.extra.chrono;
 
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
+import static javax.time.calendrical.ChronoField.EPOCH_DAY;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -39,9 +39,9 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.time.DateTimeException;
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
 import javax.time.chrono.Chrono;
 import javax.time.chrono.ChronoLocalDate;
 import javax.time.chrono.Era;
@@ -217,7 +217,7 @@ public final class CopticChrono extends Chrono<CopticChrono> implements Serializ
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeValueRange range(LocalDateTimeField field) {
+    public DateTimeValueRange range(ChronoField field) {
         switch (field) {
             case DAY_OF_MONTH: return DateTimeValueRange.of(1, 5, 30);
             case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1, 1, 5);

@@ -31,8 +31,8 @@
  */
 package javax.time.extra;
 
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.YEAR;
+import static javax.time.calendrical.ChronoField.DAY_OF_YEAR;
+import static javax.time.calendrical.ChronoField.YEAR;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -41,11 +41,11 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.Year;
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.LocalDateTimeField;
 
 /**
  * A representation of a day-of-year in the ISO-8601 calendar system.
@@ -143,7 +143,7 @@ public final class DayOfYear
      * @return the day-of-year field, never null
      */
     public DateTimeField getField() {
-        return LocalDateTimeField.DAY_OF_YEAR;
+        return ChronoField.DAY_OF_YEAR;
     }
 
     /**

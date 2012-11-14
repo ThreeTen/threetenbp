@@ -31,16 +31,16 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
+import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
+import static javax.time.calendrical.ChronoField.DAY_OF_WEEK;
+import static javax.time.calendrical.ChronoField.EPOCH_DAY;
 
 import java.io.PrintStream;
 import java.util.Set;
 
+import javax.time.calendrical.ChronoField;
+import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.JulianDayField;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.chrono.Chrono;
 import javax.time.chrono.ChronoLocalDate;
 import javax.time.chrono.HijrahChrono;
@@ -88,15 +88,15 @@ public final class UsabilityChrono {
         date = date.with(DAY_OF_MONTH, 1);
         System.out.printf("first of month: %s%n", date);
 
-        int month = (int) date.get(LocalDateTimeField.MONTH_OF_YEAR);
+        int month = (int) date.get(ChronoField.MONTH_OF_YEAR);
         date = date.with(DAY_OF_WEEK, 1);
         System.out.printf("start of first week: %s%n", date);
 
-        while (date.get(LocalDateTimeField.MONTH_OF_YEAR) <= month) {
+        while (date.get(ChronoField.MONTH_OF_YEAR) <= month) {
             String row = "";
             for (int i = 0; i < 7; i++) {
-                row += date.get(LocalDateTimeField.DAY_OF_MONTH) + " ";
-                date = date.plus(1, LocalPeriodUnit.DAYS);
+                row += date.get(ChronoField.DAY_OF_MONTH) + " ";
+                date = date.plus(1, ChronoUnit.DAYS);
             }
             System.out.println(row);
         }
@@ -129,20 +129,20 @@ public final class UsabilityChrono {
 
         // Print the Minguo date
         ChronoLocalDate<MinguoChrono> now1 = MinguoChrono.INSTANCE.dateNow();
-        int day = now1.get(LocalDateTimeField.DAY_OF_MONTH);
-        int dow = now1.get(LocalDateTimeField.DAY_OF_WEEK);
-        int month = now1.get(LocalDateTimeField.MONTH_OF_YEAR);
-        int year = now1.get(LocalDateTimeField.YEAR);
+        int day = now1.get(ChronoField.DAY_OF_MONTH);
+        int dow = now1.get(ChronoField.DAY_OF_WEEK);
+        int month = now1.get(ChronoField.MONTH_OF_YEAR);
+        int year = now1.get(ChronoField.YEAR);
         System.out.printf("  Today is %s %s %d-%s-%d%n", now1.getChrono().getId(),
                 DayOfWeek.of(dow), year, month, day);
 
         // Print today's date and the last day of the year for the Minguo Calendar.
         ChronoLocalDate<MinguoChrono> first = now1
-                .with(LocalDateTimeField.DAY_OF_MONTH, 1)
-                .with(LocalDateTimeField.MONTH_OF_YEAR, 1);
+                .with(ChronoField.DAY_OF_MONTH, 1)
+                .with(ChronoField.MONTH_OF_YEAR, 1);
         ChronoLocalDate<MinguoChrono> last = first
-                .plus(1, LocalPeriodUnit.YEARS)
-                .minus(1, LocalPeriodUnit.DAYS);
+                .plus(1, ChronoUnit.YEARS)
+                .minus(1, ChronoUnit.DAYS);
         System.out.printf("  1st of year: %s; end of year: %s%n", first, last);
 
         // Enumerate the list of available calendars and print today for each
@@ -173,22 +173,22 @@ public final class UsabilityChrono {
     private static <C extends Chrono<C>> void printMonthCal(ChronoLocalDate<C> date, PrintStream out) {
 
         int lengthOfMonth = (int) date.lengthOfMonth();
-        ChronoLocalDate<C> end = date.with(LocalDateTimeField.DAY_OF_MONTH, lengthOfMonth);
-        end = end.plus(7 - end.get(LocalDateTimeField.DAY_OF_WEEK), LocalPeriodUnit.DAYS);
+        ChronoLocalDate<C> end = date.with(ChronoField.DAY_OF_MONTH, lengthOfMonth);
+        end = end.plus(7 - end.get(ChronoField.DAY_OF_WEEK), ChronoUnit.DAYS);
         // Back up to the beginning of the week including the 1st of the month
-        ChronoLocalDate<C> start = date.with(LocalDateTimeField.DAY_OF_MONTH, 1);
-        start = start.minus(start.get(LocalDateTimeField.DAY_OF_WEEK), LocalPeriodUnit.DAYS);
+        ChronoLocalDate<C> start = date.with(ChronoField.DAY_OF_MONTH, 1);
+        start = start.minus(start.get(ChronoField.DAY_OF_WEEK), ChronoUnit.DAYS);
 
         out.printf("%9s Month %2d, %4d%n", date.getChrono().getId(),
-                date.get(LocalDateTimeField.MONTH_OF_YEAR),
-                date.get(LocalDateTimeField.YEAR));
+                date.get(ChronoField.MONTH_OF_YEAR),
+                date.get(ChronoField.YEAR));
         String[] colText = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
         printMonthRow(colText, " ", out);
 
         String[] cell = new String[7];
-        for ( ; start.compareTo(end) <= 0; start = start.plus(1, LocalPeriodUnit.DAYS)) {
-            int ndx = start.get(LocalDateTimeField.DAY_OF_WEEK) - 1;
-            cell[ndx] = Integer.toString((int) start.get(LocalDateTimeField.DAY_OF_MONTH));
+        for ( ; start.compareTo(end) <= 0; start = start.plus(1, ChronoUnit.DAYS)) {
+            int ndx = start.get(ChronoField.DAY_OF_WEEK) - 1;
+            cell[ndx] = Integer.toString((int) start.get(ChronoField.DAY_OF_MONTH));
             if (ndx == 6) {
                 printMonthRow(cell, "|", out);
             }

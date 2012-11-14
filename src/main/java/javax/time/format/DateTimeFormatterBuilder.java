@@ -31,9 +31,9 @@
  */
 package javax.time.format;
 
-import static javax.time.calendrical.LocalDateTimeField.INSTANT_SECONDS;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
-import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
+import static javax.time.calendrical.ChronoField.INSTANT_SECONDS;
+import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
+import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -59,11 +59,11 @@ import javax.time.Instant;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeAccessor.Query;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
 import javax.time.chrono.Chrono;
 import javax.time.chrono.ISOChrono;
 import javax.time.format.SimpleDateTimeTextProvider.LocaleStore;
@@ -1037,11 +1037,11 @@ public final class DateTimeFormatterBuilder {
             return field;
         }
 
-        switch ((LocalDateTimeField) field) {
+        switch ((ChronoField) field) {
         case SECOND_OF_MINUTE:
-            return LocalDateTimeField.NANO_OF_SECOND;
+            return ChronoField.NANO_OF_SECOND;
         case MINUTE_OF_HOUR:
-            return LocalDateTimeField.SECOND_OF_MINUTE;
+            return ChronoField.SECOND_OF_MINUTE;
         default:
             throw new DateTimeException(field + " is an invalid field to have a duplicate of");
         }
@@ -1128,33 +1128,33 @@ public final class DateTimeFormatterBuilder {
     /** Map of letters to fields. */
     private static final Map<Character, DateTimeField> FIELD_MAP = new HashMap<>();
     static {
-        FIELD_MAP.put('G', LocalDateTimeField.ERA);                       // Java, CLDR (different to both for 1/2 chars)
-        FIELD_MAP.put('y', LocalDateTimeField.YEAR);                      // CLDR
-        // FIELD_MAP.put('y', LocalDateTimeField.YEAR_OF_ERA);            // Java, CLDR  // TODO redefine from above
-        // FIELD_MAP.put('u', LocalDateTimeField.YEAR);                   // CLDR  // TODO
+        FIELD_MAP.put('G', ChronoField.ERA);                       // Java, CLDR (different to both for 1/2 chars)
+        FIELD_MAP.put('y', ChronoField.YEAR);                      // CLDR
+        // FIELD_MAP.put('y', ChronoField.YEAR_OF_ERA);            // Java, CLDR  // TODO redefine from above
+        // FIELD_MAP.put('u', ChronoField.YEAR);                   // CLDR  // TODO
         // FIELD_MAP.put('Y', ISODateTimeField.WEEK_BASED_YEAR);          // Java7, CLDR (needs localized week number)  // TODO
         // FIELD_MAP.put('Q', QuarterYearField.QUARTER_OF_YEAR);          // CLDR (removed quarter from 310)
         // FIELD_MAP.put('q', QuarterYearField.QUARTER_OF_YEAR);          // CLDR (needs standalone data)  // TODO
-        FIELD_MAP.put('M', LocalDateTimeField.MONTH_OF_YEAR);             // Java, CLDR
-        // FIELD_MAP.put('L', LocalDateTimeField.MONTH_OF_YEAR);          // Java, CLDR (needs standalone data)  // TODO
+        FIELD_MAP.put('M', ChronoField.MONTH_OF_YEAR);             // Java, CLDR
+        // FIELD_MAP.put('L', ChronoField.MONTH_OF_YEAR);          // Java, CLDR (needs standalone data)  // TODO
         // FIELD_MAP.put('w', ISODateTimeField.WEEK_OF_WEEK_BASED_YEAR);  // Java, CLDR (needs localized week number)  // TODO
-        FIELD_MAP.put('D', LocalDateTimeField.DAY_OF_YEAR);               // Java, CLDR
-        FIELD_MAP.put('d', LocalDateTimeField.DAY_OF_MONTH);              // Java, CLDR
-        FIELD_MAP.put('F', LocalDateTimeField.ALIGNED_WEEK_OF_MONTH);     // Java, CLDR
-        FIELD_MAP.put('E', LocalDateTimeField.DAY_OF_WEEK);               // Java, CLDR (different to both for 1/2 chars)
-        // FIELD_MAP.put('e', LocalDateTimeField.DAY_OF_WEEK);            // CLDR (needs localized week number)  // TODO
-        // FIELD_MAP.put('c', LocalDateTimeField.DAY_OF_WEEK);            // CLDR (needs standalone data)  // TODO
-        FIELD_MAP.put('a', LocalDateTimeField.AMPM_OF_DAY);               // Java, CLDR
-        FIELD_MAP.put('H', LocalDateTimeField.HOUR_OF_DAY);               // Java, CLDR
-        FIELD_MAP.put('k', LocalDateTimeField.CLOCK_HOUR_OF_DAY);         // Java, CLDR
-        FIELD_MAP.put('K', LocalDateTimeField.HOUR_OF_AMPM);              // Java, CLDR
-        FIELD_MAP.put('h', LocalDateTimeField.CLOCK_HOUR_OF_AMPM);        // Java, CLDR
-        FIELD_MAP.put('m', LocalDateTimeField.MINUTE_OF_HOUR);            // Java, CLDR
-        FIELD_MAP.put('s', LocalDateTimeField.SECOND_OF_MINUTE);          // Java, CLDR
-        FIELD_MAP.put('S', LocalDateTimeField.MILLI_OF_SECOND);           // Java, CLDR (CLDR fraction-of-second)
-        FIELD_MAP.put('A', LocalDateTimeField.MILLI_OF_DAY);              // CLDR
-        FIELD_MAP.put('n', LocalDateTimeField.NANO_OF_SECOND);            // 310
-        FIELD_MAP.put('N', LocalDateTimeField.NANO_OF_DAY);               // 310
+        FIELD_MAP.put('D', ChronoField.DAY_OF_YEAR);               // Java, CLDR
+        FIELD_MAP.put('d', ChronoField.DAY_OF_MONTH);              // Java, CLDR
+        FIELD_MAP.put('F', ChronoField.ALIGNED_WEEK_OF_MONTH);     // Java, CLDR
+        FIELD_MAP.put('E', ChronoField.DAY_OF_WEEK);               // Java, CLDR (different to both for 1/2 chars)
+        // FIELD_MAP.put('e', ChronoField.DAY_OF_WEEK);            // CLDR (needs localized week number)  // TODO
+        // FIELD_MAP.put('c', ChronoField.DAY_OF_WEEK);            // CLDR (needs standalone data)  // TODO
+        FIELD_MAP.put('a', ChronoField.AMPM_OF_DAY);               // Java, CLDR
+        FIELD_MAP.put('H', ChronoField.HOUR_OF_DAY);               // Java, CLDR
+        FIELD_MAP.put('k', ChronoField.CLOCK_HOUR_OF_DAY);         // Java, CLDR
+        FIELD_MAP.put('K', ChronoField.HOUR_OF_AMPM);              // Java, CLDR
+        FIELD_MAP.put('h', ChronoField.CLOCK_HOUR_OF_AMPM);        // Java, CLDR
+        FIELD_MAP.put('m', ChronoField.MINUTE_OF_HOUR);            // Java, CLDR
+        FIELD_MAP.put('s', ChronoField.SECOND_OF_MINUTE);          // Java, CLDR
+        FIELD_MAP.put('S', ChronoField.MILLI_OF_SECOND);           // Java, CLDR (CLDR fraction-of-second)
+        FIELD_MAP.put('A', ChronoField.MILLI_OF_DAY);              // CLDR
+        FIELD_MAP.put('n', ChronoField.NANO_OF_SECOND);            // 310
+        FIELD_MAP.put('N', ChronoField.NANO_OF_DAY);               // 310
         // reserved - z,Z,X,I,f,p
         // Java - X - compatible, but extended to 4 and 5 letters
         // Java - u - clashes with CLDR, go with CLDR (year-proleptic) here

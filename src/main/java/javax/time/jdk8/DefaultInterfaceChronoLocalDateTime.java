@@ -31,8 +31,8 @@
  */
 package javax.time.jdk8;
 
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
+import static javax.time.calendrical.ChronoField.EPOCH_DAY;
+import static javax.time.calendrical.ChronoField.NANO_OF_DAY;
 
 import java.util.Objects;
 

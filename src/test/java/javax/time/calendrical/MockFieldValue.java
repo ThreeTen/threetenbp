@@ -54,7 +54,7 @@ public final class MockFieldValue extends DefaultInterfaceDateTimeAccessor {
 
     @Override
     public DateTimeValueRange range(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             if (isSupported(field)) {
                 return field.range();
             }

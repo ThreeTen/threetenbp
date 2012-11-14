@@ -34,12 +34,11 @@ package javax.time;
 import static javax.time.Month.DECEMBER;
 import static javax.time.Month.JANUARY;
 import static javax.time.Month.JUNE;
-import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
-import static javax.time.calendrical.LocalPeriodUnit.HALF_YEARS;
-import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
-import static javax.time.calendrical.LocalPeriodUnit.QUARTER_YEARS;
-import static javax.time.calendrical.LocalPeriodUnit.YEARS;
-import static org.testng.Assert.assertEquals;
+import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
+import static javax.time.calendrical.ChronoUnit.HALF_YEARS;
+import static javax.time.calendrical.ChronoUnit.MONTHS;
+import static javax.time.calendrical.ChronoUnit.QUARTER_YEARS;
+import static javax.time.calendrical.ChronoUnit.YEARS;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
@@ -48,17 +47,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Locale;
 
+import javax.time.calendrical.ChronoField;
+import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.JulianDayField;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.format.TextStyle;
 
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
@@ -69,7 +65,7 @@ public class TestMonth extends AbstractDateTimeTest {
 
     private static final PeriodUnit[] INVALID_UNITS;
     static {
-        EnumSet<LocalPeriodUnit> set = EnumSet.allOf(LocalPeriodUnit.class);
+        EnumSet<ChronoUnit> set = EnumSet.allOf(ChronoUnit.class);
         set.remove(MONTHS);
         set.remove(QUARTER_YEARS);
         set.remove(HALF_YEARS);
@@ -96,7 +92,7 @@ public class TestMonth extends AbstractDateTimeTest {
 
     @Override
     protected List<DateTimeField> invalidFields() {
-        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(LocalDateTimeField.values()));
+        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(ChronoField.values()));
         list.removeAll(validFields());
         list.add(JulianDayField.JULIAN_DAY);
         list.add(JulianDayField.MODIFIED_JULIAN_DAY);

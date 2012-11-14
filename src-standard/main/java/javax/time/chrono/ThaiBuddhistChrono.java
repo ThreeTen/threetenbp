@@ -31,8 +31,8 @@
  */
 package javax.time.chrono;
 
-import static javax.time.calendrical.LocalDateTimeField.WEEK_BASED_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.YEAR;
+import static javax.time.calendrical.ChronoField.WEEK_BASED_YEAR;
+import static javax.time.calendrical.ChronoField.YEAR;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -42,9 +42,9 @@ import java.util.Locale;
 
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
 
 /**
  * The Thai Buddhist calendar system.
@@ -234,7 +234,7 @@ public final class ThaiBuddhistChrono extends Chrono<ThaiBuddhistChrono> impleme
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeValueRange range(LocalDateTimeField field) {
+    public DateTimeValueRange range(ChronoField field) {
         switch (field) {
             case WEEK_BASED_YEAR: {
                 DateTimeValueRange range = WEEK_BASED_YEAR.range();

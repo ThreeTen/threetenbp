@@ -32,40 +32,40 @@
 package javax.time;
 
 import static javax.time.Month.JANUARY;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.AMPM_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.CLOCK_HOUR_OF_AMPM;
-import static javax.time.calendrical.LocalDateTimeField.CLOCK_HOUR_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.ERA;
-import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_AMPM;
-import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.INSTANT_SECONDS;
-import static javax.time.calendrical.LocalDateTimeField.MICRO_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.MICRO_OF_SECOND;
-import static javax.time.calendrical.LocalDateTimeField.MILLI_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.MILLI_OF_SECOND;
-import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_HOUR;
-import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
-import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
-import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
-import static javax.time.calendrical.LocalDateTimeField.WEEK_BASED_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_WEEK_BASED_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.YEAR;
-import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
+import static javax.time.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
+import static javax.time.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
+import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_MONTH;
+import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_YEAR;
+import static javax.time.calendrical.ChronoField.AMPM_OF_DAY;
+import static javax.time.calendrical.ChronoField.CLOCK_HOUR_OF_AMPM;
+import static javax.time.calendrical.ChronoField.CLOCK_HOUR_OF_DAY;
+import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
+import static javax.time.calendrical.ChronoField.DAY_OF_WEEK;
+import static javax.time.calendrical.ChronoField.DAY_OF_YEAR;
+import static javax.time.calendrical.ChronoField.EPOCH_DAY;
+import static javax.time.calendrical.ChronoField.EPOCH_MONTH;
+import static javax.time.calendrical.ChronoField.ERA;
+import static javax.time.calendrical.ChronoField.HOUR_OF_AMPM;
+import static javax.time.calendrical.ChronoField.HOUR_OF_DAY;
+import static javax.time.calendrical.ChronoField.INSTANT_SECONDS;
+import static javax.time.calendrical.ChronoField.MICRO_OF_DAY;
+import static javax.time.calendrical.ChronoField.MICRO_OF_SECOND;
+import static javax.time.calendrical.ChronoField.MILLI_OF_DAY;
+import static javax.time.calendrical.ChronoField.MILLI_OF_SECOND;
+import static javax.time.calendrical.ChronoField.MINUTE_OF_DAY;
+import static javax.time.calendrical.ChronoField.MINUTE_OF_HOUR;
+import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
+import static javax.time.calendrical.ChronoField.NANO_OF_DAY;
+import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
+import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
+import static javax.time.calendrical.ChronoField.SECOND_OF_DAY;
+import static javax.time.calendrical.ChronoField.SECOND_OF_MINUTE;
+import static javax.time.calendrical.ChronoField.WEEK_BASED_YEAR;
+import static javax.time.calendrical.ChronoField.WEEK_OF_MONTH;
+import static javax.time.calendrical.ChronoField.WEEK_OF_WEEK_BASED_YEAR;
+import static javax.time.calendrical.ChronoField.WEEK_OF_YEAR;
+import static javax.time.calendrical.ChronoField.YEAR;
+import static javax.time.calendrical.ChronoField.YEAR_OF_ERA;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -76,14 +76,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.time.calendrical.ChronoField;
+import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime.MinusAdjuster;
 import javax.time.calendrical.DateTime.PlusAdjuster;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.JulianDayField;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.MockFieldNoValue;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeParseException;
@@ -167,7 +167,7 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
 
     @Override
     protected List<DateTimeField> invalidFields() {
-        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(LocalDateTimeField.values()));
+        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(ChronoField.values()));
         list.removeAll(validFields());
         return list;
     }
@@ -777,18 +777,18 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_get_DateTimeField() {
         ZonedDateTime test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 12, 30, 40, 987654321), ZONE_0100);
-        assertEquals(test.getLong(LocalDateTimeField.YEAR), 2008);
-        assertEquals(test.getLong(LocalDateTimeField.MONTH_OF_YEAR), 6);
-        assertEquals(test.getLong(LocalDateTimeField.DAY_OF_MONTH), 30);
-        assertEquals(test.getLong(LocalDateTimeField.DAY_OF_WEEK), 1);
-        assertEquals(test.getLong(LocalDateTimeField.DAY_OF_YEAR), 182);
+        assertEquals(test.getLong(ChronoField.YEAR), 2008);
+        assertEquals(test.getLong(ChronoField.MONTH_OF_YEAR), 6);
+        assertEquals(test.getLong(ChronoField.DAY_OF_MONTH), 30);
+        assertEquals(test.getLong(ChronoField.DAY_OF_WEEK), 1);
+        assertEquals(test.getLong(ChronoField.DAY_OF_YEAR), 182);
 
-        assertEquals(test.getLong(LocalDateTimeField.HOUR_OF_DAY), 12);
-        assertEquals(test.getLong(LocalDateTimeField.MINUTE_OF_HOUR), 30);
-        assertEquals(test.getLong(LocalDateTimeField.SECOND_OF_MINUTE), 40);
-        assertEquals(test.getLong(LocalDateTimeField.NANO_OF_SECOND), 987654321);
-        assertEquals(test.getLong(LocalDateTimeField.HOUR_OF_AMPM), 0);
-        assertEquals(test.getLong(LocalDateTimeField.AMPM_OF_DAY), 1);
+        assertEquals(test.getLong(ChronoField.HOUR_OF_DAY), 12);
+        assertEquals(test.getLong(ChronoField.MINUTE_OF_HOUR), 30);
+        assertEquals(test.getLong(ChronoField.SECOND_OF_MINUTE), 40);
+        assertEquals(test.getLong(ChronoField.NANO_OF_SECOND), 987654321);
+        assertEquals(test.getLong(ChronoField.HOUR_OF_AMPM), 0);
+        assertEquals(test.getLong(ChronoField.AMPM_OF_DAY), 1);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
@@ -1210,7 +1210,7 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_plus_adjuster() {
-        MockSimplePeriod period = MockSimplePeriod.of(7, LocalPeriodUnit.MONTHS);
+        MockSimplePeriod period = MockSimplePeriod.of(7, ChronoUnit.MONTHS);
         ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
         ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2009, 1, 1, 12, 30, 59, 500), ZONE_0100);
         assertEquals(t.plus(period), expected);
@@ -1344,7 +1344,7 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_minus_adjuster() {
-        MockSimplePeriod period = MockSimplePeriod.of(7, LocalPeriodUnit.MONTHS);
+        MockSimplePeriod period = MockSimplePeriod.of(7, ChronoUnit.MONTHS);
         ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
         ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2007, 11, 1, 12, 30, 59, 500), ZONE_0100);
         assertEquals(t.minus(period), expected);

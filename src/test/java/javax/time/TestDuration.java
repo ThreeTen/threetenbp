@@ -31,19 +31,9 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.LocalPeriodUnit.DAYS;
-import static javax.time.calendrical.LocalPeriodUnit.HALF_DAYS;
-import static javax.time.calendrical.LocalPeriodUnit.HOURS;
-import static javax.time.calendrical.LocalPeriodUnit.MICROS;
-import static javax.time.calendrical.LocalPeriodUnit.MILLIS;
-import static javax.time.calendrical.LocalPeriodUnit.MINUTES;
-import static javax.time.calendrical.LocalPeriodUnit.NANOS;
-import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
-import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -51,10 +41,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import javax.time.calendrical.PeriodUnit;
-import javax.time.format.DateTimeParseException;
-
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**

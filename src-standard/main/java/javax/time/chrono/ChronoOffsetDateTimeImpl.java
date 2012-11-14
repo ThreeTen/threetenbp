@@ -32,9 +32,9 @@
 package javax.time.chrono;
 
 import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
+import static javax.time.calendrical.ChronoField.EPOCH_DAY;
+import static javax.time.calendrical.ChronoField.NANO_OF_DAY;
+import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -48,12 +48,12 @@ import javax.time.LocalTime;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
+import javax.time.calendrical.ChronoField;
+import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.jdk8.DefaultInterfaceChronoOffsetDateTime;
 import javax.time.jdk8.Jdk8Methods;
@@ -144,7 +144,7 @@ class ChronoOffsetDateTimeImpl<C extends Chrono<C>>
     //-----------------------------------------------------------------------
     @Override
     public boolean isSupported(DateTimeField field) {
-        return field instanceof LocalDateTimeField || (field != null && field.doIsSupported(this));  // TODO: not all LocalDateTimeField are supported
+        return field instanceof ChronoField || (field != null && field.doIsSupported(this));  // TODO: not all ChronoField are supported
     }
 
     //-----------------------------------------------------------------------
@@ -365,14 +365,14 @@ class ChronoOffsetDateTimeImpl<C extends Chrono<C>>
      */
     @Override
     public ChronoOffsetDateTimeImpl<C> with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField f = (ChronoField) field;
             switch (f) {
                 case INSTANT_SECONDS:
                     long epochDays = Jdk8Methods.floorDiv(newValue, SECONDS_PER_DAY);
-                    ChronoOffsetDateTimeImpl<C> odt = with(LocalDateTimeField.EPOCH_DAY, epochDays);
+                    ChronoOffsetDateTimeImpl<C> odt = with(ChronoField.EPOCH_DAY, epochDays);
                     int secsOfDay = Jdk8Methods.floorMod(newValue, SECONDS_PER_DAY);
-                    odt  = odt.with(LocalDateTimeField.SECOND_OF_DAY, secsOfDay);
+                    odt  = odt.with(ChronoField.SECOND_OF_DAY, secsOfDay);
                     return odt;
 
                 case OFFSET_SECONDS: {
@@ -582,7 +582,7 @@ class ChronoOffsetDateTimeImpl<C extends Chrono<C>>
     //-----------------------------------------------------------------------
     @Override
     public ChronoOffsetDateTime<C> plus(long amountToAdd, PeriodUnit unit) {
-        if (unit instanceof LocalPeriodUnit) {
+        if (unit instanceof ChronoUnit) {
             return with(dateTime.plus(amountToAdd, unit), offset);
         }
         return unit.doAdd(this, amountToAdd);
@@ -981,8 +981,8 @@ class ChronoOffsetDateTimeImpl<C extends Chrono<C>>
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
 //        ChronoOffsetDateTime<?> end = (ChronoOffsetDateTime<?>) endDateTime;
-        if (unit instanceof LocalPeriodUnit) {
-//            LocalPeriodUnit f = (LocalPeriodUnit) unit;
+        if (unit instanceof ChronoUnit) {
+//            ChronoUnit f = (ChronoUnit) unit;
 //            long until = dateTime.periodUntil(end.getDateTime(), unit);
             // NYI Adjust for offsets
             throw new DateTimeException("nyi: ChronoOffsetDateTime.periodUntil");

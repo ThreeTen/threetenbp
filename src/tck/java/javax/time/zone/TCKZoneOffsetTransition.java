@@ -31,7 +31,7 @@
  */
 package javax.time.zone;
 
-import static javax.time.calendrical.LocalPeriodUnit.HOURS;
+import static javax.time.calendrical.ChronoUnit.HOURS;
 import static org.testng.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;

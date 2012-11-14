@@ -32,24 +32,24 @@
 package javax.time;
 
 import static javax.time.Month.DECEMBER;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_WEEK;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.ERA;
-import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
-import static javax.time.calendrical.LocalDateTimeField.WEEK_BASED_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_WEEK_BASED_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.YEAR;
-import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
+import static javax.time.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
+import static javax.time.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
+import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_MONTH;
+import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_YEAR;
+import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
+import static javax.time.calendrical.ChronoField.DAY_OF_WEEK;
+import static javax.time.calendrical.ChronoField.DAY_OF_YEAR;
+import static javax.time.calendrical.ChronoField.EPOCH_DAY;
+import static javax.time.calendrical.ChronoField.EPOCH_MONTH;
+import static javax.time.calendrical.ChronoField.ERA;
+import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
+import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
+import static javax.time.calendrical.ChronoField.WEEK_BASED_YEAR;
+import static javax.time.calendrical.ChronoField.WEEK_OF_MONTH;
+import static javax.time.calendrical.ChronoField.WEEK_OF_WEEK_BASED_YEAR;
+import static javax.time.calendrical.ChronoField.WEEK_OF_YEAR;
+import static javax.time.calendrical.ChronoField.YEAR;
+import static javax.time.calendrical.ChronoField.YEAR_OF_ERA;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
@@ -67,13 +67,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.time.calendrical.ChronoField;
+import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.JulianDayField;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.MockFieldNoValue;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeParseException;
@@ -136,7 +136,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
 
     @Override
     protected List<DateTimeField> invalidFields() {
-        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(LocalDateTimeField.values()));
+        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(ChronoField.values()));
         list.removeAll(validFields());
         return list;
     }
@@ -525,9 +525,9 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     @DataProvider(name="invalidFields")
     Object[][] data_invalidFields() {
         return new Object[][] {
-            {LocalDateTimeField.NANO_OF_DAY},
-            {LocalDateTimeField.HOUR_OF_DAY},
-            {LocalDateTimeField.INSTANT_SECONDS},
+            {ChronoField.NANO_OF_DAY},
+            {ChronoField.HOUR_OF_DAY},
+            {ChronoField.INSTANT_SECONDS},
             {MockFieldNoValue.INSTANCE},
         };
     }
@@ -535,13 +535,13 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_get_DateTimeField() {
         OffsetDate test = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
-        assertEquals(test.getLong(LocalDateTimeField.YEAR), 2008);
-        assertEquals(test.getLong(LocalDateTimeField.MONTH_OF_YEAR), 6);
-        assertEquals(test.getLong(LocalDateTimeField.DAY_OF_MONTH), 30);
-        assertEquals(test.getLong(LocalDateTimeField.DAY_OF_WEEK), 1);
-        assertEquals(test.getLong(LocalDateTimeField.DAY_OF_YEAR), 182);
+        assertEquals(test.getLong(ChronoField.YEAR), 2008);
+        assertEquals(test.getLong(ChronoField.MONTH_OF_YEAR), 6);
+        assertEquals(test.getLong(ChronoField.DAY_OF_MONTH), 30);
+        assertEquals(test.getLong(ChronoField.DAY_OF_WEEK), 1);
+        assertEquals(test.getLong(ChronoField.DAY_OF_YEAR), 182);
 
-        assertEquals(test.getLong(LocalDateTimeField.OFFSET_SECONDS), 3600);
+        assertEquals(test.getLong(ChronoField.OFFSET_SECONDS), 3600);
     }
 
     @Test(dataProvider="invalidFields", expectedExceptions=DateTimeException.class, groups={"tck"} )
@@ -619,13 +619,13 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_with_DateTimeField() {
         OffsetDate test = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
-        assertEquals(test.with(LocalDateTimeField.YEAR, 2009), OffsetDate.of(2009, 6, 30, OFFSET_PONE));
-        assertEquals(test.with(LocalDateTimeField.MONTH_OF_YEAR, 7), OffsetDate.of(2008, 7, 30, OFFSET_PONE));
-        assertEquals(test.with(LocalDateTimeField.DAY_OF_MONTH, 1), OffsetDate.of(2008, 6, 1, OFFSET_PONE));
-        assertEquals(test.with(LocalDateTimeField.DAY_OF_WEEK, 2), OffsetDate.of(2008, 7, 1, OFFSET_PONE));
-        assertEquals(test.with(LocalDateTimeField.DAY_OF_YEAR, 183), OffsetDate.of(2008, 7, 1, OFFSET_PONE));
+        assertEquals(test.with(ChronoField.YEAR, 2009), OffsetDate.of(2009, 6, 30, OFFSET_PONE));
+        assertEquals(test.with(ChronoField.MONTH_OF_YEAR, 7), OffsetDate.of(2008, 7, 30, OFFSET_PONE));
+        assertEquals(test.with(ChronoField.DAY_OF_MONTH, 1), OffsetDate.of(2008, 6, 1, OFFSET_PONE));
+        assertEquals(test.with(ChronoField.DAY_OF_WEEK, 2), OffsetDate.of(2008, 7, 1, OFFSET_PONE));
+        assertEquals(test.with(ChronoField.DAY_OF_YEAR, 183), OffsetDate.of(2008, 7, 1, OFFSET_PONE));
 
-        assertEquals(test.with(LocalDateTimeField.OFFSET_SECONDS, 7205), OffsetDate.of(2008, 6, 30, ZoneOffset.ofHoursMinutesSeconds(2, 0, 5)));
+        assertEquals(test.with(ChronoField.OFFSET_SECONDS, 7205), OffsetDate.of(2008, 6, 30, ZoneOffset.ofHoursMinutesSeconds(2, 0, 5)));
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
@@ -729,7 +729,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_plus_Period() {
-        MockSimplePeriod period = MockSimplePeriod.of(7, LocalPeriodUnit.MONTHS);
+        MockSimplePeriod period = MockSimplePeriod.of(7, ChronoUnit.MONTHS);
         OffsetDate t = TEST_2007_07_15_PONE.plus(period);
         assertEquals(t, OffsetDate.of(2008, 2, 15, OFFSET_PONE));
     }
@@ -1110,7 +1110,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_minus_PeriodProvider() {
-        MockSimplePeriod period = MockSimplePeriod.of(7, LocalPeriodUnit.MONTHS);
+        MockSimplePeriod period = MockSimplePeriod.of(7, ChronoUnit.MONTHS);
         OffsetDate t = TEST_2007_07_15_PONE.minus(period);
         assertEquals(t, OffsetDate.of(2006, 12, 15, OFFSET_PONE));
     }

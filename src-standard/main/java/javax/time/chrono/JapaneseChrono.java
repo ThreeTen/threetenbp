@@ -42,9 +42,9 @@ import java.util.Map;
 import javax.time.DateTimeConstants;
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
 
 import sun.util.calendar.CalendarSystem;
 import sun.util.calendar.LocalGregorianCalendar;
@@ -273,7 +273,7 @@ public final class JapaneseChrono extends Chrono<JapaneseChrono> implements Seri
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeValueRange range(LocalDateTimeField field) {
+    public DateTimeValueRange range(ChronoField field) {
         switch (field) {
             case DAY_OF_MONTH:
             case DAY_OF_WEEK:

@@ -38,10 +38,10 @@ import static javax.time.Month.JUNE;
 import static javax.time.Month.MARCH;
 import static javax.time.Month.OCTOBER;
 import static javax.time.Month.SEPTEMBER;
-import static javax.time.calendrical.LocalPeriodUnit.DAYS;
-import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
-import static javax.time.calendrical.LocalPeriodUnit.WEEKS;
-import static javax.time.calendrical.LocalPeriodUnit.YEARS;
+import static javax.time.calendrical.ChronoUnit.DAYS;
+import static javax.time.calendrical.ChronoUnit.MONTHS;
+import static javax.time.calendrical.ChronoUnit.WEEKS;
+import static javax.time.calendrical.ChronoUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 
 import javax.time.LocalDate;
@@ -55,7 +55,7 @@ import org.testng.annotations.Test;
  * Test.
  */
 @Test
-public class TestLocalPeriodUnit {
+public class TestChronoUnit {
 
     //-----------------------------------------------------------------------
     @DataProvider(name = "yearsBetween")

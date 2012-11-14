@@ -31,10 +31,10 @@
  */
 package javax.time.chrono;
 
-import static javax.time.calendrical.LocalDateTimeField.WEEK_BASED_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_WEEK_BASED_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_YEAR;
+import static javax.time.calendrical.ChronoField.WEEK_BASED_YEAR;
+import static javax.time.calendrical.ChronoField.WEEK_OF_MONTH;
+import static javax.time.calendrical.ChronoField.WEEK_OF_WEEK_BASED_YEAR;
+import static javax.time.calendrical.ChronoField.WEEK_OF_YEAR;
 
 import java.io.Serializable;
 
@@ -42,11 +42,11 @@ import javax.time.DateTimeException;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
+import javax.time.calendrical.ChronoField;
+import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.jdk8.DefaultInterfaceChronoLocalDate;
 import javax.time.jdk8.Jdk8Methods;
@@ -81,19 +81,19 @@ import javax.time.jdk8.Jdk8Methods;
  *
  *        // Print the Hijrah date and calendar
  *        ChronoLocalDate<?> date = Chrono.of("Hijrah").dateNow();
- *        int day = date.get(LocalDateTimeField.DAY_OF_MONTH);
- *        int dow = date.get(LocalDateTimeField.DAY_OF_WEEK);
- *        int month = date.get(LocalDateTimeField.MONTH_OF_YEAR);
- *        int year = date.get(LocalDateTimeField.YEAR);
+ *        int day = date.get(ChronoField.DAY_OF_MONTH);
+ *        int dow = date.get(ChronoField.DAY_OF_WEEK);
+ *        int month = date.get(ChronoField.MONTH_OF_YEAR);
+ *        int year = date.get(ChronoField.YEAR);
  *        System.out.printf("  Today is %s %s %d-%s-%d%n", date.getChrono().getID(),
  *                dow, day, month, year);
 
  *        // Print today's date and the last day of the year
  *        ChronoLocalDate<?> now1 = Chrono.of("Hijrah").dateNow();
- *        ChronoLocalDate<?> first = now1.with(LocalDateTimeField.DAY_OF_MONTH, 1)
- *                .with(LocalDateTimeField.MONTH_OF_YEAR, 1);
- *        ChronoLocalDate<?> last = first.plus(1, LocalPeriodUnit.YEARS)
- *                .minus(1, LocalPeriodUnit.DAYS);
+ *        ChronoLocalDate<?> first = now1.with(ChronoField.DAY_OF_MONTH, 1)
+ *                .with(ChronoField.MONTH_OF_YEAR, 1);
+ *        ChronoLocalDate<?> last = first.plus(1, ChronoUnit.YEARS)
+ *                .minus(1, ChronoUnit.DAYS);
  *        System.out.printf("  Today is %s: start: %s; end: %s%n", last.getChrono().getID(),
  *                first, last);
  * </pre>
@@ -135,8 +135,8 @@ abstract class ChronoDateImpl<C extends Chrono<C>>
     //-----------------------------------------------------------------------
     @Override
     public boolean isSupported(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            return ((LocalDateTimeField) field).isDateField() && field != WEEK_OF_MONTH &&
+        if (field instanceof ChronoField) {
+            return ((ChronoField) field).isDateField() && field != WEEK_OF_MONTH &&
                     field != WEEK_OF_YEAR && field != WEEK_OF_WEEK_BASED_YEAR && field != WEEK_BASED_YEAR;
         }
         return field != null && field.doIsSupported(this);
@@ -154,7 +154,7 @@ abstract class ChronoDateImpl<C extends Chrono<C>>
      * @return the year-of-era, within the valid range for the chronology
      */
     int getYear() {
-        return get(LocalDateTimeField.YEAR_OF_ERA);
+        return get(ChronoField.YEAR_OF_ERA);
     }
 
     /**
@@ -168,7 +168,7 @@ abstract class ChronoDateImpl<C extends Chrono<C>>
      * @return the month-of-year, within the valid range for the chronology
      */
     int getMonthValue() {
-        return get(LocalDateTimeField.MONTH_OF_YEAR);
+        return get(ChronoField.MONTH_OF_YEAR);
     }
 
     /**
@@ -182,7 +182,7 @@ abstract class ChronoDateImpl<C extends Chrono<C>>
      * @return the day-of-month, within the valid range for the chronology
      */
     int getDayOfMonth() {
-        return get(LocalDateTimeField.DAY_OF_MONTH);
+        return get(ChronoField.DAY_OF_MONTH);
     }
 
     /**
@@ -197,7 +197,7 @@ abstract class ChronoDateImpl<C extends Chrono<C>>
      * @return the day-of-year, within the valid range for the chronology
      */
     int getDayOfYear() {
-        return get(LocalDateTimeField.DAY_OF_YEAR);
+        return get(ChronoField.DAY_OF_YEAR);
     }
 
     /**
@@ -214,7 +214,7 @@ abstract class ChronoDateImpl<C extends Chrono<C>>
      * @return the day-of-week, not null
      */
     DayOfWeek getDayOfWeek() {
-        return DayOfWeek.of(get(LocalDateTimeField.DAY_OF_WEEK));
+        return DayOfWeek.of(get(ChronoField.DAY_OF_WEEK));
     }
 
     //-----------------------------------------------------------------------
@@ -228,7 +228,7 @@ abstract class ChronoDateImpl<C extends Chrono<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoLocalDate<C> withEra(Era<C> era) {
-        return with(LocalDateTimeField.ERA, era.getValue());
+        return with(ChronoField.ERA, era.getValue());
     }
 
     /**
@@ -240,7 +240,7 @@ abstract class ChronoDateImpl<C extends Chrono<C>>
      * @return a date based on this one with the specified year-of-era, not null
      */
     ChronoLocalDate<C> withYear(int year) {
-        return with(LocalDateTimeField.YEAR_OF_ERA, year);
+        return with(ChronoField.YEAR_OF_ERA, year);
     }
 
     /**
@@ -252,7 +252,7 @@ abstract class ChronoDateImpl<C extends Chrono<C>>
      * @return a date based on this one with the specified month-of-year, not null
      */
     ChronoLocalDate<C> withMonth(int month) {
-        return with(LocalDateTimeField.MONTH_OF_YEAR, month);
+        return with(ChronoField.MONTH_OF_YEAR, month);
     }
 
     /**
@@ -264,7 +264,7 @@ abstract class ChronoDateImpl<C extends Chrono<C>>
      * @return a date based on this one with the specified day-of-month, not null
      */
     ChronoLocalDate<C> withDayOfMonth(int dayOfMonth) {
-        return with(LocalDateTimeField.DAY_OF_MONTH, dayOfMonth);
+        return with(ChronoField.DAY_OF_MONTH, dayOfMonth);
     }
 
     /**
@@ -276,14 +276,14 @@ abstract class ChronoDateImpl<C extends Chrono<C>>
      * @return a date based on this one with the specified day-of-year, not null
      */
     ChronoLocalDate<C> withDayOfYear(int dayOfYear) {
-        return with(LocalDateTimeField.DAY_OF_YEAR, dayOfYear);
+        return with(ChronoField.DAY_OF_YEAR, dayOfYear);
     }
 
     //-----------------------------------------------------------------------
     @Override
     public ChronoDateImpl<C> plus(long amountToAdd, PeriodUnit unit) {
-        if (unit instanceof LocalPeriodUnit) {
-            LocalPeriodUnit f = (LocalPeriodUnit) unit;
+        if (unit instanceof ChronoUnit) {
+            ChronoUnit f = (ChronoUnit) unit;
             switch (f) {
                 case DAYS: return plusDays(amountToAdd);
                 case WEEKS: return plusDays(Jdk8Methods.safeMultiply(amountToAdd, 7));
@@ -459,7 +459,7 @@ abstract class ChronoDateImpl<C extends Chrono<C>>
         if (getChrono().equals(end.getChrono()) == false) {
             throw new DateTimeException("Unable to calculate period between two different chronologies");
         }
-        if (unit instanceof LocalPeriodUnit) {
+        if (unit instanceof ChronoUnit) {
             return LocalDate.from(this).periodUntil(end, unit);  // TODO: this is wrong
         }
         return unit.between(this, endDateTime).getAmount();

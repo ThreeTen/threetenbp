@@ -32,21 +32,23 @@
 package javax.time;
 
 import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.ERA;
-import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.YEAR;
+import static javax.time.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
+import static javax.time.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
+import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_MONTH;
+import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_YEAR;
+import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
+import static javax.time.calendrical.ChronoField.DAY_OF_YEAR;
+import static javax.time.calendrical.ChronoField.EPOCH_DAY;
+import static javax.time.calendrical.ChronoField.EPOCH_MONTH;
+import static javax.time.calendrical.ChronoField.ERA;
+import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
+import static javax.time.calendrical.ChronoField.YEAR;
 
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.time.calendrical.ChronoField;
+import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
@@ -54,8 +56,6 @@ import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.ChronoLocalDate;
 import javax.time.chrono.Era;
@@ -408,16 +408,16 @@ public final class LocalDate
     //-----------------------------------------------------------------------
     @Override
     public boolean isSupported(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            return ((LocalDateTimeField) field).isDateField();
+        if (field instanceof ChronoField) {
+            return ((ChronoField) field).isDateField();
         }
         return field != null && field.doIsSupported(this);
     }
 
     @Override
     public DateTimeValueRange range(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField f = (ChronoField) field;
             if (f.isDateField()) {
                 switch (f) {
                     case DAY_OF_MONTH: return DateTimeValueRange.of(1, lengthOfMonth());
@@ -438,7 +438,7 @@ public final class LocalDate
 
     @Override
     public int get(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             return get0(field);
         }
         return super.get(field);
@@ -446,7 +446,7 @@ public final class LocalDate
 
     @Override
     public long getLong(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             if (field == EPOCH_DAY) {
                 return toEpochDay();
             }
@@ -459,7 +459,7 @@ public final class LocalDate
     }
 
     private int get0(DateTimeField field) {
-        switch ((LocalDateTimeField) field) {
+        switch ((ChronoField) field) {
             case DAY_OF_WEEK: return getDayOfWeek().getValue();
             case ALIGNED_DAY_OF_WEEK_IN_MONTH: return ((day - 1) % 7) + 1;
             case ALIGNED_DAY_OF_WEEK_IN_YEAR: return ((getDayOfYear() - 1) % 7) + 1;
@@ -719,8 +719,8 @@ public final class LocalDate
      */
     @Override
     public LocalDate with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField f = (ChronoField) field;
             f.checkValidValue(newValue);
             switch (f) {
                 case DAY_OF_WEEK: return plusDays(newValue - getDayOfWeek().getValue());
@@ -858,8 +858,8 @@ public final class LocalDate
      */
     @Override
     public LocalDate plus(long amountToAdd, PeriodUnit unit) {
-        if (unit instanceof LocalPeriodUnit) {
-            LocalPeriodUnit f = (LocalPeriodUnit) unit;
+        if (unit instanceof ChronoUnit) {
+            ChronoUnit f = (ChronoUnit) unit;
             switch (f) {
                 case DAYS: return plusDays(amountToAdd);
                 case WEEKS: return plusWeeks(amountToAdd);
@@ -1240,8 +1240,8 @@ public final class LocalDate
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
         LocalDate end = (LocalDate) endDateTime;
-        if (unit instanceof LocalPeriodUnit) {
-            switch ((LocalPeriodUnit) unit) {
+        if (unit instanceof ChronoUnit) {
+            switch ((ChronoUnit) unit) {
                 case DAYS: return daysUntil(end);
                 case WEEKS: return daysUntil(end) / 7;
                 case MONTHS: return monthsUntil(end);
@@ -1391,7 +1391,7 @@ public final class LocalDate
      * <p>
      * Only objects of type {@code LocalDate} are compared, other types return false.
      * To compare the dates of two {@code DateTimeAccessor} instances, including dates
-     * in two different chronologies, use {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
+     * in two different chronologies, use {@link ChronoField#EPOCH_DAY} as a comparator.
      *
      * @param obj  the object to check, null returns false
      * @return true if this is equal to the other date

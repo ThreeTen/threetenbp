@@ -34,10 +34,10 @@ package javax.time.chrono;
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.LocalDateTimeField;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
 
@@ -51,7 +51,7 @@ import javax.time.format.CalendricalFormatter;
  * A {@code ChronoLocalDate} is the abstract representation of a date where the
  * {@code Chrono chronology}, or calendar system, is pluggable.
  * The date is defined in terms of fields expressed by {@link DateTimeField},
- * where most common implementations are defined in {@link LocalDateTimeField}.
+ * where most common implementations are defined in {@link ChronoField}.
  * The chronology defines how the calendar system operates and the meaning of
  * the standard fields.
  *
@@ -204,7 +204,7 @@ public interface ChronoLocalDate<C extends Chrono<C>>
      * Gets the chronology of this date.
      * <p>
      * The {@code Chrono} represents the calendar system in use.
-     * The era and other fields in {@link LocalDateTimeField} are defined by the chronology.
+     * The era and other fields in {@link ChronoField} are defined by the chronology.
      *
      * @return the chronology, not null
      */
@@ -297,7 +297,7 @@ public interface ChronoLocalDate<C extends Chrono<C>>
     /**
      * Converts this date to the Epoch Day.
      * <p>
-     * The {@link LocalDateTimeField#EPOCH_DAY Epoch Day count} is a simple
+     * The {@link ChronoField#EPOCH_DAY Epoch Day count} is a simple
      * incrementing count of days where day 0 is 1970-01-01 (ISO).
      * This definition is the same for all chronologies, enabling conversion.
      *
@@ -327,7 +327,7 @@ public interface ChronoLocalDate<C extends Chrono<C>>
      * If all the date objects being compared are in the same chronology, then the
      * additional chronology stage is not required and only the local date is used.
      * To compare the dates of two {@code DateTimeAccessor} instances, including dates
-     * in two different chronologies, use {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
+     * in two different chronologies, use {@link ChronoField#EPOCH_DAY} as a comparator.
      *
      * @param other  the other date to compare to, not null
      * @return the comparator value, negative if less, positive if greater
@@ -385,7 +385,7 @@ public interface ChronoLocalDate<C extends Chrono<C>>
      * Compares this date with another ensuring that the date and chronology are the same.
      * <p>
      * To compare the dates of two {@code DateTimeAccessor} instances, including dates
-     * in two different chronologies, use {@link LocalDateTimeField#EPOCH_DAY} as a comparator.
+     * in two different chronologies, use {@link ChronoField#EPOCH_DAY} as a comparator.
      *
      * @param obj  the object to check, null returns false
      * @return true if this is equal to the other date

@@ -31,9 +31,9 @@
  */
 package javax.time.zone;
 
+import static javax.time.calendrical.ChronoField.YEAR;
 import static javax.time.calendrical.DateTimeAdjusters.nextOrCurrent;
 import static javax.time.calendrical.DateTimeAdjusters.previousOrCurrent;
-import static javax.time.calendrical.LocalDateTimeField.YEAR;
 
 import java.util.ArrayList;
 import java.util.Collections;

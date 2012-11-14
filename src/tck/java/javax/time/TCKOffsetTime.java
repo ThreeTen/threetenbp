@@ -31,22 +31,22 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.LocalDateTimeField.AMPM_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.CLOCK_HOUR_OF_AMPM;
-import static javax.time.calendrical.LocalDateTimeField.CLOCK_HOUR_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_AMPM;
-import static javax.time.calendrical.LocalDateTimeField.HOUR_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.MICRO_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.MICRO_OF_SECOND;
-import static javax.time.calendrical.LocalDateTimeField.MILLI_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.MILLI_OF_SECOND;
-import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.MINUTE_OF_HOUR;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_SECOND;
-import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
-import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.SECOND_OF_MINUTE;
+import static javax.time.calendrical.ChronoField.AMPM_OF_DAY;
+import static javax.time.calendrical.ChronoField.CLOCK_HOUR_OF_AMPM;
+import static javax.time.calendrical.ChronoField.CLOCK_HOUR_OF_DAY;
+import static javax.time.calendrical.ChronoField.HOUR_OF_AMPM;
+import static javax.time.calendrical.ChronoField.HOUR_OF_DAY;
+import static javax.time.calendrical.ChronoField.MICRO_OF_DAY;
+import static javax.time.calendrical.ChronoField.MICRO_OF_SECOND;
+import static javax.time.calendrical.ChronoField.MILLI_OF_DAY;
+import static javax.time.calendrical.ChronoField.MILLI_OF_SECOND;
+import static javax.time.calendrical.ChronoField.MINUTE_OF_DAY;
+import static javax.time.calendrical.ChronoField.MINUTE_OF_HOUR;
+import static javax.time.calendrical.ChronoField.NANO_OF_DAY;
+import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
+import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
+import static javax.time.calendrical.ChronoField.SECOND_OF_DAY;
+import static javax.time.calendrical.ChronoField.SECOND_OF_MINUTE;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
@@ -64,13 +64,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.time.calendrical.ChronoField;
+import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.JulianDayField;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.MockFieldNoValue;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeParseException;
@@ -127,7 +127,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
 
     @Override
     protected List<DateTimeField> invalidFields() {
-        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(LocalDateTimeField.values()));
+        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(ChronoField.values()));
         list.removeAll(validFields());
         list.add(JulianDayField.JULIAN_DAY);
         list.add(JulianDayField.MODIFIED_JULIAN_DAY);
@@ -512,9 +512,9 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     @DataProvider(name="invalidFields")
     Object[][] data_invalidFields() {
         return new Object[][] {
-            {LocalDateTimeField.DAY_OF_MONTH},
-            {LocalDateTimeField.YEAR},
-            {LocalDateTimeField.INSTANT_SECONDS},
+            {ChronoField.DAY_OF_MONTH},
+            {ChronoField.YEAR},
+            {ChronoField.INSTANT_SECONDS},
             {MockFieldNoValue.INSTANCE},
         };
     }
@@ -522,14 +522,14 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_get_DateTimeField() {
         OffsetTime test = OffsetTime.of(12, 30, 40, 987654321, OFFSET_PONE);
-        assertEquals(test.getLong(LocalDateTimeField.HOUR_OF_DAY), 12);
-        assertEquals(test.getLong(LocalDateTimeField.MINUTE_OF_HOUR), 30);
-        assertEquals(test.getLong(LocalDateTimeField.SECOND_OF_MINUTE), 40);
-        assertEquals(test.getLong(LocalDateTimeField.NANO_OF_SECOND), 987654321);
-        assertEquals(test.getLong(LocalDateTimeField.HOUR_OF_AMPM), 0);
-        assertEquals(test.getLong(LocalDateTimeField.AMPM_OF_DAY), 1);
+        assertEquals(test.getLong(ChronoField.HOUR_OF_DAY), 12);
+        assertEquals(test.getLong(ChronoField.MINUTE_OF_HOUR), 30);
+        assertEquals(test.getLong(ChronoField.SECOND_OF_MINUTE), 40);
+        assertEquals(test.getLong(ChronoField.NANO_OF_SECOND), 987654321);
+        assertEquals(test.getLong(ChronoField.HOUR_OF_AMPM), 0);
+        assertEquals(test.getLong(ChronoField.AMPM_OF_DAY), 1);
 
-        assertEquals(test.getLong(LocalDateTimeField.OFFSET_SECONDS), 3600);
+        assertEquals(test.getLong(ChronoField.OFFSET_SECONDS), 3600);
     }
 
     @Test(dataProvider="invalidFields", expectedExceptions=DateTimeException.class, groups={"tck"} )
@@ -628,14 +628,14 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_with_DateTimeField() {
         OffsetTime test = OffsetTime.of(12, 30, 40, 987654321, OFFSET_PONE);
-        assertEquals(test.with(LocalDateTimeField.HOUR_OF_DAY, 15), OffsetTime.of(15, 30, 40, 987654321, OFFSET_PONE));
-        assertEquals(test.with(LocalDateTimeField.MINUTE_OF_HOUR, 50), OffsetTime.of(12, 50, 40, 987654321, OFFSET_PONE));
-        assertEquals(test.with(LocalDateTimeField.SECOND_OF_MINUTE, 50), OffsetTime.of(12, 30, 50, 987654321, OFFSET_PONE));
-        assertEquals(test.with(LocalDateTimeField.NANO_OF_SECOND, 12345), OffsetTime.of(12, 30, 40, 12345, OFFSET_PONE));
-        assertEquals(test.with(LocalDateTimeField.HOUR_OF_AMPM, 6), OffsetTime.of(18, 30, 40, 987654321, OFFSET_PONE));
-        assertEquals(test.with(LocalDateTimeField.AMPM_OF_DAY, 0), OffsetTime.of(0, 30, 40, 987654321, OFFSET_PONE));
+        assertEquals(test.with(ChronoField.HOUR_OF_DAY, 15), OffsetTime.of(15, 30, 40, 987654321, OFFSET_PONE));
+        assertEquals(test.with(ChronoField.MINUTE_OF_HOUR, 50), OffsetTime.of(12, 50, 40, 987654321, OFFSET_PONE));
+        assertEquals(test.with(ChronoField.SECOND_OF_MINUTE, 50), OffsetTime.of(12, 30, 50, 987654321, OFFSET_PONE));
+        assertEquals(test.with(ChronoField.NANO_OF_SECOND, 12345), OffsetTime.of(12, 30, 40, 12345, OFFSET_PONE));
+        assertEquals(test.with(ChronoField.HOUR_OF_AMPM, 6), OffsetTime.of(18, 30, 40, 987654321, OFFSET_PONE));
+        assertEquals(test.with(ChronoField.AMPM_OF_DAY, 0), OffsetTime.of(0, 30, 40, 987654321, OFFSET_PONE));
 
-        assertEquals(test.with(LocalDateTimeField.OFFSET_SECONDS, 7205), OffsetTime.of(12, 30, 40, 987654321, ZoneOffset.ofHoursMinutesSeconds(2, 0, 5)));
+        assertEquals(test.with(ChronoField.OFFSET_SECONDS, 7205), OffsetTime.of(12, 30, 40, 987654321, ZoneOffset.ofHoursMinutesSeconds(2, 0, 5)));
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
@@ -693,7 +693,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_plus_Period() {
-        MockSimplePeriod period = MockSimplePeriod.of(7, LocalPeriodUnit.MINUTES);
+        MockSimplePeriod period = MockSimplePeriod.of(7, ChronoUnit.MINUTES);
         OffsetTime t = TEST_11_30_59_500_PONE.plus(period);
         assertEquals(t, OffsetTime.of(11, 37, 59, 500, OFFSET_PONE));
     }
@@ -748,7 +748,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_minus_Period() {
-        MockSimplePeriod period = MockSimplePeriod.of(7, LocalPeriodUnit.MINUTES);
+        MockSimplePeriod period = MockSimplePeriod.of(7, ChronoUnit.MINUTES);
         OffsetTime t = TEST_11_30_59_500_PONE.minus(period);
         assertEquals(t, OffsetTime.of(11, 23, 59, 500, OFFSET_PONE));
     }

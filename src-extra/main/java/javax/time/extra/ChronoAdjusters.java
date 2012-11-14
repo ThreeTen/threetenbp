@@ -31,7 +31,7 @@
  */
 package javax.time.extra;
 
-import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
+import static javax.time.calendrical.ChronoUnit.MONTHS;
 
 import javax.time.LocalDate;
 import javax.time.calendrical.DateTime;

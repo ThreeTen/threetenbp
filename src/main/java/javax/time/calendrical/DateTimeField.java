@@ -126,7 +126,7 @@ public interface DateTimeField extends Comparator<DateTimeAccessor> {
      *   boolean supported = date.isSupported(field);
      * </pre>
      * <p>
-     * Implementations should be written using the fields available in {@link LocalDateTimeField}.
+     * Implementations should be written using the fields available in {@link ChronoField}.
      *
      * @param dateTime  the date-time object to query, not null
      * @return true if the date-time can be queried for this field, false if not
@@ -150,7 +150,7 @@ public interface DateTimeField extends Comparator<DateTimeAccessor> {
      *   DateTimeValueRange range = date.range(field);
      * </pre>
      * <p>
-     * Implementations should be written using the fields available in {@link LocalDateTimeField}.
+     * Implementations should be written using the fields available in {@link ChronoField}.
      *
      * @param dateTime  the date-time object used to refine the result, not null
      * @return the range of valid values for this field, not null
@@ -171,7 +171,7 @@ public interface DateTimeField extends Comparator<DateTimeAccessor> {
      * The value of the associated field is expressed as a {@code long} integer
      * and is extracted from the specified date-time object.
      * <p>
-     * Implementations should be written using the fields available in {@link LocalDateTimeField}.
+     * Implementations should be written using the fields available in {@link ChronoField}.
      *
      * @param dateTime  the date-time object to query, not null
      * @return the value of this field, not null
@@ -192,7 +192,7 @@ public interface DateTimeField extends Comparator<DateTimeAccessor> {
      * The new value of the field is expressed as a {@code long} integer.
      * The result will be adjusted to set the value of the field.
      * <p>
-     * Implementations should be written using the fields available in {@link LocalDateTimeField}.
+     * Implementations should be written using the fields available in {@link ChronoField}.
      *
      * @param dateTime the date-time object to adjust, not null
      * @param newValue the new value of the field

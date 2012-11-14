@@ -35,19 +35,19 @@ import static javax.time.DateTimeConstants.NANOS_PER_HOUR;
 import static javax.time.DateTimeConstants.NANOS_PER_MINUTE;
 import static javax.time.DateTimeConstants.NANOS_PER_SECOND;
 import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.OFFSET_SECONDS;
+import static javax.time.calendrical.ChronoField.NANO_OF_DAY;
+import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
 
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.time.calendrical.ChronoField;
+import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
@@ -284,15 +284,15 @@ public final class OffsetTime
     //-----------------------------------------------------------------------
     @Override
     public boolean isSupported(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            return ((LocalDateTimeField) field).isTimeField() || field == OFFSET_SECONDS;
+        if (field instanceof ChronoField) {
+            return ((ChronoField) field).isTimeField() || field == OFFSET_SECONDS;
         }
         return field != null && field.doIsSupported(this);
     }
 
     @Override
     public DateTimeValueRange range(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             if (field == OFFSET_SECONDS) {
                 return field.range();
             }
@@ -303,7 +303,7 @@ public final class OffsetTime
 
     @Override
     public long getLong(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             if (field == OFFSET_SECONDS) {
                 return getOffset().getTotalSeconds();
             }
@@ -452,9 +452,9 @@ public final class OffsetTime
      * @throws DateTimeException if the value is invalid
      */
     public OffsetTime with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             if (field == OFFSET_SECONDS) {
-                LocalDateTimeField f = (LocalDateTimeField) field;
+                ChronoField f = (ChronoField) field;
                 return with(time, ZoneOffset.ofTotalSeconds(f.checkValidIntValue(newValue)));
             }
             return with(time.with(field, newValue), offset);
@@ -554,7 +554,7 @@ public final class OffsetTime
      * @throws DateTimeException if the unit cannot be added to this type
      */
     public OffsetTime plus(long amountToAdd, PeriodUnit unit) {
-        if (unit instanceof LocalPeriodUnit) {
+        if (unit instanceof ChronoUnit) {
             return with(time.plus(amountToAdd, unit), offset);
         }
         return unit.doAdd(this, amountToAdd);
@@ -737,10 +737,10 @@ public final class OffsetTime
         if (endDateTime instanceof OffsetTime == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
-        if (unit instanceof LocalPeriodUnit) {
+        if (unit instanceof ChronoUnit) {
             OffsetTime end = (OffsetTime) endDateTime;
             long nanosUntil = end.toEpochNano() - toEpochNano();  // no overflow
-            switch ((LocalPeriodUnit) unit) {
+            switch ((ChronoUnit) unit) {
                 case NANOS: return nanosUntil;
                 case MICROS: return nanosUntil / 1000;
                 case MILLIS: return nanosUntil / 1000_000;
@@ -797,7 +797,7 @@ public final class OffsetTime
      * consistent with {@code equals()}.
      * <p>
      * To compare the underlying local time of two {@code DateTimeAccessor} instances,
-     * use {@link LocalDateTimeField#NANO_OF_DAY} as a comparator.
+     * use {@link ChronoField#NANO_OF_DAY} as a comparator.
      *
      * @param other  the other time to compare to, not null
      * @return the comparator value, negative if less, positive if greater
@@ -869,7 +869,7 @@ public final class OffsetTime
      * <p>
      * Only objects of type {@code OffsetTime} are compared, other types return false.
      * To compare the underlying local time of two {@code DateTimeAccessor} instances,
-     * use {@link LocalDateTimeField#NANO_OF_DAY} as a comparator.
+     * use {@link ChronoField#NANO_OF_DAY} as a comparator.
      *
      * @param obj  the object to check, null returns false
      * @return true if this is equal to the other time

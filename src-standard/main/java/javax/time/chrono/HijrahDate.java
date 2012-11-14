@@ -31,10 +31,10 @@
  */
 package javax.time.chrono;
 
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_YEAR;
+import static javax.time.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
+import static javax.time.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
+import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_MONTH;
+import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_YEAR;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -53,9 +53,9 @@ import java.util.zip.ZipFile;
 import javax.time.DateTimeException;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
 import javax.time.jdk8.Jdk8Methods;
 
 /**
@@ -532,9 +532,9 @@ final class HijrahDate
 
     @Override
     public DateTimeValueRange range(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             if (isSupported(field)) {
-                LocalDateTimeField f = (LocalDateTimeField) field;
+                ChronoField f = (ChronoField) field;
                 switch (f) {
                     case DAY_OF_MONTH: return DateTimeValueRange.of(1, lengthOfMonth());
                     case DAY_OF_YEAR: return DateTimeValueRange.of(1, lengthOfYear());
@@ -550,8 +550,8 @@ final class HijrahDate
 
     @Override
     public long getLong(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            switch ((LocalDateTimeField) field) {
+        if (field instanceof ChronoField) {
+            switch ((ChronoField) field) {
                 case DAY_OF_WEEK: return getDayOfWeek().getValue();
                 case ALIGNED_DAY_OF_WEEK_IN_MONTH: return ((getDayOfWeek().getValue() - 1) % 7) + 1;
                 case ALIGNED_DAY_OF_WEEK_IN_YEAR: return ((getDayOfYear() - 1) % 7) + 1;
@@ -572,8 +572,8 @@ final class HijrahDate
 
     @Override
     public HijrahDate with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField f = (ChronoField) field;
             f.checkValidValue(newValue);        // TODO: validate value
             int nvalue = (int) newValue;
             switch (f) {

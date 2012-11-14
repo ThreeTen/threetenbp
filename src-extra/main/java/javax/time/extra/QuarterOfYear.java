@@ -38,12 +38,12 @@ import java.util.Objects;
 
 import javax.time.DateTimeException;
 import javax.time.Month;
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
 import javax.time.chrono.Chrono;
 import javax.time.chrono.ISOChrono;
 import javax.time.format.DateTimeFormatterBuilder;
@@ -183,7 +183,7 @@ public enum QuarterOfYear implements DateTimeAccessor, WithAdjuster {
     //-----------------------------------------------------------------------
     @Override
     public boolean isSupported(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             return field == QUARTER_OF_YEAR;
         }
         return field != null && field.doIsSupported(this);
@@ -193,7 +193,7 @@ public enum QuarterOfYear implements DateTimeAccessor, WithAdjuster {
     public DateTimeValueRange range(DateTimeField field) {
         if (field == QUARTER_OF_YEAR) {
             return field.range();
-        } else if (field instanceof LocalDateTimeField) {
+        } else if (field instanceof ChronoField) {
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doRange(this);
@@ -212,7 +212,7 @@ public enum QuarterOfYear implements DateTimeAccessor, WithAdjuster {
         if (field == QUARTER_OF_YEAR) {
             return getValue();
         }
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doGet(this);
@@ -224,7 +224,7 @@ public enum QuarterOfYear implements DateTimeAccessor, WithAdjuster {
             int val = QUARTER_OF_YEAR.range().checkValidIntValue(newValue, QUARTER_OF_YEAR);
             return QuarterOfYear.of(val);
         }
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doSet(this, newValue);

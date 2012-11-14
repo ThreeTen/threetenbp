@@ -31,9 +31,9 @@
  */
 package javax.time.chrono;
 
-import static javax.time.calendrical.LocalDateTimeField.ERA;
-import static javax.time.calendrical.LocalDateTimeField.YEAR;
-import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
+import static javax.time.calendrical.ChronoField.ERA;
+import static javax.time.calendrical.ChronoField.YEAR;
+import static javax.time.calendrical.ChronoField.YEAR_OF_ERA;
 import static javax.time.chrono.ISOChrono.ERA_BCE;
 import static javax.time.chrono.ISOChrono.ERA_CE;
 import static org.testng.Assert.assertEquals;
@@ -44,8 +44,8 @@ import static org.testng.Assert.assertTrue;
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeAdjusters;
-import javax.time.calendrical.LocalDateTimeField;
 
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -149,9 +149,9 @@ public class TestISOChrono {
         int dayOfMonth = 5;
         ChronoLocalDate ChronoLocalDate = ISOChrono.INSTANCE.date(ERA_BCE, year, month, dayOfMonth);
         assertEquals(ChronoLocalDate.getEra(), ERA_BCE);
-        assertEquals(ChronoLocalDate.get(LocalDateTimeField.YEAR_OF_ERA), year);
-        assertEquals(ChronoLocalDate.get(LocalDateTimeField.MONTH_OF_YEAR), month);
-        assertEquals(ChronoLocalDate.get(LocalDateTimeField.DAY_OF_MONTH), dayOfMonth);
+        assertEquals(ChronoLocalDate.get(ChronoField.YEAR_OF_ERA), year);
+        assertEquals(ChronoLocalDate.get(ChronoField.MONTH_OF_YEAR), month);
+        assertEquals(ChronoLocalDate.get(ChronoField.DAY_OF_MONTH), dayOfMonth);
 
         assertEquals(ChronoLocalDate.get(YEAR), 1 + (-1 * year));
         assertEquals(ChronoLocalDate.get(ERA), 0);

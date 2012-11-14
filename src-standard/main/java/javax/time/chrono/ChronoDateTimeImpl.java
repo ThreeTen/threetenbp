@@ -40,7 +40,7 @@ import static javax.time.DateTimeConstants.NANOS_PER_HOUR;
 import static javax.time.DateTimeConstants.NANOS_PER_MINUTE;
 import static javax.time.DateTimeConstants.NANOS_PER_SECOND;
 import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_DAY;
+import static javax.time.calendrical.ChronoField.EPOCH_DAY;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -50,12 +50,12 @@ import javax.time.DayOfWeek;
 import javax.time.LocalTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
+import javax.time.calendrical.ChronoField;
+import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.jdk8.DefaultInterfaceChronoLocalDateTime;
 import javax.time.jdk8.Jdk8Methods;
@@ -144,8 +144,8 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
     //-----------------------------------------------------------------------
     @Override
     public boolean isSupported(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField f = (ChronoField) field;
             return f.isDateField() || f.isTimeField();
         }
         return field != null && field.doIsSupported(this);
@@ -153,8 +153,8 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
 
     @Override
     public DateTimeValueRange range(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField f = (ChronoField) field;
             return (f.isTimeField() ? time.range(field) : date.range(field));
         }
         return field.doRange(this);
@@ -162,8 +162,8 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
 
     @Override
     public int get(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField f = (ChronoField) field;
             return (f.isTimeField() ? time.get(field) : date.get(field));
         }
         return range(field).checkValidIntValue(getLong(field), field);
@@ -171,8 +171,8 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
 
     @Override
     public long getLong(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField f = (ChronoField) field;
             return (f.isTimeField() ? time.getLong(field) : date.getLong(field));
         }
         return field.doGet(this);
@@ -187,7 +187,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
      * @return the year, from MIN_YEAR to MAX_YEAR
      */
     int getYear() {
-        return date.get(LocalDateTimeField.YEAR_OF_ERA);
+        return date.get(ChronoField.YEAR_OF_ERA);
     }
 
     /**
@@ -196,7 +196,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
      * @return the month-of-year, from 1 to 12 or 13
      */
     int getMonthValue() {
-        return date.get(LocalDateTimeField.MONTH_OF_YEAR);
+        return date.get(ChronoField.MONTH_OF_YEAR);
     }
 
     /**
@@ -207,7 +207,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
      * @return the day-of-month, from 1 to 31
      */
     int getDayOfMonth() {
-        return date.get(LocalDateTimeField.DAY_OF_MONTH);
+        return date.get(ChronoField.DAY_OF_MONTH);
     }
 
     /**
@@ -218,7 +218,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
      * @return the day-of-year, from 1 to 365, or 366 in a leap year
      */
     int getDayOfYear() {
-        return date.get(LocalDateTimeField.DAY_OF_YEAR);
+        return date.get(ChronoField.DAY_OF_YEAR);
     }
 
     /**
@@ -235,7 +235,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
      * @return the day-of-week, not null
      */
     DayOfWeek getDayOfWeek() {
-        return DayOfWeek.of(date.get(LocalDateTimeField.DAY_OF_WEEK));
+        return DayOfWeek.of(date.get(ChronoField.DAY_OF_WEEK));
     }
 
     //-----------------------------------------------------------------------
@@ -292,8 +292,8 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
 
     @Override
     public ChronoDateTimeImpl<C> with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField f = (ChronoField) field;
             if (f.isTimeField()) {
                 return with(date, time.with(field, newValue));
             } else {
@@ -316,7 +316,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
      * @throws DateTimeException if the year value is invalid
      */
     ChronoDateTimeImpl<C> withYear(int year) {
-        return with(date.with(LocalDateTimeField.YEAR_OF_ERA, year), time);
+        return with(date.with(ChronoField.YEAR_OF_ERA, year), time);
     }
 
     /**
@@ -331,7 +331,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
      * @throws DateTimeException if the month-of-year value is invalid
      */
     ChronoDateTimeImpl<C> withMonth(int month) {
-        return with(date.with(LocalDateTimeField.MONTH_OF_YEAR, month), time);
+        return with(date.with(ChronoField.MONTH_OF_YEAR, month), time);
     }
 
     /**
@@ -347,7 +347,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
      * @throws DateTimeException if the day-of-month is invalid for the month-year
      */
     ChronoDateTimeImpl<C> withDayOfMonth(int dayOfMonth) {
-        return with(date.with(LocalDateTimeField.DAY_OF_MONTH, dayOfMonth), time);
+        return with(date.with(ChronoField.DAY_OF_MONTH, dayOfMonth), time);
     }
 
     /**
@@ -362,7 +362,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
      * @throws DateTimeException if the day-of-year is invalid for the year
      */
     ChronoDateTimeImpl<C> withDayOfYear(int dayOfYear) {
-        return with(date.with(LocalDateTimeField.DAY_OF_YEAR, dayOfYear), time);
+        return with(date.with(ChronoField.DAY_OF_YEAR, dayOfYear), time);
     }
 
     /**
@@ -512,8 +512,8 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
     //-----------------------------------------------------------------------
     @Override
     public ChronoDateTimeImpl<C> plus(long amountToAdd, PeriodUnit unit) {
-        if (unit instanceof LocalPeriodUnit) {
-            LocalPeriodUnit f = (LocalPeriodUnit) unit;
+        if (unit instanceof ChronoUnit) {
+            ChronoUnit f = (ChronoUnit) unit;
             switch (f) {
                 case NANOS: return plusNanos(amountToAdd);
                 case MICROS: return plusDays(amountToAdd / MICROS_PER_DAY).plusNanos((amountToAdd % MICROS_PER_DAY) * 1000);
@@ -550,7 +550,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTimeImpl<C> plusYears(long years) {
-        return with(date.plus(years, LocalPeriodUnit.YEARS), time);
+        return with(date.plus(years, ChronoUnit.YEARS), time);
     }
 
     /**
@@ -574,7 +574,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTimeImpl<C> plusMonths(long months) {
-        return with(date.plus(months, LocalPeriodUnit.MONTHS), time);
+        return with(date.plus(months, ChronoUnit.MONTHS), time);
     }
 
     /**
@@ -593,7 +593,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTimeImpl<C> plusWeeks(long weeks) {
-        return with(date.plus(weeks, LocalPeriodUnit.WEEKS), time);
+        return with(date.plus(weeks, ChronoUnit.WEEKS), time);
     }
 
     /**
@@ -612,7 +612,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTimeImpl<C> plusDays(long days) {
-        return with(date.plus(days, LocalPeriodUnit.DAYS), time);
+        return with(date.plus(days, ChronoUnit.DAYS), time);
     }
 
     /**
@@ -689,7 +689,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTimeImpl<C> minusYears(long years) {
-        return with(date.minus(years, LocalPeriodUnit.YEARS), time);
+        return with(date.minus(years, ChronoUnit.YEARS), time);
     }
 
     /**
@@ -713,7 +713,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTimeImpl<C> minusMonths(long months) {
-        return with(date.minus(months, LocalPeriodUnit.MONTHS), time);
+        return with(date.minus(months, ChronoUnit.MONTHS), time);
     }
 
     /**
@@ -732,7 +732,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTimeImpl<C> minusWeeks(long weeks) {
-        return with(date.minus(weeks, LocalPeriodUnit.WEEKS), time);
+        return with(date.minus(weeks, ChronoUnit.WEEKS), time);
     }
 
     /**
@@ -751,7 +751,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoDateTimeImpl<C> minusDays(long days) {
-        return with(date.minus(days, LocalPeriodUnit.DAYS), time);
+        return with(date.minus(days, ChronoUnit.DAYS), time);
     }
 
     /**
@@ -839,7 +839,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
         totDays += Jdk8Methods.floorDiv(totNanos, NANOS_PER_DAY);
         long newNoD = Jdk8Methods.floorMod(totNanos, NANOS_PER_DAY);
         LocalTime newTime = (newNoD == curNoD ? time : LocalTime.ofNanoOfDay(newNoD));
-        return with(newDate.plus(totDays, LocalPeriodUnit.DAYS), newTime);
+        return with(newDate.plus(totDays, ChronoUnit.DAYS), newTime);
     }
 
     //-----------------------------------------------------------------------
@@ -914,8 +914,8 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
         }
         @SuppressWarnings("unchecked")
         ChronoLocalDateTime<C> end = (ChronoLocalDateTime<C>) endDateTime;
-        if (unit instanceof LocalPeriodUnit) {
-            LocalPeriodUnit f = (LocalPeriodUnit) unit;
+        if (unit instanceof ChronoUnit) {
+            ChronoUnit f = (ChronoUnit) unit;
             if (f.isTimeUnit()) {
                 long amount = end.getLong(EPOCH_DAY) - date.getLong(EPOCH_DAY);
                 switch (f) {
@@ -931,7 +931,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
             }
             ChronoLocalDate<C> endDate = end.getDate();
             if (end.getTime().isBefore(time)) {
-                endDate = endDate.minus(1, LocalPeriodUnit.DAYS);
+                endDate = endDate.minus(1, ChronoUnit.DAYS);
             }
             return date.periodUntil(endDate, unit);
         }

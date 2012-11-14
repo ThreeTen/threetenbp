@@ -31,25 +31,13 @@
  */
 package javax.time.format;
 
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
-import static org.testng.Assert.assertEquals;
+import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
 import static org.testng.Assert.assertSame;
 
-import java.io.IOException;
-import java.text.Format;
-import java.text.ParseException;
-import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import javax.time.DateTimeException;
-import javax.time.LocalDate;
-import javax.time.LocalTime;
-import javax.time.OffsetDate;
-import javax.time.ZoneOffset;
-import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeBuilder;
 import javax.time.format.DateTimeFormatterBuilder.CompositePrinterParser;
 import javax.time.format.DateTimeFormatterBuilder.DateTimePrinterParser;
 import javax.time.format.DateTimeFormatterBuilder.NumberPrinterParser;

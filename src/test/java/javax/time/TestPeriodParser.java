@@ -31,13 +31,13 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.LocalPeriodUnit.DAYS;
-import static javax.time.calendrical.LocalPeriodUnit.HOURS;
-import static javax.time.calendrical.LocalPeriodUnit.MINUTES;
-import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
-import static javax.time.calendrical.LocalPeriodUnit.NANOS;
-import static javax.time.calendrical.LocalPeriodUnit.SECONDS;
-import static javax.time.calendrical.LocalPeriodUnit.YEARS;
+import static javax.time.calendrical.ChronoUnit.DAYS;
+import static javax.time.calendrical.ChronoUnit.HOURS;
+import static javax.time.calendrical.ChronoUnit.MINUTES;
+import static javax.time.calendrical.ChronoUnit.MONTHS;
+import static javax.time.calendrical.ChronoUnit.NANOS;
+import static javax.time.calendrical.ChronoUnit.SECONDS;
+import static javax.time.calendrical.ChronoUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 
 import javax.time.format.DateTimeParseException;

@@ -31,22 +31,22 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.ERA;
-import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.YEAR;
-import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
+import static javax.time.calendrical.ChronoField.EPOCH_MONTH;
+import static javax.time.calendrical.ChronoField.ERA;
+import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
+import static javax.time.calendrical.ChronoField.YEAR;
+import static javax.time.calendrical.ChronoField.YEAR_OF_ERA;
 
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.time.calendrical.ChronoField;
+import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.Chrono;
 import javax.time.chrono.ISOChrono;
@@ -257,7 +257,7 @@ public final class YearMonth
     //-----------------------------------------------------------------------
     @Override
     public boolean isSupported(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             return field == YEAR || field == MONTH_OF_YEAR ||
                     field == EPOCH_MONTH || field == YEAR_OF_ERA || field == ERA;
         }
@@ -274,8 +274,8 @@ public final class YearMonth
 
     @Override
     public long getLong(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            switch ((LocalDateTimeField) field) {
+        if (field instanceof ChronoField) {
+            switch ((ChronoField) field) {
                 case MONTH_OF_YEAR: return month;
                 case EPOCH_MONTH: return getEpochMonth();
                 case YEAR_OF_ERA: return (year < 1 ? 1 - year : year);
@@ -396,8 +396,8 @@ public final class YearMonth
 
     @Override
     public YearMonth with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField f = (ChronoField) field;
             f.checkValidValue(newValue);
             switch (f) {
                 case MONTH_OF_YEAR: return withMonth((int) newValue);
@@ -463,8 +463,8 @@ public final class YearMonth
 
     @Override
     public YearMonth plus(long amountToAdd, PeriodUnit unit) {
-        if (unit instanceof LocalPeriodUnit) {
-            switch ((LocalPeriodUnit) unit) {
+        if (unit instanceof ChronoUnit) {
+            switch ((ChronoUnit) unit) {
                 case MONTHS: return plusMonths(amountToAdd);
                 case QUARTER_YEARS: return plusYears(amountToAdd / 256).plusMonths((amountToAdd % 256) * 3);  // no overflow (256 is multiple of 4)
                 case HALF_YEARS: return plusYears(amountToAdd / 256).plusMonths((amountToAdd % 256) * 6);  // no overflow (256 is multiple of 2)
@@ -646,9 +646,9 @@ public final class YearMonth
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
         YearMonth end = (YearMonth) endDateTime;
-        if (unit instanceof LocalPeriodUnit) {
+        if (unit instanceof ChronoUnit) {
             long monthsUntil = end.getEpochMonth() - getEpochMonth();  // no overflow
-            switch ((LocalPeriodUnit) unit) {
+            switch ((ChronoUnit) unit) {
                 case MONTHS: return monthsUntil;
                 case QUARTER_YEARS: return monthsUntil / 3;
                 case HALF_YEARS: return monthsUntil / 6;

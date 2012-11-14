@@ -44,14 +44,14 @@ import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.time.calendrical.ChronoField;
+import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.ChronoLocalDateTime;
 import javax.time.chrono.ISOChrono;
@@ -407,8 +407,8 @@ public final class LocalDateTime
     //-----------------------------------------------------------------------
     @Override
     public boolean isSupported(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField f = (ChronoField) field;
             return f.isDateField() || f.isTimeField();
         }
         return field != null && field.doIsSupported(this);
@@ -416,8 +416,8 @@ public final class LocalDateTime
 
     @Override
     public DateTimeValueRange range(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField f = (ChronoField) field;
             return (f.isTimeField() ? time.range(field) : date.range(field));
         }
         return field.doRange(this);
@@ -425,8 +425,8 @@ public final class LocalDateTime
 
     @Override
     public int get(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField f = (ChronoField) field;
             return (f.isTimeField() ? time.get(field) : date.get(field));
         }
         return super.get(field);
@@ -434,8 +434,8 @@ public final class LocalDateTime
 
     @Override
     public long getLong(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField f = (ChronoField) field;
             return (f.isTimeField() ? time.getLong(field) : date.getLong(field));
         }
         return field.doGet(this);
@@ -644,8 +644,8 @@ public final class LocalDateTime
      */
     @Override
     public LocalDateTime with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField f = (ChronoField) field;
             if (f.isTimeField()) {
                 return with(date, time.with(field, newValue));
             } else {
@@ -927,8 +927,8 @@ public final class LocalDateTime
      */
     @Override
     public LocalDateTime plus(long amountToAdd, PeriodUnit unit) {
-        if (unit instanceof LocalPeriodUnit) {
-            LocalPeriodUnit f = (LocalPeriodUnit) unit;
+        if (unit instanceof ChronoUnit) {
+            ChronoUnit f = (ChronoUnit) unit;
             switch (f) {
                 case NANOS: return plusNanos(amountToAdd);
                 case MICROS: return plusDays(amountToAdd / MICROS_PER_DAY).plusNanos((amountToAdd % MICROS_PER_DAY) * 1000);
@@ -1375,8 +1375,8 @@ public final class LocalDateTime
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
         LocalDateTime end = (LocalDateTime) endDateTime;
-        if (unit instanceof LocalPeriodUnit) {
-            LocalPeriodUnit f = (LocalPeriodUnit) unit;
+        if (unit instanceof ChronoUnit) {
+            ChronoUnit f = (ChronoUnit) unit;
             if (f.isTimeUnit()) {
                 long amount = date.daysUntil(end.date);
                 switch (f) {

@@ -44,11 +44,11 @@ import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.ZoneId;
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAccessor.Query;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
 import javax.time.format.DateTimeFormatterBuilder;
 import javax.time.format.TextStyle;
 import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
@@ -62,21 +62,21 @@ import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
  * <p>
  * Most other calendar systems also operate on the shared concepts of year, month and day,
  * linked to the cycles of the Earth around the Sun, and the Moon around the Earth.
- * These shared concepts are defined by {@link LocalDateTimeField} and are availalbe
+ * These shared concepts are defined by {@link ChronoField} and are availalbe
  * for use by any {@code Chrono} implementation:
  * <pre>
  *   LocalDate isoDate = ...
- *   ChronoLocalDate&lt;MinguoChrono&gt; minguoDate = ...
- *   int isoYear = isoDate.get(LocalDateTimeField.YEAR);
- *   int minguoYear = minguoDate.get(LocalDateTimeField.YEAR);
+ *   ChronoLocalDate&lt;ThaiBuddhistChrono&gt; minguoDate = ...
+ *   int isoYear = isoDate.get(ChronoField.YEAR);
+ *   int thaiYear = thaiDate.get(ChronoField.YEAR);
  * </pre>
  * As shown, although the date objects are in different calendar systems, represented by different
- * {@code Chrono} instances, both can be queried using the same constant on {@code LocalDateTimeField}.
+ * {@code Chrono} instances, both can be queried using the same constant on {@code ChronoField}.
  * For a full discussion of the implications of this, see {@link ChronoLocalDate}.
  * In general, the advice is to use the known ISO-based {@code LocalDate}, rather than
  * {@code ChronoLocalDate}.
  * <p>
- * While a {@code Chrono} object typically uses {@code LocalDateTimeField} and is based on
+ * While a {@code Chrono} object typically uses {@code ChronoField} and is based on
  * an era, year-of-era, month-of-year, day-of-month model of a date, this is not required.
  * A {@code Chrono} instance may represent a totally different kind of calendar system,
  * such as the Mayan.
@@ -343,7 +343,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * Creates a date in this chronology from another date-time object.
      * <p>
      * This creates a date in this chronology by extracting the
-     * {@link LocalDateTimeField#EPOCH_DAY local epoch-day} field.
+     * {@link ChronoField#EPOCH_DAY local epoch-day} field.
      *
      * @param dateTime  the date-time object to convert, not null
      * @return the date in this chronology, not null
@@ -478,7 +478,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * @return the range of valid values for the field, not null
      * @throws DateTimeException if the range for the field cannot be obtained
      */
-    public abstract DateTimeValueRange range(LocalDateTimeField field);
+    public abstract DateTimeValueRange range(ChronoField field);
 
     //-----------------------------------------------------------------------
     /**

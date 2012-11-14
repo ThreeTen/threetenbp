@@ -40,9 +40,9 @@ import java.util.Objects;
 import javax.time.DateTimeException;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
 import javax.time.jdk8.Jdk8Methods;
 
 import sun.util.calendar.LocalGregorianCalendar;
@@ -221,9 +221,9 @@ final class JapaneseDate
 
     @Override
     public DateTimeValueRange range(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             if (isSupported(field)) {
-                LocalDateTimeField f = (LocalDateTimeField) field;
+                ChronoField f = (ChronoField) field;
                 switch (f) {
                     case DAY_OF_YEAR:
                         return actualRange(Calendar.DAY_OF_YEAR);
@@ -247,8 +247,8 @@ final class JapaneseDate
 
     @Override
     public long getLong(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            switch ((LocalDateTimeField) field) {
+        if (field instanceof ChronoField) {
+            switch ((ChronoField) field) {
                 case YEAR_OF_ERA:
                     return yearOfEra;
                 case ERA:
@@ -288,8 +288,8 @@ final class JapaneseDate
     //-----------------------------------------------------------------------
     @Override
     public JapaneseDate with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField f = (ChronoField) field;
             switch (f) {
                 case YEAR_OF_ERA:
                 case YEAR:

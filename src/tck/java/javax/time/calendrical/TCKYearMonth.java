@@ -31,11 +31,11 @@
  */
 package javax.time.calendrical;
 
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.ERA;
-import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.YEAR;
-import static javax.time.calendrical.LocalDateTimeField.YEAR_OF_ERA;
+import static javax.time.calendrical.ChronoField.EPOCH_MONTH;
+import static javax.time.calendrical.ChronoField.ERA;
+import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
+import static javax.time.calendrical.ChronoField.YEAR;
+import static javax.time.calendrical.ChronoField.YEAR_OF_ERA;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
@@ -106,7 +106,7 @@ public class TCKYearMonth extends AbstractDateTimeTest {
 
     @Override
     protected List<DateTimeField> invalidFields() {
-        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(LocalDateTimeField.values()));
+        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(ChronoField.values()));
         list.removeAll(validFields());
         list.add(JulianDayField.JULIAN_DAY);
         list.add(JulianDayField.MODIFIED_JULIAN_DAY);
@@ -400,11 +400,11 @@ public class TCKYearMonth extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_get_DateTimeField() {
-        assertEquals(TEST_2008_06.getLong(LocalDateTimeField.YEAR), 2008);
-        assertEquals(TEST_2008_06.getLong(LocalDateTimeField.MONTH_OF_YEAR), 6);
-        assertEquals(TEST_2008_06.getLong(LocalDateTimeField.YEAR_OF_ERA), 2008);
-        assertEquals(TEST_2008_06.getLong(LocalDateTimeField.ERA), 1);
-        assertEquals(TEST_2008_06.getLong(LocalDateTimeField.EPOCH_MONTH), (2008 - 1970) * 12 + 6 - 1);
+        assertEquals(TEST_2008_06.getLong(ChronoField.YEAR), 2008);
+        assertEquals(TEST_2008_06.getLong(ChronoField.MONTH_OF_YEAR), 6);
+        assertEquals(TEST_2008_06.getLong(ChronoField.YEAR_OF_ERA), 2008);
+        assertEquals(TEST_2008_06.getLong(ChronoField.ERA), 1);
+        assertEquals(TEST_2008_06.getLong(ChronoField.EPOCH_MONTH), (2008 - 1970) * 12 + 6 - 1);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
@@ -419,7 +419,7 @@ public class TCKYearMonth extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
     public void test_get_DateTimeField_timeField() {
-        TEST_2008_06.getLong(LocalDateTimeField.AMPM_OF_DAY);
+        TEST_2008_06.getLong(ChronoField.AMPM_OF_DAY);
     }
 
     //-----------------------------------------------------------------------

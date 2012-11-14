@@ -31,16 +31,16 @@
  */
 package javax.time.extra.chrono;
 
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.ALIGNED_WEEK_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.WEEK_BASED_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_WEEK_BASED_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.WEEK_OF_YEAR;
+import static javax.time.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
+import static javax.time.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
+import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_MONTH;
+import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_YEAR;
+import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
+import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
+import static javax.time.calendrical.ChronoField.WEEK_BASED_YEAR;
+import static javax.time.calendrical.ChronoField.WEEK_OF_MONTH;
+import static javax.time.calendrical.ChronoField.WEEK_OF_WEEK_BASED_YEAR;
+import static javax.time.calendrical.ChronoField.WEEK_OF_YEAR;
 
 import java.io.Serializable;
 
@@ -48,11 +48,11 @@ import javax.time.DateTimeConstants;
 import javax.time.DateTimeException;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
+import javax.time.calendrical.ChronoField;
+import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.ChronoLocalDate;
 import javax.time.chrono.Era;
@@ -191,8 +191,8 @@ final class CopticDate
 
     @Override
     public boolean isSupported(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            return ((LocalDateTimeField) field).isDateField() && field != WEEK_OF_MONTH &&
+        if (field instanceof ChronoField) {
+            return ((ChronoField) field).isDateField() && field != WEEK_OF_MONTH &&
                     field != WEEK_OF_YEAR && field != WEEK_OF_WEEK_BASED_YEAR && field != WEEK_BASED_YEAR;
         }
         return field != null && field.doIsSupported(this);
@@ -200,9 +200,9 @@ final class CopticDate
 
     @Override
     public DateTimeValueRange range(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
+        if (field instanceof ChronoField) {
             if (isSupported(field)) {
-                LocalDateTimeField f = (LocalDateTimeField) field;
+                ChronoField f = (ChronoField) field;
                 switch (f) {
                     case DAY_OF_MONTH: return DateTimeValueRange.of(1, lengthOfMonth());
                     case DAY_OF_YEAR: return DateTimeValueRange.of(1, lengthOfYear());
@@ -220,8 +220,8 @@ final class CopticDate
 
     @Override
     public long getLong(DateTimeField field) {
-        if (field instanceof LocalDateTimeField) {
-            switch ((LocalDateTimeField) field) {
+        if (field instanceof ChronoField) {
+            switch ((ChronoField) field) {
                 case DAY_OF_WEEK: return Jdk8Methods.floorMod(toEpochDay() + 3, 7) + 1;
                 case ALIGNED_DAY_OF_WEEK_IN_MONTH: return ((day - 1) % 7) + 1;
                 case ALIGNED_DAY_OF_WEEK_IN_YEAR: return ((getDayOfYear() - 1) % 7) + 1;
@@ -247,8 +247,8 @@ final class CopticDate
 
     @Override
     public CopticDate with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField f = (ChronoField) field;
             f.checkValidValue(newValue);        // TODO: validate value
             int nvalue = (int) newValue;
             switch (f) {
@@ -278,8 +278,8 @@ final class CopticDate
 
     @Override
     public CopticDate plus(long amountToAdd, PeriodUnit unit) {
-        if (unit instanceof LocalPeriodUnit) {
-            LocalPeriodUnit f = (LocalPeriodUnit) unit;
+        if (unit instanceof ChronoUnit) {
+            ChronoUnit f = (ChronoUnit) unit;
             switch (f) {
                 case DAYS: return plusDays(amountToAdd);
                 case WEEKS: return plusDays(Jdk8Methods.safeMultiply(amountToAdd, 7));
@@ -336,43 +336,43 @@ final class CopticDate
     }
 
     public int getYear() {
-        return get(LocalDateTimeField.YEAR_OF_ERA);
+        return get(ChronoField.YEAR_OF_ERA);
     }
 
     public int getMonthValue() {
-        return get(LocalDateTimeField.MONTH_OF_YEAR);
+        return get(ChronoField.MONTH_OF_YEAR);
     }
 
     public int getDayOfMonth() {
-        return get(LocalDateTimeField.DAY_OF_MONTH);
+        return get(ChronoField.DAY_OF_MONTH);
     }
 
     public int getDayOfYear() {
-        return get(LocalDateTimeField.DAY_OF_YEAR);
+        return get(ChronoField.DAY_OF_YEAR);
     }
 
     public DayOfWeek getDayOfWeek() {
-        return DayOfWeek.of(get(LocalDateTimeField.DAY_OF_WEEK));
+        return DayOfWeek.of(get(ChronoField.DAY_OF_WEEK));
     }
 
     public CopticDate withEra(Era<CopticChrono> era) {
-        return with(LocalDateTimeField.ERA, era.getValue());
+        return with(ChronoField.ERA, era.getValue());
     }
 
     public CopticDate withYear(int year) {
-        return with(LocalDateTimeField.YEAR_OF_ERA, year);
+        return with(ChronoField.YEAR_OF_ERA, year);
     }
 
     public CopticDate withMonth(int month) {
-        return with(LocalDateTimeField.MONTH_OF_YEAR, month);
+        return with(ChronoField.MONTH_OF_YEAR, month);
     }
 
     public CopticDate withDayOfMonth(int dayOfMonth) {
-        return with(LocalDateTimeField.DAY_OF_MONTH, month);
+        return with(ChronoField.DAY_OF_MONTH, month);
     }
 
     public CopticDate withDayOfYear(int dayOfYear) {
-        return with(LocalDateTimeField.DAY_OF_YEAR, month);
+        return with(ChronoField.DAY_OF_YEAR, month);
     }
 
     public CopticDate minusYears(long yearsToSubtract) {
@@ -400,7 +400,7 @@ final class CopticDate
         if (getChrono().equals(end.getChrono()) == false) {
             throw new DateTimeException("Unable to calculate period between two different chronologies");
         }
-        if (unit instanceof LocalPeriodUnit) {
+        if (unit instanceof ChronoUnit) {
             return LocalDate.from(this).periodUntil(end, unit);  // TODO: this is wrong
         }
         return unit.between(this, endDateTime).getAmount();

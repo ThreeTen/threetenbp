@@ -36,15 +36,15 @@ import static javax.time.DayOfWeek.TUESDAY;
 import static javax.time.Month.AUGUST;
 import static javax.time.Month.FEBRUARY;
 import static javax.time.Month.MARCH;
+import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
+import static javax.time.calendrical.ChronoUnit.DAYS;
+import static javax.time.calendrical.ChronoUnit.HOURS;
+import static javax.time.calendrical.ChronoUnit.MINUTES;
 import static javax.time.calendrical.DateTimeAdjusters.dayOfWeekInMonth;
 import static javax.time.calendrical.DateTimeAdjusters.firstInMonth;
 import static javax.time.calendrical.DateTimeAdjusters.lastDayOfMonth;
 import static javax.time.calendrical.DateTimeAdjusters.next;
 import static javax.time.calendrical.DateTimeAdjusters.nextOrCurrent;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
-import static javax.time.calendrical.LocalPeriodUnit.DAYS;
-import static javax.time.calendrical.LocalPeriodUnit.HOURS;
-import static javax.time.calendrical.LocalPeriodUnit.MINUTES;
 
 import javax.time.zone.ZoneOffsetTransition;
 

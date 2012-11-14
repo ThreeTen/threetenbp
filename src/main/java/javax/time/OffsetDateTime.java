@@ -34,13 +34,13 @@ package javax.time;
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.time.calendrical.ChronoField;
+import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.ChronoOffsetDateTime;
 import javax.time.chrono.ISOChrono;
@@ -481,7 +481,7 @@ public final class OffsetDateTime
     //-----------------------------------------------------------------------
     @Override
     public boolean isSupported(DateTimeField field) {
-        return field instanceof LocalDateTimeField || (field != null && field.doIsSupported(this));
+        return field instanceof ChronoField || (field != null && field.doIsSupported(this));
     }
 
     //-----------------------------------------------------------------------
@@ -766,8 +766,8 @@ public final class OffsetDateTime
      */
     @Override
     public OffsetDateTime with(DateTimeField field, long newValue) {
-        if (field instanceof LocalDateTimeField) {
-            LocalDateTimeField f = (LocalDateTimeField) field;
+        if (field instanceof ChronoField) {
+            ChronoField f = (ChronoField) field;
             switch (f) {
                 case INSTANT_SECONDS: return ofEpochSecond(newValue, offset);
                 case OFFSET_SECONDS: {
@@ -1036,7 +1036,7 @@ public final class OffsetDateTime
      */
     @Override
     public OffsetDateTime plus(long amountToAdd, PeriodUnit unit) {
-        if (unit instanceof LocalPeriodUnit) {
+        if (unit instanceof ChronoUnit) {
             return with(dateTime.plus(amountToAdd, unit), offset);
         }
         return unit.doAdd(this, amountToAdd);
@@ -1487,7 +1487,7 @@ public final class OffsetDateTime
         if (endDateTime instanceof OffsetDateTime == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
-        if (unit instanceof LocalPeriodUnit) {
+        if (unit instanceof ChronoUnit) {
             OffsetDateTime end = (OffsetDateTime) endDateTime;
             end = end.withOffsetSameInstant(offset);
             return dateTime.periodUntil(end, unit);

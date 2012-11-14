@@ -35,26 +35,26 @@ import static javax.time.DateTimeConstants.NANOS_PER_DAY;
 import static javax.time.DateTimeConstants.NANOS_PER_HOUR;
 import static javax.time.DateTimeConstants.NANOS_PER_MINUTE;
 import static javax.time.DateTimeConstants.NANOS_PER_SECOND;
-import static javax.time.calendrical.LocalDateTimeField.DAY_OF_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.EPOCH_MONTH;
-import static javax.time.calendrical.LocalDateTimeField.MONTH_OF_YEAR;
-import static javax.time.calendrical.LocalDateTimeField.NANO_OF_DAY;
-import static javax.time.calendrical.LocalDateTimeField.YEAR;
-import static javax.time.calendrical.LocalPeriodUnit.DAYS;
-import static javax.time.calendrical.LocalPeriodUnit.MONTHS;
-import static javax.time.calendrical.LocalPeriodUnit.NANOS;
-import static javax.time.calendrical.LocalPeriodUnit.YEARS;
+import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
+import static javax.time.calendrical.ChronoField.EPOCH_MONTH;
+import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
+import static javax.time.calendrical.ChronoField.NANO_OF_DAY;
+import static javax.time.calendrical.ChronoField.YEAR;
+import static javax.time.calendrical.ChronoUnit.DAYS;
+import static javax.time.calendrical.ChronoUnit.MONTHS;
+import static javax.time.calendrical.ChronoUnit.NANOS;
+import static javax.time.calendrical.ChronoUnit.YEARS;
 
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.time.calendrical.ChronoField;
+import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.MinusAdjuster;
 import javax.time.calendrical.DateTime.PlusAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.LocalDateTimeField;
-import javax.time.calendrical.LocalPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.Chrono;
 import javax.time.format.DateTimeParseException;
@@ -68,9 +68,9 @@ import javax.time.jdk8.Jdk8Methods;
  * <p>
  * This period supports the following units:
  * <ul>
- * <li>{@link LocalPeriodUnit#YEARS YEARS}</li>
- * <li>{@link LocalPeriodUnit#MONTHS MONTHS}</li>
- * <li>{@link LocalPeriodUnit#DAYS DAYS}</li>
+ * <li>{@link ChronoUnit#YEARS YEARS}</li>
+ * <li>{@link ChronoUnit#MONTHS MONTHS}</li>
+ * <li>{@link ChronoUnit#DAYS DAYS}</li>
  * <li>time units with an {@link PeriodUnit#isDurationEstimated() exact duration}</li>
  * </ul>
  * <p>
@@ -211,7 +211,7 @@ public final class Period
      *  Period.of(3, SECONDS);
      *  Period.of(5, YEARS);
      * </pre>
-     * The specified unit must be one of the supported units from {@link LocalPeriodUnit},
+     * The specified unit must be one of the supported units from {@link ChronoUnit},
      * {@code YEARS}, {@code MONTHS} or {@code DAYS} or be a time unit with an
      * {@link PeriodUnit#isDurationEstimated() exact duration}.
      * Other units throw an exception.
@@ -256,7 +256,7 @@ public final class Period
      * The start date is included, but the end date is not. Only whole years count.
      * For example, from {@code 2010-01-15} to {@code 2011-03-18} is one year, two months and three days.
      * <p>
-     * This method examines the {@link LocalDateTimeField fields} {@code YEAR}, {@code MONTH_OF_YEAR},
+     * This method examines the {@link ChronoField fields} {@code YEAR}, {@code MONTH_OF_YEAR},
      * {@code DAY_OF_MONTH} and {@code NANO_OF_DAY}
      * The difference between each of the fields is calculated independently from the others.
      * At least one of the four fields must be present.
@@ -646,7 +646,7 @@ public final class Period
     /**
      * Returns a copy of this period with the specified period added.
      * <p>
-     * The specified unit must be one of the supported units from {@link LocalPeriodUnit},
+     * The specified unit must be one of the supported units from {@link ChronoUnit},
      * {@code YEARS}, {@code MONTHS} or {@code DAYS} or be a time unit with an
      * {@link PeriodUnit#isDurationEstimated() exact duration}.
      * Other units throw an exception.
@@ -660,12 +660,12 @@ public final class Period
      */
     public Period plus(long amount, PeriodUnit unit) {
         Objects.requireNonNull(unit, "unit");
-        if (unit instanceof LocalPeriodUnit) {
+        if (unit instanceof ChronoUnit) {
             if (unit == YEARS || unit == MONTHS || unit == DAYS || unit.isDurationEstimated() == false) {
                 if (amount == 0) {
                     return this;
                 }
-                switch((LocalPeriodUnit) unit) {
+                switch((ChronoUnit) unit) {
                     case NANOS: return plusNanos(amount);
                     case MICROS: return plusNanos(Jdk8Methods.safeMultiply(amount, 1000L));
                     case MILLIS: return plusNanos(Jdk8Methods.safeMultiply(amount, 1000_000L));
@@ -738,7 +738,7 @@ public final class Period
     /**
      * Returns a copy of this period with the specified period subtracted.
      * <p>
-     * The specified unit must be one of the supported units from {@link LocalPeriodUnit},
+     * The specified unit must be one of the supported units from {@link ChronoUnit},
      * {@code YEARS}, {@code MONTHS} or {@code DAYS} or be a time unit with an
      * {@link PeriodUnit#isDurationEstimated() exact duration}.
      * Other units throw an exception.
