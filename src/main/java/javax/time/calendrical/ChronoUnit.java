@@ -39,9 +39,13 @@ import javax.time.ZonedDateTime;
 /**
  * A standard set of date periods units.
  * <p>
- * These are the basic set of units common across many calendar systems.
- * The calculation part of the units is specific to the ISO calendar system,
- * however the units as concepts may be used with other calendar systems.
+ * This set of units provide unit-based access to manipulate a date, time or date-time.
+ * The standard set of units can be extended by implementing {@link PeriodUnit}.
+ * <p>
+ * These units are intended to be applicable in multiple calendar systems.
+ * For example, most non-ISO calendar systems define units of years, months and days,
+ * just with slightly different rules.
+ * The documentation of each unit explains how it operates.
  *
  * <h4>Implementation notes</h4>
  * This is a final, immutable and thread-safe enum.

@@ -36,12 +36,18 @@ import java.util.Comparator;
 import javax.time.DateTimeException;
 
 /**
- * A field of date/time.
+ * A field of date-time, such as month-of-year or hour-of-minute.
  * <p>
- * A date, as expressed by {@link javax.time.LocalDateTime}, is broken down into a number of fields,
- * such as year, month, day-of-month, hour, minute and second.
- * Implementations of this interface represent those fields.
- * The fields include their own calculations which are specific to one calendar system.
+ * Date and time is expressed using fields which partition the time-line into something
+ * meaningful for humans. Implementations of this interface represent those fields.
+ * <p>
+ * The most commonly used units are defined in {@link ChronoField}.
+ * Additional fields can be written by application code by implementing this interface.
+ * <p>
+ * The field works using double dispatch. Client code calls methods on a date-time like
+ * {@code LocalDateTime} which check if the field is a {@code ChronoField}.
+ * If it is, then the date-time must handle it.
+ * Otherwise, the method call is re-dispatched to the matching method in this interface.
  *
  * <h4>Implementation notes</h4>
  * This interface must be implemented with care to ensure other classes operate correctly.

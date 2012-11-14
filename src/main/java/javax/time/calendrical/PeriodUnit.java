@@ -38,14 +38,21 @@ import javax.time.calendrical.DateTime.MinusAdjuster;
 import javax.time.calendrical.DateTime.PlusAdjuster;
 
 /**
- * A unit of time, such as Days or Hours.
+ * A unit of date-time, such as Days or Hours.
  * <p>
  * Measurement of time is built on units, such as years, months, days, hours, minutes and seconds.
+ * Implementations of this interface represent those units.
+ * <p>
  * An instance of this interface represents the unit itself, rather than an amount of the unit.
  * See {@link Period} for a class that represents an amount in terms of the common units.
  * <p>
- * Implementations of this interface define one or more units.
- * The units include their own calculations which are specific to one calendar system.
+ * The most commonly used units are defined in {@link ChronoUnit}.
+ * Additional units can be written by application code by implementing this interface.
+ * <p>
+ * The unit works using double dispatch. Client code calls methods on a date-time like
+ * {@code LocalDateTime} which check if the unit is a {@code ChronoUnit}.
+ * If it is, then the date-time must handle it.
+ * Otherwise, the method call is re-dispatched to the matching method in this interface.
  *
  * <h4>Implementation notes</h4>
  * This interface must be implemented with care to ensure other classes operate correctly.

@@ -57,6 +57,11 @@ import javax.time.chrono.ChronoLocalDate;
  * <p>
  * This set of fields provide field-based access to manipulate a date, time or date-time.
  * The standard set of fields can be extended by implementing {@link DateTimeField}.
+ * <p>
+ * These fields are intended to be applicable in multiple calendar systems.
+ * For example, most non-ISO calendar systems define dates as a year, month and day,
+ * just with slightly different rules.
+ * The documentation of each field explains how it operates.
  *
  * <h4>Implementation notes</h4>
  * This is a final, immutable and thread-safe enum.
