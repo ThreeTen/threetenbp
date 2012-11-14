@@ -31,13 +31,22 @@
  */
 package javax.time.chrono;
 
+import static javax.time.calendrical.LocalDateTimeField.ERA;
+
+import java.util.Locale;
+
 import javax.time.DateTimeException;
-import javax.time.LocalDate;
+import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeValueRange;
+import javax.time.calendrical.LocalDateTimeField;
+import javax.time.format.DateTimeFormatterBuilder;
+import javax.time.format.TextStyle;
 
 /**
  * An era in the ISO calendar system.
  * <p>
- * The ISO calendar system does not define eras.
+ * The ISO-8601 standard does not define eras.
  * A definition has therefore been created with two eras - 'Current era' (CE) for
  * years from 0001-01-01 (ISO) and 'Before current era' (BCE) for years before that.
  * <p>
@@ -100,13 +109,91 @@ enum ISOEra implements Era<ISOChrono> {
     }
 
     @Override
-    public LocalDate date(int year, int month, int day) {
-        return LocalDate.of(year, month, day);
+    public ISOChrono getChrono() {
+        return ISOChrono.INSTANCE;
+    }
+
+    // JDK8 default methods:
+    //-----------------------------------------------------------------------
+    @Override
+    public ChronoLocalDate<ISOChrono> date(int year, int month, int day) {
+        return getChrono().date(this, year, month, day);
     }
 
     @Override
     public ChronoLocalDate<ISOChrono> dateFromYearDay(int year, int dayOfYear) {
-        return ISOChrono.INSTANCE.dateFromYearDay(this, year, dayOfYear);
+        return getChrono().dateFromYearDay(this, year, dayOfYear);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public boolean isSupported(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            return field == ERA;
+        }
+        return field != null && field.doIsSupported(this);
+    }
+
+    @Override
+    public DateTimeValueRange range(DateTimeField field) {
+        if (field == ERA) {
+            return field.range();
+        } else if (field instanceof LocalDateTimeField) {
+            throw new DateTimeException("Unsupported field: " + field.getName());
+        }
+        return field.doRange(this);
+    }
+
+    @Override
+    public int get(DateTimeField field) {
+        if (field == ERA) {
+            return getValue();
+        }
+        return range(field).checkValidIntValue(getLong(field), field);
+    }
+
+    @Override
+    public long getLong(DateTimeField field) {
+        if (field == ERA) {
+            return getValue();
+        } else if (field instanceof LocalDateTimeField) {
+            throw new DateTimeException("Unsupported field: " + field.getName());
+        }
+        return field.doGet(this);
+    }
+
+    @Override
+    public Era<ISOChrono> with(DateTimeField field, long newValue) {
+        if (field == ERA) {
+            int eravalue = ((LocalDateTimeField) field).checkValidIntValue(newValue);
+            return getChrono().eraOf(eravalue);
+        } else if (field instanceof LocalDateTimeField) {
+            throw new DateTimeException("Unsupported field: " + field.getName());
+        }
+        return field.doSet(this, newValue);
+    }
+
+    //-------------------------------------------------------------------------
+    @Override
+    public DateTime doWithAdjustment(DateTime dateTime) {
+        return dateTime.with(ERA, getValue());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R query(Query<R> query) {
+        if (query == Query.ZONE_ID) {
+            return null;
+        } else if (query == Query.CHRONO) {
+            return (R) getChrono();
+        }
+        return query.doQuery(this);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public String getText(TextStyle style, Locale locale) {
+        return new DateTimeFormatterBuilder().appendText(ERA, style).toFormatter(locale).print(this);
     }
 
 }

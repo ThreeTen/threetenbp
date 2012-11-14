@@ -38,11 +38,14 @@ import java.util.Arrays;
 
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
+import javax.time.jdk8.DefaultInterfaceEra;
 
 import sun.util.calendar.CalendarDate;
 
 /**
- * Defines the valid eras for the Japanese Imperial calendar system.
+ * An era in the Japanese Imperial calendar system.
+ * <p>
+ * This class defines the valid eras for the Japanese chronology.
  * Only Meiji (1868-09-08 - 1912-07-29) and later eras are supported.
  * Japan introduced the Gregorian calendar since Meiji 6. The dates
  * between Meiji 1 - 5 are not historically correct.
@@ -53,7 +56,10 @@ import sun.util.calendar.CalendarDate;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class JapaneseEra implements Era<JapaneseChrono>, Serializable {
+final class JapaneseEra
+        extends DefaultInterfaceEra<JapaneseChrono>
+        implements Serializable {
+
     // The offset value to 0-based index from the era value.
     // i.e., getValue() + ERA_OFFSET == 0-based index
     static final int ERA_OFFSET = 2;
@@ -248,15 +254,11 @@ final class JapaneseEra implements Era<JapaneseChrono>, Serializable {
     }
 
     @Override
-    public JapaneseDate date(int year, int month, int day) {
-        return JapaneseDate.of(this, year, month, day);
+    public JapaneseChrono getChrono() {
+        return JapaneseChrono.INSTANCE;
     }
 
-    @Override
-    public ChronoLocalDate<JapaneseChrono> dateFromYearDay(int year, int dayOfYear) {
-        return JapaneseChrono.INSTANCE.dateFromYearDay(this, year, dayOfYear);
-    }
-
+    //-----------------------------------------------------------------------
     String getAbbreviation() {
         int index = getValue() + ERA_OFFSET;
         if (index == 0) {
@@ -269,4 +271,5 @@ final class JapaneseEra implements Era<JapaneseChrono>, Serializable {
     public String toString() {
         return getAbbreviation();
     }
+
 }

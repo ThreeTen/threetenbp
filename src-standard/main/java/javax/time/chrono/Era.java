@@ -31,6 +31,12 @@
  */
 package javax.time.chrono;
 
+import java.util.Locale;
+
+import javax.time.calendrical.DateTime.WithAdjuster;
+import javax.time.calendrical.DateTimeAccessor;
+import javax.time.format.TextStyle;
+
 /**
  * An era of the time-line.
  * <p>
@@ -54,7 +60,7 @@ package javax.time.chrono;
  *
  * @param <C> the chronology of the era
  */
-public interface Era<C extends Chrono<C>>  {
+public interface Era<C extends Chrono<C>> extends DateTimeAccessor, WithAdjuster  {
 
     /**
      * Gets the numeric value associated with the era as defined by the chronology.
@@ -75,11 +81,23 @@ public interface Era<C extends Chrono<C>>  {
     int getValue();
 
     /**
+     * Gets the chronology of this era.
+     * <p>
+     * The {@code Chrono} represents the calendar system in use.
+     * This always returns the standard form of the chronology.
+     *
+     * @return the chronology, not null
+     */
+    C getChrono();
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains a date in this era given the year-of-era, month, and day.
      * <p>
      * This era is combined with the given date fields to form a date.
      * The year specified must be the year-of-era.
      * Methods to create a date from the proleptic-year are on {@code Chrono}.
+     * This always uses the standard form of the chronology.
      *
      * @param yearOfEra  the calendar system year-of-era
      * @param month  the calendar system month-of-year
@@ -94,12 +112,28 @@ public interface Era<C extends Chrono<C>>  {
      * This era is combined with the given date fields to form a date.
      * The year specified must be the year-of-era.
      * Methods to create a date from the proleptic-year are on {@code Chrono}.
+     * This always uses the standard form of the chronology.
      *
      * @param yearOfEra  the calendar system year-of-era
      * @param dayOfYear  the calendar system day-of-year
      * @return a new date based on this era and the specified year-of-era and day-of-year
      */
     ChronoLocalDate<C> dateFromYearDay(int yearOfEra, int dayOfYear);
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the textual representation of this era.
+     * <p>
+     * This returns the textual name used to identify the era.
+     * The parameters control the length of the returned text and the locale.
+     * <p>
+     * If no textual mapping is found then the {@link #getValue() numeric value} is returned.
+     *
+     * @param style  the length of the text required, not null
+     * @param locale  the locale to use, not null
+     * @return the text value of the era, not null
+     */
+    String getText(TextStyle style, Locale locale);
 
     // NOTE: methods to convert year-of-era/proleptic-year cannot be here as they may depend on month/day (Japanese)
 }

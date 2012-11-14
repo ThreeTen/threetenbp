@@ -31,10 +31,22 @@
  */
 package javax.time.chrono;
 
+import static javax.time.calendrical.LocalDateTimeField.ERA;
+
+import java.util.Locale;
+
 import javax.time.DateTimeException;
+import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeValueRange;
+import javax.time.calendrical.LocalDateTimeField;
+import javax.time.format.DateTimeFormatterBuilder;
+import javax.time.format.TextStyle;
 
 /**
- * Defines the valid eras for the Thai Buddhist calendar system.
+ * An era in the Thai Buddhist calendar system.
+ * <p>
+ * The Thai Buddhist calendar system has two eras.
  * <p>
  * <b>Do not use ordinal() to obtain the numeric representation of a ThaiBuddhistEra
  * instance. Use getValue() instead.</b>
@@ -91,14 +103,91 @@ enum ThaiBuddhistEra implements Era<ThaiBuddhistChrono> {
     }
 
     @Override
-    public ThaiBuddhistDate date(int yearOfEra, int month, int day) {
-        return ThaiBuddhistDate.of(((this == BE ? yearOfEra : 1 - yearOfEra) -
-                ThaiBuddhistChrono.YEARS_DIFFERENCE), month, day);
+    public ThaiBuddhistChrono getChrono() {
+        return ThaiBuddhistChrono.INSTANCE;
+    }
+
+    // JDK8 default methods:
+    //-----------------------------------------------------------------------
+    @Override
+    public ChronoLocalDate<ThaiBuddhistChrono> date(int year, int month, int day) {
+        return getChrono().date(this, year, month, day);
     }
 
     @Override
     public ChronoLocalDate<ThaiBuddhistChrono> dateFromYearDay(int year, int dayOfYear) {
-        return ThaiBuddhistChrono.INSTANCE.dateFromYearDay(this, year, dayOfYear);
+        return getChrono().dateFromYearDay(this, year, dayOfYear);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public boolean isSupported(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            return field == ERA;
+        }
+        return field != null && field.doIsSupported(this);
+    }
+
+    @Override
+    public DateTimeValueRange range(DateTimeField field) {
+        if (field == ERA) {
+            return field.range();
+        } else if (field instanceof LocalDateTimeField) {
+            throw new DateTimeException("Unsupported field: " + field.getName());
+        }
+        return field.doRange(this);
+    }
+
+    @Override
+    public int get(DateTimeField field) {
+        if (field == ERA) {
+            return getValue();
+        }
+        return range(field).checkValidIntValue(getLong(field), field);
+    }
+
+    @Override
+    public long getLong(DateTimeField field) {
+        if (field == ERA) {
+            return getValue();
+        } else if (field instanceof LocalDateTimeField) {
+            throw new DateTimeException("Unsupported field: " + field.getName());
+        }
+        return field.doGet(this);
+    }
+
+    @Override
+    public Era<ThaiBuddhistChrono> with(DateTimeField field, long newValue) {
+        if (field == ERA) {
+            int eravalue = ((LocalDateTimeField) field).checkValidIntValue(newValue);
+            return getChrono().eraOf(eravalue);
+        } else if (field instanceof LocalDateTimeField) {
+            throw new DateTimeException("Unsupported field: " + field.getName());
+        }
+        return field.doSet(this, newValue);
+    }
+
+    //-------------------------------------------------------------------------
+    @Override
+    public DateTime doWithAdjustment(DateTime dateTime) {
+        return dateTime.with(ERA, getValue());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R query(Query<R> query) {
+        if (query == Query.ZONE_ID) {
+            return null;
+        } else if (query == Query.CHRONO) {
+            return (R) getChrono();
+        }
+        return query.doQuery(this);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public String getText(TextStyle style, Locale locale) {
+        return new DateTimeFormatterBuilder().appendText(ERA, style).toFormatter(locale).print(this);
     }
 
 }

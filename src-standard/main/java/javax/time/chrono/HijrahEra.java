@@ -31,13 +31,26 @@
  */
 package javax.time.chrono;
 
+import static javax.time.calendrical.LocalDateTimeField.ERA;
+
+import java.util.Locale;
+
 import javax.time.DateTimeException;
+import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeValueRange;
+import javax.time.calendrical.LocalDateTimeField;
+import javax.time.format.DateTimeFormatterBuilder;
+import javax.time.format.TextStyle;
 
 /**
- * Defines the valid eras for the Hijrah calendar system.
+ * An era in the Hijrah calendar system.
  * <p>
- * <b>Do not use ordinal() to obtain the numeric representation of a HijrahEra
- * instance. Use getValue() instead.</b>
+ * The Hijrah calendar system has two eras.
+ * The date {@code 0001-01-01 (Hijrah)} is {@code 622-06-19 (ISO)}.
+ * <p>
+ * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code MinguoEra}.
+ * Use {@code getValue()} instead.</b>
  *
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
@@ -91,13 +104,91 @@ enum HijrahEra implements Era<HijrahChrono> {
     }
 
     @Override
-    public HijrahDate date(int year, int month, int day) {
-        return HijrahDate.of(this, year, month, day);
+    public HijrahChrono getChrono() {
+        return HijrahChrono.INSTANCE;
+    }
+
+    // JDK8 default methods:
+    //-----------------------------------------------------------------------
+    @Override
+    public ChronoLocalDate<HijrahChrono> date(int year, int month, int day) {
+        return getChrono().date(this, year, month, day);
     }
 
     @Override
     public ChronoLocalDate<HijrahChrono> dateFromYearDay(int year, int dayOfYear) {
-        return HijrahChrono.INSTANCE.dateFromYearDay(this, year, dayOfYear);
+        return getChrono().dateFromYearDay(this, year, dayOfYear);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public boolean isSupported(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            return field == ERA;
+        }
+        return field != null && field.doIsSupported(this);
+    }
+
+    @Override
+    public DateTimeValueRange range(DateTimeField field) {
+        if (field == ERA) {
+            return field.range();
+        } else if (field instanceof LocalDateTimeField) {
+            throw new DateTimeException("Unsupported field: " + field.getName());
+        }
+        return field.doRange(this);
+    }
+
+    @Override
+    public int get(DateTimeField field) {
+        if (field == ERA) {
+            return getValue();
+        }
+        return range(field).checkValidIntValue(getLong(field), field);
+    }
+
+    @Override
+    public long getLong(DateTimeField field) {
+        if (field == ERA) {
+            return getValue();
+        } else if (field instanceof LocalDateTimeField) {
+            throw new DateTimeException("Unsupported field: " + field.getName());
+        }
+        return field.doGet(this);
+    }
+
+    @Override
+    public Era<HijrahChrono> with(DateTimeField field, long newValue) {
+        if (field == ERA) {
+            int eravalue = ((LocalDateTimeField) field).checkValidIntValue(newValue);
+            return getChrono().eraOf(eravalue);
+        } else if (field instanceof LocalDateTimeField) {
+            throw new DateTimeException("Unsupported field: " + field.getName());
+        }
+        return field.doSet(this, newValue);
+    }
+
+    //-------------------------------------------------------------------------
+    @Override
+    public DateTime doWithAdjustment(DateTime dateTime) {
+        return dateTime.with(ERA, getValue());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R query(Query<R> query) {
+        if (query == Query.ZONE_ID) {
+            return null;
+        } else if (query == Query.CHRONO) {
+            return (R) getChrono();
+        }
+        return query.doQuery(this);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public String getText(TextStyle style, Locale locale) {
+        return new DateTimeFormatterBuilder().appendText(ERA, style).toFormatter(locale).print(this);
     }
 
     /**

@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.chrono;
+package javax.time.jdk8;
 
 import static javax.time.calendrical.LocalDateTimeField.ERA;
 
@@ -38,85 +38,30 @@ import java.util.Locale;
 import javax.time.DateTimeException;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.LocalDateTimeField;
+import javax.time.chrono.Chrono;
+import javax.time.chrono.ChronoLocalDate;
+import javax.time.chrono.Era;
 import javax.time.format.DateTimeFormatterBuilder;
 import javax.time.format.TextStyle;
 
 /**
- * An era in the Minguo calendar system.
- * <p>
- * The Minguo calendar system has two eras.
- * The date {@code 0001-01-01 (Minguo)} is equal to {@code 1912-01-01 (ISO)}.
- * <p>
- * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code MinguoEra}.
- * Use {@code getValue()} instead.</b>
+ * A temporary class providing implementations that will become default interface
+ * methods once integrated into JDK 8.
  *
- * <h4>Implementation notes</h4>
- * This is an immutable and thread-safe enum.
+ * @param <C> the chronology of this era
  */
-enum MinguoEra implements Era<MinguoChrono>  {
-
-    /**
-     * The singleton instance for the era BEFORE_ROC, 'Before Republic of China'.
-     * This has the numeric value of {@code 0}.
-     */
-    BEFORE_ROC,
-    /**
-     * The singleton instance for the era ROC, 'Republic of China'.
-     * This has the numeric value of {@code 1}.
-     */
-    ROC;
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of {@code MinguoEra} from an {@code int} value.
-     * <p>
-     * {@code MinguoEra} is an enum representing the Minguo eras of BEFORE_ROC/ROC.
-     * This factory allows the enum to be obtained from the {@code int} value.
-     *
-     * @param era  the BEFORE_ROC/ROC value to represent, from 0 (BEFORE_ROC) to 1 (ROC)
-     * @return the era singleton, not null
-     * @throws DateTimeException if the value is invalid
-     */
-    public static MinguoEra of(int era) {
-        switch (era) {
-            case 0:
-                return BEFORE_ROC;
-            case 1:
-                return ROC;
-            default:
-                throw new DateTimeException("Invalid era: " + era);
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the numeric era {@code int} value.
-     * <p>
-     * The era BEFORE_ROC has the value 0, while the era ROC has the value 1.
-     *
-     * @return the era value, from 0 (BEFORE_ROC) to 1 (ROC)
-     */
-    @Override
-    public int getValue() {
-        return ordinal();
-    }
+public abstract class DefaultInterfaceEra<C extends Chrono<C>>
+        extends DefaultInterfaceDateTimeAccessor
+        implements Era<C> {
 
     @Override
-    public MinguoChrono getChrono() {
-        return MinguoChrono.INSTANCE;
-    }
-
-    // JDK8 default methods:
-    //-----------------------------------------------------------------------
-    @Override
-    public ChronoLocalDate<MinguoChrono> date(int year, int month, int day) {
+    public ChronoLocalDate<C> date(int year, int month, int day) {
         return getChrono().date(this, year, month, day);
     }
 
     @Override
-    public ChronoLocalDate<MinguoChrono> dateFromYearDay(int year, int dayOfYear) {
+    public ChronoLocalDate<C> dateFromYearDay(int year, int dayOfYear) {
         return getChrono().dateFromYearDay(this, year, dayOfYear);
     }
 
@@ -127,16 +72,6 @@ enum MinguoEra implements Era<MinguoChrono>  {
             return field == ERA;
         }
         return field != null && field.doIsSupported(this);
-    }
-
-    @Override
-    public DateTimeValueRange range(DateTimeField field) {
-        if (field == ERA) {
-            return field.range();
-        } else if (field instanceof LocalDateTimeField) {
-            throw new DateTimeException("Unsupported field: " + field.getName());
-        }
-        return field.doRange(this);
     }
 
     @Override
@@ -158,7 +93,7 @@ enum MinguoEra implements Era<MinguoChrono>  {
     }
 
     @Override
-    public Era<MinguoChrono> with(DateTimeField field, long newValue) {
+    public Era<C> with(DateTimeField field, long newValue) {
         if (field == ERA) {
             int eravalue = ((LocalDateTimeField) field).checkValidIntValue(newValue);
             return getChrono().eraOf(eravalue);
@@ -174,7 +109,6 @@ enum MinguoEra implements Era<MinguoChrono>  {
         return dateTime.with(ERA, getValue());
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <R> R query(Query<R> query) {
         if (query == Query.ZONE_ID) {

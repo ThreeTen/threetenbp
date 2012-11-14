@@ -31,9 +31,19 @@
  */
 package javax.time.extra.chrono;
 
+import static javax.time.calendrical.LocalDateTimeField.ERA;
+
+import java.util.Locale;
+
 import javax.time.DateTimeException;
+import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeValueRange;
+import javax.time.calendrical.LocalDateTimeField;
 import javax.time.chrono.ChronoLocalDate;
 import javax.time.chrono.Era;
+import javax.time.format.DateTimeFormatterBuilder;
+import javax.time.format.TextStyle;
 
 /**
  * An era in the Coptic calendar system.
@@ -95,13 +105,91 @@ enum CopticEra implements Era<CopticChrono> {
     }
 
     @Override
+    public CopticChrono getChrono() {
+        return CopticChrono.INSTANCE;
+    }
+
+    // JDK8 default methods:
+    //-----------------------------------------------------------------------
+    @Override
     public ChronoLocalDate<CopticChrono> date(int year, int month, int day) {
-        return CopticDate.of(this, year, month, day);
+        return getChrono().date(this, year, month, day);
     }
 
     @Override
     public ChronoLocalDate<CopticChrono> dateFromYearDay(int year, int dayOfYear) {
-        return CopticChrono.INSTANCE.dateFromYearDay(this, year, dayOfYear);
+        return getChrono().dateFromYearDay(this, year, dayOfYear);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public boolean isSupported(DateTimeField field) {
+        if (field instanceof LocalDateTimeField) {
+            return field == ERA;
+        }
+        return field != null && field.doIsSupported(this);
+    }
+
+    @Override
+    public DateTimeValueRange range(DateTimeField field) {
+        if (field == ERA) {
+            return field.range();
+        } else if (field instanceof LocalDateTimeField) {
+            throw new DateTimeException("Unsupported field: " + field.getName());
+        }
+        return field.doRange(this);
+    }
+
+    @Override
+    public int get(DateTimeField field) {
+        if (field == ERA) {
+            return getValue();
+        }
+        return range(field).checkValidIntValue(getLong(field), field);
+    }
+
+    @Override
+    public long getLong(DateTimeField field) {
+        if (field == ERA) {
+            return getValue();
+        } else if (field instanceof LocalDateTimeField) {
+            throw new DateTimeException("Unsupported field: " + field.getName());
+        }
+        return field.doGet(this);
+    }
+
+    @Override
+    public Era<CopticChrono> with(DateTimeField field, long newValue) {
+        if (field == ERA) {
+            int eravalue = ((LocalDateTimeField) field).checkValidIntValue(newValue);
+            return getChrono().eraOf(eravalue);
+        } else if (field instanceof LocalDateTimeField) {
+            throw new DateTimeException("Unsupported field: " + field.getName());
+        }
+        return field.doSet(this, newValue);
+    }
+
+    //-------------------------------------------------------------------------
+    @Override
+    public DateTime doWithAdjustment(DateTime dateTime) {
+        return dateTime.with(ERA, getValue());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R query(Query<R> query) {
+        if (query == Query.ZONE_ID) {
+            return null;
+        } else if (query == Query.CHRONO) {
+            return (R) getChrono();
+        }
+        return query.doQuery(this);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public String getText(TextStyle style, Locale locale) {
+        return new DateTimeFormatterBuilder().appendText(ERA, style).toFormatter(locale).print(this);
     }
 
 }
