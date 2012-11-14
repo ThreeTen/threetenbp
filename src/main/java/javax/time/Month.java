@@ -193,8 +193,6 @@ public enum Month implements DateTimeAccessor, WithAdjuster {
      * The parameters control the length of the returned text and the locale.
      * <p>
      * If no textual mapping is found then the {@link #getValue() numeric value} is returned.
-     * <p>
-     * If no textual mapping is found then the {@link #getValue() numeric value} is returned.
      *
      * @param style  the length of the text required, not null
      * @param locale  the locale to use, not null
