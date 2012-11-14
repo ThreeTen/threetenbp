@@ -263,7 +263,7 @@ public final class Year
     /**
      * Gets the year value.
      * <p>
-     * This is a synonm for {@link #getYear()}.
+     * The year returned by this method is proleptic as per {@code get(YEAR)}.
      *
      * @return the year, from MIN_YEAR to MAX_YEAR
      */
@@ -283,7 +283,7 @@ public final class Year
     @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field == YEAR_OF_ERA) {
-            return (getYear() <= 0 ? DateTimeValueRange.of(1, MAX_YEAR + 1) : DateTimeValueRange.of(1, MAX_YEAR));
+            return (year <= 0 ? DateTimeValueRange.of(1, MAX_YEAR + 1) : DateTimeValueRange.of(1, MAX_YEAR));
         }
         return super.range(field);
     }
@@ -299,19 +299,6 @@ public final class Year
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doGet(this);
-    }
-
-    /**
-     * Gets the year value.
-     * <p>
-     * This is a synonm for {@link #getValue()}.
-     * <p>
-     * The year returned by this method is proleptic as per {@code get(YEAR)}.
-     *
-     * @return the year, from MIN_YEAR to MAX_YEAR
-     */
-    public int getYear() {
-        return year;
     }
 
     //-----------------------------------------------------------------------
@@ -605,7 +592,7 @@ public final class Year
         }
         Year end = (Year) endDateTime;
         if (unit instanceof LocalPeriodUnit) {
-            long yearsUntil = ((long) end.getYear()) - getYear();  // no overflow
+            long yearsUntil = ((long) end.year) - year;  // no overflow
             switch ((LocalPeriodUnit) unit) {
                 case YEARS: return yearsUntil;
                 case DECADES: return yearsUntil / 10;
