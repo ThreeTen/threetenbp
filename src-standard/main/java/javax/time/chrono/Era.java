@@ -41,8 +41,9 @@ package javax.time.chrono;
  * Each chronology defines the Era's that are known Eras and a
  * {@link Chrono#eras Chrono.eras} to get the valid eras.
  * <p>
- * For example, the Gregorian calendar system divides time into AD and BC.
- * By contrast, the Japanese imperial calendar system has one modern era per Emperor's reign.
+ * For example, the Thai Buddhist calendar system divides time into two eras,
+ * before and after a single date. By contrast, the Japanese calendar system
+ * has one era for the reign of each Emperor.
  * <p>
  * Instances of {@code Era} may be compared using the {@code ==} operator.
  *
@@ -50,8 +51,6 @@ package javax.time.chrono;
  * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations must be singletons - final, immutable and thread-safe.
  * It is recommended to use an enum whenever possible.
- * An implementation of {@code Era} may be shared between different calendar systems
- * if appropriate.
  *
  * @param <C> the chronology of the era
  */
@@ -62,38 +61,45 @@ public interface Era<C extends Chrono<C>>  {
      * Each chronology defines the predefined Eras and methods to list the Eras
      * of the chronology.
      * <p>
-     * All fields, including eras, must have an associated numeric value.
+     * All fields, including eras, have an associated numeric value.
      * The meaning of the numeric value for era is determined by the chronology
      * according to these principles:
-     * <p>
-     * The era in use at the epoch 1970-01-01 (ISO) has the value 1.
-     * Later eras have sequentially higher values.
-     * Earlier eras have sequentially lower values, which may be negative.
-     * <p>
-     * For example, the Gregorian chronology uses AD/BC, with AD being 1 and BC being 0.
+     * <ul>
+     * <li>The era in use at the epoch 1970-01-01 (ISO) has the value 1.
+     * <li>Later eras have sequentially higher values.
+     * <li>Earlier eras have sequentially lower values, which may be negative.
+     * </ul>
      *
      * @return the numeric era value
      */
     int getValue();
 
     /**
-     * Returns a new ChronoLocalDate in this Era from the year, month, and day.
+     * Obtains a date in this era given the year-of-era, month, and day.
+     * <p>
+     * This era is combined with the given date fields to form a date.
+     * The year specified must be the year-of-era.
+     * Methods to create a date from the proleptic-year are on {@code Chrono}.
      *
-     * @param year the year of eara
-     * @param month the month of year
-     * @param day the day of month
-     * @return a new ChronoLocalDate of the Era, year, month, day using the chronology of the era.
+     * @param yearOfEra  the calendar system year-of-era
+     * @param month  the calendar system month-of-year
+     * @param day  the calendar system day-of-month
+     * @return a new date based on this era and the specified year-of-era, month and day
      */
-    ChronoLocalDate<C> date(int year, int month, int day);
+    ChronoLocalDate<C> date(int yearOfEra, int month, int day);
 
     /**
-     * Creates a new ChronoLocalDate in this Era from year and day-of-year fields.
+     * Obtains a date in this era given year-of-era and day-of-year fields.
+     * <p>
+     * This era is combined with the given date fields to form a date.
+     * The year specified must be the year-of-era.
+     * Methods to create a date from the proleptic-year are on {@code Chrono}.
      *
      * @param yearOfEra  the calendar system year-of-era
      * @param dayOfYear  the calendar system day-of-year
-     * @return the date in this calendar system, not null
+     * @return a new date based on this era and the specified year-of-era and day-of-year
      */
     ChronoLocalDate<C> dateFromYearDay(int yearOfEra, int dayOfYear);
 
-    // NOTE: methods to convert year/proleptic-year cannot be here as they may depend on month/day
+    // NOTE: methods to convert year-of-era/proleptic-year cannot be here as they may depend on month/day (Japanese)
 }
