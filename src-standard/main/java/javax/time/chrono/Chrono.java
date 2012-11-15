@@ -45,6 +45,7 @@ import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.ZoneId;
 import javax.time.calendrical.ChronoField;
+import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAccessor.Query;
 import javax.time.calendrical.DateTimeField;
@@ -262,6 +263,69 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
         if (type != null) {
             CHRONOS_BY_TYPE.putIfAbsent(type, this);
         }
+    }
+
+    /**
+     * Casts the {@code DateTime} to the same chronology as this ChronoLocalDate.
+     * @param datetime a datetime to cast
+     * @return the datetime checked and cast to {@code ChronoLocalDate}
+     * @throws ClassCastException if the type or chronology are different than
+     *     this datetime.
+     */
+    public /* protected */ ChronoLocalDate<C> ensureChronoLocalDate(DateTime obj) {
+        ChronoLocalDate<C> other = (ChronoLocalDate<C>) obj;
+        if (this != other.getChrono()) {
+            throw new ClassCastException("Chrono mismatch, expected: " + getId() + ", actual: " + other.getChrono().getId());
+        }
+        return other;
+    }
+
+    /**
+     * Casts the {@code DateTime} to the same chronology as this ChronoLocalDate.
+     * @param datetime a datetime to cast
+     * @return the datetime checked and cast to {@code ChronoLocalDate}
+     * @throws ClassCastException if the type or chronology are different than
+     *     this datetime.
+     */
+    public /* protected */ ChronoDateTimeImpl<C> ensureChronoLocalDateTime(DateTime obj) {
+        ChronoDateTimeImpl<C> other = (ChronoDateTimeImpl<C>) obj;
+        if (this != other.getDate().getChrono()) {
+            throw new ClassCastException("Chrono mismatch, required: " + getId()
+                    + ", supplied: " + other.getDate().getChrono().getId());
+        }
+        return other;
+    }
+
+    /**
+     * Casts the {@code DateTime} to the same chronology as this ChronoLocalDate.
+     * @param datetime a datetime to cast
+     * @return the datetime checked and cast to {@code ChronoLocalDate}
+     * @throws ClassCastException if the type or chronology are different than
+     *     this datetime.
+     */
+    public /* protected */ ChronoOffsetDateTimeImpl<C> ensureChronoOffsetDateTime(DateTime obj) {
+        ChronoOffsetDateTimeImpl<C> other = (ChronoOffsetDateTimeImpl<C>) obj;
+        if (this != other.getDate().getChrono()) {
+            throw new ClassCastException("Chrono mismatch, required: " + getId()
+                    + ", supplied: " + other.getDate().getChrono().getId());
+        }
+        return other;
+    }
+
+    /**
+     * Casts the {@code DateTime} to the same chronology as this ChronoLocalDate.
+     * @param datetime a datetime to cast
+     * @return the datetime checked and cast to {@code ChronoLocalDate}
+     * @throws ClassCastException if the type or chronology are different than
+     *     this datetime.
+     */
+    public /* protected */ ChronoZonedDateTimeImpl<C> ensureChronoZonedDateTime(DateTime obj) {
+        ChronoZonedDateTimeImpl<C> other = (ChronoZonedDateTimeImpl<C>) obj;
+        if (this != other.getDate().getChrono()) {
+            throw new ClassCastException("Chrono mismatch, required: " + getId()
+                    + ", supplied: " + other.getDate().getChrono().getId());
+        }
+        return other;
     }
 
     //-----------------------------------------------------------------------

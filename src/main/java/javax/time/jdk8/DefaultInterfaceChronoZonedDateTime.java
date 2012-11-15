@@ -112,22 +112,22 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chrono<C>>
     //-----------------------------------------------------------------------
     @Override
     public ChronoZonedDateTime<C> with(WithAdjuster adjuster) {
-        return (ChronoZonedDateTime<C>) super.with(adjuster);
+        return getDate().getChrono().ensureChronoZonedDateTime(super.with(adjuster));
     }
 
     @Override
     public ChronoZonedDateTime<C> plus(PlusAdjuster adjuster) {
-        return (ChronoZonedDateTime<C>) super.plus(adjuster);
+        return getDate().getChrono().ensureChronoZonedDateTime(super.plus(adjuster));
     }
 
     @Override
     public ChronoZonedDateTime<C> minus(MinusAdjuster adjuster) {
-        return (ChronoZonedDateTime<C>) super.minus(adjuster);
+        return getDate().getChrono().ensureChronoZonedDateTime(super.minus(adjuster));
     }
 
     @Override
     public ChronoZonedDateTime<C> minus(long amountToSubtract, PeriodUnit unit) {
-        return (ChronoZonedDateTime<C>) super.minus(amountToSubtract, unit);
+        return getDate().getChrono().ensureChronoZonedDateTime(super.minus(amountToSubtract, unit));
     }
 
     //-------------------------------------------------------------------------

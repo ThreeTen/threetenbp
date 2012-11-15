@@ -77,22 +77,22 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
     //-------------------------------------------------------------------------
     @Override
     public ChronoLocalDate<C> with(WithAdjuster adjuster) {
-        return (ChronoLocalDate<C>) super.with(adjuster);
+        return getChrono().ensureChronoLocalDate(super.with(adjuster));
     }
 
     @Override
     public ChronoLocalDate<C> plus(PlusAdjuster adjuster) {
-        return (ChronoLocalDate<C>) super.plus(adjuster);
+        return getChrono().ensureChronoLocalDate(super.plus(adjuster));
     }
 
     @Override
     public ChronoLocalDate<C> minus(MinusAdjuster adjuster) {
-        return (ChronoLocalDate<C>) super.minus(adjuster);
+        return getChrono().ensureChronoLocalDate(super.minus(adjuster));
     }
 
     @Override
     public ChronoLocalDate<C> minus(long amountToSubtract, PeriodUnit unit) {
-        return (ChronoLocalDate<C>) super.minus(amountToSubtract, unit);
+        return getChrono().ensureChronoLocalDate(super.minus(amountToSubtract, unit));
     }
 
     //-------------------------------------------------------------------------
