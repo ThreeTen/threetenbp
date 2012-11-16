@@ -22,9 +22,9 @@
                     <encoding>UTF-8</encoding>
                 </source-folder>
                 <source-folder>
-                    <label>src-extra\main\java</label>
+                    <label>src-standard\main\java</label>
                     <type>java</type>
-                    <location>src-extra/main/java</location>
+                    <location>src-standard/main/java</location>
                     <encoding>UTF-8</encoding>
                 </source-folder>
                 <source-folder>
@@ -34,33 +34,9 @@
                     <encoding>UTF-8</encoding>
                 </source-folder>
                 <source-folder>
-                    <label>src-standard\main\java</label>
+                    <label>src-extra\main\java</label>
                     <type>java</type>
-                    <location>src-standard/main/java</location>
-                    <encoding>UTF-8</encoding>
-                </source-folder>
-                <source-folder>
-                    <label>src\test\java</label>
-                    <type>java</type>
-                    <location>src/test/java</location>
-                    <encoding>UTF-8</encoding>
-                </source-folder>
-                <source-folder>
-                    <label>src-extra\test\java</label>
-                    <type>java</type>
-                    <location>src-extra/test/java</location>
-                    <encoding>UTF-8</encoding>
-                </source-folder>
-                <source-folder>
-                    <label>src-openjdk\test\java</label>
-                    <type>java</type>
-                    <location>src-openjdk/test/java</location>
-                    <encoding>UTF-8</encoding>
-                </source-folder>
-                <source-folder>
-                    <label>src-standard\test\java</label>
-                    <type>java</type>
-                    <location>src-standard/test/java</location>
+                    <location>src-extra/main/java</location>
                     <encoding>UTF-8</encoding>
                 </source-folder>
                 <source-folder>
@@ -73,6 +49,30 @@
                     <label>src-standard/tck/java</label>
                     <type>java</type>
                     <location>src-standard/tck/java</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>src\test\java</label>
+                    <type>java</type>
+                    <location>src/test/java</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>src-standard\test\java</label>
+                    <type>java</type>
+                    <location>src-standard/test/java</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>src-extra\test\java</label>
+                    <type>java</type>
+                    <location>src-extra/test/java</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>src-openjdk\test\java</label>
+                    <type>java</type>
+                    <location>src-openjdk/test/java</location>
                     <encoding>UTF-8</encoding>
                 </source-folder>
             </folders>
@@ -124,32 +124,16 @@
                         <location>src/main/java</location>
                     </source-folder>
                     <source-folder style="packages">
-                        <label>src-extra\main\java</label>
-                        <location>src-extra/main/java</location>
+                        <label>src-standard\main\java</label>
+                        <location>src-standard/main/java</location>
                     </source-folder>
                     <source-folder style="packages">
                         <label>src-openjdk\main\java</label>
                         <location>src-openjdk/main/java</location>
                     </source-folder>
                     <source-folder style="packages">
-                        <label>src-standard\main\java</label>
-                        <location>src-standard/main/java</location>
-                    </source-folder>
-                    <source-folder style="packages">
-                        <label>src\test\java</label>
-                        <location>src/test/java</location>
-                    </source-folder>
-                    <source-folder style="packages">
-                        <label>src-extra\test\java</label>
-                        <location>src-extra/test/java</location>
-                    </source-folder>
-                    <source-folder style="packages">
-                        <label>src-openjdk\test\java</label>
-                        <location>src-openjdk/test/java</location>
-                    </source-folder>
-                    <source-folder style="packages">
-                        <label>src-standard\test\java</label>
-                        <location>src-standard/test/java</location>
+                        <label>src-extra\main\java</label>
+                        <location>src-extra/main/java</location>
                     </source-folder>
                     <source-folder style="packages">
                         <label>src/tck/java</label>
@@ -158,6 +142,22 @@
                     <source-folder style="packages">
                         <label>src-standard/tck/java</label>
                         <location>src-standard/tck/java</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>src\test\java</label>
+                        <location>src/test/java</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>src-standard\test\java</label>
+                        <location>src-standard/test/java</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>src-extra\test\java</label>
+                        <location>src-extra/test/java</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>src-openjdk\test\java</label>
+                        <location>src-openjdk/test/java</location>
                     </source-folder>
                     <source-file>
                         <location>build.xml</location>
