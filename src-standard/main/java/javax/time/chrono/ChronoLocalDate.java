@@ -373,10 +373,10 @@ public interface ChronoLocalDate<C extends Chrono<C>>
      * on the time-line position.
      * This is equivalent to using {@code date1.toEpochDay() == date2.toEpochDay()}.
      *
-     * @param other  the other date to compare to, not null
+     * @param  other  the other date to compare to, not null
      * @return true if the underlying date is equal to the specified date
      */
-    boolean equalDate(ChronoLocalDate<?> other);
+    boolean isEqual(ChronoLocalDate<?> other);
 
     //-----------------------------------------------------------------------
     /**

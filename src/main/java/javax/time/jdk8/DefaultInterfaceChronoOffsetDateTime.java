@@ -198,7 +198,7 @@ public abstract class DefaultInterfaceChronoOffsetDateTime<C extends Chrono<C>>
     }
 
     @Override
-    public boolean equalInstant(ChronoOffsetDateTime<?> other) {
+    public boolean isEqual(ChronoOffsetDateTime<?> other) {
         return toEpochSecond() == other.toEpochSecond() &&
                 getTime().getNano() == other.getTime().getNano();
     }

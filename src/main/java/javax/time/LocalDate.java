@@ -1376,11 +1376,11 @@ public final class LocalDate
      * @return true if the underlying date is equal to the specified date
      */
     @Override  // override for Javadoc and performance
-    public boolean equalDate(ChronoLocalDate<?> other) {
+    public boolean isEqual(ChronoLocalDate<?> other) {
         if (other instanceof LocalDate) {
             return compareTo0((LocalDate) other) == 0;
         }
-        return super.equalDate(other);
+        return super.isEqual(other);
     }
 
     //-----------------------------------------------------------------------

@@ -142,7 +142,7 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
     }
 
     @Override
-    public boolean equalDate(ChronoLocalDate<?> other) {
+    public boolean isEqual(ChronoLocalDate<?> other) {
         return this.toEpochDay() == other.toEpochDay();
     }
 

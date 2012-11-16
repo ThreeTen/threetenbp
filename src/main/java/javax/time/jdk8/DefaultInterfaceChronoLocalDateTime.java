@@ -119,6 +119,13 @@ public abstract class DefaultInterfaceChronoLocalDateTime<C extends Chrono<C>>
             (thisEpDay == otherEpDay && this.getTime().toNanoOfDay() < other.getTime().toNanoOfDay());
     }
 
+    @Override
+    public boolean isEqual(ChronoLocalDateTime<?> other) {
+        // Do the time check first, it is cheaper than computing EPOCH day.
+        return this.getTime().toNanoOfDay() == other.getTime().toNanoOfDay() &&
+               this.getDate().toEpochDay() == other.getDate().toEpochDay();
+    }
+
     //-------------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {

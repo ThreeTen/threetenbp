@@ -343,6 +343,18 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
      */
     boolean isAfter(ChronoZonedDateTime<?> other);
 
+    /**
+     * Checks if the instant of this date-time is equal to that of the specified date-time.
+     * <p>
+     * This method differs from the comparison in {@link #compareTo} and {@link #equals}
+     * in that it only compares the instant of the date-time. This is equivalent to using
+     * {@code dateTime1.toInstant().equals(dateTime2.toInstant());}.
+     *
+     * @param  other  the other date-time to compare to, not null
+     * @return true if the instant equals the instant of the specified date-time
+     */
+    boolean isEqual(ChronoZonedDateTime<?> other);
+
     //-----------------------------------------------------------------------
     /**
      * Checks if this date-time is equal to another date-time.

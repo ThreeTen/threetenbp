@@ -31,13 +31,16 @@
  */
 package javax.time.chrono;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.time.Duration;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 import javax.time.LocalDate;
-import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.ZoneOffset;
+import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeBuilder;
@@ -210,6 +213,79 @@ public class TestChronoOffsetDateTime {
             }
         }
     }
+
+    //-----------------------------------------------------------------------
+    // isBefore, isAfter, isEqual  test a Chrono against the other Chronos
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"}, dataProvider="calendars")
+    public void test_isBefore_isAfter_isEqual(Chrono chrono) {
+        List<ChronoOffsetDateTime<?>> dates = new ArrayList<>();
+
+        ChronoOffsetDateTime<?> date = chrono.date(LocalDate.of(1900, 1, 1))
+                .atTime(LocalTime.MIN_TIME)
+                .atOffset(ZoneOffset.UTC);
+
+        // Insert dates in order, no duplicates
+        dates.add(date.minus(100, ChronoUnit.YEARS));
+        dates.add(date.minus(1, ChronoUnit.YEARS));
+        dates.add(date.minus(1, ChronoUnit.MONTHS));
+        dates.add(date.minus(1, ChronoUnit.WEEKS));
+        dates.add(date.minus(1, ChronoUnit.DAYS));
+        dates.add(date.withOffsetSameLocal(ZoneOffset.ofHours(18)));
+        dates.add(date.withOffsetSameLocal(ZoneOffset.ofHours(4)));
+        dates.add(date.withOffsetSameLocal(ZoneOffset.ofHours(2)));
+        dates.add(date.minus(1, ChronoUnit.HOURS));
+        dates.add(date.minus(1, ChronoUnit.MINUTES));
+        dates.add(date.minus(1, ChronoUnit.SECONDS));
+        dates.add(date.minus(1, ChronoUnit.NANOS));
+        dates.add(date);
+        dates.add(date.plus(1, ChronoUnit.NANOS));
+        dates.add(date.plus(1, ChronoUnit.SECONDS));
+        dates.add(date.plus(1, ChronoUnit.MINUTES));
+        dates.add(date.plus(1, ChronoUnit.HOURS));
+        dates.add(date.withOffsetSameLocal(ZoneOffset.ofHours(-2)));
+        dates.add(date.withOffsetSameLocal(ZoneOffset.ofHours(-4)));
+        dates.add(date.withOffsetSameLocal(ZoneOffset.ofHours(-18)));
+        dates.add(date.plus(1, ChronoUnit.DAYS));
+        dates.add(date.plus(1, ChronoUnit.WEEKS));
+        dates.add(date.plus(1, ChronoUnit.MONTHS));
+        dates.add(date.plus(1, ChronoUnit.YEARS));
+        dates.add(date.plus(100, ChronoUnit.YEARS));
+
+        // Check these dates against the corresponding dates for every calendar
+        for (Chrono[] clist : data_of_calendars()) {
+            List<ChronoOffsetDateTime<?>> otherDates = new ArrayList<>();
+            Chrono chrono2 = ISOChrono.INSTANCE; //clist[0];
+            for (ChronoOffsetDateTime<?> d : dates) {
+                otherDates.add(chrono2.date(d).atTime(d.getTime()).atOffset(d.getOffset()));
+            }
+
+            // Now compare  the sequence of original dates with the sequence of converted dates
+            for (int i = 0; i < dates.size(); i++) {
+                ChronoOffsetDateTime<?> a = dates.get(i);
+                for (int j = 0; j < otherDates.size(); j++) {
+                    ChronoOffsetDateTime<?> b = otherDates.get(j);
+                    if (i < j) {
+                        //assertTrue(a.compareTo(b) < 0, a + " compareTo " + b);
+                        assertEquals(a.isBefore(b), true, a + " isBefore " + b);
+                        assertEquals(a.isAfter(b), false, a + " ifAfter " + b);
+                        assertEquals(a.isEqual(b), false, a + " isEqual " + b);
+                    } else if (i > j) {
+                        //assertTrue(a.compareTo(b) > 0, a + " <=> " + b);
+                        assertEquals(a.isBefore(b), false, a + " isBefore " + b);
+                        assertEquals(a.isAfter(b), true, a + " ifAfter " + b);
+                        assertEquals(a.isEqual(b), false, a + " isEqual " + b);
+                    } else {
+                        //assertEquals(a.compareTo(b), 0, a + " <=> " + b);
+                        assertEquals(a.isBefore(b), false, a + " isBefore " + b);
+                        assertEquals(a.isAfter(b), false, a + " ifAfter " + b);
+                        assertEquals(a.isEqual(b), true, a + " isEqual " + b);
+                    }
+                }
+            }
+        }
+    }
+
 
     /**
      * FixedAdjusted returns a fixed DateTime in all adjustments.

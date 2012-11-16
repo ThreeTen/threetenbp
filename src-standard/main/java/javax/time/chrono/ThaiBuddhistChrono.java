@@ -62,10 +62,10 @@ import javax.time.calendrical.DateTimeValueRange;
  * <li>proleptic-year - The proleptic year is the same as the year-of-era for the
  *  current era. For the previous era, years have zero, then negative values.
  *  The value is equal to the ISO proleptic-year plus 543.
- * <li>month-of-year - The Minguo month-of-year exactly matches ISO.
- * <li>day-of-month - The Minguo day-of-month exactly matches ISO.
- * <li>day-of-year - The Minguo day-of-year exactly matches ISO.
- * <li>leap-year - The Minguo leap-year pattern exactly matches ISO, such that the two calendars
+ * <li>month-of-year - The ThaiBuddhist month-of-year exactly matches ISO.
+ * <li>day-of-month - The ThaiBuddhist day-of-month exactly matches ISO.
+ * <li>day-of-year - The ThaiBuddhist day-of-year exactly matches ISO.
+ * <li>leap-year - The ThaiBuddhist leap-year pattern exactly matches ISO, such that the two calendars
  *  are never out of step.
  * </ul>
  *
@@ -192,7 +192,7 @@ public final class ThaiBuddhistChrono extends Chrono<ThaiBuddhistChrono> impleme
 
     @Override
     public ChronoLocalDate<ThaiBuddhistChrono> date(DateTimeAccessor dateTime) {
-        if (dateTime instanceof MinguoDate) {
+        if (dateTime instanceof ThaiBuddhistDate) {
             return (ThaiBuddhistDate) dateTime;
         }
         return new ThaiBuddhistDate(LocalDate.from(dateTime));

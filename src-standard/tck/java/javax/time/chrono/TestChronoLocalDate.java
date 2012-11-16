@@ -31,10 +31,15 @@
  */
 package javax.time.chrono;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.time.Duration;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 import javax.time.LocalDate;
+import javax.time.Year;
+import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeBuilder;
@@ -204,6 +209,67 @@ public class TestChronoLocalDate {
             }
         }
     }
+
+    //-----------------------------------------------------------------------
+    // isBefore, isAfter, isEqual
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"}, dataProvider="calendars")
+    public void test_isBefore_isAfter_isEqual(Chrono chrono) {
+        List<ChronoLocalDate<?>> dates = new ArrayList<>();
+
+        ChronoLocalDate<?> date = chrono.date(LocalDate.of(1900, 1, 1));
+
+        // Insert dates in order, no duplicates
+        dates.add(date.minus(1000, ChronoUnit.YEARS));
+        dates.add(date.minus(100, ChronoUnit.YEARS));
+        dates.add(date.minus(10, ChronoUnit.YEARS));
+        dates.add(date.minus(1, ChronoUnit.YEARS));
+        dates.add(date.minus(1, ChronoUnit.MONTHS));
+        dates.add(date.minus(1, ChronoUnit.WEEKS));
+        dates.add(date.minus(1, ChronoUnit.DAYS));
+        dates.add(date);
+        dates.add(date.plus(1, ChronoUnit.DAYS));
+        dates.add(date.plus(1, ChronoUnit.WEEKS));
+        dates.add(date.plus(1, ChronoUnit.MONTHS));
+        dates.add(date.plus(1, ChronoUnit.YEARS));
+        dates.add(date.plus(10, ChronoUnit.YEARS));
+        dates.add(date.plus(100, ChronoUnit.YEARS));
+        dates.add(date.plus(1000, ChronoUnit.YEARS));
+
+        // Check these dates against the corresponding dates for every calendar
+        for (Chrono[] clist : data_of_calendars()) {
+            List<ChronoLocalDate<?>> otherDates = new ArrayList<>();
+            Chrono chrono2 = clist[0];
+            for (ChronoLocalDate<?> d : dates) {
+                otherDates.add(chrono2.date(d));
+            }
+
+            // Now compare  the sequence of original dates with the sequence of converted dates
+            for (int i = 0; i < dates.size(); i++) {
+                ChronoLocalDate<?> a = dates.get(i);
+                for (int j = 0; j < otherDates.size(); j++) {
+                    ChronoLocalDate<?> b = otherDates.get(j);
+                    if (i < j) {
+                        //assertTrue(a.compareTo(b) < 0, a + " <=> " + b);
+                        assertEquals(a.isBefore(b), true, a + " <=> " + b);
+                        assertEquals(a.isAfter(b), false, a + " <=> " + b);
+                        assertEquals(a.isEqual(b), false, a + " <=> " + b);
+                    } else if (i > j) {
+                        //assertTrue(a.compareTo(b) > 0, a + " <=> " + b);
+                        assertEquals(a.isBefore(b), false, a + " <=> " + b);
+                        assertEquals(a.isAfter(b), true, a + " <=> " + b);
+                        assertEquals(a.isEqual(b), false, a + " <=> " + b);
+                    } else {
+                        //assertEquals(a.compareTo(b), 0, a + " <=> " + b);
+                        assertEquals(a.isBefore(b), false, a + " <=> " + b);
+                        assertEquals(a.isAfter(b), false, a + " <=> " + b);
+                        assertEquals(a.isEqual(b), true, a + " <=> " + b);
+                    }
+                }
+            }
+        }
+    }
+
 
     /**
      * FixedAdjusted returns a fixed DateTime in all adjustments.

@@ -180,6 +180,11 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chrono<C>>
         return getOffsetDateTime().isBefore(other.getOffsetDateTime());
     }
 
+    @Override
+    public boolean isEqual(ChronoZonedDateTime<?> other) {
+        return getOffsetDateTime().isEqual(other.getOffsetDateTime());
+    }
+
     //-------------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
