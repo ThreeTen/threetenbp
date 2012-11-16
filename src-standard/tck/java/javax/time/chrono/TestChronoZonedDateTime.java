@@ -85,7 +85,11 @@ public class TestChronoZonedDateTime {
                     // Expected exception; not an error
                 }
             } else {
-                // Same chronology,
+                // Same chronology, the date-time should be replaced
+                // This test fails because ChronoZoneDateTime attempts
+                // to check and resolve the date
+                // Usually the adjuster is adjusting the ChronoOffsetDateTime
+                // and does expects the return value to be a ChronoOffsetDateTime
                 ChronoZonedDateTime<?> result = codt.with(adjuster);
                 assertEquals(result, codt2, "WithAdjuster failed to replace date");
             }

@@ -297,7 +297,7 @@ abstract class ChronoDateImpl<C extends Chrono<C>>
 //                case ERAS: throw new DateTimeException("Unable to add era, standard calendar system only has one era");
 //                case FOREVER: return (period == 0 ? this : (period > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE));
             }
-            throw new DateTimeException(unit.getName() + " not valid for HijrahDate");
+            throw new DateTimeException(unit.getName() + " not valid for chronology " + getChrono().getId());
         }
         return (ChronoDateImpl<C>)getChrono().ensureChronoLocalDate(unit.doAdd(this, amountToAdd));
     }
