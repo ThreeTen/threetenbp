@@ -215,10 +215,10 @@ public class TestChronoOffsetDateTime {
     }
 
     //-----------------------------------------------------------------------
-    // isBefore, isAfter, isEqual  test a Chrono against the other Chronos
+    // isBefore, isAfter, isEqual, INSTANT_COMPARATOR  test a Chrono against the other Chronos
     //-----------------------------------------------------------------------
     @Test(groups={"tck"}, dataProvider="calendars")
-    public void test_isBefore_isAfter_isEqual(Chrono chrono) {
+    public void test_offsetDateTime_comparisons(Chrono chrono) {
         List<ChronoOffsetDateTime<?>> dates = new ArrayList<>();
 
         ChronoOffsetDateTime<?> date = chrono.date(LocalDate.of(1900, 1, 1))
@@ -265,18 +265,19 @@ public class TestChronoOffsetDateTime {
                 ChronoOffsetDateTime<?> a = dates.get(i);
                 for (int j = 0; j < otherDates.size(); j++) {
                     ChronoOffsetDateTime<?> b = otherDates.get(j);
+                    int cmp = ChronoOffsetDateTime.INSTANT_COMPARATOR.compare(a, b);
                     if (i < j) {
-                        //assertTrue(a.compareTo(b) < 0, a + " compareTo " + b);
+                        assertTrue(cmp < 0, a + " compare " + b);
                         assertEquals(a.isBefore(b), true, a + " isBefore " + b);
                         assertEquals(a.isAfter(b), false, a + " ifAfter " + b);
                         assertEquals(a.isEqual(b), false, a + " isEqual " + b);
                     } else if (i > j) {
-                        //assertTrue(a.compareTo(b) > 0, a + " <=> " + b);
+                        assertTrue(cmp > 0, a + " compare " + b);
                         assertEquals(a.isBefore(b), false, a + " isBefore " + b);
                         assertEquals(a.isAfter(b), true, a + " ifAfter " + b);
                         assertEquals(a.isEqual(b), false, a + " isEqual " + b);
                     } else {
-                        //assertEquals(a.compareTo(b), 0, a + " <=> " + b);
+                        assertTrue(cmp == 0, a + " compare " + b);
                         assertEquals(a.isBefore(b), false, a + " isBefore " + b);
                         assertEquals(a.isAfter(b), false, a + " ifAfter " + b);
                         assertEquals(a.isEqual(b), true, a + " isEqual " + b);

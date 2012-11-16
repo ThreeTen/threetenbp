@@ -31,6 +31,7 @@
  */
 package javax.time.chrono;
 
+import java.util.Comparator;
 import javax.time.DateTimeException;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
@@ -76,6 +77,30 @@ import javax.time.zone.ZoneResolvers;
  */
 public interface ChronoLocalDateTime<C extends Chrono<C>>
         extends  DateTime, WithAdjuster, Comparable<ChronoLocalDateTime<?>> {
+
+   /**
+     * Comparator for two {@code ChronoLocalDateTime}s ignoring the chronology.
+     * <p>
+     * This method differs from the comparison in {@link #compareTo} in that it
+     * only compares the underlying date and not the chronology.
+     * This allows dates in different calendar systems to be compared based
+     * on the time-line position.
+     * 
+     * @see #isAfter
+     * @see #isBefore
+     * @see #isEqual
+     */
+    public static final Comparator<ChronoLocalDateTime<?>> DATE_TIME_COMPARATOR =
+            new Comparator<ChronoLocalDateTime<?>>() {
+        @Override
+        public int compare(ChronoLocalDateTime<?> datetime1, ChronoLocalDateTime<?> datetime2) {
+            int cmp = Long.compare(datetime1.getDate().toEpochDay(), datetime2.getDate().toEpochDay());
+            if (cmp == 0) {
+                cmp = Long.compare(datetime1.getTime().toNanoOfDay(), datetime2.getTime().toNanoOfDay());
+            }
+            return cmp;
+        }
+    };
 
     /**
      * Gets the local date part of this date-time.

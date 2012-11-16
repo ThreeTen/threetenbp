@@ -64,7 +64,7 @@ public abstract class DefaultInterfaceChronoLocalDateTime<C extends Chrono<C>>
 
     @Override
     public ChronoLocalDateTime<C> minus(MinusAdjuster adjuster) {
-        return getDate().getChrono().ensureChronoLocalDateTime( super.minus(adjuster));
+        return getDate().getChrono().ensureChronoLocalDateTime(super.minus(adjuster));
     }
 
     @Override

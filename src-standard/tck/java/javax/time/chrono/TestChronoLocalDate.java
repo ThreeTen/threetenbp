@@ -38,7 +38,6 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
 import javax.time.LocalDate;
-import javax.time.Year;
 import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
@@ -211,10 +210,10 @@ public class TestChronoLocalDate {
     }
 
     //-----------------------------------------------------------------------
-    // isBefore, isAfter, isEqual
+    // isBefore, isAfter, isEqual, DATE_COMPARATOR
     //-----------------------------------------------------------------------
     @Test(groups={"tck"}, dataProvider="calendars")
-    public void test_isBefore_isAfter_isEqual(Chrono chrono) {
+    public void test_date_comparisons(Chrono chrono) {
         List<ChronoLocalDate<?>> dates = new ArrayList<>();
 
         ChronoLocalDate<?> date = chrono.date(LocalDate.of(1900, 1, 1));
@@ -249,21 +248,22 @@ public class TestChronoLocalDate {
                 ChronoLocalDate<?> a = dates.get(i);
                 for (int j = 0; j < otherDates.size(); j++) {
                     ChronoLocalDate<?> b = otherDates.get(j);
+                    int cmp = ChronoLocalDate.DATE_COMPARATOR.compare(a, b);
                     if (i < j) {
-                        //assertTrue(a.compareTo(b) < 0, a + " <=> " + b);
-                        assertEquals(a.isBefore(b), true, a + " <=> " + b);
-                        assertEquals(a.isAfter(b), false, a + " <=> " + b);
-                        assertEquals(a.isEqual(b), false, a + " <=> " + b);
+                        assertTrue(cmp < 0, a + " compare " + b);
+                        assertEquals(a.isBefore(b), true, a + " isBefore " + b);
+                        assertEquals(a.isAfter(b), false, a + " isAfter " + b);
+                        assertEquals(a.isEqual(b), false, a + " isEqual " + b);
                     } else if (i > j) {
-                        //assertTrue(a.compareTo(b) > 0, a + " <=> " + b);
-                        assertEquals(a.isBefore(b), false, a + " <=> " + b);
-                        assertEquals(a.isAfter(b), true, a + " <=> " + b);
-                        assertEquals(a.isEqual(b), false, a + " <=> " + b);
+                        assertTrue(cmp > 0, a + " compare " + b);
+                        assertEquals(a.isBefore(b), false, a + " isBefore " + b);
+                        assertEquals(a.isAfter(b), true, a + " isAfter " + b);
+                        assertEquals(a.isEqual(b), false, a + " isEqual " + b);
                     } else {
-                        //assertEquals(a.compareTo(b), 0, a + " <=> " + b);
-                        assertEquals(a.isBefore(b), false, a + " <=> " + b);
-                        assertEquals(a.isAfter(b), false, a + " <=> " + b);
-                        assertEquals(a.isEqual(b), true, a + " <=> " + b);
+                        assertTrue(cmp == 0, a + " compare " + b);
+                        assertEquals(a.isBefore(b), false, a + " isBefore " + b);
+                        assertEquals(a.isAfter(b), false, a + " isAfter " + b);
+                        assertEquals(a.isEqual(b), true, a + " isEqual " + b);
                     }
                 }
             }
