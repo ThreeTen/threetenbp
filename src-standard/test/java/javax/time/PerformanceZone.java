@@ -36,6 +36,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import javax.time.zone.ZoneRules;
+
 /**
  * Test Performance.
  */
@@ -59,10 +61,15 @@ public class PerformanceZone {
         LocalTime time = LocalTime.of(12, 30, 20);
         System.out.println(time);
 
-        jsrLocalGetOffset();
-        jsrInstantGetOffset();
-        jdkLocalGetOffset();
-        jdkInstantGetOffset();
+        for (int i = 0; i < 6; i++) {
+            jsrLocalGetOffset();
+            jsrInstantGetOffset();
+            jsrRulesLocalGetOffset();
+            jsrRulesInstantGetOffset();
+            jdkLocalGetOffset();
+            jdkInstantGetOffset();
+            System.out.println();
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -90,6 +97,33 @@ public class PerformanceZone {
         }
         long end = System.nanoTime();
         System.out.println("JSR-Ins: Setup:  " + NF.format(end - start) + " ns" + list[0]);
+    }
+
+    //-----------------------------------------------------------------------
+    private static void jsrRulesLocalGetOffset() {
+        LocalDateTime dt = LocalDateTime.of(YEAR, 6, 1, 12, 0);
+        ZoneRules tz = ZoneId.of("Europe/London").getRules();
+        ZoneOffset[] list = new ZoneOffset[SIZE];
+        long start = System.nanoTime();
+        for (int i = 0; i < SIZE; i++) {
+            list[i] = tz.getOffset(dt);
+        }
+        long end = System.nanoTime();
+        System.out.println("JSR-LoR: Setup:  " + NF.format(end - start) + " ns" + list[0]);
+    }
+
+    //-----------------------------------------------------------------------
+    private static void jsrRulesInstantGetOffset() {
+        OffsetDateTime dt = OffsetDateTime.of(YEAR, 6, 1, 12, 0, ZoneOffset.ofHours(1));
+        Instant instant = dt.toInstant();
+        ZoneRules tz = ZoneId.of("Europe/London").getRules();
+        ZoneOffset[] list = new ZoneOffset[SIZE];
+        long start = System.nanoTime();
+        for (int i = 0; i < SIZE; i++) {
+            list[i] = tz.getOffset(instant);
+        }
+        long end = System.nanoTime();
+        System.out.println("JSR-InR: Setup:  " + NF.format(end - start) + " ns" + list[0]);
     }
 
     //-----------------------------------------------------------------------
