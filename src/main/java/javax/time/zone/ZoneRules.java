@@ -102,14 +102,14 @@ public interface ZoneRules {
      * <p>
      * The mapping from a local date-time to an offset is not straightforward.
      * There are three cases:
-     * <ul>
+     * <p><ul>
      * <li>Normal, with one valid offset. For the vast majority of the year, the normal
      *  case applies, where there is a single valid offset for the local date-time.</li>
      * <li>Gap, with zero valid offsets. Where there is a gap in the local time-line
      *  typically caused by the spring cutover to daylight savings.</li>
      * <li>Overlap, with two valid offsets. Where there is a gap in the local time-line
      *  typically caused by the autumn cutover from daylight savings.</li>
-     * </ul>
+     * </ul><p>
      * Thus, for any given local date-time there can be zero, one or two valid offsets.
      * This method returns the single offset in the Normal case, and in the Gap or Overlap
      * case it returns the offset before the transition.
@@ -130,14 +130,14 @@ public interface ZoneRules {
      * <p>
      * The mapping from a local date-time to an offset is not straightforward.
      * There are three cases:
-     * <ul>
+     * <p><ul>
      * <li>Normal, with one valid offset. For the vast majority of the year, the normal
      *  case applies, where there is a single valid offset for the local date-time.</li>
      * <li>Gap, with zero valid offsets. Where there is a gap in the local time-line
      *  typically caused by the spring cutover to daylight savings.</li>
      * <li>Overlap, with two valid offsets. Where there is a gap in the local time-line
      *  typically caused by the autumn cutover from daylight savings.</li>
-     * </ul>
+     * </ul><p>
      * Thus, for any given local date-time there can be zero, one or two valid offsets.
      * This method returns that list of valid offsets, which is a list of size 0, 1 or 2.
      * In the case where there are two offsets, the earlier offset is returned at index 0
@@ -172,14 +172,14 @@ public interface ZoneRules {
      * <p>
      * The mapping from a local date-time to an offset is not straightforward.
      * There are three cases:
-     * <ul>
+     * <p><ul>
      * <li>Normal, with one valid offset. For the vast majority of the year, the normal
      *  case applies, where there is a single valid offset for the local date-time.</li>
      * <li>Gap, with zero valid offsets. Where there is a gap in the local time-line
      *  typically caused by the spring cutover to daylight savings.</li>
      * <li>Overlap, with two valid offsets. Where there is a gap in the local time-line
      *  typically caused by the autumn cutover from daylight savings.</li>
-     * </ul>
+     * </ul><p>
      * A transition is used to model the cases of a Gap or Overlap.
      * The Normal case will return null.
      * <p>

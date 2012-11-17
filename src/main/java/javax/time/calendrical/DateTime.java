@@ -49,15 +49,15 @@ import javax.time.LocalTime;
  * <h4>Formal definition</h4>
  * <p>
  * Formally, a class should implement this interface if it meets three criteria:
- * <ul>
+ * <p><ul>
  * <li>it represents a map of date-time fields to values (as per {@code DateTimeAccessor})
  * <li>the set of fields are contiguous from the largest to the smallest
  * <li>the set of fields are complete, such that no other field is needed to define the
  *  valid range of values for the fields that are represented
- * </ul>
+ * </ul><p>
  * <p>
  * Four examples make this clear:
- * <ul>
+ * <p><ul>
  * <li>{@code LocalDate} should implement this interface as it represents a set of fields
  *  that are contiguous from days to forever and require no external information to determine
  *  the validity of each date. It is therefore able to implement plus/minus correctly.
@@ -71,7 +71,7 @@ import javax.time.LocalTime;
  * <li>The combination day-of-week and day-of-month ("Friday the 13th") should not implement
  *  this interface. It does not represent a contiguous set of fields, as days to weeks overlaps
  *  days to months.
- * </ul>
+ * </ul><p>
  *
  * <h4>Implementation notes</h4>
  * This interface places no restrictions on implementations and makes no guarantees

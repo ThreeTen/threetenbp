@@ -60,10 +60,10 @@ import javax.time.zone.ZoneRulesProvider;
  * This class provides an identifier that locates a single set of rules.
  * <p>
  * The rule data is split across two main classes:
- * <ul>
+ * <p><ul>
  * <li>{@code ZoneId}, which only represents the identifier of the rule-set
  * <li>{@link ZoneRules}, which defines the set of rules themselves
- * </ul>
+ * </ul><p>
  * <p>
  * One benefit of this separation occurs in serialization. Storing this class will
  * only store the reference to the zone, whereas serializing {@code ZoneRules} will
@@ -126,7 +126,7 @@ public abstract class ZoneId implements Serializable {
      * A map of zone overrides to enable the older US time-zone names to be used.
      * <p>
      * This maps as follows:
-     * <ul>
+     * <p><ul>
      * <li>EST - America/Indianapolis</li>
      * <li>MST - America/Phoenix</li>
      * <li>HST - Pacific/Honolulu</li>
@@ -155,7 +155,7 @@ public abstract class ZoneId implements Serializable {
      * <li>PST - America/Los_Angeles</li>
      * <li>SST - Pacific/Guadalcanal</li>
      * <li>VST - Asia/Ho_Chi_Minh</li>
-     * </ul>
+     * </ul><p>
      * The map is unmodifiable.
      */
     public static final Map<String, String> OLD_IDS_PRE_2005;
@@ -163,7 +163,7 @@ public abstract class ZoneId implements Serializable {
      * A map of zone overrides to enable the older US time-zone names to be used.
      * <p>
      * This maps as follows:
-     * <ul>
+     * <p><ul>
      * <li>EST - UTC-05:00</li>
      * <li>HST - UTC-10:00</li>
      * <li>MST - UTC-07:00</li>
@@ -192,7 +192,7 @@ public abstract class ZoneId implements Serializable {
      * <li>PST - America/Los_Angeles</li>
      * <li>SST - Pacific/Guadalcanal</li>
      * <li>VST - Asia/Ho_Chi_Minh</li>
-     * </ul>
+     * </ul><p>
      * The map is unmodifiable.
      */
     public static final Map<String, String> OLD_IDS_POST_2005;
@@ -295,12 +295,12 @@ public abstract class ZoneId implements Serializable {
      * against the known set of IDs for which rules are available.
      * <p>
      * Four forms of identifier are recognized:
-     * <ul>
+     * <p><ul>
      * <li>{@code {groupID}:{regionID}} - full
      * <li>{@code {regionID}} - implies 'TZDB' group and specific version
      * <li>{@code UTC{offset}} - implies 'UTC' group with fixed offset
      * <li>{@code GMT{offset}} - implies 'UTC' group with fixed offset
-     * </ul>
+     * </ul><p>
      * Group IDs must match regular expression {@code [A-Za-z0-9._-]+}.<br />
      * Region IDs must match regular expression {@code [A-Za-z0-9%@~/+._-]+}, except
      * if the group ID is 'UTC' when the regular expression is {@code [Z0-9+:-]+}.<br />

@@ -177,9 +177,9 @@ public final class TAIInstant
      * Obtains an instance of {@code TAIInstant} from a text string.
      * <p>
      * The following format is accepted:
-     * <ul>
+     * <p><ul>
      * <li>{@code {seconds}.{nanosOfSecond}s(TAI)}
-     * </ul>
+     * </ul><p>
      * The accepted format is strict.
      * The seconds part must contain only numbers and a possible leading negative sign.
      * The nanoseconds part must contain exactly nine digits.

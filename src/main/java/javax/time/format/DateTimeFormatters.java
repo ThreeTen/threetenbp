@@ -52,11 +52,11 @@ import javax.time.calendrical.DateTimeField;
  * Provides common implementations of {@code DateTimeFormatter}.
  * <p>
  * This utility class provides three different ways to obtain a formatter.
- * <ul>
+ * <p><ul>
  * <li>Using pattern letters, such as {@code yyyy-MMM-dd}
  * <li>Using localized styles, such as {@code long} or {@code medium}
  * <li>Using predefined constants, such as {@code isoLocalDate()}
- * </ul>
+ * </ul><p>
  *
  * <h4>Implementation notes</h4>
  * This is a thread-safe utility class.

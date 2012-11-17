@@ -45,12 +45,12 @@ import javax.time.DayOfWeek;
  * <p>
  * A standard week is seven days long, but cultures have different definitions for some
  * other aspects of a week.
- * <ul>
+ * <p><ul>
  * <li>The first day-of-week.
  * For example, the ISO-8601 standard considers Monday to be the first day-of-week.
  * <li>The minimal number of days in the first week.
  * For example, the ISO-08601 standard counts the first week as needing at least 4 days.
- * </ul>
+ * </ul><p>
  * Together these two values allow a year or month to be divided into weeks.
  * <p>
  * <h4>Week based years</h4>

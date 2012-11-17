@@ -77,7 +77,7 @@ import javax.time.zone.ZoneRulesProvider;
  * All date-time formatters are created ultimately using this builder.
  * <p>
  * The basic elements of date-time can all be added:
- * <ul>
+ * <p><ul>
  * <li>Value - a numeric value</li>
  * <li>Fraction - a fractional value including the decimal place. Always use this when
  * outputting fractions to ensure that the fraction is parsed correctly</li>
@@ -88,7 +88,7 @@ import javax.time.zone.ZoneRulesProvider;
  * <li>Literal - a text literal</li>
  * <li>Nested and Optional - formats can be nested or made optional</li>
  * <li>Other - the printer and parser interfaces can be used to add user supplied formatting</li>
- * </ul>
+ * </ul><p>
  * In addition, any of the elements may be decorated by padding, either with spaces or any other character.
  * <p>
  * Finally, a shorthand pattern, mostly compatible with {@code java.text.SimpleDateFormat SimpleDateFormat}
@@ -580,7 +580,7 @@ public final class DateTimeFormatterBuilder {
      * If the offset cannot be obtained then an exception will be thrown.
      * <p>
      * The output format is controlled by a pattern which must be one of the following:
-     * <ul>
+     * <p><ul>
      * <li>{@code +HH} - hour only, truncating any minute
      * <li>{@code +HHMM} - hour and minute, no colon
      * <li>{@code +HH:MM} - hour and minute, with colon
@@ -588,8 +588,7 @@ public final class DateTimeFormatterBuilder {
      * <li>{@code +HH:MM:ss} - hour and minute, with second if non-zero and colon
      * <li>{@code +HHMMSS} - hour, minute and second, no colon
      * <li>{@code +HH:MM:SS} - hour, minute and second, with colon
-     * </ul>
-     * <p>
+     * </ul><p>
      * The "no offset" text controls what text is printed when the offset is zero.
      * Example values would be 'Z', '+00:00', 'UTC' or 'GMT'.
      * <p>

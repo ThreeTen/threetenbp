@@ -51,7 +51,7 @@ import javax.time.calendrical.DateTimeValueRange;
  * This chronology defines the rules of the Hijrah calendar system.
  * <p>
  * The implementation follows the Freeman-Grenville algorithm (*1) and has following features.
- * <ul>
+ * <p><ul>
  * <li>A year has 12 months.</li>
  * <li>Over a cycle of 30 years there are 11 leap years.</li>
  * <li>There are 30 days in month number 1, 3, 5, 7, 9, and 11,
@@ -60,7 +60,7 @@ import javax.time.calendrical.DateTimeValueRange;
  * <li>In a 30 year cycle, year 2, 5, 7, 10, 13, 16, 18, 21, 24,
  * 26, and 29 are leap years.</li>
  * <li>Total of 10631 days in a 30 years cycle.</li>
- * </ul>
+ * </ul><p>
  * <P>
  * The table shows the features described above.
  * <blockquote>

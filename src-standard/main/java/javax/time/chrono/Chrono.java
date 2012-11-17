@@ -88,7 +88,7 @@ import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
  * <p>
  * The {@code Chrono} instance provides a set of methods to create {@code ChronoLocalDate} instances.
  * The date classes are used to manipulate specific dates.
- * <ul>
+ * <p><ul>
  * <li> {@link #dateNow() dateNow()}
  * <li> {@link #dateNow(Clock) dateNow(clock)}
  * <li> {@link #dateNow(ZoneId) dateNow(zone)}
@@ -97,7 +97,7 @@ import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
  * <li> {@link #dateFromYearDay(int, int) date(yearProleptic, dayOfYear)}
  * <li> {@link #dateFromYearDay(Era, int, int) date(era, yearOfEra, dayOfYear)}
  * <li> {@link #date(DateTimeAccessor) date(DateTimeAccessor)}
- * </ul>
+ * </ul><p>
  *
  * <h4 id="addcalendars">Adding New Calendars</h4>
  * The set of available chronologies can be extended by applications.
@@ -475,10 +475,10 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * <p>
      * A leap-year is a year of a longer length than normal.
      * The exact meaning is determined by the chronology according to the following constraints.
-     * <ul>
+     * <p><ul>
      * <li>a leap-year must imply a year-length longer than a non leap-year.
      * <li>a chronology that does not support the concept of a year must return false.
-     * </ul>
+     * </ul><p>
      *
      * @param prolepticYear  the proleptic-year to check, not validated for range
      * @return true if the year is a leap year

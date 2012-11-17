@@ -185,7 +185,7 @@ import javax.time.format.CalendricalFormatter;
  *  rather than arbitrary
  * <li>perform the calculation
  * <li>convert back to {@code LocalDate}
- * </ul>
+ * </ul><p>
  *
  * <h4>Implementation notes</h4>
  * This interface must be implemented with care to ensure other classes operate correctly.

@@ -55,7 +55,7 @@ import javax.time.jdk8.Jdk8Methods;
  * Dates are aligned such that {@code 0001AM-01-01 (Coptic)} is {@code 0284-08-29 (ISO)}.
  * <p>
  * The fields are defined as follows:
- * <ul>
+ * <p><ul>
  * <li>era - There are two eras, the current 'Era of the Martyrs' (AM) and the previous era (ERA_ERA_BEFORE_AM).
  * <li>year-of-era - The year-of-era for the current era increases uniformly from the epoch at year one.
  *  For the previous era the year increases from one as time goes backwards.
@@ -67,7 +67,7 @@ import javax.time.jdk8.Jdk8Methods;
  * <li>day-of-year - There are 365 days in a standard Coptic year and 366 in a leap year.
  *  The days are numbered from 1 to 365 or 1 to 366.
  * <li>leap-year - Leap years occur every 4 years.
- * </ul>
+ * </ul><p>
  *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.

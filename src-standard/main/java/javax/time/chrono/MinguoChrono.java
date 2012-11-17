@@ -53,7 +53,7 @@ import javax.time.calendrical.DateTimeValueRange;
  * Dates are aligned such that {@code 0001-01-01 (Minguo)} is {@code 1911-01-01 (ISO)}.
  * <p>
  * The fields are defined as follows:
- * <ul>
+ * <p><ul>
  * <li>era - There are two eras, the current 'Republic' (ERA_ROC) and the previous era (ERA_BEFORE_ROC).
  * <li>year-of-era - The year-of-era for the current era increases uniformly from the epoch at year one.
  *  For the previous era the year increases from one as time goes backwards.
@@ -66,7 +66,7 @@ import javax.time.calendrical.DateTimeValueRange;
  * <li>day-of-year - The Minguo day-of-year exactly matches ISO.
  * <li>leap-year - The Minguo leap-year pattern exactly matches ISO, such that the two calendars
  *  are never out of step.
- * </ul>
+ * </ul><p>
  *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.

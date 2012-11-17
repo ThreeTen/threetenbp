@@ -1935,13 +1935,13 @@ public final class ZonedDateTime
      * {@code 2007-12-03T10:15:30+01:00[Europe/Paris]}.
      * <p>
      * The output will be one of the following formats:
-     * <ul>
+     * <p><ul>
      * <li>{@code yyyy-MM-dd'T'HH:mmXXXXX'['I']'}</li>
      * <li>{@code yyyy-MM-dd'T'HH:mm:ssXXXXX'['I']'}</li>
      * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnXXXXX'['I']'}</li>
      * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnnnnXXXXX'['I']'}</li>
      * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnnnnnnnXXXXX'['I']'}</li>
-     * </ul>
+     * </ul><p>
      * The format used will be the shortest that outputs the full value of
      * the time where the omitted parts are implied to be zero.
      *

@@ -67,13 +67,12 @@ import javax.time.jdk8.Jdk8Methods;
  * The model is of a directed amount of time, meaning that the period may be negative.
  * <p>
  * This period supports the following units:
- * <ul>
+ * <p><ul>
  * <li>{@link ChronoUnit#YEARS YEARS}</li>
  * <li>{@link ChronoUnit#MONTHS MONTHS}</li>
  * <li>{@link ChronoUnit#DAYS DAYS}</li>
  * <li>time units with an {@link PeriodUnit#isDurationEstimated() exact duration}</li>
- * </ul>
- * <p>
+ * </ul><p>
  * The period may be used with any calendar system with the exception is methods with an "ISO" suffix.
  * The meaning of a "year" or a "month" is only applied when the object is added to a date.
  *

@@ -70,11 +70,11 @@ public interface Era<C extends Chrono<C>> extends DateTimeAccessor, WithAdjuster
      * All fields, including eras, have an associated numeric value.
      * The meaning of the numeric value for era is determined by the chronology
      * according to these principles:
-     * <ul>
+     * <p><ul>
      * <li>The era in use at the epoch 1970-01-01 (ISO) has the value 1.
      * <li>Later eras have sequentially higher values.
      * <li>Earlier eras have sequentially lower values, which may be negative.
-     * </ul>
+     * </ul><p>
      *
      * @return the numeric era value
      */

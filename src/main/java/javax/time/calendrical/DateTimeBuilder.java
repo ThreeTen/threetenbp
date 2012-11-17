@@ -87,12 +87,12 @@ import javax.time.jdk8.Jdk8Methods;
  * <p>
  * The builder is used to hold onto different elements of date and time.
  * It is designed as two separate maps:
- * <ul>
+ * <p><ul>
  * <li>from {@link DateTimeField} to {@code long} value, where the value may be
  * outside the valid range for the field
  * <li>from {@code Class} to {@link DateTimeAccessor}, holding larger scale objects
  * like {@code LocalDateTime}.
- * </ul>
+ * </ul><p>
  *
  * <h4>Implementation notes</h4>
  * This class is mutable and not thread-safe.

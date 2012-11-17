@@ -1584,13 +1584,13 @@ public final class OffsetDateTime
      * Outputs this date-time as a {@code String}, such as {@code 2007-12-03T10:15:30+01:00}.
      * <p>
      * The output will be one of the following ISO-8601 formats:
-     * <ul>
+     * <p><ul>
      * <li>{@code yyyy-MM-dd'T'HH:mmXXXXX}</li>
      * <li>{@code yyyy-MM-dd'T'HH:mm:ssXXXXX}</li>
      * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnXXXXX}</li>
      * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnnnnXXXXX}</li>
      * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnnnnnnnXXXXX}</li>
-     * </ul>
+     * </ul><p>
      * The format used will be the shortest that outputs the full value of
      * the time where the omitted parts are implied to be zero.
      *

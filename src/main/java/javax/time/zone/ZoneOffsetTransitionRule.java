@@ -54,12 +54,12 @@ import javax.time.chrono.ISOChrono;
  * <p>
  * This class allows rules for identifying future transitions to be expressed.
  * A rule might be written in many forms:
- * <ul>
+ * <p><ul>
  * <li>the 16th March
  * <li>the Sunday on or after the 16th March
  * <li>the Sunday on or before the 16th March
  * <li>the last Sunday in February
- * </ul>
+ * </ul><p>
  * These different rule types can be expressed and queried.
  *
  * <h4>Implementation notes</h4>
@@ -493,11 +493,11 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      * A definition of the way a local time can be converted to an offset time.
      * <p>
      * Time zone rules are expressed in one of three ways:
-     * <ul>
+     * <p><ul>
      * <li>Relative to UTC</li>
      * <li>Relative to the standard offset in force</li>
      * <li>Relative to the wall offset (what you would see on a clock on the wall)</li>
-     * </ul>
+     * </ul><p>
      */
     public static enum TimeDefinition {
         /** The local date-time is expressed in terms of the UTC offset. */
