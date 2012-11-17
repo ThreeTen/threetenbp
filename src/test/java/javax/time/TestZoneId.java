@@ -642,8 +642,8 @@ public class TestZoneId {
         assertEquals(trans.getOffsetBefore(), ZoneOffset.ofHours(0));
         assertEquals(trans.getOffsetAfter(), ZoneOffset.ofHours(1));
         assertEquals(trans.getInstant(), OffsetDateTime.of(2008, 3, 30, 1, 0, ZoneOffset.UTC).toInstant());
-        assertEquals(trans.getDateTimeBefore(), OffsetDateTime.of(2008, 3, 30, 1, 0, ZoneOffset.ofHours(0)));
-        assertEquals(trans.getDateTimeAfter(), OffsetDateTime.of(2008, 3, 30, 2, 0, ZoneOffset.ofHours(1)));
+        assertEquals(trans.getDateTimeBefore(), LocalDateTime.of(2008, 3, 30, 1, 0));
+        assertEquals(trans.getDateTimeAfter(), LocalDateTime.of(2008, 3, 30, 2, 0));
         assertEquals(trans.isValidOffset(ZoneOffset.ofHours(-1)), false);
         assertEquals(trans.isValidOffset(ZoneOffset.ofHours(0)), false);
         assertEquals(trans.isValidOffset(ZoneOffset.ofHours(1)), false);
@@ -668,8 +668,8 @@ public class TestZoneId {
         assertEquals(trans.getOffsetBefore(), ZoneOffset.ofHours(1));
         assertEquals(trans.getOffsetAfter(), ZoneOffset.ofHours(0));
         assertEquals(trans.getInstant(), OffsetDateTime.of(2008, 10, 26, 1, 0, ZoneOffset.UTC).toInstant());
-        assertEquals(trans.getDateTimeBefore(), OffsetDateTime.of(2008, 10, 26, 2, 0, ZoneOffset.ofHours(1)));
-        assertEquals(trans.getDateTimeAfter(), OffsetDateTime.of(2008, 10, 26, 1, 0, ZoneOffset.ofHours(0)));
+        assertEquals(trans.getDateTimeBefore(), LocalDateTime.of(2008, 10, 26, 2, 0));
+        assertEquals(trans.getDateTimeAfter(), LocalDateTime.of(2008, 10, 26, 1, 0));
         assertEquals(trans.isValidOffset(ZoneOffset.ofHours(-1)), false);
         assertEquals(trans.isValidOffset(ZoneOffset.ofHours(0)), true);
         assertEquals(trans.isValidOffset(ZoneOffset.ofHours(1)), true);

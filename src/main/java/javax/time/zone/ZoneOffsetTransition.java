@@ -31,6 +31,8 @@
  */
 package javax.time.zone;
 
+import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -42,8 +44,11 @@ import java.util.Objects;
 
 import javax.time.Duration;
 import javax.time.Instant;
-import javax.time.OffsetDateTime;
+import javax.time.LocalDate;
+import javax.time.LocalDateTime;
+import javax.time.LocalTime;
 import javax.time.ZoneOffset;
+import javax.time.jdk8.Jdk8Methods;
 
 /**
  * A transition between two offsets caused by a discontinuity in the local time-line.
@@ -71,13 +76,17 @@ public final class ZoneOffsetTransition
      */
     private static final long serialVersionUID = -6946044323557704546L;
     /**
-     * The transition date-time with the offset before the transition.
+     * The local transition date-time at the transition.
      */
-    private final OffsetDateTime transition;
+    private final LocalDateTime transition;
     /**
-     * The transition date-time with the offset after the transition.
+     * The offset before transition.
      */
-    private final OffsetDateTime transitionAfter;
+    private final ZoneOffset offsetBefore;
+    /**
+     * The offset after transition.
+     */
+    private final ZoneOffset offsetAfter;
 
     //-----------------------------------------------------------------------
     /**
@@ -86,27 +95,54 @@ public final class ZoneOffsetTransition
      * Applications should normally obtain an instance from {@link ZoneRules}.
      * This constructor is intended for use by implementors of {@code ZoneRules}.
      *
-     * @param transition  the transition date-time with the offset before the transition, not null
+     * @param transition  the transition date-time at the transition, which never
+     *  actually occurs, expressed local to the before offset, not null
+     * @param offsetBefore  the offset before the transition, not null
      * @param offsetAfter  the offset at and after the transition, not null
      */
-    public static ZoneOffsetTransition of(OffsetDateTime transition, ZoneOffset offsetAfter) {
+    public static ZoneOffsetTransition of(LocalDateTime transition, ZoneOffset offsetBefore, ZoneOffset offsetAfter) {
         Objects.requireNonNull(transition, "transition");
+        Objects.requireNonNull(offsetBefore, "offsetBefore");
         Objects.requireNonNull(offsetAfter, "offsetAfter");
-        if (transition.getOffset().equals(offsetAfter)) {
+        if (offsetBefore.equals(offsetAfter)) {
             throw new IllegalArgumentException("Offsets must not be equal");
         }
-        return new ZoneOffsetTransition(transition, offsetAfter);
+        if (transition.getNano() != 0) {
+            throw new IllegalArgumentException("Nano-of-second must be zero");
+        }
+        return new ZoneOffsetTransition(transition, offsetBefore, offsetAfter);
     }
 
     /**
      * Creates an instance defining a transition between two offsets.
      *
      * @param transition  the transition date-time with the offset before the transition, not null
+     * @param offsetBefore  the offset before the transition, not null
      * @param offsetAfter  the offset at and after the transition, not null
      */
-    ZoneOffsetTransition(OffsetDateTime transition, ZoneOffset offsetAfter) {
+    ZoneOffsetTransition(LocalDateTime transition, ZoneOffset offsetBefore, ZoneOffset offsetAfter) {
         this.transition = transition;
-        this.transitionAfter = transition.withOffsetSameInstant(offsetAfter);  // cached for performance
+        this.offsetBefore = offsetBefore;
+        this.offsetAfter = offsetAfter;
+    }
+
+    /**
+     * Creates an instance from epoch-second and offsets.
+     *
+     * @param epochSecond  the transition epoch-second
+     * @param offsetBefore  the offset before the transition, not null
+     * @param offsetAfter  the offset at and after the transition, not null
+     */
+    ZoneOffsetTransition(long epochSecond, ZoneOffset offsetBefore, ZoneOffset offsetAfter) {
+        // inline for performance
+        long localSeconds = epochSecond + offsetBefore.getTotalSeconds();
+        long epochDays = Jdk8Methods.floorDiv(localSeconds, SECONDS_PER_DAY);
+        int secsOfDay = Jdk8Methods.floorMod(localSeconds, SECONDS_PER_DAY);
+        LocalDate date = LocalDate.ofEpochDay(epochDays);
+        LocalTime time = LocalTime.ofSecondOfDay(secsOfDay);
+        this.transition = LocalDateTime.of(date, time);
+        this.offsetBefore = offsetBefore;
+        this.offsetAfter = offsetAfter;
     }
 
     //-----------------------------------------------------------------------
@@ -126,9 +162,9 @@ public final class ZoneOffsetTransition
      * @throws IOException if an error occurs
      */
     void writeExternal(DataOutput out) throws IOException {
-        Ser.writeEpochSec(transition.toEpochSecond(), out);
-        Ser.writeOffset(transition.getOffset(), out);
-        Ser.writeOffset(transitionAfter.getOffset(), out);
+        Ser.writeEpochSec(toEpochSecond(), out);
+        Ser.writeOffset(offsetBefore, out);
+        Ser.writeOffset(offsetAfter, out);
     }
 
     /**
@@ -142,7 +178,10 @@ public final class ZoneOffsetTransition
         long epochSecond = Ser.readEpochSec(in);
         ZoneOffset before = Ser.readOffset(in);
         ZoneOffset after = Ser.readOffset(in);
-        return ZoneOffsetTransition.of(OffsetDateTime.ofEpochSecond(epochSecond, before), after);
+        if (before.equals(after)) {
+            throw new IllegalArgumentException("Offsets must not be equal");
+        }
+        return new ZoneOffsetTransition(epochSecond, before, after);
     }
 
     //-----------------------------------------------------------------------
@@ -158,36 +197,51 @@ public final class ZoneOffsetTransition
      * @return the transition instant, not null
      */
     public Instant getInstant() {
-        return transition.toInstant();
+        return Instant.ofEpochSecond(toEpochSecond());
     }
 
     /**
-     * Gets the transition instant date-time expressed with the 'before' offset.
+     * Gets the transition instant an an epoch second.
+     *
+     * @return the transition epoch second
+     */
+    long toEpochSecond() {
+        // inline for performance
+        long epochDay = transition.getDate().toEpochDay();
+        long secs = epochDay * SECONDS_PER_DAY + transition.getTime().toSecondOfDay();
+        secs -= offsetBefore.getTotalSeconds();
+        return secs;
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Gets the local transition date-time, as would be expressed with the 'before' offset.
      * <p>
-     * This is the date-time where the discontinuity begins expressed with the before offset.
-     * At this instant, the after offset is actually used, therefore this is an invalid date-time.
+     * This is the date-time where the discontinuity begins expressed with the 'before' offset.
+     * At this instant, the 'after' offset is actually used, therefore the combination of this
+     * date-time and the 'before' offset will never occur.
      * <p>
-     * The methods {@link #getInstant()}, {@link #getDateTimeBefore()} and {@link #getDateTimeAfter()}
-     * all represent the same instant.
+     * The combination of the 'before' date-time and offset represents the same instant
+     * as the 'after' date-time and offset.
      *
      * @return the transition date-time expressed with the before offset, not null
      */
-    public OffsetDateTime getDateTimeBefore() {
+    public LocalDateTime getDateTimeBefore() {
         return transition;
     }
 
     /**
-     * Gets the transition date-time expressed with the 'after' offset.
+     * Gets the local transition date-time, as would be expressed with the 'after' offset.
      * <p>
      * This is the first date-time after the discontinuity, when the new offset applies.
      * <p>
-     * The methods {@link #getInstant()}, {@link #getDateTimeBefore()} and {@link #getDateTimeAfter()}
-     * all represent the same instant.
+     * The combination of the 'before' date-time and offset represents the same instant
+     * as the 'after' date-time and offset.
      *
      * @return the transition date-time expressed with the after offset, not null
      */
-    public OffsetDateTime getDateTimeAfter() {
-        return transitionAfter;
+    public LocalDateTime getDateTimeAfter() {
+        return transition.plusSeconds(getDurationSeconds());
     }
 
     /**
@@ -198,7 +252,7 @@ public final class ZoneOffsetTransition
      * @return the offset before the transition, not null
      */
     public ZoneOffset getOffsetBefore() {
-        return transition.getOffset();
+        return offsetBefore;
     }
 
     /**
@@ -209,7 +263,7 @@ public final class ZoneOffsetTransition
      * @return the offset after the transition, not null
      */
     public ZoneOffset getOffsetAfter() {
-        return transitionAfter.getOffset();
+        return offsetAfter;
     }
 
     /**
@@ -222,7 +276,16 @@ public final class ZoneOffsetTransition
      * @return the duration of the transition, positive for gaps, negative for overlaps
      */
     public Duration getDuration() {
-        return Duration.ofSeconds(getOffsetAfter().getTotalSeconds() - getOffsetBefore().getTotalSeconds());
+        return Duration.ofSeconds(getDurationSeconds());
+    }
+
+    /**
+     * Gets the duration of the transition in seconds.
+     *
+     * @return the duration in seconds
+     */
+    private int getDurationSeconds() {
+        return getOffsetAfter().getTotalSeconds() - getOffsetBefore().getTotalSeconds();
     }
 
     /**
@@ -311,7 +374,7 @@ public final class ZoneOffsetTransition
         if (other instanceof ZoneOffsetTransition) {
             ZoneOffsetTransition d = (ZoneOffsetTransition) other;
             return transition.equals(d.transition) &&
-                transitionAfter.getOffset().equals(d.transitionAfter.getOffset());
+                offsetBefore.equals(d.offsetBefore) && offsetAfter.equals(d.offsetAfter);
         }
         return false;
     }
@@ -323,7 +386,7 @@ public final class ZoneOffsetTransition
      */
     @Override
     public int hashCode() {
-        return transition.hashCode() ^ transitionAfter.getOffset().hashCode();
+        return transition.hashCode() ^ offsetBefore.hashCode() ^ Integer.rotateLeft(offsetAfter.hashCode(), 16);
     }
 
     //-----------------------------------------------------------------------
@@ -339,8 +402,9 @@ public final class ZoneOffsetTransition
             .append(isGap() ? "Gap" : "Overlap")
             .append(" at ")
             .append(transition)
+            .append(offsetBefore)
             .append(" to ")
-            .append(transitionAfter.getOffset())
+            .append(offsetAfter)
             .append(']');
         return buf.toString();
     }

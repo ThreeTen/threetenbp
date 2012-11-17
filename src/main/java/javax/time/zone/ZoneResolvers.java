@@ -233,7 +233,7 @@ public final class ZoneResolvers {
             @Override
             public OffsetDateTime resolve(LocalDateTime desiredLocalDateTime, ZoneOffsetTransition transition, ZoneRules rules, ZoneId zone, OffsetDateTime oldDateTime) {
                 if (transition.isGap()) {
-                    return transition.getDateTimeBefore().minusNanos(1);
+                    return transition.getDateTimeBefore().minusNanos(1).atOffset(transition.getOffsetBefore());
                 } else {  // overlap
                     return OffsetDateTime.of(desiredLocalDateTime, transition.getOffsetBefore());
                 }
@@ -245,7 +245,7 @@ public final class ZoneResolvers {
             @Override
             public OffsetDateTime resolve(LocalDateTime desiredLocalDateTime, ZoneOffsetTransition transition, ZoneRules rules, ZoneId zone, OffsetDateTime oldDateTime) {
                 if (transition.isGap()) {
-                    return transition.getDateTimeAfter();
+                    return transition.getDateTimeAfter().atOffset(transition.getOffsetAfter());
                 } else {  // overlap
                     return OffsetDateTime.of(desiredLocalDateTime, transition.getOffsetAfter());
                 }
@@ -257,7 +257,7 @@ public final class ZoneResolvers {
             @Override
             public OffsetDateTime resolve(LocalDateTime desiredLocalDateTime, ZoneOffsetTransition transition, ZoneRules rules, ZoneId zone, OffsetDateTime oldDateTime) {
                 if (transition.isGap()) {
-                    return transition.getDateTimeAfter();
+                    return transition.getDateTimeAfter().atOffset(transition.getOffsetAfter());
                 } else {  // overlap
                     return OffsetDateTime.of(desiredLocalDateTime, transition.getOffsetBefore());
                 }
@@ -269,7 +269,7 @@ public final class ZoneResolvers {
             @Override
             public OffsetDateTime resolve(LocalDateTime desiredLocalDateTime, ZoneOffsetTransition transition, ZoneRules rules, ZoneId zone, OffsetDateTime oldDateTime) {
                 if (transition.isGap()) {
-                    return transition.getDateTimeAfter();
+                    return transition.getDateTimeAfter().atOffset(transition.getOffsetAfter());
                 } else {  // overlap
                     if (oldDateTime != null && transition.isValidOffset(oldDateTime.getOffset())) {
                         return OffsetDateTime.of(desiredLocalDateTime, oldDateTime.getOffset());

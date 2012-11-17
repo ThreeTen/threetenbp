@@ -39,9 +39,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import javax.time.DayOfWeek;
+import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.Month;
-import javax.time.OffsetDateTime;
 import javax.time.ZoneOffset;
 import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
@@ -233,7 +233,7 @@ public class TCKZoneOffsetTransitionRule {
                 Month.MARCH, 20, DayOfWeek.SUNDAY, TIME_0100, false, TimeDefinition.WALL,
                 OFFSET_0200, OFFSET_0200, OFFSET_0300);
         ZoneOffsetTransition trans = new ZoneOffsetTransition(
-                OffsetDateTime.of(2000, Month.MARCH, 26, 1, 0, OFFSET_0200), OFFSET_0300);
+                LocalDateTime.of(2000, Month.MARCH, 26, 1, 0), OFFSET_0200, OFFSET_0300);
         assertEquals(test.createTransition(2000), trans);
     }
 
@@ -243,7 +243,7 @@ public class TCKZoneOffsetTransitionRule {
                 Month.MARCH, 20, DayOfWeek.SUNDAY, LocalTime.MIDNIGHT, true, TimeDefinition.WALL,
                 OFFSET_0200, OFFSET_0300, OFFSET_0200);
         ZoneOffsetTransition trans = new ZoneOffsetTransition(
-                OffsetDateTime.of(2000, Month.MARCH, 27, 0, 0, OFFSET_0300), OFFSET_0200);
+                LocalDateTime.of(2000, Month.MARCH, 27, 0, 0), OFFSET_0300, OFFSET_0200);
         assertEquals(test.createTransition(2000), trans);
     }
 
@@ -253,7 +253,7 @@ public class TCKZoneOffsetTransitionRule {
                 Month.MARCH, -1, DayOfWeek.SUNDAY, TIME_0100, false, TimeDefinition.WALL,
                 OFFSET_0200, OFFSET_0200, OFFSET_0300);
         ZoneOffsetTransition trans = new ZoneOffsetTransition(
-                OffsetDateTime.of(2000, Month.MARCH, 26, 1, 0, OFFSET_0200), OFFSET_0300);
+                LocalDateTime.of(2000, Month.MARCH, 26, 1, 0), OFFSET_0200, OFFSET_0300);
         assertEquals(test.createTransition(2000), trans);
     }
 
@@ -263,7 +263,7 @@ public class TCKZoneOffsetTransitionRule {
                 Month.MARCH, -7, DayOfWeek.SUNDAY, TIME_0100, false, TimeDefinition.WALL,
                 OFFSET_0200, OFFSET_0200, OFFSET_0300);
         ZoneOffsetTransition trans = new ZoneOffsetTransition(
-                OffsetDateTime.of(2000, Month.MARCH, 19, 1, 0, OFFSET_0200), OFFSET_0300);
+                LocalDateTime.of(2000, Month.MARCH, 19, 1, 0), OFFSET_0200, OFFSET_0300);
         assertEquals(test.createTransition(2000), trans);
     }
 
@@ -273,7 +273,7 @@ public class TCKZoneOffsetTransitionRule {
                 Month.MARCH, -2, DayOfWeek.SUNDAY, TIME_0100, false, TimeDefinition.WALL,
                 OFFSET_0200, OFFSET_0200, OFFSET_0300);
         ZoneOffsetTransition trans = new ZoneOffsetTransition(
-                OffsetDateTime.of(2000, Month.MARCH, 26, 1, 0, OFFSET_0200), OFFSET_0300);
+                LocalDateTime.of(2000, Month.MARCH, 26, 1, 0), OFFSET_0200, OFFSET_0300);
         assertEquals(test.createTransition(2000), trans);
     }
 
@@ -283,7 +283,7 @@ public class TCKZoneOffsetTransitionRule {
                 Month.MARCH, 20, null, TIME_0100, false, TimeDefinition.STANDARD,
                 OFFSET_0200, OFFSET_0200, OFFSET_0300);
         ZoneOffsetTransition trans = new ZoneOffsetTransition(
-                OffsetDateTime.of(2000, Month.MARCH, 20, 1, 0, OFFSET_0200), OFFSET_0300);
+                LocalDateTime.of(2000, Month.MARCH, 20, 1, 0), OFFSET_0200, OFFSET_0300);
         assertEquals(test.createTransition(2000), trans);
     }
 

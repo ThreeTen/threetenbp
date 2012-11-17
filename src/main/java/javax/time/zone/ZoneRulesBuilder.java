@@ -347,7 +347,7 @@ class ZoneRulesBuilder {
                 effectiveSavings = 0;
                 for (TZRule rule : window.ruleList) {
                     ZoneOffsetTransition trans = rule.toTransition(standardOffset, savings);
-                    if (trans.getDateTimeBefore().isAfter(windowStart)) {
+                    if (trans.toEpochSecond() > windowStart.toEpochSecond()) {
                         // previous savings amount found, which could be the savings amount at
                         // the instant that the window starts (hence isAfter)
                         break;
@@ -365,7 +365,8 @@ class ZoneRulesBuilder {
             // check if the start of the window represents a transition
             ZoneOffset effectiveWallOffset = deduplicate(ZoneOffset.ofTotalSeconds(standardOffset.getTotalSeconds() + effectiveSavings));
             if (windowStart.getOffset().equals(effectiveWallOffset) == false) {
-                ZoneOffsetTransition trans = deduplicate(new ZoneOffsetTransition(windowStart, effectiveWallOffset));
+                ZoneOffsetTransition trans = deduplicate(
+                    new ZoneOffsetTransition(windowStart.getDateTime(), windowStart.getOffset(), effectiveWallOffset));
                 transitionList.add(trans);
             }
             savings = effectiveSavings;
@@ -373,8 +374,8 @@ class ZoneRulesBuilder {
             // apply rules within the window
             for (TZRule rule : window.ruleList) {
                 ZoneOffsetTransition trans = deduplicate(rule.toTransition(standardOffset, savings));
-                if (trans.getDateTimeBefore().isBefore(windowStart) == false &&
-                        trans.getDateTimeBefore().isBefore(window.createDateTime(savings)) &&
+                if (trans.toEpochSecond() < windowStart.toEpochSecond() == false &&
+                        trans.toEpochSecond() < window.createDateTime(savings).toEpochSecond() &&
                         trans.getOffsetBefore().equals(trans.getOffsetAfter()) == false) {
                     transitionList.add(trans);
                     savings = rule.savingAmountSecs;
@@ -592,7 +593,8 @@ class ZoneRulesBuilder {
          */
         OffsetDateTime createDateTime(int savingsSecs) {
             ZoneOffset wallOffset = ZoneOffset.ofTotalSeconds(standardOffset.getTotalSeconds() + savingsSecs);
-            return timeDefinition.createDateTime(windowEnd, standardOffset, wallOffset);
+            LocalDateTime ldt = timeDefinition.createDateTime(windowEnd, standardOffset, wallOffset);
+            return OffsetDateTime.of(ldt, wallOffset);
         }
     }
 
@@ -658,9 +660,9 @@ class ZoneRulesBuilder {
             date = deduplicate(date);
             LocalDateTime ldt = deduplicate(LocalDateTime.of(date, time));
             ZoneOffset wallOffset = deduplicate(ZoneOffset.ofTotalSeconds(standardOffset.getTotalSeconds() + savingsBeforeSecs));
-            OffsetDateTime dt = deduplicate(timeDefinition.createDateTime(ldt, standardOffset, wallOffset));
+            LocalDateTime dt = deduplicate(timeDefinition.createDateTime(ldt, standardOffset, wallOffset));
             ZoneOffset offsetAfter = deduplicate(ZoneOffset.ofTotalSeconds(standardOffset.getTotalSeconds() + savingAmountSecs));
-            return new ZoneOffsetTransition(dt, offsetAfter);
+            return new ZoneOffsetTransition(dt, wallOffset, offsetAfter);
         }
 
         /**

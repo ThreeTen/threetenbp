@@ -176,7 +176,7 @@ public class TCKFixedZoneRules {
     @Test(expectedExceptions=UnsupportedOperationException.class, groups="tck")
     public void test_getTransitions_immutable() {
         ZoneRules test = make(OFFSET_PTWO);
-        test.getTransitions().add(ZoneOffsetTransition.of(ODT, OFFSET_PTWO));
+        test.getTransitions().add(ZoneOffsetTransition.of(LDT, OFFSET_PONE, OFFSET_PTWO));
     }
 
     @Test(groups="tck", dataProvider="rules")
