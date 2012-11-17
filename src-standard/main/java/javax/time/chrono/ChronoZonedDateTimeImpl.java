@@ -34,11 +34,11 @@ package javax.time.chrono;
 import static javax.time.calendrical.ChronoField.EPOCH_DAY;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 import javax.time.DateTimeException;
 import javax.time.DayOfWeek;
-import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
@@ -50,7 +50,6 @@ import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.jdk8.DefaultInterfaceChronoZonedDateTime;
-import javax.time.zone.ZoneOffsetInfo;
 import javax.time.zone.ZoneOffsetTransition;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneResolvers;
@@ -139,13 +138,13 @@ import javax.time.zone.ZoneRules;
     static <R extends Chrono<R>> ChronoZonedDateTimeImpl<R> of(ChronoOffsetDateTimeImpl<R> dateTime, ZoneId zone) {
         Objects.requireNonNull(dateTime, "dateTime");
         Objects.requireNonNull(zone, "zone");
+        LocalDateTime inputLDT = LocalDateTime.from(dateTime.getDateTime());
         ZoneOffset inputOffset = dateTime.getOffset();
         ZoneRules rules = zone.getRules();  // latest rules version
-        LocalDateTime ldt = LocalDate.from(dateTime.getDate()).atTime(dateTime.getTime());
-        ZoneOffsetInfo info = rules.getOffsetInfo(ldt);
-        if (info.isValidOffset(inputOffset) == false) {
-            if (info instanceof ZoneOffsetTransition && ((ZoneOffsetTransition) info).isGap()) {
-                throw new DateTimeException("The local time " + LocalDateTime.from(dateTime) +
+        List<ZoneOffset> validOffsets = rules.getValidOffsets(inputLDT);
+        if (validOffsets.contains(inputOffset) == false) {
+            if (validOffsets.size() == 0) {
+                throw new DateTimeException("The local time " + inputLDT +
                         " does not exist in time-zone " + zone + " due to a daylight savings gap");
             }
             throw new DateTimeException("The offset in the date-time " + dateTime +
@@ -153,7 +152,6 @@ import javax.time.zone.ZoneRules;
         }
         return new ChronoZonedDateTimeImpl<>(dateTime, zone);
     }
-
 
     /**
      * Obtains an instance of {@code ZoneChronoDateTime} from an {@code ChronoOffsetDateTime}.
@@ -200,10 +198,18 @@ import javax.time.zone.ZoneRules;
         ZoneRules rules = zone.getRules();
         LocalDateTime desired = LocalDateTime.from(desiredLocalDateTime);
         OffsetDateTime old = (oldDateTime == null ? null : OffsetDateTime.from(oldDateTime));
-        OffsetDateTime offsetDT = resolver.resolve(desired, rules.getOffsetInfo(desired), rules, zone, old);
-        if (offsetDT == null || rules.isValidDateTime(offsetDT) == false) {
-            throw new DateTimeException(
+        List<ZoneOffset> validOffsets = rules.getValidOffsets(desired);
+        OffsetDateTime offsetDT;
+        if (validOffsets.size() == 1) {
+            offsetDT = OffsetDateTime.of(desired, validOffsets.get(0));
+        } else {
+            ZoneOffsetTransition trans = rules.getTransition(desired);
+            offsetDT = resolver.resolve(desired, trans, rules, zone, old);
+            if (((offsetDT.getDateTime() == desired && validOffsets.contains(offsetDT.getOffset())) ||
+                    rules.isValidOffset(offsetDT.getDateTime(), offsetDT.getOffset())) == false) {
+                throw new DateTimeException(
                     "ZoneResolver implementation must return a valid date-time and offset for the zone: " + resolver.getClass().getName());
+            }
         }
         // Convert the date back to the current chronology and set the time.
         ChronoLocalDateTime<R> cdt = desiredLocalDateTime.with(EPOCH_DAY, offsetDT.getDate().toEpochDay()).with(offsetDT.getTime());
@@ -261,9 +267,9 @@ import javax.time.zone.ZoneRules;
      */
     @Override
     public ChronoZonedDateTime<C> withEarlierOffsetAtOverlap() {
-        ZoneOffsetInfo info = getZone().getRules().getOffsetInfo(LocalDateTime.from(this));
-        if (info instanceof ZoneOffsetTransition) {
-            ZoneOffset offset = ((ZoneOffsetTransition) info).getOffsetBefore();
+        ZoneOffsetTransition trans = getZone().getRules().getTransition(LocalDateTime.from(this));
+        if (trans != null) {
+            ZoneOffset offset = trans.getOffsetBefore();
             if (offset.equals(getOffset()) == false) {
                 ChronoOffsetDateTimeImpl<C> newDT = dateTime.withOffsetSameLocal(offset);
                 return new ChronoZonedDateTimeImpl<C>(newDT, zone);
@@ -291,9 +297,9 @@ import javax.time.zone.ZoneRules;
      * @throws DateTimeException if no rules are valid for this date-time
      */
     public ChronoZonedDateTime<C> withLaterOffsetAtOverlap() {
-        ZoneOffsetInfo info = getZone().getRules().getOffsetInfo(LocalDateTime.from(this));
-        if (info instanceof ZoneOffsetTransition) {
-            ZoneOffset offset = ((ZoneOffsetTransition) info).getOffsetAfter();
+        ZoneOffsetTransition trans = getZone().getRules().getTransition(LocalDateTime.from(this));
+        if (trans != null) {
+            ZoneOffset offset = trans.getOffsetAfter();
             if (offset.equals(getOffset()) == false) {
                 ChronoOffsetDateTimeImpl<C> newDT = dateTime.withOffsetSameLocal(offset);
                 return new ChronoZonedDateTimeImpl<C>(newDT, zone);
@@ -532,45 +538,6 @@ import javax.time.zone.ZoneRules;
         return getDate().getChrono().ensureChronoZonedDateTime(field.doSet(this, newValue));
     }
 
-    /**
-     * Obtains an instance of {@code ZoneChronoDateTime} from a local date-time
-     * providing a resolver to handle an invalid date-time.
-     * <p>
-     * This factory creates a {@code ZoneChronoDateTime} from a date-time and time-zone.
-     * If the time is invalid for the zone, due to either being a gap or an overlap,
-     * then the resolver will determine what action to take.
-     * See {@link ZoneResolvers} for common resolver implementations.
-     *
-     * @param desiredTime  the local date-time, not null
-     * @param zone  the time-zone, not null
-     * @param resolver  the resolver from local date-time to zoned, not null
-     * @return the zoned date-time, not null
-     * @throws DateTimeException if the resolver cannot resolve an invalid local date-time
-     */
-    @SuppressWarnings("unchecked")
-    private <R extends Chrono<R>> ChronoZonedDateTime<R> with(ChronoOffsetDateTime<R> desiredTime, ZoneId zone, ZoneResolver resolver) {
-        Objects.requireNonNull(desiredTime, "desiredTime");
-        Objects.requireNonNull(zone, "zone");
-        Objects.requireNonNull(resolver, "resolver");
-        ZoneRules rules = zone.getRules();
-        // Convert to ISO desired date and time to apply zone check/replacement
-        LocalDateTime desired = LocalDateTime.from(desiredTime);
-        OffsetDateTime old = OffsetDateTime.from(dateTime);
-        OffsetDateTime offsetDT = resolver.resolve(desired, rules.getOffsetInfo(desired), rules, zone, old);
-        if (offsetDT == null || rules.isValidDateTime(offsetDT) == false) {
-            throw new DateTimeException(
-                    "ZoneResolver implementation must return a valid date-time and offset for the zone: " + resolver.getClass().getName());
-        }
-        if (offsetDT.equals(old) && getZone() == zone) {
-            return (ChronoZonedDateTime<R>) this;
-        }
-        // Convert offsetDT.date back to the right chronology ChronoLocalDate
-        // Convert the date back to the current chronology and set the time.
-        ChronoOffsetDateTimeImpl<R> cdt = (ChronoOffsetDateTimeImpl<R>) desiredTime.with(EPOCH_DAY, offsetDT.get(EPOCH_DAY)).with(offsetDT.getTime());
-        ChronoOffsetDateTimeImpl<R> codt = cdt.withOffsetSameLocal(offsetDT.getOffset());
-        return new ChronoZonedDateTimeImpl<R>(codt, zone);
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this {@code ZoneChronoDateTime} with the year value altered.
@@ -590,7 +557,8 @@ import javax.time.zone.ZoneRules;
         if (newDT == dateTime) {
             return this;
         }
-        return with(newDT, zone, ZoneResolvers.retainOffset());
+        return (newDT == dateTime ? this :
+            resolve(newDT.getDateTime(), zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
     /**

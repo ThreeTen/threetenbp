@@ -34,7 +34,7 @@ package javax.time.calendrical;
 import javax.time.LocalDateTime;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
-import javax.time.zone.ZoneOffsetInfo;
+import javax.time.zone.ZoneOffsetTransition;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneRules;
 
@@ -43,9 +43,8 @@ import javax.time.zone.ZoneRules;
  */
 public class MockZoneResolverReturnsNull implements ZoneResolver {
 
-    /** {@inheritDoc} */
     @Override
-    public OffsetDateTime resolve(LocalDateTime desiredLocalDateTime, ZoneOffsetInfo info, ZoneRules rules, ZoneId zone, OffsetDateTime oldDateTime) {
+    public OffsetDateTime resolve(LocalDateTime desiredLocalDateTime, ZoneOffsetTransition trans, ZoneRules rules, ZoneId zone, OffsetDateTime oldDateTime) {
         return null;
     }
 

@@ -48,6 +48,7 @@ import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
@@ -58,6 +59,7 @@ public class TCKFixedZoneRules {
 
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
+    private static final ZoneOffset OFFSET_M18 = ZoneOffset.ofHours(-18);
     private static final LocalDateTime LDT = LocalDateTime.of(2010, 12, 3, 11, 30);
     private static final OffsetDateTime ODT = OffsetDateTime.of(2010, 12, 3, 11, 30, OFFSET_PONE);
     private static final Instant INSTANT = ODT.toInstant();
@@ -66,12 +68,20 @@ public class TCKFixedZoneRules {
         return ZoneId.of(offset).getRules();
     }
 
+    @DataProvider(name="rules")
+    Object[][] data_rules() {
+        return new Object[][] {
+            {make(OFFSET_PONE), OFFSET_PONE},
+            {make(OFFSET_PTWO), OFFSET_PTWO},
+            {make(OFFSET_M18), OFFSET_M18},
+        };
+    }
+
     //-----------------------------------------------------------------------
     // Basics
     //-----------------------------------------------------------------------
-    @Test(groups={"implementation","tck"})
-    public void test_serialization() throws Exception {
-        ZoneRules test = make(OFFSET_PONE);
+    @Test(groups="tck", dataProvider="rules")
+    public void test_serialization(ZoneRules test, ZoneOffset expectedOffset) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);
         out.writeObject(test);
@@ -89,38 +99,92 @@ public class TCKFixedZoneRules {
     //-----------------------------------------------------------------------
     // basics
     //-----------------------------------------------------------------------
-    @Test(groups={"implementation","tck"})
-    public void test_data() {
-        ZoneRules test = make(OFFSET_PONE);
+    @Test(groups="tck", dataProvider="rules")
+    public void test_getOffset_Instant(ZoneRules test, ZoneOffset expectedOffset) {
+        assertEquals(test.getOffset(INSTANT), expectedOffset);
+        assertEquals(test.getOffset((Instant) null), expectedOffset);
+    }
+
+    @Test(groups="tck", dataProvider="rules")
+    public void test_getOffset_LocalDateTime(ZoneRules test, ZoneOffset expectedOffset) {
+        assertEquals(test.getOffset(LDT), expectedOffset);
+        assertEquals(test.getOffset((LocalDateTime) null), expectedOffset);
+    }
+
+    @Test(groups="tck", dataProvider="rules")
+    public void test_getValidOffsets_LDT(ZoneRules test, ZoneOffset expectedOffset) {
+        assertEquals(test.getValidOffsets(LDT).size(), 1);
+        assertEquals(test.getValidOffsets(LDT).get(0), expectedOffset);
+        assertEquals(test.getValidOffsets(null).size(), 1);
+        assertEquals(test.getValidOffsets(null).get(0), expectedOffset);
+    }
+
+    @Test(groups="tck", dataProvider="rules")
+    public void test_getTransition_LDT(ZoneRules test, ZoneOffset expectedOffset) {
+        assertEquals(test.getTransition(LDT), null);
+        assertEquals(test.getTransition(null), null);
+    }
+
+    @Test(groups="tck", dataProvider="rules")
+    public void test_isValidOffset_LDT_ZO(ZoneRules test, ZoneOffset expectedOffset) {
+        assertEquals(test.isValidOffset(LDT, expectedOffset), true);
+        assertEquals(test.isValidOffset(LDT, ZoneOffset.UTC), false);
+        assertEquals(test.isValidOffset(LDT, null), false);
+
+        assertEquals(test.isValidOffset(null, expectedOffset), true);
+        assertEquals(test.isValidOffset(null, ZoneOffset.UTC), false);
+        assertEquals(test.isValidOffset(null, null), false);
+    }
+
+    @Test(groups="tck", dataProvider="rules")
+    public void test_getStandardOffset_Instant(ZoneRules test, ZoneOffset expectedOffset) {
+        assertEquals(test.getStandardOffset(INSTANT), expectedOffset);
+        assertEquals(test.getStandardOffset(null), expectedOffset);
+    }
+
+    @Test(groups="tck", dataProvider="rules")
+    public void test_getDaylightSavings_Instant(ZoneRules test, ZoneOffset expectedOffset) {
         assertEquals(test.getDaylightSavings(INSTANT), Duration.ZERO);
-        assertEquals(test.getOffset(INSTANT), OFFSET_PONE);
-        assertEquals(test.getOffsetInfo(LDT), OFFSET_PONE);
-        assertEquals(test.getStandardOffset(INSTANT), OFFSET_PONE);
-        assertEquals(test.getTransitions().size(), 0);
-        assertEquals(test.getTransitionRules().size(), 0);
+        assertEquals(test.getDaylightSavings(null), Duration.ZERO);
+    }
+
+    @Test(groups="tck", dataProvider="rules")
+    public void test_isDaylightSavings_Instant(ZoneRules test, ZoneOffset expectedOffset) {
+        assertEquals(test.isDaylightSavings(INSTANT), false);
+        assertEquals(test.isDaylightSavings(null), false);
+    }
+
+    //-------------------------------------------------------------------------
+    @Test(groups="tck", dataProvider="rules")
+    public void test_nextTransition_Instant(ZoneRules test, ZoneOffset expectedOffset) {
         assertEquals(test.nextTransition(INSTANT), null);
+        assertEquals(test.nextTransition(null), null);
+    }
+
+    @Test(groups="tck", dataProvider="rules")
+    public void test_previousTransition_Instant(ZoneRules test, ZoneOffset expectedOffset) {
         assertEquals(test.previousTransition(INSTANT), null);
+        assertEquals(test.previousTransition(null), null);
     }
 
-    @Test(groups={"implementation","tck"})
-    public void test_isValidDateTime_same_offset() {
-        ZoneRules test = make(OFFSET_PONE);
-        assertEquals(test.isValidDateTime(ODT), true);
+    //-------------------------------------------------------------------------
+    @Test(groups="tck", dataProvider="rules")
+    public void test_getTransitions(ZoneRules test, ZoneOffset expectedOffset) {
+        assertEquals(test.getTransitions().size(), 0);
     }
 
-    @Test(groups={"implementation","tck"})
-    public void test_isValidDateTime_diff_offset() {
-        ZoneRules test = make(OFFSET_PTWO);
-        assertEquals(test.isValidDateTime(ODT), false);
-    }
-
-    @Test(expectedExceptions=UnsupportedOperationException.class, groups={"implementation","tck"})
+    @Test(expectedExceptions=UnsupportedOperationException.class, groups="tck")
     public void test_getTransitions_immutable() {
         ZoneRules test = make(OFFSET_PTWO);
         test.getTransitions().add(ZoneOffsetTransition.of(ODT, OFFSET_PTWO));
     }
 
-    @Test(expectedExceptions=UnsupportedOperationException.class, groups={"implementation","tck"})
+    @Test(groups="tck", dataProvider="rules")
+    public void test_getTransitionRules(ZoneRules test, ZoneOffset expectedOffset) {
+        assertEquals(test.getTransitionRules().size(), 0);
+    }
+
+    @Test(expectedExceptions=UnsupportedOperationException.class, groups="tck")
     public void test_getTransitionRules_immutable() {
         ZoneRules test = make(OFFSET_PTWO);
         test.getTransitionRules().add(ZoneOffsetTransitionRule.of(Month.JULY, 2, null, LocalTime.of(12, 30), false, TimeDefinition.STANDARD, OFFSET_PONE, OFFSET_PTWO, OFFSET_PONE));
@@ -129,8 +193,8 @@ public class TCKFixedZoneRules {
     //-----------------------------------------------------------------------
     // equals() / hashCode()
     //-----------------------------------------------------------------------
-    @Test(groups={"implementation","tck"})
-    public void test_equals() {
+    @Test(groups="tck")
+    public void test_equalsHashCode() {
         ZoneRules a = make(OFFSET_PONE);
         ZoneRules b = make(OFFSET_PTWO);
 

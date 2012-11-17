@@ -2915,7 +2915,7 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
         t.atZone(ZONE_PARIS, (ZoneResolver) null);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_atZone_resolver_badResolver() {
         LocalDateTime t = LocalDateTime.of(2007, 4, 1, 0, 0);
         t.atZone(ZONE_GAZA, new MockZoneResolverReturnsNull());

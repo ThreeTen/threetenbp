@@ -36,8 +36,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import javax.time.zone.ZoneOffsetInfo;
-
 /**
  * Test Performance.
  */
@@ -65,17 +63,16 @@ public class PerformanceZone {
         jsrInstantGetOffset();
         jdkLocalGetOffset();
         jdkInstantGetOffset();
-
     }
 
     //-----------------------------------------------------------------------
     private static void jsrLocalGetOffset() {
         LocalDateTime dt = LocalDateTime.of(YEAR, 6, 1, 12, 0);
         ZoneId tz = ZoneId.of("Europe/London");
-        ZoneOffsetInfo[] list = new ZoneOffsetInfo[SIZE];
+        ZoneOffset[] list = new ZoneOffset[SIZE];
         long start = System.nanoTime();
         for (int i = 0; i < SIZE; i++) {
-            list[i] = tz.getRules().getOffsetInfo(dt);
+            list[i] = tz.getRules().getOffset(dt);
         }
         long end = System.nanoTime();
         System.out.println("JSR-Loc: Setup:  " + NF.format(end - start) + " ns" + list[0]);

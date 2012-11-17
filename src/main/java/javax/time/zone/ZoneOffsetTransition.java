@@ -35,6 +35,9 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import javax.time.Duration;
@@ -61,7 +64,7 @@ import javax.time.ZoneOffset;
  * This class is immutable and thread-safe.
  */
 public final class ZoneOffsetTransition
-        implements ZoneOffsetInfo, Comparable<ZoneOffsetTransition>, Serializable {
+        implements Comparable<ZoneOffsetTransition>, Serializable {
 
     /**
      * Serialization version.
@@ -258,9 +261,22 @@ public final class ZoneOffsetTransition
      * @param offset  the offset to check, null returns false
      * @return true if the offset is valid during the transition
      */
-    @Override
     public boolean isValidOffset(ZoneOffset offset) {
         return isGap() ? false : (getOffsetBefore().equals(offset) || getOffsetAfter().equals(offset));
+    }
+
+    /**
+     * Gets the valid offsets during this transition.
+     * <p>
+     * A gap will return an empty list, while an overlap will return both offsets.
+     *
+     * @return the list of valid offsets
+     */
+    List<ZoneOffset> getValidOffsets() {
+        if (isGap()) {
+            return Collections.emptyList();
+        }
+        return Arrays.asList(getOffsetBefore(), getOffsetAfter());
     }
 
     //-----------------------------------------------------------------------

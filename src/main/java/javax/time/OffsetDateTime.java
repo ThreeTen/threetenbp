@@ -1401,7 +1401,7 @@ public final class OffsetDateTime
      */
     public OffsetDateTime resolveOffset(ZoneId zone) {
         ZoneRules rules = zone.getRules();
-        if (rules.isValidDateTime(this)) {  // avoids toInstant()
+        if (rules.isValidOffset(dateTime, offset)) {  // avoids toInstant()
             return this;
         }
         return withOffsetSameInstant(rules.getOffset(toInstant()));
@@ -1476,9 +1476,7 @@ public final class OffsetDateTime
      */
     @Override
     public ZonedDateTime atZoneSimilarLocal(ZoneId zone, ZoneResolver resolver) {
-        ZoneRules rules = zone.getRules();
-        OffsetDateTime offsetDT = resolver.resolve(dateTime, rules.getOffsetInfo(dateTime), rules, zone, this);
-        return ZonedDateTime.of(offsetDT, zone);
+        return ZonedDateTime.resolve(dateTime, zone, this, resolver);
     }
 
     //-----------------------------------------------------------------------

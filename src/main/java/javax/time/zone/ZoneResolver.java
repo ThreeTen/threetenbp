@@ -69,7 +69,7 @@ public interface ZoneResolver {
      * is in a gap or overlap, adjusting accordingly.
      *
      * @param desiredLocalDateTime  the desired local date-time, not null
-     * @param info  the zone-offset info from the rules for the local date-time, not null
+     * @param transition  the zone-offset transition applicable at the local date-time, not null
      * @param rules  the time-zone rules to use, not null
      * @param zone  the target time-zone, not normally used by implementations, not null
      * @param oldDateTime  the old date-time before any adjustment, may be null
@@ -78,7 +78,7 @@ public interface ZoneResolver {
      */
     OffsetDateTime resolve(
             LocalDateTime desiredLocalDateTime,
-            ZoneOffsetInfo info,
+            ZoneOffsetTransition transition,
             ZoneRules rules,
             ZoneId zone,
             OffsetDateTime oldDateTime);

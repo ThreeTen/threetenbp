@@ -85,53 +85,121 @@ public interface ZoneRules {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the offset applicable at the specified instant in this zone.
+     * Gets the offset applicable at the specified instant in these rules.
      * <p>
-     * For any given instant there can only ever be one valid offset, which
-     * is returned by this method.
+     * The mapping from an instant to an offset is simple, there is only
+     * one valid offset for each instant.
+     * This method returns that offset.
      *
-     * @param instant  the instant to find the offset for,
-     *   ignored for fixed offset rules, otherwise not null
+     * @param instant  the instant to find the offset for, not null, but null
+     *  may be ignored if the rules have a single offset for all instants
      * @return the offset, not null
      */
     ZoneOffset getOffset(Instant instant);
 
     /**
-     * Gets the offset information for a local date-time in this zone.
+     * Gets a suitable offset for the specified local date-time in these rules.
      * <p>
-     * This provides access to full details as to the offset or offsets applicable
-     * for the local date-time. The mapping from a local date-time to an offset
-     * is not straightforward. There are three cases:
+     * The mapping from a local date-time to an offset is not straightforward.
+     * There are three cases:
      * <ul>
-     * <li>Normal. Where there is a single offset for the local date-time.</li>
-     * <li>Gap. Where there is a gap in the local time-line normally caused by the
-     * spring cutover to daylight savings. There are no valid offsets within the gap</li>
-     * <li>Overlap. Where there is a gap in the local time-line normally caused by the
-     * autumn cutover from daylight savings. There are two valid offsets during the overlap.</li>
+     * <li>Normal, with one valid offset. For the vast majority of the year, the normal
+     *  case applies, where there is a single valid offset for the local date-time.</li>
+     * <li>Gap, with zero valid offsets. Where there is a gap in the local time-line
+     *  typically caused by the spring cutover to daylight savings.</li>
+     * <li>Overlap, with two valid offsets. Where there is a gap in the local time-line
+     *  typically caused by the autumn cutover from daylight savings.</li>
      * </ul>
-     * The returned object will be either a {@link ZoneOffset} or a {@link ZoneOffsetTransition}.
-     *
-     * @param dateTime  the date-time to find the offset information for, not null
-     * @return the offset information, not null
-     */
-    ZoneOffsetInfo getOffsetInfo(LocalDateTime dateTime);
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if the offset date-time is valid for these rules.
+     * Thus, for any given local date-time there can be zero, one or two valid offsets.
+     * This method returns the single offset in the Normal case, and in the Gap or Overlap
+     * case it returns the offset before the transition.
      * <p>
-     * To be valid, the local date-time must not be in a gap and the offset
-     * must match the valid offsets.
+     * Since, in the case of Gap and Overlap, the offset returned is a "best" value, rather
+     * than the "correct" value, it should be treated with care. Applications that care
+     * about the correct offset should use a combination of this method,
+     * {@link #getValidOffsets(LocalDateTime)} and {@link #getTransition(LocalDateTime)}.
      *
-     * @param dateTime  the date-time to check, not null
-     * @return true if the offset date-time is valid for these rules
+     * @param localDateTime  the local date-time to query, not null, but null
+     *  may be ignored if the rules have a single offset for all instants
+     * @return the best available offset for the local date-time, not null
      */
-    boolean isValidDateTime(OffsetDateTime dateTime);
-    // JAVA8
-    //    default {
-    //        ZoneOffsetInfo info = getOffsetInfo(dateTime.toLocalDateTime());
-    //        return info.isValidOffset(dateTime.getOffset());
-    //    }
+    ZoneOffset getOffset(LocalDateTime localDateTime);
+
+    /**
+     * Gets the offset applicable at the specified local date-time in these rules.
+     * <p>
+     * The mapping from a local date-time to an offset is not straightforward.
+     * There are three cases:
+     * <ul>
+     * <li>Normal, with one valid offset. For the vast majority of the year, the normal
+     *  case applies, where there is a single valid offset for the local date-time.</li>
+     * <li>Gap, with zero valid offsets. Where there is a gap in the local time-line
+     *  typically caused by the spring cutover to daylight savings.</li>
+     * <li>Overlap, with two valid offsets. Where there is a gap in the local time-line
+     *  typically caused by the autumn cutover from daylight savings.</li>
+     * </ul>
+     * Thus, for any given local date-time there can be zero, one or two valid offsets.
+     * This method returns that list of valid offsets, which is a list of size 0, 1 or 2.
+     * In the case where there are two offsets, the earlier offset is returned at index 0
+     * and the later offset at index 1.
+     * <p>
+     * There are various ways to handle the conversion from a {@code LocalDateTime}.
+     * One technique, using this method, would be:
+     * <pre>
+     *  List<ZoneOffset> validOffsets = rules.getOffset(localDT);
+     *  if (validOffsets.size() == 1) {
+     *    // Normal case: only one valid offset
+     *    zoneOffset = validOffsets.get(0);
+     *  } else {
+     *    // Gap or Overlap: determine what to do from transition (which will be non-null)
+     *    ZoneOffsetTransition trans = rules.getTransition(localDT);
+     *  }
+     * </pre>
+     * <p>
+     * In theory, it is possible for there to be more than two valid offsets.
+     * This would happen if clocks to be put back more than once in quick succession.
+     * This has never happened in the history of time-zones and thus has no special handling.
+     * However, if it were to happen, then the list would return more than 2 entries.
+     *
+     * @param localDateTime  the local date-time to query for valid offsets, not null, but null
+     *  may be ignored if the rules have a single offset for all instants
+     * @return the list of valid offsets, may be immutable, not null
+     */
+    List<ZoneOffset> getValidOffsets(LocalDateTime localDateTime);
+
+    /**
+     * Gets the offset transition applicable at the specified local date-time in these rules.
+     * <p>
+     * The mapping from a local date-time to an offset is not straightforward.
+     * There are three cases:
+     * <ul>
+     * <li>Normal, with one valid offset. For the vast majority of the year, the normal
+     *  case applies, where there is a single valid offset for the local date-time.</li>
+     * <li>Gap, with zero valid offsets. Where there is a gap in the local time-line
+     *  typically caused by the spring cutover to daylight savings.</li>
+     * <li>Overlap, with two valid offsets. Where there is a gap in the local time-line
+     *  typically caused by the autumn cutover from daylight savings.</li>
+     * </ul>
+     * A transition is used to model the cases of a Gap or Overlap.
+     * The Normal case will return null.
+     * <p>
+     * There are various ways to handle the conversion from a {@code LocalDateTime}.
+     * One technique, using this method, would be:
+     * <pre>
+     *  ZoneOffsetTransition trans = rules.getTransition(localDT);
+     *  if (trans == null) {
+     *    // Gap or Overlap: determine what to do from transition
+     *  } else {
+     *    // Normal case: only one valid offset
+     *    zoneOffset = rule.getOffset(localDT);
+     *  }
+     * </pre>
+     *
+     * @param localDateTime  the local date-time to query for offset transition, not null, but null
+     *  may be ignored if the rules have a single offset for all instants
+     * @return the offset transition, null if the local date-time is not in transition
+     */
+    ZoneOffsetTransition getTransition(LocalDateTime localDateTime);
 
     //-----------------------------------------------------------------------
     /**
@@ -142,7 +210,8 @@ public interface ZoneRules {
      * The standard offset is the offset before any daylight saving time is applied.
      * This is typically the offset applicable during winter.
      *
-     * @param instant  the instant to find the offset information for, not null
+     * @param instant  the instant to find the offset information for, not null, but null
+     *  may be ignored if the rules have a single offset for all instants
      * @return the standard offset, not null
      */
     ZoneOffset getStandardOffset(Instant instant);
@@ -156,11 +225,11 @@ public interface ZoneRules {
      * Typically the amount is zero during winter and one hour during summer.
      * Time-zones are second-based, so the nanosecond part of the duration will be zero.
      *
-     * @param instant  the instant to find the daylight savings for, not null
+     * @param instant  the instant to find the daylight savings for, not null, but null
+     *  may be ignored if the rules have a single offset for all instants
      * @return the difference between the standard and actual offset, not null
      */
     Duration getDaylightSavings(Instant instant);
-    // JAVA8
     //    default {
     //        ZoneOffset standardOffset = getStandardOffset(instant);
     //        ZoneOffset actualOffset = getOffset(instant);
@@ -172,13 +241,29 @@ public interface ZoneRules {
      * <p>
      * This checks if the standard and actual offsets are the same at the specified instant.
      *
-     * @param instant  the instant to find the offset information for, not null
+     * @param instant  the instant to find the offset information for, not null, but null
+     *  may be ignored if the rules have a single offset for all instants
      * @return the standard offset, not null
      */
     boolean isDaylightSavings(Instant instant);
-    // JAVA8
     //    default {
     //        return (getStandardOffset(instant).equals(getOffset(instant)) == false);
+    //    }
+
+    /**
+     * Checks if the offset date-time is valid for these rules.
+     * <p>
+     * To be valid, the local date-time must not be in a gap and the offset
+     * must match the valid offsets.
+     *
+     * @param localDateTime  the date-time to check, not null, but null
+     *  may be ignored if the rules have a single offset for all instants
+     * @param offset  the offset to check, null returns false
+     * @return true if the offset date-time is valid for these rules
+     */
+    boolean isValidOffset(LocalDateTime localDateTime, ZoneOffset offset);
+    //    default {
+    //        return getValidOffsets(dateTime).contains(offset);
     //    }
 
     //-----------------------------------------------------------------------
@@ -189,7 +274,8 @@ public interface ZoneRules {
      * For example, if the instant represents a point where "Summer" daylight savings time
      * applies, then the method will return the transition to the next "Winter" time.
      *
-     * @param instant  the instant to get the next transition after, not null
+     * @param instant  the instant to get the next transition after, not null, but null
+     *  may be ignored if the rules have a single offset for all instants
      * @return the next transition after the specified instant, null if this is after the last transition
      */
     ZoneOffsetTransition nextTransition(Instant instant);
@@ -201,7 +287,8 @@ public interface ZoneRules {
      * For example, if the instant represents a point where "summer" daylight saving time
      * applies, then the method will return the transition from the previous "winter" time.
      *
-     * @param instant  the instant to get the previous transition after, not null
+     * @param instant  the instant to get the previous transition after, not null, but null
+     *  may be ignored if the rules have a single offset for all instants
      * @return the previous transition after the specified instant, null if this is before the first transition
      */
     ZoneOffsetTransition previousTransition(Instant instant);

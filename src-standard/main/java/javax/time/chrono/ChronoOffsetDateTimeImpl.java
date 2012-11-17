@@ -42,12 +42,11 @@ import java.util.Objects;
 import javax.time.DateTimeException;
 import javax.time.DayOfWeek;
 import javax.time.Instant;
-import javax.time.LocalDate;
-import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
+import javax.time.ZonedDateTime;
 import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
@@ -954,15 +953,10 @@ class ChronoOffsetDateTimeImpl<C extends Chrono<C>>
      */
     @Override
     public ChronoZonedDateTime<C> atZoneSimilarLocal(ZoneId zone, ZoneResolver resolver) {
-        // Convert the ChronoLocalDate to LocalDate to work with Zone rules and then convert back
-        ZoneRules rules = zone.getRules();
-        LocalDate ld = LocalDate.from(dateTime.getDate());
-        LocalDateTime ldt = LocalDateTime.of(ld, dateTime.getTime());
-        OffsetDateTime odt = OffsetDateTime.of(ldt, offset);
-        OffsetDateTime offsetDT = resolver.resolve(ldt, rules.getOffsetInfo(odt.getDateTime()), rules, zone, odt);
+        ZonedDateTime resolved = OffsetDateTime.from(this).atZoneSimilarLocal(zone, resolver);
         ChronoOffsetDateTimeImpl<C> codt = this
-                .with(EPOCH_DAY, offsetDT.getDate().toEpochDay())
-                .with(NANO_OF_DAY, offsetDT.getTime().toNanoOfDay());
+                .with(EPOCH_DAY, resolved.getDate().toEpochDay())
+                .with(NANO_OF_DAY, resolved.getTime().toNanoOfDay());
         return ChronoZonedDateTimeImpl.of(codt, zone);
     }
 

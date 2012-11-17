@@ -46,7 +46,6 @@ import java.util.regex.Pattern;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAccessor.Query;
 import javax.time.format.TextStyle;
-import javax.time.zone.ZoneOffsetInfo;
 import javax.time.zone.ZoneOffsetTransition;
 import javax.time.zone.ZoneOffsetTransitionRule;
 import javax.time.zone.ZoneRules;
@@ -717,13 +716,23 @@ public abstract class ZoneId implements Serializable {
         }
 
         @Override
-        public ZoneOffsetInfo getOffsetInfo(LocalDateTime dateTime) {
+        public ZoneOffset getOffset(LocalDateTime localDateTime) {
             return offset;
         }
 
         @Override
-        public boolean isValidDateTime(OffsetDateTime dateTime) {
-            return dateTime.getOffset().equals(offset);
+        public List<ZoneOffset> getValidOffsets(LocalDateTime localDateTime) {
+            return Collections.singletonList(offset);
+        }
+
+        @Override
+        public ZoneOffsetTransition getTransition(LocalDateTime localDateTime) {
+            return null;
+        }
+
+        @Override
+        public boolean isValidOffset(LocalDateTime dateTime, ZoneOffset offset) {
+            return this.offset.equals(offset);
         }
 
         //-------------------------------------------------------------------------

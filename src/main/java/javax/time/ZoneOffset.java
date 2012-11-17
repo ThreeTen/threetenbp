@@ -45,7 +45,6 @@ import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
-import javax.time.zone.ZoneOffsetInfo;
 
 /**
  * A time-zone offset from Greenwich/UTC, such as {@code +02:00}.
@@ -81,7 +80,7 @@ import javax.time.zone.ZoneOffsetInfo;
  */
 public final class ZoneOffset
         extends DefaultInterfaceDateTimeAccessor
-        implements DateTimeAccessor, WithAdjuster, ZoneOffsetInfo, Comparable<ZoneOffset>, Serializable {
+        implements DateTimeAccessor, WithAdjuster, Comparable<ZoneOffset>, Serializable {
 
     /** Cache of time-zone offset by offset in seconds. */
     private static final ConcurrentMap<Integer, ZoneOffset> SECONDS_CACHE = new ConcurrentHashMap<Integer, ZoneOffset>(16, 0.75f, 4);
@@ -486,20 +485,6 @@ public final class ZoneOffset
     @Override
     public DateTime doWithAdjustment(DateTime dateTime) {
         return dateTime.with(OFFSET_SECONDS, totalSeconds);
-    }
-
-    /**
-     * Checks if this offset equals the specified offset.
-     * <p>
-     * This checks to see if the given offset equals this offset.
-     * This method exists to implement the {@link ZoneOffsetInfo} contract.
-     *
-     * @param offset  the offset to check, null returns false
-     * @return true if the specified offset equals this offset
-     */
-    @Override
-    public boolean isValidOffset(ZoneOffset offset) {
-        return equals(offset);
     }
 
     //-----------------------------------------------------------------------

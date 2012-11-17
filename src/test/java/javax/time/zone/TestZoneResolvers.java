@@ -397,12 +397,16 @@ public class TestZoneResolvers {
     //-----------------------------------------------------------------------
     private OffsetDateTime resolve(ZoneResolver resolver, LocalDateTime desiredLocal, ZoneId zone) {
         ZoneRules rules = zone.getRules();
-        return resolver.resolve(desiredLocal, rules.getOffsetInfo(desiredLocal), rules, zone, null);
+        ZoneOffsetTransition trans = rules.getTransition(desiredLocal);
+        if (trans != null) {
+            return resolver.resolve(desiredLocal, trans, rules, zone, null);
+        }
+        return desiredLocal.atOffset(rules.getOffset(desiredLocal));
     }
 
     private OffsetDateTime resolve(ZoneResolver resolver, LocalDateTime desiredLocal, ZoneId zone, OffsetDateTime old) {
         ZoneRules rules = zone.getRules();
-        return resolver.resolve(desiredLocal, rules.getOffsetInfo(desiredLocal), rules, zone, old);
+        return resolver.resolve(desiredLocal, rules.getTransition(desiredLocal), rules, zone, old);
     }
 
     private static LocalDateTime dateTime(int year, int month, int day, int h, int m, int s, int n) {

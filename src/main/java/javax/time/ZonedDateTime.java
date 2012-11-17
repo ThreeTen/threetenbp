@@ -35,6 +35,7 @@ import static javax.time.DateTimeConstants.SECONDS_PER_HOUR;
 import static javax.time.DateTimeConstants.SECONDS_PER_MINUTE;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 import javax.time.calendrical.ChronoField;
@@ -52,7 +53,6 @@ import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
 import javax.time.jdk8.DefaultInterfaceChronoZonedDateTime;
-import javax.time.zone.ZoneOffsetInfo;
 import javax.time.zone.ZoneOffsetTransition;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneResolvers;
@@ -360,12 +360,13 @@ public final class ZonedDateTime
     public static ZonedDateTime of(OffsetDateTime dateTime, ZoneId zone) {
         Objects.requireNonNull(dateTime, "dateTime");
         Objects.requireNonNull(zone, "zone");
+        LocalDateTime inputLDT = dateTime.getDateTime();
         ZoneOffset inputOffset = dateTime.getOffset();
         ZoneRules rules = zone.getRules();  // latest rules version
-        ZoneOffsetInfo info = rules.getOffsetInfo(dateTime.getDateTime());
-        if (info.isValidOffset(inputOffset) == false) {
-            if (info instanceof ZoneOffsetTransition && ((ZoneOffsetTransition) info).isGap()) {
-                throw new DateTimeException("The local time " + dateTime.getDateTime() +
+        List<ZoneOffset> validOffsets = rules.getValidOffsets(inputLDT);
+        if (validOffsets.contains(inputOffset) == false) {
+            if (validOffsets.size() == 0) {
+                throw new DateTimeException("The local time " + inputLDT +
                         " does not exist in time-zone " + zone + " due to a daylight savings gap");
             }
             throw new DateTimeException("The offset in the date-time " + dateTime +
@@ -433,7 +434,7 @@ public final class ZonedDateTime
         Objects.requireNonNull(instantDateTime, "instantDateTime");
         Objects.requireNonNull(zone, "zone");
         ZoneRules rules = zone.getRules();
-        if (rules.isValidDateTime(instantDateTime) == false) {  // avoids toInstant()
+        if (rules.isValidOffset(instantDateTime.getDateTime(), instantDateTime.getOffset()) == false) {  // avoids toInstant()
             instantDateTime = instantDateTime.withOffsetSameInstant(rules.getOffset(instantDateTime.toInstant()));
         }
         return new ZonedDateTime(instantDateTime, zone);
@@ -551,15 +552,23 @@ public final class ZonedDateTime
      * @return the zoned date-time, not null
      * @throws DateTimeException if the date-time cannot be resolved
      */
-    private static ZonedDateTime resolve(LocalDateTime desiredLocalDateTime, ZoneId zone, OffsetDateTime oldDateTime, ZoneResolver resolver) {
+    static ZonedDateTime resolve(LocalDateTime desiredLocalDateTime, ZoneId zone, OffsetDateTime oldDateTime, ZoneResolver resolver) {
         Objects.requireNonNull(desiredLocalDateTime, "desiredLocalDateTime");
         Objects.requireNonNull(zone, "zone");
         Objects.requireNonNull(resolver, "resolver");
         ZoneRules rules = zone.getRules();
-        OffsetDateTime offsetDT = resolver.resolve(desiredLocalDateTime, rules.getOffsetInfo(desiredLocalDateTime), rules, zone, oldDateTime);
-        if (offsetDT == null || rules.isValidDateTime(offsetDT) == false) {
-            throw new DateTimeException(
+        List<ZoneOffset> validOffsets = rules.getValidOffsets(desiredLocalDateTime);
+        OffsetDateTime offsetDT;
+        if (validOffsets.size() == 1) {
+            offsetDT = OffsetDateTime.of(desiredLocalDateTime, validOffsets.get(0));
+        } else {
+            ZoneOffsetTransition trans = rules.getTransition(desiredLocalDateTime);
+            offsetDT = resolver.resolve(desiredLocalDateTime, trans, rules, zone, oldDateTime);
+            if (((offsetDT.getDateTime() == desiredLocalDateTime && validOffsets.contains(offsetDT.getOffset())) ||
+                    rules.isValidOffset(offsetDT.getDateTime(), offsetDT.getOffset())) == false) {
+                throw new DateTimeException(
                     "ZoneResolver implementation must return a valid date-time and offset for the zone: " + resolver.getClass().getName());
+            }
         }
         return new ZonedDateTime(offsetDT, zone);
     }
@@ -647,9 +656,9 @@ public final class ZonedDateTime
      */
     @Override
     public ZonedDateTime withEarlierOffsetAtOverlap() {
-        ZoneOffsetInfo info = getZone().getRules().getOffsetInfo(getDateTime());
-        if (info instanceof ZoneOffsetTransition) {
-            ZoneOffset offset = ((ZoneOffsetTransition) info).getOffsetBefore();
+        ZoneOffsetTransition trans = getZone().getRules().getTransition(getDateTime());
+        if (trans != null) {
+            ZoneOffset offset = trans.getOffsetBefore();
             if (offset.equals(getOffset()) == false) {
                 OffsetDateTime newDT = dateTime.withOffsetSameLocal(offset);
                 return new ZonedDateTime(newDT, zone);
@@ -678,9 +687,9 @@ public final class ZonedDateTime
      */
     @Override
     public ZonedDateTime withLaterOffsetAtOverlap() {
-        ZoneOffsetInfo info = getZone().getRules().getOffsetInfo(getDateTime());
-        if (info instanceof ZoneOffsetTransition) {
-            ZoneOffset offset = ((ZoneOffsetTransition) info).getOffsetAfter();
+        ZoneOffsetTransition trans = getZone().getRules().getTransition(getDateTime());
+        if (trans != null) {
+            ZoneOffset offset = trans.getOffsetAfter();
             if (offset.equals(getOffset()) == false) {
                 OffsetDateTime newDT = dateTime.withOffsetSameLocal(offset);
                 return new ZonedDateTime(newDT, zone);
