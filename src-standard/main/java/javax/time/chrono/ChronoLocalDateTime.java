@@ -85,7 +85,7 @@ public interface ChronoLocalDateTime<C extends Chrono<C>>
      * only compares the underlying date and not the chronology.
      * This allows dates in different calendar systems to be compared based
      * on the time-line position.
-     * 
+     *
      * @see #isAfter
      * @see #isBefore
      * @see #isEqual
@@ -244,7 +244,7 @@ public interface ChronoLocalDateTime<C extends Chrono<C>>
      * This allows dates in different calendar systems to be compared based
      * on the time-line position.
      *
-     * @param  other  the other date-time to compare to, not null
+     * @param other  the other date-time to compare to, not null
      * @return true if this is before the specified date-time
      */
     boolean isBefore(ChronoLocalDateTime<?> other);
@@ -257,7 +257,7 @@ public interface ChronoLocalDateTime<C extends Chrono<C>>
      * This allows date-times in different calendar systems to be compared based
      * on the time-line position.
      *
-     * @param  other  the other date-time to compare to, not null
+     * @param other  the other date-time to compare to, not null
      * @return true if the underlying date-time is equal to the specified date-time on the timeline
      */
     boolean isEqual(ChronoLocalDateTime<?> other);

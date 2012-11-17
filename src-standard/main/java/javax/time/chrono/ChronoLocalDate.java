@@ -208,7 +208,7 @@ public interface ChronoLocalDate<C extends Chrono<C>>
      * This allows dates in different calendar systems to be compared based
      * on the time-line position.
      * This is equivalent to using {@code Long.compare(date1.toEpochDay(),  date2.toEpochDay())}.
-     * 
+     *
      * @see #isAfter
      * @see #isBefore
      * @see #isEqual
@@ -394,7 +394,7 @@ public interface ChronoLocalDate<C extends Chrono<C>>
      * on the time-line position.
      * This is equivalent to using {@code date1.toEpochDay() == date2.toEpochDay()}.
      *
-     * @param  other  the other date to compare to, not null
+     * @param other  the other date to compare to, not null
      * @return true if the underlying date is equal to the specified date
      */
     boolean isEqual(ChronoLocalDate<?> other);
