@@ -134,11 +134,12 @@ class ChronoOffsetDateTimeImpl<C extends Chrono<C>>
      * @param offset  the zone offset to create with, not null
      */
     @SuppressWarnings("unchecked")
-    private <R extends Chrono<R>> ChronoOffsetDateTimeImpl<R> with(ChronoDateTimeImpl<R> dateTime, ZoneOffset offset) {
+    private  ChronoOffsetDateTimeImpl<C> with(ChronoDateTimeImpl<C> dateTime, ZoneOffset offset) {
         if (this.dateTime == dateTime && this.offset.equals(offset)) {
-            return (ChronoOffsetDateTimeImpl<R>) this;
+            return this;
         }
-        return new ChronoOffsetDateTimeImpl<>(dateTime, offset);
+        ChronoDateTimeImpl<C> impl = getDate().getChrono().ensureChronoLocalDateTime(dateTime);
+        return new ChronoOffsetDateTimeImpl<>(impl, offset);
     }
 
     //-----------------------------------------------------------------------
@@ -341,7 +342,7 @@ class ChronoOffsetDateTimeImpl<C extends Chrono<C>>
         } else if (adjuster instanceof ChronoOffsetDateTime) {
             return (ChronoOffsetDateTime<C>) adjuster;
         }
-        return (ChronoOffsetDateTime<C>) adjuster.doWithAdjustment(this);
+        return getDate().getChrono().ensureChronoOffsetDateTime((ChronoOffsetDateTime<C>) adjuster.doWithAdjustment(this));
     }
 
     /**
@@ -381,7 +382,7 @@ class ChronoOffsetDateTimeImpl<C extends Chrono<C>>
             }
             return with(dateTime.with(field, newValue), offset);
         }
-        return field.doSet(this, newValue);
+        return getDate().getChrono().ensureChronoOffsetDateTime(field.doSet(this, newValue));
     }
 
     //-----------------------------------------------------------------------
@@ -585,7 +586,7 @@ class ChronoOffsetDateTimeImpl<C extends Chrono<C>>
         if (unit instanceof ChronoUnit) {
             return with(dateTime.plus(amountToAdd, unit), offset);
         }
-        return unit.doAdd(this, amountToAdd);
+        return getDate().getChrono().ensureChronoOffsetDateTime(unit.doAdd(this, amountToAdd));
     }
 
     //-----------------------------------------------------------------------

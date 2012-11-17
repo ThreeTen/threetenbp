@@ -31,6 +31,7 @@
  */
 package javax.time.chrono;
 
+import java.util.Comparator;
 import javax.time.DateTimeException;
 import javax.time.Instant;
 import javax.time.LocalTime;
@@ -77,6 +78,30 @@ import javax.time.zone.ZoneResolvers;
  */
 public interface ChronoOffsetDateTime<C extends Chrono<C>>
         extends DateTime, WithAdjuster, Comparable<ChronoOffsetDateTime<?>> {
+
+    /**
+     * Comparator for two {@code ChronoOffsetDateTime}s ignoring the chronology.
+     * <p>
+     * This method differs from the comparison in {@link #compareTo} in that it
+     * only compares the underlying date and not the chronology.
+     * This allows dates in different calendar systems to be compared based
+     * on the time-line position.
+     *
+     * @see #isAfter
+     * @see #isBefore
+     * @see #isEqual
+     */
+    public static final Comparator<ChronoOffsetDateTime<?>> INSTANT_COMPARATOR =
+            new Comparator<ChronoOffsetDateTime<?>>() {
+        @Override
+        public int compare(ChronoOffsetDateTime<?> datetime1, ChronoOffsetDateTime<?> datetime2) {
+            int cmp = Long.compare(datetime1.toEpochSecond(), datetime2.toEpochSecond());
+            if (cmp == 0) {
+                cmp = Long.compare(datetime1.getTime().toNanoOfDay(), datetime2.getTime().toNanoOfDay());
+            }
+            return cmp;
+        }
+    };
 
     /**
      * Gets the local date part of this date-time.
@@ -319,20 +344,20 @@ public interface ChronoOffsetDateTime<C extends Chrono<C>>
      * in that it only compares the instant of the date-time. This is equivalent to using
      * {@code dateTime1.toInstant().equals(dateTime2.toInstant());}.
      *
-     * @param other  the other date-time to compare to, not null
+     * @param  other  the other date-time to compare to, not null
      * @return true if the instant equals the instant of the specified date-time
      */
-    boolean equalInstant(ChronoOffsetDateTime<?> other);
+    boolean isEqual(ChronoOffsetDateTime<?> other);
 
     //-----------------------------------------------------------------------
     /**
      * Checks if this date-time is equal to another date-time, including the chronology.
      * <p>
      * Compares this date-time with another ensuring that the local date-time and chronology are the same.
-     * To compare for the same instant on the time-line, use {@link #equalInstant}.
+     * To compare for the same instant on the time-line, use {@link #isEqual}.
      * Only objects of type {@code OffsetDateTime} are compared, other types return false.
      *
-     * @param obj  the object to check, null returns false
+     * @param  obj  the object to check, null returns false
      * @return true if this is equal to the other date-time
      */
     @Override

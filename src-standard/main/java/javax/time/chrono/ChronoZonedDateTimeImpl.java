@@ -529,7 +529,7 @@ import javax.time.zone.ZoneRules;
             }
             return with(dateTime.with(field, newValue));
         }
-        return field.doSet(this, newValue);
+        return getDate().getChrono().ensureChronoZonedDateTime(field.doSet(this, newValue));
     }
 
     /**
@@ -730,7 +730,7 @@ import javax.time.zone.ZoneRules;
         if (unit instanceof ChronoUnit) {
             return with(dateTime.plus(amountToAdd, unit));
         }
-        return unit.doAdd(this, amountToAdd);
+        return getDate().getChrono().ensureChronoZonedDateTime(unit.doAdd(this, amountToAdd));   /// TODO: Generics replacement Risk!
     }
 
     //-----------------------------------------------------------------------

@@ -132,12 +132,12 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
      * @return the date-time, not null
      */
     @SuppressWarnings("unchecked")
-    private <R extends Chrono<R>> ChronoDateTimeImpl<R> with(DateTime newDate, LocalTime newTime) {
+    private ChronoDateTimeImpl<C> with(DateTime newDate, LocalTime newTime) {
         if (date == newDate && time == newTime) {
-            return (ChronoDateTimeImpl<R>) this;
+            return (ChronoDateTimeImpl<C>) this;
         }
         // Validate that the new DateTime is a ChronoLocalDate (and not something else)
-        ChronoLocalDate<R> cd = ChronoLocalDate.class.cast(newDate);
+        ChronoLocalDate<C> cd = date.getChrono().ensureChronoLocalDate(newDate);
         return new ChronoDateTimeImpl<>(cd, newTime);
     }
 
@@ -280,14 +280,14 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
     @Override
     public ChronoDateTimeImpl<C> with(WithAdjuster adjuster) {
         if (adjuster instanceof ChronoLocalDate) {
-            ChronoLocalDate<C> cd = (ChronoLocalDate<C>) adjuster;  // TODO breaks invariants by losing generics
-            return with(cd, time);
+            // The Chrono is checked in with(date,time)
+            return with((ChronoLocalDate<C>) adjuster, time);
         } else if (adjuster instanceof LocalTime) {
             return with(date, (LocalTime) adjuster);
         } else if (adjuster instanceof ChronoDateTimeImpl) {
-            return (ChronoDateTimeImpl<C>) adjuster;
+            return date.getChrono().ensureChronoLocalDateTime((ChronoDateTimeImpl<?>) adjuster);
         }
-        return (ChronoDateTimeImpl<C>) adjuster.doWithAdjustment(this);
+        return date.getChrono().ensureChronoLocalDateTime((ChronoDateTimeImpl<?>) adjuster.doWithAdjustment(this));
     }
 
     @Override
@@ -300,7 +300,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
                 return with(date.with(field, newValue), time);
             }
         }
-        return field.doSet(this, newValue);
+        return date.getChrono().ensureChronoLocalDateTime(field.doSet(this, newValue));
     }
 
     //-----------------------------------------------------------------------
@@ -525,7 +525,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
             }
             return with(date.plus(amountToAdd, unit), time);
         }
-        return unit.doAdd(this, amountToAdd);
+        return date.getChrono().ensureChronoLocalDateTime(unit.doAdd(this, amountToAdd));
     }
 
     //-----------------------------------------------------------------------

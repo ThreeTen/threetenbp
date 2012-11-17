@@ -31,7 +31,7 @@
  */
 package javax.time.chrono;
 
-import javax.time.DateTimeException;
+import java.util.Comparator;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.calendrical.ChronoField;
@@ -199,6 +199,27 @@ import javax.time.format.CalendricalFormatter;
  */
 public interface ChronoLocalDate<C extends Chrono<C>>
         extends DateTime, WithAdjuster, Comparable<ChronoLocalDate<?>> {
+
+    /**
+     * Comparator for two {@code ChronoLocalDate}s ignoring the chronology.
+     * <p>
+     * This comparator differs from the comparison in {@link #compareTo} in that it
+     * only compares the underlying date and not the chronology.
+     * This allows dates in different calendar systems to be compared based
+     * on the time-line position.
+     * This is equivalent to using {@code Long.compare(date1.toEpochDay(),  date2.toEpochDay())}.
+     * 
+     * @see #isAfter
+     * @see #isBefore
+     * @see #isEqual
+     */
+    public static final Comparator<ChronoLocalDate<?>> DATE_COMPARATOR =
+            new Comparator<ChronoLocalDate<?>>() {
+        @Override
+        public int compare(ChronoLocalDate<?> date1, ChronoLocalDate<?> date2) {
+            return Long.compare(date1.toEpochDay(), date2.toEpochDay());
+        }
+    };
 
     /**
      * Gets the chronology of this date.
@@ -373,10 +394,10 @@ public interface ChronoLocalDate<C extends Chrono<C>>
      * on the time-line position.
      * This is equivalent to using {@code date1.toEpochDay() == date2.toEpochDay()}.
      *
-     * @param other  the other date to compare to, not null
+     * @param  other  the other date to compare to, not null
      * @return true if the underlying date is equal to the specified date
      */
-    boolean equalDate(ChronoLocalDate<?> other);
+    boolean isEqual(ChronoLocalDate<?> other);
 
     //-----------------------------------------------------------------------
     /**

@@ -111,22 +111,22 @@ public abstract class DefaultInterfaceChronoOffsetDateTime<C extends Chrono<C>>
     //-----------------------------------------------------------------------
     @Override
     public ChronoOffsetDateTime<C> with(WithAdjuster adjuster) {
-        return (ChronoOffsetDateTime<C>) super.with(adjuster);
+        return getDate().getChrono().ensureChronoOffsetDateTime(super.with(adjuster));
     }
 
     @Override
     public ChronoOffsetDateTime<C> plus(PlusAdjuster adjuster) {
-        return (ChronoOffsetDateTime<C>) super.plus(adjuster);
+        return getDate().getChrono().ensureChronoOffsetDateTime(super.plus(adjuster));
     }
 
     @Override
     public ChronoOffsetDateTime<C> minus(MinusAdjuster adjuster) {
-        return (ChronoOffsetDateTime<C>) super.minus(adjuster);
+        return getDate().getChrono().ensureChronoOffsetDateTime(super.minus(adjuster));
     }
 
     @Override
     public ChronoOffsetDateTime<C> minus(long amountToSubtract, PeriodUnit unit) {
-        return (ChronoOffsetDateTime<C>) super.minus(amountToSubtract, unit);
+        return getDate().getChrono().ensureChronoOffsetDateTime(super.minus(amountToSubtract, unit));
     }
 
     //-------------------------------------------------------------------------
@@ -198,7 +198,7 @@ public abstract class DefaultInterfaceChronoOffsetDateTime<C extends Chrono<C>>
     }
 
     @Override
-    public boolean equalInstant(ChronoOffsetDateTime<?> other) {
+    public boolean isEqual(ChronoOffsetDateTime<?> other) {
         return toEpochSecond() == other.toEpochSecond() &&
                 getTime().getNano() == other.getTime().getNano();
     }

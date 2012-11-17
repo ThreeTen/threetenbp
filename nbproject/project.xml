@@ -16,51 +16,27 @@
                     <encoding>UTF-8</encoding>
                 </source-folder>
                 <source-folder>
-                    <label>src\main\java</label>
+                    <label>src/main/java</label>
                     <type>java</type>
                     <location>src/main/java</location>
                     <encoding>UTF-8</encoding>
                 </source-folder>
                 <source-folder>
-                    <label>src-extra\main\java</label>
-                    <type>java</type>
-                    <location>src-extra/main/java</location>
-                    <encoding>UTF-8</encoding>
-                </source-folder>
-                <source-folder>
-                    <label>src-openjdk\main\java</label>
-                    <type>java</type>
-                    <location>src-openjdk/main/java</location>
-                    <encoding>UTF-8</encoding>
-                </source-folder>
-                <source-folder>
-                    <label>src-standard\main\java</label>
+                    <label>src-standard/main/java</label>
                     <type>java</type>
                     <location>src-standard/main/java</location>
                     <encoding>UTF-8</encoding>
                 </source-folder>
                 <source-folder>
-                    <label>src\test\java</label>
+                    <label>src-openjdk/main/java</label>
                     <type>java</type>
-                    <location>src/test/java</location>
+                    <location>src-openjdk/main/java</location>
                     <encoding>UTF-8</encoding>
                 </source-folder>
                 <source-folder>
-                    <label>src-extra\test\java</label>
+                    <label>src-extra/main/java</label>
                     <type>java</type>
-                    <location>src-extra/test/java</location>
-                    <encoding>UTF-8</encoding>
-                </source-folder>
-                <source-folder>
-                    <label>src-openjdk\test\java</label>
-                    <type>java</type>
-                    <location>src-openjdk/test/java</location>
-                    <encoding>UTF-8</encoding>
-                </source-folder>
-                <source-folder>
-                    <label>src-standard\test\java</label>
-                    <type>java</type>
-                    <location>src-standard/test/java</location>
+                    <location>src-extra/main/java</location>
                     <encoding>UTF-8</encoding>
                 </source-folder>
                 <source-folder>
@@ -73,6 +49,30 @@
                     <label>src-standard/tck/java</label>
                     <type>java</type>
                     <location>src-standard/tck/java</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>src/test/java</label>
+                    <type>java</type>
+                    <location>src/test/java</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>src-standard/test/java</label>
+                    <type>java</type>
+                    <location>src-standard/test/java</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>src-extra/test/java</label>
+                    <type>java</type>
+                    <location>src-extra/test/java</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>src-openjdk/test/java</label>
+                    <type>java</type>
+                    <location>src-openjdk/test/java</location>
                     <encoding>UTF-8</encoding>
                 </source-folder>
             </folders>
@@ -120,36 +120,20 @@
             <view>
                 <items>
                     <source-folder style="packages">
-                        <label>src\main\java</label>
+                        <label>src/main/java</label>
                         <location>src/main/java</location>
                     </source-folder>
                     <source-folder style="packages">
-                        <label>src-extra\main\java</label>
-                        <location>src-extra/main/java</location>
-                    </source-folder>
-                    <source-folder style="packages">
-                        <label>src-openjdk\main\java</label>
-                        <location>src-openjdk/main/java</location>
-                    </source-folder>
-                    <source-folder style="packages">
-                        <label>src-standard\main\java</label>
+                        <label>src-standard/main/java</label>
                         <location>src-standard/main/java</location>
                     </source-folder>
                     <source-folder style="packages">
-                        <label>src\test\java</label>
-                        <location>src/test/java</location>
+                        <label>src-openjdk/main/java</label>
+                        <location>src-openjdk/main/java</location>
                     </source-folder>
                     <source-folder style="packages">
-                        <label>src-extra\test\java</label>
-                        <location>src-extra/test/java</location>
-                    </source-folder>
-                    <source-folder style="packages">
-                        <label>src-openjdk\test\java</label>
-                        <location>src-openjdk/test/java</location>
-                    </source-folder>
-                    <source-folder style="packages">
-                        <label>src-standard\test\java</label>
-                        <location>src-standard/test/java</location>
+                        <label>src-extra/main/java</label>
+                        <location>src-extra/main/java</location>
                     </source-folder>
                     <source-folder style="packages">
                         <label>src/tck/java</label>
@@ -158,6 +142,22 @@
                     <source-folder style="packages">
                         <label>src-standard/tck/java</label>
                         <location>src-standard/tck/java</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>src/test/java</label>
+                        <location>src/test/java</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>src-standard/test/java</label>
+                        <location>src-standard/test/java</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>src-extra/test/java</label>
+                        <location>src-extra/test/java</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>src-openjdk/test/java</label>
+                        <location>src-openjdk/test/java</location>
                     </source-folder>
                     <source-file>
                         <location>build.xml</location>
@@ -212,25 +212,25 @@
             <compilation-unit>
                 <package-root>src-extra/test/java</package-root>
                 <unit-tests/>
-                <classpath mode="compile">lib/test/testng-5.8-jdk15.jar;src/main/java;src/test/java;src-extra/main/java;src-standard/main/java</classpath>
+                <classpath mode="compile">lib/test/testng-5.8-jdk15.jar;src/main/java;src-standard/main/java;src-extra/main/java;src/test/java</classpath>
                 <source-level>1.7</source-level>
             </compilation-unit>
             <compilation-unit>
                 <package-root>src-openjdk/test/java</package-root>
                 <unit-tests/>
-                <classpath mode="compile">lib/test/testng-5.8-jdk15.jar;src/main/java;src-openjdk/main/java</classpath>
+                <classpath mode="compile">lib/test/testng-5.8-jdk15.jar:src/main/java:src-openjdk/main/java</classpath>
                 <source-level>1.7</source-level>
             </compilation-unit>
             <compilation-unit>
                 <package-root>src-standard/test/java</package-root>
                 <unit-tests/>
-                <classpath mode="compile">lib/test/testng-5.8-jdk15.jar;src/main/java;src/tck/java;src/test/java;src-standard/main/java;src-standard/tck/java</classpath>
+                <classpath mode="compile">lib/test/testng-5.8-jdk15.jar;src/main/java;src-standard/main/java;src/tck/java;src-standard/tck/java;src/test/java</classpath>
                 <source-level>1.7</source-level>
             </compilation-unit>
             <compilation-unit>
                 <package-root>src/tck/java</package-root>
                 <unit-tests/>
-                <classpath mode="compile">lib/test/testng-5.8-jdk15.jar;src/main/java;src/test/java</classpath>
+                <classpath mode="compile">lib/test/testng-5.8-jdk15.jar;src/main/java;src-standard/main/java;src/test/java</classpath>
                 <source-level>1.7</source-level>
             </compilation-unit>
             <compilation-unit>

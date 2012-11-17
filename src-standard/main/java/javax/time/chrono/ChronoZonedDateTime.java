@@ -31,6 +31,7 @@
  */
 package javax.time.chrono;
 
+import java.util.Comparator;
 import javax.time.DateTimeException;
 import javax.time.Instant;
 import javax.time.LocalTime;
@@ -78,6 +79,27 @@ import javax.time.zone.ZoneResolvers;
  */
 public interface ChronoZonedDateTime<C extends Chrono<C>>
         extends DateTime, WithAdjuster, Comparable<ChronoZonedDateTime<?>> {
+
+    /**
+     * Comparator for two {@code ChronoZonedDateTime}s ignoring the chronology.
+     * <p>
+     * This method differs from the comparison in {@link #compareTo} in that it
+     * only compares the underlying date and not the chronology.
+     * This allows dates in different calendar systems to be compared based
+     * on the time-line position.
+     *
+     * @see #isAfter
+     * @see #isBefore
+     * @see #isEqual
+     */
+    public static final Comparator<ChronoZonedDateTime<?>> INSTANT_COMPARATOR =
+            new Comparator<ChronoZonedDateTime<?>>() {
+        @Override
+        public int compare(ChronoZonedDateTime<?> datetime1, ChronoZonedDateTime<?> datetime2) {
+            return ChronoOffsetDateTime.INSTANT_COMPARATOR
+                    .compare(datetime1.getOffsetDateTime(), datetime2.getOffsetDateTime());
+        }
+    };
 
     /**
      * Gets the local date part of this date-time.
@@ -342,6 +364,18 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
      * @return true if this is after the specified date-time
      */
     boolean isAfter(ChronoZonedDateTime<?> other);
+
+    /**
+     * Checks if the instant of this date-time is equal to that of the specified date-time.
+     * <p>
+     * This method differs from the comparison in {@link #compareTo} and {@link #equals}
+     * in that it only compares the instant of the date-time. This is equivalent to using
+     * {@code dateTime1.toInstant().equals(dateTime2.toInstant());}.
+     *
+     * @param  other  the other date-time to compare to, not null
+     * @return true if the instant equals the instant of the specified date-time
+     */
+    boolean isEqual(ChronoZonedDateTime<?> other);
 
     //-----------------------------------------------------------------------
     /**
