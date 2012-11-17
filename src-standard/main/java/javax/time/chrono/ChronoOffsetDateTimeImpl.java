@@ -133,8 +133,7 @@ class ChronoOffsetDateTimeImpl<C extends Chrono<C>>
      * @param dateTime  the date-time to create with, not null
      * @param offset  the zone offset to create with, not null
      */
-    @SuppressWarnings("unchecked")
-    private  ChronoOffsetDateTimeImpl<C> with(ChronoDateTimeImpl<C> dateTime, ZoneOffset offset) {
+    private ChronoOffsetDateTimeImpl<C> with(ChronoDateTimeImpl<C> dateTime, ZoneOffset offset) {
         if (this.dateTime == dateTime && this.offset.equals(offset)) {
             return this;
         }

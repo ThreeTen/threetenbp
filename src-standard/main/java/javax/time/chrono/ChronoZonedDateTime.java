@@ -372,7 +372,7 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
      * in that it only compares the instant of the date-time. This is equivalent to using
      * {@code dateTime1.toInstant().equals(dateTime2.toInstant());}.
      *
-     * @param  other  the other date-time to compare to, not null
+     * @param other  the other date-time to compare to, not null
      * @return true if the instant equals the instant of the specified date-time
      */
     boolean isEqual(ChronoZonedDateTime<?> other);

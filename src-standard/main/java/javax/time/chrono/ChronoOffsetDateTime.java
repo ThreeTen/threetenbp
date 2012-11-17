@@ -344,7 +344,7 @@ public interface ChronoOffsetDateTime<C extends Chrono<C>>
      * in that it only compares the instant of the date-time. This is equivalent to using
      * {@code dateTime1.toInstant().equals(dateTime2.toInstant());}.
      *
-     * @param  other  the other date-time to compare to, not null
+     * @param other  the other date-time to compare to, not null
      * @return true if the instant equals the instant of the specified date-time
      */
     boolean isEqual(ChronoOffsetDateTime<?> other);
@@ -357,7 +357,7 @@ public interface ChronoOffsetDateTime<C extends Chrono<C>>
      * To compare for the same instant on the time-line, use {@link #isEqual}.
      * Only objects of type {@code OffsetDateTime} are compared, other types return false.
      *
-     * @param  obj  the object to check, null returns false
+     * @param obj  the object to check, null returns false
      * @return true if this is equal to the other date-time
      */
     @Override
