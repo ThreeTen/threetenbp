@@ -307,7 +307,7 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
     Instant toInstant() ;
 
     /**
-     * Converts this date-time to a {@code OffsetDateTime}.
+     * Converts this date-time to an {@code OffsetDateTime}.
      *
      * @return an {@code OffsetDateTime} representing the fields of this date-time, not null
      */

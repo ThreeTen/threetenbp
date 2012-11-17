@@ -1089,7 +1089,7 @@ import javax.time.zone.ZoneRules;
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this {@code ZonedDateTime} to a {@code OffsetDateTime}.
+     * Converts this {@code ZonedDateTime} to an {@code OffsetDateTime}.
      *
      * @return a OffsetDateTime representing the fields of this date-time, not null
      */

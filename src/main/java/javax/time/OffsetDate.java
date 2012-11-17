@@ -65,7 +65,7 @@ import javax.time.zone.ZoneResolvers;
  * <p>
  * This class does not store or represent a time.
  * For example, the value "2nd October 2007 +02:00" can be stored
- * in a {@code OffsetDate}.
+ * in an {@code OffsetDate}.
  *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.

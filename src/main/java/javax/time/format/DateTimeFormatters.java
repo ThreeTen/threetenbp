@@ -568,7 +568,7 @@ public final class DateTimeFormatters {
      * The year will print 4 digits, unless this is insufficient, in which
      * case the full year will be printed together with a positive/negative sign.
      * <p>
-     * The seconds will be printed if present in the input, thus a {@code OffsetDateTime}
+     * The seconds will be printed if present in the input, thus an {@code OffsetDateTime}
      * will always print the seconds.
      * The nanoseconds will be printed if non-zero.
      * If non-zero, the minimum number of fractional second digits will printed.

@@ -1869,7 +1869,7 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this {@code ZonedDateTime} to a {@code OffsetDate}.
+     * Converts this {@code ZonedDateTime} to an {@code OffsetDate}.
      *
      * @return a OffsetDate representing the date fields of this date-time, not null
      */
@@ -1878,7 +1878,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Converts this {@code ZonedDateTime} to a {@code OffsetTime}.
+     * Converts this {@code ZonedDateTime} to an {@code OffsetTime}.
      *
      * @return a OffsetTime representing the time fields of this date-time, not null
      */
@@ -1887,7 +1887,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Converts this {@code ZonedDateTime} to a {@code OffsetDateTime}.
+     * Converts this {@code ZonedDateTime} to an {@code OffsetDateTime}.
      *
      * @return a OffsetDateTime representing the fields of this date-time, not null
      */
