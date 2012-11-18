@@ -26,8 +26,6 @@
     <property name="jarNamePom" value="${jarBase}.pom" />
     <property name="jarCoreName" value="threeten-core-${version.full}.jar" />
     <property name="jarStandardName" value="threeten-standard-${version.full}.jar" />
-    <property name="jarOpenJDKName" value="threeten-openjdk-${version.full}.jar" />
-    <property name="jarAllName" value="threeten-all-${version.full}.jar" />
     <property name="distFileName" value="threeten-${version.full}.zip"/>
     <property name="tzdbBase" value="jsr-310-TZDB-all-${version.full}" />
     <property name="tzdbJarName" value="${tzdbBase}.jar" />
@@ -50,7 +48,6 @@
 
     <path id="main.path">
         <pathelement location="${core.main.classes}" />
-        <pathelement location="${ojdk.main.classes}" />
         <pathelement location="${lib.main}/${tzdb.outputjar}"/>
     </path>
 
@@ -62,7 +59,6 @@
     <path id="test.commonpath">
         <pathelement location="${core.test.classes}" />
         <pathelement location="${standard.test.classes}" />
-        <pathelement location="${ojdk.test.classes}" />
         <pathelement location="${lib.main}/${tzdb.outputjar}"/>
         <fileset dir="lib/test">
             <include name="**/*.jar" />
@@ -70,6 +66,7 @@
     </path>
 
     <path id="test.path">
+        <path refid="standard.path" />
         <path refid="test.commonpath" />
     </path>
 
@@ -137,13 +134,6 @@
         </javac>
     </target>
 
-    <target name="compile-openjdk" depends="compile-core">
-        <mkdir  dir="${ojdk.main.classes}"/>
-        <javac srcdir="${ojdk.main}" destdir="${ojdk.main.classes}" nowarn="true" debug="true" bootclasspath="${java.home}/lib/rt.jar" includeantruntime="false">
-            <classpath refid="main.path"/>
-        </javac>
-    </target>
-
     <!-- target to test if existing tzdb is out of date with respect to the input tzdb files -->
     <target name="check-tzdb">
         <dependset>
@@ -188,13 +178,13 @@
         <delete file="${basedir}/tzdb.tar" />
     </target>
 
-    <target name="compile" depends="compile-core, compile-standard, compile-openjdk, compile-tzdb" description="compile all sources" />
+    <target name="compile" depends="compile-core, compile-standard, compile-tzdb" description="compile all sources" />
 
     <!-- ==================================================================== -->
     <target name="javadoc" depends="init" description="generates javadoc for the api">
       <mkdir dir="${build.javadoc}"/>
-      <javadoc sourcepath="${core.main};${standard.main};${ojdk.main}" destdir="${build.javadoc}"
-               group="Core javax.time:javax.time.calendrical:javax.time.builder:javax.time.format:javax.time.zone,Standard javax.time.chrono,Util java.util"
+      <javadoc sourcepath="${core.main};${standard.main}" destdir="${build.javadoc}"
+               group="Core javax.time:javax.time.calendrical:javax.time.builder:javax.time.format:javax.time.zone,Standard javax.time.chrono"
                classpathref="main.path"
                link="http://docs.oracle.com/javase/7/docs/api/"
                stylesheetfile="${basedir}/stylesheet.css"
@@ -359,25 +349,10 @@
         </jar>
     </target>
 
-    <target name="jar-openjdk" depends="compile-openjdk">
-        <jar jarfile="${build}/${jarOpenJDKName}">
-            <fileset dir="${ojdk.main.classes}"/>
-        </jar>
-    </target>
-
-    <target name="jar-all" depends="compile">
-        <jar jarfile="${build}/${jarAllName}">
-            <fileset dir="${core.main.classes}"/>
-            <fileset dir="${standard.main.classes}"/>
-            <fileset dir="${ojdk.main.classes}"/>
-        </jar>
-    </target>
-
     <target name="jar-main" depends="compile">
         <jar jarfile="${build}/${jarName}">
             <fileset dir="${core.main.classes}"/>
             <fileset dir="${standard.main.classes}"/>
-            <fileset dir="${ojdk.main.classes}"/>
         </jar>
     </target>
 
@@ -385,7 +360,6 @@
         <jar jarfile="${build}/${jarNameSources}">
             <fileset dir="${core.main}"/>
             <fileset dir="${standard.main}"/>
-            <fileset dir="${ojdk.main}"/>
         </jar>
     </target>
 
@@ -395,7 +369,7 @@
         </jar>
     </target>
 
-    <target name="jar" depends="jar-core,jar-standard,jar-openjdk,jar-all,jar-main,jar-main-sources,jar-main-javadoc" description="build jar files" />
+    <target name="jar" depends="jar-core,jar-standard,jar-main,jar-main-sources,jar-main-javadoc" description="build jar files" />
 
     <!-- ==================================================================== -->
     <target name="dist" depends="jar" description="generate the distribution">

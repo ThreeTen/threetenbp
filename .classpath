@@ -2,10 +2,8 @@
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src-standard/main/java"/>
-	<classpathentry kind="src" path="src-openjdk/main/java"/>
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="src" path="src-standard/test/java"/>
-	<classpathentry kind="src" output="build/test" path="src-openjdk/test/java"/>
 	<classpathentry kind="src" path="src/tck/java"/>
 	<classpathentry kind="src" path="src-standard/tck/java"/>
 	<classpathentry kind="src" path="src/main/resources"/>

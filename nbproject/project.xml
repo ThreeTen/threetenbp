@@ -28,12 +28,6 @@
                     <encoding>UTF-8</encoding>
                 </source-folder>
                 <source-folder>
-                    <label>src-openjdk/main/java</label>
-                    <type>java</type>
-                    <location>src-openjdk/main/java</location>
-                    <encoding>UTF-8</encoding>
-                </source-folder>
-                <source-folder>
                     <label>src/tck/java</label>
                     <type>java</type>
                     <location>src/tck/java</location>
@@ -55,12 +49,6 @@
                     <label>src-standard/test/java</label>
                     <type>java</type>
                     <location>src-standard/test/java</location>
-                    <encoding>UTF-8</encoding>
-                </source-folder>
-                <source-folder>
-                    <label>src-openjdk/test/java</label>
-                    <type>java</type>
-                    <location>src-openjdk/test/java</location>
                     <encoding>UTF-8</encoding>
                 </source-folder>
             </folders>
@@ -111,10 +99,6 @@
                         <location>src-standard/main/java</location>
                     </source-folder>
                     <source-folder style="packages">
-                        <label>src-openjdk/main/java</label>
-                        <location>src-openjdk/main/java</location>
-                    </source-folder>
-                    <source-folder style="packages">
                         <label>src/tck/java</label>
                         <location>src/tck/java</location>
                     </source-folder>
@@ -129,10 +113,6 @@
                     <source-folder style="packages">
                         <label>src-standard/test/java</label>
                         <location>src-standard/test/java</location>
-                    </source-folder>
-                    <source-folder style="packages">
-                        <label>src-openjdk/test/java</label>
-                        <location>src-openjdk/test/java</location>
                     </source-folder>
                     <source-file>
                         <location>build.xml</location>
@@ -158,13 +138,6 @@
                 <source-level>1.7</source-level>
             </compilation-unit>
             <compilation-unit>
-                <package-root>src-openjdk/main/java</package-root>
-                <classpath mode="compile">src/main/java</classpath>
-                <built-to>build/main/ojdk</built-to>
-                <javadoc-built-to>build/javadoc</javadoc-built-to>
-                <source-level>1.7</source-level>
-            </compilation-unit>
-            <compilation-unit>
                 <package-root>src-standard/main/java</package-root>
                 <classpath mode="compile">src/main/java</classpath>
                 <built-to>build/main/standard</built-to>
@@ -175,12 +148,6 @@
                 <package-root>src/test/java</package-root>
                 <unit-tests/>
                 <classpath mode="compile">lib/test/testng-5.8-jdk15.jar;src/main/java;src-standard/main/java</classpath>
-                <source-level>1.7</source-level>
-            </compilation-unit>
-            <compilation-unit>
-                <package-root>src-openjdk/test/java</package-root>
-                <unit-tests/>
-                <classpath mode="compile">lib/test/testng-5.8-jdk15.jar:src/main/java:src-openjdk/main/java</classpath>
                 <source-level>1.7</source-level>
             </compilation-unit>
             <compilation-unit>
