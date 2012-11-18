@@ -25,7 +25,6 @@
     <property name="jarNameJavadoc" value="${jarBase}-javadoc.jar" />
     <property name="jarNamePom" value="${jarBase}.pom" />
     <property name="jarCoreName" value="threeten-core-${version.full}.jar" />
-    <property name="jarStandardName" value="threeten-standard-${version.full}.jar" />
     <property name="distFileName" value="threeten-${version.full}.zip"/>
     <property name="tzdbBase" value="jsr-310-TZDB-all-${version.full}" />
     <property name="tzdbJarName" value="${tzdbBase}.jar" />
@@ -51,11 +50,6 @@
         <pathelement location="${lib.main}/${tzdb.outputjar}"/>
     </path>
 
-    <path id="standard.path">
-        <path refid="main.path" />
-        <pathelement location="${standard.main.classes}" />
-    </path>
-
     <path id="test.commonpath">
         <pathelement location="${core.test.classes}" />
         <pathelement location="${standard.test.classes}" />
@@ -66,7 +60,7 @@
     </path>
 
     <path id="test.path">
-        <path refid="standard.path" />
+        <path refid="main.path" />
         <path refid="test.commonpath" />
     </path>
 
@@ -79,7 +73,6 @@
 
     <path id="coverage.path">
         <pathelement location="${core.main.classes}" />
-        <pathelement location="${standard.main.classes}" />
         <pathelement location="${core.test.classes}" />
         <pathelement location="${standard.test.classes}" />
         <pathelement location="${lib.main}/${tzdb.outputjar}"/>
@@ -118,20 +111,13 @@
     <!-- ==================================================================== -->
     <target name="compile-core" depends="init">
         <mkdir  dir="${core.main.classes}"/>
-        <javac srcdir="${core.main}:${standard.main}" destdir="${core.main.classes}" debug="true" includeantruntime="false">
+        <javac srcdir="${core.main}" destdir="${core.main.classes}" debug="true" includeantruntime="false">
             <classpath refid="main.path"/>
             <!--compilerarg value="-Xlint" /-->
         </javac>
         <copy todir="${core.main.classes}">
             <fileset dir="${core.main.resources}" />
         </copy>
-    </target>
-
-    <target name="compile-standard" depends="compile-core">
-        <mkdir  dir="${standard.main.classes}"/>
-        <javac srcdir="${standard.main}" destdir="${standard.main.classes}" debug="true" includeantruntime="false">
-            <classpath refid="standard.path"/>
-        </javac>
     </target>
 
     <!-- target to test if existing tzdb is out of date with respect to the input tzdb files -->
@@ -148,11 +134,11 @@
             file="${lib.main}/${tzdb.outputjar}" />
     </target>
 
-    <target name="compile-tzdb" depends="check-tzdb,compile-standard"  unless="tzdb.available">
+    <target name="compile-tzdb" depends="check-tzdb,compile-core"  unless="tzdb.available">
     	<antcall target="force-compile-tzdb"/>
     </target>
 
-    <target name="force-compile-tzdb" depends="compile-standard">
+    <target name="force-compile-tzdb" depends="compile-core">
         <mkdir dir="${tzdata.main.workarea}"/>
         <copy todir="${tzdata.main.workarea}">
             <fileset dir="${tzdata.main}" includes="tzdata*.tar.gz"/>
@@ -161,7 +147,7 @@
         <subant genericantfile="build.xml" target="tzdb-unpack">
             <dirset dir="${tzdata.main.workarea}" includes="*" />
         </subant>
-        <java classpathref="standard.path" classname="javax.time.zone.TZDBZoneRulesCompiler" fork="true" failonerror="true">
+        <java classpathref="main.path" classname="javax.time.zone.TZDBZoneRulesCompiler" fork="true" failonerror="true">
             <arg line="-srcdir ${tzdata.main.workarea}" />
             <arg line="-dstdir ${lib.optional}" />
             <arg line="${tzdb.files}" />
@@ -178,13 +164,13 @@
         <delete file="${basedir}/tzdb.tar" />
     </target>
 
-    <target name="compile" depends="compile-core, compile-standard, compile-tzdb" description="compile all sources" />
+    <target name="compile" depends="compile-core, compile-tzdb" description="compile all sources" />
 
     <!-- ==================================================================== -->
     <target name="javadoc" depends="init" description="generates javadoc for the api">
       <mkdir dir="${build.javadoc}"/>
-      <javadoc sourcepath="${core.main};${standard.main}" destdir="${build.javadoc}"
-               group="Core javax.time:javax.time.calendrical:javax.time.builder:javax.time.format:javax.time.zone,Standard javax.time.chrono"
+      <javadoc sourcepath="${core.main}" destdir="${build.javadoc}"
+               group="Core javax.time:javax.time.calendrical:javax.time.builder:javax.time.format:javax.time.zone:javax.time.chrono"
                classpathref="main.path"
                link="http://docs.oracle.com/javase/7/docs/api/"
                stylesheetfile="${basedir}/stylesheet.css"
@@ -210,7 +196,7 @@
 
     <target name="compile-standard-tests" depends="compile">
         <mkdir dir="${standard.test.classes}" />
-        <javac srcdir="${standard.test}:${standard.tck}" destdir="${standard.test.classes}" classpathref="test.path" debug="true" includeantruntime="false" />
+        <javac srcdir="${standard.test}" destdir="${standard.test.classes}" classpathref="test.path" debug="true" includeantruntime="false" />
     </target>
 
     <target name="test-core" depends="compile-core-tests">
@@ -231,7 +217,6 @@
             <jvmarg value="-Duser.language=en" />
             <jvmarg value="-Duser.country=UK" />
             <classfileset dir="${standard.test.classes}" includes="**/Test*.class" excludes="java/util/*" />
-            <classfileset dir="${standard.test.classes}" includes="**/TCK*.class" excludes="java/util/*" />
         </testng>
     </target>
 
@@ -337,29 +322,15 @@
     </target>
 
     <!-- ==================================================================== -->
-    <target name="jar-core" depends="compile-core">
-        <jar jarfile="${build}/${jarCoreName}">
-            <fileset dir="${core.main.classes}"/>
-        </jar>
-    </target>
-
-    <target name="jar-standard" depends="compile-standard">
-        <jar jarfile="${build}/${jarStandardName}">
-            <fileset dir="${standard.main.classes}"/>
-        </jar>
-    </target>
-
     <target name="jar-main" depends="compile">
         <jar jarfile="${build}/${jarName}">
             <fileset dir="${core.main.classes}"/>
-            <fileset dir="${standard.main.classes}"/>
         </jar>
     </target>
 
     <target name="jar-main-sources">
         <jar jarfile="${build}/${jarNameSources}">
             <fileset dir="${core.main}"/>
-            <fileset dir="${standard.main}"/>
         </jar>
     </target>
 
@@ -369,7 +340,7 @@
         </jar>
     </target>
 
-    <target name="jar" depends="jar-core,jar-standard,jar-main,jar-main-sources,jar-main-javadoc" description="build jar files" />
+    <target name="jar" depends="jar-main,jar-main-sources,jar-main-javadoc" description="build jar files" />
 
     <!-- ==================================================================== -->
     <target name="dist" depends="jar" description="generate the distribution">
