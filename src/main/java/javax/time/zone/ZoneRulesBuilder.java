@@ -319,7 +319,7 @@ class ZoneRulesBuilder {
             throw new IllegalStateException("No windows have been added to the builder");
         }
 
-        final List<OffsetDateTime> standardOffsetList = new ArrayList<>(4);
+        final List<ZoneOffsetTransition> standardTransitionList = new ArrayList<>(4);
         final List<ZoneOffsetTransition> transitionList = new ArrayList<>(256);
         final List<ZoneOffsetTransitionRule> lastTransitionRuleList = new ArrayList<>(2);
 
@@ -358,8 +358,11 @@ class ZoneRulesBuilder {
 
             // check if standard offset changed, and update it
             if (loopStandardOffset.equals(window.standardOffset) == false) {
+                standardTransitionList.add(deduplicate(
+                    new ZoneOffsetTransition(
+                        loopWindowStart.withOffsetSameInstant(loopStandardOffset).getDateTime(),
+                        loopStandardOffset, window.standardOffset)));
                 loopStandardOffset = deduplicate(window.standardOffset);
-                standardOffsetList.add(deduplicate(loopWindowStart.withOffsetSameInstant(loopStandardOffset)));
             }
 
             // check if the start of the window represents a transition
@@ -393,7 +396,7 @@ class ZoneRulesBuilder {
             loopWindowStart = deduplicate(window.createDateTime(loopSavings));
         }
         return new StandardZoneRules(
-                firstWindow.standardOffset, firstWallOffset, standardOffsetList,
+                firstWindow.standardOffset, firstWallOffset, standardTransitionList,
                 transitionList, lastTransitionRuleList);
     }
 

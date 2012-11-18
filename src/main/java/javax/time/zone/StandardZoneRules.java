@@ -49,7 +49,6 @@ import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
-import javax.time.OffsetDateTime;
 import javax.time.ZoneOffset;
 import javax.time.jdk8.Jdk8Methods;
 
@@ -116,7 +115,7 @@ final class StandardZoneRules implements ZoneRules, Serializable {
     StandardZoneRules(
             ZoneOffset baseStandardOffset,
             ZoneOffset baseWallOffset,
-            List<OffsetDateTime> standardOffsetTransitionList,
+            List<ZoneOffsetTransition> standardOffsetTransitionList,
             List<ZoneOffsetTransition> transitionList,
             List<ZoneOffsetTransitionRule> lastRules) {
         super();
@@ -127,7 +126,7 @@ final class StandardZoneRules implements ZoneRules, Serializable {
         this.standardOffsets[0] = baseStandardOffset;
         for (int i = 0; i < standardOffsetTransitionList.size(); i++) {
             this.standardTransitions[i] = standardOffsetTransitionList.get(i).toEpochSecond();
-            this.standardOffsets[i + 1] = standardOffsetTransitionList.get(i).getOffset();
+            this.standardOffsets[i + 1] = standardOffsetTransitionList.get(i).getOffsetAfter();
         }
 
         // convert savings transitions to locals
