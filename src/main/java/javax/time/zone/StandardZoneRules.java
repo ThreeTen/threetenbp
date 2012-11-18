@@ -31,6 +31,8 @@
  */
 package javax.time.zone;
 
+import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -45,9 +47,11 @@ import java.util.concurrent.ConcurrentMap;
 import javax.time.DateTimeConstants;
 import javax.time.Duration;
 import javax.time.Instant;
+import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneOffset;
+import javax.time.jdk8.Jdk8Methods;
 
 /**
  * The rules describing how the zone offset varies through the year and historically.
@@ -281,8 +285,8 @@ final class StandardZoneRules implements ZoneRules, Serializable {
         // check if using last rules
         if (lastRules.length > 0 &&
                 epochSec > savingsInstantTransitions[savingsInstantTransitions.length - 1]) {
-            OffsetDateTime dt = OffsetDateTime.ofEpochSecond(epochSec, wallOffsets[wallOffsets.length - 1]);
-            ZoneOffsetTransition[] transArray = findTransitionArray(dt.getYear());
+            int year = findYear(epochSec, wallOffsets[wallOffsets.length - 1]);
+            ZoneOffsetTransition[] transArray = findTransitionArray(year);
             ZoneOffsetTransition trans = null;
             for (int i = 0; i < transArray.length; i++) {
                 trans = transArray[i];
@@ -469,18 +473,20 @@ final class StandardZoneRules implements ZoneRules, Serializable {
             if (lastRules.length == 0) {
                 return null;
             }
-            OffsetDateTime dt = OffsetDateTime.ofInstant(instant, wallOffsets[wallOffsets.length - 1]);
-            for (int year = dt.getYear(); true; year++) {
-                ZoneOffsetTransition[] transArray = findTransitionArray(year);
-                for (ZoneOffsetTransition trans : transArray) {
-                    if (epochSec < trans.toEpochSecond()) {
-                        return trans;
-                    }
-                }
-                if (year == DateTimeConstants.MAX_YEAR) {
-                    return null;
+            // search year the instant is in
+            int year = findYear(epochSec, wallOffsets[wallOffsets.length - 1]);
+            ZoneOffsetTransition[] transArray = findTransitionArray(year);
+            for (ZoneOffsetTransition trans : transArray) {
+                if (epochSec < trans.toEpochSecond()) {
+                    return trans;
                 }
             }
+            // use first from following year
+            if (year < DateTimeConstants.MAX_YEAR) {
+                transArray = findTransitionArray(year + 1);
+                return transArray[0];
+            }
+            return null;
         }
 
         // using historic rules
@@ -503,17 +509,22 @@ final class StandardZoneRules implements ZoneRules, Serializable {
         // check if using last rules
         long lastHistoric = savingsInstantTransitions[savingsInstantTransitions.length - 1];
         if (lastRules.length > 0 && epochSec > lastHistoric) {
+            // search year the instant is in
             ZoneOffset lastHistoricOffset = wallOffsets[wallOffsets.length - 1];
-            OffsetDateTime dt = OffsetDateTime.ofInstant(instant, lastHistoricOffset);
-            OffsetDateTime lastHistoricDT = OffsetDateTime.ofInstant(Instant.ofEpochSecond(lastHistoric), lastHistoricOffset);
-            for (int year = dt.getYear(); year > lastHistoricDT.getYear(); year--) {
-                ZoneOffsetTransition[] transArray = findTransitionArray(year);
-                for (int i = transArray.length - 1; i >= 0; i--) {
-                    if (epochSec > transArray[i].toEpochSecond()) {
-                        return transArray[i];
-                    }
+            int year = findYear(epochSec, lastHistoricOffset);
+            ZoneOffsetTransition[] transArray = findTransitionArray(year);
+            for (int i = transArray.length - 1; i >= 0; i--) {
+                if (epochSec > transArray[i].toEpochSecond()) {
+                    return transArray[i];
                 }
             }
+            // use last from preceeding year
+            int lastHistoricYear = findYear(lastHistoric, lastHistoricOffset);
+            if (--year > lastHistoricYear) {
+                transArray = findTransitionArray(year);
+                return transArray[transArray.length - 1];
+            }
+            // drop through
         }
 
         // using historic rules
@@ -525,6 +536,14 @@ final class StandardZoneRules implements ZoneRules, Serializable {
             return null;
         }
         return new ZoneOffsetTransition(savingsInstantTransitions[index - 1], wallOffsets[index - 1], wallOffsets[index]);
+    }
+
+    private int findYear(long epochSecond, ZoneOffset offset) {
+        // inline for performance
+        long localSeconds = epochSecond + offset.getTotalSeconds();
+        long epochDays = Jdk8Methods.floorDiv(localSeconds, SECONDS_PER_DAY);
+        LocalDate date = LocalDate.ofEpochDay(epochDays);
+        return date.getYear();
     }
 
     //-------------------------------------------------------------------------

@@ -495,6 +495,12 @@ public class TestStandardZoneRules {
         assertEquals(test.previousTransition(last.getInstant().plusSeconds(1)), last);
         assertEquals(test.previousTransition(last.getInstant().plusNanos(1)), last);
 
+        // Jan 1st of year between transitions and rules
+        OffsetDateTime odt = OffsetDateTime.ofInstant(last.getInstant(), last.getOffsetAfter());
+        odt = odt.withDayOfYear(1).plusYears(1).withTime(0, 0);
+        assertEquals(test.previousTransition(odt.toInstant()), last);
+
+        // later years
         for (int year = 1998; year < 2010; year++) {
             ZoneOffsetTransition a = rules.get(0).createTransition(year);
             ZoneOffsetTransition b = rules.get(1).createTransition(year);
