@@ -26,7 +26,6 @@
     <property name="jarNamePom" value="${jarBase}.pom" />
     <property name="jarCoreName" value="threeten-core-${version.full}.jar" />
     <property name="jarStandardName" value="threeten-standard-${version.full}.jar" />
-    <property name="jarExtraName" value="threeten-extra-${version.full}.jar" />
     <property name="jarOpenJDKName" value="threeten-openjdk-${version.full}.jar" />
     <property name="jarAllName" value="threeten-all-${version.full}.jar" />
     <property name="distFileName" value="threeten-${version.full}.zip"/>
@@ -60,15 +59,9 @@
         <pathelement location="${standard.main.classes}" />
     </path>
 
-    <path id="extra.path">
-        <path refid="standard.path" />
-        <pathelement location="${extra.main.classes}" />
-    </path>
-
     <path id="test.commonpath">
         <pathelement location="${core.test.classes}" />
         <pathelement location="${standard.test.classes}" />
-        <pathelement location="${extra.test.classes}" />
         <pathelement location="${ojdk.test.classes}" />
         <pathelement location="${lib.main}/${tzdb.outputjar}"/>
         <fileset dir="lib/test">
@@ -77,7 +70,6 @@
     </path>
 
     <path id="test.path">
-        <path refid="extra.path" />
         <path refid="test.commonpath" />
     </path>
 
@@ -145,14 +137,6 @@
         </javac>
     </target>
 
-    <target name="compile-extra" depends="compile-core">
-        <mkdir  dir="${extra.main.classes}"/>
-        <javac srcdir="${extra.main}" destdir="${extra.main.classes}" debug="true" includeantruntime="false">
-            <!-- <classpath location="${core.main.classes}"/> -->
-            <classpath refid="extra.path"/>
-        </javac>
-    </target>
-
     <target name="compile-openjdk" depends="compile-core">
         <mkdir  dir="${ojdk.main.classes}"/>
         <javac srcdir="${ojdk.main}" destdir="${ojdk.main.classes}" nowarn="true" debug="true" bootclasspath="${java.home}/lib/rt.jar" includeantruntime="false">
@@ -204,7 +188,7 @@
         <delete file="${basedir}/tzdb.tar" />
     </target>
 
-    <target name="compile" depends="compile-core, compile-standard, compile-extra, compile-openjdk, compile-tzdb" description="compile all sources" />
+    <target name="compile" depends="compile-core, compile-standard, compile-openjdk, compile-tzdb" description="compile all sources" />
 
     <!-- ==================================================================== -->
     <target name="javadoc" depends="init" description="generates javadoc for the api">
@@ -239,11 +223,6 @@
         <javac srcdir="${standard.test}:${standard.tck}" destdir="${standard.test.classes}" classpathref="test.path" debug="true" includeantruntime="false" />
     </target>
 
-    <target name="compile-extra-tests" depends="compile">
-        <mkdir dir="${extra.test.classes}" />
-        <javac srcdir="${extra.test}" destdir="${extra.test.classes}" classpathref="test.path" debug="true" includeantruntime="false" />
-    </target>
-
     <target name="test-core" depends="compile-core-tests">
         <taskdef resource="testngtasks" classpathref="test.path" />
         <testng classpathref="test.path" outputDir="${core.test.classes}" sourceDir="${core.test}" haltonfailure="true" verbose="2">
@@ -266,17 +245,7 @@
         </testng>
     </target>
 
-    <target name="test-extra" depends="compile-extra-tests">
-        <taskdef resource="testngtasks" classpathref="test.path" />
-        <testng classpathref="test.path" outputDir="${extra.test.classes}" sourceDir="${extra.test}" haltonfailure="true" verbose="2">
-            <jvmarg value="-Xmx512M" />
-            <jvmarg value="-Duser.language=en" />
-            <jvmarg value="-Duser.country=UK" />
-            <classfileset dir="${extra.test.classes}" includes="**/Test*.class" excludes="java/util/*" />
-        </testng>
-    </target>
-
-    <target name="test" depends="test-core,test-standard,test-extra" description="run tests" />
+    <target name="test" depends="test-core,test-standard" description="run tests" />
 
     <target name="check-sigtest-downloaded">
         <available property="sigtest.exists" file="${sigtest.loc}"/>
@@ -390,12 +359,6 @@
         </jar>
     </target>
 
-    <target name="jar-extra" depends="compile-extra">
-        <jar jarfile="${build}/${jarExtraName}">
-            <fileset dir="${extra.main.classes}"/>
-        </jar>
-    </target>
-
     <target name="jar-openjdk" depends="compile-openjdk">
         <jar jarfile="${build}/${jarOpenJDKName}">
             <fileset dir="${ojdk.main.classes}"/>
@@ -406,7 +369,6 @@
         <jar jarfile="${build}/${jarAllName}">
             <fileset dir="${core.main.classes}"/>
             <fileset dir="${standard.main.classes}"/>
-            <fileset dir="${extra.main.classes}"/>
             <fileset dir="${ojdk.main.classes}"/>
         </jar>
     </target>
@@ -433,7 +395,7 @@
         </jar>
     </target>
 
-    <target name="jar" depends="jar-core,jar-standard,jar-extra,jar-openjdk,jar-all,jar-main,jar-main-sources,jar-main-javadoc" description="build jar files" />
+    <target name="jar" depends="jar-core,jar-standard,jar-openjdk,jar-all,jar-main,jar-main-sources,jar-main-javadoc" description="build jar files" />
 
     <!-- ==================================================================== -->
     <target name="dist" depends="jar" description="generate the distribution">

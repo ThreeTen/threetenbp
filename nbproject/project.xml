@@ -34,12 +34,6 @@
                     <encoding>UTF-8</encoding>
                 </source-folder>
                 <source-folder>
-                    <label>src-extra/main/java</label>
-                    <type>java</type>
-                    <location>src-extra/main/java</location>
-                    <encoding>UTF-8</encoding>
-                </source-folder>
-                <source-folder>
                     <label>src/tck/java</label>
                     <type>java</type>
                     <location>src/tck/java</location>
@@ -61,12 +55,6 @@
                     <label>src-standard/test/java</label>
                     <type>java</type>
                     <location>src-standard/test/java</location>
-                    <encoding>UTF-8</encoding>
-                </source-folder>
-                <source-folder>
-                    <label>src-extra/test/java</label>
-                    <type>java</type>
-                    <location>src-extra/test/java</location>
                     <encoding>UTF-8</encoding>
                 </source-folder>
                 <source-folder>
@@ -104,11 +92,6 @@
             </export>
             <export>
                 <type>folder</type>
-                <location>build/main/extra</location>
-                <build-target>dist</build-target>
-            </export>
-            <export>
-                <type>folder</type>
                 <location>build/main/ojdk</location>
                 <build-target>dist</build-target>
             </export>
@@ -132,10 +115,6 @@
                         <location>src-openjdk/main/java</location>
                     </source-folder>
                     <source-folder style="packages">
-                        <label>src-extra/main/java</label>
-                        <location>src-extra/main/java</location>
-                    </source-folder>
-                    <source-folder style="packages">
                         <label>src/tck/java</label>
                         <location>src/tck/java</location>
                     </source-folder>
@@ -150,10 +129,6 @@
                     <source-folder style="packages">
                         <label>src-standard/test/java</label>
                         <location>src-standard/test/java</location>
-                    </source-folder>
-                    <source-folder style="packages">
-                        <label>src-extra/test/java</label>
-                        <location>src-extra/test/java</location>
                     </source-folder>
                     <source-folder style="packages">
                         <label>src-openjdk/test/java</label>
@@ -183,13 +158,6 @@
                 <source-level>1.7</source-level>
             </compilation-unit>
             <compilation-unit>
-                <package-root>src-extra/main/java</package-root>
-                <classpath mode="compile">src/main/java;src-standard/main/java</classpath>
-                <built-to>build/main/extra</built-to>
-                <javadoc-built-to>build/javadoc</javadoc-built-to>
-                <source-level>1.7</source-level>
-            </compilation-unit>
-            <compilation-unit>
                 <package-root>src-openjdk/main/java</package-root>
                 <classpath mode="compile">src/main/java</classpath>
                 <built-to>build/main/ojdk</built-to>
@@ -207,12 +175,6 @@
                 <package-root>src/test/java</package-root>
                 <unit-tests/>
                 <classpath mode="compile">lib/test/testng-5.8-jdk15.jar;src/main/java;src-standard/main/java</classpath>
-                <source-level>1.7</source-level>
-            </compilation-unit>
-            <compilation-unit>
-                <package-root>src-extra/test/java</package-root>
-                <unit-tests/>
-                <classpath mode="compile">lib/test/testng-5.8-jdk15.jar;src/main/java;src-standard/main/java;src-extra/main/java;src/test/java</classpath>
                 <source-level>1.7</source-level>
             </compilation-unit>
             <compilation-unit>
