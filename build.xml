@@ -365,7 +365,6 @@
         <copy file="build.properties" todir="${dist.workarea}" />
         <copy file="checkstyle.xml" todir="${dist.workarea}" />
         <copy file="LICENSE.txt" todir="${dist.workarea}" />
-        <copy file="LICENSE_OpenJDK.txt" todir="${dist.workarea}" />
         <copy file="README.txt" todir="${dist.workarea}" />
         <copy file="TODO.txt" todir="${dist.workarea}" />
         <zip destfile="${dist}/${distFileName}" basedir="${dist.workarea}" />
