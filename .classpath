@@ -17,6 +17,6 @@
 		</accessrules>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/test/testng-5.8-jdk15.jar"/>
-	<classpathentry kind="lib" path="lib/main/jsr-310-TZDB-all.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/main/jsr-310-TZDB-all.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
