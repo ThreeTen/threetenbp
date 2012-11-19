@@ -152,28 +152,9 @@ public final class LocalDateTime
      */
     public static LocalDateTime now(Clock clock) {
         Objects.requireNonNull(clock, "clock");
-        // inline OffsetDateTime factory to avoid creating object and InstantProvider checks
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
-        long localSeconds = now.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
-        return create(localSeconds, now.getNano());
-    }
-
-    /**
-     * Obtains an instance of {@code LocalDateTime} using seconds from the
-     * local epoch of 1970-01-01T00:00:00.
-     *
-     * @param localSeconds  the number of seconds from the local epoch of 1970-01-01T00:00:00
-     * @param nanoOfSecond  the nanosecond within the second, from 0 to 999,999,999
-     * @return the local date-time, not null
-     * @throws DateTimeException if the instant exceeds the supported date range
-     */
-    static LocalDateTime create(long localSeconds, int nanoOfSecond) {
-        long epochDays = Jdk8Methods.floorDiv(localSeconds, SECONDS_PER_DAY);
-        int secsOfDay = Jdk8Methods.floorMod(localSeconds, SECONDS_PER_DAY);
-        LocalDate date = LocalDate.ofEpochDay(epochDays);
-        LocalTime time = LocalTime.ofSecondOfDay(secsOfDay, nanoOfSecond);
-        return LocalDateTime.of(date, time);
+        return ofEpochSecond(now.getEpochSecond(), now.getNano(), offset);
     }
 
     //-----------------------------------------------------------------------
@@ -324,6 +305,30 @@ public final class LocalDateTime
     public static LocalDateTime of(LocalDate date, LocalTime time) {
         Objects.requireNonNull(date, "date");
         Objects.requireNonNull(time, "time");
+        return new LocalDateTime(date, time);
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Obtains an instance of {@code OffsetDateTime} using seconds from the
+     * epoch of 1970-01-01T00:00:00Z.
+     * <p>
+     * This allows the {@link ChronoField#INSTANT_SECONDS epoch-seconds} field
+     * to be converted to a local date-time. This is primarily intended for
+     * low-level conversions rather than general application usage.
+     *
+     * @param epochSecond  the number of seconds from the epoch of 1970-01-01T00:00:00Z
+     * @param nanoOfSecond  the nanosecond within the second, from 0 to 999,999,999
+     * @return the local date-time, not null
+     * @throws DateTimeException if the result exceeds the supported range
+     */
+    public static LocalDateTime ofEpochSecond(long epochSecond, int nanoOfSecond, ZoneOffset offset) {
+        Objects.requireNonNull(offset, "offset");
+        long localSecond = epochSecond + offset.getTotalSeconds();  // overflow caught later
+        long localEpochDay = Jdk8Methods.floorDiv(localSecond, SECONDS_PER_DAY);
+        int secsOfDay = Jdk8Methods.floorMod(localSecond, SECONDS_PER_DAY);
+        LocalDate date = LocalDate.ofEpochDay(localEpochDay);
+        LocalTime time = LocalTime.ofSecondOfDay(secsOfDay, nanoOfSecond);
         return new LocalDateTime(date, time);
     }
 
@@ -1366,6 +1371,25 @@ public final class LocalDateTime
     @Override
     public ZonedDateTime atZone(ZoneId zone, ZoneResolver resolver) {
         return ZonedDateTime.of(this, zone, resolver);
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Converts this date-time to the number of seconds from the epoch of 1970-01-01T00:00:00Z.
+     * <p>
+     * This allows this date-time to be converted to a value of the
+     * {@link ChronoField#INSTANT_SECONDS epoch-seconds} field. This is primarily
+     * intended for low-level conversions rather than general application usage.
+     *
+     * @param offset  the offset to use for the conversion, not null
+     * @return the number of seconds from the epoch of 1970-01-01T00:00:00Z
+     */
+    public long toEpochSecond(ZoneOffset offset) {
+        Objects.requireNonNull(offset, "offset");
+        long epochDay = date.toEpochDay();
+        long secs = epochDay * SECONDS_PER_DAY + time.toSecondOfDay();
+        secs -= offset.getTotalSeconds();
+        return secs;
     }
 
     //-----------------------------------------------------------------------

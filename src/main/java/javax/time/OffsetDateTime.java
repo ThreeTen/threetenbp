@@ -366,15 +366,18 @@ public final class OffsetDateTime
      * Obtains an instance of {@code OffsetDateTime} using seconds from the
      * epoch of 1970-01-01T00:00:00Z.
      * <p>
-     * The nanosecond field is set to zero.
+     * This allows the {@link ChronoField#INSTANT_SECONDS epoch-seconds} field
+     * to be converted to an offset date-time. This is primarily intended for
+     * low-level conversions rather than general application usage.
      *
      * @param epochSecond  the number of seconds from the epoch of 1970-01-01T00:00:00Z
+     * @param nanoOfSecond  the nanosecond within the second, from 0 to 999,999,999
      * @return the offset date-time, not null
      * @throws DateTimeException if the result exceeds the supported range
      */
-    public static OffsetDateTime ofEpochSecond(long epochSecond, ZoneOffset offset) {
+    public static OffsetDateTime ofEpochSecond(long epochSecond, int nanoOfSecond, ZoneOffset offset) {
         Objects.requireNonNull(offset, "offset");
-        return create(epochSecond, 0, offset);
+        return create(epochSecond, nanoOfSecond, offset);
     }
 
     /**
@@ -387,8 +390,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if the instant exceeds the supported date range
      */
     static OffsetDateTime create(long epochSecond, int nanoOfSecond, ZoneOffset offset) {
-        long localSeconds = epochSecond + offset.getTotalSeconds();  // overflow caught later
-        LocalDateTime ldt = LocalDateTime.create(localSeconds, nanoOfSecond);
+        LocalDateTime ldt = LocalDateTime.ofEpochSecond(epochSecond, nanoOfSecond, offset);
         return new OffsetDateTime(ldt, offset);
     }
 
@@ -769,7 +771,7 @@ public final class OffsetDateTime
         if (field instanceof ChronoField) {
             ChronoField f = (ChronoField) field;
             switch (f) {
-                case INSTANT_SECONDS: return ofEpochSecond(newValue, offset);
+                case INSTANT_SECONDS: return ofEpochSecond(newValue, getNano(), offset);
                 case OFFSET_SECONDS: {
                     return with(dateTime, ZoneOffset.ofTotalSeconds(f.checkValidIntValue(newValue)));
                 }

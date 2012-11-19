@@ -275,10 +275,11 @@ public interface ChronoOffsetDateTime<C extends Chrono<C>>
     Instant toInstant();
 
     /**
-     * Converts this date-time to the number of seconds from the epoch
-     * of 1970-01-01T00:00:00Z.
+     * Converts this date-time to the number of seconds from the epoch of 1970-01-01T00:00:00Z.
      * <p>
-     * Instants on the time-line after the epoch are positive, earlier are negative.
+     * This allows this date-time to be converted to a value of the
+     * {@link ChronoField#INSTANT_SECONDS epoch-seconds} field. This is primarily
+     * intended for low-level conversions rather than general application usage.
      *
      * @return the number of seconds from the epoch of 1970-01-01T00:00:00Z
      */

@@ -422,33 +422,45 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void factory_ofEpochSecond_longOffset_afterEpoch() {
+        OffsetDateTime base = OffsetDateTime.of(1970, 1, 1, 2, 0, 0, 500, OFFSET_PTWO);
         for (int i = 0; i < 100000; i++) {
-            OffsetDateTime test = OffsetDateTime.ofEpochSecond(i, OFFSET_PONE);
-            assertEquals(test, OffsetDateTime.of(1970, 1, 1, 0, 0, ZoneOffset.UTC).withOffsetSameInstant(OFFSET_PONE).plusSeconds(i));
+            OffsetDateTime test = OffsetDateTime.ofEpochSecond(i, 500, OFFSET_PTWO);
+            assertEquals(test, base.plusSeconds(i));
         }
     }
 
     @Test(groups={"tck"})
     public void factory_ofEpochSecond_longOffset_beforeEpoch() {
+        OffsetDateTime base = OffsetDateTime.of(1970, 1, 1, 2, 0, 0, 500, OFFSET_PTWO);
         for (int i = 0; i < 100000; i++) {
-            OffsetDateTime test = OffsetDateTime.ofEpochSecond(-i, OFFSET_PONE);
-            assertEquals(test, OffsetDateTime.of(1970, 1, 1, 0, 0, ZoneOffset.UTC).withOffsetSameInstant(OFFSET_PONE).minusSeconds(i));
+            OffsetDateTime test = OffsetDateTime.ofEpochSecond(-i, 500, OFFSET_PTWO);
+            assertEquals(test, base.minusSeconds(i));
         }
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_ofEpochSecond_longOffset_tooBig() {
-        OffsetDateTime.ofEpochSecond(Long.MAX_VALUE, OFFSET_PONE);  // TODO: better test
+        OffsetDateTime.ofEpochSecond(Long.MAX_VALUE, 500, OFFSET_PONE);  // TODO: better test
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_ofEpochSecond_longOffset_tooSmall() {
-        OffsetDateTime.ofEpochSecond(Long.MIN_VALUE, OFFSET_PONE);  // TODO: better test
+        OffsetDateTime.ofEpochSecond(Long.MIN_VALUE, 500, OFFSET_PONE);  // TODO: better test
+    }
+
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    public void factory_ofEpochSecond_badNanos_toBig() {
+        OffsetDateTime.ofEpochSecond(0, 1_000_000_000, OFFSET_PONE);
+    }
+
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    public void factory_ofEpochSecond_badNanos_toSmall() {
+        OffsetDateTime.ofEpochSecond(0, -1, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_ofEpochSecond_longOffset_nullOffset() {
-        OffsetDateTime.ofEpochSecond(0L, null);
+        OffsetDateTime.ofEpochSecond(0L, 500, null);
     }
 
     //-----------------------------------------------------------------------

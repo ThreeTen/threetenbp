@@ -727,21 +727,67 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
+    // ofEpochSecond()
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void factory_ofEpochSecond_longOffset_afterEpoch() {
+        LocalDateTime base = LocalDateTime.of(1970, 1, 1, 2, 0, 0, 500);
+        for (int i = 0; i < 100000; i++) {
+            LocalDateTime test = LocalDateTime.ofEpochSecond(i, 500, OFFSET_PTWO);
+            assertEquals(test, base.plusSeconds(i));
+        }
+    }
+
+    @Test(groups={"tck"})
+    public void factory_ofEpochSecond_longOffset_beforeEpoch() {
+        LocalDateTime base = LocalDateTime.of(1970, 1, 1, 2, 0, 0, 500);
+        for (int i = 0; i < 100000; i++) {
+            LocalDateTime test = LocalDateTime.ofEpochSecond(-i, 500, OFFSET_PTWO);
+            assertEquals(test, base.minusSeconds(i));
+        }
+    }
+
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    public void factory_ofEpochSecond_longOffset_tooBig() {
+        LocalDateTime.ofEpochSecond(Long.MAX_VALUE, 500, OFFSET_PONE);  // TODO: better test
+    }
+
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    public void factory_ofEpochSecond_longOffset_tooSmall() {
+        LocalDateTime.ofEpochSecond(Long.MIN_VALUE, 500, OFFSET_PONE);  // TODO: better test
+    }
+
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    public void factory_ofEpochSecond_badNanos_toBig() {
+        LocalDateTime.ofEpochSecond(0, 1_000_000_000, OFFSET_PONE);
+    }
+
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    public void factory_ofEpochSecond_badNanos_toSmall() {
+        LocalDateTime.ofEpochSecond(0, -1, OFFSET_PONE);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void factory_ofEpochSecond_longOffset_nullOffset() {
+        LocalDateTime.ofEpochSecond(0L, 500, null);
+    }
+
+    //-----------------------------------------------------------------------
     // from()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_factory_CalendricalObject() {
+    public void test_from_Accessor() {
         assertEquals(LocalDateTime.from(LocalDateTime.of(2007, 7, 15, 17, 30)), LocalDateTime.of(2007, 7, 15, 17, 30));
         assertEquals(LocalDateTime.from(OffsetDateTime.of(2007, 7, 15, 17, 30, ZoneOffset.ofHours(2))), LocalDateTime.of(2007, 7, 15, 17, 30));
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_factory_CalendricalObject_invalid_noDerive() {
+    public void test_from_Accessor_invalid_noDerive() {
         LocalDateTime.from(LocalTime.of(12, 30));
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_factory_CalendricalObject_null() {
+    public void test_from_Accessor_null() {
         LocalDateTime.from((DateTimeAccessor) null);
     }
 
@@ -2919,6 +2965,28 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
     public void test_atZone_resolver_badResolver() {
         LocalDateTime t = LocalDateTime.of(2007, 4, 1, 0, 0);
         t.atZone(ZONE_GAZA, new MockZoneResolverReturnsNull());
+    }
+
+    //-----------------------------------------------------------------------
+    // toEpochSecond()
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_toEpochSecond_afterEpoch() {
+        for (int i = -5; i < 5; i++) {
+            ZoneOffset offset = ZoneOffset.ofHours(i);
+            for (int j = 0; j < 100000; j++) {
+                LocalDateTime a = LocalDateTime.of(1970, 1, 1, 0, 0).plusSeconds(j);
+                assertEquals(a.toEpochSecond(offset), j - i * 3600);
+            }
+        }
+    }
+
+    @Test(groups={"tck"})
+    public void test_toEpochSecond_beforeEpoch() {
+        for (int i = 0; i < 100000; i++) {
+            LocalDateTime a = LocalDateTime.of(1970, 1, 1, 0, 0).minusSeconds(i);
+            assertEquals(a.toEpochSecond(ZoneOffset.UTC), -i);
+        }
     }
 
     //-----------------------------------------------------------------------

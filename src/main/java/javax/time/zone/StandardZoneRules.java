@@ -539,10 +539,9 @@ final class StandardZoneRules implements ZoneRules, Serializable {
 
     private int findYear(long epochSecond, ZoneOffset offset) {
         // inline for performance
-        long localSeconds = epochSecond + offset.getTotalSeconds();
-        long epochDays = Jdk8Methods.floorDiv(localSeconds, SECONDS_PER_DAY);
-        LocalDate date = LocalDate.ofEpochDay(epochDays);
-        return date.getYear();
+        long localSecond = epochSecond + offset.getTotalSeconds();
+        long localEpochDay = Jdk8Methods.floorDiv(localSecond, SECONDS_PER_DAY);
+        return LocalDate.ofEpochDay(localEpochDay).getYear();
     }
 
     //-------------------------------------------------------------------------

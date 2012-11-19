@@ -31,8 +31,6 @@
  */
 package javax.time.zone;
 
-import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
-
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -44,11 +42,8 @@ import java.util.Objects;
 
 import javax.time.Duration;
 import javax.time.Instant;
-import javax.time.LocalDate;
 import javax.time.LocalDateTime;
-import javax.time.LocalTime;
 import javax.time.ZoneOffset;
-import javax.time.jdk8.Jdk8Methods;
 
 /**
  * A transition between two offsets caused by a discontinuity in the local time-line.
@@ -134,13 +129,7 @@ public final class ZoneOffsetTransition
      * @param offsetAfter  the offset at and after the transition, not null
      */
     ZoneOffsetTransition(long epochSecond, ZoneOffset offsetBefore, ZoneOffset offsetAfter) {
-        // inline for performance
-        long localSeconds = epochSecond + offsetBefore.getTotalSeconds();
-        long epochDays = Jdk8Methods.floorDiv(localSeconds, SECONDS_PER_DAY);
-        int secsOfDay = Jdk8Methods.floorMod(localSeconds, SECONDS_PER_DAY);
-        LocalDate date = LocalDate.ofEpochDay(epochDays);
-        LocalTime time = LocalTime.ofSecondOfDay(secsOfDay);
-        this.transition = LocalDateTime.of(date, time);
+        this.transition = LocalDateTime.ofEpochSecond(epochSecond, 0, offsetBefore);
         this.offsetBefore = offsetBefore;
         this.offsetAfter = offsetAfter;
     }
@@ -201,16 +190,12 @@ public final class ZoneOffsetTransition
     }
 
     /**
-     * Gets the transition instant an an epoch second.
+     * Gets the transition instant as an epoch second.
      *
      * @return the transition epoch second
      */
     long toEpochSecond() {
-        // inline for performance
-        long epochDay = transition.getDate().toEpochDay();
-        long secs = epochDay * SECONDS_PER_DAY + transition.getTime().toSecondOfDay();
-        secs -= offsetBefore.getTotalSeconds();
-        return secs;
+        return transition.toEpochSecond(offsetBefore);
     }
 
     //-------------------------------------------------------------------------
