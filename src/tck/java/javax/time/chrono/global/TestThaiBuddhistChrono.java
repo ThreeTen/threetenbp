@@ -37,6 +37,8 @@ import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
 import static javax.time.calendrical.ChronoField.YEAR;
 import static javax.time.calendrical.ChronoField.YEAR_OF_ERA;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
@@ -47,6 +49,7 @@ import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.chrono.Chrono;
 import javax.time.chrono.ChronoLocalDate;
+import javax.time.chrono.ISOChrono;
 
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -255,6 +258,19 @@ public class TestThaiBuddhistChrono {
         assertEquals(ThaiBuddhistChrono.INSTANCE.range(DAY_OF_MONTH), DAY_OF_MONTH.range());
         assertEquals(ThaiBuddhistChrono.INSTANCE.range(DAY_OF_YEAR), DAY_OF_YEAR.range());
         assertEquals(ThaiBuddhistChrono.INSTANCE.range(MONTH_OF_YEAR), MONTH_OF_YEAR.range());
+    }
+
+    //-----------------------------------------------------------------------
+    // equals()
+    //-----------------------------------------------------------------------
+    @Test(groups="tck")
+    public void test_equals_true() {
+        assertTrue(ThaiBuddhistChrono.INSTANCE.equals(ThaiBuddhistChrono.INSTANCE));
+    }
+
+    @Test(groups="tck")
+    public void test_equals_false() {
+        assertFalse(ThaiBuddhistChrono.INSTANCE.equals(ISOChrono.INSTANCE));
     }
 
 }

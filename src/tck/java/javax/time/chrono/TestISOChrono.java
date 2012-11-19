@@ -279,5 +279,4 @@ public class TestISOChrono {
         assertFalse(ISOChrono.INSTANCE.equals(HijrahChrono.INSTANCE));
     }
 
-
 }

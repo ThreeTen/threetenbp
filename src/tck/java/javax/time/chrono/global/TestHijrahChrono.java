@@ -32,6 +32,8 @@
 package javax.time.chrono.global;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
@@ -40,6 +42,7 @@ import javax.time.Month;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.chrono.Chrono;
 import javax.time.chrono.ChronoLocalDate;
+import javax.time.chrono.ISOChrono;
 
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -191,5 +194,17 @@ public class TestHijrahChrono {
         assertEquals(hijrahDate.toString(), expected);
     }
 
+    //-----------------------------------------------------------------------
+    // equals()
+    //-----------------------------------------------------------------------
+    @Test(groups="tck")
+    public void test_equals_true() {
+        assertTrue(HijrahChrono.INSTANCE.equals(HijrahChrono.INSTANCE));
+    }
+
+    @Test(groups="tck")
+    public void test_equals_false() {
+        assertFalse(HijrahChrono.INSTANCE.equals(ISOChrono.INSTANCE));
+    }
 
 }

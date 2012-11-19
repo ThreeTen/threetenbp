@@ -32,6 +32,8 @@
 package javax.time.chrono.global;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
@@ -47,6 +49,7 @@ import javax.time.chrono.ChronoLocalDate;
 import javax.time.chrono.ChronoLocalDateTime;
 import javax.time.chrono.ChronoOffsetDateTime;
 import javax.time.chrono.ChronoZonedDateTime;
+import javax.time.chrono.ISOChrono;
 
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -230,6 +233,19 @@ public class TestMinguoChrono {
     @Test(dataProvider="toString", groups={"tck"})
     public void test_toString(ChronoLocalDate<MinguoChrono> minguo, String expected) {
         assertEquals(minguo.toString(), expected);
+    }
+
+    //-----------------------------------------------------------------------
+    // equals()
+    //-----------------------------------------------------------------------
+    @Test(groups="tck")
+    public void test_equals_true() {
+        assertTrue(MinguoChrono.INSTANCE.equals(MinguoChrono.INSTANCE));
+    }
+
+    @Test(groups="tck")
+    public void test_equals_false() {
+        assertFalse(MinguoChrono.INSTANCE.equals(ISOChrono.INSTANCE));
     }
 
 }
