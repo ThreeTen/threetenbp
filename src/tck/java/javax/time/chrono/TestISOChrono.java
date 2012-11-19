@@ -44,6 +44,7 @@ import static org.testng.Assert.assertTrue;
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
+import javax.time.Month;
 import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.chrono.global.HijrahChrono;
@@ -195,11 +196,11 @@ public class TestISOChrono {
         assertEquals(test, ISOChrono.INSTANCE.date(2012, 7, 6));
     }
 
-//    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
-//    public void test_adjust_toMonth() {
-//        ChronoLocalDate<ISOChrono> ISODate = ISOChrono.INSTANCE.date(1726, 1, 4);
-//        ISODate.with(Month.APRIL);
-//    }  // TODO: shouldn't really accept ISO Month
+    @Test(groups={"tck"})
+    public void test_adjust_toMonth() {
+        ChronoLocalDate<ISOChrono> isoDate = ISOChrono.INSTANCE.date(1726, 1, 4);
+        assertEquals(ISOChrono.INSTANCE.date(1726, 4, 4), isoDate.with(Month.APRIL));
+    }
 
     //-----------------------------------------------------------------------
     // LocalDate.with(ISODate)

@@ -36,10 +36,10 @@ import static org.testng.Assert.assertEquals;
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
+import javax.time.Month;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.chrono.Chrono;
 import javax.time.chrono.ChronoLocalDate;
-import javax.time.chrono.global.HijrahChrono;
 
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -149,11 +149,11 @@ public class TestHijrahChrono {
         assertEquals(test, HijrahChrono.INSTANCE.date(1433, 8, 16));
     }
 
-//    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
-//    public void test_adjust_toMonth() {
-//        ChronoLocalDate hijrahDate = HijrahChrono.INSTANCE.date(1726, 1, 4);
-//        hijrahDate.with(Month.APRIL);
-//    }  // TODO: shouldn't really accept ISO Month
+    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    public void test_adjust_toMonth() {
+        ChronoLocalDate<?> hijrahDate = HijrahChrono.INSTANCE.date(1726, 1, 4);
+        hijrahDate.with(Month.APRIL);
+    }
 
     //-----------------------------------------------------------------------
     // LocalDate.with(HijrahDate)

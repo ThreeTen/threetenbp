@@ -37,6 +37,7 @@ import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
+import javax.time.Month;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.ChronoUnit;
@@ -189,11 +190,11 @@ public class TestMinguoChrono {
         assertEquals(test, MinguoChrono.INSTANCE.date(101, 7, 6));
     }
 
-//    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
-//    public void test_adjust_toMonth() {
-//        ChronoLocalDate<MinguoChrono> minguo = MinguoChrono.INSTANCE.date(1726, 1, 4);
-//        minguo.with(Month.APRIL);
-//    }  // TODO: shouldn't really accept ISO Month
+    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    public void test_adjust_toMonth() {
+        ChronoLocalDate<MinguoChrono> minguo = MinguoChrono.INSTANCE.date(1726, 1, 4);
+        minguo.with(Month.APRIL);
+    }
 
     //-----------------------------------------------------------------------
     // LocalDate.with(MinguoDate)

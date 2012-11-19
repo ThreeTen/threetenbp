@@ -41,12 +41,12 @@ import static org.testng.Assert.assertEquals;
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
+import javax.time.Month;
 import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.chrono.Chrono;
 import javax.time.chrono.ChronoLocalDate;
-import javax.time.chrono.global.ThaiBuddhistChrono;
 
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -200,11 +200,11 @@ public class TestThaiBuddhistChrono {
         assertEquals(test, ThaiBuddhistChrono.INSTANCE.date(2555, 7, 6));
     }
 
-//    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
-//    public void test_adjust_toMonth() {
-//        ChronoLocalDate<ThaiBuddhistChrono> jdate = BuddhistChrono.INSTANCE.date(1726, 1, 4);
-//        jdate.with(Month.APRIL);
-//    }  // TODO: shouldn't really accept ISO Month
+    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    public void test_adjust_toMonth() {
+        ChronoLocalDate<ThaiBuddhistChrono> jdate = ThaiBuddhistChrono.INSTANCE.date(1726, 1, 4);
+        jdate.with(Month.APRIL);
+    }
 
     //-----------------------------------------------------------------------
     // LocalDate.with(BuddhistDate)
