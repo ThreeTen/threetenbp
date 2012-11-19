@@ -242,6 +242,9 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
     //-----------------------------------------------------------------------
     /**
      * Returns a new {@code ChronoLocalDateTime} with the {@code date} and {@code time}.
+     * <p>
+     * This method is intended for chronology implementations. It uses a standard
+     * local date-time implementation that can be shared for all chronologies.
      *
      * @param <R>  the chronology of the date
      * @param date  the date, not null
