@@ -292,7 +292,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * @throws ClassCastException if the date-time cannot be cast to ChronoDateTimeImpl
      *  or the chronology is not equal this Chrono
      */
-    public /* protected */ ChronoDateTimeImpl<C> ensureChronoLocalDateTime(DateTime dateTime) {
+    public /* package-scoped */ ChronoDateTimeImpl<C> ensureChronoLocalDateTime(DateTime dateTime) {
         ChronoDateTimeImpl<C> other = (ChronoDateTimeImpl<C>) dateTime;
         if (this.equals(other.getDate().getChrono()) == false) {
             throw new ClassCastException("Chrono mismatch, required: " + getId()
@@ -309,7 +309,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * @throws ClassCastException if the date-time cannot be cast to ChronoOffsetDateTimeImpl
      *  or the chronology is not equal this Chrono
      */
-    public /* protected */ ChronoOffsetDateTimeImpl<C> ensureChronoOffsetDateTime(DateTime dateTime) {
+    public /* package-scoped */ ChronoOffsetDateTimeImpl<C> ensureChronoOffsetDateTime(DateTime dateTime) {
         ChronoOffsetDateTimeImpl<C> other = (ChronoOffsetDateTimeImpl<C>) dateTime;
         if (this.equals(other.getDate().getChrono()) == false) {
             throw new ClassCastException("Chrono mismatch, required: " + getId()
@@ -326,7 +326,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * @throws ClassCastException if the date-time cannot be cast to ChronoZonedDateTimeImpl
      *  or the chronology is not equal this Chrono
      */
-    public /* protected */ ChronoZonedDateTimeImpl<C> ensureChronoZonedDateTime(DateTime dateTime) {
+    public /* package-scoped */ ChronoZonedDateTimeImpl<C> ensureChronoZonedDateTime(DateTime dateTime) {
         ChronoZonedDateTimeImpl<C> other = (ChronoZonedDateTimeImpl<C>) dateTime;
         if (this.equals(other.getDate().getChrono()) == false) {
             throw new ClassCastException("Chrono mismatch, required: " + getId()
