@@ -43,11 +43,11 @@ import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.JulianDayField;
 import javax.time.chrono.Chrono;
 import javax.time.chrono.ChronoLocalDate;
-import javax.time.chrono.HijrahChrono;
 import javax.time.chrono.ISOChrono;
-import javax.time.chrono.JapaneseChrono;
-import javax.time.chrono.MinguoChrono;
-import javax.time.chrono.ThaiBuddhistChrono;
+import javax.time.chrono.global.HijrahChrono;
+import javax.time.chrono.global.JapaneseChrono;
+import javax.time.chrono.global.MinguoChrono;
+import javax.time.chrono.global.ThaiBuddhistChrono;
 
 /**
  * Usability class for package.

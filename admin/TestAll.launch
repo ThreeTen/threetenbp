@@ -12,6 +12,7 @@
 <listEntry value="javax.time"/>
 <listEntry value="javax.time.calendrical"/>
 <listEntry value="javax.time.chrono"/>
+<listEntry value="javax.time.chrono.global"/>
 <listEntry value="javax.time.format"/>
 <listEntry value="javax.time.zone"/>
 </listAttribute>

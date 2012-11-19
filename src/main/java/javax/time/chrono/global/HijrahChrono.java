@@ -30,7 +30,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javax.time.chrono;
+package javax.time.chrono.global;
 
 import static javax.time.calendrical.ChronoField.EPOCH_DAY;
 
@@ -44,6 +44,9 @@ import javax.time.DateTimeException;
 import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeValueRange;
+import javax.time.chrono.Chrono;
+import javax.time.chrono.ChronoLocalDate;
+import javax.time.chrono.Era;
 
 /**
  * The Hijrah calendar system.

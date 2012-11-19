@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.chrono;
+package javax.time.chrono.global;
 
 import static javax.time.calendrical.ChronoField.ERA;
 
@@ -40,51 +40,54 @@ import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
+import javax.time.chrono.ChronoLocalDate;
+import javax.time.chrono.Era;
 import javax.time.format.DateTimeFormatterBuilder;
 import javax.time.format.TextStyle;
 
 /**
- * An era in the Thai Buddhist calendar system.
+ * An era in the Hijrah calendar system.
  * <p>
- * The Thai Buddhist calendar system has two eras.
+ * The Hijrah calendar system has two eras.
+ * The date {@code 0001-01-01 (Hijrah)} is {@code 622-06-19 (ISO)}.
  * <p>
- * <b>Do not use ordinal() to obtain the numeric representation of a ThaiBuddhistEra
- * instance. Use getValue() instead.</b>
+ * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code MinguoEra}.
+ * Use {@code getValue()} instead.</b>
  *
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-enum ThaiBuddhistEra implements Era<ThaiBuddhistChrono> {
+enum HijrahEra implements Era<HijrahChrono> {
 
     /**
-     * The singleton instance for the era before the current one, 'Before Buddhist Era',
+     * The singleton instance for the era before the current one, 'Before Anno Hegirae',
      * which has the value 0.
      */
-    BEFORE_BE,
+    BEFORE_AH,
     /**
-     * The singleton instance for the current era, 'Buddhist Era', which has the value 1.
+     * The singleton instance for the current era, 'Anno Hegirae', which has the value 1.
      */
-    BE;
+    AH;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code ThaiBuddhistEra} from a value.
+     * Obtains an instance of {@code HijrahEra} from a value.
      * <p>
-     * The current era (from ISO year -543 onwards) has the value 1
+     * The current era (from ISO date 622-06-19 onwards) has the value 1
      * The previous era has the value 0.
      *
-     * @param thaiBuddhistEra  the era to represent, from 0 to 1
-     * @return the BuddhistEra singleton, never null
-     * @throws IllegalCalendarFieldValueException if the era is invalid
+     * @param hijrahEra  the era to represent, from 0 to 1
+     * @return the HijrahEra singleton, never null
+     * @throws DateTimeException if the era is invalid
      */
-    public static ThaiBuddhistEra of(int thaiBuddhistEra) {
-        switch (thaiBuddhistEra) {
+    public static HijrahEra of(int hijrahEra) {
+        switch (hijrahEra) {
             case 0:
-                return BEFORE_BE;
+                return BEFORE_AH;
             case 1:
-                return BE;
+                return AH;
             default:
-                throw new DateTimeException("Era is not valid for ThaiBuddhistEra");
+                throw new DateTimeException("HijrahEra not valid");
         }
     }
 
@@ -92,10 +95,10 @@ enum ThaiBuddhistEra implements Era<ThaiBuddhistChrono> {
     /**
      * Gets the era numeric value.
      * <p>
-     * The current era (from ISO year -543 onwards) has the value 1
+     * The current era (from ISO date 622-06-19 onwards) has the value 1.
      * The previous era has the value 0.
      *
-     * @return the era value, from 0 (BEFORE_BE) to 1 (BE)
+     * @return the era value, from 0 (BEFORE_AH) to 1 (AH)
      */
     @Override
     public int getValue() {
@@ -103,19 +106,19 @@ enum ThaiBuddhistEra implements Era<ThaiBuddhistChrono> {
     }
 
     @Override
-    public ThaiBuddhistChrono getChrono() {
-        return ThaiBuddhistChrono.INSTANCE;
+    public HijrahChrono getChrono() {
+        return HijrahChrono.INSTANCE;
     }
 
     // JDK8 default methods:
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDate<ThaiBuddhistChrono> date(int year, int month, int day) {
+    public ChronoLocalDate<HijrahChrono> date(int year, int month, int day) {
         return getChrono().date(this, year, month, day);
     }
 
     @Override
-    public ChronoLocalDate<ThaiBuddhistChrono> dateFromYearDay(int year, int dayOfYear) {
+    public ChronoLocalDate<HijrahChrono> dateFromYearDay(int year, int dayOfYear) {
         return getChrono().dateFromYearDay(this, year, dayOfYear);
     }
 
@@ -157,7 +160,7 @@ enum ThaiBuddhistEra implements Era<ThaiBuddhistChrono> {
     }
 
     @Override
-    public Era<ThaiBuddhistChrono> with(DateTimeField field, long newValue) {
+    public Era<HijrahChrono> with(DateTimeField field, long newValue) {
         if (field == ERA) {
             int eravalue = ((ChronoField) field).checkValidIntValue(newValue);
             return getChrono().eraOf(eravalue);
@@ -188,6 +191,16 @@ enum ThaiBuddhistEra implements Era<ThaiBuddhistChrono> {
     @Override
     public String getText(TextStyle style, Locale locale) {
         return new DateTimeFormatterBuilder().appendText(ERA, style).toFormatter(locale).print(this);
+    }
+
+    /**
+     * Returns the proleptic year from this era and year of era.
+     *
+     * @param yearOfEra the year of Era
+     * @return the computed prolepticYear
+     */
+    int prolepticYear(int yearOfEra) {
+        return (this == HijrahEra.AH ? yearOfEra : 1 - yearOfEra);
     }
 
 }

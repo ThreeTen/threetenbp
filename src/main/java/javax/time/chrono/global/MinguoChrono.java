@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.chrono;
+package javax.time.chrono.global;
 
 import static javax.time.calendrical.ChronoField.WEEK_BASED_YEAR;
 import static javax.time.calendrical.ChronoField.YEAR;
@@ -44,6 +44,10 @@ import javax.time.LocalDate;
 import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeValueRange;
+import javax.time.chrono.Chrono;
+import javax.time.chrono.ChronoLocalDate;
+import javax.time.chrono.Era;
+import javax.time.chrono.ISOChrono;
 
 /**
  * The Minguo calendar system.

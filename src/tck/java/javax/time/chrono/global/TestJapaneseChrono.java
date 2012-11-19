@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.chrono;
+package javax.time.chrono.global;
 
 import static org.testng.Assert.assertEquals;
 
@@ -37,6 +37,9 @@ import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.calendrical.DateTimeAdjusters;
+import javax.time.chrono.Chrono;
+import javax.time.chrono.ChronoLocalDate;
+import javax.time.chrono.global.JapaneseChrono;
 
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;

@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.chrono;
+package javax.time.chrono.global;
 
 import static javax.time.calendrical.ChronoField.ERA;
 
@@ -40,63 +40,64 @@ import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
+import javax.time.chrono.ChronoLocalDate;
+import javax.time.chrono.Era;
 import javax.time.format.DateTimeFormatterBuilder;
 import javax.time.format.TextStyle;
 
 /**
- * An era in the Minguo calendar system.
+ * An era in the Thai Buddhist calendar system.
  * <p>
- * The Minguo calendar system has two eras.
- * The date {@code 0001-01-01 (Minguo)} is equal to {@code 1912-01-01 (ISO)}.
+ * The Thai Buddhist calendar system has two eras.
  * <p>
- * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code MinguoEra}.
- * Use {@code getValue()} instead.</b>
+ * <b>Do not use ordinal() to obtain the numeric representation of a ThaiBuddhistEra
+ * instance. Use getValue() instead.</b>
  *
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-enum MinguoEra implements Era<MinguoChrono>  {
+enum ThaiBuddhistEra implements Era<ThaiBuddhistChrono> {
 
     /**
-     * The singleton instance for the era BEFORE_ROC, 'Before Republic of China'.
-     * This has the numeric value of {@code 0}.
+     * The singleton instance for the era before the current one, 'Before Buddhist Era',
+     * which has the value 0.
      */
-    BEFORE_ROC,
+    BEFORE_BE,
     /**
-     * The singleton instance for the era ROC, 'Republic of China'.
-     * This has the numeric value of {@code 1}.
+     * The singleton instance for the current era, 'Buddhist Era', which has the value 1.
      */
-    ROC;
+    BE;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code MinguoEra} from an {@code int} value.
+     * Obtains an instance of {@code ThaiBuddhistEra} from a value.
      * <p>
-     * {@code MinguoEra} is an enum representing the Minguo eras of BEFORE_ROC/ROC.
-     * This factory allows the enum to be obtained from the {@code int} value.
+     * The current era (from ISO year -543 onwards) has the value 1
+     * The previous era has the value 0.
      *
-     * @param era  the BEFORE_ROC/ROC value to represent, from 0 (BEFORE_ROC) to 1 (ROC)
-     * @return the era singleton, not null
-     * @throws DateTimeException if the value is invalid
+     * @param thaiBuddhistEra  the era to represent, from 0 to 1
+     * @return the BuddhistEra singleton, never null
+     * @throws IllegalCalendarFieldValueException if the era is invalid
      */
-    public static MinguoEra of(int era) {
-        switch (era) {
+    public static ThaiBuddhistEra of(int thaiBuddhistEra) {
+        switch (thaiBuddhistEra) {
             case 0:
-                return BEFORE_ROC;
+                return BEFORE_BE;
             case 1:
-                return ROC;
+                return BE;
             default:
-                throw new DateTimeException("Invalid era: " + era);
+                throw new DateTimeException("Era is not valid for ThaiBuddhistEra");
         }
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the numeric era {@code int} value.
+     * Gets the era numeric value.
      * <p>
-     * The era BEFORE_ROC has the value 0, while the era ROC has the value 1.
+     * The current era (from ISO year -543 onwards) has the value 1
+     * The previous era has the value 0.
      *
-     * @return the era value, from 0 (BEFORE_ROC) to 1 (ROC)
+     * @return the era value, from 0 (BEFORE_BE) to 1 (BE)
      */
     @Override
     public int getValue() {
@@ -104,19 +105,19 @@ enum MinguoEra implements Era<MinguoChrono>  {
     }
 
     @Override
-    public MinguoChrono getChrono() {
-        return MinguoChrono.INSTANCE;
+    public ThaiBuddhistChrono getChrono() {
+        return ThaiBuddhistChrono.INSTANCE;
     }
 
     // JDK8 default methods:
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDate<MinguoChrono> date(int year, int month, int day) {
+    public ChronoLocalDate<ThaiBuddhistChrono> date(int year, int month, int day) {
         return getChrono().date(this, year, month, day);
     }
 
     @Override
-    public ChronoLocalDate<MinguoChrono> dateFromYearDay(int year, int dayOfYear) {
+    public ChronoLocalDate<ThaiBuddhistChrono> dateFromYearDay(int year, int dayOfYear) {
         return getChrono().dateFromYearDay(this, year, dayOfYear);
     }
 
@@ -158,7 +159,7 @@ enum MinguoEra implements Era<MinguoChrono>  {
     }
 
     @Override
-    public Era<MinguoChrono> with(DateTimeField field, long newValue) {
+    public Era<ThaiBuddhistChrono> with(DateTimeField field, long newValue) {
         if (field == ERA) {
             int eravalue = ((ChronoField) field).checkValidIntValue(newValue);
             return getChrono().eraOf(eravalue);

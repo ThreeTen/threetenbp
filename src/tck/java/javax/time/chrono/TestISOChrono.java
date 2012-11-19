@@ -46,6 +46,7 @@ import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeAdjusters;
+import javax.time.chrono.global.HijrahChrono;
 
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;

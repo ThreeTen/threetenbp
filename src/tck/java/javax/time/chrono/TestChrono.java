@@ -39,6 +39,10 @@ import java.util.Locale;
 import java.util.Set;
 
 import javax.time.calendrical.ChronoField;
+import javax.time.chrono.global.HijrahChrono;
+import javax.time.chrono.global.JapaneseChrono;
+import javax.time.chrono.global.MinguoChrono;
+import javax.time.chrono.global.ThaiBuddhistChrono;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;

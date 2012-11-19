@@ -29,10 +29,10 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.chrono;
+package javax.time.chrono.global;
 
 import static javax.time.calendrical.ChronoField.YEAR;
-import static javax.time.chrono.ThaiBuddhistChrono.YEARS_DIFFERENCE;
+import static javax.time.chrono.global.ThaiBuddhistChrono.YEARS_DIFFERENCE;
 
 import java.io.Serializable;
 import java.util.Objects;

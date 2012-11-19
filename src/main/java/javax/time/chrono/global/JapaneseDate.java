@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.chrono;
+package javax.time.chrono.global;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -43,6 +43,7 @@ import javax.time.LocalDate;
 import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
+import javax.time.chrono.Era;
 import javax.time.jdk8.Jdk8Methods;
 
 import sun.util.calendar.LocalGregorianCalendar;

@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.chrono;
+package javax.time.chrono.global;
 
 import static javax.time.calendrical.ChronoField.ERA;
 
@@ -40,14 +40,16 @@ import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
+import javax.time.chrono.ChronoLocalDate;
+import javax.time.chrono.Era;
 import javax.time.format.DateTimeFormatterBuilder;
 import javax.time.format.TextStyle;
 
 /**
- * An era in the Hijrah calendar system.
+ * An era in the Minguo calendar system.
  * <p>
- * The Hijrah calendar system has two eras.
- * The date {@code 0001-01-01 (Hijrah)} is {@code 622-06-19 (ISO)}.
+ * The Minguo calendar system has two eras.
+ * The date {@code 0001-01-01 (Minguo)} is equal to {@code 1912-01-01 (ISO)}.
  * <p>
  * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code MinguoEra}.
  * Use {@code getValue()} instead.</b>
@@ -55,48 +57,48 @@ import javax.time.format.TextStyle;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-enum HijrahEra implements Era<HijrahChrono> {
+enum MinguoEra implements Era<MinguoChrono>  {
 
     /**
-     * The singleton instance for the era before the current one, 'Before Anno Hegirae',
-     * which has the value 0.
+     * The singleton instance for the era BEFORE_ROC, 'Before Republic of China'.
+     * This has the numeric value of {@code 0}.
      */
-    BEFORE_AH,
+    BEFORE_ROC,
     /**
-     * The singleton instance for the current era, 'Anno Hegirae', which has the value 1.
+     * The singleton instance for the era ROC, 'Republic of China'.
+     * This has the numeric value of {@code 1}.
      */
-    AH;
+    ROC;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code HijrahEra} from a value.
+     * Obtains an instance of {@code MinguoEra} from an {@code int} value.
      * <p>
-     * The current era (from ISO date 622-06-19 onwards) has the value 1
-     * The previous era has the value 0.
+     * {@code MinguoEra} is an enum representing the Minguo eras of BEFORE_ROC/ROC.
+     * This factory allows the enum to be obtained from the {@code int} value.
      *
-     * @param hijrahEra  the era to represent, from 0 to 1
-     * @return the HijrahEra singleton, never null
-     * @throws DateTimeException if the era is invalid
+     * @param era  the BEFORE_ROC/ROC value to represent, from 0 (BEFORE_ROC) to 1 (ROC)
+     * @return the era singleton, not null
+     * @throws DateTimeException if the value is invalid
      */
-    public static HijrahEra of(int hijrahEra) {
-        switch (hijrahEra) {
+    public static MinguoEra of(int era) {
+        switch (era) {
             case 0:
-                return BEFORE_AH;
+                return BEFORE_ROC;
             case 1:
-                return AH;
+                return ROC;
             default:
-                throw new DateTimeException("HijrahEra not valid");
+                throw new DateTimeException("Invalid era: " + era);
         }
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the era numeric value.
+     * Gets the numeric era {@code int} value.
      * <p>
-     * The current era (from ISO date 622-06-19 onwards) has the value 1.
-     * The previous era has the value 0.
+     * The era BEFORE_ROC has the value 0, while the era ROC has the value 1.
      *
-     * @return the era value, from 0 (BEFORE_AH) to 1 (AH)
+     * @return the era value, from 0 (BEFORE_ROC) to 1 (ROC)
      */
     @Override
     public int getValue() {
@@ -104,19 +106,19 @@ enum HijrahEra implements Era<HijrahChrono> {
     }
 
     @Override
-    public HijrahChrono getChrono() {
-        return HijrahChrono.INSTANCE;
+    public MinguoChrono getChrono() {
+        return MinguoChrono.INSTANCE;
     }
 
     // JDK8 default methods:
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDate<HijrahChrono> date(int year, int month, int day) {
+    public ChronoLocalDate<MinguoChrono> date(int year, int month, int day) {
         return getChrono().date(this, year, month, day);
     }
 
     @Override
-    public ChronoLocalDate<HijrahChrono> dateFromYearDay(int year, int dayOfYear) {
+    public ChronoLocalDate<MinguoChrono> dateFromYearDay(int year, int dayOfYear) {
         return getChrono().dateFromYearDay(this, year, dayOfYear);
     }
 
@@ -158,7 +160,7 @@ enum HijrahEra implements Era<HijrahChrono> {
     }
 
     @Override
-    public Era<HijrahChrono> with(DateTimeField field, long newValue) {
+    public Era<MinguoChrono> with(DateTimeField field, long newValue) {
         if (field == ERA) {
             int eravalue = ((ChronoField) field).checkValidIntValue(newValue);
             return getChrono().eraOf(eravalue);
@@ -189,16 +191,6 @@ enum HijrahEra implements Era<HijrahChrono> {
     @Override
     public String getText(TextStyle style, Locale locale) {
         return new DateTimeFormatterBuilder().appendText(ERA, style).toFormatter(locale).print(this);
-    }
-
-    /**
-     * Returns the proleptic year from this era and year of era.
-     *
-     * @param yearOfEra the year of Era
-     * @return the computed prolepticYear
-     */
-    int prolepticYear(int yearOfEra) {
-        return (this == HijrahEra.AH ? yearOfEra : 1 - yearOfEra);
     }
 
 }

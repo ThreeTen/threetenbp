@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.chrono;
+package javax.time.chrono.global;
 
 import static org.testng.Assert.assertEquals;
 
@@ -41,6 +41,11 @@ import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTimeAdjusters;
+import javax.time.chrono.Chrono;
+import javax.time.chrono.ChronoLocalDate;
+import javax.time.chrono.ChronoLocalDateTime;
+import javax.time.chrono.ChronoOffsetDateTime;
+import javax.time.chrono.ChronoZonedDateTime;
 
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -101,8 +106,6 @@ public class TestMinguoChrono {
     @SuppressWarnings("unused")
     @Test(dataProvider="samples", groups={"implementation"})
     public void test_MinguoDate(ChronoLocalDate<MinguoChrono> minguoDate, LocalDate iso) {
-        assertEquals(minguoDate instanceof MinguoDate, true, "Minguo didn't create MinguoDate");
-        MinguoDate date = MinguoDate.class.cast(minguoDate);
         ChronoLocalDate<MinguoChrono> hd = minguoDate;
         ChronoLocalDateTime<MinguoChrono> hdt = hd.atTime(LocalTime.MIDDAY);
         ZoneOffset zo = ZoneOffset.ofHours(1);
@@ -124,14 +127,13 @@ public class TestMinguoChrono {
 
     @Test()
     public void test_MinguoChrono() {
-        MinguoDate h1 = MinguoDate.of(MinguoChrono.ERA_ROC, 1, 2, 3);
+        ChronoLocalDate<MinguoChrono> h1 = MinguoChrono.ERA_ROC.date(1, 2, 3);
         ChronoLocalDate<MinguoChrono> h2 = h1;
         ChronoLocalDateTime<MinguoChrono> h3 = h2.atTime(LocalTime.MIDDAY);
         ChronoOffsetDateTime<MinguoChrono> h4 = h3.atOffset(ZoneOffset.UTC);
         @SuppressWarnings("unused")
         ChronoZonedDateTime<MinguoChrono> h5 = h4.atZoneSameInstant(ZoneId.UTC);
     }
-
 
     @DataProvider(name="badDates")
     Object[][] data_badDates() {
@@ -228,6 +230,5 @@ public class TestMinguoChrono {
     public void test_toString(ChronoLocalDate<MinguoChrono> minguo, String expected) {
         assertEquals(minguo.toString(), expected);
     }
-
 
 }

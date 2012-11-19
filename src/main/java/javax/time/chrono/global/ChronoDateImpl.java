@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.chrono;
+package javax.time.chrono.global;
 
 import static javax.time.calendrical.ChronoField.WEEK_BASED_YEAR;
 import static javax.time.calendrical.ChronoField.WEEK_OF_MONTH;
@@ -48,6 +48,10 @@ import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.chrono.Chrono;
+import javax.time.chrono.ChronoLocalDate;
+import javax.time.chrono.ChronoLocalDateTime;
+import javax.time.chrono.Era;
 import javax.time.jdk8.DefaultInterfaceChronoLocalDate;
 import javax.time.jdk8.Jdk8Methods;
 
@@ -446,7 +450,7 @@ abstract class ChronoDateImpl<C extends Chrono<C>>
 
     @Override
     public final ChronoLocalDateTime<C> atTime(LocalTime localTime) {
-        return ChronoDateTimeImpl.of(this, localTime);
+        return Chrono.dateTime(this, localTime);
     }
 
     //-----------------------------------------------------------------------
