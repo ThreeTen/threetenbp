@@ -20,4 +20,15 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>net.sf.eclipsecs.core.CheckstyleNature</nature>
 	</natures>
+	<filteredResources>
+		<filter>
+			<id>1353369842080</id>
+			<name></name>
+			<type>26</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-true-false-.git</arguments>
+			</matcher>
+		</filter>
+	</filteredResources>
 </projectDescription>
