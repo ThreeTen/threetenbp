@@ -70,8 +70,8 @@ import sun.util.calendar.LocalGregorianCalendar;
 public final class JapaneseChrono extends Chrono<JapaneseChrono> implements Serializable {
     // TODO: definition for unknown era may break requirement that year-of-era >= 1
 
-    static final LocalGregorianCalendar JCAL
-        = (LocalGregorianCalendar) CalendarSystem.forName("japanese");
+    static final LocalGregorianCalendar JCAL =
+        (LocalGregorianCalendar) CalendarSystem.forName("japanese");
 
     // Locale for creating a JapaneseImpericalCalendar.
     static final Locale LOCALE = Locale.forLanguageTag("ja-JP-u-ca-japanese");

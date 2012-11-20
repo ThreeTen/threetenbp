@@ -45,7 +45,7 @@ import javax.time.chrono.Chrono;
  * Implementations must be thread-safe.
  * Implementations should cache the returned formatters.
  */
-public abstract class DateTimeFormatStyleProvider extends LocaleServiceProvider {
+ public abstract class DateTimeFormatStyleProvider extends LocaleServiceProvider {
 
     /**
      * Gets a localized date, time or date-time formatter.

@@ -92,7 +92,7 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
      * @see #isBefore
      * @see #isEqual
      */
-    public static final Comparator<ChronoZonedDateTime<?>> INSTANT_COMPARATOR =
+    Comparator<ChronoZonedDateTime<?>> INSTANT_COMPARATOR =
             new Comparator<ChronoZonedDateTime<?>>() {
         @Override
         public int compare(ChronoZonedDateTime<?> datetime1, ChronoZonedDateTime<?> datetime2) {
