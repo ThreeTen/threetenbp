@@ -698,7 +698,7 @@ import javax.time.zone.ZoneRules;
         if (unit instanceof ChronoUnit) {
             return with(dateTime.plus(amountToAdd, unit));
         }
-        return getDate().getChrono().ensureChronoZonedDateTime(unit.doAdd(this, amountToAdd));   /// TODO: Generics replacement Risk!
+        return getDate().getChrono().ensureChronoZonedDateTime(unit.doPlus(this, amountToAdd));   /// TODO: Generics replacement Risk!
     }
 
     //-----------------------------------------------------------------------

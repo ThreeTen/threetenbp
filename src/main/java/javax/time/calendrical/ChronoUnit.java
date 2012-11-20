@@ -278,7 +278,7 @@ public enum ChronoUnit implements PeriodUnit {
     }
 
     @Override
-    public <R extends DateTime> R doAdd(R dateTime, long periodToAdd) {
+    public <R extends DateTime> R doPlus(R dateTime, long periodToAdd) {
         return (R) dateTime.plus(periodToAdd, this);
     }
 

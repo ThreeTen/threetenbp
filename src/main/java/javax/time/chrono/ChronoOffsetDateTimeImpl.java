@@ -584,7 +584,7 @@ class ChronoOffsetDateTimeImpl<C extends Chrono<C>>
         if (unit instanceof ChronoUnit) {
             return with(dateTime.plus(amountToAdd, unit), offset);
         }
-        return getDate().getChrono().ensureChronoOffsetDateTime(unit.doAdd(this, amountToAdd));
+        return getDate().getChrono().ensureChronoOffsetDateTime(unit.doPlus(this, amountToAdd));
     }
 
     //-----------------------------------------------------------------------

@@ -165,7 +165,7 @@ public class TestChronoZonedDateTime {
             if (chrono != chrono2) {
                 try {
                     ChronoZonedDateTime<?> notreached = codt.plus(1, adjuster);
-                    Assert.fail("PeriodUnit.doAdd plus should have thrown a ClassCastException, " + codt
+                    Assert.fail("PeriodUnit.doPlus plus should have thrown a ClassCastException, " + codt
                             + " can not be cast to " + codt2);
                 } catch (ClassCastException cce) {
                     // Expected exception; not an error
@@ -189,7 +189,7 @@ public class TestChronoZonedDateTime {
             if (chrono != chrono2) {
                 try {
                     ChronoZonedDateTime<?> notreached = codt.minus(1, adjuster);
-                    Assert.fail("PeriodUnit.doAdd minus should have thrown a ClassCastException, " + codt.getClass()
+                    Assert.fail("PeriodUnit.doPlus minus should have thrown a ClassCastException, " + codt.getClass()
                             + " can not be cast to " + codt2.getClass());
                 } catch (ClassCastException cce) {
                     // Expected exception; not an error
@@ -325,7 +325,7 @@ public class TestChronoZonedDateTime {
 
     /**
      * FixedPeriodUnit returns a fixed DateTime in all adjustments.
-     * Construct an FixedPeriodUnit with the DateTime that should be returned from doAdd.
+     * Construct an FixedPeriodUnit with the DateTime that should be returned from doPlus.
      */
     static class FixedPeriodUnit implements PeriodUnit {
         private DateTime dateTime;
@@ -355,7 +355,7 @@ public class TestChronoZonedDateTime {
         }
 
         @Override
-        public <R extends DateTime> R doAdd(R dateTime, long periodToAdd) {
+        public <R extends DateTime> R doPlus(R dateTime, long periodToAdd) {
             return (R)this.dateTime;
         }
 

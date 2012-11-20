@@ -525,7 +525,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
             }
             return with(date.plus(amountToAdd, unit), time);
         }
-        return date.getChrono().ensureChronoLocalDateTime(unit.doAdd(this, amountToAdd));
+        return date.getChrono().ensureChronoLocalDateTime(unit.doPlus(this, amountToAdd));
     }
 
     //-----------------------------------------------------------------------

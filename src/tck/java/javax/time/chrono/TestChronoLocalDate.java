@@ -153,7 +153,7 @@ public class TestChronoLocalDate {
             if (chrono != chrono2) {
                 try {
                     ChronoLocalDate<?> notreached = date.plus(1, adjuster);
-                    Assert.fail("PeriodUnit.doAdd plus should have thrown a ClassCastException" + date.getClass()
+                    Assert.fail("PeriodUnit.doPlus plus should have thrown a ClassCastException" + date.getClass()
                             + ", can not be cast to " + date2.getClass());
                 } catch (ClassCastException cce) {
                     // Expected exception; not an error
@@ -177,7 +177,7 @@ public class TestChronoLocalDate {
             if (chrono != chrono2) {
                 try {
                     ChronoLocalDate<?> notreached = date.minus(1, adjuster);
-                    Assert.fail("PeriodUnit.doAdd minus should have thrown a ClassCastException" + date.getClass()
+                    Assert.fail("PeriodUnit.doPlus minus should have thrown a ClassCastException" + date.getClass()
                             + ", can not be cast to " + date2.getClass());
                 } catch (ClassCastException cce) {
                     // Expected exception; not an error
@@ -306,7 +306,7 @@ public class TestChronoLocalDate {
 
     /**
      * FixedPeriodUnit returns a fixed DateTime in all adjustments.
-     * Construct an FixedPeriodUnit with the DateTime that should be returned from doAdd.
+     * Construct an FixedPeriodUnit with the DateTime that should be returned from doPlus.
      */
     static class FixedPeriodUnit implements PeriodUnit {
         private DateTime dateTime;
@@ -336,7 +336,7 @@ public class TestChronoLocalDate {
         }
 
         @Override
-        public <R extends DateTime> R doAdd(R dateTime, long periodToAdd) {
+        public <R extends DateTime> R doPlus(R dateTime, long periodToAdd) {
             return (R)this.dateTime;
         }
 

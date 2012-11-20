@@ -107,10 +107,6 @@ public interface DateTime extends DateTimeAccessor {
      * @throws ArithmeticException if numeric overflow occurs
      */
     DateTime with(WithAdjuster adjuster);
-    // JAVA8
-    // default {
-    //     return adjuster.doAdjustment(this);
-    // }
 
     /**
      * Returns an object of the same type as this object with the specified field altered.
@@ -165,10 +161,6 @@ public interface DateTime extends DateTimeAccessor {
      * @throws ArithmeticException if numeric overflow occurs
      */
     DateTime plus(PlusAdjuster adjuster);
-    // JAVA8
-    // default {
-    //     return adjuster.doAdd(this);
-    // }
 
     /**
      * Returns an object of the same type as this object with the specified period added.
@@ -188,7 +180,7 @@ public interface DateTime extends DateTimeAccessor {
      *
      * <h4>Implementation notes</h4>
      * Implementations must check and handle any fields defined in {@link ChronoField} before
-     * delegating on to the {@link PeriodUnit#doAdd(DateTime, long) doAdd method} on the specified unit.
+     * delegating on to the {@link PeriodUnit#doPlus(DateTime, long) doPlus method} on the specified unit.
      * If the implementing class is immutable, then this method must return an updated copy of the original.
      * If the class is mutable, then this method must update the original and return it.
      *
@@ -227,10 +219,6 @@ public interface DateTime extends DateTimeAccessor {
      * @throws ArithmeticException if numeric overflow occurs
      */
     DateTime minus(MinusAdjuster adjuster);
-    // JAVA8
-    // default {
-    //     return adjuster.doAdd(this);
-    // }
 
     /**
      * Returns an object of the same type as this object with the specified period subtracted.
@@ -250,7 +238,7 @@ public interface DateTime extends DateTimeAccessor {
      *
      * <h4>Implementation notes</h4>
      * Implementations must check and handle any fields defined in {@link ChronoField} before
-     * delegating on to the {@link PeriodUnit#doAdd(DateTime, long) doAdd method} on the specified unit.
+     * delegating on to the {@link PeriodUnit#doPlus(DateTime, long) doPlus method} on the specified unit.
      * If the implementing class is immutable, then this method must return an updated copy of the original.
      * If the class is mutable, then this method must update the original and return it.
      * This method is normally implemented by delegating to {@link #plus(long, PeriodUnit)} with
@@ -263,10 +251,6 @@ public interface DateTime extends DateTimeAccessor {
      * @throws ArithmeticException if numeric overflow occurs
      */
     DateTime minus(long amountToSubtract, PeriodUnit unit);
-    // JAVA8, but still face self type problem
-    // default {
-    //     return plus(DateTimes.safeNegate(period), unit);
-    // }
 
     //-----------------------------------------------------------------------
     /**

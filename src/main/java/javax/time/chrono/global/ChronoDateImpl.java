@@ -164,7 +164,7 @@ abstract class ChronoDateImpl<C extends Chrono<C>>
             }
             throw new DateTimeException(unit.getName() + " not valid for chronology " + getChrono().getId());
         }
-        return (ChronoDateImpl<C>)getChrono().ensureChronoLocalDate(unit.doAdd(this, amountToAdd));
+        return (ChronoDateImpl<C>)getChrono().ensureChronoLocalDate(unit.doPlus(this, amountToAdd));
     }
 
     //-----------------------------------------------------------------------

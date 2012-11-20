@@ -557,7 +557,7 @@ public final class OffsetTime
         if (unit instanceof ChronoUnit) {
             return with(time.plus(amountToAdd, unit), offset);
         }
-        return unit.doAdd(this, amountToAdd);
+        return unit.doPlus(this, amountToAdd);
     }
 
     //-----------------------------------------------------------------------

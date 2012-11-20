@@ -1374,7 +1374,7 @@ public final class ZonedDateTime
         if (unit instanceof ChronoUnit) {
             return withDateTime(getDateTime().plus(amountToAdd, unit));
         }
-        return unit.doAdd(this, amountToAdd);
+        return unit.doPlus(this, amountToAdd);
     }
 
     //-----------------------------------------------------------------------

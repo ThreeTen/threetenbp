@@ -945,7 +945,7 @@ public final class LocalDateTime
             }
             return with(date.plus(amountToAdd, unit), time);
         }
-        return unit.doAdd(this, amountToAdd);
+        return unit.doPlus(this, amountToAdd);
     }
 
     //-----------------------------------------------------------------------

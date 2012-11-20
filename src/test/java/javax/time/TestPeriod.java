@@ -1270,10 +1270,10 @@ public class TestPeriod {
     }
 
     //-----------------------------------------------------------------------
-    // doAdd()
+    // doPlusAdjustment()
     //-----------------------------------------------------------------------
-    @DataProvider(name="doAdd")
-    Object[][] data_doAdd() {
+    @DataProvider(name="doPlusAdjustment")
+    Object[][] data_doPlusAdjustment() {
         return new Object[][] {
             {pymd(0, 0, 0),  date(2012, 6, 30), date(2012, 6, 30)},
 
@@ -1301,20 +1301,20 @@ public class TestPeriod {
         };
     }
 
-    @Test(dataProvider="doAdd")
-    public void test_doAdd(Period period, LocalDate baseDate, LocalDate expected) {
+    @Test(dataProvider="doPlusAdjustment")
+    public void test_doPlusAdjustment(Period period, LocalDate baseDate, LocalDate expected) {
         assertEquals(period.doPlusAdjustment(baseDate), expected);
     }
 
-    public void test_doAdd_null() {
+    public void test_doPlusAdjustment_null() {
         Period.ZERO.doPlusAdjustment(null);
     }
 
     //-----------------------------------------------------------------------
-    // doAdd()
+    // doMinusAdjustment()
     //-----------------------------------------------------------------------
-    @DataProvider(name="doSubtract")
-    Object[][] data_doSubtract() {
+    @DataProvider(name="doMinusAdjustment")
+    Object[][] data_doMinusAdjustment() {
         return new Object[][] {
             {pymd(0, 0, 0),  date(2012, 6, 30), date(2012, 6, 30)},
 
@@ -1343,12 +1343,12 @@ public class TestPeriod {
         };
     }
 
-    @Test(dataProvider="doSubtract")
-    public void test_doSubtract(Period period, LocalDate baseDate, LocalDate expected) {
+    @Test(dataProvider="doMinusAdjustment")
+    public void test_doMinusAdjustment(Period period, LocalDate baseDate, LocalDate expected) {
         assertEquals(period.doMinusAdjustment(baseDate), expected);
     }
 
-    public void test_doSubtract_null() {
+    public void test_doMinusAdjustment_null() {
         Period.ZERO.doMinusAdjustment(null);
     }
 
