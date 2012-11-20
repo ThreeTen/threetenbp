@@ -59,8 +59,8 @@ See {@link javax.time.chrono.ChronoLocalDate ChronoLocalDate} for a full discuss
 This example creates and uses a date in a non-ISO calendar system.
 </p>
 <pre>
-        // Print the Minguo date
-        ChronoLocalDate&lt;MinguoChrono&gt; now1 = MinguoChrono.INSTANCE.now();
+        // Print the Thai Buddhist date
+        ChronoLocalDate&lt;ThaiBuddhistChrono&gt; now1 = ThaiBuddhistChrono.INSTANCE.now();
         int day = now1.get(LocalDateTimeField.DAY_OF_MONTH);
         int dow = now1.get(LocalDateTimeField.DAY_OF_WEEK);
         int month = now1.get(LocalDateTimeField.MONTH_OF_YEAR);
@@ -76,11 +76,11 @@ This example creates and uses a date in a non-ISO calendar system.
             System.out.printf("   %20s: %s%n", chrono.getId(), date.toString());
         }
 
-        // Print today's date and the last day of the year for the Minguo Calendar.
-        ChronoLocalDate&lt;MinguoChrono&gt; first = now1
+        // Print today's date and the last day of the year for the Thai Buddhist Calendar.
+        ChronoLocalDate&lt;ThaiBuddhistChrono&gt; first = now1
                 .with(LocalDateTimeField.DAY_OF_MONTH, 1)
                 .with(LocalDateTimeField.MONTH_OF_YEAR, 1);
-        ChronoLocalDate&lt;MinguoChrono&gt; last = first
+        ChronoLocalDate&lt;ThaiBuddhistChrono&gt; last = first
                 .plus(1, LocalPeriodUnit.YEARS)
                 .minus(1, LocalPeriodUnit.DAYS);
         System.out.printf("  %s: 1st of year: %s; end of year: %s%n", last.getChrono().getId(),
