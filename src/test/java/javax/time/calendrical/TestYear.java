@@ -37,6 +37,7 @@ import static javax.time.calendrical.ChronoField.YEAR_OF_ERA;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -106,6 +107,17 @@ public class TestYear extends AbstractDateTimeTest {
     public void test_minusYear_zero_same() {
         Year base = Year.of(2007);
         assertSame(base.minusYears(0), base);
+    }
+
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_serialization_format() throws ClassNotFoundException, IOException {
+        assertEqualsSerialisedForm(Year.of(2012));
+    }
+
+    @Test(groups={"tck"})
+    public void test_serialization() throws ClassNotFoundException, IOException {
+        assertSerializable(Year.of(-1));
     }
 
 }

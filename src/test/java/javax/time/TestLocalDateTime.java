@@ -65,6 +65,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -159,6 +160,19 @@ public class TestLocalDateTime extends AbstractDateTimeTest {
         assertTrue(obj instanceof DateTimeAccessor);
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
+    }
+
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_serialization() throws IOException, ClassNotFoundException {
+        assertSerializable(TEST_2007_07_15_12_30_40_987654321);
+    }
+
+    @Test(groups={"tck"})
+    public void test_serialization_format() throws ClassNotFoundException, IOException {
+        LocalDate date = LocalDate.of(2012, 9, 16);
+        LocalTime time = LocalTime.of(22, 17, 59, 459 * 1000000);
+        assertEqualsSerialisedForm(LocalDateTime.of(date, time));
     }
 
     //-----------------------------------------------------------------------

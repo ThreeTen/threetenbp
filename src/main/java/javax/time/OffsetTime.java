@@ -38,6 +38,9 @@ import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
 import static javax.time.calendrical.ChronoField.NANO_OF_DAY;
 import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -928,6 +931,22 @@ public final class OffsetTime
     public String toString(CalendricalFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
         return formatter.print(this);
+    }
+
+    // -----------------------------------------------------------------------
+    private Object writeReplace() {
+        return new Ser(Ser.OFFSET_TIME_TYPE, this);
+    }
+
+    void writeExternal(DataOutput out) throws IOException {
+        time.writeExternal(out);
+        offset.writeExternal(out);
+    }
+
+    static OffsetTime readExternal(DataInput in) throws IOException {
+        LocalTime time = LocalTime.readExternal(in);
+        ZoneOffset offset = ZoneOffset.readExternal(in);
+        return OffsetTime.of(time, offset);
     }
 
 }

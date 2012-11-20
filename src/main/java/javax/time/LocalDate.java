@@ -44,6 +44,9 @@ import static javax.time.calendrical.ChronoField.ERA;
 import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
 import static javax.time.calendrical.ChronoField.YEAR;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -1448,6 +1451,24 @@ public final class LocalDate
             .append(dayValue < 10 ? "-0" : "-")
             .append(dayValue)
             .toString();
+    }
+
+    //-----------------------------------------------------------------------
+    private Object writeReplace() {
+        return new Ser(Ser.LOCAL_DATE_TYPE, this);
+    }
+
+    void writeExternal(DataOutput out) throws IOException {
+    	out.writeInt(year);
+    	out.writeByte(month);
+    	out.writeByte(day);
+    }
+
+    static LocalDate readExternal(DataInput in) throws IOException {
+    	int year = in.readInt();
+    	int month = in.readByte();
+    	int dayOfMonth = in.readByte();
+    	return LocalDate.of(year, month, dayOfMonth);
     }
 
 }

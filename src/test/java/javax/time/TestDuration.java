@@ -37,6 +37,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -47,7 +48,7 @@ import org.testng.annotations.Test;
  * Test Duration.
  */
 @Test
-public class TestDuration {
+public class TestDuration extends AbstractTest {
 
     //-----------------------------------------------------------------------
     @Test(groups={"implementation"})
@@ -197,6 +198,17 @@ public class TestDuration {
                 }
             }
         }
+    }
+
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_serialization_format() throws ClassNotFoundException, IOException {
+        assertEqualsSerialisedForm(Duration.ofMillis(130));
+    }
+
+    @Test(groups={"tck"})
+    public void test_serialization() throws ClassNotFoundException, IOException {
+        assertSerializable(Duration.ofHours(5));
     }
 
 }

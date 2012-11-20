@@ -31,7 +31,9 @@
  */
 package javax.time;
 
-import java.io.ObjectStreamException;
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -575,6 +577,16 @@ public abstract class ZoneId implements Serializable {
     }
 
     //-----------------------------------------------------------------------
+    void writeExternal(DataOutput out) throws IOException {
+        out.writeUTF(getId());
+    }
+
+    static ZoneId readExternal(DataInput in) throws IOException {
+        String id = in.readUTF();
+        return ZoneId.ofUnchecked(id);
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * ID based time-zone.
      * This can refer to an ID that does not have available rules.
@@ -602,13 +614,8 @@ public abstract class ZoneId implements Serializable {
             this.provider = provider;
         }
 
-        /**
-         * Handle deserialization.
-         *
-         * @return the resolved instance, not null
-         */
-        private Object readResolve() throws ObjectStreamException {
-            return ZoneId.ofUnchecked(groupId + ":" + regionId);
+        private Object writeReplace() {
+            return new Ser(Ser.ZONE_ID_TYPE, this);
         }
 
         //-----------------------------------------------------------------------
@@ -669,13 +676,8 @@ public abstract class ZoneId implements Serializable {
             this.offset = offset;
         }
 
-        /**
-         * Handle deserialization.
-         *
-         * @return the resolved instance, not null
-         */
-        private Object readResolve() throws ObjectStreamException {
-            return ZoneId.of(id);
+        private Object writeReplace() {
+            return new Ser(Ser.ZONE_ID_TYPE, this);
         }
 
         //-----------------------------------------------------------------------

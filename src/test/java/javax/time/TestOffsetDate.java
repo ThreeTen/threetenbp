@@ -51,6 +51,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -112,6 +113,17 @@ public class TestOffsetDate extends AbstractDateTimeTest {
             JulianDayField.RATA_DIE,
         };
         return Arrays.asList(array);
+    }
+
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_serialization_format() throws ClassNotFoundException, IOException {
+        assertEqualsSerialisedForm(OffsetDate.of(2012, 9, 16, ZoneOffset.of("+01:00")));
+    }
+
+    @Test(groups={"tck"})
+    public void test_serialization() throws ClassNotFoundException, IOException {
+        assertSerializable(TEST_2007_07_15_PONE);
     }
 
     @Override

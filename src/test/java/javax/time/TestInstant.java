@@ -37,6 +37,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -51,7 +52,7 @@ import org.testng.annotations.Test;
  * Test Instant.
  */
 @Test
-public class TestInstant {
+public class TestInstant extends AbstractTest {
 
     //-----------------------------------------------------------------------
     @Test(groups={"implementation"})
@@ -1423,6 +1424,17 @@ public class TestInstant {
     public void test_toString() {
         Instant t = Instant.ofEpochSecond(0L, 567);
         assertEquals(t.toString(), "1970-01-01T00:00:00.000000567Z");
+    }
+
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_serialization_format() throws ClassNotFoundException, IOException {
+        assertEqualsSerialisedForm(Instant.ofEpochMilli(1347830279338l));
+    }
+
+    @Test(groups={"tck"})
+    public void test_serialization() throws ClassNotFoundException, IOException {
+        assertSerializable(Instant.ofEpochMilli(134l));
     }
 
 }

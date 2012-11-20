@@ -68,6 +68,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -619,6 +620,19 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     public void test_minusDuration_intintintlong_zero() {
         ZonedDateTime t = TEST_DATE_TIME.minusDuration(0, 0, 0, 0);
         assertSame(t, TEST_DATE_TIME);
+    }
+
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_serialization_format() throws ClassNotFoundException, IOException {
+        LocalDate date = LocalDate.of(2012, 9, 16);
+        LocalTime time = LocalTime.of(22, 17, 59, 470 * 1000000);
+        assertEqualsSerialisedForm(ZonedDateTime.of(date, time, ZoneId.of("Europe/London")));
+    }
+
+    @Test(groups={"tck"})
+    public void test_serialization() throws ClassNotFoundException, IOException {
+        assertSerializable(TEST_DATE_TIME);
     }
 
 }

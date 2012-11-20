@@ -51,6 +51,9 @@ import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
 import static javax.time.calendrical.ChronoField.SECOND_OF_DAY;
 import static javax.time.calendrical.ChronoField.SECOND_OF_MINUTE;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -1115,6 +1118,26 @@ public final class LocalTime
     public String toString(CalendricalFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
         return formatter.print(this);
+    }
+
+    //-----------------------------------------------------------------------
+    private Object writeReplace() {
+        return new Ser(Ser.LOCAL_TIME_TYPE, this);
+    }
+
+    void writeExternal(DataOutput out) throws IOException {
+        out.writeByte(hour);
+        out.writeByte(minute);
+        out.writeByte(second);
+        out.writeInt(nano);
+    }
+
+    static LocalTime readExternal(DataInput in) throws IOException {
+        byte hour = in.readByte();
+        byte minute = in.readByte();
+        byte second = in.readByte();
+        int nano = in.readInt();
+        return LocalTime.of(hour, minute, second, nano);
     }
 
 }

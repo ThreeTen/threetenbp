@@ -33,6 +33,9 @@ package javax.time;
 
 import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -544,6 +547,25 @@ public final class ZoneOffset
     @Override
     public String toString() {
         return id;
+    }
+
+    // -----------------------------------------------------------------------
+    private Object writeReplace() {
+        return new Ser(Ser.ZONE_OFFSET_TYPE, this);
+    }
+
+    void writeExternal(DataOutput out) throws IOException {
+        final int offsetSecs = totalSeconds;
+        int offsetByte = offsetSecs % 900 == 0 ? offsetSecs / 900 : 127;  // compress to -72 to +72
+        out.writeByte(offsetByte);
+        if (offsetByte == 127) {
+            out.writeInt(offsetSecs);
+        }
+    }
+
+    static ZoneOffset readExternal(DataInput in) throws IOException {
+        int offsetByte = in.readByte();
+        return (offsetByte == 127 ? ZoneOffset.ofTotalSeconds(in.readInt()) : ZoneOffset.ofTotalSeconds(offsetByte * 900));
     }
 
 }

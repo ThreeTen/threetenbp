@@ -34,6 +34,9 @@ package javax.time;
 import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
 import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -543,6 +546,22 @@ public final class MonthDay
     public String toString(CalendricalFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
         return formatter.print(this);
+    }
+
+    //-----------------------------------------------------------------------
+    private Object writeReplace() {
+        return new Ser(Ser.MONTH_DAY_TYPE, this);
+    }
+
+    void writeExternal(DataOutput out) throws IOException {
+        out.writeByte(month);
+        out.writeByte(day);
+    }
+
+    static MonthDay readExternal(DataInput in) throws IOException {
+        byte month = in.readByte();
+        byte day = in.readByte();
+        return MonthDay.of(month, day);
     }
 
 }

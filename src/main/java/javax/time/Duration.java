@@ -36,6 +36,9 @@ import static javax.time.calendrical.ChronoField.INSTANT_SECONDS;
 import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
 import static javax.time.calendrical.ChronoUnit.DAYS;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -952,6 +955,22 @@ public final class Duration
         }
         buf.append('S');
         return buf.toString();
+    }
+
+    //-----------------------------------------------------------------------
+    private Object writeReplace() {
+        return new Ser(Ser.DURATION_TYPE, this);
+    }
+
+    void writeExternal(DataOutput out) throws IOException {
+        out.writeLong(seconds);
+        out.writeInt(nanos);
+    }
+
+    static Duration readExternal(DataInput in) throws IOException {
+        long seconds = in.readLong();
+        int nanos = in.readInt();
+        return Duration.ofSeconds(seconds, nanos);
     }
 
 }

@@ -31,6 +31,9 @@
  */
 package javax.time;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -1601,6 +1604,22 @@ public final class OffsetDateTime
     @Override  // override for Javadoc
     public String toString() {
         return dateTime.toString() + offset.toString();
+    }
+
+    //-----------------------------------------------------------------------
+    private Object writeReplace() {
+        return new Ser(Ser.OFFSET_DATE_TIME_TYPE, this);
+    }
+
+    void writeExternal(DataOutput out) throws IOException {
+        dateTime.writeExternal(out);
+        offset.writeExternal(out);
+    }
+
+    static OffsetDateTime readExternal(DataInput in) throws IOException {
+        LocalDateTime dateTime = LocalDateTime.readExternal(in);
+        ZoneOffset offset = ZoneOffset.readExternal(in);
+        return OffsetDateTime.of(dateTime, offset);
     }
 
 }

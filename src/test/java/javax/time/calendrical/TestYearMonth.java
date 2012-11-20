@@ -40,6 +40,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,6 +74,17 @@ public class TestYearMonth extends AbstractDateTimeTest {
     protected List<DateTimeAccessor> samples() {
         DateTimeAccessor[] array = {TEST_2008_06, };
         return Arrays.asList(array);
+    }
+
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_serialization_format() throws ClassNotFoundException, IOException {
+        assertEqualsSerialisedForm(YearMonth.of(2012, 9));
+    }
+
+    @Test(groups={"tck"})
+    public void test_serialization() throws IOException, ClassNotFoundException {
+        assertSerializable(TEST_2008_06);
     }
 
     @Override

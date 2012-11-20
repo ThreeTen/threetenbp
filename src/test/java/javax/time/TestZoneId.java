@@ -37,10 +37,7 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
@@ -62,7 +59,7 @@ import org.testng.annotations.Test;
  * Test ZoneId.
  */
 @Test
-public class TestZoneId {
+public class TestZoneId extends AbstractTest {
 
     private static final ZoneId ZONE_PARIS = ZoneId.of("Europe/Paris");
     public static final String LATEST_TZDB = "2010i";
@@ -87,63 +84,27 @@ public class TestZoneId {
 
     public void test_serialization_UTC() throws Exception {
         ZoneId test = ZoneId.UTC;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(baos);
-        out.writeObject(test);
-        baos.close();
-        byte[] bytes = baos.toByteArray();
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-        ObjectInputStream in = new ObjectInputStream(bais);
-        ZoneId result = (ZoneId) in.readObject();
-
-        assertSame(result, test);
+        assertSerializableAndSame(test);
     }
 
     public void test_serialization_fixed() throws Exception {
         ZoneId test = ZoneId.of("UTC+01:30");
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(baos);
-        out.writeObject(test);
-        baos.close();
-        byte[] bytes = baos.toByteArray();
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-        ObjectInputStream in = new ObjectInputStream(bais);
-        ZoneId result = (ZoneId) in.readObject();
-
-        assertEquals(result, test);
+        assertSerializable(test);
     }
 
     public void test_serialization_Europe() throws Exception {
         ZoneId test = ZoneId.of("Europe/London");
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(baos);
-        out.writeObject(test);
-        baos.close();
-        byte[] bytes = baos.toByteArray();
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-        ObjectInputStream in = new ObjectInputStream(bais);
-        ZoneId result = (ZoneId) in.readObject();
-
-        assertEquals(result, test);
+        assertSerializable(test);
     }
 
     public void test_serialization_America() throws Exception {
         ZoneId test = ZoneId.of("America/Chicago");
+        assertSerializable(test);
+    }
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(baos);
-        out.writeObject(test);
-        baos.close();
-        byte[] bytes = baos.toByteArray();
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-        ObjectInputStream in = new ObjectInputStream(bais);
-        ZoneId result = (ZoneId) in.readObject();
-
-        assertEquals(result, test);
+    @Test(groups={"tck"})
+    public void test_serialization_format() throws ClassNotFoundException, IOException {
+        assertEqualsSerialisedForm(ZoneId.of("Europe/London"), ZoneId.class);
     }
 
     //-----------------------------------------------------------------------
