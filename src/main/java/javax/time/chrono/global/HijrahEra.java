@@ -51,7 +51,7 @@ import javax.time.format.TextStyle;
  * The Hijrah calendar system has two eras.
  * The date {@code 0001-01-01 (Hijrah)} is {@code 622-06-19 (ISO)}.
  * <p>
- * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code MinguoEra}.
+ * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code HijrahEra}.
  * Use {@code getValue()} instead.</b>
  *
  * <h4>Implementation notes</h4>
