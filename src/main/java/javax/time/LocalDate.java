@@ -307,6 +307,9 @@ public final class LocalDate
      * @throws DateTimeException if unable to convert to a {@code LocalDate}
      */
     public static LocalDate from(DateTimeAccessor dateTime) {
+        if (dateTime instanceof LocalDate) {
+            return (LocalDate) dateTime;
+        }
         // handle builder as a special case
         if (dateTime instanceof DateTimeBuilder) {
             DateTimeBuilder builder = (DateTimeBuilder) dateTime;
