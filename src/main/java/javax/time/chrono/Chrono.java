@@ -565,10 +565,6 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
     public String getText(TextStyle style, Locale locale) {
         return new DateTimeFormatterBuilder().appendChronoText(style).toFormatter(locale).print(new DefaultInterfaceDateTimeAccessor() {
             @Override
-            public DateTimeAccessor with(DateTimeField field, long newValue) {
-                throw new DateTimeException("Unsupported field: " + field);
-            }
-            @Override
             public boolean isSupported(DateTimeField field) {
                 return false;
             }

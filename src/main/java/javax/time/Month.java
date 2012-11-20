@@ -239,17 +239,6 @@ public enum Month implements DateTimeAccessor, WithAdjuster {
         return field.doGet(this);
     }
 
-    @Override
-    public Month with(DateTimeField field, long newValue) {
-        if (field == MONTH_OF_YEAR) {
-            ((ChronoField) field).checkValidValue(newValue);
-            return Month.of((int) newValue);
-        } else if (field instanceof ChronoField) {
-            throw new DateTimeException("Unsupported field: " + field.getName());
-        }
-        return field.doSet(this, newValue);
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Returns the month that is the specified number of quarters after this one.

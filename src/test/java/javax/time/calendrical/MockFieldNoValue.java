@@ -84,9 +84,8 @@ public enum MockFieldNoValue implements DateTimeField {
         throw new DateTimeException("Mock");
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public DateTimeAccessor doSet(DateTimeAccessor dateTime, long newValue) {
+    public <R extends DateTime> R doSet(R dateTime, long newValue) {
         throw new DateTimeException("Mock");
     }
 

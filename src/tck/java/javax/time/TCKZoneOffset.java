@@ -455,26 +455,6 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // with(DateTimeField, long)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_with_DateTimeField() {
-        assertEquals(ZoneOffset.UTC.with(OFFSET_SECONDS, 3600), ZoneOffset.ofHours(1));
-        assertEquals(ZoneOffset.ofHours(-2).with(OFFSET_SECONDS, 3609), ZoneOffset.ofHoursMinutesSeconds(1, 0, 9));
-        assertEquals(ZoneOffset.ofHoursMinutesSeconds(0, 1, 5).with(OFFSET_SECONDS, 0), ZoneOffset.UTC);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
-    public void test_with_DateTimeField_null() {
-        ZoneOffset.UTC.with((DateTimeField) null, 0);
-    }
-
-    @Test(dataProvider="invalidFields", expectedExceptions=DateTimeException.class, groups={"tck"} )
-    public void test_with_DateTimeField_invalidField(DateTimeField field) {
-        ZoneOffset.UTC.with(field, 0);
-    }
-
-    //-----------------------------------------------------------------------
     // toZoneId()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})

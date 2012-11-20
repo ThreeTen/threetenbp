@@ -471,18 +471,6 @@ public final class ZoneOffset
     }
 
     @Override
-    public ZoneOffset with(DateTimeField field, long newValue) {
-        if (field instanceof ChronoField) {
-            ChronoField f = (ChronoField) field;
-            switch (f) {
-                case OFFSET_SECONDS: return ZoneOffset.ofTotalSeconds(f.checkValidIntValue(newValue));
-            }
-            throw new DateTimeException("Unsupported field: " + field.getName());
-        }
-        return field.doSet(this, newValue);
-    }
-
-    @Override
     public DateTime doWithAdjustment(DateTime dateTime) {
         return dateTime.with(OFFSET_SECONDS, totalSeconds);
     }

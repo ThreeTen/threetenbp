@@ -219,7 +219,7 @@ public enum JulianDayField implements DateTimeField {
     }
 
     @Override
-    public <R extends DateTimeAccessor> R doSet(R dateTime, long newValue) {
+    public <R extends DateTime> R doSet(R dateTime, long newValue) {
         if (range().isValidValue(newValue) == false) {
             throw new DateTimeException("Invalid value: " + name + " " + newValue);
         }

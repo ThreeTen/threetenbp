@@ -318,22 +318,6 @@ public final class MonthDay
     }
 
     //-----------------------------------------------------------------------
-    @Override
-    public MonthDay with(DateTimeField field, long newValue) {
-        if (field instanceof ChronoField) {
-            ChronoField f = (ChronoField) field;
-            f.checkValidValue(newValue);
-            switch (f) {
-                // alignedDOW and alignedWOM not supported because they require plus/minus to next month
-                case DAY_OF_MONTH: return withDayOfMonth((int) newValue);
-                case MONTH_OF_YEAR: return  withMonth((int) newValue);
-            }
-            throw new DateTimeException("Unsupported field: " + field.getName());
-        }
-        return field.doSet(this, newValue);
-    }
-
-    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this {@code MonthDay} with the month-of-year altered.
      * <p>

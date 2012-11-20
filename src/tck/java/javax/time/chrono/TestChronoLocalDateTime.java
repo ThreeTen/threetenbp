@@ -31,12 +31,13 @@
  */
 package javax.time.chrono;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.time.Duration;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.time.Duration;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.calendrical.ChronoUnit;
@@ -84,7 +85,7 @@ public class TestChronoLocalDateTime {
             if (chrono != chrono2) {
                 try {
                     ChronoLocalDateTime<?> notreached = cdt.with(adjuster);
-                    Assert.fail("WithAdjuster should have thrown a ClassCastException, " 
+                    Assert.fail("WithAdjuster should have thrown a ClassCastException, "
                             + "required: " + cdt + ", supplied: " + cdt2);
                 } catch (ClassCastException cce) {
                     // Expected exception; not an error
@@ -316,7 +317,7 @@ public class TestChronoLocalDateTime {
      */
     static class FixedPeriodUnit implements PeriodUnit {
         private DateTime dateTime;
-        
+
         FixedPeriodUnit(DateTime dateTime) {
             this.dateTime = dateTime;
         }
@@ -402,9 +403,10 @@ public class TestChronoLocalDateTime {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
+        @SuppressWarnings("unchecked")
         @Override
-        public <R extends DateTimeAccessor> R doSet(R dateTime, long newValue) {
-            return (R)this.dateTime;
+        public <R extends DateTime> R doSet(R dateTime, long newValue) {
+            return (R) this.dateTime;
         }
 
         @Override

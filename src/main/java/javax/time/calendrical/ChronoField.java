@@ -614,7 +614,7 @@ public enum ChronoField implements DateTimeField {
     }
 
     @Override
-    public <R extends DateTimeAccessor> R doSet(R dateTime, long newValue) {
+    public <R extends DateTime> R doSet(R dateTime, long newValue) {
         return (R) dateTime.with(this, newValue);
     }
 

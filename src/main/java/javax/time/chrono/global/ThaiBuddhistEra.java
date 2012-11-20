@@ -158,17 +158,6 @@ enum ThaiBuddhistEra implements Era<ThaiBuddhistChrono> {
         return field.doGet(this);
     }
 
-    @Override
-    public Era<ThaiBuddhistChrono> with(DateTimeField field, long newValue) {
-        if (field == ERA) {
-            int eravalue = ((ChronoField) field).checkValidIntValue(newValue);
-            return getChrono().eraOf(eravalue);
-        } else if (field instanceof ChronoField) {
-            throw new DateTimeException("Unsupported field: " + field.getName());
-        }
-        return field.doSet(this, newValue);
-    }
-
     //-------------------------------------------------------------------------
     @Override
     public DateTime doWithAdjustment(DateTime dateTime) {

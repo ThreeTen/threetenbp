@@ -713,10 +713,4 @@ public final class DateTimeBuilder
         return getFieldValue(field);
     }
 
-    @Override
-    public DateTimeBuilder with(DateTimeField field, long newValue) {
-        putFieldValue0(field, newValue);
-        return this;
-    }
-
 }
