@@ -37,7 +37,7 @@ package javax.time;
  * <h4>Implementation notes</h4>
  * This class is intended for use in a single thread.
  */
-public class DateTimeException extends RuntimeException {
+public class DateTimeException extends IllegalArgumentException {
 
     /**
      * Serialization version.
