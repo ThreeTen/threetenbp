@@ -62,8 +62,8 @@ public enum JulianDayField implements DateTimeField {
      * <p>
      * For date-times, 'JULIAN_DAY.doGet()' assumes the same value from
      * midnight until just before the next midnight.
-     * When 'JULIAN_DAY.doSet()' is applied to a date-time, the time of day portion remains unaltered.
-     * 'JULIAN_DAY.doSet()' and 'JULIAN_DAY.doGet()' only apply to {@code DateTimeAccessor} objects that
+     * When 'JULIAN_DAY.doWith()' is applied to a date-time, the time of day portion remains unaltered.
+     * 'JULIAN_DAY.doWith()' and 'JULIAN_DAY.doGet()' only apply to {@code DateTime} objects that
      * can be converted into {@link ChronoField#EPOCH_DAY}.
      * A {@link DateTimeException} is thrown for any other type of object.
      * <p>
@@ -103,8 +103,8 @@ public enum JulianDayField implements DateTimeField {
      * <p>
      * For date-times, 'MODIFIED_JULIAN_DAY.doGet()' assumes the same value from
      * midnight until just before the next midnight.
-     * When 'MODIFIED_JULIAN_DAY.doSet()' is applied to a date-time, the time of day portion remains unaltered.
-     * 'MODIFIED_JULIAN_DAY.doSet()' and 'MODIFIED_JULIAN_DAY.doGet()' only apply to {@code DateTimeAccessor} objects
+     * When 'MODIFIED_JULIAN_DAY.doWith()' is applied to a date-time, the time of day portion remains unaltered.
+     * 'MODIFIED_JULIAN_DAY.doWith()' and 'MODIFIED_JULIAN_DAY.doGet()' only apply to {@code DateTime} objects
      * that can be converted into {@link ChronoField#EPOCH_DAY}.
      * A {@link DateTimeException} is thrown for any other type of object.
      * <p>
@@ -136,8 +136,8 @@ public enum JulianDayField implements DateTimeField {
      * <p>
      * For date-times, 'RATA_DIE.doGet()' assumes the same value from
      * midnight until just before the next midnight.
-     * When 'RATA_DIE.doSet()' is applied to a date-time, the time of day portion remains unaltered.
-     * 'MODIFIED_JULIAN_DAY.doSet()' and 'RATA_DIE.doGet()' only apply to {@code DateTimeAccessor} objects
+     * When 'RATA_DIE.doWith()' is applied to a date-time, the time of day portion remains unaltered.
+     * 'MODIFIED_JULIAN_DAY.doWith()' and 'RATA_DIE.doGet()' only apply to {@code DateTime} objects
      * that can be converted into {@link ChronoField#EPOCH_DAY}.
      * A {@link DateTimeException} is thrown for any other type of object.
      */
@@ -196,7 +196,7 @@ public enum JulianDayField implements DateTimeField {
      * @throws DateTimeException if the value exceeds the supported date range
      */
     public LocalDate createDate(long value) {
-        return doSet(LocalDate.MIN_DATE, value);
+        return doWith(LocalDate.MIN_DATE, value);
     }
 
     //-----------------------------------------------------------------------
@@ -219,7 +219,7 @@ public enum JulianDayField implements DateTimeField {
     }
 
     @Override
-    public <R extends DateTime> R doSet(R dateTime, long newValue) {
+    public <R extends DateTime> R doWith(R dateTime, long newValue) {
         if (range().isValidValue(newValue) == false) {
             throw new DateTimeException("Invalid value: " + name + " " + newValue);
         }

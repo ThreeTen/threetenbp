@@ -300,7 +300,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
                 return with(date.with(field, newValue), time);
             }
         }
-        return date.getChrono().ensureChronoLocalDateTime(field.doSet(this, newValue));
+        return date.getChrono().ensureChronoLocalDateTime(field.doWith(this, newValue));
     }
 
     //-----------------------------------------------------------------------

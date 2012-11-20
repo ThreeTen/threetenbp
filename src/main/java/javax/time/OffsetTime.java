@@ -459,7 +459,7 @@ public final class OffsetTime
             }
             return with(time.with(field, newValue), offset);
         }
-        return field.doSet(this, newValue);
+        return field.doWith(this, newValue);
     }
 
     //-----------------------------------------------------------------------

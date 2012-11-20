@@ -455,7 +455,7 @@ public final class OffsetDate
             }
             return with(date.with(field, newValue), offset);
         }
-        return field.doSet(this, newValue);
+        return field.doWith(this, newValue);
     }
 
     //-----------------------------------------------------------------------

@@ -592,7 +592,7 @@ final class HijrahDate
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return field.doSet(this, newValue);
+        return field.doWith(this, newValue);
     }
 
     private static HijrahDate resolvePreviousValid(int yearOfEra, int month, int day) {

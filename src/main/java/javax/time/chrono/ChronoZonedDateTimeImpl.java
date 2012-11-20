@@ -535,7 +535,7 @@ import javax.time.zone.ZoneRules;
             }
             return with(dateTime.with(field, newValue));
         }
-        return getDate().getChrono().ensureChronoZonedDateTime(field.doSet(this, newValue));
+        return getDate().getChrono().ensureChronoZonedDateTime(field.doWith(this, newValue));
     }
 
     //-----------------------------------------------------------------------

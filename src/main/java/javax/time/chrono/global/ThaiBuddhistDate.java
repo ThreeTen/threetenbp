@@ -159,7 +159,7 @@ final class ThaiBuddhistDate
             }
             return with(isoDate.with(field, newValue));
         }
-        return field.doSet(this, newValue);
+        return field.doWith(this, newValue);
     }
 
     //-----------------------------------------------------------------------

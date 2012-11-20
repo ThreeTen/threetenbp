@@ -380,7 +380,7 @@ class ChronoOffsetDateTimeImpl<C extends Chrono<C>>
             }
             return with(dateTime.with(field, newValue), offset);
         }
-        return getDate().getChrono().ensureChronoOffsetDateTime(field.doSet(this, newValue));
+        return getDate().getChrono().ensureChronoOffsetDateTime(field.doWith(this, newValue));
     }
 
     //-----------------------------------------------------------------------

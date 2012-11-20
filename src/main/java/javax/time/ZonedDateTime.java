@@ -1084,7 +1084,7 @@ public final class ZonedDateTime
             }
             return withDateTime(getDateTime().with(field, newValue));
         }
-        return field.doSet(this, newValue);
+        return field.doWith(this, newValue);
     }
 
     //-----------------------------------------------------------------------

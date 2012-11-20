@@ -201,7 +201,7 @@ public class TestChronoLocalDate {
             if (chrono != chrono2) {
                 try {
                     ChronoLocalDate<?> notreached = date.with(adjuster, 1);
-                    Assert.fail("DateTimeField doSet should have thrown a ClassCastException" + date.getClass()
+                    Assert.fail("DateTimeField doWith() should have thrown a ClassCastException" + date.getClass()
                             + ", can not be cast to " + date2.getClass());
                 } catch (ClassCastException cce) {
                     // Expected exception; not an error
@@ -209,7 +209,7 @@ public class TestChronoLocalDate {
             } else {
                 // Same chronology,
                 ChronoLocalDate<?> result = date.with(adjuster, 1);
-                assertEquals(result, date2, "DateTimeField doSet failed to replace date");
+                assertEquals(result, date2, "DateTimeField doWith() failed to replace date");
             }
         }
     }
@@ -348,7 +348,7 @@ public class TestChronoLocalDate {
 
     /**
      * FixedDateTimeField returns a fixed DateTime in all adjustments.
-     * Construct an FixedDateTimeField with the DateTime that should be returned from doSet.
+     * Construct an FixedDateTimeField with the DateTime that should be returned from doWith.
      */
     static class FixedDateTimeField implements DateTimeField {
         private DateTime dateTime;
@@ -398,7 +398,7 @@ public class TestChronoLocalDate {
 
         @SuppressWarnings("unchecked")
         @Override
-        public <R extends DateTime> R doSet(R dateTime, long newValue) {
+        public <R extends DateTime> R doWith(R dateTime, long newValue) {
             return (R) this.dateTime;
         }
 

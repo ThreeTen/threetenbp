@@ -778,7 +778,7 @@ public final class OffsetDateTime
             }
             return with(dateTime.with(field, newValue), offset);
         }
-        return field.doSet(this, newValue);
+        return field.doWith(this, newValue);
     }
 
     //-----------------------------------------------------------------------

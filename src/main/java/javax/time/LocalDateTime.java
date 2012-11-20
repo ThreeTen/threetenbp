@@ -657,7 +657,7 @@ public final class LocalDateTime
                 return with(date.with(field, newValue), time);
             }
         }
-        return field.doSet(this, newValue);
+        return field.doWith(this, newValue);
     }
 
     //-----------------------------------------------------------------------

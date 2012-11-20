@@ -85,7 +85,7 @@ public enum MockFieldNoValue implements DateTimeField {
     }
 
     @Override
-    public <R extends DateTime> R doSet(R dateTime, long newValue) {
+    public <R extends DateTime> R doWith(R dateTime, long newValue) {
         throw new DateTimeException("Mock");
     }
 
