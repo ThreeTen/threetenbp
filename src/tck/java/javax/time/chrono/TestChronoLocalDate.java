@@ -31,17 +31,13 @@
  */
 package javax.time.chrono;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import javax.time.Duration;
-import javax.time.Instant;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,10 +50,6 @@ import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.chrono.global.HijrahChrono;
-import javax.time.chrono.global.JapaneseChrono;
-import javax.time.chrono.global.MinguoChrono;
-import javax.time.chrono.global.ThaiBuddhistChrono;
 
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;

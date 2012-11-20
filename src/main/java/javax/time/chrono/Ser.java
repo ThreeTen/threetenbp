@@ -31,14 +31,15 @@
  */
 package javax.time.chrono;
 
-import java.io.DataInput;
-import java.io.DataOutput;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.InvalidClassException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.StreamCorruptedException;
+
+import javax.time.LocalDate;
+import javax.time.LocalDateTime;
 
 /**
  * The shared serialization delegate for this package.
@@ -47,7 +48,7 @@ import java.io.StreamCorruptedException;
  * This class wraps the object being serialized, and takes a byte representing the type of the class to
  * be serialized.  This byte can also be used for versioning the serialization format.  In this case another
  * byte flag would be used in order to specify an alternative version of the type format.
- * For example LOCAL_DATE_TYPE_VERSION_2 = 21.
+ * For example {@code CHRONO_TYPE_VERSION_2 = 21}
  * <p>
  * In order to serialise the object it writes its byte and then calls back to the appropriate class where
  * the serialisation is performed.  In order to deserialise the object it read in the type byte, switching
@@ -59,9 +60,6 @@ import java.io.StreamCorruptedException;
  * {@link LocalDateTime} are serialised as one object.  Enum classes are serialised using the index of their
  * element in the index, an ordering which is defined by JSR-310.
  * <p>
- * Period has not been provided with a custom serialization specification due to the possibility of it
- * holding a user defined class as its unit type.
- * <p>
  * This class is mutable and should be created once per serialization.
  */
 final class Ser implements Externalizable {
@@ -70,7 +68,6 @@ final class Ser implements Externalizable {
     static final byte CHRONO_LOCALDATETIME_TYPE = 2;
     static final byte CHRONO_OFFSETDATETIME_TYPE = 3;
     static final byte CHRONO_ZONEDDATETIME_TYPE = 4;
-
 
     /** The type being serialized. */
     private byte type;
@@ -108,29 +105,28 @@ final class Ser implements Externalizable {
     private static void writeInternal(byte type, Object object, ObjectOutput out) throws IOException {
         out.writeByte(type);
         switch (type) {
-        case CHRONO_TYPE:
-            ((Chrono) object).writeExternal(out);
-            break;
-        case CHRONO_LOCALDATETIME_TYPE:
-            ((ChronoDateTimeImpl) object).writeExternal(out);
-            break;
-        case CHRONO_OFFSETDATETIME_TYPE:
-            ((ChronoOffsetDateTimeImpl) object).writeExternal(out);
-            break;
-        case CHRONO_ZONEDDATETIME_TYPE:
-            ((ChronoZonedDateTimeImpl) object).writeExternal(out);
-            break;
-        default:
-            throw new InvalidClassException("Unknown serialized type");
+            case CHRONO_TYPE:
+                ((Chrono<?>) object).writeExternal(out);
+                break;
+            case CHRONO_LOCALDATETIME_TYPE:
+                ((ChronoDateTimeImpl<?>) object).writeExternal(out);
+                break;
+            case CHRONO_OFFSETDATETIME_TYPE:
+                ((ChronoOffsetDateTimeImpl<?>) object).writeExternal(out);
+                break;
+            case CHRONO_ZONEDDATETIME_TYPE:
+                ((ChronoZonedDateTimeImpl<?>) object).writeExternal(out);
+                break;
+            default:
+                throw new InvalidClassException("Unknown serialized type");
         }
     }
 
-    // ----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     /**
      * Implements the {@code Externalizable} interface to read the object.
      *
-     * @param in
-     *            the data to read, not null
+     * @param in  the data to read, not null
      */
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -153,7 +149,6 @@ final class Ser implements Externalizable {
                 return ChronoOffsetDateTimeImpl.readExternal(in);
             case CHRONO_ZONEDDATETIME_TYPE:
                 return ChronoZonedDateTimeImpl.readExternal(in);
-
             default:
                 throw new StreamCorruptedException("Unknown serialized type");
         }

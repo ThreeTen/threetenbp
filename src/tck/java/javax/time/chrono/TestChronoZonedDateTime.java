@@ -40,10 +40,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import javax.time.Duration;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.time.Duration;
 import javax.time.LocalDate;

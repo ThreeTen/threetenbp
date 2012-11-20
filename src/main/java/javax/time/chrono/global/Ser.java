@@ -49,7 +49,7 @@ import javax.time.LocalDateTime;
  * This class wraps the object being serialized, and takes a byte representing the type of the class to
  * be serialized.  This byte can also be used for versioning the serialization format.  In this case another
  * byte flag would be used in order to specify an alternative version of the type format.
- * For example LOCAL_DATE_TYPE_VERSION_2 = 21.
+ * For example {@code JAPANESE_DATE_TYPE_VERSION_2 = 21}.
  * <p>
  * In order to serialise the object it writes its byte and then calls back to the appropriate class where
  * the serialisation is performed.  In order to deserialise the object it read in the type byte, switching
@@ -60,9 +60,6 @@ import javax.time.LocalDateTime;
  * example in the case of {@link LocalDate} year is written before month.  Composite classes, such as
  * {@link LocalDateTime} are serialised as one object.  Enum classes are serialised using the index of their
  * element in the index, an ordering which is defined by JSR-310.
- * <p>
- * Period has not been provided with a custom serialization specification due to the possibility of it
- * holding a user defined class as its unit type.
  * <p>
  * This class is mutable and should be created once per serialization.
  */
@@ -113,42 +110,40 @@ final class Ser implements Externalizable {
     private static void writeInternal(byte type, Object object, DataOutput out) throws IOException {
         out.writeByte(type);
         switch (type) {
-        case JAPANESE_DATE_TYPE:
-            ((JapaneseDate) object).writeExternal(out);
-            break;
-        case JAPANESE_ERA_TYPE:
-            ((JapaneseEra) object).writeExternal(out);
-            break;
-        case HIJRAH_DATE_TYPE:
-            ((HijrahDate) object).writeExternal(out);
-            break;
-        case HIJRAH_ERA_TYPE:
-            ((HijrahEra) object).writeExternal(out);
-            break;
-        case MINGUO_DATE_TYPE:
-            ((MinguoDate) object).writeExternal(out);
-            break;
-        case MINGUO_ERA_TYPE:
-            ((MinguoEra) object).writeExternal(out);
-            break;
-        case THAIBUDDHIST_DATE_TYPE:
-            ((ThaiBuddhistDate) object).writeExternal(out);
-            break;
-        case THAIBUDDHIST_ERA_TYPE:
-            ((ThaiBuddhistEra) object).writeExternal(out);
-            break;
-
-        default:
-            throw new InvalidClassException("Unknown serialized type");
+            case JAPANESE_DATE_TYPE:
+                ((JapaneseDate) object).writeExternal(out);
+                break;
+            case JAPANESE_ERA_TYPE:
+                ((JapaneseEra) object).writeExternal(out);
+                break;
+            case HIJRAH_DATE_TYPE:
+                ((HijrahDate) object).writeExternal(out);
+                break;
+            case HIJRAH_ERA_TYPE:
+                ((HijrahEra) object).writeExternal(out);
+                break;
+            case MINGUO_DATE_TYPE:
+                ((MinguoDate) object).writeExternal(out);
+                break;
+            case MINGUO_ERA_TYPE:
+                ((MinguoEra) object).writeExternal(out);
+                break;
+            case THAIBUDDHIST_DATE_TYPE:
+                ((ThaiBuddhistDate) object).writeExternal(out);
+                break;
+            case THAIBUDDHIST_ERA_TYPE:
+                ((ThaiBuddhistEra) object).writeExternal(out);
+                break;
+            default:
+                throw new InvalidClassException("Unknown serialized type");
         }
     }
 
-    // ----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     /**
      * Implements the {@code Externalizable} interface to read the object.
      *
-     * @param in
-     *            the data to read, not null
+     * @param in  the data to read, not null
      */
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {

@@ -50,7 +50,6 @@ import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.PeriodUnit;
-
 import javax.time.chrono.Chrono;
 import javax.time.chrono.ChronoLocalDate;
 import javax.time.chrono.ISOChrono;
@@ -355,9 +354,10 @@ public class TestChronoLocalDate {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
+        @SuppressWarnings("unchecked")
         @Override
-        public <R extends DateTime> R doAdd(R dateTime, long periodToAdd) {
-            return (R)this.dateTime;
+        public <R extends DateTime> R doPlus(R dateTime, long periodToAdd) {
+            return (R) this.dateTime;
         }
 
         @Override
@@ -416,9 +416,10 @@ public class TestChronoLocalDate {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
+        @SuppressWarnings("unchecked")
         @Override
-        public <R extends DateTimeAccessor> R doSet(R dateTime, long newValue) {
-            return (R)this.dateTime;
+        public <R extends DateTime> R doWith(R dateTime, long newValue) {
+            return (R) this.dateTime;
         }
 
         @Override
