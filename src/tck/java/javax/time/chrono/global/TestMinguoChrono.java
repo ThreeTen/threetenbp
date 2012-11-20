@@ -222,11 +222,11 @@ public class TestMinguoChrono {
     @DataProvider(name="toString")
     Object[][] data_toString() {
         return new Object[][] {
-            {MinguoChrono.INSTANCE.date(1, 1, 1), "Minguo ROC1-01-01"},
-            {MinguoChrono.INSTANCE.date(1728, 10, 28), "Minguo ROC1728-10-28"},
-            {MinguoChrono.INSTANCE.date(1728, 10, 29), "Minguo ROC1728-10-29"},
-            {MinguoChrono.INSTANCE.date(1727, 12, 5), "Minguo ROC1727-12-05"},
-            {MinguoChrono.INSTANCE.date(1727, 12, 6), "Minguo ROC1727-12-06"},
+            {MinguoChrono.INSTANCE.date(1, 1, 1), "Minguo ROC 1-01-01"},
+            {MinguoChrono.INSTANCE.date(1728, 10, 28), "Minguo ROC 1728-10-28"},
+            {MinguoChrono.INSTANCE.date(1728, 10, 29), "Minguo ROC 1728-10-29"},
+            {MinguoChrono.INSTANCE.date(1727, 12, 5), "Minguo ROC 1727-12-05"},
+            {MinguoChrono.INSTANCE.date(1727, 12, 6), "Minguo ROC 1727-12-06"},
         };
     }
 

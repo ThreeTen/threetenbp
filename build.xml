@@ -206,7 +206,7 @@
             <jvmarg value="-Duser.language=en" />
             <jvmarg value="-Duser.country=UK" />
             <classfileset dir="${core.test.classes}" includes="**/Test*.class" excludes="java/util/*" />
-            <classfileset dir="${core.test.classes}" includes="**/TCK*.class" excludes="java/util/*" />
+            <classfileset dir="${core.test.classes}" includes="**/TCKX*.class" excludes="java/util/*" />
         </testng>
     </target>
 
