@@ -56,7 +56,6 @@ import javax.time.LocalDate;
 import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.chrono.Era;
 import javax.time.jdk8.Jdk8Methods;
 
 /**
@@ -418,7 +417,7 @@ final class HijrahDate
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static HijrahDate of(int prolepticYear, int monthOfYear, int dayOfMonth) {
+    static HijrahDate of(int prolepticYear, int monthOfYear, int dayOfMonth) {
         return (prolepticYear >= 1) ?
             HijrahDate.of(HijrahEra.AH, prolepticYear, monthOfYear, dayOfMonth) :
             HijrahDate.of(HijrahEra.BEFORE_AH, 1 - prolepticYear, monthOfYear, dayOfMonth);
@@ -436,7 +435,7 @@ final class HijrahDate
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static HijrahDate of(HijrahEra era, int yearOfEra, int monthOfYear, int dayOfMonth) {
+    static HijrahDate of(HijrahEra era, int yearOfEra, int monthOfYear, int dayOfMonth) {
         Objects.requireNonNull(era, "era");
         checkValidYearOfEra(yearOfEra);
         checkValidMonth(monthOfYear);
@@ -553,14 +552,14 @@ final class HijrahDate
     public long getLong(DateTimeField field) {
         if (field instanceof ChronoField) {
             switch ((ChronoField) field) {
-                case DAY_OF_WEEK: return getDayOfWeek().getValue();
-                case ALIGNED_DAY_OF_WEEK_IN_MONTH: return ((getDayOfWeek().getValue() - 1) % 7) + 1;
-                case ALIGNED_DAY_OF_WEEK_IN_YEAR: return ((getDayOfYear() - 1) % 7) + 1;
+                case DAY_OF_WEEK: return dayOfWeek.getValue();
+                case ALIGNED_DAY_OF_WEEK_IN_MONTH: return ((dayOfWeek.getValue() - 1) % 7) + 1;
+                case ALIGNED_DAY_OF_WEEK_IN_YEAR: return ((dayOfYear - 1) % 7) + 1;
                 case DAY_OF_MONTH: return this.dayOfMonth;
                 case DAY_OF_YEAR: return this.dayOfYear;
                 case EPOCH_DAY: return toEpochDay();
-                case ALIGNED_WEEK_OF_MONTH: return ((getDayOfMonth() - 1) / 7) + 1;
-                case ALIGNED_WEEK_OF_YEAR: return ((getDayOfYear() - 1) / 7) + 1;
+                case ALIGNED_WEEK_OF_MONTH: return ((dayOfMonth - 1) / 7) + 1;
+                case ALIGNED_WEEK_OF_YEAR: return ((dayOfYear - 1) / 7) + 1;
                 case MONTH_OF_YEAR: return monthOfYear;
                 case YEAR_OF_ERA: return yearOfEra;
                 case YEAR: return yearOfEra;
@@ -578,7 +577,7 @@ final class HijrahDate
             f.checkValidValue(newValue);        // TODO: validate value
             int nvalue = (int) newValue;
             switch (f) {
-                case DAY_OF_WEEK: return plusDays(newValue - getDayOfWeek().getValue());
+                case DAY_OF_WEEK: return plusDays(newValue - dayOfWeek.getValue());
                 case ALIGNED_DAY_OF_WEEK_IN_MONTH: return plusDays(newValue - getLong(ALIGNED_DAY_OF_WEEK_IN_MONTH));
                 case ALIGNED_DAY_OF_WEEK_IN_YEAR: return plusDays(newValue - getLong(ALIGNED_DAY_OF_WEEK_IN_YEAR));
                 case DAY_OF_MONTH: return resolvePreviousValid(yearOfEra, monthOfYear, nvalue);
@@ -610,72 +609,9 @@ final class HijrahDate
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the Hijrah era field.
-     *
-     * @return the era, never null
-     */
     @Override
     public HijrahEra getEra() {
         return this.era;
-    }
-
-    /**
-     * Gets the Hijrah year-of-era field.
-     *
-     * @return the year, from 1 to 9999
-     */
-    @Override
-    public int getYear() {
-        return this.yearOfEra;
-    }
-
-    /**
-     * Gets the Hijrah month-of-year field.
-     *
-     * @return the month-of-year, from 1 to 12
-     */
-    @Override
-    public int getMonthValue() {
-        return this.monthOfYear;
-    }
-
-    /**
-     * Gets the Hijrah day-of-month field.
-     *
-     * @return the day-of-month, from 1 to 29-30 (it changes depending on deviation configuration)
-     */
-    @Override
-    public int getDayOfMonth() {
-        return this.dayOfMonth;
-    }
-
-    /**
-     * Gets the Hijrah day-of-year field.
-     *
-     * @return the day-of-year, from 1 to 354-355 (it changes depending on deviation configuration)
-     */
-    @Override
-    public int getDayOfYear() {
-        return this.dayOfYear;
-    }
-
-    /**
-     * Gets the day-of-week field, which is an enum {@code DayOfWeek}.
-     * <p>
-     * This method returns the enum {@link DayOfWeek} for the day-of-week.
-     * This avoids confusion as to what {@code int} values mean.
-     * If you need access to the primitive {@code int} value then the enum
-     * provides the {@link DayOfWeek#getValue() int value}.
-     * <p>
-     * Additional information can be obtained from the {@code DayOfWeek}.
-     * This includes textual names of the values.
-     *
-     * @return the day-of-week, never null
-     */
-    @Override
-    public DayOfWeek getDayOfWeek() {
-        return this.dayOfWeek;
     }
 
     //-----------------------------------------------------------------------
@@ -687,94 +623,6 @@ final class HijrahDate
     @Override
     public boolean isLeapYear() {
         return this.isLeapYear;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this date with the year altered.
-     * <p>
-     * This method changes the year of the date.
-     * If the resulting date is invalid, an exception is thrown.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param era  the era to set in the returned date, not null
-     * @param yearOfEra  the year-of-era to set in the returned date, from 1 to 9999
-     * @return a {@code HijrahDate} based on this date with the requested year, never null
-     * @throws IllegalCalendarFieldValueException if the year-of-era value is invalid
-     */
-    public HijrahDate withYear(HijrahEra era, int yearOfEra) {
-        return HijrahDate.of(era, yearOfEra, this.monthOfYear, this.dayOfMonth);
-    }
-
-    /**
-     * Returns a copy of this date with the year-of-era altered.
-     * <p>
-     * This method changes the year-of-era of the date.
-     * If the resulting date is invalid, an exception is thrown.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param yearOfEra  the year-of-era to set in the returned date, from 1 to 9999
-     * @return a {@code HijrahDate} based on this date with the requested year-of-era, never null
-     * @throws IllegalCalendarFieldValueException if the year-of-era value is invalid
-     */
-    @Override
-    public HijrahDate withYear(int yearOfEra) {
-        return withYear(getEra(), yearOfEra);
-    }
-
-    /**
-     * Returns a copy of this date with the month-of-year altered.
-     * <p>
-     * This method changes the month-of-year of the date.
-     * If the resulting date is invalid, an exception is thrown.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param monthOfYear  the month-of-year to set in the returned date, from 1 to 12
-     * @return a {@code HijrahDate} based on this date with the requested month, never null
-     * @throws IllegalCalendarFieldValueException if the month-of-year is invalid
-     */
-    public HijrahDate withMonthOfYear(int monthOfYear) {
-        return HijrahDate.of(this.era, this.yearOfEra, monthOfYear, this.dayOfMonth);
-    }
-
-    /**
-     * Returns a copy of this date with the day-of-month altered.
-     * <p>
-     * This method changes the day-of-month of the date.
-     * If the resulting date is invalid, an exception is thrown.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param dayOfMonth  the day-of-month to set in the returned date, from 1 to 29-30 (it changes depending on deviation configuration)
-     * @return a {@code HijrahDate} based on this date with the requested day, never null
-     * @throws IllegalCalendarFieldValueException if the day-of-month value is invalid
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
-     */
-    @Override
-    public HijrahDate withDayOfMonth(int dayOfMonth) {
-        return HijrahDate.of(this.era, this.yearOfEra, this.monthOfYear, dayOfMonth);
-    }
-
-    /**
-     * Returns a copy of this date with the day-of-year altered.
-     * <p>
-     * This method changes the day-of-year of the date.
-     * If the resulting date is invalid, an exception is thrown.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param dayOfYear  the day-of-year to set in the returned date, from 1 to 354-355 (it changes depending on deviation configuration)
-     * @return a {@code HijrahDate} based on this date with the requested day, never null
-     * @throws IllegalCalendarFieldValueException if the day-of-year value is invalid
-     * @throws InvalidCalendarFieldException if the day-of-year is invalid for the year
-     */
-    @Override
-    public HijrahDate withDayOfYear(int dayOfYear) {
-        checkValidDayOfYear(dayOfYear);
-        return HijrahDate.of(this.era, this.yearOfEra, 1, 1).plusDays(dayOfYear).plusDays(-1);
     }
 
     //-----------------------------------------------------------------------
@@ -805,44 +653,8 @@ final class HijrahDate
     }
 
     @Override
-    public HijrahDate plusWeeks(long weeksToAdd) {
-        return plusDays(Jdk8Methods.safeMultiply(weeksToAdd, 7));
-    }
-
-    @Override
     public HijrahDate plusDays(long days) {
         return new HijrahDate(this.gregorianEpochDay + days);
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public HijrahDate withEra(Era<HijrahChrono> era) {
-        return (HijrahDate) super.withEra(era);
-    }
-
-    @Override
-    public HijrahDate withMonth(int month) {
-        return (HijrahDate) super.withMonth(month);
-    }
-
-    @Override
-    public HijrahDate minusYears(long yearsToSubtract) {
-        return (HijrahDate) super.minusYears(yearsToSubtract);
-    }
-
-    @Override
-    public HijrahDate minusMonths(long monthsToSubtract) {
-        return (HijrahDate) super.minusMonths(monthsToSubtract);
-    }
-
-    @Override
-    public HijrahDate minusWeeks(long weeksToSubtract) {
-        return (HijrahDate) super.minusWeeks(weeksToSubtract);
-    }
-
-    @Override
-    public HijrahDate minusDays(long daysToSubtract) {
-        return (HijrahDate) super.minusDays(daysToSubtract);
     }
 
     //-----------------------------------------------------------------------

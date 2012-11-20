@@ -186,12 +186,12 @@ public final class ThaiBuddhistChrono extends Chrono<ThaiBuddhistChrono> impleme
     //-----------------------------------------------------------------------
     @Override
     public ChronoLocalDate<ThaiBuddhistChrono> date(int prolepticYear, int month, int dayOfMonth) {
-        return ThaiBuddhistDate.of(prolepticYear, month, dayOfMonth);
+        return new ThaiBuddhistDate(LocalDate.of(prolepticYear - YEARS_DIFFERENCE, month, dayOfMonth));
     }
 
     @Override
     public ChronoLocalDate<ThaiBuddhistChrono> dateFromYearDay(int prolepticYear, int dayOfYear) {
-        return ThaiBuddhistDate.ofYearDay(prolepticYear, dayOfYear);
+        return new ThaiBuddhistDate(LocalDate.ofYearDay(prolepticYear - YEARS_DIFFERENCE, dayOfYear));
     }
 
     @Override

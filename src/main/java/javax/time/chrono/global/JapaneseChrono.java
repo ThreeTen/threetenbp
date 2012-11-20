@@ -205,7 +205,7 @@ public final class JapaneseChrono extends Chrono<JapaneseChrono> implements Seri
 
     @Override
     public ChronoLocalDate<JapaneseChrono> date(int prolepticYear, int month, int dayOfMonth) {
-        return JapaneseDate.of(prolepticYear, month, dayOfMonth);
+        return new JapaneseDate(LocalDate.of(prolepticYear, month, dayOfMonth));
     }
 
     @Override

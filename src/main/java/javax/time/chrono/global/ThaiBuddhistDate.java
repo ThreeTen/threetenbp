@@ -40,7 +40,6 @@ import java.util.Objects;
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.calendrical.ChronoField;
-import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 
@@ -68,73 +67,10 @@ final class ThaiBuddhistDate
      */
     private final LocalDate isoDate;
 
-    //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code ThaiBuddhistDate} from the Thai Buddhist proleptic year,
-     * month-of-year and day-of-month. This uses the Thai Buddhist era.
+     * Creates an instance from an ISO date.
      *
-     * @param prolepticYear  the year to represent in the Thai Buddhist era, from 1 to MAX_YEAR
-     * @param month  the month-of-year to represent, 1 to 12
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return the Thai Buddhist date, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
-     */
-    public static ThaiBuddhistDate of(int prolepticYear, int month, int dayOfMonth) {
-        return new ThaiBuddhistDate(LocalDate.of(prolepticYear - YEARS_DIFFERENCE, month, dayOfMonth));
-    }
-
-    /**
-     * Obtains an instance of {@code ThaiBuddhistDate} from the Thai Buddhist proleptic year,
-     * month-of-year and day-of-month. This uses the Thai Buddhist era.
-     *
-     * @param prolepticYear  the year to represent in the Thai Buddhist era, from 1 to MAX_YEAR
-     * @param dayOfYear  the day-of-year to represent, from 1 to 266
-     * @return the Thai Buddhist date, not null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
-     */
-    public static ThaiBuddhistDate ofYearDay(int prolepticYear, int dayOfYear) {
-        return new ThaiBuddhistDate(LocalDate.ofYearDay(prolepticYear - YEARS_DIFFERENCE, dayOfYear));
-    }
-
-    /**
-     * Obtains an instance of {@code ThaiBuddhistDate} from a date-time object.
-
-     * <p>
-     * A {@code DateTimeAccessor} represents some form of date and time information.
-     * This factory converts the arbitrary date-time object to an instance of {@code ThaiBuddhistDate}.
-     *
-     * @param dateTime  the date-time object to convert, not null
-     * @return the Thai Buddhist date, not null
-     * @throws DateTimeException if unable to convert to a {@code LocalDate}
-     */
-    public static ThaiBuddhistDate from(DateTimeAccessor dateTime) {
-        if (dateTime instanceof ThaiBuddhistDate) {
-            return (ThaiBuddhistDate) dateTime;
-        }
-        return new ThaiBuddhistDate(LocalDate.from(dateTime));
-    }
-
-    /**
-     * Obtains an instance of {@code ThaiBuddhistDate} from the epoch day count.
-     * <p>
-     * The Epoch Day count is a simple incrementing count of days
-     * where day 0 is 1970-01-01. Negative numbers represent earlier days.
-     *
-     * @param epochDay  the Epoch Day to convert, based on the epoch 1970-01-01
-     * @return the Thai Buddhist date, not null
-     * @throws DateTimeException if the epoch days exceeds the supported date range
-     */
-    public static ThaiBuddhistDate ofEpochDay(long epochDay) {
-        return new ThaiBuddhistDate(LocalDate.ofEpochDay(epochDay));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Creates an instance.
-     *
-     * @param date  the time-line date, not null
+     * @param isoDate  the standard local date, validated not null
      */
     ThaiBuddhistDate(LocalDate date) {
         Objects.requireNonNull(date, "date");
@@ -147,7 +83,6 @@ final class ThaiBuddhistDate
         return ThaiBuddhistChrono.INSTANCE;
     }
 
-    //-----------------------------------------------------------------------
     @Override
     public int lengthOfMonth() {
         return isoDate.lengthOfMonth();
@@ -180,38 +115,22 @@ final class ThaiBuddhistDate
     public long getLong(DateTimeField field) {
         if (field instanceof ChronoField) {
             switch ((ChronoField) field) {
-                case YEAR_OF_ERA: return getYear();
-                case YEAR: return getProlepticYear();
-                case ERA: return getEra().getValue();
+                case YEAR_OF_ERA: {
+                    int prolepticYear = getProlepticYear();
+                    return (prolepticYear >= 1 ? prolepticYear : 1 - prolepticYear);
+                }
+                case YEAR:
+                    return getProlepticYear();
+                case ERA:
+                    return (getProlepticYear() >= 1 ? 1 : 0);
             }
             return isoDate.getLong(field);
         }
         return field.doGet(this);
     }
 
-    /**
-     * Gets the Thai Buddhist era field.
-     *
-     * @return the era, never null
-     */
-    @Override
-    public ThaiBuddhistEra getEra() {
-        return getProlepticYear() < 1 ? ThaiBuddhistEra.BEFORE_BE : ThaiBuddhistEra.BE;
-    }
-
     private int getProlepticYear() {
         return isoDate.getYear() + YEARS_DIFFERENCE;
-    }
-
-    /**
-     * Gets the Thai Buddhist year-of-era field.
-     *
-     * @return the year-of-era
-     */
-    @Override
-    public int getYear() {
-        int year = getProlepticYear();
-        return year < 1 ? 1 - year : year;
     }
 
     //-----------------------------------------------------------------------
@@ -226,7 +145,7 @@ final class ThaiBuddhistDate
                 case YEAR_OF_ERA:
                 case YEAR:
                 case ERA: {
-//                    f.checkValidValue(newValue);  // TODO ranges
+                    f.checkValidValue(newValue);
                     int nvalue = (int) newValue;
                     switch (f) {
                         case YEAR_OF_ERA:
@@ -245,32 +164,17 @@ final class ThaiBuddhistDate
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean isLeapYear() {
-        return getChrono().isLeapYear(get(ChronoField.YEAR));
-    }
-
-    @Override
-    public int lengthOfYear() {
-        return (isLeapYear() ? 366 : 365);
-    }
-
-    @Override
-    public ThaiBuddhistDate plusYears(long years) {
+    ThaiBuddhistDate plusYears(long years) {
         return with(isoDate.plusYears(years));
     }
 
     @Override
-    public ThaiBuddhistDate plusMonths(long months) {
+    ThaiBuddhistDate plusMonths(long months) {
         return with(isoDate.plusMonths(months));
     }
 
     @Override
-    public ThaiBuddhistDate plusWeeks(long weeksToAdd) {
-        return with(isoDate.plusWeeks(weeksToAdd));
-    }
-
-    @Override
-    public ThaiBuddhistDate plusDays(long days) {
+    ThaiBuddhistDate plusDays(long days) {
         return with(isoDate.plusDays(days));
     }
 
@@ -278,9 +182,27 @@ final class ThaiBuddhistDate
         return (newDate.equals(isoDate) ? this : new ThaiBuddhistDate(newDate));
     }
 
-    @Override
+    @Override  // override for performance
     public long toEpochDay() {
         return isoDate.toEpochDay();
+    }
+
+    //-------------------------------------------------------------------------
+    @Override  // override for performance
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof ThaiBuddhistDate) {
+            ThaiBuddhistDate otherDate = (ThaiBuddhistDate) obj;
+            return this.isoDate.equals(otherDate.isoDate);
+        }
+        return false;
+    }
+
+    @Override  // override for performance
+    public int hashCode() {
+        return getChrono().getId().hashCode() ^ isoDate.hashCode();
     }
 
 }

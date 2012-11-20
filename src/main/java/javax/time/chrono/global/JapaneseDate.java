@@ -38,13 +38,10 @@ import java.util.Calendar;
 import java.util.Objects;
 
 import javax.time.DateTimeException;
-import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.chrono.Era;
-import javax.time.jdk8.Jdk8Methods;
 
 import sun.util.calendar.LocalGregorianCalendar;
 
@@ -82,22 +79,6 @@ final class JapaneseDate
      */
     private transient int yearOfEra;
 
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of {@code JapaneseDate} from the proleptic ISO year,
-     * month-of-year and day-of-month.
-     *
-     * @param prolepticYear  the year to represent in the proleptic year
-     * @param month  the month-of-year to represent, not null
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return the Japanese date, never null
-     * @throws DateTimeException if the value of any field is out of range, or
-     *                              if the day-of-month is invalid for the month-year
-     */
-    public static JapaneseDate of(int prolepticYear, int month, int dayOfMonth) {
-        return new JapaneseDate(LocalDate.of(prolepticYear, month, dayOfMonth));
-    }
-
     /**
      * Obtains an instance of {@code JapaneseDate} from the era, year-of-era,
      * month-of-year and day-of-month.
@@ -123,7 +104,7 @@ final class JapaneseDate
 
     //-----------------------------------------------------------------------
     /**
-     * Creates an instance from the given date.
+     * Creates an instance from an ISO date.
      *
      * @param isoDate  the standard local date, validated not null
      */
@@ -142,7 +123,7 @@ final class JapaneseDate
      * @param year  the year-of-era, validated
      * @param isoDate  the standard local date, validated not null
      */
-    private JapaneseDate(JapaneseEra era, int year, LocalDate isoDate) {
+    JapaneseDate(JapaneseEra era, int year, LocalDate isoDate) {
         this.era = era;
         this.yearOfEra = year;
         this.isoDate = isoDate;
@@ -166,55 +147,6 @@ final class JapaneseDate
         return JapaneseChrono.INSTANCE;
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if this date is equal to another {@code JapaneseDate}.
-     * The comparison is based on the time-line position of the dates.
-     * <p>
-     * Only objects of type {@code JapaneseDate} are compared, other types return {@code false}.
-     *
-     * @param obj  the object to check, null returns {@code false}
-     * @return {@code true} if this is equal to the other date
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj instanceof JapaneseDate == false) {
-            return false;
-        }
-        JapaneseDate otherDate = (JapaneseDate) obj;
-        return this.isoDate.equals(otherDate.isoDate);
-    }
-
-    /**
-     * A hash code for this {@code JapaneseDate}.
-     *
-     * @return a suitable hash code
-     */
-    @Override
-    public int hashCode() {
-        return isoDate.hashCode();
-    }
-
-    /**
-     * Returns a {@code String} representation of this {@code JapaneseDate}, such as {@code "H24-10-20"}.
-     * <p>
-     * The output will be in the format {@code {era-abbr}{year}-{month}-{day}} for dates in Meiji and the later eras,
-     * or {@code {gregorian_year}-{month}-{day}} for dates before Meiji.
-     *
-     * @return the formatted date, not null
-     */
-    @Override
-    public String toString() {
-        if (era == JapaneseEra.SEIREKI) {
-            return getChrono().getId() + " " + isoDate.toString();
-        }
-        return super.toString();
-    }
-
-    //-----------------------------------------------------------------------
     @Override
     public int lengthOfMonth() {
         return isoDate.lengthOfMonth();
@@ -291,6 +223,9 @@ final class JapaneseDate
     public JapaneseDate with(DateTimeField field, long newValue) {
         if (field instanceof ChronoField) {
             ChronoField f = (ChronoField) field;
+            if (getLong(f) == newValue) {
+                return this;
+            }
             switch (f) {
                 case YEAR_OF_ERA:
                 case YEAR:
@@ -347,29 +282,23 @@ final class JapaneseDate
      * @return a {@code JapaneseDate} based on this date with the requested year-of-era, never null
      * @throws DateTimeException if {@code year} is invalid
      */
-    @Override
-    public JapaneseDate withYear(int year) {
+    private JapaneseDate withYear(int year) {
         return withYear((JapaneseEra) getEra(), year);
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public JapaneseDate plusYears(long years) {
+    JapaneseDate plusYears(long years) {
         return with(isoDate.plusYears(years));
     }
 
     @Override
-    public JapaneseDate plusMonths(long months) {
+    JapaneseDate plusMonths(long months) {
         return with(isoDate.plusMonths(months));
     }
 
     @Override
-    public JapaneseDate plusWeeks(long weeksToAdd) {
-        return plusDays(Jdk8Methods.safeMultiply(weeksToAdd, 7));
-    }
-
-    @Override
-    public JapaneseDate plusDays(long days) {
+    JapaneseDate plusDays(long days) {
         return with(isoDate.plusDays(days));
     }
 
@@ -377,90 +306,35 @@ final class JapaneseDate
         return (newDate.equals(isoDate) ? this : new JapaneseDate(newDate));
     }
 
-    //-----------------------------------------------------------------------
-    @Override
-    public Era<JapaneseChrono> getEra() {
-        return super.getEra();
-    }
-
-    @Override
-    public int getYear() {
-        return super.getYear();
-    }
-
-    @Override
-    public int getMonthValue() {
-        return super.getMonthValue();
-    }
-
-    @Override
-    public int getDayOfMonth() {
-        return super.getDayOfMonth();
-    }
-
-    @Override
-    public int getDayOfYear() {
-        return super.getDayOfYear();
-    }
-
-    @Override
-    public DayOfWeek getDayOfWeek() {
-        return super.getDayOfWeek();
-    }
-
-    @Override
-    public boolean isLeapYear() {
-        return super.isLeapYear();
-    }
-
-    @Override
-    public int lengthOfYear() {
-        return super.lengthOfYear();
-    }
-
-    @Override
-    public JapaneseDate withEra(Era<JapaneseChrono> era) {
-        return (JapaneseDate)super.withEra(era);
-    }
-
-    @Override
-    public JapaneseDate withMonth(int month) {
-        return (JapaneseDate)super.withMonth(month);
-    }
-
-    @Override
-    public JapaneseDate withDayOfMonth(int dayOfMonth) {
-        return (JapaneseDate)super.withDayOfMonth(dayOfMonth);
-    }
-
-    @Override
-    public JapaneseDate withDayOfYear(int dayOfYear) {
-        return (JapaneseDate)super.withDayOfYear(dayOfYear);
-    }
-
-    @Override
-    public JapaneseDate minusYears(long yearsToSubtract) {
-        return (JapaneseDate)super.minusYears(yearsToSubtract);
-    }
-
-    @Override
-    public JapaneseDate minusMonths(long monthsToSubtract) {
-        return (JapaneseDate)super.minusMonths(monthsToSubtract);
-    }
-
-    @Override
-    public JapaneseDate minusWeeks(long weeksToSubtract) {
-        return (JapaneseDate)super.minusWeeks(weeksToSubtract);
-    }
-
-    @Override
-    public JapaneseDate minusDays(long daysToSubtract) {
-        return (JapaneseDate)super.minusDays(daysToSubtract);
-    }
-
-    @Override
+    @Override  // override for performance
     public long toEpochDay() {
         return isoDate.toEpochDay();
+    }
+
+    //-------------------------------------------------------------------------
+    @Override  // override for performance
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof JapaneseDate) {
+            JapaneseDate otherDate = (JapaneseDate) obj;
+            return this.isoDate.equals(otherDate.isoDate);
+        }
+        return false;
+    }
+
+    @Override  // override for performance
+    public int hashCode() {
+        return getChrono().getId().hashCode() ^ isoDate.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        if (era == JapaneseEra.SEIREKI) {
+            return getChrono().getId() + " " + isoDate.toString();
+        }
+        return super.toString();
     }
 
 }

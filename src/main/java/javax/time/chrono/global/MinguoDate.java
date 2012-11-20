@@ -38,13 +38,10 @@ import java.io.Serializable;
 import java.util.Objects;
 
 import javax.time.DateTimeException;
-import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.chrono.Era;
-import javax.time.jdk8.Jdk8Methods;
 
 /**
  * A date in the Minguo calendar system.
@@ -70,25 +67,10 @@ final class MinguoDate
      */
     private final LocalDate isoDate;
 
-    //-----------------------------------------------------------------------
     /**
-     * Creates a date in Minguo calendar system from the Era, year-of-era,
-     * month-of-year and day-of-month.
+     * Creates an instance from an ISO date.
      *
-     * @param era  the Era, not null
-     * @param year  the calendar system year-of-era
-     * @param month  the calendar system month-of-year
-     * @param dayOfMonth  the calendar system day-of-month
-     * @return the date in this calendar system, not null
-     */
-    public static MinguoDate of(Era<MinguoChrono> era, int year, int month, int dayOfMonth) {
-        return (MinguoDate)MinguoChrono.INSTANCE.date(era, year, month, dayOfMonth);
-    }
-
-    /**
-     * Creates an instance.
-     *
-     * @param date  the time-line date, not null
+     * @param isoDate  the standard local date, validated not null
      */
     MinguoDate(LocalDate date) {
         Objects.requireNonNull(date, "date");
@@ -101,7 +83,6 @@ final class MinguoDate
         return MinguoChrono.INSTANCE;
     }
 
-    //-----------------------------------------------------------------------
     @Override
     public int lengthOfMonth() {
         return isoDate.lengthOfMonth();
@@ -138,35 +119,14 @@ final class MinguoDate
                     int prolepticYear = getProlepticYear();
                     return (prolepticYear >= 1 ? prolepticYear : 1 - prolepticYear);
                 }
-                case YEAR: return getProlepticYear();
-                case ERA: return (isoDate.getYear() - YEARS_DIFFERENCE >= 1 ? 1 : 0);
+                case YEAR:
+                    return getProlepticYear();
+                case ERA:
+                    return (getProlepticYear() >= 1 ? 1 : 0);
             }
             return isoDate.getLong(field);
         }
         return field.doGet(this);
-    }
-
-    @Override
-    public MinguoDate with(DateTimeField field, long newValue) {
-        if (field instanceof ChronoField) {
-            ChronoField f = (ChronoField) field;
-            switch (f) {
-                case YEAR_OF_ERA:
-                case YEAR:
-                case ERA: {
-                    f.checkValidValue(newValue);
-                    int nvalue = (int) newValue;
-                    switch (f) {
-                        case YEAR_OF_ERA: return with(isoDate.withYear(
-                                getProlepticYear() >= 1 ? nvalue + YEARS_DIFFERENCE : (1 - nvalue)  + YEARS_DIFFERENCE));
-                        case YEAR: return with(isoDate.withYear(nvalue + YEARS_DIFFERENCE));
-                        case ERA: return with(isoDate.withYear((1 - getProlepticYear()) + YEARS_DIFFERENCE));
-                    }
-                }
-            }
-            return with(isoDate.with(field, newValue));
-        }
-        return field.doSet(this, newValue);
     }
 
     private int getProlepticYear() {
@@ -175,22 +135,46 @@ final class MinguoDate
 
     //-----------------------------------------------------------------------
     @Override
-    public MinguoDate plusYears(long years) {
+    public MinguoDate with(DateTimeField field, long newValue) {
+        if (field instanceof ChronoField) {
+            ChronoField f = (ChronoField) field;
+            if (getLong(f) == newValue) {
+                return this;
+            }
+            switch (f) {
+                case YEAR_OF_ERA:
+                case YEAR:
+                case ERA: {
+                    f.checkValidValue(newValue);
+                    int nvalue = (int) newValue;
+                    switch (f) {
+                        case YEAR_OF_ERA:
+                            return with(isoDate.withYear(getProlepticYear() >= 1 ? nvalue + YEARS_DIFFERENCE : (1 - nvalue)  + YEARS_DIFFERENCE));
+                        case YEAR:
+                            return with(isoDate.withYear(nvalue + YEARS_DIFFERENCE));
+                        case ERA:
+                            return with(isoDate.withYear((1 - getProlepticYear()) + YEARS_DIFFERENCE));
+                    }
+                }
+            }
+            return with(isoDate.with(field, newValue));
+        }
+        return field.doSet(this, newValue);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    MinguoDate plusYears(long years) {
         return with(isoDate.plusYears(years));
     }
 
     @Override
-    public MinguoDate plusMonths(long months) {
+    MinguoDate plusMonths(long months) {
         return with(isoDate.plusMonths(months));
     }
 
     @Override
-    public MinguoDate plusWeeks(long weeksToAdd) {
-        return plusDays(Jdk8Methods.safeMultiply(weeksToAdd, 7));
-    }
-
-    @Override
-    public MinguoDate plusDays(long days) {
+    MinguoDate plusDays(long days) {
         return with(isoDate.plusDays(days));
     }
 
@@ -198,95 +182,27 @@ final class MinguoDate
         return (newDate.equals(isoDate) ? this : new MinguoDate(newDate));
     }
 
-    //-----------------------------------------------------------------------
-    @Override
-    public Era<MinguoChrono> getEra() {
-        return super.getEra();
-    }
-
-    @Override
-    public int getYear() {
-        return super.getYear();
-    }
-
-    @Override
-    public int getMonthValue() {
-        return super.getMonthValue();
-    }
-
-    @Override
-    public int getDayOfMonth() {
-        return super.getDayOfMonth();
-    }
-
-    @Override
-    public int getDayOfYear() {
-        return super.getDayOfYear();
-    }
-
-    @Override
-    public DayOfWeek getDayOfWeek() {
-        return super.getDayOfWeek();
-    }
-
-    @Override
-    public boolean isLeapYear() {
-        return super.isLeapYear();
-    }
-
-    @Override
-    public int lengthOfYear() {
-        return super.lengthOfYear();
-    }
-
-    @Override
-    public MinguoDate withEra(Era<MinguoChrono> era) {
-        return (MinguoDate)super.withEra(era);
-    }
-
-    @Override
-    public MinguoDate withYear(int year) {
-        return (MinguoDate)super.withYear(year);
-    }
-
-    @Override
-    public MinguoDate withMonth(int month) {
-        return (MinguoDate)super.withMonth(month);
-    }
-
-    @Override
-    public MinguoDate withDayOfMonth(int dayOfMonth) {
-        return (MinguoDate)super.withDayOfMonth(dayOfMonth);
-    }
-
-    @Override
-    public MinguoDate withDayOfYear(int dayOfYear) {
-        return (MinguoDate)super.withDayOfYear(dayOfYear);
-    }
-
-    @Override
-    public MinguoDate minusYears(long yearsToSubtract) {
-        return (MinguoDate)super.minusYears(yearsToSubtract);
-    }
-
-    @Override
-    public MinguoDate minusMonths(long monthsToSubtract) {
-        return (MinguoDate)super.minusMonths(monthsToSubtract);
-    }
-
-    @Override
-    public MinguoDate minusWeeks(long weeksToSubtract) {
-        return (MinguoDate)super.minusWeeks(weeksToSubtract);
-    }
-
-    @Override
-    public MinguoDate minusDays(long daysToSubtract) {
-        return (MinguoDate)super.minusDays(daysToSubtract);
-    }
-
-    @Override
+    @Override  // override for performance
     public long toEpochDay() {
         return isoDate.toEpochDay();
+    }
+
+    //-------------------------------------------------------------------------
+    @Override  // override for performance
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof MinguoDate) {
+            MinguoDate otherDate = (MinguoDate) obj;
+            return this.isoDate.equals(otherDate.isoDate);
+        }
+        return false;
+    }
+
+    @Override  // override for performance
+    public int hashCode() {
+        return getChrono().getId().hashCode() ^ isoDate.hashCode();
     }
 
 }

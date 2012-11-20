@@ -39,7 +39,6 @@ import static javax.time.calendrical.ChronoField.WEEK_OF_YEAR;
 import java.io.Serializable;
 
 import javax.time.DateTimeException;
-import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.calendrical.ChronoField;
@@ -51,7 +50,6 @@ import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.Chrono;
 import javax.time.chrono.ChronoLocalDate;
 import javax.time.chrono.ChronoLocalDateTime;
-import javax.time.chrono.Era;
 import javax.time.jdk8.DefaultInterfaceChronoLocalDate;
 import javax.time.jdk8.Jdk8Methods;
 
@@ -144,143 +142,6 @@ abstract class ChronoDateImpl<C extends Chrono<C>>
                     field != WEEK_OF_YEAR && field != WEEK_OF_WEEK_BASED_YEAR && field != WEEK_BASED_YEAR;
         }
         return field != null && field.doIsSupported(this);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the year-of-era, as defined by the calendar system.
-     * <p>
-     * The year-of-era is a value representing the count of years within the era.
-     * The exact meaning is determined by the chronology according to the following constraints.
-     * <p>
-     * The year-of-era value must be positive.
-     *
-     * @return the year-of-era, within the valid range for the chronology
-     */
-    int getYear() {
-        return get(ChronoField.YEAR_OF_ERA);
-    }
-
-    /**
-     * Gets the month-of-year, as defined by the calendar system.
-     * <p>
-     * The month-of-year is a value representing the count of months within the year.
-     * The exact meaning is determined by the chronology according to the following constraints.
-     * <p>
-     * The month-of-year value must be positive.
-     *
-     * @return the month-of-year, within the valid range for the chronology
-     */
-    int getMonthValue() {
-        return get(ChronoField.MONTH_OF_YEAR);
-    }
-
-    /**
-     * Gets the day-of-month, as defined by the calendar system.
-     * <p>
-     * The day-of-month is a value representing the count of days within the month.
-     * The exact meaning is determined by the chronology according to the following constraints.
-     * <p>
-     * The day-of-month value must be positive.
-     *
-     * @return the day-of-month, within the valid range for the chronology
-     */
-    int getDayOfMonth() {
-        return get(ChronoField.DAY_OF_MONTH);
-    }
-
-    /**
-     * Gets the day-of-year, as defined by the calendar system.
-     * <p>
-     * The day-of-year is a value representing the count of days within the year.
-     * The exact meaning is determined by the chronology according to the following constraints.
-     * <p>
-     * The day-of-year value must be positive.
-     * The number of days in a year may vary.
-     *
-     * @return the day-of-year, within the valid range for the chronology
-     */
-    int getDayOfYear() {
-        return get(ChronoField.DAY_OF_YEAR);
-    }
-
-    /**
-     * Gets the day-of-week field, which is an enum {@code DayOfWeek}.
-     * <p>
-     * This method returns the enum {@link DayOfWeek} for the day-of-week.
-     * This avoids confusion as to what {@code int} values mean.
-     * If you need access to the primitive {@code int} value then the enum
-     * provides the {@link DayOfWeek#getValue() int value}.
-     * <p>
-     * Additional information can be obtained from the {@code DayOfWeek}.
-     * This includes textual names of the values.
-     *
-     * @return the day-of-week, not null
-     */
-    DayOfWeek getDayOfWeek() {
-        return DayOfWeek.of(get(ChronoField.DAY_OF_WEEK));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this date with the specified era.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param era  the era to set, not null
-     * @return a date based on this one with the years added, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    ChronoLocalDate<C> withEra(Era<C> era) {
-        return with(ChronoField.ERA, era.getValue());
-    }
-
-    /**
-     * Returns a copy of this date with the specified year-of-era.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param year  the year-of-era to set
-     * @return a date based on this one with the specified year-of-era, not null
-     */
-    ChronoLocalDate<C> withYear(int year) {
-        return with(ChronoField.YEAR_OF_ERA, year);
-    }
-
-    /**
-     * Returns a copy of this date with the specified month-of-year.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param month  the month-of-year to set
-     * @return a date based on this one with the specified month-of-year, not null
-     */
-    ChronoLocalDate<C> withMonth(int month) {
-        return with(ChronoField.MONTH_OF_YEAR, month);
-    }
-
-    /**
-     * Returns a copy of this date with the specified day-of-month.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param dayOfMonth  the day-of-month to set
-     * @return a date based on this one with the specified day-of-month, not null
-     */
-    ChronoLocalDate<C> withDayOfMonth(int dayOfMonth) {
-        return with(ChronoField.DAY_OF_MONTH, dayOfMonth);
-    }
-
-    /**
-     * Returns a copy of this date with the specified day-of-year.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param dayOfYear  the day-of-year to set
-     * @return a date based on this one with the specified day-of-year, not null
-     */
-    ChronoLocalDate<C> withDayOfYear(int dayOfYear) {
-        return with(ChronoField.DAY_OF_YEAR, dayOfYear);
     }
 
     //-----------------------------------------------------------------------
@@ -467,22 +328,6 @@ abstract class ChronoDateImpl<C extends Chrono<C>>
             return LocalDate.from(this).periodUntil(end, unit);  // TODO: this is wrong
         }
         return unit.between(this, endDateTime).getAmount();
-    }
-
-    //-------------------------------------------------------------------------
-    @Override // override to use local getters which may be overridden
-    public String toString() {
-        int yearValue = getYear();
-        int monthValue = getMonthValue();
-        int dayValue = getDayOfMonth();
-        StringBuilder buf = new StringBuilder(30);
-        buf.append(getChrono().toString())
-                .append(" ")
-                .append(getEra().toString())
-                .append(yearValue)
-                .append(monthValue < 10 ? "-0" : "-").append(monthValue)
-                .append(dayValue < 10 ? "-0" : "-").append(dayValue);
-        return buf.toString();
     }
 
 }
