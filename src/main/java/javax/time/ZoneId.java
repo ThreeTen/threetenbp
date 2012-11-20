@@ -31,11 +31,8 @@
  */
 package javax.time;
 
-import java.io.ObjectStreamException;
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -46,8 +43,6 @@ import java.util.regex.Pattern;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAccessor.Query;
 import javax.time.format.TextStyle;
-import javax.time.zone.ZoneOffsetTransition;
-import javax.time.zone.ZoneOffsetTransitionRule;
 import javax.time.zone.ZoneRules;
 import javax.time.zone.ZoneRulesProvider;
 
@@ -100,14 +95,12 @@ import javax.time.zone.ZoneRulesProvider;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public abstract class ZoneId implements Serializable {
+public abstract class ZoneId {
 
     /**
-     * The time-zone ID for 'UTC'.
-     * Note that it is intended that fixed offset time-zones like this are rarely used.
-     * Applications should use {@link ZoneOffset} and {@link OffsetDateTime} in preference.
+     * The time-zone offset for 'UTC'.
      */
-    public static final ZoneId UTC = new FixedZone(ZoneOffset.UTC);
+    public static final ZoneOffset UTC = ZoneOffset.UTC;
     /**
      * The time-zone group ID for 'TZDB'.
      * <p>
@@ -164,9 +157,9 @@ public abstract class ZoneId implements Serializable {
      * <p>
      * This maps as follows:
      * <p><ul>
-     * <li>EST - UTC-05:00</li>
-     * <li>HST - UTC-10:00</li>
-     * <li>MST - UTC-07:00</li>
+     * <li>EST - -05:00</li>
+     * <li>HST - -10:00</li>
+     * <li>MST - -07:00</li>
      * <li>ACT - Australia/Darwin</li>
      * <li>AET - Australia/Sydney</li>
      * <li>AGT - America/Argentina/Buenos_Aires</li>
@@ -229,24 +222,16 @@ public abstract class ZoneId implements Serializable {
         pre.put("HST", "Pacific/Honolulu");
         OLD_IDS_PRE_2005 = Collections.unmodifiableMap(pre);
         Map<String, String> post = new HashMap<>(base);
-        post.put("EST", "UTC-05:00");
-        post.put("MST", "UTC-07:00");
-        post.put("HST", "UTC-10:00");
+        post.put("EST", "-05:00");
+        post.put("MST", "-07:00");
+        post.put("HST", "-10:00");
         OLD_IDS_POST_2005 = Collections.unmodifiableMap(post);
     }
 
     /**
-     * Serialization version.
-     */
-    private static final long serialVersionUID = -1530063628632242016L;
-    /**
      * The group:region ID pattern.
      */
     private static final Pattern PATTERN = Pattern.compile("(([A-Za-z0-9._-]+)[:])?([A-Za-z0-9%@~/+._-]+)");
-    /**
-     * The time-zone group ID for 'UTC:'.
-     */
-    private static final String GROUP_UTC_COLON = "UTC:";
 
     //-----------------------------------------------------------------------
     /**
@@ -344,7 +329,7 @@ public abstract class ZoneId implements Serializable {
      * @throws DateTimeException if the zone ID cannot be found
      */
     public static ZoneId ofUnchecked(String zoneId) {
-        return ofId(zoneId, false);
+        return ofId(zoneId, false);  // TODO: move to ZoneRegion?
     }
 
     /**
@@ -358,20 +343,13 @@ public abstract class ZoneId implements Serializable {
     private static ZoneId ofId(String zoneId, boolean checkAvailable) {
         Objects.requireNonNull(zoneId, "zoneId");
 
-        // special fixed cases
-        if (zoneId.equals("UTC") || zoneId.equals("GMT")) {
+        // handle most zone offset cases
+        if (zoneId.equals("Z") || zoneId.equals("UTC") || zoneId.equals("GMT")) {
             return UTC;
-        }
-        if (zoneId.startsWith(GROUP_UTC_COLON)) {
-            try {
-                return of(ZoneOffset.of(zoneId.substring(4)));
-            } catch (IllegalArgumentException ex) {
-                throw new DateTimeException("Unknown time-zone offset", ex);
-            }
         }
         if (zoneId.startsWith("UTC") || zoneId.startsWith("GMT")) {
             try {
-                return of(ZoneOffset.of(zoneId.substring(3)));
+                return ZoneOffset.of(zoneId.substring(3));
             } catch (IllegalArgumentException ex) {
                 // continue, in case it is something like GMT0, GMT+0, GMT-0
             }
@@ -397,25 +375,7 @@ public abstract class ZoneId implements Serializable {
                 throw ex;
             }
         }
-        return new RulesZone(groupId, regionId, provider);
-    }
-
-    /**
-     * Obtains an instance of {@code ZoneId} representing a fixed time-zone.
-     * <p>
-     * The time-zone returned from this factory has a fixed offset for all time.
-     * The group identifier is 'UTC' and the region is the identifier of
-     * the {@code ZoneOffset}.
-     *
-     * @param offset  the zone offset to create a fixed zone for, not null
-     * @return the zone ID for the offset, not null
-     */
-    public static ZoneId of(ZoneOffset offset) {
-        Objects.requireNonNull(offset, "offset");
-        if (offset == ZoneOffset.UTC) {
-            return UTC;
-        }
-        return new FixedZone(offset);
+        return new ZoneRegion(zoneId, provider);
     }
 
     //-----------------------------------------------------------------------
@@ -448,52 +408,29 @@ public abstract class ZoneId implements Serializable {
     /**
      * Gets the unique time-zone ID.
      * <p>
-     * The unique key is created from the group ID and region ID.
-     * The format is <code>{groupID}:{regionID}</code>.
-     * If the group is 'TZDB' then only the region ID is returned.
+     * This ID uniquely defines this object.
+     * The format is defined by {@link ZoneOffset} and {@link ZoneRegion}.
      *
      * @return the time-zone unique ID, not null
      */
     public abstract String getId();
 
-    /**
-     * Gets the time-zone rules group ID, such as 'TZDB'.
-     * <p>
-     * The group ID is the first part of the {@link #getId() full unique ID}.
-     * Time zone rule data is supplied by a group, typically a company or organization.
-     * The default group is 'TZDB' representing the public time-zone database.
-     *
-     * @return the time-zone rules group ID, not empty, not null
-     */
-    public abstract String getGroupId();
-
-    /**
-     * Gets the time-zone region ID, such as 'Europe/London'.
-     * <p>
-     * The region ID is the second part of the {@link #getId() full unique ID}.
-     * Time zone rules are defined for a region and this element represents that region.
-     * The ID uses a format specific to the group.
-     * The default 'TZDB' group generally uses the format '{area}/{city}', such as 'Europe/Paris'.
-     *
-     * @return the time-zone rules region ID, not empty, not null
-     */
-    public abstract String getRegionId();
-
     //-----------------------------------------------------------------------
     /**
      * Checks if this time-zone is valid such that rules can be obtained for it.
      * <p>
-     * This will return true if the rules are available for this ID. If this method
+     * This will return true if rules are available for this ID. If this method
      * returns true, then {@link #getRules()} will return a valid rules instance.
      * <p>
      * A time-zone can be invalid if it is deserialized in a JVM which does not
      * have the same rules available as the JVM that serialized it.
-     * <p>
-     * If this is a fixed time-zone of group 'UTC', then it is always valid.
+     * {@link ZoneOffset} will always return true.
      *
      * @return true if this time-zone is valid and rules are available
      */
-    public abstract boolean isValid();
+    public boolean isValid() {
+        return true;
+    }
 
     /**
      * Gets the time-zone rules for this ID allowing calculations to be performed.
@@ -509,7 +446,8 @@ public abstract class ZoneId implements Serializable {
      * support dynamic updates to the rules without restarting the JVM.
      * If so, then the result of this method may change over time.
      * Each individual call will be still remain thread-safe.
-     * If this is a fixed time-zone of group 'UTC', then the rules never change.
+     * <p>
+     * {@link ZoneOffset} will always return a set of rules where the offset never changes.
      *
      * @return the rules, not null
      * @throws DateTimeException if no rules are available for this ID
@@ -518,7 +456,8 @@ public abstract class ZoneId implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the textual representation of the zone, such as 'British Time'.
+     * Gets the textual representation of the zone, such as 'British Time' or
+     * '+02:00'.
      * <p>
      * This returns a textual description for the time-zone ID.
      * <p>
@@ -528,7 +467,7 @@ public abstract class ZoneId implements Serializable {
      * @return the short text value of the day-of-week, not null
      */
     public String getText(TextStyle style, Locale locale) {
-        return getId();  // TODO
+        return getId();
     }
 
     //-----------------------------------------------------------------------
@@ -547,8 +486,7 @@ public abstract class ZoneId implements Serializable {
         }
         if (obj instanceof ZoneId) {
             ZoneId other = (ZoneId) obj;
-            return getRegionId().equals(other.getRegionId()) &&
-                    getGroupId().equals(other.getGroupId());
+            return getId().equals(other.getId());
         }
         return false;
     }
@@ -560,7 +498,7 @@ public abstract class ZoneId implements Serializable {
      */
     @Override
     public int hashCode() {
-        return getGroupId().hashCode() ^ getRegionId().hashCode();
+        return getId().hashCode();
     }
 
     //-----------------------------------------------------------------------
@@ -572,222 +510,6 @@ public abstract class ZoneId implements Serializable {
     @Override
     public String toString() {
         return getId();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * ID based time-zone.
-     * This can refer to an ID that does not have available rules.
-     */
-    static final class RulesZone extends ZoneId {
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 8386373296231747096L;
-        /** The time-zone group ID, not null. */
-        private final String groupId;
-        /** The time-zone region ID, not null. */
-        private final String regionId;
-        /** The time-zone group provider, null if zone ID is unchecked. */
-        private final transient ZoneRulesProvider provider;
-
-        /**
-         * Constructor.
-         *
-         * @param groupId  the time-zone rules group ID, not null
-         * @param regionId  the time-zone region ID, not null
-         * @param provider  the provider, null if zone is unchecked
-         */
-        RulesZone(String groupId, String regionId, ZoneRulesProvider provider) {
-            this.groupId = groupId;
-            this.regionId = regionId;
-            this.provider = provider;
-        }
-
-        /**
-         * Handle deserialization.
-         *
-         * @return the resolved instance, not null
-         */
-        private Object readResolve() throws ObjectStreamException {
-            return ZoneId.ofUnchecked(groupId + ":" + regionId);
-        }
-
-        //-----------------------------------------------------------------------
-        @Override
-        public String getId() {
-            if (groupId.equals(GROUP_TZDB)) {
-                return regionId;
-            }
-            return groupId + ':' + regionId;
-        }
-
-        @Override
-        public String getGroupId() {
-            return groupId;
-        }
-
-        @Override
-        public String getRegionId() {
-            return regionId;
-        }
-
-        @Override
-        public boolean isValid() {
-            return getProvider().isValid(regionId, null);
-        }
-
-        @Override
-        public ZoneRules getRules() {
-            return getProvider().getRules(regionId, null);
-        }
-
-        private ZoneRulesProvider getProvider() {
-            // additional query for group provider when null allows for possibility
-            // that the provider was added after the ZoneId was created
-            return (provider != null ? provider : ZoneRulesProvider.getProvider(groupId));
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Fixed time-zone.
-     */
-    static final class FixedZone extends ZoneId implements ZoneRules {
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = -8733721350312276297L;
-        /** The zone ID. */
-        private final String id;
-        /** The offset. */
-        private final transient ZoneOffset offset;
-
-        /**
-         * Constructor.
-         *
-         * @param offset  the offset, not null
-         */
-        FixedZone(ZoneOffset offset) {
-            this.id = GROUP_UTC_COLON + offset.getId();
-            this.offset = offset;
-        }
-
-        /**
-         * Handle deserialization.
-         *
-         * @return the resolved instance, not null
-         */
-        private Object readResolve() throws ObjectStreamException {
-            return ZoneId.of(id);
-        }
-
-        //-----------------------------------------------------------------------
-        @Override
-        public String getId() {
-            return id;
-        }
-
-        @Override
-        public String getGroupId() {
-            return GROUP_UTC;
-        }
-
-        @Override
-        public String getRegionId() {
-            return id.substring(4);
-        }
-
-        @Override
-        public boolean isValid() {
-            return true;
-        }
-
-        @Override
-        public ZoneRules getRules() {
-            return this;
-        }
-
-        //-------------------------------------------------------------------------
-        @Override
-        public boolean isFixedOffset() {
-            return true;
-        }
-
-        @Override
-        public ZoneOffset getOffset(Instant instant) {
-            return offset;
-        }
-
-        @Override
-        public ZoneOffset getOffset(LocalDateTime localDateTime) {
-            return offset;
-        }
-
-        @Override
-        public List<ZoneOffset> getValidOffsets(LocalDateTime localDateTime) {
-            return Collections.singletonList(offset);
-        }
-
-        @Override
-        public ZoneOffsetTransition getTransition(LocalDateTime localDateTime) {
-            return null;
-        }
-
-        @Override
-        public boolean isValidOffset(LocalDateTime dateTime, ZoneOffset offset) {
-            return this.offset.equals(offset);
-        }
-
-        //-------------------------------------------------------------------------
-        @Override
-        public ZoneOffset getStandardOffset(Instant instant) {
-            return offset;
-        }
-
-        @Override
-        public Duration getDaylightSavings(Instant instant) {
-            return Duration.ZERO;
-        }
-
-        @Override
-        public boolean isDaylightSavings(Instant instant) {
-            return false;
-        }
-
-        //-------------------------------------------------------------------------
-        @Override
-        public ZoneOffsetTransition nextTransition(Instant instant) {
-            return null;
-        }
-
-        @Override
-        public ZoneOffsetTransition previousTransition(Instant instant) {
-            return null;
-        }
-
-        @Override
-        public List<ZoneOffsetTransition> getTransitions() {
-            return Collections.emptyList();
-        }
-
-        @Override
-        public List<ZoneOffsetTransitionRule> getTransitionRules() {
-            return Collections.emptyList();
-        }
-
-        //-----------------------------------------------------------------------
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-               return true;
-            }
-            if (obj instanceof FixedZone) {
-                return offset.equals(((FixedZone) obj).offset);
-            }
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            return offset.hashCode() + 1;
-        }
     }
 
 }
