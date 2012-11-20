@@ -133,15 +133,6 @@ public enum ChronoUnit implements PeriodUnit {
      */
     HALF_YEARS("HalfYears", Duration.ofSeconds(31556952L / 2)),
     /**
-     * Unit that represents the concept of a week-based-year.
-     * For the ISO calendar system, the week-based-year is either 52 or 53 week long.
-     * The estimated duration of a week-based-year is {@code 365.2425 Days}.
-     * <p>
-     * When used with other calendar systems it must correspond to an integral number of weeks
-     * roughly equal to a year defined by the passage of the Earth around the Sun.
-     */
-    WEEK_BASED_YEARS("WeekBasedYears", Duration.ofSeconds(31556952L)),
-    /**
      * Unit that represents the concept of a year.
      * For the ISO calendar system, it is equal to 12 months.
      * The estimated duration of a year is {@code 365.2425 Days}.

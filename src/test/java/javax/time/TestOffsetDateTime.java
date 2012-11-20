@@ -59,9 +59,7 @@ import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
 import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
 import static javax.time.calendrical.ChronoField.SECOND_OF_DAY;
 import static javax.time.calendrical.ChronoField.SECOND_OF_MINUTE;
-import static javax.time.calendrical.ChronoField.WEEK_BASED_YEAR;
 import static javax.time.calendrical.ChronoField.WEEK_OF_MONTH;
-import static javax.time.calendrical.ChronoField.WEEK_OF_WEEK_BASED_YEAR;
 import static javax.time.calendrical.ChronoField.WEEK_OF_YEAR;
 import static javax.time.calendrical.ChronoField.YEAR;
 import static javax.time.calendrical.ChronoField.YEAR_OF_ERA;
@@ -130,12 +128,10 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
             EPOCH_DAY,
             ALIGNED_WEEK_OF_MONTH,
             WEEK_OF_MONTH,
-            WEEK_OF_WEEK_BASED_YEAR,
             ALIGNED_WEEK_OF_YEAR,
             WEEK_OF_YEAR,
             MONTH_OF_YEAR,
             EPOCH_MONTH,
-            WEEK_BASED_YEAR,
             YEAR_OF_ERA,
             YEAR,
             ERA,

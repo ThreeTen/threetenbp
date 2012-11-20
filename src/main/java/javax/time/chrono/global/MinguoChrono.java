@@ -31,7 +31,6 @@
  */
 package javax.time.chrono.global;
 
-import static javax.time.calendrical.ChronoField.WEEK_BASED_YEAR;
 import static javax.time.calendrical.ChronoField.YEAR;
 
 import java.io.Serializable;
@@ -205,10 +204,6 @@ public final class MinguoChrono extends Chrono<MinguoChrono> implements Serializ
     @Override
     public DateTimeValueRange range(ChronoField field) {
         switch (field) {
-            case WEEK_BASED_YEAR: {
-                DateTimeValueRange range = WEEK_BASED_YEAR.range();
-                return DateTimeValueRange.of(range.getMinimum() - YEARS_DIFFERENCE, range.getMaximum() - YEARS_DIFFERENCE);
-            }
             case YEAR_OF_ERA: {
                 DateTimeValueRange range = YEAR.range();
                 return DateTimeValueRange.of(1, range.getMaximum() - YEARS_DIFFERENCE, -range.getMinimum() + 1 + YEARS_DIFFERENCE);

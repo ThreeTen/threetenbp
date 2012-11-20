@@ -39,14 +39,13 @@ import static javax.time.calendrical.ChronoField.MINUTE_OF_HOUR;
 import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
 import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
 import static javax.time.calendrical.ChronoField.SECOND_OF_MINUTE;
-import static javax.time.calendrical.ChronoField.WEEK_BASED_YEAR;
-import static javax.time.calendrical.ChronoField.WEEK_OF_WEEK_BASED_YEAR;
 import static javax.time.calendrical.ChronoField.YEAR;
 
 import java.util.Locale;
 import java.util.Objects;
 
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.ISOWeeks;
 
 /**
  * Provides common implementations of {@code DateTimeFormatter}.
@@ -731,9 +730,9 @@ public final class DateTimeFormatters {
     static {
         ISO_WEEK_DATE = new DateTimeFormatterBuilder()
             .parseCaseInsensitive()
-            .appendValue(WEEK_BASED_YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
+            .appendValue(ISOWeeks.WEEK_BASED_YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
             .appendLiteral("-W")
-            .appendValue(WEEK_OF_WEEK_BASED_YEAR, 2)
+            .appendValue(ISOWeeks.WEEK_OF_WEEK_BASED_YEAR, 2)
             .appendLiteral('-')
             .appendValue(DAY_OF_WEEK, 1)
             .optionalStart()
