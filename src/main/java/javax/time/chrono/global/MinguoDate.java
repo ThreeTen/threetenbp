@@ -31,6 +31,12 @@
  */
 package javax.time.chrono.global;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+
+import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
+import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
 import static javax.time.calendrical.ChronoField.YEAR;
 import static javax.time.chrono.global.MinguoChrono.YEARS_DIFFERENCE;
 
@@ -42,6 +48,7 @@ import javax.time.LocalDate;
 import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
+import javax.time.chrono.ChronoLocalDate;
 
 /**
  * A date in the Minguo calendar system.
@@ -204,5 +211,26 @@ final class MinguoDate
     public int hashCode() {
         return getChrono().getId().hashCode() ^ isoDate.hashCode();
     }
+
+    //-----------------------------------------------------------------------
+    private Object writeReplace() {
+        return new Ser(Ser.MINGUO_DATE_TYPE, this);
+    }
+
+    void writeExternal(DataOutput out) throws IOException {
+        // MinguoChrono is implicit in the MINGUO_DATE_TYPE
+        out.writeInt(get(YEAR));
+        out.writeByte(get(MONTH_OF_YEAR));
+        out.writeByte(get(DAY_OF_MONTH));
+
+    }
+
+    static ChronoLocalDate<MinguoChrono> readExternal(DataInput in) throws IOException {
+        int year = in.readInt();
+        int month = in.readByte();
+        int dayOfMonth = in.readByte();
+        return MinguoChrono.INSTANCE.date(year, month, dayOfMonth);
+    }
+
 
 }

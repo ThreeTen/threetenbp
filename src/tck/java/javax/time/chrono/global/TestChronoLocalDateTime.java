@@ -29,7 +29,10 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.chrono;
+package javax.time.chrono.global;
+
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -38,13 +41,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import javax.time.Duration;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.time.Duration;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
@@ -55,10 +52,10 @@ import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.chrono.global.HijrahChrono;
-import javax.time.chrono.global.JapaneseChrono;
-import javax.time.chrono.global.MinguoChrono;
-import javax.time.chrono.global.ThaiBuddhistChrono;
+
+import javax.time.chrono.Chrono;
+import javax.time.chrono.ChronoLocalDateTime;
+import javax.time.chrono.ISOChrono;
 
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -165,7 +162,7 @@ public class TestChronoLocalDateTime {
             if (chrono != chrono2) {
                 try {
                     ChronoLocalDateTime<?> notreached = cdt.plus(1, adjuster);
-                    Assert.fail("PeriodUnit.doPlus plus should have thrown a ClassCastException" + cdt
+                    Assert.fail("PeriodUnit.doAdd plus should have thrown a ClassCastException" + cdt
                             + ", can not be cast to " + cdt2);
                 } catch (ClassCastException cce) {
                     // Expected exception; not an error
@@ -189,7 +186,7 @@ public class TestChronoLocalDateTime {
             if (chrono != chrono2) {
                 try {
                     ChronoLocalDateTime<?> notreached = cdt.minus(1, adjuster);
-                    Assert.fail("PeriodUnit.doPlus minus should have thrown a ClassCastException" + cdt.getClass()
+                    Assert.fail("PeriodUnit.doAdd minus should have thrown a ClassCastException" + cdt.getClass()
                             + ", can not be cast to " + cdt2.getClass());
                 } catch (ClassCastException cce) {
                     // Expected exception; not an error
@@ -213,7 +210,7 @@ public class TestChronoLocalDateTime {
             if (chrono != chrono2) {
                 try {
                     ChronoLocalDateTime<?> notreached = cdt.with(adjuster, 1);
-                    Assert.fail("DateTimeField doWith() should have thrown a ClassCastException" + cdt.getClass()
+                    Assert.fail("DateTimeField doSet should have thrown a ClassCastException" + cdt.getClass()
                             + ", can not be cast to " + cdt2.getClass());
                 } catch (ClassCastException cce) {
                     // Expected exception; not an error
@@ -221,7 +218,7 @@ public class TestChronoLocalDateTime {
             } else {
                 // Same chronology,
                 ChronoLocalDateTime<?> result = cdt.with(adjuster, 1);
-                assertEquals(result, cdt2, "DateTimeField doWith() failed to replace date");
+                assertEquals(result, cdt2, "DateTimeField doSet failed to replace date");
             }
         }
     }
@@ -308,6 +305,7 @@ public class TestChronoLocalDateTime {
         assertEquals(ser, orginal, "deserialized date is wrong");
     }
 
+
     /**
      * FixedAdjusted returns a fixed DateTime in all adjustments.
      * Construct an adjuster with the DateTime that should be returned from doWithAdjustment.
@@ -338,7 +336,7 @@ public class TestChronoLocalDateTime {
 
     /**
      * FixedPeriodUnit returns a fixed DateTime in all adjustments.
-     * Construct an FixedPeriodUnit with the DateTime that should be returned from doPlus.
+     * Construct an FixedPeriodUnit with the DateTime that should be returned from doAdd.
      */
     static class FixedPeriodUnit implements PeriodUnit {
         private DateTime dateTime;
@@ -368,7 +366,7 @@ public class TestChronoLocalDateTime {
         }
 
         @Override
-        public <R extends DateTime> R doPlus(R dateTime, long periodToAdd) {
+        public <R extends DateTime> R doAdd(R dateTime, long periodToAdd) {
             return (R)this.dateTime;
         }
 
@@ -380,7 +378,7 @@ public class TestChronoLocalDateTime {
 
     /**
      * FixedDateTimeField returns a fixed DateTime in all adjustments.
-     * Construct an FixedDateTimeField with the DateTime that should be returned from doWith.
+     * Construct an FixedDateTimeField with the DateTime that should be returned from doSet.
      */
     static class FixedDateTimeField implements DateTimeField {
         private DateTime dateTime;
@@ -428,10 +426,9 @@ public class TestChronoLocalDateTime {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
-        @SuppressWarnings("unchecked")
         @Override
-        public <R extends DateTime> R doWith(R dateTime, long newValue) {
-            return (R) this.dateTime;
+        public <R extends DateTimeAccessor> R doSet(R dateTime, long newValue) {
+            return (R)this.dateTime;
         }
 
         @Override

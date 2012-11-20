@@ -410,6 +410,12 @@
         <fixcrlf srcdir="." includes="**/*.java" eof="remove" fixlast="true" tab="remove" tablength="4" javafiles="true" />
     </target>
 
+    <target name="checkstyle" description="checkstyle to 310 standards">
+        <exec executable="checkstyle">
+            <arg line="-c checkstyle.xml -r ${core.main} -r ${core.test}"/>
+        </exec>
+    </target>
+
     <!-- ==================================================================== -->
     <target name="examples" depends="compile-core-tests,compile-standard-tests" description="outputs some examples to system out">
         <java classname="javax.time.Examples" classpathref="test.path" fork="true"/>

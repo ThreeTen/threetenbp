@@ -31,6 +31,14 @@
  */
 package javax.time.chrono;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import javax.time.Duration;
+import javax.time.Instant;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -56,21 +64,18 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Test assertions that must be true for all built-in chronologies.
+ * Test assertions that must be true for the built-in ISO chronology.
  */
 @Test
 public class TestChronoLocalDate {
     //-----------------------------------------------------------------------
-    // regular data factory for names and descriptions of available calendars
+    // regular data factory for names and descriptions of ISO calendar
     //-----------------------------------------------------------------------
     @DataProvider(name = "calendars")
     Chrono[][] data_of_calendars() {
         return new Chrono[][]{
-                    {HijrahChrono.INSTANCE},
                     {ISOChrono.INSTANCE},
-                    {JapaneseChrono.INSTANCE},
-                    {MinguoChrono.INSTANCE},
-                    {ThaiBuddhistChrono.INSTANCE}};
+        };
     }
 
     @Test(groups={"tck"}, dataProvider="calendars")
@@ -275,6 +280,22 @@ public class TestChronoLocalDate {
         }
     }
 
+    //-----------------------------------------------------------------------
+    // Test Serialization of ISO via chrono API
+    //-----------------------------------------------------------------------
+    @Test( groups={"tck"}, dataProvider="calendars")
+    public <C extends Chrono<C>> void test_ChronoSerialization(C chrono) throws Exception {
+        LocalDate ref = LocalDate.of(2000, 1, 5);
+        ChronoLocalDate<C> orginal = chrono.date(ref);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(baos);
+        out.writeObject(orginal);
+        out.close();
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        ObjectInputStream in = new ObjectInputStream(bais);
+        ChronoLocalDate<C> ser = (ChronoLocalDate<C>) in.readObject();
+        assertEquals(ser, orginal, "deserialized date is wrong");
+    }
 
     /**
      * FixedAdjusted returns a fixed DateTime in all adjustments.

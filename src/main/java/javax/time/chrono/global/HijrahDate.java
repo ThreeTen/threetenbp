@@ -35,8 +35,13 @@ import static javax.time.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
 import static javax.time.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
 import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_MONTH;
 import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_YEAR;
+import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
+import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
+import static javax.time.calendrical.ChronoField.YEAR;
 
 import java.io.BufferedReader;
+import java.io.DataInput;
+import java.io.DataOutput;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -56,6 +61,7 @@ import javax.time.LocalDate;
 import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
+import javax.time.chrono.ChronoLocalDate;
 import javax.time.jdk8.Jdk8Methods;
 
 /**
@@ -1627,6 +1633,24 @@ final class HijrahDate
             }
             return null;
         }
+    }
+    //-----------------------------------------------------------------------
+    private Object writeReplace() {
+        return new Ser(Ser.HIJRAH_DATE_TYPE, this);
+    }
+
+    void writeExternal(DataOutput out) throws IOException {
+        // HijrahChrono is implicit in the Hijrah_DATE_TYPE
+        out.writeInt(get(YEAR));
+        out.writeByte(get(MONTH_OF_YEAR));
+        out.writeByte(get(DAY_OF_MONTH));
+    }
+
+    static ChronoLocalDate<HijrahChrono> readExternal(DataInput in) throws IOException {
+        int year = in.readInt();
+        int month = in.readByte();
+        int dayOfMonth = in.readByte();
+        return HijrahChrono.INSTANCE.date(year, month, dayOfMonth);
     }
 
 }

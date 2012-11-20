@@ -91,7 +91,7 @@ public interface ChronoOffsetDateTime<C extends Chrono<C>>
      * @see #isBefore
      * @see #isEqual
      */
-    public static final Comparator<ChronoOffsetDateTime<?>> INSTANT_COMPARATOR =
+    Comparator<ChronoOffsetDateTime<?>> INSTANT_COMPARATOR =
             new Comparator<ChronoOffsetDateTime<?>>() {
         @Override
         public int compare(ChronoOffsetDateTime<?> datetime1, ChronoOffsetDateTime<?> datetime2) {

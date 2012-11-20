@@ -34,12 +34,21 @@ package javax.time.chrono;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import javax.time.Duration;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.time.Duration;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
+import javax.time.OffsetDateTime;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
@@ -292,6 +301,22 @@ public class TestChronoOffsetDateTime {
         }
     }
 
+    //-----------------------------------------------------------------------
+    // Test Serialization of ISO via chrono API
+    //-----------------------------------------------------------------------
+    @Test( groups={"tck"}, dataProvider="calendars")
+    public <C extends Chrono<C>> void test_ChronoOffsetDateTimeSerialization(C chrono) throws Exception {
+        OffsetDateTime ref = LocalDate.of(2000, 1, 5).atTime(12, 1, 2, 3).atOffset(ZoneOffset.ofHoursMinutesSeconds(1, 2, 3));
+        ChronoOffsetDateTime<C> orginal = chrono.date(ref).atTime(ref.getTime()).atOffset(ref.getOffset());
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(baos);
+        out.writeObject(orginal);
+        out.close();
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        ObjectInputStream in = new ObjectInputStream(bais);
+        ChronoOffsetDateTime<C> ser = (ChronoOffsetDateTime<C>) in.readObject();
+        assertEquals(ser, orginal, "deserialized date is wrong");
+    }
 
     /**
      * FixedAdjusted returns a fixed DateTime in all adjustments.

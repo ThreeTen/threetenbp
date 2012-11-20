@@ -90,7 +90,7 @@ public interface ChronoLocalDateTime<C extends Chrono<C>>
      * @see #isBefore
      * @see #isEqual
      */
-    public static final Comparator<ChronoLocalDateTime<?>> DATE_TIME_COMPARATOR =
+    Comparator<ChronoLocalDateTime<?>> DATE_TIME_COMPARATOR =
             new Comparator<ChronoLocalDateTime<?>>() {
         @Override
         public int compare(ChronoLocalDateTime<?> datetime1, ChronoLocalDateTime<?> datetime2) {

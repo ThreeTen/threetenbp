@@ -31,9 +31,14 @@
  */
 package javax.time.chrono.global;
 
+import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
+import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
 import static javax.time.calendrical.ChronoField.YEAR;
 import static javax.time.chrono.global.ThaiBuddhistChrono.YEARS_DIFFERENCE;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -42,6 +47,7 @@ import javax.time.LocalDate;
 import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
+import javax.time.chrono.ChronoLocalDate;
 
 /**
  * A date in the Thai Buddhist calendar system.
@@ -203,6 +209,25 @@ final class ThaiBuddhistDate
     @Override  // override for performance
     public int hashCode() {
         return getChrono().getId().hashCode() ^ isoDate.hashCode();
+    }
+
+    //-----------------------------------------------------------------------
+    private Object writeReplace() {
+        return new Ser(Ser.THAIBUDDHIST_DATE_TYPE, this);
+    }
+
+    void writeExternal(DataOutput out) throws IOException {
+        // MinguoChrono is implicit in the THAIBUDDHIST_DATE_TYPE
+        out.writeInt(this.get(YEAR));
+        out.writeByte(this.get(MONTH_OF_YEAR));
+        out.writeByte(this.get(DAY_OF_MONTH));
+    }
+
+    static ChronoLocalDate<ThaiBuddhistChrono> readExternal(DataInput in) throws IOException {
+        int year = in.readInt();
+        int month = in.readByte();
+        int dayOfMonth = in.readByte();
+        return ThaiBuddhistChrono.INSTANCE.date(year, month, dayOfMonth);
     }
 
 }
