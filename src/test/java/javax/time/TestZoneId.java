@@ -112,15 +112,12 @@ public class TestZoneId extends AbstractTest {
     //-----------------------------------------------------------------------
     public void test_constant_UTC() {
         ZoneId test = ZoneId.UTC;
-        assertEquals(test.getId(), "UTC:Z");
-        assertEquals(test.getGroupId(), "UTC");
-        assertEquals(test.getRegionId(), "Z");
-        assertEquals(test.getText(TextStyle.FULL, Locale.UK), "UTC:Z");
+        assertEquals(test.getId(), "Z");
+        assertEquals(test.getText(TextStyle.FULL, Locale.UK), "Z");
         assertEquals(test.getRules().isFixedOffset(), true);
         assertEquals(test.getRules().getOffset(Instant.ofEpochSecond(0L)), ZoneOffset.UTC);
         checkOffset(test.getRules(), createDateMidnight(2008, 6, 30), ZoneOffset.UTC, 1);
-        assertSame(test, ZoneId.of("UTC:Z"));
-        assertSame(test, ZoneId.of(ZoneOffset.UTC));
+        assertSame(test, ZoneId.of("UTC+00"));
     }
 
     //-----------------------------------------------------------------------

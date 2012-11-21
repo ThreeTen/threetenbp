@@ -31,7 +31,9 @@
  */
 package javax.time;
 
-import java.io.ObjectStreamException;
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.io.Serializable;
 
 import javax.time.zone.ZoneRules;
@@ -71,6 +73,28 @@ public final class ZoneRegion extends ZoneId implements Serializable {
     private final transient ZoneRulesProvider provider;
 
     /**
+     * Obtains an instance of {@code ZoneRegion} from an identifier without checking
+     * if the time-zone has available rules.
+     * <p>
+     * This method parses the ID and applies any appropriate normalization.
+     * Unlike {@link #of(String)}, it does not validate the ID against the known
+     * set of IDsfor which rules are available.
+     * <p>
+     * This method is intended for advanced use cases.
+     * For example, consider a system that always retrieves time-zone rules from a remote server.
+     * Using this factory would allow a {@code ZoneRegion}, and thus a {@code ZonedDateTime},
+     * to be created without loading the rules from the remote server.
+     *
+     * @param zoneId  the time-zone ID, not null
+     * @return the zone ID, not null
+     * @throws TimeZoneException if the ID is malformed
+     */
+    public static ZoneRegion ofUnchecked(String zoneId) {
+        return ofId(zoneId, false);  // TODO: move to ZoneRegion?
+    }
+
+    //-------------------------------------------------------------------------
+    /**
      * Constructor.
      *
      * @param id  the time-zone ID, not null
@@ -79,15 +103,6 @@ public final class ZoneRegion extends ZoneId implements Serializable {
     ZoneRegion(String id, ZoneRulesProvider provider) {
         this.id = id;
         this.provider = provider;
-    }
-
-    /**
-     * Handle deserialization.
-     *
-     * @return the resolved instance, not null
-     */
-    private Object readResolve() throws ObjectStreamException {
-        return ZoneId.ofUnchecked(id);
     }
 
     //-----------------------------------------------------------------------
@@ -110,6 +125,20 @@ public final class ZoneRegion extends ZoneId implements Serializable {
         // additional query for group provider when null allows for possibility
         // that the provider was added after the ZoneId was created
         return (provider != null ? provider : ZoneRulesProvider.getProvider(id));
+    }
+
+    //-----------------------------------------------------------------------
+    void writeExternal(DataOutput out) throws IOException {
+        out.writeUTF(getId());
+    }
+
+    static ZoneId readExternal(DataInput in) throws IOException {
+        String id = in.readUTF();
+        return ofUnchecked(id);
+    }
+
+    private Object writeReplace() {
+        return new Ser(Ser.ZONE_REGION_TYPE, this);
     }
 
 }

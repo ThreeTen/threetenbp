@@ -1962,12 +1962,16 @@ public final class ZonedDateTime
 
     void writeExternal(DataOutput out) throws IOException {
         dateTime.writeExternal(out);
-        zone.writeExternal(out);
+        if (zone instanceof ZoneOffset) {
+            ((ZoneOffset) zone).writeExternal(out);
+        } else {
+            ((ZoneRegion) zone).writeExternal(out);
+        }
     }
 
     static ZonedDateTime readExternal(DataInput in) throws IOException {
         OffsetDateTime dateTime = OffsetDateTime.readExternal(in);
-        ZoneId id = ZoneId.readExternal(in);
+        ZoneId id = (ZoneId) Ser.read(in);
         return ZonedDateTime.of(dateTime, id);
     }
 

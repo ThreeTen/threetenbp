@@ -31,10 +31,6 @@
  */
 package javax.time;
 
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
@@ -105,19 +101,6 @@ public abstract class ZoneId {
      * The time-zone offset for 'UTC'.
      */
     public static final ZoneOffset UTC = ZoneOffset.UTC;
-    /**
-     * The time-zone group ID for 'TZDB'.
-     * <p>
-     * The 'TZDB' group represents the main public time-zone database.
-     */
-    public static final String GROUP_TZDB = "TZDB";
-    /**
-     * The time-zone group ID for 'UTC'.
-     * <p>
-     * The 'UTC' group represents fixed offsets from UTC/Greenwich, which should
-     * normally be used directly via {@link ZoneOffset}.
-     */
-    public static final String GROUP_UTC = "UTC";
 
     /**
      * A map of zone overrides to enable the older US time-zone names to be used.
@@ -316,27 +299,6 @@ public abstract class ZoneId {
     }
 
     /**
-     * Obtains an instance of {@code ZoneId} from an identifier without checking
-     * if the time-zone has available rules.
-     * <p>
-     * This method parses the ID and applies any appropriate normalization.
-     * Unlike {@link #of(String)}, it does not validates the ID against the known set of IDs
-     * for which rules are available.
-     * <p>
-     * This method is intended for advanced use cases.
-     * For example, consider a system that always retrieves time-zone rules from a remote server.
-     * Using this factory would allow a {@code ZoneId}, and thus a {@code ZonedDateTime},
-     * to be created without loading the rules from the remote server.
-     *
-     * @param zoneId  the time-zone ID, not null
-     * @return the zone ID, not null
-     * @throws DateTimeException if the zone ID cannot be found
-     */
-    public static ZoneId ofUnchecked(String zoneId) {
-        return ofId(zoneId, false);  // TODO: move to ZoneRegion?
-    }
-
-    /**
      * Obtains an instance of {@code ZoneId} from an identifier.
      *
      * @param zoneId  the time-zone ID, not null
@@ -514,20 +476,6 @@ public abstract class ZoneId {
     @Override
     public String toString() {
         return getId();
-    }
-
-    //-----------------------------------------------------------------------
-    void writeExternal(DataOutput out) throws IOException {
-        out.writeUTF(getId());
-    }
-
-    static ZoneId readExternal(DataInput in) throws IOException {
-        String id = in.readUTF();
-        return ZoneId.ofUnchecked(id);
-    }
-
-    private Object writeReplace() {
-        return new Ser(Ser.ZONE_ID_TYPE, this);
     }
 
 }
