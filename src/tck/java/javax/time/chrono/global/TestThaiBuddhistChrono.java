@@ -232,11 +232,11 @@ public class TestThaiBuddhistChrono {
     @DataProvider(name="toString")
     Object[][] data_toString() {
         return new Object[][] {
-            {ThaiBuddhistChrono.INSTANCE.date(544, 1, 1), "ThaiBuddhist BE544-01-01"},
-            {ThaiBuddhistChrono.INSTANCE.date(2271, 10, 28), "ThaiBuddhist BE2271-10-28"},
-            {ThaiBuddhistChrono.INSTANCE.date(2271, 10, 29), "ThaiBuddhist BE2271-10-29"},
-            {ThaiBuddhistChrono.INSTANCE.date(2270, 12, 5), "ThaiBuddhist BE2270-12-05"},
-            {ThaiBuddhistChrono.INSTANCE.date(2270, 12, 6), "ThaiBuddhist BE2270-12-06"},
+            {ThaiBuddhistChrono.INSTANCE.date(544, 1, 1), "ThaiBuddhist BE 544-01-01"},
+            {ThaiBuddhistChrono.INSTANCE.date(2271, 10, 28), "ThaiBuddhist BE 2271-10-28"},
+            {ThaiBuddhistChrono.INSTANCE.date(2271, 10, 29), "ThaiBuddhist BE 2271-10-29"},
+            {ThaiBuddhistChrono.INSTANCE.date(2270, 12, 5), "ThaiBuddhist BE 2270-12-05"},
+            {ThaiBuddhistChrono.INSTANCE.date(2270, 12, 6), "ThaiBuddhist BE 2270-12-06"},
         };
     }
 

@@ -217,6 +217,9 @@ public final class MonthDay
         if (dateTime instanceof MonthDay) {
             return (MonthDay) dateTime;
         }
+        if (ISOChrono.INSTANCE.equals(Chrono.from(dateTime)) == false) {
+            dateTime = LocalDate.from(dateTime);
+        }
         return of(dateTime.get(MONTH_OF_YEAR), dateTime.get(DAY_OF_MONTH));
     }
 
