@@ -190,7 +190,7 @@ final class Ser implements Externalizable {
             case YEAR_MONTH_TYPE: return YearMonth.readExternal(in);
             case ZONED_DATE_TIME_TYPE: return ZonedDateTime.readExternal(in);
             case ZONE_OFFSET_TYPE: return ZoneOffset.readExternal(in);
-            case ZONE_ID_TYPE: return ZoneId.RulesZone.readExternal(in);
+            case ZONE_ID_TYPE: return ZoneId.readExternal(in);
             default:
                 throw new StreamCorruptedException("Unknown serialized type");
         }
