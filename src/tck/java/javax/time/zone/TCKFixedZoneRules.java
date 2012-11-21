@@ -44,7 +44,6 @@ import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.Month;
 import javax.time.OffsetDateTime;
-import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
@@ -65,7 +64,7 @@ public class TCKFixedZoneRules {
     private static final Instant INSTANT = ODT.toInstant();
 
     private ZoneRules make(ZoneOffset offset) {
-        return ZoneId.of(offset).getRules();
+        return offset.getRules();
     }
 
     @DataProvider(name="rules")

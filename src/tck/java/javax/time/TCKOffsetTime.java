@@ -187,7 +187,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     public void now_Clock_allSecsInDay() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSecond(i, 8);
-            Clock clock = Clock.fixed(instant, ZoneId.UTC);
+            Clock clock = Clock.fixed(instant, ZoneOffset.UTC);
             OffsetTime test = OffsetTime.now(clock);
             assertEquals(test.getHour(), (i / (60 * 60)) % 24);
             assertEquals(test.getMinute(), (i / 60) % 60);
@@ -201,7 +201,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     public void now_Clock_beforeEpoch() {
         for (int i =-1; i >= -(24 * 60 * 60); i--) {
             Instant instant = Instant.ofEpochSecond(i, 8);
-            Clock clock = Clock.fixed(instant, ZoneId.UTC);
+            Clock clock = Clock.fixed(instant, ZoneOffset.UTC);
             OffsetTime test = OffsetTime.now(clock);
             assertEquals(test.getHour(), ((i + 24 * 60 * 60) / (60 * 60)) % 24);
             assertEquals(test.getMinute(), ((i + 24 * 60 * 60) / 60) % 60);
@@ -216,7 +216,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
         OffsetDateTime base = OffsetDateTime.of(1970, 1, 1, 12, 0, ZoneOffset.UTC);
         for (int i = -9; i < 15; i++) {
             ZoneOffset offset = ZoneOffset.ofHours(i);
-            Clock clock = Clock.fixed(base.toInstant(), ZoneId.of(offset));
+            Clock clock = Clock.fixed(base.toInstant(), offset);
             OffsetTime test = OffsetTime.now(clock);
             assertEquals(test.getHour(), (12 + i) % 24);
             assertEquals(test.getMinute(), 0);

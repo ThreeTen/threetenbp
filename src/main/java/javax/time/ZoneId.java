@@ -37,8 +37,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAccessor.Query;
@@ -47,60 +45,64 @@ import javax.time.zone.ZoneRules;
 import javax.time.zone.ZoneRulesProvider;
 
 /**
- * A time-zone ID representing the set of rules by which the zone offset
- * varies through the year and historically.
+ * A time-zone ID providing access to a set of rules that allow the offset
+ * from UTC/Greenwich to be determined for any local date-time.
  * <p>
- * Time-zones are geographical regions where the same rules for time apply.
- * The rules are defined by governments and change frequently.
- * This class provides an identifier that locates a single set of rules.
- * <p>
- * The rule data is split across two main classes:
+ * A {@code ZoneId} is used to identify the rules used for converting between
+ * an {@link Instant} and a {@link LocalDateTime}.
+ * There are two distinct types of identifier:
  * <p><ul>
- * <li>{@code ZoneId}, which only represents the identifier of the rule-set
- * <li>{@link ZoneRules}, which defines the set of rules themselves
+ * <li>{@link ZoneOffset} - a fully resolved offset from UTC/Greenwich, that uses
+ *  the same offset for all local date-times
+ * <li>{@link ZoneRegion} - a geographical region where a specific set of rules
+ *  for finding the offset from UTC/Greenwich apply
  * </ul><p>
  * <p>
- * One benefit of this separation occurs in serialization. Storing this class will
- * only store the reference to the zone, whereas serializing {@code ZoneRules} will
- * store the entire set of rules.
+ * The actual rules, describing when and how the offset changes, are defined by {@link ZoneRules}.
+ * This class is simply an identifier used to obtain the underlying rules.
+ * This approach is taken because rules are defined by governments and change
+ * frequently, whereas the identifier is stable.
  * <p>
- * Similarly, comparing two {@code ZoneId} instances will only compare the identifier,
- * whereas comparing two {@code ZoneRules} instances will actually check to see if the
- * rules represent the same set of data.
+ * The distinction has other effects. Serializing the {@code ZoneId} will only send
+ * the identifier, whereas serializing the rules sends the entire data set.
+ * Similarly, a comparison of two identifiers only examines the identifier, whereas
+ * a comparison of two rules examines the entire data set.
  * <p>
- * After deserialization, or by using the special factory {@link #ofUnchecked}, it is
- * possible for the {@code ZoneId} to represent an identifier that has no available rules.
- * This approach allows the application to continue and some operations to be performed.
- * It also allows an application to dynamically download missing rules from a central
- * server, if desired.
+ * The code supports loading a {@code ZoneId} on a JVM which does not have available rules
+ * for that identifier. This allows the date-time object, such as {@link ZonedDateTime},
+ * to still be queried.
  *
  * <h4>Time-zone identifiers</h4>
- * A unique time-zone identifier is formed from two parts, the group and the region.
- * They are combined using a colon to make a full identifier - <code>{groupID}:{regionID}</code>.
+ * The identifier is unique within the system.
+ * The formats for {@code ZoneOffset} and {@code ZoneRegion} differ.
  * <p>
- * The group represents the source of time-zone information.
- * This is necessary as multiple companies and organizations provide time-zone data.
- * Two groups are provided as standard, 'TZDB' and 'UTC'.
+ * The {@code ZoneOffset} identifier is either 'Z' for an offset equal to UTC/Greenwich
+ * or an amount away from UTC/Greenwich, such as '+02:00' or '-05:00'.
  * <p>
- * The 'TZDB' group represents the main public time-zone database.
- * It typically uses region identifiers of the form <code>{area}/{city}</code>,
- * such as {@code Europe/London}. The 'TZDB' group is considered to be the
- * default such that normally only the region ID is seen in identifiers.
+ * In addition, identifiers starting with 'UTC' or 'GMT' are mapped to {@code ZoneOffset}.
+ * These mapped identifiers will be normalized to the default used by {@code ZoneOffset}.
  * <p>
- * The 'UTC' group represents fixed offsets from UTC/Greenwich.
- * That concept is best represented using {@link ZoneOffset} directly, but a fixed
- * offset is also a valid {@code ZoneId}, hence the 'UTC' group.
- * The region identifier for the 'UTC' group is the {@code ZoneOffset} identifier.
+ * All other identifiers are considered to be {@code ZoneRegion} identifiers.
+ * <p>
+ * There are multiple groups producing the rule data sets, each of which define their own
+ * time-zone regions. The default group is the IANA Time Zone Database (TZDB).
+ * Other organizations include IATA (the airline industry body) and Microsoft.
+ * Region identifiers defined by the TZDB group, such as 'Europe/London' or 'America/New_York',
+ * take precedence over other groups.
+ * <p>
+ * It is recommended that the group name is included in all identifiers supplied by groups
+ * other than TZDB to avoid conflicts.
+ * For example, IATA airline time-zones are typically the same as the three letter airport codes
+ * However, the airport of Utrecht has the code 'UTC', which is an obviously conflict.
+ * The recommended format is 'group~region', thus if IATA data were defined, Utrecht
+ * airport would be 'IATA~UTC'.
+ * <p>
+ * {@code ZoneRegion} identifiers are provided by {@link ZoneRulesProvider}.
  *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
 public abstract class ZoneId {
-
-    /**
-     * The time-zone offset for 'UTC'.
-     */
-    public static final ZoneOffset UTC = ZoneOffset.UTC;
 
     /**
      * A map of zone overrides to enable the older US time-zone names to be used.
@@ -215,11 +217,6 @@ public abstract class ZoneId {
         OLD_IDS_POST_2005 = Collections.unmodifiableMap(post);
     }
 
-    /**
-     * The group:region ID pattern.
-     */
-    private static final Pattern PATTERN = Pattern.compile("(([A-Za-z0-9._-]+)[:])?([A-Za-z0-9%@~/+._-]+)");
-
     //-----------------------------------------------------------------------
     /**
      * Gets the system default time-zone.
@@ -249,7 +246,7 @@ public abstract class ZoneId {
      * @param zoneId  the time-zone ID, not null
      * @param aliasMap  a map of alias zone IDs (typically abbreviations) to real zone IDs, not null
      * @return the zone ID, not null
-     * @throws DateTimeException if the zone ID cannot be found
+     * @throws TimeZoneException if the zone ID is malformed or cannot be found
      */
     public static ZoneId of(String zoneId, Map<String, String> aliasMap) {
         Objects.requireNonNull(zoneId, "zoneId");
@@ -268,80 +265,31 @@ public abstract class ZoneId {
      * <p>
      * Four forms of identifier are recognized:
      * <p><ul>
-     * <li>{@code {groupID}:{regionID}} - full
-     * <li>{@code {regionID}} - implies 'TZDB' group and specific version
-     * <li>{@code UTC{offset}} - implies 'UTC' group with fixed offset
-     * <li>{@code GMT{offset}} - implies 'UTC' group with fixed offset
+     * <li><code>{regionID}</code> - full {@link ZoneRegion} identifier, from configuration
+     * <li><code>{offset}</code> - a {@link ZoneOffset} identifier, such as 'Z' or '+02:00'
+     * <li><code>UTC{offset}</code> - alternate form of a {@code ZoneOffset} identifier
+     * <li><code>GMT{offset}</code> - alternate form of a {@code ZoneOffset} identifier
      * </ul><p>
-     * Group IDs must match regular expression {@code [A-Za-z0-9._-]+}.<br />
-     * Region IDs must match regular expression {@code [A-Za-z0-9%@~/+._-]+}, except
-     * if the group ID is 'UTC' when the regular expression is {@code [Z0-9+:-]+}.<br />
+     * Region IDs must match the regular expression <code>[A-Za-z][A-Za-z0-9~/._+-]+</code>.
      * <p>
-     * The detailed format of the region ID depends on the group.
-     * The default group is 'TZDB' which has region IDs generally of the form '{area}/{city}',
-     * such as 'Europe/Paris' or 'America/New_York'.
+     * The detailed format of the region ID depends on the group supplying the data.
+     * The default set of data is supplied by the IANA Time Zone Database (TZDB)
+     * This has region IDs of the form '{area}/{city}', such as 'Europe/Paris' or 'America/New_York'.
      * This is compatible with most IDs from {@link java.util.TimeZone}.
-     * <p>
-     * For example, the ID in use in Tokyo, Japan is 'Asia/Tokyo'.
-     * Passing either 'Asia/Tokyo' or 'TZDB:Asia/Tokyo' will create a valid object for that city.
-     * <p>
-     * The three additional special cases can match where the group ID is not specified.
-     * If the input starts with UTC or GMT then the remainder is parsed to find an offset
-     * and the group ID is treated as 'UTC'.
-     * Otherwise, the group ID is considered to be 'TZDB'.
      *
      * @param zoneId  the time-zone ID, not null
      * @return the zone ID, not null
-     * @throws DateTimeException if the zone ID cannot be found
+     * @throws TimeZoneException if the zone ID is malformed or cannot be found
      */
     public static ZoneId of(String zoneId) {
-        return ofId(zoneId, true);
-    }
-
-    /**
-     * Obtains an instance of {@code ZoneId} from an identifier.
-     *
-     * @param zoneId  the time-zone ID, not null
-     * @param checkAvailable  whether to check if the zone ID is available
-     * @return the zone ID, not null
-     * @throws DateTimeException if the zone ID cannot be found
-     */
-    private static ZoneId ofId(String zoneId, boolean checkAvailable) {
         Objects.requireNonNull(zoneId, "zoneId");
-
-        // handle most zone offset cases
         if (zoneId.equals("Z") || zoneId.equals("UTC") || zoneId.equals("GMT")) {
-            return UTC;
+            return ZoneOffset.UTC;
         }
         if (zoneId.startsWith("UTC") || zoneId.startsWith("GMT")) {
-            try {
-                return ZoneOffset.of(zoneId.substring(3));
-            } catch (IllegalArgumentException ex) {
-                // continue, in case it is something like GMT0, GMT+0, GMT-0
-            }
+            return ZoneOffset.of(zoneId.substring(3));
         }
-
-        // normal non-fixed IDs
-        Matcher matcher = PATTERN.matcher(zoneId);
-        if (matcher.matches() == false) {
-            throw new DateTimeException("Invalid time-zone ID: " + zoneId);
-        }
-        String groupId = matcher.group(2);
-        String regionId = matcher.group(3);
-        groupId = (groupId != null ? (groupId.equals(GROUP_TZDB) ? GROUP_TZDB : groupId) : GROUP_TZDB);
-        ZoneRulesProvider provider = null;
-        try {
-            // always attempt load for better behavior after deserialization
-            provider = ZoneRulesProvider.getProvider(groupId);
-            if (checkAvailable && provider.isValid(regionId, null) == false) {
-                throw new DateTimeException("Unknown time-zone: " + groupId + ':' + regionId);
-            }
-        } catch (DateTimeException ex) {
-            if (checkAvailable) {
-                throw ex;
-            }
-        }
-        return new ZoneRegion(zoneId, provider);
+        return ZoneRegion.ofId(zoneId, true);
     }
 
     //-----------------------------------------------------------------------
@@ -368,6 +316,9 @@ public abstract class ZoneId {
      * Constructor only accessible within the package.
      */
     ZoneId() {
+        if (getClass() != ZoneOffset.class && getClass() != ZoneRegion.class) {
+            throw new AssertionError("Invalid subclass");
+        }
     }
 
     //-----------------------------------------------------------------------

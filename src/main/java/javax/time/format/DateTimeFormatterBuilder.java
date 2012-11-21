@@ -2501,11 +2501,11 @@ public final class DateTimeFormatterBuilder {
                 }
                 int endPos = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss").parse(newContext, text, startPos);
                 if (endPos < 0) {
-                    context.setParsed(ZoneId.UTC);
+                    context.setParsed(ZoneOffset.UTC);
                     return startPos;
                 }
                 int offset = (int) (long) newContext.getParsed(OFFSET_SECONDS);
-                ZoneId zone = ZoneId.of(ZoneOffset.ofTotalSeconds(offset));
+                ZoneId zone = ZoneOffset.ofTotalSeconds(offset);
                 context.setParsed(zone);
                 return endPos;
             }

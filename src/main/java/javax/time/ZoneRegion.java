@@ -35,7 +35,10 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Objects;
+import java.util.regex.Pattern;
 
+import javax.time.zone.TimeZoneException;
 import javax.time.zone.ZoneRules;
 import javax.time.zone.ZoneRulesProvider;
 
@@ -63,6 +66,10 @@ public final class ZoneRegion extends ZoneId implements Serializable {
      * Serialization version.
      */
     private static final long serialVersionUID = 8386373296231747096L;
+    /**
+     * The group:region ID pattern.
+     */
+    private static final Pattern PATTERN = Pattern.compile("[A-Za-z][A-Za-z0-9~/._+-]+");
 
     /**
      * The time-zone ID, not null. */
@@ -71,6 +78,25 @@ public final class ZoneRegion extends ZoneId implements Serializable {
      * The time-zone group provider, null if zone ID is unchecked.
      */
     private final transient ZoneRulesProvider provider;
+
+    /**
+     * Obtains an instance of {@code ZoneId} from an identifier ensuring that the
+     * identifier is valid and available for use.
+     * <p>
+     * This method parses the ID, applies any appropriate normalization, and validates it
+     * against the known set of IDs for which rules are available.
+     * <p>
+     * Only region identifiers are accepted by this method, offset formats are rejected.
+     * See {@link ZoneId#of(String)} for more details on the format.
+     *
+     * @param zoneId  the time-zone ID, not null
+     * @return the zone ID, not null
+     * @throws TimeZoneException if the zone ID is malformed or cannot be found
+     */
+    public static ZoneRegion of(String zoneId) {
+        checkNotZoneOffset(zoneId);
+        return ofId(zoneId, true);
+    }
 
     /**
      * Obtains an instance of {@code ZoneRegion} from an identifier without checking
@@ -90,7 +116,44 @@ public final class ZoneRegion extends ZoneId implements Serializable {
      * @throws TimeZoneException if the ID is malformed
      */
     public static ZoneRegion ofUnchecked(String zoneId) {
-        return ofId(zoneId, false);  // TODO: move to ZoneRegion?
+        checkNotZoneOffset(zoneId);
+        return ofId(zoneId, false);
+    }
+
+    private static void checkNotZoneOffset(String zoneId) {
+        if (zoneId.equals("Z") || zoneId.startsWith("UTC") || zoneId.startsWith("GMT")) {
+            throw new TimeZoneException("Identifier is not valid for ZoneRegion");
+        }
+    }
+
+    /**
+     * Obtains an instance of {@code ZoneId} from an identifier.
+     *
+     * @param zoneId  the time-zone ID, not null
+     * @param checkAvailable  whether to check if the zone ID is available
+     * @return the zone ID, not null
+     * @throws TimeZoneException if the ID is malformed
+     * @throws TimeZoneException if checking availability and the ID cannot be found
+     */
+    static ZoneRegion ofId(String zoneId, boolean checkAvailable) {
+        Objects.requireNonNull(zoneId, "zoneId");
+        // check valid format
+        if (PATTERN.matcher(zoneId).matches() == false) {
+            throw new TimeZoneException("Invalid time-zone ID: " + zoneId);
+        }
+        ZoneRulesProvider provider = null;
+        try {
+            // always attempt load for better behavior after deserialization
+            provider = ZoneRulesProvider.getProvider("TZDB");
+            if (checkAvailable && provider.isValid(zoneId, null) == false) {
+                throw new TimeZoneException("Unknown time-zone: " + zoneId);
+            }
+        } catch (TimeZoneException ex) {
+            if (checkAvailable) {
+                throw ex;
+            }
+        }
+        return new ZoneRegion(zoneId, provider);
     }
 
     //-------------------------------------------------------------------------

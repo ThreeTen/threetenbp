@@ -137,6 +137,7 @@ public final class ZoneOffset
      * {@link #getId()}, plus some additional formats:
      * <p><ul>
      * <li>{@code Z} - for UTC
+     * <li>{@code +hh}
      * <li>{@code +hh:mm}
      * <li>{@code -hh:mm}
      * <li>{@code +hhmm}
@@ -437,6 +438,7 @@ public final class ZoneOffset
      *
      * @return the zone offset ID, not null
      */
+    @Override
     public String getId() {
         return id;
     }

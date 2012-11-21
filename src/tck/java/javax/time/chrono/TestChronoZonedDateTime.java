@@ -85,10 +85,10 @@ public class TestChronoZonedDateTime {
     @Test(groups={"tck"}, dataProvider="calendars")
     public void test_badWithAdjusterChrono(Chrono chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
-        ChronoZonedDateTime codt = chrono.date(refDate).atTime(LocalTime.MIDDAY).atOffset(ZoneOffset.UTC).atZoneSameInstant(ZoneId.UTC);
+        ChronoZonedDateTime codt = chrono.date(refDate).atTime(LocalTime.MIDDAY).atOffset(ZoneOffset.UTC).atZoneSameInstant(ZoneOffset.UTC);
         for (Chrono[] clist : data_of_calendars()) {
             Chrono chrono2 = clist[0];
-            ChronoZonedDateTime<?> codt2 = chrono2.date(refDate).atTime(LocalTime.MIDDAY).atOffset(ZoneOffset.UTC).atZoneSameInstant(ZoneId.UTC);
+            ChronoZonedDateTime<?> codt2 = chrono2.date(refDate).atTime(LocalTime.MIDDAY).atOffset(ZoneOffset.UTC).atZoneSameInstant(ZoneOffset.UTC);
             // TODO: debug the class cast exception when the Adjuster return a ChronoZonedDateTime
             DateTime.WithAdjuster adjuster = new FixedAdjuster(codt2.getOffsetDateTime());
             if (chrono != chrono2) {
@@ -114,10 +114,10 @@ public class TestChronoZonedDateTime {
     @Test(groups={"tck"}, dataProvider="calendars")
     public void test_badPlusAdjusterChrono(Chrono chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
-        ChronoZonedDateTime codt = chrono.date(refDate).atTime(LocalTime.MIDDAY).atOffset(ZoneOffset.UTC).atZoneSameInstant(ZoneId.UTC);
+        ChronoZonedDateTime codt = chrono.date(refDate).atTime(LocalTime.MIDDAY).atOffset(ZoneOffset.UTC).atZoneSameInstant(ZoneOffset.UTC);
         for (Chrono[] clist : data_of_calendars()) {
             Chrono chrono2 = clist[0];
-            ChronoZonedDateTime<?> codt2 = chrono2.date(refDate).atTime(LocalTime.MIDDAY).atOffset(ZoneOffset.UTC).atZoneSameInstant(ZoneId.UTC);
+            ChronoZonedDateTime<?> codt2 = chrono2.date(refDate).atTime(LocalTime.MIDDAY).atOffset(ZoneOffset.UTC).atZoneSameInstant(ZoneOffset.UTC);
             DateTime.PlusAdjuster adjuster = new FixedAdjuster(codt2);
             if (chrono != chrono2) {
                 try {
@@ -138,10 +138,10 @@ public class TestChronoZonedDateTime {
     @Test(groups={"tck"}, dataProvider="calendars")
     public void test_badMinusAdjusterChrono(Chrono chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
-        ChronoZonedDateTime codt = chrono.date(refDate).atTime(LocalTime.MIDDAY).atOffset(ZoneOffset.UTC).atZoneSameInstant(ZoneId.UTC);
+        ChronoZonedDateTime codt = chrono.date(refDate).atTime(LocalTime.MIDDAY).atOffset(ZoneOffset.UTC).atZoneSameInstant(ZoneOffset.UTC);
         for (Chrono[] clist : data_of_calendars()) {
             Chrono chrono2 = clist[0];
-            ChronoZonedDateTime<?> codt2 = chrono2.date(refDate).atTime(LocalTime.MIDDAY).atOffset(ZoneOffset.UTC).atZoneSameInstant(ZoneId.UTC);
+            ChronoZonedDateTime<?> codt2 = chrono2.date(refDate).atTime(LocalTime.MIDDAY).atOffset(ZoneOffset.UTC).atZoneSameInstant(ZoneOffset.UTC);
             DateTime.MinusAdjuster adjuster = new FixedAdjuster(codt2);
             if (chrono != chrono2) {
                 try {
@@ -162,10 +162,10 @@ public class TestChronoZonedDateTime {
     @Test(groups={"tck"}, dataProvider="calendars")
     public void test_badPlusPeriodUnitChrono(Chrono chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
-        ChronoZonedDateTime codt = chrono.date(refDate).atTime(LocalTime.MIDDAY).atOffset(ZoneOffset.UTC).atZoneSameInstant(ZoneId.UTC);
+        ChronoZonedDateTime codt = chrono.date(refDate).atTime(LocalTime.MIDDAY).atOffset(ZoneOffset.UTC).atZoneSameInstant(ZoneOffset.UTC);
         for (Chrono[] clist : data_of_calendars()) {
             Chrono chrono2 = clist[0];
-            ChronoZonedDateTime<?> codt2 = chrono2.date(refDate).atTime(LocalTime.MIDDAY).atOffset(ZoneOffset.UTC).atZoneSameInstant(ZoneId.UTC);
+            ChronoZonedDateTime<?> codt2 = chrono2.date(refDate).atTime(LocalTime.MIDDAY).atOffset(ZoneOffset.UTC).atZoneSameInstant(ZoneOffset.UTC);
             PeriodUnit adjuster = new FixedPeriodUnit(codt2);
             if (chrono != chrono2) {
                 try {
@@ -186,10 +186,10 @@ public class TestChronoZonedDateTime {
     @Test(groups={"tck"}, dataProvider="calendars")
     public void test_badMinusPeriodUnitChrono(Chrono chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
-        ChronoZonedDateTime codt = chrono.date(refDate).atTime(LocalTime.MIDDAY).atOffset(ZoneOffset.UTC).atZoneSameInstant(ZoneId.UTC);
+        ChronoZonedDateTime codt = chrono.date(refDate).atTime(LocalTime.MIDDAY).atOffset(ZoneOffset.UTC).atZoneSameInstant(ZoneOffset.UTC);
         for (Chrono[] clist : data_of_calendars()) {
             Chrono chrono2 = clist[0];
-            ChronoZonedDateTime<?> codt2 = chrono2.date(refDate).atTime(LocalTime.MIDDAY).atOffset(ZoneOffset.UTC).atZoneSameInstant(ZoneId.UTC);
+            ChronoZonedDateTime<?> codt2 = chrono2.date(refDate).atTime(LocalTime.MIDDAY).atOffset(ZoneOffset.UTC).atZoneSameInstant(ZoneOffset.UTC);
             PeriodUnit adjuster = new FixedPeriodUnit(codt2);
             if (chrono != chrono2) {
                 try {
@@ -210,10 +210,10 @@ public class TestChronoZonedDateTime {
     @Test(groups={"tck"}, dataProvider="calendars")
     public void test_badDateTimeFieldChrono(Chrono chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
-        ChronoZonedDateTime codt = chrono.date(refDate).atTime(LocalTime.MIDDAY).atOffset(ZoneOffset.UTC).atZoneSameInstant(ZoneId.UTC);
+        ChronoZonedDateTime codt = chrono.date(refDate).atTime(LocalTime.MIDDAY).atOffset(ZoneOffset.UTC).atZoneSameInstant(ZoneOffset.UTC);
         for (Chrono[] clist : data_of_calendars()) {
             Chrono chrono2 = clist[0];
-            ChronoZonedDateTime<?> codt2 = chrono2.date(refDate).atTime(LocalTime.MIDDAY).atOffset(ZoneOffset.UTC).atZoneSameInstant(ZoneId.UTC);
+            ChronoZonedDateTime<?> codt2 = chrono2.date(refDate).atTime(LocalTime.MIDDAY).atOffset(ZoneOffset.UTC).atZoneSameInstant(ZoneOffset.UTC);
             DateTimeField adjuster = new FixedDateTimeField(codt2);
             if (chrono != chrono2) {
                 try {
@@ -240,7 +240,7 @@ public class TestChronoZonedDateTime {
 
         ChronoZonedDateTime<?> date = chrono.date(LocalDate.of(1900, 1, 1))
                 .atTime(LocalTime.MIN_TIME)
-                .atZone(ZoneId.UTC);
+                .atZone(ZoneOffset.UTC);
 
         // Insert dates in order, no duplicates
         dates.add(date.minus(100, ChronoUnit.YEARS));

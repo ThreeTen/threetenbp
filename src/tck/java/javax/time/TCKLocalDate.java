@@ -240,7 +240,7 @@ public class TCKLocalDate extends AbstractDateTimeTest {
     public void now_Clock_allSecsInDay_utc() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSecond(i);
-            Clock clock = Clock.fixed(instant, ZoneId.UTC);
+            Clock clock = Clock.fixed(instant, ZoneOffset.UTC);
             LocalDate test = LocalDate.now(clock);
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonth(), Month.JANUARY);
@@ -252,7 +252,7 @@ public class TCKLocalDate extends AbstractDateTimeTest {
     public void now_Clock_allSecsInDay_offset() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSecond(i);
-            Clock clock = Clock.fixed(instant.minusSeconds(OFFSET_PONE.getTotalSeconds()), ZoneId.of(OFFSET_PONE));
+            Clock clock = Clock.fixed(instant.minusSeconds(OFFSET_PONE.getTotalSeconds()), OFFSET_PONE);
             LocalDate test = LocalDate.now(clock);
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonth(), Month.JANUARY);
@@ -264,7 +264,7 @@ public class TCKLocalDate extends AbstractDateTimeTest {
     public void now_Clock_allSecsInDay_beforeEpoch() {
         for (int i =-1; i >= -(2 * 24 * 60 * 60); i--) {
             Instant instant = Instant.ofEpochSecond(i);
-            Clock clock = Clock.fixed(instant, ZoneId.UTC);
+            Clock clock = Clock.fixed(instant, ZoneOffset.UTC);
             LocalDate test = LocalDate.now(clock);
             assertEquals(test.getYear(), 1969);
             assertEquals(test.getMonth(), Month.DECEMBER);
@@ -275,27 +275,27 @@ public class TCKLocalDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void now_Clock_maxYear() {
-        Clock clock = Clock.fixed(MAX_INSTANT, ZoneId.UTC);
+        Clock clock = Clock.fixed(MAX_INSTANT, ZoneOffset.UTC);
         LocalDate test = LocalDate.now(clock);
         assertEquals(test, MAX_DATE);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void now_Clock_tooBig() {
-        Clock clock = Clock.fixed(MAX_INSTANT.plusSeconds(24 * 60 * 60), ZoneId.UTC);
+        Clock clock = Clock.fixed(MAX_INSTANT.plusSeconds(24 * 60 * 60), ZoneOffset.UTC);
         LocalDate.now(clock);
     }
 
     @Test(groups={"tck"})
     public void now_Clock_minYear() {
-        Clock clock = Clock.fixed(MIN_INSTANT, ZoneId.UTC);
+        Clock clock = Clock.fixed(MIN_INSTANT, ZoneOffset.UTC);
         LocalDate test = LocalDate.now(clock);
         assertEquals(test, MIN_DATE);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void now_Clock_tooLow() {
-        Clock clock = Clock.fixed(MIN_INSTANT.minusNanos(1), ZoneId.UTC);
+        Clock clock = Clock.fixed(MIN_INSTANT.minusNanos(1), ZoneOffset.UTC);
         LocalDate.now(clock);
     }
 

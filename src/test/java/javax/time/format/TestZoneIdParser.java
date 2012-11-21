@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.time.ZoneId;
+import javax.time.ZoneOffset;
 import javax.time.format.DateTimeFormatterBuilder.ZoneIdPrinterParser;
 import javax.time.zone.ZoneRulesProvider;
 
@@ -144,7 +145,7 @@ public class TestZoneIdParser extends AbstractTestPrinterParser {
         ZoneIdPrinterParser pp = new ZoneIdPrinterParser(null);
         int result = pp.parse(parseContext, "OTHERUTC", 5);
         assertEquals(result, 8);
-        assertParsed(ZoneId.UTC);
+        assertParsed(ZoneOffset.UTC);
     }
 
     public void test_parse_endStringMatch_utc_plus1() throws Exception {
@@ -159,7 +160,7 @@ public class TestZoneIdParser extends AbstractTestPrinterParser {
         ZoneIdPrinterParser pp = new ZoneIdPrinterParser(null);
         int result = pp.parse(parseContext, "OTHERUTCOTHER", 5);
         assertEquals(result, 8);
-        assertParsed(ZoneId.UTC);
+        assertParsed(ZoneOffset.UTC);
     }
 
     public void test_parse_midStringMatch_utc_plus1() throws Exception {

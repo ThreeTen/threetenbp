@@ -394,7 +394,7 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported range
      */
     public static ZonedDateTime ofInstantUTC(Instant instant) {
-        return ofInstant(instant, ZoneId.UTC);
+        return ofInstant(instant, ZoneOffset.UTC);
     }
 
     /**

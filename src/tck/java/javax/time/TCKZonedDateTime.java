@@ -101,8 +101,8 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     private static final ZoneOffset OFFSET_0100 = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_0200 = ZoneOffset.ofHours(2);
     private static final ZoneOffset OFFSET_0130 = ZoneOffset.of("+01:30");
-    private static final ZoneId ZONE_0100 = ZoneId.of(OFFSET_0100);
-    private static final ZoneId ZONE_0200 = ZoneId.of(OFFSET_0200);
+    private static final ZoneId ZONE_0100 = OFFSET_0100;
+    private static final ZoneId ZONE_0200 = OFFSET_0200;
     private static final ZoneId ZONE_PARIS = ZoneId.of("Europe/Paris");
     private ZonedDateTime TEST_DATE_TIME;
 
@@ -211,7 +211,7 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     public void now_Clock_allSecsInDay_utc() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSecond(i).plusNanos(123456789L);
-            Clock clock = Clock.fixed(instant, ZoneId.UTC);
+            Clock clock = Clock.fixed(instant, ZoneOffset.UTC);
             ZonedDateTime test = ZonedDateTime.now(clock);
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonth(), Month.JANUARY);
@@ -221,7 +221,7 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
             assertEquals(test.getSecond(), i % 60);
             assertEquals(test.getNano(), 123456789);
             assertEquals(test.getOffset(), ZoneOffset.UTC);
-            assertEquals(test.getZone(), ZoneId.UTC);
+            assertEquals(test.getZone(), ZoneOffset.UTC);
         }
     }
 
@@ -242,7 +242,7 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
         LocalTime expected = LocalTime.MIDNIGHT.plusNanos(123456789L);
         for (int i =-1; i >= -(24 * 60 * 60); i--) {
             Instant instant = Instant.ofEpochSecond(i).plusNanos(123456789L);
-            Clock clock = Clock.fixed(instant, ZoneId.UTC);
+            Clock clock = Clock.fixed(instant, ZoneOffset.UTC);
             ZonedDateTime test = ZonedDateTime.now(clock);
             assertEquals(test.getYear(), 1969);
             assertEquals(test.getMonth(), Month.DECEMBER);
@@ -250,23 +250,23 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
             expected = expected.minusSeconds(1);
             assertEquals(test.getTime(), expected);
             assertEquals(test.getOffset(), ZoneOffset.UTC);
-            assertEquals(test.getZone(), ZoneId.UTC);
+            assertEquals(test.getZone(), ZoneOffset.UTC);
         }
     }
 
     @Test(groups={"tck"})
     public void now_Clock_offsets() {
-        ZonedDateTime base = ZonedDateTime.of(OffsetDateTime.of(1970, 1, 1, 12, 0, ZoneOffset.UTC), ZoneId.UTC);
+        ZonedDateTime base = ZonedDateTime.of(OffsetDateTime.of(1970, 1, 1, 12, 0, ZoneOffset.UTC), ZoneOffset.UTC);
         for (int i = -9; i < 15; i++) {
             ZoneOffset offset = ZoneOffset.ofHours(i);
-            Clock clock = Clock.fixed(base.toInstant(), ZoneId.of(offset));
+            Clock clock = Clock.fixed(base.toInstant(), offset);
             ZonedDateTime test = ZonedDateTime.now(clock);
             assertEquals(test.getHour(), (12 + i) % 24);
             assertEquals(test.getMinute(), 0);
             assertEquals(test.getSecond(), 0);
             assertEquals(test.getNano(), 0);
             assertEquals(test.getOffset(), offset);
-            assertEquals(test.getZone(), ZoneId.of(offset));
+            assertEquals(test.getZone(), offset);
         }
     }
 
@@ -524,7 +524,7 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     public void factoryUTC_ofInstant() {
         Instant instant = Instant.ofEpochSecond(86400 + 5 * 3600 + 10 * 60 + 20);
         ZonedDateTime test = ZonedDateTime.ofInstantUTC(instant);
-        check(test, 1970, 1, 2, 5, 10, 20, 0, ZoneOffset.UTC, ZoneId.UTC);
+        check(test, 1970, 1, 2, 5, 10, 20, 0, ZoneOffset.UTC, ZoneOffset.UTC);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
@@ -1693,14 +1693,14 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     @DataProvider(name="sampleToString")
     Object[][] provider_sampleToString() {
         return new Object[][] {
-            {2008, 6, 30, 11, 30, 59, 0, "UTC:Z", "2008-06-30T11:30:59Z[UTC:Z]"},
-            {2008, 6, 30, 11, 30, 59, 0, "UTC:+01:00", "2008-06-30T11:30:59+01:00[UTC:+01:00]"},
-            {2008, 6, 30, 11, 30, 59, 999000000, "UTC:Z", "2008-06-30T11:30:59.999Z[UTC:Z]"},
-            {2008, 6, 30, 11, 30, 59, 999000000, "UTC:+01:00", "2008-06-30T11:30:59.999+01:00[UTC:+01:00]"},
-            {2008, 6, 30, 11, 30, 59, 999000, "UTC:Z", "2008-06-30T11:30:59.000999Z[UTC:Z]"},
-            {2008, 6, 30, 11, 30, 59, 999000, "UTC:+01:00", "2008-06-30T11:30:59.000999+01:00[UTC:+01:00]"},
-            {2008, 6, 30, 11, 30, 59, 999, "UTC:Z", "2008-06-30T11:30:59.000000999Z[UTC:Z]"},
-            {2008, 6, 30, 11, 30, 59, 999, "UTC:+01:00", "2008-06-30T11:30:59.000000999+01:00[UTC:+01:00]"},
+            {2008, 6, 30, 11, 30, 59, 0, "Z", "2008-06-30T11:30:59Z[Z]"},
+            {2008, 6, 30, 11, 30, 59, 0, "+01:00", "2008-06-30T11:30:59+01:00[+01:00]"},
+            {2008, 6, 30, 11, 30, 59, 999000000, "Z", "2008-06-30T11:30:59.999Z[Z]"},
+            {2008, 6, 30, 11, 30, 59, 999000000, "+01:00", "2008-06-30T11:30:59.999+01:00[+01:00]"},
+            {2008, 6, 30, 11, 30, 59, 999000, "Z", "2008-06-30T11:30:59.000999Z[Z]"},
+            {2008, 6, 30, 11, 30, 59, 999000, "+01:00", "2008-06-30T11:30:59.000999+01:00[+01:00]"},
+            {2008, 6, 30, 11, 30, 59, 999, "Z", "2008-06-30T11:30:59.000000999Z[Z]"},
+            {2008, 6, 30, 11, 30, 59, 999, "+01:00", "2008-06-30T11:30:59.000000999+01:00[+01:00]"},
 
             {2008, 6, 30, 11, 30, 59, 999, "Europe/London", "2008-06-30T11:30:59.000000999+01:00[Europe/London]"},
         };

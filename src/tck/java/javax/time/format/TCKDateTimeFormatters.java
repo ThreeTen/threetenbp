@@ -840,13 +840,13 @@ public class TCKDateTimeFormatters {
 
     @Test(groups={"tck"})
     public void test_print_isoOrdinalDate_zoned() {
-        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), ZoneId.UTC);
+        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), ZoneOffset.UTC);
         assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "2008-155Z[UTC:Z]");
     }
 
     @Test(groups={"tck"})
     public void test_print_isoOrdinalDate_zoned_largeYear() {
-        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(123456, 6, 3, 11, 5, 30), ZoneId.UTC);
+        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(123456, 6, 3, 11, 5, 30), ZoneOffset.UTC);
         assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "+123456-155Z[UTC:Z]");
     }
 
@@ -892,13 +892,13 @@ public class TCKDateTimeFormatters {
 
     @Test(groups={"tck"})
     public void test_print_basicIsoDate_zoned() {
-        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), ZoneId.UTC);
+        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), ZoneOffset.UTC);
         assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080603Z[UTC:Z]");
     }
 
     @Test(expectedExceptions=DateTimePrintException.class, groups={"tck"})
     public void test_print_basicIsoDate_largeYear() {
-        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(123456, 6, 3, 11, 5, 30), ZoneId.UTC);
+        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(123456, 6, 3, 11, 5, 30), ZoneOffset.UTC);
         DateTimeFormatters.basicIsoDate().print(test);
     }
 
@@ -939,7 +939,7 @@ public class TCKDateTimeFormatters {
     @DataProvider(name="weekDate")
     Iterator<Object[]> weekDate() {
         return new Iterator<Object[]>() {
-            private ZonedDateTime date = ZonedDateTime.of(LocalDateTime.of(2003, 12, 29, 11, 5, 30), ZoneId.UTC);
+            private ZonedDateTime date = ZonedDateTime.of(LocalDateTime.of(2003, 12, 29, 11, 5, 30), ZoneOffset.UTC);
             private ZonedDateTime endDate = date.withDate(2005, 1, 2);
             private int week = 1;
             private int day = 1;
@@ -975,7 +975,7 @@ public class TCKDateTimeFormatters {
 
     @Test(groups={"tck"})
     public void test_print_isoWeekDate_zoned_largeYear() {
-        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(123456, 6, 3, 11, 5, 30), ZoneId.UTC);
+        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(123456, 6, 3, 11, 5, 30), ZoneOffset.UTC);
         assertEquals(DateTimeFormatters.isoWeekDate().print(test), "+123456-W23-2Z[UTC:Z]");
     }
 
@@ -1011,7 +1011,7 @@ public class TCKDateTimeFormatters {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_print_rfc1123() {
-        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), ZoneId.UTC);
+        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), ZoneOffset.UTC);
         assertEquals(DateTimeFormatters.rfc1123().print(test), "Tue, 03 Jun 2008 11:05:30 Z");
     }
 

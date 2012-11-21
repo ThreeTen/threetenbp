@@ -114,7 +114,7 @@ public class TestMinguoChrono {
         ChronoLocalDateTime<MinguoChrono> hdt = hd.atTime(LocalTime.MIDDAY);
         ZoneOffset zo = ZoneOffset.ofHours(1);
         ChronoOffsetDateTime<MinguoChrono> hodt = hdt.atOffset(zo);
-        ChronoZonedDateTime<MinguoChrono> hzdt = hodt.atZoneSameInstant(ZoneId.UTC);
+        ChronoZonedDateTime<MinguoChrono> hzdt = hodt.atZoneSameInstant(ZoneOffset.UTC);
         hdt = hdt.plus(1, ChronoUnit.YEARS);
         hdt = hdt.plus(1, ChronoUnit.MONTHS);
         hdt = hdt.plus(1, ChronoUnit.DAYS);
@@ -136,7 +136,7 @@ public class TestMinguoChrono {
         ChronoLocalDateTime<MinguoChrono> h3 = h2.atTime(LocalTime.MIDDAY);
         ChronoOffsetDateTime<MinguoChrono> h4 = h3.atOffset(ZoneOffset.UTC);
         @SuppressWarnings("unused")
-        ChronoZonedDateTime<MinguoChrono> h5 = h4.atZoneSameInstant(ZoneId.UTC);
+        ChronoZonedDateTime<MinguoChrono> h5 = h4.atZoneSameInstant(ZoneOffset.UTC);
     }
 
     @DataProvider(name="badDates")
