@@ -34,11 +34,9 @@ package javax.time.zone;
 import static javax.time.calendrical.ChronoUnit.HOURS;
 import static org.testng.Assert.assertEquals;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.IOException;
 
+import javax.time.AbstractTCKTest;
 import javax.time.Duration;
 import javax.time.LocalDateTime;
 import javax.time.Year;
@@ -50,7 +48,7 @@ import org.testng.annotations.Test;
  * Test ZoneOffsetTransition.
  */
 @Test
-public class TCKZoneOffsetTransition {
+public class TCKZoneOffsetTransition extends AbstractTCKTest {
 
     private static final ZoneOffset OFFSET_0100 = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_0200 = ZoneOffset.ofHours(2);
@@ -121,6 +119,7 @@ public class TCKZoneOffsetTransition {
         assertSerializable(test);
     }
 
+    //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_serialization_unusual1() throws Exception {
         LocalDateTime ldt = LocalDateTime.of(Year.MAX_YEAR, 12, 31, 1, 31, 53);
@@ -135,18 +134,11 @@ public class TCKZoneOffsetTransition {
         assertSerializable(test);
     }
 
-    private void assertSerializable(ZoneOffsetTransition test) throws Exception {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(baos);
-        out.writeObject(test);
-        baos.close();
-        byte[] bytes = baos.toByteArray();
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-        ObjectInputStream in = new ObjectInputStream(bais);
-        ZoneOffsetTransition result = (ZoneOffsetTransition) in.readObject();
-
-        assertEquals(result, test);
+    @Test(groups={"tck"})
+    public void test_serialization_format() throws ClassNotFoundException, IOException {
+        LocalDateTime ldt = LocalDateTime.of(Year.MIN_YEAR, 1, 1, 12, 1, 3);
+        ZoneOffsetTransition test = ZoneOffsetTransition.of(ldt, ZoneOffset.of("+02:04:56"), ZoneOffset.of("+10:02:34"));
+        assertEqualsSerialisedForm(test);
     }
 
     //-----------------------------------------------------------------------

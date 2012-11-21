@@ -33,11 +33,9 @@ package javax.time.zone;
 
 import static org.testng.Assert.assertEquals;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.IOException;
 
+import javax.time.AbstractTCKTest;
 import javax.time.DayOfWeek;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
@@ -51,7 +49,7 @@ import org.testng.annotations.Test;
  * Test ZoneOffsetTransitionRule.
  */
 @Test
-public class TCKZoneOffsetTransitionRule {
+public class TCKZoneOffsetTransitionRule extends AbstractTCKTest {
 
     private static final LocalTime TIME_0100 = LocalTime.of(1, 0);
     private static final ZoneOffset OFFSET_0200 = ZoneOffset.ofHours(2);
@@ -210,18 +208,12 @@ public class TCKZoneOffsetTransitionRule {
         assertSerializable(test);
     }
 
-    private void assertSerializable(ZoneOffsetTransitionRule test) throws Exception {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(baos);
-        out.writeObject(test);
-        baos.close();
-        byte[] bytes = baos.toByteArray();
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-        ObjectInputStream in = new ObjectInputStream(bais);
-        ZoneOffsetTransitionRule result = (ZoneOffsetTransitionRule) in.readObject();
-
-        assertEquals(result, test);
+    @Test(groups={"tck"})
+    public void test_serialization_format() throws ClassNotFoundException, IOException {
+        ZoneOffsetTransitionRule test = new ZoneOffsetTransitionRule(
+                        Month.MARCH, 20, DayOfWeek.TUESDAY, LocalTime.of(13, 34, 56), false, TimeDefinition.STANDARD,
+                        OFFSET_0200, OFFSET_0200, OFFSET_0300);
+        assertEqualsSerialisedForm(test);
     }
 
     //-----------------------------------------------------------------------
