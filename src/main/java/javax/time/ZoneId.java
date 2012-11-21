@@ -283,10 +283,14 @@ public abstract class ZoneId {
      */
     public static ZoneId of(String zoneId) {
         Objects.requireNonNull(zoneId, "zoneId");
-        if (zoneId.equals("Z") || zoneId.equals("UTC") || zoneId.equals("GMT") || zoneId.equals("GMT0")) {
+        if (zoneId.startsWith("+") || zoneId.startsWith("-")) {
+            return ZoneOffset.of(zoneId);
+        } else if (zoneId.equals("Z")) {
             return ZoneOffset.UTC;
-        }
-        if (zoneId.startsWith("UTC") || zoneId.startsWith("GMT")) {
+        } else if (zoneId.startsWith("UTC") || zoneId.startsWith("GMT")) {
+            if (zoneId.length() == 3 || zoneId.equals("GMT0")) {
+                return ZoneOffset.UTC;
+            }
             return ZoneOffset.of(zoneId.substring(3));
         }
         return ZoneRegion.ofId(zoneId, true);

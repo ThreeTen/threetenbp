@@ -91,7 +91,7 @@ public final class ZoneRegion extends ZoneId implements Serializable {
      *
      * @param zoneId  the time-zone ID, not null
      * @return the zone ID, not null
-     * @throws TimeZoneException if the zone ID is malformed or cannot be found
+     * @throws DateTimeException if the zone ID is malformed or cannot be found
      */
     public static ZoneRegion of(String zoneId) {
         checkNotZoneOffset(zoneId);
@@ -113,7 +113,7 @@ public final class ZoneRegion extends ZoneId implements Serializable {
      *
      * @param zoneId  the time-zone ID, not null
      * @return the zone ID, not null
-     * @throws TimeZoneException if the ID is malformed
+     * @throws DateTimeException if the ID is malformed
      */
     public static ZoneRegion ofUnchecked(String zoneId) {
         checkNotZoneOffset(zoneId);
@@ -122,7 +122,7 @@ public final class ZoneRegion extends ZoneId implements Serializable {
 
     private static void checkNotZoneOffset(String zoneId) {
         if (zoneId.equals("Z") || zoneId.startsWith("UTC") || zoneId.startsWith("GMT")) {
-            throw new TimeZoneException("Identifier is not valid for ZoneRegion");
+            throw new DateTimeException("Identifier is not valid for ZoneRegion");
         }
     }
 
@@ -132,23 +132,23 @@ public final class ZoneRegion extends ZoneId implements Serializable {
      * @param zoneId  the time-zone ID, not null
      * @param checkAvailable  whether to check if the zone ID is available
      * @return the zone ID, not null
-     * @throws TimeZoneException if the ID is malformed
-     * @throws TimeZoneException if checking availability and the ID cannot be found
+     * @throws DateTimeException if the ID is malformed
+     * @throws DateTimeException if checking availability and the ID cannot be found
      */
     static ZoneRegion ofId(String zoneId, boolean checkAvailable) {
         Objects.requireNonNull(zoneId, "zoneId");
         // check valid format
         if (PATTERN.matcher(zoneId).matches() == false) {
-            throw new TimeZoneException("Invalid time-zone ID: " + zoneId);
+            throw new DateTimeException("Invalid time-zone ID: " + zoneId);
         }
         ZoneRulesProvider provider = null;
         try {
             // always attempt load for better behavior after deserialization
             provider = ZoneRulesProvider.getProvider("TZDB");
             if (checkAvailable && provider.isValid(zoneId, null) == false) {
-                throw new TimeZoneException("Unknown time-zone: " + zoneId);
+                throw new DateTimeException("Unknown time-zone: " + zoneId);
             }
-        } catch (TimeZoneException ex) {
+        } catch (DateTimeException ex) {
             if (checkAvailable) {
                 throw ex;
             }

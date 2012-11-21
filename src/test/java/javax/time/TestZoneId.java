@@ -167,9 +167,9 @@ public class TestZoneId extends AbstractTest {
     //-----------------------------------------------------------------------
     public void test_constant_OLD_IDS_POST_2005() {
         Map<String, String> ids = ZoneId.OLD_IDS_POST_2005;
-        assertEquals(ids.get("EST"), "UTC-05:00");
-        assertEquals(ids.get("MST"), "UTC-07:00");
-        assertEquals(ids.get("HST"), "UTC-10:00");
+        assertEquals(ids.get("EST"), "-05:00");
+        assertEquals(ids.get("MST"), "-07:00");
+        assertEquals(ids.get("HST"), "-10:00");
         assertEquals(ids.get("ACT"), "Australia/Darwin");
         assertEquals(ids.get("AET"), "Australia/Sydney");
         assertEquals(ids.get("AGT"), "America/Argentina/Buenos_Aires");
@@ -211,7 +211,7 @@ public class TestZoneId extends AbstractTest {
         assertEquals(test.getId(), TimeZone.getDefault().getID());
     }
 
-    @Test(expectedExceptions = TimeZoneException.class)
+    @Test(expectedExceptions = DateTimeException.class)
     public void test_systemDefault_unableToConvert() {
         TimeZone current = TimeZone.getDefault();
         try {
@@ -247,7 +247,7 @@ public class TestZoneId extends AbstractTest {
         assertEquals(test.getId(), "Europe/Madrid");
     }
 
-    @Test(expectedExceptions=TimeZoneException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_of_string_Map_unknown() {
         Map<String, String> map = new HashMap<String, String>();
         ZoneId.of("Unknown", map);
@@ -303,7 +303,7 @@ public class TestZoneId extends AbstractTest {
         assertEquals(test.getId(), id);
         assertEquals(test.getText(TextStyle.FULL, Locale.UK), id);
         assertEquals(test.getRules().isFixedOffset(), true);
-        ZoneOffset offset = ZoneOffset.of(id.substring(4));
+        ZoneOffset offset = ZoneOffset.of(id);
         assertEquals(test.getRules().getOffset(Instant.ofEpochSecond(0L)), offset);
         checkOffset(test.getRules(), createDateMidnight(2008, 6, 30), offset, 1);
     }
@@ -314,7 +314,7 @@ public class TestZoneId extends AbstractTest {
         assertEquals(test.getId(), id);
         assertEquals(test.getText(TextStyle.FULL, Locale.UK), id);
         assertEquals(test.getRules().isFixedOffset(), true);
-        ZoneOffset offset = ZoneOffset.of(id.substring(4));
+        ZoneOffset offset = ZoneOffset.of(id);
         assertEquals(test.getRules().getOffset(Instant.ofEpochSecond(0L)), offset);
         checkOffset(test.getRules(), createDateMidnight(2008, 6, 30), offset, 1);
     }
@@ -325,7 +325,7 @@ public class TestZoneId extends AbstractTest {
         assertEquals(test.getId(), id);
         assertEquals(test.getText(TextStyle.FULL, Locale.UK), id);
         assertEquals(test.getRules().isFixedOffset(), true);
-        ZoneOffset offset = ZoneOffset.of(id.substring(4));
+        ZoneOffset offset = ZoneOffset.of(id);
         assertEquals(test.getRules().getOffset(Instant.ofEpochSecond(0L)), offset);
         checkOffset(test.getRules(), createDateMidnight(2008, 6, 30), offset, 1);
     }
@@ -350,12 +350,12 @@ public class TestZoneId extends AbstractTest {
         };
     }
 
-    @Test(dataProvider="String_UTC_Invalid", expectedExceptions=TimeZoneException.class)
+    @Test(dataProvider="String_UTC_Invalid", expectedExceptions=DateTimeException.class)
     public void test_of_string_UTC_invalid(String id) {
         ZoneId.of("UTC" + id);
     }
 
-    @Test(dataProvider="String_UTC_Invalid", expectedExceptions=TimeZoneException.class)
+    @Test(dataProvider="String_UTC_Invalid", expectedExceptions=DateTimeException.class)
     public void test_of_string_GMT_invalid(String id) {
         ZoneId.of("GMT" + id);
     }
@@ -377,12 +377,12 @@ public class TestZoneId extends AbstractTest {
         };
     }
 
-    @Test(dataProvider="String_Invalid", expectedExceptions=TimeZoneException.class)
+    @Test(dataProvider="String_Invalid", expectedExceptions=DateTimeException.class)
     public void test_of_string_invalid(String id) {
         ZoneId.of(id);
     }
 
-    @Test(dataProvider="String_Invalid", expectedExceptions=TimeZoneException.class)
+    @Test(dataProvider="String_Invalid", expectedExceptions=DateTimeException.class)
     public void test_ofUnchecked_string_invalid(String id) {
         ZoneRegion.ofUnchecked(id);
     }
@@ -407,7 +407,7 @@ public class TestZoneId extends AbstractTest {
         ZoneId.of((String) null);
     }
 
-    @Test(expectedExceptions=TimeZoneException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_of_string_unknown_simple() {
         ZoneId.of("Unknown");
     }
@@ -978,10 +978,10 @@ public class TestZoneId extends AbstractTest {
     Object[][] data_toString() {
         return new Object[][] {
             {"Europe/London", "Europe/London"},
-            {"TZDB:Europe/Paris", "Europe/Paris"},
-            {"TZDB:Europe/Berlin", "Europe/Berlin"},
-            {"UTC", "UTC:Z"},
-            {"UTC+01:00", "UTC:+01:00"},
+            {"Europe/Paris", "Europe/Paris"},
+            {"Europe/Berlin", "Europe/Berlin"},
+            {"UTC", "Z"},
+            {"UTC+01:00", "+01:00"},
         };
     }
 
