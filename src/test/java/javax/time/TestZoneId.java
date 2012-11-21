@@ -284,6 +284,8 @@ public class TestZoneId extends AbstractTest {
     Object[][] data_of_string_Fixed() {
         return new Object[][] {
             {"Z", "UTC:Z"},
+            {"+0", "UTC:Z"},
+            {"+5", "UTC:+05:00"},
             {"+01", "UTC:+01:00"},
             {"+0100", "UTC:+01:00"},{"+01:00", "UTC:+01:00"},
             {"+010000", "UTC:+01:00"},{"+01:00:00", "UTC:+01:00"},
@@ -291,6 +293,7 @@ public class TestZoneId extends AbstractTest {
             {"+1234", "UTC:+12:34"},{"+12:34", "UTC:+12:34"},
             {"+123456", "UTC:+12:34:56"},{"+12:34:56", "UTC:+12:34:56"},
             {"-02", "UTC:-02:00"},
+            {"-5", "UTC:-05:00"},
             {"-0200", "UTC:-02:00"},{"-02:00", "UTC:-02:00"},
             {"-020000", "UTC:-02:00"},{"-02:00:00", "UTC:-02:00"},
         };
@@ -361,11 +364,6 @@ public class TestZoneId extends AbstractTest {
     }
 
     @Test(dataProvider="String_UTC_Invalid", expectedExceptions=DateTimeException.class)
-    public void test_of_string_UTCp0_invalid(String id) {
-        ZoneId.of("UTC+0");
-    }
-
-    @Test(dataProvider="String_UTC_Invalid", expectedExceptions=DateTimeException.class)
     public void test_of_string_GMT_invalid(String id) {
         ZoneId.of("GMT" + id);
     }
@@ -400,17 +398,9 @@ public class TestZoneId extends AbstractTest {
     //-----------------------------------------------------------------------
     public void test_of_string_GMT0() {
         ZoneId test = ZoneId.of("GMT0");
-        assertEquals(test.getId(), "GMT0");
-        assertEquals(test.getGroupId(), "TZDB");
-        assertEquals(test.getRegionId(), "GMT0");
-        assertEquals(test.getRules().isFixedOffset(), true);
-    }
-
-    public void test_of_string_groupGMT0() {
-        ZoneId test = ZoneId.of("TZDB:GMT0");
-        assertEquals(test.getId(), "GMT0");
-        assertEquals(test.getGroupId(), "TZDB");
-        assertEquals(test.getRegionId(), "GMT0");
+        assertEquals(test.getId(), "UTC:Z");
+        assertEquals(test.getGroupId(), "UTC");
+        assertEquals(test.getRegionId(), "Z");
         assertEquals(test.getRules().isFixedOffset(), true);
     }
 
