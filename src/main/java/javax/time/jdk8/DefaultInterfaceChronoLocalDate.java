@@ -175,6 +175,7 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
         buf.append(getChrono().toString())
                 .append(" ")
                 .append(getEra())
+                .append(" ")
                 .append(yoe)
                 .append(moy < 10 ? "-0" : "-").append(moy)
                 .append(dom < 10 ? "-0" : "-").append(dom);

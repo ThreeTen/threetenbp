@@ -64,16 +64,16 @@ final class JapaneseEra
         implements Serializable {
 
     // The offset value to 0-based index from the era value.
-    // i.e., getValue() + ERA_OFFSET == 0-based index
+    // i.e., getValue() + ERA_OFFSET == 0-based index; except that -999 is mapped to zero
     static final int ERA_OFFSET = 2;
 
     static final sun.util.calendar.Era[] ERA_CONFIG;
 
     /**
      * The singleton instance for the before Meiji era ( - 1868-09-07)
-     * which has the value -2.
+     * which has the value -999.
      */
-    public static final JapaneseEra SEIREKI = new JapaneseEra(-2, LocalDate.MIN_DATE);
+    public static final JapaneseEra SEIREKI = new JapaneseEra(-999, LocalDate.MIN_DATE);
     /**
      * The singleton instance for the 'Meiji' era (1868-09-08 - 1912-07-29)
      * which has the value -1.
@@ -173,7 +173,7 @@ final class JapaneseEra
      *         or null for SEIREKI.
      */
     sun.util.calendar.Era getPrivateEra() {
-        return ERA_CONFIG[eraValue + ERA_OFFSET];
+        return ERA_CONFIG[ordinal(eraValue)];
     }
 
     //-----------------------------------------------------------------------
@@ -190,11 +190,11 @@ final class JapaneseEra
      * @throws DateTimeException if {@code japaneseEra} is invalid
      */
     public static JapaneseEra of(int japaneseEra) {
-        int index = japaneseEra + ERA_OFFSET;
-        if (index < 0 || index >= KNOWN_ERAS.length) {
+        if (japaneseEra != SEIREKI.eraValue &&
+            (japaneseEra < MEIJI.eraValue || japaneseEra > HEISEI.eraValue)) {
             throw new DateTimeException("japaneseEra is invalid");
         }
-        return KNOWN_ERAS[index];
+        return KNOWN_ERAS[ordinal(japaneseEra)];
     }
 
     /**
@@ -241,13 +241,23 @@ final class JapaneseEra
         return null;
     }
 
+    /**
+     * Returns the index into the arrays from the Era value.
+     * the eraValue is a valid Era number, -999, -1..2.
+     * @param eravalue the era value to convert to the index
+     * @return the index of the current Era
+     */
+    private static int ordinal(int eravalue) {
+        return (eravalue == SEIREKI.eraValue) ? 0 : eravalue + ERA_OFFSET;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Returns the numeric value of this {@code JapaneseEra}.
      * <p>
      * The {@link #SHOWA} era that contains 1970-01-01 (ISO calendar system) has the value 1.
      * Later eras are numbered from 2 ({@link #HEISEI}).
-     * Earlier eras are numbered 0 ({@link #TAISHO}), -1 ({@link #MEIJI}), and -2 ({@link #SEIREKI}).
+     * Earlier eras are numbered 0 ({@link #TAISHO}), -1 ({@link #MEIJI}), and -999 ({@link #SEIREKI}).
      *
      * @return the era value
      */
@@ -263,16 +273,24 @@ final class JapaneseEra
 
     //-----------------------------------------------------------------------
     String getAbbreviation() {
-        int index = getValue() + ERA_OFFSET;
+        int index = ordinal(getValue());
         if (index == 0) {
             return "";
         }
         return ERA_CONFIG[index].getAbbreviation();
     }
 
+    String getName() {
+        int index = ordinal(getValue());
+        if (index == 0) {
+            return "Seireki";
+        }
+        return ERA_CONFIG[index].getName();
+    }
+
     @Override
     public String toString() {
-        return getAbbreviation();
+        return getName();
     }
 
     //-----------------------------------------------------------------------

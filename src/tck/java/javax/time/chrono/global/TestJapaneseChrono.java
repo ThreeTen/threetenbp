@@ -31,9 +31,11 @@
  */
 package javax.time.chrono.global;
 
+import java.util.List;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
@@ -42,6 +44,7 @@ import javax.time.Month;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.chrono.Chrono;
 import javax.time.chrono.ChronoLocalDate;
+import javax.time.chrono.Era;
 import javax.time.chrono.ISOChrono;
 
 import org.testng.Assert;
@@ -176,6 +179,42 @@ public class TestJapaneseChrono {
     }
 
     //-----------------------------------------------------------------------
+    // Check Japanese Eras
+    //-----------------------------------------------------------------------
+    @DataProvider(name="japaneseEras")
+    Object[][] data_japanseseEras() {
+        return new Object[][] {
+            { JapaneseChrono.ERA_SEIREKI, -999, "Seireki"},
+            { JapaneseChrono.ERA_MEIJI, -1, "Meiji"},
+            { JapaneseChrono.ERA_TAISHO, 0, "Taisho"},
+            { JapaneseChrono.ERA_SHOWA, 1, "Showa"},
+            { JapaneseChrono.ERA_HEISEI, 2, "Heisei"},
+        };
+    }
+
+    @Test(groups={"tck"}, dataProvider="japaneseEras")
+    public void test_Japanese_Eras(Era era, int eraValue, String name) {
+        assertEquals(era.getValue(), eraValue, "EraValue");
+        assertEquals(era.toString(), name, "Era Name");
+        assertEquals(era, JapaneseChrono.INSTANCE.eraOf(eraValue), "JapaneseChrono.eraOf()");
+        List<Era<JapaneseChrono>> eras = JapaneseChrono.INSTANCE.eras();
+        assertTrue(eras.contains(era), "Era is not present in JapaneseChrono.INSTANCE.eras()");
+    }
+
+    @Test(groups="tck")
+    public void test_Japanese_badEras() {
+        int badEras[] = {-1000, -998, -997, -2, 3, 4, 1000};
+        for (int badEra : badEras) {
+            try {
+                Era<JapaneseChrono> era = JapaneseChrono.INSTANCE.eraOf(badEra);
+                fail("JapaneseChrono.eraOf returned " + era + " + for invalid eraValue " + badEra);
+            } catch (DateTimeException ex) {
+                // ignore expected exception
+            }
+        }
+    }
+
+    //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
     @DataProvider(name="toString")
@@ -186,14 +225,14 @@ public class TestJapaneseChrono {
             {JapaneseChrono.INSTANCE.date(1728, 10, 29), "Japanese 1728-10-29"},
             {JapaneseChrono.INSTANCE.date(1727, 12,  5), "Japanese 1727-12-05"},
             {JapaneseChrono.INSTANCE.date(1727, 12,  6), "Japanese 1727-12-06"},
-            {JapaneseChrono.INSTANCE.date(1868,  9,  8), "Japanese M1-09-08"},
-            {JapaneseChrono.INSTANCE.date(1912,  7, 29), "Japanese M45-07-29"},
-            {JapaneseChrono.INSTANCE.date(1912,  7, 30), "Japanese T1-07-30"},
-            {JapaneseChrono.INSTANCE.date(1926, 12, 24), "Japanese T15-12-24"},
-            {JapaneseChrono.INSTANCE.date(1926, 12, 25), "Japanese S1-12-25"},
-            {JapaneseChrono.INSTANCE.date(1989,  1,  7), "Japanese S64-01-07"},
-            {JapaneseChrono.INSTANCE.date(1989,  1,  8), "Japanese H1-01-08"},
-            {JapaneseChrono.INSTANCE.date(2012, 12,  6), "Japanese H24-12-06"},
+            {JapaneseChrono.INSTANCE.date(1868,  9,  8), "Japanese Meiji 1-09-08"},
+            {JapaneseChrono.INSTANCE.date(1912,  7, 29), "Japanese Meiji 45-07-29"},
+            {JapaneseChrono.INSTANCE.date(1912,  7, 30), "Japanese Taisho 1-07-30"},
+            {JapaneseChrono.INSTANCE.date(1926, 12, 24), "Japanese Taisho 15-12-24"},
+            {JapaneseChrono.INSTANCE.date(1926, 12, 25), "Japanese Showa 1-12-25"},
+            {JapaneseChrono.INSTANCE.date(1989,  1,  7), "Japanese Showa 64-01-07"},
+            {JapaneseChrono.INSTANCE.date(1989,  1,  8), "Japanese Heisei 1-01-08"},
+            {JapaneseChrono.INSTANCE.date(2012, 12,  6), "Japanese Heisei 24-12-06"},
         };
     }
 

@@ -83,7 +83,7 @@ public final class JapaneseChrono extends Chrono<JapaneseChrono> implements Seri
 
     /**
      * The singleton instance for the before Meiji era ( - 1868-09-07)
-     * which has the value -2.
+     * which has the value -999.
      */
     public static final Era<JapaneseChrono> ERA_SEIREKI = JapaneseEra.SEIREKI;
     /**
@@ -259,10 +259,14 @@ public final class JapaneseChrono extends Chrono<JapaneseChrono> implements Seri
 
     /**
      * Returns the calendar system era object from the given numeric value.
-     * This method is equivalent to a call to {@link JapaneseEra#of(int) JapaneseEra.of(eraValue)}.
+     *
+     * See the description of each Era for the numeric values of:
+     * {@link #ERA_HEISEI}, {@link #ERA_SHOWA},{@link #ERA_TAISHO},
+     * {@link #ERA_MEIJI}), only Meiji and later eras are supported.
+     * Prior to Meiji {@link #ERA_SEIREKI} is used.
      *
      * @param eraValue  the era value
-     * @return the {@code JapaneseEra} for the given numeric era value
+     * @return the Japanese {@code Era} for the given numeric era value
      * @throws DateTimeException if {@code eraValue} is invalid
      */
     @Override
