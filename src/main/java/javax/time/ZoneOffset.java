@@ -133,6 +133,8 @@ public final class ZoneOffset
      * {@link #getId()}, plus some additional formats:
      * <p><ul>
      * <li>{@code Z} - for UTC
+     * <li>{@code +h}
+     * <li>{@code +hh}
      * <li>{@code +hh:mm}
      * <li>{@code -hh:mm}
      * <li>{@code +hhmm}
@@ -161,10 +163,11 @@ public final class ZoneOffset
             return offset;
         }
 
-        // parse - +hh, +hhmm, +hh:mm, +hhmmss, +hh:mm:ss
+        // parse - +h, +hh, +hhmm, +hh:mm, +hhmmss, +hh:mm:ss
         final int hours, minutes, seconds;
-        int len = offsetId.length();
-        switch (len) {
+        switch (offsetId.length()) {
+            case 2:
+                offsetId = offsetId.charAt(0) + "0" + offsetId.charAt(1);  // fallthru
             case 3:
                 hours = parseNumber(offsetId, 1, false);
                 minutes = 0;

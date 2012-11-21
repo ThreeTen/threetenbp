@@ -921,6 +921,9 @@ final class TZDBZoneRulesCompiler {
         // remove UTC and GMT
         builtZones.remove("UTC");
         builtZones.remove("GMT");
+        builtZones.remove("GMT0");
+        builtZones.remove("GMT+0");
+        builtZones.remove("GMT-0");
     }
 
     //-----------------------------------------------------------------------

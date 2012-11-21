@@ -361,7 +361,7 @@ public abstract class ZoneId implements Serializable {
         Objects.requireNonNull(zoneId, "zoneId");
 
         // special fixed cases
-        if (zoneId.equals("UTC") || zoneId.equals("GMT")) {
+        if (zoneId.equals("UTC") || zoneId.equals("GMT") || zoneId.equals("GMT0")) {
             return UTC;
         }
         if (zoneId.startsWith(GROUP_UTC_COLON)) {
@@ -372,11 +372,7 @@ public abstract class ZoneId implements Serializable {
             }
         }
         if (zoneId.startsWith("UTC") || zoneId.startsWith("GMT")) {
-            try {
-                return of(ZoneOffset.of(zoneId.substring(3)));
-            } catch (IllegalArgumentException ex) {
-                // continue, in case it is something like GMT0, GMT+0, GMT-0
-            }
+            return of(ZoneOffset.of(zoneId.substring(3)));
         }
 
         // normal non-fixed IDs
