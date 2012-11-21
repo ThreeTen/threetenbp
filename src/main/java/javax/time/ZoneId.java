@@ -283,7 +283,7 @@ public abstract class ZoneId {
      */
     public static ZoneId of(String zoneId) {
         Objects.requireNonNull(zoneId, "zoneId");
-        if (zoneId.equals("Z") || zoneId.equals("UTC") || zoneId.equals("GMT")) {
+        if (zoneId.equals("Z") || zoneId.equals("UTC") || zoneId.equals("GMT") || zoneId.equals("GMT0")) {
             return ZoneOffset.UTC;
         }
         if (zoneId.startsWith("UTC") || zoneId.startsWith("GMT")) {

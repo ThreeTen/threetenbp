@@ -133,7 +133,7 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_factory_string_UTC() {
         String[] values = new String[] {
-            "Z",
+            "Z", "+0",
             "+00","+0000","+00:00","+000000","+00:00:00",
             "-00","-0000","-00:00","-000000","-00:00:00",
         };
@@ -148,12 +148,12 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
         String[] values = new String[] {
             "","A","B","C","D","E","F","G","H","I","J","K","L","M",
             "N","O","P","Q","R","S","T","U","V","W","X","Y","ZZ",
-            "+0","+0:00","+00:0","+0:0",
+            "0", "+0:00","+00:0","+0:0",
             "+000","+00000",
             "+0:00:00","+00:0:00","+00:00:0","+0:0:0","+0:0:00","+00:0:0","+0:00:0",
-            "+01_00","+01;00","+01@00","+01:AA",
+            "1", "+01_00","+01;00","+01@00","+01:AA",
             "+19","+19:00","+18:01","+18:00:01","+1801","+180001",
-            "-0","-0:00","-00:0","-0:0",
+            "-0:00","-00:0","-0:0",
             "-000","-00000",
             "-0:00:00","-00:0:00","-00:00:0","-0:0:0","-0:0:00","-00:0:0","-0:00:0",
             "-19","-19:00","-18:01","-18:00:01","-1801","-180001",
@@ -164,7 +164,7 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
             try {
                 ZoneOffset.of(values[i]);
                 fail("Should have failed:" + values[i]);
-            } catch (IllegalArgumentException ex) {
+            } catch (DateTimeException ex) {
                 // expected
             }
         }
@@ -176,6 +176,15 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_factory_string_singleDigitHours() {
+        for (int i = -9; i <= 9; i++) {
+            String str = (i < 0 ? "-" : "+") + Math.abs(i);
+            ZoneOffset test = ZoneOffset.of(str);
+            doTestOffset(test, i, 0, 0);
+        }
+    }
+
     @Test(groups={"tck"})
     public void test_factory_string_hours() {
         for (int i = -18; i <= 18; i++) {
@@ -278,6 +287,16 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
         }
     }
 
+    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    public void test_factory_int_hours_tooBig() {
+        ZoneOffset.ofHours(19);
+    }
+
+    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    public void test_factory_int_hours_tooSmall() {
+        ZoneOffset.ofHours(-19);
+    }
+
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_factory_int_hours_minutes() {
@@ -293,6 +312,16 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
         doTestOffset(test1, -18, 0, 0);
         ZoneOffset test2 = ZoneOffset.ofHoursMinutes(18, 0);
         doTestOffset(test2, 18, 0, 0);
+    }
+
+    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    public void test_factory_int_hours_minutes_tooBig() {
+        ZoneOffset.ofHoursMinutes(19, 0);
+    }
+
+    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    public void test_factory_int_hours_minutes_tooSmall() {
+        ZoneOffset.ofHoursMinutes(-19, 0);
     }
 
     //-----------------------------------------------------------------------
@@ -363,6 +392,16 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
     @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_factory_int_hours_minutes_seconds_secondsTooSmall() {
         ZoneOffset.ofHoursMinutesSeconds(0, 0, 60);
+    }
+
+    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    public void test_factory_int_hours_minutes_seconds_hoursTooBig() {
+        ZoneOffset.ofHoursMinutesSeconds(19, 0, 0);
+    }
+
+    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    public void test_factory_int_hours_minutes_seconds_hoursTooSmall() {
+        ZoneOffset.ofHoursMinutesSeconds(-19, 0, 0);
     }
 
     //-----------------------------------------------------------------------

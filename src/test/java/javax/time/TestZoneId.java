@@ -282,6 +282,8 @@ public class TestZoneId extends AbstractTest {
     Object[][] data_of_string_Fixed() {
         return new Object[][] {
             {"Z", "Z"},
+            {"+0", "Z"},
+            {"+5", "+05:00"},
             {"+01", "+01:00"},
             {"+0100", "+01:00"},{"+01:00", "+01:00"},
             {"+010000", "+01:00"},{"+01:00:00", "+01:00"},
@@ -289,6 +291,7 @@ public class TestZoneId extends AbstractTest {
             {"+1234", "+12:34"},{"+12:34", "+12:34"},
             {"+123456", "+12:34:56"},{"+12:34:56", "+12:34:56"},
             {"-02", "-02:00"},
+            {"-5", "-05:00"},
             {"-0200", "-02:00"},{"-02:00", "-02:00"},
             {"-020000", "-02:00"},{"-02:00:00", "-02:00"},
         };
@@ -353,11 +356,6 @@ public class TestZoneId extends AbstractTest {
     }
 
     @Test(dataProvider="String_UTC_Invalid", expectedExceptions=TimeZoneException.class)
-    public void test_of_string_UTCp0_invalid(String id) {
-        ZoneId.of("UTC+0");
-    }
-
-    @Test(dataProvider="String_UTC_Invalid", expectedExceptions=TimeZoneException.class)
     public void test_of_string_GMT_invalid(String id) {
         ZoneId.of("GMT" + id);
     }
@@ -393,7 +391,7 @@ public class TestZoneId extends AbstractTest {
     public void test_of_string_GMT0() {
         ZoneId test = ZoneId.of("GMT0");
         assertEquals(test.getId(), "Z");
-        assertEquals(test.getRules().isFixedOffset(), false);
+        assertEquals(test.getRules().isFixedOffset(), true);
     }
 
     //-----------------------------------------------------------------------
