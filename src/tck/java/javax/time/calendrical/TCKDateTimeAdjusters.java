@@ -41,9 +41,6 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.Month;
@@ -56,16 +53,6 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TCKDateTimeAdjusters {
-
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    @Test(expectedExceptions = InvocationTargetException.class, groups={"tck"})
-    public void test_forceCoverage() throws Exception {
-        Enum en = (Enum) DateTimeAdjusters.lastDayOfYear();
-        Class cls = en.getClass();
-        Method m = cls.getMethod("valueOf", String.class);
-        m.invoke(null, en.name());
-        m.invoke(null, "NOTREAL");
-    }
 
     //-----------------------------------------------------------------------
     // firstDayOfMonth()
