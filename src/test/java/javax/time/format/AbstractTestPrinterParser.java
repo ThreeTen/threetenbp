@@ -70,9 +70,5 @@ public class AbstractTestPrinterParser {
         public long getLong(DateTimeField field) {
             throw new DateTimeException("Mock");
         }
-        @Override
-        public DateTimeAccessor with(DateTimeField field, long newValue) {
-            throw new DateTimeException("Mock");
-        }
     };
 }

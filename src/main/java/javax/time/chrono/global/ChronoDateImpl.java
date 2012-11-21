@@ -31,9 +31,7 @@
  */
 package javax.time.chrono.global;
 
-import static javax.time.calendrical.ChronoField.WEEK_BASED_YEAR;
 import static javax.time.calendrical.ChronoField.WEEK_OF_MONTH;
-import static javax.time.calendrical.ChronoField.WEEK_OF_WEEK_BASED_YEAR;
 import static javax.time.calendrical.ChronoField.WEEK_OF_YEAR;
 
 import java.io.Serializable;
@@ -138,8 +136,8 @@ abstract class ChronoDateImpl<C extends Chrono<C>>
     @Override
     public boolean isSupported(DateTimeField field) {
         if (field instanceof ChronoField) {
-            return ((ChronoField) field).isDateField() && field != WEEK_OF_MONTH &&
-                    field != WEEK_OF_YEAR && field != WEEK_OF_WEEK_BASED_YEAR && field != WEEK_BASED_YEAR;
+            return ((ChronoField) field).isDateField() &&
+                    field != WEEK_OF_MONTH && field != WEEK_OF_YEAR;
         }
         return field != null && field.doIsSupported(this);
     }
@@ -164,7 +162,7 @@ abstract class ChronoDateImpl<C extends Chrono<C>>
             }
             throw new DateTimeException(unit.getName() + " not valid for chronology " + getChrono().getId());
         }
-        return (ChronoDateImpl<C>)getChrono().ensureChronoLocalDate(unit.doAdd(this, amountToAdd));
+        return (ChronoDateImpl<C>) getChrono().ensureChronoLocalDate(unit.doPlus(this, amountToAdd));
     }
 
     //-----------------------------------------------------------------------

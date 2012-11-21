@@ -31,6 +31,9 @@
  */
 package javax.time.chrono;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -565,10 +568,6 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
     public String getText(TextStyle style, Locale locale) {
         return new DateTimeFormatterBuilder().appendChronoText(style).toFormatter(locale).print(new DefaultInterfaceDateTimeAccessor() {
             @Override
-            public DateTimeAccessor with(DateTimeField field, long newValue) {
-                throw new DateTimeException("Unsupported field: " + field);
-            }
-            @Override
             public boolean isSupported(DateTimeField field) {
                 return false;
             }
@@ -651,4 +650,17 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
         return getId();
     }
 
+    //-----------------------------------------------------------------------
+    private Object writeReplace() {
+        return new Ser(Ser.CHRONO_TYPE, this);
+    }
+
+    void writeExternal(DataOutput out) throws IOException {
+        out.writeUTF(getId());
+    }
+
+    static Chrono readExternal(DataInput in) throws IOException {
+        String id = in.readUTF();
+        return Chrono.of(id);
+    }
 }

@@ -39,6 +39,9 @@ import static javax.time.calendrical.ChronoField.MICRO_OF_SECOND;
 import static javax.time.calendrical.ChronoField.MILLI_OF_SECOND;
 import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -403,7 +406,7 @@ public final class Instant
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return field.doSet(this, newValue);
+        return field.doWith(this, newValue);
     }
 
     //-----------------------------------------------------------------------
@@ -427,7 +430,7 @@ public final class Instant
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
-        return unit.doAdd(this, amountToAdd);
+        return unit.doPlus(this, amountToAdd);
     }
 
     //-----------------------------------------------------------------------
@@ -702,6 +705,22 @@ public final class Instant
     @Override
     public String toString() {
         return DateTimeFormatters.isoInstant().print(this);
+    }
+
+    // -----------------------------------------------------------------------
+    private Object writeReplace() {
+        return new Ser(Ser.INSTANT_TYPE, this);
+    }
+
+    void writeExternal(DataOutput out) throws IOException {
+        out.writeLong(seconds);
+        out.writeInt(nanos);
+    }
+
+    static Instant readExternal(DataInput in) throws IOException {
+        long seconds = in.readLong();
+        int nanos = in.readInt();
+        return Instant.ofEpochSecond(seconds, nanos);
     }
 
 }

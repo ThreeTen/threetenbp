@@ -141,7 +141,7 @@ public interface PeriodUnit {
      * @return the adjusted date-time object, not null
      * @throws DateTimeException if the period cannot be added
      */
-    <R extends DateTime> R doAdd(R dateTime, long periodToAdd);
+    <R extends DateTime> R doPlus(R dateTime, long periodToAdd);
 
     //-----------------------------------------------------------------------
     /**

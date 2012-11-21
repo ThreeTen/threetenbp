@@ -43,9 +43,7 @@ import static javax.time.calendrical.ChronoField.EPOCH_MONTH;
 import static javax.time.calendrical.ChronoField.ERA;
 import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
 import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
-import static javax.time.calendrical.ChronoField.WEEK_BASED_YEAR;
 import static javax.time.calendrical.ChronoField.WEEK_OF_MONTH;
-import static javax.time.calendrical.ChronoField.WEEK_OF_WEEK_BASED_YEAR;
 import static javax.time.calendrical.ChronoField.WEEK_OF_YEAR;
 import static javax.time.calendrical.ChronoField.YEAR;
 import static javax.time.calendrical.ChronoField.YEAR_OF_ERA;
@@ -53,6 +51,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -101,12 +100,10 @@ public class TestOffsetDate extends AbstractDateTimeTest {
             EPOCH_DAY,
             ALIGNED_WEEK_OF_MONTH,
             WEEK_OF_MONTH,
-            WEEK_OF_WEEK_BASED_YEAR,
             ALIGNED_WEEK_OF_YEAR,
             WEEK_OF_YEAR,
             MONTH_OF_YEAR,
             EPOCH_MONTH,
-            WEEK_BASED_YEAR,
             YEAR_OF_ERA,
             YEAR,
             ERA,
@@ -116,6 +113,17 @@ public class TestOffsetDate extends AbstractDateTimeTest {
             JulianDayField.RATA_DIE,
         };
         return Arrays.asList(array);
+    }
+
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_serialization_format() throws ClassNotFoundException, IOException {
+        assertEqualsSerialisedForm(OffsetDate.of(2012, 9, 16, ZoneOffset.of("+01:00")));
+    }
+
+    @Test(groups={"tck"})
+    public void test_serialization() throws ClassNotFoundException, IOException {
+        assertSerializable(TEST_2007_07_15_PONE);
     }
 
     @Override

@@ -43,7 +43,6 @@ import static javax.time.calendrical.ChronoUnit.MONTHS;
 import static javax.time.calendrical.ChronoUnit.NANOS;
 import static javax.time.calendrical.ChronoUnit.SECONDS;
 import static javax.time.calendrical.ChronoUnit.WEEKS;
-import static javax.time.calendrical.ChronoUnit.WEEK_BASED_YEARS;
 import static javax.time.calendrical.ChronoUnit.YEARS;
 
 import javax.time.DateTimeConstants;
@@ -304,27 +303,6 @@ public enum ChronoField implements DateTimeField {
      */
     WEEK_OF_MONTH("WeekOfMonth", WEEKS, MONTHS, DateTimeValueRange.of(0, 1, 4, 5)),
     /**
-     * The week within a week-based-year.
-     * <p>
-     * This represents the concept of the count of weeks within a week-based-year.
-     * This field is defined by ISO-8601 and based on a year, known as the week-based-year,
-     * that always starts on Monday.
-     * This field is typically used with {@link #DAY_OF_WEEK} and {@link #WEEK_BASED_YEAR}.
-     * <p>
-     * In the default ISO calendar system, the week starts on Monday and there must be at
-     * least 4 days in the first week. With these definitions, the week-based-year can start up
-     * to 3 days before or up to 3 days after the start of the standard year.
-     * Thus, if the 1st day of the regular year is a Tuesday, then the week-based-year starts
-     * on December 31st of the previous regular year. Similarly, if the 1st day of the regular
-     * year is a Sunday, then the week-based-year starts on January 2nd.
-     * Given this definition, the week of the week-based-year counts the week from one
-     * to 52 or 53 within the week-based-year.
-     * <p>
-     * Non-ISO calendar systems should implement this field in the same way, taking
-     * into account any differences in week or year length.
-     */
-    WEEK_OF_WEEK_BASED_YEAR("WeekOfWeekBasedYear", WEEKS, WEEK_BASED_YEARS, DateTimeValueRange.of(1, 52, 53)),
-    /**
      * The aligned week within a year.
      * <p>
      * This represents concept of the count of weeks within the period of a year
@@ -384,26 +362,6 @@ public enum ChronoField implements DateTimeField {
      * count of months. It is recommended to define zero as the month of 1970-01-01 (ISO).
      */
     EPOCH_MONTH("EpochMonth", MONTHS, FOREVER, DateTimeValueRange.of((DateTimeConstants.MIN_YEAR - 1970L) * 12, (DateTimeConstants.MAX_YEAR - 1970L) * 12L - 1L)),
-    /**
-     * The proleptic week-based-year.
-     * <p>
-     * This represents the concept of the week-based-year, counting sequentially using negative
-     * numbers and not based on the era. This field is defined by ISO-8601, and numbers years
-     * related to the standard ISO year, ensuring that the week-based-year always starts on Monday.
-     * This field is typically used with {@link #DAY_OF_WEEK} and {@link #WEEK_OF_WEEK_BASED_YEAR}.
-     * <p>
-     * In the default ISO calendar system, the week starts on Monday and there must be at
-     * least 4 days in the first week. With these definitions, the week-based-year can start up
-     * to 3 days before or up to 3 days after the start of the standard year.
-     * Similarly, the week-based-year can end before or after the end of the regular year.
-     * Thus, if the 1st day of the regular year is a Tuesday, then the week-based-year starts
-     * on December 31st of the previous regular year. Similarly, if the 1st day of the regular
-     * year is a Sunday, then the week-based-year starts on January 2nd.
-     * <p>
-     * Non-ISO calendar systems should implement this field in the same way, taking
-     * into account any differences in week or year length.
-     */
-    WEEK_BASED_YEAR("WeekBasedYear", WEEK_BASED_YEARS, FOREVER, DateTimeValueRange.of(DateTimeConstants.MIN_YEAR, DateTimeConstants.MAX_YEAR)),
     /**
      * The year within the era.
      * <p>
@@ -614,7 +572,7 @@ public enum ChronoField implements DateTimeField {
     }
 
     @Override
-    public <R extends DateTimeAccessor> R doSet(R dateTime, long newValue) {
+    public <R extends DateTime> R doWith(R dateTime, long newValue) {
         return (R) dateTime.with(this, newValue);
     }
 

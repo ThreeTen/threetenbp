@@ -41,6 +41,9 @@ import static javax.time.DateTimeConstants.NANOS_PER_MINUTE;
 import static javax.time.DateTimeConstants.NANOS_PER_SECOND;
 import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -657,7 +660,7 @@ public final class LocalDateTime
                 return with(date.with(field, newValue), time);
             }
         }
-        return field.doSet(this, newValue);
+        return field.doWith(this, newValue);
     }
 
     //-----------------------------------------------------------------------
@@ -945,7 +948,7 @@ public final class LocalDateTime
             }
             return with(date.plus(amountToAdd, unit), time);
         }
-        return unit.doAdd(this, amountToAdd);
+        return unit.doPlus(this, amountToAdd);
     }
 
     //-----------------------------------------------------------------------
@@ -1545,6 +1548,22 @@ public final class LocalDateTime
     @Override
     public String toString() {
         return date.toString() + 'T' + time.toString();
+    }
+
+    //-----------------------------------------------------------------------
+    private Object writeReplace() {
+        return new Ser(Ser.LOCAL_DATE_TIME_TYPE, this);
+    }
+
+    void writeExternal(DataOutput out) throws IOException {
+        date.writeExternal(out);
+        time.writeExternal(out);
+    }
+
+    static LocalDateTime readExternal(DataInput in) throws IOException {
+        LocalDate date = LocalDate.readExternal(in);
+        LocalTime time = LocalTime.readExternal(in);
+        return LocalDateTime.of(date, time);
     }
 
 }

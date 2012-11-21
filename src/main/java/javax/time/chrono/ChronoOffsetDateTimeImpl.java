@@ -36,6 +36,9 @@ import static javax.time.calendrical.ChronoField.EPOCH_DAY;
 import static javax.time.calendrical.ChronoField.NANO_OF_DAY;
 import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -380,7 +383,7 @@ class ChronoOffsetDateTimeImpl<C extends Chrono<C>>
             }
             return with(dateTime.with(field, newValue), offset);
         }
-        return getDate().getChrono().ensureChronoOffsetDateTime(field.doSet(this, newValue));
+        return getDate().getChrono().ensureChronoOffsetDateTime(field.doWith(this, newValue));
     }
 
     //-----------------------------------------------------------------------
@@ -584,7 +587,7 @@ class ChronoOffsetDateTimeImpl<C extends Chrono<C>>
         if (unit instanceof ChronoUnit) {
             return with(dateTime.plus(amountToAdd, unit), offset);
         }
-        return getDate().getChrono().ensureChronoOffsetDateTime(unit.doAdd(this, amountToAdd));
+        return getDate().getChrono().ensureChronoOffsetDateTime(unit.doPlus(this, amountToAdd));
     }
 
     //-----------------------------------------------------------------------
@@ -997,6 +1000,23 @@ class ChronoOffsetDateTimeImpl<C extends Chrono<C>>
         long secs = epochDay * SECONDS_PER_DAY + dateTime.getTime().toSecondOfDay();
         secs -= offset.getTotalSeconds();
         return secs;
+    }
+
+
+    //-----------------------------------------------------------------------
+    private Object writeReplace() {
+        return new Ser(Ser.CHRONO_OFFSETDATETIME_TYPE, this);
+    }
+
+    void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(dateTime);
+        out.writeObject(offset);
+    }
+
+    static ChronoOffsetDateTime<?> readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        ChronoLocalDateTime<?> dateTime = (ChronoLocalDateTime<?>) in.readObject();
+        ZoneOffset offset = (ZoneOffset) in.readObject();
+        return dateTime.atOffset(offset);
     }
 
 }

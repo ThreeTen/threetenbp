@@ -44,6 +44,9 @@ import static javax.time.calendrical.ChronoField.ERA;
 import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
 import static javax.time.calendrical.ChronoField.YEAR;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -307,6 +310,9 @@ public final class LocalDate
      * @throws DateTimeException if unable to convert to a {@code LocalDate}
      */
     public static LocalDate from(DateTimeAccessor dateTime) {
+        if (dateTime instanceof LocalDate) {
+            return (LocalDate) dateTime;
+        }
         // handle builder as a special case
         if (dateTime instanceof DateTimeBuilder) {
             DateTimeBuilder builder = (DateTimeBuilder) dateTime;
@@ -424,7 +430,6 @@ public final class LocalDate
                     case DAY_OF_YEAR: return DateTimeValueRange.of(1, lengthOfYear());
                     case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1, getMonth() == Month.FEBRUARY && isLeapYear() == false ? 4 : 5);
                     case WEEK_OF_MONTH: throw new UnsupportedOperationException("TODO");
-                    case WEEK_OF_WEEK_BASED_YEAR: throw new UnsupportedOperationException("TODO");
                     case WEEK_OF_YEAR: throw new UnsupportedOperationException("TODO");
                     case YEAR_OF_ERA:
                         return (getYear() <= 0 ? DateTimeValueRange.of(1, DateTimeConstants.MAX_YEAR + 1) : DateTimeValueRange.of(1, DateTimeConstants.MAX_YEAR));
@@ -468,12 +473,10 @@ public final class LocalDate
             case EPOCH_DAY: throw new DateTimeException("Field too large for an int: " + field);
             case ALIGNED_WEEK_OF_MONTH: return ((day - 1) / 7) + 1;
             case WEEK_OF_MONTH: throw new UnsupportedOperationException("TODO");
-            case WEEK_OF_WEEK_BASED_YEAR: throw new UnsupportedOperationException("TODO");
             case ALIGNED_WEEK_OF_YEAR: return ((getDayOfYear() - 1) / 7) + 1;
             case WEEK_OF_YEAR: throw new UnsupportedOperationException("TODO");
             case MONTH_OF_YEAR: return month;
             case EPOCH_MONTH: throw new DateTimeException("Field too large for an int: " + field);
-            case WEEK_BASED_YEAR: throw new UnsupportedOperationException("TODO");
             case YEAR_OF_ERA: return (year >= 1 ? year : 1 - year);
             case YEAR: return year;
             case ERA: return (year >= 1 ? 1 : 0);
@@ -731,19 +734,17 @@ public final class LocalDate
                 case EPOCH_DAY: return LocalDate.ofEpochDay(newValue);
                 case ALIGNED_WEEK_OF_MONTH: return plusWeeks(newValue - getLong(ALIGNED_WEEK_OF_MONTH));
                 case WEEK_OF_MONTH: throw new UnsupportedOperationException("TODO");
-                case WEEK_OF_WEEK_BASED_YEAR: throw new UnsupportedOperationException("TODO");
                 case ALIGNED_WEEK_OF_YEAR: return plusWeeks(newValue - getLong(ALIGNED_WEEK_OF_YEAR));
                 case WEEK_OF_YEAR: throw new UnsupportedOperationException("TODO");
                 case MONTH_OF_YEAR: return withMonth((int) newValue);
                 case EPOCH_MONTH: return plusMonths(newValue - getLong(EPOCH_MONTH));
-                case WEEK_BASED_YEAR: throw new UnsupportedOperationException("TODO");
                 case YEAR_OF_ERA: return withYear((int) (year >= 1 ? newValue : 1 - newValue));
                 case YEAR: return withYear((int) newValue);
                 case ERA: return (getLong(ERA) == newValue ? this : withYear(1 - year));
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return field.doSet(this, newValue);
+        return field.doWith(this, newValue);
     }
 
     //-----------------------------------------------------------------------
@@ -866,7 +867,6 @@ public final class LocalDate
                 case MONTHS: return plusMonths(amountToAdd);
                 case QUARTER_YEARS: return plusYears(amountToAdd / 256).plusMonths((amountToAdd % 256) * 3);  // no overflow (256 is multiple of 4)
                 case HALF_YEARS: return plusYears(amountToAdd / 256).plusMonths((amountToAdd % 256) * 6);  // no overflow (256 is multiple of 2)
-                case WEEK_BASED_YEARS: throw new UnsupportedOperationException("TODO");
                 case YEARS: return plusYears(amountToAdd);
                 case DECADES: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 10));
                 case CENTURIES: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 100));
@@ -875,7 +875,7 @@ public final class LocalDate
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
-        return unit.doAdd(this, amountToAdd);
+        return unit.doPlus(this, amountToAdd);
     }
 
     //-----------------------------------------------------------------------
@@ -1247,7 +1247,6 @@ public final class LocalDate
                 case MONTHS: return monthsUntil(end);
                 case QUARTER_YEARS: return monthsUntil(end) / 3;
                 case HALF_YEARS: return monthsUntil(end) / 6;
-                case WEEK_BASED_YEARS: throw new UnsupportedOperationException("TODO");
                 case YEARS: return monthsUntil(end) / 12;
                 case DECADES: return monthsUntil(end) / 120;
                 case CENTURIES: return monthsUntil(end) / 1200;
@@ -1452,6 +1451,24 @@ public final class LocalDate
             .append(dayValue < 10 ? "-0" : "-")
             .append(dayValue)
             .toString();
+    }
+
+    //-----------------------------------------------------------------------
+    private Object writeReplace() {
+        return new Ser(Ser.LOCAL_DATE_TYPE, this);
+    }
+
+    void writeExternal(DataOutput out) throws IOException {
+    	out.writeInt(year);
+    	out.writeByte(month);
+    	out.writeByte(day);
+    }
+
+    static LocalDate readExternal(DataInput in) throws IOException {
+    	int year = in.readInt();
+    	int month = in.readByte();
+    	int dayOfMonth = in.readByte();
+    	return LocalDate.of(year, month, dayOfMonth);
     }
 
 }

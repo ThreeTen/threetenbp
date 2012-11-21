@@ -189,7 +189,7 @@ public interface DateTimeField extends Comparator<DateTimeAccessor> {
      * Implementation of the logic to set the value of this field.
      * <p>
      * This method is not intended to be called by application code directly.
-     * Applications should use {@link DateTimeAccessor#with(DateTimeField, long)} on the date-time
+     * Applications should use {@link DateTime#with(DateTimeField, long)} on the date-time
      * object passing this as the argument.
      * <pre>
      *   updated = date.with(field, newValue);
@@ -205,7 +205,7 @@ public interface DateTimeField extends Comparator<DateTimeAccessor> {
      * @return the adjusted date-time object, not null
      * @throws DateTimeException if the value is invalid
      */
-    <R extends DateTimeAccessor> R doSet(R dateTime, long newValue);
+    <R extends DateTime> R doWith(R dateTime, long newValue);
 
     /**
      * Resolves the date/time information in the builder

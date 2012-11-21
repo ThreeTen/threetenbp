@@ -51,6 +51,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -110,6 +111,20 @@ public class TestOffsetTime extends AbstractDateTimeTest {
         return Arrays.asList(array);
     }
 
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_serialization() throws IOException, ClassNotFoundException {
+        assertSerializable(TEST_11_30_59_500_PONE);
+    }
+
+    @Test(groups={"tck"})
+    public void test_serialization_format() throws ClassNotFoundException, IOException {
+        LocalTime time = LocalTime.of(22, 17, 59, 465 * 1000000);
+        ZoneOffset offset = ZoneOffset.of("+01:00");
+        assertEqualsSerialisedForm(OffsetTime.of(time, offset));
+    }
+
+    //-----------------------------------------------------------------------
     @Override
     protected List<DateTimeField> invalidFields() {
         List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(ChronoField.values()));

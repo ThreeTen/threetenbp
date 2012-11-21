@@ -51,6 +51,9 @@ import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
 import static javax.time.calendrical.ChronoField.SECOND_OF_DAY;
 import static javax.time.calendrical.ChronoField.SECOND_OF_MINUTE;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -329,6 +332,9 @@ public final class LocalTime
      * @throws DateTimeException if unable to convert to a {@code LocalTime}
      */
     public static LocalTime from(DateTimeAccessor dateTime) {
+        if (dateTime instanceof LocalTime) {
+            return (LocalTime) dateTime;
+        }
         // handle builder as a special case
         if (dateTime instanceof DateTimeBuilder) {
             DateTimeBuilder builder = (DateTimeBuilder) dateTime;
@@ -574,7 +580,7 @@ public final class LocalTime
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return field.doSet(this, newValue);
+        return field.doWith(this, newValue);
     }
 
     //-----------------------------------------------------------------------
@@ -697,7 +703,7 @@ public final class LocalTime
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
-        return unit.doAdd(this, amountToAdd);
+        return unit.doPlus(this, amountToAdd);
     }
 
     //-----------------------------------------------------------------------
@@ -1112,6 +1118,26 @@ public final class LocalTime
     public String toString(CalendricalFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
         return formatter.print(this);
+    }
+
+    //-----------------------------------------------------------------------
+    private Object writeReplace() {
+        return new Ser(Ser.LOCAL_TIME_TYPE, this);
+    }
+
+    void writeExternal(DataOutput out) throws IOException {
+        out.writeByte(hour);
+        out.writeByte(minute);
+        out.writeByte(second);
+        out.writeInt(nano);
+    }
+
+    static LocalTime readExternal(DataInput in) throws IOException {
+        byte hour = in.readByte();
+        byte minute = in.readByte();
+        byte second = in.readByte();
+        int nano = in.readInt();
+        return LocalTime.of(hour, minute, second, nano);
     }
 
 }

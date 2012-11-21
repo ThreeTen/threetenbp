@@ -34,6 +34,9 @@ package javax.time;
 import static javax.time.DateTimeConstants.SECONDS_PER_HOUR;
 import static javax.time.DateTimeConstants.SECONDS_PER_MINUTE;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
@@ -1084,7 +1087,7 @@ public final class ZonedDateTime
             }
             return withDateTime(getDateTime().with(field, newValue));
         }
-        return field.doSet(this, newValue);
+        return field.doWith(this, newValue);
     }
 
     //-----------------------------------------------------------------------
@@ -1374,7 +1377,7 @@ public final class ZonedDateTime
         if (unit instanceof ChronoUnit) {
             return withDateTime(getDateTime().plus(amountToAdd, unit));
         }
-        return unit.doAdd(this, amountToAdd);
+        return unit.doPlus(this, amountToAdd);
     }
 
     //-----------------------------------------------------------------------
@@ -1950,6 +1953,22 @@ public final class ZonedDateTime
     @Override  // override for Javadoc
     public String toString() {
         return dateTime.toString() + '[' + zone.toString() + ']';
+    }
+
+    //-----------------------------------------------------------------------
+    private Object writeReplace() {
+        return new Ser(Ser.ZONED_DATE_TIME_TYPE, this);
+    }
+
+    void writeExternal(DataOutput out) throws IOException {
+        dateTime.writeExternal(out);
+        zone.writeExternal(out);
+    }
+
+    static ZonedDateTime readExternal(DataInput in) throws IOException {
+        OffsetDateTime dateTime = OffsetDateTime.readExternal(in);
+        ZoneId id = ZoneId.readExternal(in);
+        return ZonedDateTime.of(dateTime, id);
     }
 
 }

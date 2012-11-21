@@ -37,6 +37,9 @@ import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
 import static javax.time.calendrical.ChronoField.YEAR;
 import static javax.time.calendrical.ChronoField.YEAR_OF_ERA;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -408,7 +411,7 @@ public final class YearMonth
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return field.doSet(this, newValue);
+        return field.doWith(this, newValue);
     }
 
     //-----------------------------------------------------------------------
@@ -476,7 +479,7 @@ public final class YearMonth
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
-        return unit.doAdd(this, amountToAdd);
+        return unit.doPlus(this, amountToAdd);
     }
 
     /**
@@ -768,6 +771,22 @@ public final class YearMonth
     public String toString(CalendricalFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
         return formatter.print(this);
+    }
+
+    // -----------------------------------------------------------------------
+    private Object writeReplace() {
+        return new Ser(Ser.YEAR_MONTH_TYPE, this);
+    }
+
+    void writeExternal(DataOutput out) throws IOException {
+        out.writeInt(year);
+        out.writeByte(month);
+    }
+
+    static YearMonth readExternal(DataInput in) throws IOException {
+        int year = in.readInt();
+        byte month = in.readByte();
+        return YearMonth.of(year, month);
     }
 
 }

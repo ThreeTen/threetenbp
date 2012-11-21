@@ -60,9 +60,7 @@ import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
 import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
 import static javax.time.calendrical.ChronoField.SECOND_OF_DAY;
 import static javax.time.calendrical.ChronoField.SECOND_OF_MINUTE;
-import static javax.time.calendrical.ChronoField.WEEK_BASED_YEAR;
 import static javax.time.calendrical.ChronoField.WEEK_OF_MONTH;
-import static javax.time.calendrical.ChronoField.WEEK_OF_WEEK_BASED_YEAR;
 import static javax.time.calendrical.ChronoField.WEEK_OF_YEAR;
 import static javax.time.calendrical.ChronoField.YEAR;
 import static javax.time.calendrical.ChronoField.YEAR_OF_ERA;
@@ -70,6 +68,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -139,12 +138,10 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
             EPOCH_DAY,
             ALIGNED_WEEK_OF_MONTH,
             WEEK_OF_MONTH,
-            WEEK_OF_WEEK_BASED_YEAR,
             ALIGNED_WEEK_OF_YEAR,
             WEEK_OF_YEAR,
             MONTH_OF_YEAR,
             EPOCH_MONTH,
-            WEEK_BASED_YEAR,
             YEAR_OF_ERA,
             YEAR,
             ERA,
@@ -623,6 +620,19 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     public void test_minusDuration_intintintlong_zero() {
         ZonedDateTime t = TEST_DATE_TIME.minusDuration(0, 0, 0, 0);
         assertSame(t, TEST_DATE_TIME);
+    }
+
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_serialization_format() throws ClassNotFoundException, IOException {
+        LocalDate date = LocalDate.of(2012, 9, 16);
+        LocalTime time = LocalTime.of(22, 17, 59, 470 * 1000000);
+        assertEqualsSerialisedForm(ZonedDateTime.of(date, time, ZoneId.of("Europe/London")));
+    }
+
+    @Test(groups={"tck"})
+    public void test_serialization() throws ClassNotFoundException, IOException {
+        assertSerializable(TEST_DATE_TIME);
     }
 
 }

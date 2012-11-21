@@ -32,6 +32,7 @@
 package javax.time.format;
 
 import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
+import static javax.time.calendrical.ChronoField.DAY_OF_WEEK;
 import static javax.time.calendrical.ChronoField.DAY_OF_YEAR;
 import static javax.time.calendrical.ChronoField.HOUR_OF_DAY;
 import static javax.time.calendrical.ChronoField.MINUTE_OF_HOUR;
@@ -44,6 +45,7 @@ import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
 import java.text.ParsePosition;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -60,6 +62,7 @@ import javax.time.ZonedDateTime;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.ISOWeeks;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -930,90 +933,78 @@ public class TCKDateTimeFormatters {
         }
     }
 
-//    //-----------------------------------------------------------------------
-//    //-----------------------------------------------------------------------
-//    //-----------------------------------------------------------------------
-//    @DataProvider(name="weekDate")
-//    Iterator<Object[]> weekDate() {
-//        return new Iterator<Object[]>() {
-//            private ZonedDateTime date = ZonedDateTime.of(LocalDateTime.of(2003, 12, 29, 11, 5, 30), ZoneId.UTC);
-//            private ZonedDateTime endDate = date.withDate(2005, 1, 2);
-//            private int week = 1;
-//            private int day = 1;
-//
-//            public boolean hasNext() {
-//                return !date.isAfter(endDate);
-//            }
-//            public Object[] next() {
-//                StringBuilder sb = new StringBuilder("2004-W");
-//                if (week < 10) {
-//                    sb.append('0');
-//                }
-//                sb.append(week).append('-').append(day).append("Z[UTC:Z]");
-//                Object[] ret = new Object[] {date, sb.toString()};
-//                date = date.plusDays(1);
-//                day += 1;
-//                if (day == 8) {
-//                    day = 1;
-//                    week++;
-//                }
-//                return ret;
-//            }
-//            public void remove() {
-//                throw new UnsupportedOperationException();
-//            }
-//        };
-//    }
-//
-//    @Test(dataProvider="weekDate", groups={"tck"})
-//    public void test_print_isoWeekDate(CalendricalObject test, String expected) {
-//        assertEquals(DateTimeFormatters.isoWeekDate().print(test), expected);
-//    }
-//
-//    @Test(groups={"tck"})
-//    public void test_print_isoWeekDate_zoned_largeYear() {
-//        CalendricalObject test = ZonedDateTime.of(LocalDateTime.of(123456, 6, 3, 11, 5, 30), ZoneId.UTC);
-//        assertEquals(DateTimeFormatters.isoWeekDate().print(test), "+123456-W23-2Z[UTC:Z]");
-//    }
-//
-//    @Test(groups={"tck"})
-//    public void test_print_isoWeekDate_fields() {
-//        DateTimeBuilder test = new DateTimeBuilder();
-//        test.put(WEEK_BASED_YEAR, WEEK_BASED_YEAR.field(2004));
-//        test.put(WEEK_OF_WEEK_BASED_YEAR, WEEK_OF_WEEK_BASED_YEAR.field(5));
-//        test.put(DAY_OF_WEEK, DAY_OF_WEEK.field(2));
-//        assertEquals(DateTimeFormatters.isoWeekDate().print(test), "2004-W05-2");
-//    }
-//
-//    @Test(groups={"tck"})
-//    public void test_print_isoWeekDate_missingField() {
-//        try {
-//            CalendricalObject test = DateTimeFields.of(WEEK_BASED_YEAR, 2004, WEEK_OF_WEEK_BASED_YEAR, 1);
-//            DateTimeFormatters.isoWeekDate().print(test);
-//            fail();
-//        } catch (CalendricalRuleException ex) {
-//            assertEquals(ex.getRule(), DAY_OF_WEEK);
-//        }
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    @Test(groups={"tck"})
-//    public void test_parse_weekDate() {
-//        DateTimeBuilder expected = new DateTimeBuilder();
-//        expected.put(WEEK_BASED_YEAR, WEEK_BASED_YEAR.field(2004));
-//        expected.put(WEEK_OF_WEEK_BASED_YEAR, WEEK_OF_WEEK_BASED_YEAR.field(1));
-//        expected.put(DAY_OF_WEEK, DAY_OF_WEEK.field(1));
-//        assertParseMatch(DateTimeFormatters.isoWeekDate().parseToBuilder("2004-W01-1", new ParsePosition(0)), expected);
-//    }
-//
-//    @Test(groups={"tck"})
-//    public void test_parse_weekDate_largeYear() {
-//        DateTimeBuilder expected = new DateTimeBuilder();
-//        expected.put(WEEK_BASED_YEAR, WEEK_BASED_YEAR.field(123456));
-//        expected.put(WEEK_OF_WEEK_BASED_YEAR, WEEK_OF_WEEK_BASED_YEAR.field(4));
-//        expected.put(DAY_OF_WEEK, DAY_OF_WEEK.field(5));
-//        assertParseMatch(DateTimeFormatters.isoWeekDate().parseToBuilder("+123456-W04-5", new ParsePosition(0)), expected);
-//    }
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    @DataProvider(name="weekDate")
+    Iterator<Object[]> weekDate() {
+        return new Iterator<Object[]>() {
+            private ZonedDateTime date = ZonedDateTime.of(LocalDateTime.of(2003, 12, 29, 11, 5, 30), ZoneId.UTC);
+            private ZonedDateTime endDate = date.withDate(2005, 1, 2);
+            private int week = 1;
+            private int day = 1;
+
+            public boolean hasNext() {
+                return !date.isAfter(endDate);
+            }
+            public Object[] next() {
+                StringBuilder sb = new StringBuilder("2004-W");
+                if (week < 10) {
+                    sb.append('0');
+                }
+                sb.append(week).append('-').append(day).append("Z[UTC:Z]");
+                Object[] ret = new Object[] {date, sb.toString()};
+                date = date.plusDays(1);
+                day += 1;
+                if (day == 8) {
+                    day = 1;
+                    week++;
+                }
+                return ret;
+            }
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+        };
+    }
+
+    @Test(dataProvider="weekDate", groups={"tck"})
+    public void test_print_isoWeekDate(DateTimeAccessor test, String expected) {
+        assertEquals(DateTimeFormatters.isoWeekDate().print(test), expected);
+    }
+
+    @Test(groups={"tck"})
+    public void test_print_isoWeekDate_zoned_largeYear() {
+        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(123456, 6, 3, 11, 5, 30), ZoneId.UTC);
+        assertEquals(DateTimeFormatters.isoWeekDate().print(test), "+123456-W23-2Z[UTC:Z]");
+    }
+
+    @Test(groups={"tck"})
+    public void test_print_isoWeekDate_fields() {
+        DateTimeAccessor test = LocalDate.of(2004, 1, 27);
+        assertEquals(DateTimeFormatters.isoWeekDate().print(test), "2004-W05-2");
+    }
+
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    public void test_print_isoWeekDate_missingField() {
+        DateTimeAccessor test = YearMonth.of(2008, 6);
+        DateTimeFormatters.isoWeekDate().print(test);
+    }
+
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_parse_weekDate() {
+        LocalDate expected = LocalDate.of(2004, 1, 28);
+        assertEquals(DateTimeFormatters.isoWeekDate().parse("2004-W05-3", LocalDate.class), expected);
+    }
+
+    @Test(groups={"tck"})
+    public void test_parse_weekDate_largeYear() {
+        DateTimeBuilder builder = DateTimeFormatters.isoWeekDate().parseToBuilder("+123456-W04-5", new ParsePosition(0));
+        assertEquals(builder.getFieldValue(ISOWeeks.WEEK_BASED_YEAR), 123456);
+        assertEquals(builder.getFieldValue(ISOWeeks.WEEK_OF_WEEK_BASED_YEAR), 4);
+        assertEquals(builder.getFieldValue(DAY_OF_WEEK), 5);
+    }
 
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------

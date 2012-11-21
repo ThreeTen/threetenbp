@@ -33,6 +33,10 @@ package javax.time.chrono.global;
 
 import static javax.time.calendrical.ChronoField.ERA;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+
 import java.util.Locale;
 
 import javax.time.DateTimeException;
@@ -159,17 +163,6 @@ enum MinguoEra implements Era<MinguoChrono>  {
         return field.doGet(this);
     }
 
-    @Override
-    public Era<MinguoChrono> with(DateTimeField field, long newValue) {
-        if (field == ERA) {
-            int eravalue = ((ChronoField) field).checkValidIntValue(newValue);
-            return getChrono().eraOf(eravalue);
-        } else if (field instanceof ChronoField) {
-            throw new DateTimeException("Unsupported field: " + field.getName());
-        }
-        return field.doSet(this, newValue);
-    }
-
     //-------------------------------------------------------------------------
     @Override
     public DateTime doWithAdjustment(DateTime dateTime) {
@@ -191,6 +184,20 @@ enum MinguoEra implements Era<MinguoChrono>  {
     @Override
     public String getText(TextStyle style, Locale locale) {
         return new DateTimeFormatterBuilder().appendText(ERA, style).toFormatter(locale).print(this);
+    }
+
+    //-----------------------------------------------------------------------
+    private Object writeReplace() {
+        return new Ser(Ser.MINGUO_ERA_TYPE, this);
+    }
+
+    void writeExternal(DataOutput out) throws IOException {
+        out.writeByte(this.getValue());
+    }
+
+    static MinguoEra readExternal(DataInput in) throws IOException {
+        byte eraValue = in.readByte();
+        return MinguoEra.of(eraValue);
     }
 
 }

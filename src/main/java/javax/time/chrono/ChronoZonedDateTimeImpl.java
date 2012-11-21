@@ -33,6 +33,9 @@ package javax.time.chrono;
 
 import static javax.time.calendrical.ChronoField.EPOCH_DAY;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
@@ -535,7 +538,7 @@ import javax.time.zone.ZoneRules;
             }
             return with(dateTime.with(field, newValue));
         }
-        return getDate().getChrono().ensureChronoZonedDateTime(field.doSet(this, newValue));
+        return getDate().getChrono().ensureChronoZonedDateTime(field.doWith(this, newValue));
     }
 
     //-----------------------------------------------------------------------
@@ -698,7 +701,7 @@ import javax.time.zone.ZoneRules;
         if (unit instanceof ChronoUnit) {
             return with(dateTime.plus(amountToAdd, unit));
         }
-        return getDate().getChrono().ensureChronoZonedDateTime(unit.doAdd(this, amountToAdd));   /// TODO: Generics replacement Risk!
+        return getDate().getChrono().ensureChronoZonedDateTime(unit.doPlus(this, amountToAdd));   /// TODO: Generics replacement Risk!
     }
 
     //-----------------------------------------------------------------------
@@ -1095,6 +1098,22 @@ import javax.time.zone.ZoneRules;
      */
     public ChronoOffsetDateTime<C> getOffsetDateTime() {
         return dateTime;
+    }
+
+    //-----------------------------------------------------------------------
+    private Object writeReplace() {
+        return new Ser(Ser.CHRONO_ZONEDDATETIME_TYPE, this);
+    }
+
+    void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(dateTime);
+        out.writeObject(zone);
+    }
+
+    static ChronoZonedDateTime<?> readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        ChronoOffsetDateTime<?> dateTime = (ChronoOffsetDateTime<?>) in.readObject();
+        ZoneId zone = (ZoneId) in.readObject();
+        return dateTime.atZoneSimilarLocal(zone);
     }
 
 }

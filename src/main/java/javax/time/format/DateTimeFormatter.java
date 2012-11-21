@@ -339,6 +339,7 @@ public final class DateTimeFormatter implements CalendricalFormatter {
      *  and the index of any error, not null
      * @return the parsed text, null only if the parse results in an error
      * @throws IndexOutOfBoundsException if the position is invalid
+     * @throws DateTimeParseException if the parse fails
      * @throws DateTimeException if there is a date/time problem
      */
     public DateTimeBuilder parseToBuilder(CharSequence text, ParsePosition position) {

@@ -31,6 +31,9 @@
  */
 package javax.time.chrono.global;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
@@ -270,6 +273,20 @@ final class JapaneseEra
     @Override
     public String toString() {
         return getAbbreviation();
+    }
+
+    //-----------------------------------------------------------------------
+    private Object writeReplace() {
+        return new Ser(Ser.JAPANESE_ERA_TYPE, this);
+    }
+
+    void writeExternal(DataOutput out) throws IOException {
+        out.writeByte(this.getValue());
+    }
+
+    static JapaneseEra readExternal(DataInput in) throws IOException {
+        byte eraValue = in.readByte();
+        return JapaneseEra.of(eraValue);
     }
 
 }

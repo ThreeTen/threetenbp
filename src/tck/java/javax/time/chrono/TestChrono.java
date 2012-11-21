@@ -33,8 +33,13 @@ package javax.time.chrono;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Locale;
 import java.util.Set;
 
@@ -146,6 +151,23 @@ public class TestChrono {
     public void test_lookupLocale(Chrono<?> chrono, String calendarType) {
         Locale locale = new Locale.Builder().setLanguage("en").setRegion("CA").setUnicodeLocaleKeyword("ca", calendarType).build();
         assertEquals(Chrono.ofLocale(locale), chrono);
+    }
+
+
+    //-----------------------------------------------------------------------
+    // serialization; serialize and check each calendar system
+    //-----------------------------------------------------------------------
+    @Test(groups={"implementation"}, dataProvider = "calendarsystemtype")
+    public <C extends Chrono<C>> void test_chronoSerializationSingleton(C chrono, String calendarType) throws Exception {
+        C orginal = chrono;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(baos);
+        out.writeObject(orginal);
+        out.close();
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        ObjectInputStream in = new ObjectInputStream(bais);
+        C ser = (C)in.readObject();
+        assertSame(ser, chrono, "Deserialized Chrono is not the singleton serialized");
     }
 
 }

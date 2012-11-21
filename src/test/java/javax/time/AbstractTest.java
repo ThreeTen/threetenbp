@@ -31,10 +31,22 @@
  */
 package javax.time;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 /**
  * Base test class.
  */
 public abstract class AbstractTest {
+
+    private static final String SERIALISATION_DATA_FOLDER = "src/test/resources/";
 
     protected static boolean isIsoLeap(long year) {
         if (year % 4 != 0) {
@@ -44,6 +56,43 @@ public abstract class AbstractTest {
             return false;
         }
         return true;
+    }
+
+    protected static void assertSerializable(Object o) throws IOException, ClassNotFoundException {
+        Object deserialisedObject = writeThenRead(o);
+        assertEquals(deserialisedObject, o);
+    }
+
+    protected static void assertSerializableAndSame(Object o) throws IOException, ClassNotFoundException {
+        Object deserialisedObject = writeThenRead(o);
+        assertSame(deserialisedObject, o);
+    }
+
+    protected static Object writeThenRead(Object o) throws IOException, ClassNotFoundException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos) ) {
+            oos.writeObject(o);
+        }
+
+        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
+            return ois.readObject();
+        }
+    }
+
+    protected static void assertEqualsSerialisedForm(Object objectSerialised) throws IOException, ClassNotFoundException {
+        assertEqualsSerialisedForm(objectSerialised, objectSerialised.getClass());
+    }
+
+    protected static void assertEqualsSerialisedForm(Object objectSerialised, Class<?> cls) throws IOException, ClassNotFoundException {
+        String className = cls.getSimpleName();
+//        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(SERIALISATION_DATA_FOLDER + className + ".bin"))) {
+//            out.writeObject(objectSerialised);
+//        }
+
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(SERIALISATION_DATA_FOLDER + className + ".bin"))) {
+            Object objectFromFile = in.readObject();
+            assertEquals(objectFromFile, objectSerialised);
+        }
     }
 
 }

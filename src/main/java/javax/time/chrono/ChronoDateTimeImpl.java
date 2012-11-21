@@ -42,6 +42,9 @@ import static javax.time.DateTimeConstants.NANOS_PER_SECOND;
 import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
 import static javax.time.calendrical.ChronoField.EPOCH_DAY;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -300,7 +303,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
                 return with(date.with(field, newValue), time);
             }
         }
-        return date.getChrono().ensureChronoLocalDateTime(field.doSet(this, newValue));
+        return date.getChrono().ensureChronoLocalDateTime(field.doWith(this, newValue));
     }
 
     //-----------------------------------------------------------------------
@@ -525,7 +528,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
             }
             return with(date.plus(amountToAdd, unit), time);
         }
-        return date.getChrono().ensureChronoLocalDateTime(unit.doAdd(this, amountToAdd));
+        return date.getChrono().ensureChronoLocalDateTime(unit.doPlus(this, amountToAdd));
     }
 
     //-----------------------------------------------------------------------
@@ -957,6 +960,22 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
     @Override
     public LocalTime getTime() {
         return time;
+    }
+
+    //-----------------------------------------------------------------------
+    private Object writeReplace() {
+        return new Ser(Ser.CHRONO_LOCALDATETIME_TYPE, this);
+    }
+
+    void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(date);
+        out.writeObject(time);
+    }
+
+    static ChronoLocalDateTime<?> readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        ChronoLocalDate<?> date = (ChronoLocalDate<?>) in.readObject();
+        LocalTime time = (LocalTime) in.readObject();
+        return date.atTime(time);
     }
 
 }

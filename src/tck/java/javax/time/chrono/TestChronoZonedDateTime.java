@@ -31,16 +31,22 @@
  */
 package javax.time.chrono;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.time.Duration;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.time.Duration;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
+import javax.time.ZonedDateTime;
 import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
@@ -88,7 +94,7 @@ public class TestChronoZonedDateTime {
             if (chrono != chrono2) {
                 try {
                     ChronoZonedDateTime<?> notreached = codt.with(adjuster);
-                    Assert.fail("WithAdjuster should have thrown a ClassCastException, " 
+                    Assert.fail("WithAdjuster should have thrown a ClassCastException, "
                             + "required: " + codt + ", supplied: " + codt2);
                 } catch (ClassCastException cce) {
                     // Expected exception; not an error
@@ -164,7 +170,7 @@ public class TestChronoZonedDateTime {
             if (chrono != chrono2) {
                 try {
                     ChronoZonedDateTime<?> notreached = codt.plus(1, adjuster);
-                    Assert.fail("PeriodUnit.doAdd plus should have thrown a ClassCastException, " + codt
+                    Assert.fail("PeriodUnit.doPlus plus should have thrown a ClassCastException, " + codt
                             + " can not be cast to " + codt2);
                 } catch (ClassCastException cce) {
                     // Expected exception; not an error
@@ -188,7 +194,7 @@ public class TestChronoZonedDateTime {
             if (chrono != chrono2) {
                 try {
                     ChronoZonedDateTime<?> notreached = codt.minus(1, adjuster);
-                    Assert.fail("PeriodUnit.doAdd minus should have thrown a ClassCastException, " + codt.getClass()
+                    Assert.fail("PeriodUnit.doPlus minus should have thrown a ClassCastException, " + codt.getClass()
                             + " can not be cast to " + codt2.getClass());
                 } catch (ClassCastException cce) {
                     // Expected exception; not an error
@@ -212,7 +218,7 @@ public class TestChronoZonedDateTime {
             if (chrono != chrono2) {
                 try {
                     ChronoZonedDateTime<?> notreached = codt.with(adjuster, 1);
-                    Assert.fail("DateTimeField doSet should have thrown a ClassCastException, " + codt.getClass()
+                    Assert.fail("DateTimeField doWith() should have thrown a ClassCastException, " + codt.getClass()
                             + " can not be cast to " + codt2.getClass());
                 } catch (ClassCastException cce) {
                     // Expected exception; not an error
@@ -220,7 +226,7 @@ public class TestChronoZonedDateTime {
             } else {
                 // Same chronology,
                 ChronoZonedDateTime<?> result = codt.with(adjuster, 1);
-                assertEquals(result, codt2, "DateTimeField doSet failed to replace date");
+                assertEquals(result, codt2, "DateTimeField doWith() failed to replace date");
             }
         }
     }
@@ -292,6 +298,22 @@ public class TestChronoZonedDateTime {
         }
     }
 
+    //-----------------------------------------------------------------------
+    // Test Serialization of ISO via chrono API
+    //-----------------------------------------------------------------------
+    @Test( groups={"tck"}, dataProvider="calendars")
+    public <C extends Chrono<C>> void test_ChronoZonedDateTimeSerialization(C chrono) throws Exception {
+        ZonedDateTime ref = LocalDate.of(2000, 1, 5).atTime(12, 1, 2, 3).atZone(ZoneId.of("GMT+01:23"));
+        ChronoZonedDateTime<C> orginal = chrono.date(ref).atTime(ref.getTime()).atZone(ref.getZone());
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(baos);
+        out.writeObject(orginal);
+        out.close();
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        ObjectInputStream in = new ObjectInputStream(bais);
+        ChronoZonedDateTime<C> ser = (ChronoZonedDateTime<C>) in.readObject();
+        assertEquals(ser, orginal, "deserialized date is wrong");
+    }
 
 
     /**
@@ -324,11 +346,11 @@ public class TestChronoZonedDateTime {
 
     /**
      * FixedPeriodUnit returns a fixed DateTime in all adjustments.
-     * Construct an FixedPeriodUnit with the DateTime that should be returned from doAdd.
+     * Construct an FixedPeriodUnit with the DateTime that should be returned from doPlus.
      */
     static class FixedPeriodUnit implements PeriodUnit {
         private DateTime dateTime;
-        
+
         FixedPeriodUnit(DateTime dateTime) {
             this.dateTime = dateTime;
         }
@@ -354,7 +376,7 @@ public class TestChronoZonedDateTime {
         }
 
         @Override
-        public <R extends DateTime> R doAdd(R dateTime, long periodToAdd) {
+        public <R extends DateTime> R doPlus(R dateTime, long periodToAdd) {
             return (R)this.dateTime;
         }
 
@@ -366,7 +388,7 @@ public class TestChronoZonedDateTime {
 
     /**
      * FixedDateTimeField returns a fixed DateTime in all adjustments.
-     * Construct an FixedDateTimeField with the DateTime that should be returned from doSet.
+     * Construct an FixedDateTimeField with the DateTime that should be returned from doWith.
      */
     static class FixedDateTimeField implements DateTimeField {
         private DateTime dateTime;
@@ -414,9 +436,10 @@ public class TestChronoZonedDateTime {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
+        @SuppressWarnings("unchecked")
         @Override
-        public <R extends DateTimeAccessor> R doSet(R dateTime, long newValue) {
-            return (R)this.dateTime;
+        public <R extends DateTime> R doWith(R dateTime, long newValue) {
+            return (R) this.dateTime;
         }
 
         @Override

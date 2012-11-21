@@ -32,8 +32,10 @@
 package javax.time;
 
 import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -56,6 +58,19 @@ public class TestZoneOffset extends AbstractDateTimeTest {
     protected List<DateTimeAccessor> samples() {
         DateTimeAccessor[] array = {ZoneOffset.ofHours(1), ZoneOffset.ofHoursMinutesSeconds(-5, -6, -30) };
         return Arrays.asList(array);
+    }
+
+    //-----------------------------------------------------------------------
+	@Test(groups={"tck"})
+    public void test_serialization() throws Exception {
+        ZoneOffset test = ZoneOffset.of("+01:30");
+        ZoneOffset result = (ZoneOffset) writeThenRead(test);
+        assertEquals(result.getTotalSeconds(), 90 * 60);
+    }
+
+    @Test(groups={"tck"})
+    public void test_serialization_format() throws ClassNotFoundException, IOException {
+        assertEqualsSerialisedForm(ZoneOffset.of("+18:00"));
     }
 
     @Override

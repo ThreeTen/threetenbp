@@ -35,6 +35,9 @@ import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
 import static javax.time.calendrical.ChronoField.EPOCH_DAY;
 import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -455,7 +458,7 @@ public final class OffsetDate
             }
             return with(date.with(field, newValue), offset);
         }
-        return field.doSet(this, newValue);
+        return field.doWith(this, newValue);
     }
 
     //-----------------------------------------------------------------------
@@ -562,7 +565,7 @@ public final class OffsetDate
         if (unit instanceof ChronoUnit) {
             return with(date.plus(amountToAdd, unit), offset);
         }
-        return unit.doAdd(this, amountToAdd);
+        return unit.doPlus(this, amountToAdd);
     }
 
     //-----------------------------------------------------------------------
@@ -1087,6 +1090,22 @@ public final class OffsetDate
     public String toString(CalendricalFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
         return formatter.print(this);
+    }
+
+    //-----------------------------------------------------------------------
+    private Object writeReplace() {
+        return new Ser(Ser.OFFSET_DATE_TYPE, this);
+    }
+
+    void writeExternal(DataOutput out) throws IOException {
+    	date.writeExternal(out);
+    	offset.writeExternal(out);
+    }
+
+    static OffsetDate readExternal(DataInput in) throws IOException {
+    	LocalDate date = LocalDate.readExternal(in);
+    	ZoneOffset offset = ZoneOffset.readExternal(in);
+    	return OffsetDate.of(date, offset);
     }
 
 }

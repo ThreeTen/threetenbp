@@ -65,11 +65,13 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.time.DateTimeException;
 import javax.time.DayOfWeek;
@@ -385,7 +387,8 @@ public final class DateTimeBuilder
         if (otherFields != null) {
             outer:
             while (true) {
-                for (Entry<DateTimeField, Long> entry : otherFields.entrySet()) {
+                Set<Entry<DateTimeField, Long>> entrySet = new HashSet<>(otherFields.entrySet());
+                for (Entry<DateTimeField, Long> entry : entrySet) {
                     if (entry.getKey().resolve(this, entry.getValue())) {
                         continue outer;
                     }
@@ -711,12 +714,6 @@ public final class DateTimeBuilder
     @Override
     public long getLong(DateTimeField field) {
         return getFieldValue(field);
-    }
-
-    @Override
-    public DateTimeBuilder with(DateTimeField field, long newValue) {
-        putFieldValue0(field, newValue);
-        return this;
     }
 
 }

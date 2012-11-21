@@ -31,6 +31,10 @@
  */
 package javax.time;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
@@ -510,6 +514,20 @@ public abstract class ZoneId {
     @Override
     public String toString() {
         return getId();
+    }
+
+    //-----------------------------------------------------------------------
+    void writeExternal(DataOutput out) throws IOException {
+        out.writeUTF(getId());
+    }
+
+    static ZoneId readExternal(DataInput in) throws IOException {
+        String id = in.readUTF();
+        return ZoneId.ofUnchecked(id);
+    }
+
+    private Object writeReplace() {
+        return new Ser(Ser.ZONE_ID_TYPE, this);
     }
 
 }
