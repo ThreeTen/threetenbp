@@ -50,6 +50,11 @@ import javax.time.ZoneOffset;
  */
 final class Ser implements Externalizable {
 
+    /**
+     * Serialization version.
+     */
+    private static final long serialVersionUID = -8885321777449118786L;
+
     /** Type for StandardZoneRules. */
     static final byte SZR = 1;
     /** Type for ZoneOffsetTransition. */

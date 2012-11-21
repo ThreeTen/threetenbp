@@ -39,6 +39,7 @@ import java.io.InvalidClassException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.StreamCorruptedException;
+
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 
@@ -64,6 +65,11 @@ import javax.time.LocalDateTime;
  * This class is mutable and should be created once per serialization.
  */
 final class Ser implements Externalizable {
+
+    /**
+     * Serialization version.
+     */
+    private static final long serialVersionUID = 7857518227608961174L;
 
     static final byte JAPANESE_DATE_TYPE = 1;
     static final byte JAPANESE_ERA_TYPE = 2;

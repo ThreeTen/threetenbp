@@ -62,6 +62,11 @@ import java.io.StreamCorruptedException;
  */
 final class Ser implements Externalizable {
 
+    /**
+     * Serialization version.
+     */
+    private static final long serialVersionUID = -7683839454370182990L;
+
     static final byte DURATION_TYPE = 1;
     static final byte INSTANT_TYPE = 2;
     static final byte LOCAL_DATE_TYPE = 3;
