@@ -403,7 +403,7 @@ public class TestZoneId extends AbstractTest {
         assertEquals(test.getId(), "GMT0");
         assertEquals(test.getGroupId(), "TZDB");
         assertEquals(test.getRegionId(), "GMT0");
-        assertEquals(test.getRules().isFixedOffset(), false);
+        assertEquals(test.getRules().isFixedOffset(), true);
     }
 
     public void test_of_string_groupGMT0() {
@@ -411,7 +411,7 @@ public class TestZoneId extends AbstractTest {
         assertEquals(test.getId(), "GMT0");
         assertEquals(test.getGroupId(), "TZDB");
         assertEquals(test.getRegionId(), "GMT0");
-        assertEquals(test.getRules().isFixedOffset(), false);
+        assertEquals(test.getRules().isFixedOffset(), true);
     }
 
     //-----------------------------------------------------------------------

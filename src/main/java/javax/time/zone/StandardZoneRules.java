@@ -273,7 +273,7 @@ final class StandardZoneRules implements ZoneRules, Serializable {
     //-----------------------------------------------------------------------
     @Override
     public boolean isFixedOffset() {
-        return false;
+        return savingsInstantTransitions.length == 0;
     }
 
     //-----------------------------------------------------------------------
