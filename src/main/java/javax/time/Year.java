@@ -195,6 +195,9 @@ public final class Year
         if (dateTime instanceof Year) {
             return (Year) dateTime;
         }
+        if (ISOChrono.INSTANCE.equals(Chrono.from(dateTime)) == false) {
+            dateTime = LocalDate.from(dateTime);
+        }
         return of(dateTime.get(YEAR));
     }
 

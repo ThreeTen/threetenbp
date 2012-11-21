@@ -196,6 +196,9 @@ public final class YearMonth
         if (dateTime instanceof YearMonth) {
             return (YearMonth) dateTime;
         }
+        if (ISOChrono.INSTANCE.equals(Chrono.from(dateTime)) == false) {
+            dateTime = LocalDate.from(dateTime);
+        }
         return of(dateTime.get(YEAR), dateTime.get(MONTH_OF_YEAR));
     }
 
