@@ -312,6 +312,12 @@ public final class LocalDate
     public static LocalDate from(DateTimeAccessor dateTime) {
         if (dateTime instanceof LocalDate) {
             return (LocalDate) dateTime;
+        } else if (dateTime instanceof LocalDateTime) {
+            return ((LocalDateTime) dateTime).getDate();
+        } else if (dateTime instanceof OffsetDateTime) {
+            return ((OffsetDateTime) dateTime).getDate();
+        } else if (dateTime instanceof ZonedDateTime) {
+            return ((ZonedDateTime) dateTime).getDate();
         }
         // handle builder as a special case
         if (dateTime instanceof DateTimeBuilder) {
