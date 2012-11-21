@@ -164,7 +164,7 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
             try {
                 ZoneOffset.of(values[i]);
                 fail("Should have failed:" + values[i]);
-            } catch (IllegalArgumentException ex) {
+            } catch (DateTimeException ex) {
                 // expected
             }
         }
@@ -278,6 +278,16 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
         }
     }
 
+    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    public void test_factory_int_hours_tooBig() {
+        ZoneOffset.ofHours(19);
+    }
+
+    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    public void test_factory_int_hours_tooSmall() {
+        ZoneOffset.ofHours(-19);
+    }
+
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_factory_int_hours_minutes() {
@@ -293,6 +303,16 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
         doTestOffset(test1, -18, 0, 0);
         ZoneOffset test2 = ZoneOffset.ofHoursMinutes(18, 0);
         doTestOffset(test2, 18, 0, 0);
+    }
+
+    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    public void test_factory_int_hours_minutes_tooBig() {
+        ZoneOffset.ofHoursMinutes(19, 0);
+    }
+
+    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    public void test_factory_int_hours_minutes_tooSmall() {
+        ZoneOffset.ofHoursMinutes(-19, 0);
     }
 
     //-----------------------------------------------------------------------
@@ -363,6 +383,16 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
     @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_factory_int_hours_minutes_seconds_secondsTooSmall() {
         ZoneOffset.ofHoursMinutesSeconds(0, 0, 60);
+    }
+
+    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    public void test_factory_int_hours_minutes_seconds_hoursTooBig() {
+        ZoneOffset.ofHoursMinutesSeconds(19, 0, 0);
+    }
+
+    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    public void test_factory_int_hours_minutes_seconds_hoursTooSmall() {
+        ZoneOffset.ofHoursMinutesSeconds(-19, 0, 0);
     }
 
     //-----------------------------------------------------------------------

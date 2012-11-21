@@ -151,7 +151,7 @@ public final class ZoneOffset
      *
      * @param offsetId  the offset ID, not null
      * @return the zone-offset, not null
-     * @throws IllegalArgumentException if the offset ID is invalid
+     * @throws DateTimeException if the offset ID is invalid
      */
     public static ZoneOffset of(String offsetId) {
         Objects.requireNonNull(offsetId, "offsetId");
@@ -191,11 +191,11 @@ public final class ZoneOffset
                 seconds = parseNumber(offsetId, 7, true);
                 break;
             default:
-                throw new IllegalArgumentException("Zone offset ID '" + offsetId + "' is invalid");
+                throw new DateTimeException("Zone offset ID '" + offsetId + "' is invalid");
         }
         char first = offsetId.charAt(0);
         if (first != '+' && first != '-') {
-            throw new IllegalArgumentException("Zone offset ID '" + offsetId + "' is invalid: Plus/minus not found when expected");
+            throw new DateTimeException("Zone offset ID '" + offsetId + "' is invalid: Plus/minus not found when expected");
         }
         if (first == '-') {
             return ofHoursMinutesSeconds(-hours, -minutes, -seconds);
@@ -214,12 +214,12 @@ public final class ZoneOffset
      */
     private static int parseNumber(CharSequence offsetId, int pos, boolean precededByColon) {
         if (precededByColon && offsetId.charAt(pos - 1) != ':') {
-            throw new IllegalArgumentException("Zone offset ID '" + offsetId + "' is invalid: Colon not found when expected");
+            throw new DateTimeException("Zone offset ID '" + offsetId + "' is invalid: Colon not found when expected");
         }
         char ch1 = offsetId.charAt(pos);
         char ch2 = offsetId.charAt(pos + 1);
         if (ch1 < '0' || ch1 > '9' || ch2 < '0' || ch2 > '9') {
-            throw new IllegalArgumentException("Zone offset ID '" + offsetId + "' is invalid: Non numeric characters found");
+            throw new DateTimeException("Zone offset ID '" + offsetId + "' is invalid: Non numeric characters found");
         }
         return (ch1 - 48) * 10 + (ch2 - 48);
     }
@@ -230,7 +230,7 @@ public final class ZoneOffset
      *
      * @param hours  the time-zone offset in hours, from -18 to +18
      * @return the zone-offset, not null
-     * @throws IllegalArgumentException if the offset is not in the required range
+     * @throws DateTimeException if the offset is not in the required range
      */
     public static ZoneOffset ofHours(int hours) {
         return ofHoursMinutesSeconds(hours, 0, 0);
@@ -247,7 +247,7 @@ public final class ZoneOffset
      * @param hours  the time-zone offset in hours, from -18 to +18
      * @param minutes  the time-zone offset in minutes, from 0 to &plusmn;59, sign matches hours
      * @return the zone-offset, not null
-     * @throws IllegalArgumentException if the offset is not in the required range
+     * @throws DateTimeException if the offset is not in the required range
      */
     public static ZoneOffset ofHoursMinutes(int hours, int minutes) {
         return ofHoursMinutesSeconds(hours, minutes, 0);
@@ -264,7 +264,7 @@ public final class ZoneOffset
      * @param minutes  the time-zone offset in minutes, from 0 to &plusmn;59, sign matches hours and seconds
      * @param seconds  the time-zone offset in seconds, from 0 to &plusmn;59, sign matches hours and minutes
      * @return the zone-offset, not null
-     * @throws IllegalArgumentException if the offset is not in the required range
+     * @throws DateTimeException if the offset is not in the required range
      */
     public static ZoneOffset ofHoursMinutesSeconds(int hours, int minutes, int seconds) {
         validate(hours, minutes, seconds);
@@ -294,34 +294,34 @@ public final class ZoneOffset
      * @param hours  the time-zone offset in hours, from -18 to +18
      * @param minutes  the time-zone offset in minutes, from 0 to &plusmn;59
      * @param seconds  the time-zone offset in seconds, from 0 to &plusmn;59
-     * @throws IllegalArgumentException if the offset is not in the required range
+     * @throws DateTimeException if the offset is not in the required range
      */
     private static void validate(int hours, int minutes, int seconds) {
         if (hours < -18 || hours > 18) {
-            throw new IllegalArgumentException("Zone offset hours not in valid range: value " + hours +
+            throw new DateTimeException("Zone offset hours not in valid range: value " + hours +
                     " is not in the range -18 to 18");
         }
         if (hours > 0) {
             if (minutes < 0 || seconds < 0) {
-                throw new IllegalArgumentException("Zone offset minutes and seconds must be positive because hours is positive");
+                throw new DateTimeException("Zone offset minutes and seconds must be positive because hours is positive");
             }
         } else if (hours < 0) {
             if (minutes > 0 || seconds > 0) {
-                throw new IllegalArgumentException("Zone offset minutes and seconds must be negative because hours is negative");
+                throw new DateTimeException("Zone offset minutes and seconds must be negative because hours is negative");
             }
         } else if ((minutes > 0 && seconds < 0) || (minutes < 0 && seconds > 0)) {
-            throw new IllegalArgumentException("Zone offset minutes and seconds must have the same sign");
+            throw new DateTimeException("Zone offset minutes and seconds must have the same sign");
         }
         if (Math.abs(minutes) > 59) {
-            throw new IllegalArgumentException("Zone offset minutes not in valid range: abs(value) " +
+            throw new DateTimeException("Zone offset minutes not in valid range: abs(value) " +
                     Math.abs(minutes) + " is not in the range 0 to 59");
         }
         if (Math.abs(seconds) > 59) {
-            throw new IllegalArgumentException("Zone offset seconds not in valid range: abs(value) " +
+            throw new DateTimeException("Zone offset seconds not in valid range: abs(value) " +
                     Math.abs(seconds) + " is not in the range 0 to 59");
         }
         if (Math.abs(hours) == 18 && (Math.abs(minutes) > 0 || Math.abs(seconds) > 0)) {
-            throw new IllegalArgumentException("Zone offset not in valid range: -18:00 to +18:00");
+            throw new DateTimeException("Zone offset not in valid range: -18:00 to +18:00");
         }
     }
 
@@ -345,11 +345,11 @@ public final class ZoneOffset
      *
      * @param totalSeconds  the total time-zone offset in seconds, from -64800 to +64800
      * @return the ZoneOffset, not null
-     * @throws IllegalArgumentException if the offset is not in the required range
+     * @throws DateTimeException if the offset is not in the required range
      */
     public static ZoneOffset ofTotalSeconds(int totalSeconds) {
         if (Math.abs(totalSeconds) > MAX_SECONDS) {
-            throw new IllegalArgumentException("Zone offset not in valid range: -18:00 to +18:00");
+            throw new DateTimeException("Zone offset not in valid range: -18:00 to +18:00");
         }
         if (totalSeconds % (15 * SECONDS_PER_MINUTE) == 0) {
             Integer totalSecs = totalSeconds;
