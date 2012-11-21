@@ -53,31 +53,6 @@ import javax.time.DayOfWeek;
  * </ul><p>
  * Together these two values allow a year or month to be divided into weeks.
  * <p>
- * <h4>Week based years</h4>
- * Two fields are used: week-based-year and week-of-week-based-year.
- * A week-based-year is equivalent to the standard calendar year except at the start of
- * January and the end of December. Week 1 is the earliest seven day period, starting on
- * the defined first day-of-week, with at least the minimal number of days. Days before
- * the start of the first week are allocated to the last week of the previous year.
- * For example:
- * <p>
- * <table cellpadding="0" cellspacing="3" border="0" style="text-align: left; width: 50%;">
- * <tr><th>Date</th><td>Day-of-week</td>
- *  <td>First day: Monday<br />Minimal days: 4</td><td>First day: Monday<br />Minimal days: 5</td></tr>
- * <tr><th>2008-12-28</th><td>Sunday</td>
- *  <td>Week 52 of week-based-year 2008</td><td>Week 52 of week-based-year 2008</td></tr>
- * <tr><th>2008-12-29</th><td>Monday</td>
- *  <td>Week 1 of week-based-year 2009</td><td>Week 53 of week-based-year 2008</td></tr>
- * <tr><th>2008-12-31</th><td>Wednesday</td>
- *  <td>Week 1 of week-based-year 2009</td><td>Week 53 of week-based-year 2008</td></tr>
- * <tr><th>2009-01-01</th><td>Thursday</td>
- *  <td>Week 1 of week-based-year 2009</td><td>Week 53 of week-based-year 2008</td></tr>
- * <tr><th>2009-01-04</th><td>Sunday</td>
- *  <td>Week 1 of week-based-year 2009</td><td>Week 53 of week-based-year 2008</td></tr>
- * <tr><th>2009-01-05</th><td>Monday</td>
- *  <td>Week 2 of week-based-year 2009</td><td>Week 1 of week-based-year 2009</td></tr>
- * </table>
- * <p>
  * <h4>Week of month</h4>
  * One field is used: week-of-month.
  * The calculation ensures that weeks never overlap a month boundary.
@@ -98,11 +73,24 @@ import javax.time.DayOfWeek;
  *  <td>Week 2 of January 2009</td><td>Week 1 of January 2009</td></tr>
  * </table>
  * <p>
+ * <h4>Week of year</h4>
+ * One field is used: week-of-year.
+ * The calculation ensures that weeks never overlap a year boundary.
+ * The year is divided into periods where each period starts on the defined first day-of-week.
+ * The earliest period is referred to as week 0 if it has less than the minimal number of days
+ * and week 1 if it has at least the minimal number of days.
+ * <p>
  * This class is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
 public final class WeekDefinition implements Comparable<WeekDefinition>, Serializable {
+    // implementation notes
+    // querying week-of-month or week-of-year should return the week value bound within the month/year
+    // however, setting the week value should be lenient (use plus/minus weeks)
+    // allow week-of-month outer range [0 to 5]
+    // allow week-of-year outer range [0 to 53]
+    // this is because callers shouldn't be expected to know the details of validity
 
     /**
      * The ISO-8601 definition, where a week starts on Monday and the first week
@@ -383,60 +371,37 @@ public final class WeekDefinition implements Comparable<WeekDefinition>, Seriali
 
     /**
      * Gets a field that can be used to print, parse and manipulate the
-     * week-of-week-based-year value.
-     * <p>
-     * Weeks defined used these fields do not necessarily align with years
-     * defined using the standard ISO-8601 calendar. This field provides
-     * the means to access the week number, which is used with the
-     * {@link #weekBasedYear() week-based-year}.
-     * The week number for the first week of the week-based-year will be 1.
-     * <p>
-     * Note that the first week may start in the previous calendar year.
-     * Note also that the first few days of a calendar year may be in the
-     * week-based-year corresponding to the previous calendar year.
-     *
-     * @return the field for week-of-week-based-year using this week definition, not null
-     */
-    public DateTimeField weekOfWeekBasedYear() {
-        throw new UnsupportedOperationException();  // TODO
-    }
-
-    /**
-     * Gets a field that can be used to print, parse and manipulate the
-     * week-based-year value.
-     * <p>
-     * Weeks defined used related fields do not necessarily align with years
-     * defined using the standard ISO-8601 calendar. This field provides
-     * the means to access the week-based-year, which is used with the
-     * {@link #weekOfWeekBasedYear() week-of-week-based-year}.
-     * The week-based-year will be the same as the calendar year except for
-     * a few days at the start and end of the year.
-     * <p>
-     * Note that the first week may start in the previous calendar year.
-     * Note also that the first few days of a calendar year may be in the
-     * week-based-year corresponding to the previous calendar year.
-     *
-     * @return the field for week-based-year using this week definition, not null
-     */
-    public DateTimeField weekBasedYear() {
-        throw new UnsupportedOperationException();  // TODO
-    }
-
-    /**
-     * Gets a field that can be used to print, parse and manipulate the
      * week-of-month value.
      * <p>
-     * Weeks defined used this field always align with months.
+     * This field counts weeks based on the standard month.
      * The month is divided into periods where each period starts on the defined first day-of-week.
      * The earliest period is referred to as week 0 if it has less than the minimal number of days
      * and week 1 if it has at least the minimal number of days.
      * <p>
      * The field derives the week-of-month from the whole date.
-     * The field builds a date from year-month, week-of-month and day-of-week.
+     * The field builds a date from year, month-of-year, week-of-month and day-of-week.
      *
      * @return the field for week-of-month using this week definition, not null
      */
     public DateTimeField weekOfMonth() {
+        throw new UnsupportedOperationException();  // TODO
+    }
+
+    /**
+     * Gets a field that can be used to print, parse and manipulate the
+     * week-of-year value.
+     * <p>
+     * This field counts weeks based on the standard year.
+     * The year is divided into periods where each period starts on the defined first day-of-week.
+     * The earliest period is referred to as week 0 if it has less than the minimal number of days
+     * and week 1 if it has at least the minimal number of days.
+     * <p>
+     * The field derives the week-of-year from the whole date.
+     * The field builds a date from year, week-of-year and day-of-week.
+     *
+     * @return the field for week-of-year using this week definition, not null
+     */
+    public DateTimeField weekOfYear() {
         throw new UnsupportedOperationException();  // TODO
     }
 
