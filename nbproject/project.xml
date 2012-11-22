@@ -1,155 +1,155 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://www.netbeans.org/ns/project/1">
-    <type>org.netbeans.modules.ant.freeform</type>
-    <configuration>
-        <general-data xmlns="http://www.netbeans.org/ns/freeform-project/1">
-            <name>threeten</name>
-        </general-data>
-        <general-data xmlns="http://www.netbeans.org/ns/freeform-project/2">
-            <!-- Do not use Project Properties customizer when editing this file manually. -->
-            <name>threeten</name>
-            <properties/>
-            <folders>
-                <source-folder>
-                    <label>threeten</label>
-                    <location>.</location>
-                    <encoding>UTF-8</encoding>
-                </source-folder>
-                <source-folder>
-                    <label>src/main/java</label>
-                    <type>java</type>
-                    <location>src/main/java</location>
-                    <encoding>UTF-8</encoding>
-                </source-folder>
-                <source-folder>
-                    <label>src/tck/java</label>
-                    <type>java</type>
-                    <location>src/tck/java</location>
-                    <encoding>UTF-8</encoding>
-                </source-folder>
-                <source-folder>
-                    <label>src/test/java</label>
-                    <type>java</type>
-                    <location>src/test/java</location>
-                    <encoding>UTF-8</encoding>
-                </source-folder>
-                <source-folder>
-                    <label>src-standard/test/java</label>
-                    <type>java</type>
-                    <location>src-standard/test/java</location>
-                    <encoding>UTF-8</encoding>
-                </source-folder>
-            </folders>
-            <ide-actions>
-                <action name="build">
-                    <target>dist</target>
-                </action>
-                <action name="clean">
-                    <target>clean</target>
-                </action>
-                <action name="test">
-                    <target>test</target>
-                </action>
-                <action name="rebuild">
-                    <target>clean</target>
-                    <target>dist</target>
-                </action>
-                <action name="javadoc">
-                    <target>javadoc</target>
-                </action>
-                <action name="run">
-                    <target>run</target>
-                </action>
-            </ide-actions>
-            <export>
-                <type>folder</type>
-                <location>build/main/core</location>
-                <build-target>dist</build-target>
-            </export>
-            <view>
-                <items>
-                    <source-folder style="packages">
-                        <label>src/main/java</label>
-                        <location>src/main/java</location>
-                    </source-folder>
-                    <source-folder style="packages">
-                        <label>src/tck/java</label>
-                        <location>src/tck/java</location>
-                    </source-folder>
-                    <source-folder style="packages">
-                        <label>src/test/java</label>
-                        <location>src/test/java</location>
-                    </source-folder>
-                    <source-folder style="packages">
-                        <label>src-standard/test/java</label>
-                        <location>src-standard/test/java</location>
-                    </source-folder>
-                    <source-file>
-                        <location>build.xml</location>
-                    </source-file>
-                </items>
-                <context-menu>
-                    <ide-action name="build"/>
-                    <ide-action name="rebuild"/>
-                    <ide-action name="clean"/>
-                    <ide-action name="javadoc"/>
-                    <ide-action name="run"/>
-                    <ide-action name="test"/>
-                </context-menu>
-            </view>
-            <subprojects/>
-        </general-data>
-        <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/3">
-            <compilation-unit>
-                <package-root>src/main/java</package-root>
-                <built-to>build/main/core</built-to>
-                <javadoc-built-to>build/javadoc</javadoc-built-to>
-                <source-level>1.7</source-level>
-            </compilation-unit>
-            <compilation-unit>
-                <package-root>src/test/java</package-root>
-                <unit-tests/>
-                <classpath mode="compile">lib/test/testng-5.8-jdk15.jar;src/main/java</classpath>
-                <source-level>1.7</source-level>
-            </compilation-unit>
-            <compilation-unit>
-                <package-root>src/tck/java</package-root>
-                <unit-tests/>
-                <classpath mode="compile">lib/test/testng-5.8-jdk15.jar;src/main/java;src/test/java</classpath>
-                <source-level>1.7</source-level>
-            </compilation-unit>
-        </java-data>
-        <preferences xmlns="http://www.netbeans.org/ns/auxiliary-configuration-preferences/1">
-            <module name="org-netbeans-modules-editor-indent">
-                <node name="CodeStyle">
-                    <property name="usedProfile" value="project"/>
-                    <node name="project">
-                        <property name="spaces-per-tab" value="4"/>
-                        <property name="tab-size" value="4"/>
-                        <property name="indent-shift-width" value="4"/>
-                        <property name="text-limit-width" value="136"/>
-                        <property name="expand-tabs" value="true"/>
-                    </node>
-                </node>
-                <node name="text">
-                    <node name="x-java">
-                        <node name="CodeStyle">
-                            <node name="project">
-                                <property name="spaces-per-tab" value="4"/>
-                                <property name="tab-size" value="4"/>
-                                <property name="indent-shift-width" value="4"/>
-                                <property name="text-limit-width" value="136"/>
-                                <property name="expand-tabs" value="true"/>
-                                <property name="separateStaticImports" value="true"/>
-                                <property name="importGroupsOrder" value="static *;java;javax;org;*"/>
-                            </node>
-                        </node>
-                    </node>
-                </node>
-                <node name="project"/>
-                <node name="x-java"/>
-            </module>
-            <module name="org-netbeans-modules-projectimport-eclipse-core"/>
-        </preferences>
-    </configuration>
+  <type>org.netbeans.modules.ant.freeform</type>
+  <configuration>
+    <general-data xmlns="http://www.netbeans.org/ns/freeform-project/1">
+      <name>threeten</name>
+    </general-data>
+    <general-data xmlns="http://www.netbeans.org/ns/freeform-project/2">
+      <!-- Do not use Project Properties customizer when editing this file manually. -->
+      <name>threeten</name>
+      <properties/>
+      <folders>
+        <source-folder>
+          <label>threeten</label>
+          <location>.</location>
+          <encoding>UTF-8</encoding>
+        </source-folder>
+        <source-folder>
+          <label>src/main/java</label>
+          <type>java</type>
+          <location>src/main/java</location>
+          <encoding>UTF-8</encoding>
+        </source-folder>
+        <source-folder>
+          <label>src/tck/java</label>
+          <type>java</type>
+          <location>src/tck/java</location>
+          <encoding>UTF-8</encoding>
+        </source-folder>
+        <source-folder>
+          <label>src/test/java</label>
+          <type>java</type>
+          <location>src/test/java</location>
+          <encoding>UTF-8</encoding>
+        </source-folder>
+        <source-folder>
+          <label>src-standard/test/java</label>
+          <type>java</type>
+          <location>src-standard/test/java</location>
+          <encoding>UTF-8</encoding>
+        </source-folder>
+      </folders>
+      <ide-actions>
+        <action name="build">
+          <target>dist</target>
+        </action>
+        <action name="clean">
+          <target>clean</target>
+        </action>
+        <action name="test">
+          <target>test</target>
+        </action>
+        <action name="rebuild">
+          <target>clean</target>
+          <target>dist</target>
+        </action>
+        <action name="javadoc">
+          <target>javadoc</target>
+        </action>
+        <action name="run">
+          <target>run</target>
+        </action>
+      </ide-actions>
+      <export>
+        <type>folder</type>
+        <location>build/main/core</location>
+        <build-target>dist</build-target>
+      </export>
+      <view>
+        <items>
+          <source-folder style="packages">
+            <label>src/main/java</label>
+            <location>src/main/java</location>
+          </source-folder>
+          <source-folder style="packages">
+            <label>src/tck/java</label>
+            <location>src/tck/java</location>
+          </source-folder>
+          <source-folder style="packages">
+            <label>src/test/java</label>
+            <location>src/test/java</location>
+          </source-folder>
+          <source-folder style="packages">
+            <label>src-standard/test/java</label>
+            <location>src-standard/test/java</location>
+          </source-folder>
+          <source-file>
+            <location>build.xml</location>
+          </source-file>
+        </items>
+        <context-menu>
+          <ide-action name="build"/>
+          <ide-action name="rebuild"/>
+          <ide-action name="clean"/>
+          <ide-action name="javadoc"/>
+          <ide-action name="run"/>
+          <ide-action name="test"/>
+        </context-menu>
+      </view>
+      <subprojects/>
+    </general-data>
+    <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/3">
+      <compilation-unit>
+        <package-root>src/main/java</package-root>
+        <built-to>build/main/core</built-to>
+        <javadoc-built-to>build/javadoc</javadoc-built-to>
+        <source-level>1.7</source-level>
+      </compilation-unit>
+      <compilation-unit>
+        <package-root>src/test/java</package-root>
+        <unit-tests/>
+        <classpath mode="compile">lib/test/testng-5.8-jdk15.jar;src/main/java</classpath>
+        <source-level>1.7</source-level>
+      </compilation-unit>
+      <compilation-unit>
+        <package-root>src/tck/java</package-root>
+        <unit-tests/>
+        <classpath mode="compile">lib/test/testng-5.8-jdk15.jar;src/main/java;src/test/java</classpath>
+        <source-level>1.7</source-level>
+      </compilation-unit>
+    </java-data>
+    <preferences xmlns="http://www.netbeans.org/ns/auxiliary-configuration-preferences/1">
+      <module name="org-netbeans-modules-editor-indent">
+        <node name="CodeStyle">
+          <property name="usedProfile" value="project"/>
+          <node name="project">
+            <property name="spaces-per-tab" value="4"/>
+            <property name="tab-size" value="4"/>
+            <property name="indent-shift-width" value="4"/>
+            <property name="text-limit-width" value="136"/>
+            <property name="expand-tabs" value="true"/>
+          </node>
+        </node>
+        <node name="text">
+          <node name="x-java">
+            <node name="CodeStyle">
+              <node name="project">
+                <property name="spaces-per-tab" value="4"/>
+                <property name="tab-size" value="4"/>
+                <property name="indent-shift-width" value="4"/>
+                <property name="text-limit-width" value="136"/>
+                <property name="expand-tabs" value="true"/>
+                <property name="separateStaticImports" value="true"/>
+                <property name="importGroupsOrder" value="static *;java;javax;org;*"/>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node name="project"/>
+        <node name="x-java"/>
+      </module>
+      <module name="org-netbeans-modules-projectimport-eclipse-core"/>
+    </preferences>
+  </configuration>
 </project>
