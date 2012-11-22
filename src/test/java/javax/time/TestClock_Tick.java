@@ -183,7 +183,7 @@ public class TestClock_Tick {
     //-----------------------------------------------------------------------
     public void test_tick_toString() {
         Clock offset = Clock.tick(Clock.systemUTC(), Duration.ofMillis(500));
-        assertEquals(offset.toString(), "TickClock[SystemClock[UTC:Z],PT0.5S]");
+        assertEquals(offset.toString(), "TickClock[SystemClock[Z],PT0.5S]");
     }
 
 }

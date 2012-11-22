@@ -605,7 +605,11 @@ public final class DateTimeBuilder
     @Override
     public <R> R query(Query<R> query) {
         if (query == Query.ZONE_ID) {
-            return extract(ZoneId.class);
+            R zone = extract(ZoneId.class);
+            if (zone == null) {
+                zone = extract(ZoneOffset.class);
+            }
+            return zone;
         }
         if (query == Query.CHRONO) {
             return extract(Chrono.class);

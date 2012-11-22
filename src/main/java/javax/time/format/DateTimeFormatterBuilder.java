@@ -2493,21 +2493,20 @@ public final class DateTimeFormatterBuilder {
             }
 
             // handle fixed time-zone IDs
-            if (text.subSequence(position, text.length()).toString().startsWith("UTC")) {
-                DateTimeParseContext newContext = new DateTimeParseContext(context.getLocale(), DateTimeFormatSymbols.STANDARD);
-                int startPos = position + 3;
-                if (text.length() > startPos && text.charAt(startPos) == ':') {
-                    startPos++;
+            String remainder = text.subSequence(position, text.length()).toString();
+            if (remainder.length() >= 1) {
+                char nextChar = remainder.charAt(0);
+                if (nextChar == '+' || nextChar == '-') {
+                    DateTimeParseContext newContext = new DateTimeParseContext(context.getLocale(), DateTimeFormatSymbols.STANDARD);
+                    int endPos = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss").parse(newContext, text, position);
+                    if (endPos < 0) {
+                        return endPos;
+                    }
+                    int offset = (int) (long) newContext.getParsed(OFFSET_SECONDS);
+                    ZoneId zone = ZoneOffset.ofTotalSeconds(offset);
+                    context.setParsed(zone);
+                    return endPos;
                 }
-                int endPos = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss").parse(newContext, text, startPos);
-                if (endPos < 0) {
-                    context.setParsed(ZoneOffset.UTC);
-                    return startPos;
-                }
-                int offset = (int) (long) newContext.getParsed(OFFSET_SECONDS);
-                ZoneId zone = ZoneOffset.ofTotalSeconds(offset);
-                context.setParsed(zone);
-                return endPos;
             }
 
             // parse group ID
@@ -2528,8 +2527,9 @@ public final class DateTimeFormatterBuilder {
             // parse region ID
             Entry<Integer, SubstringTree> entry = preparedTree.get(matchedGroupId);
             Set<String> regionIds = provider.getAvailableRegionIds();
-            if (entry == null || entry.getKey() < regionIds.size()) {
-                entry = new SimpleImmutableEntry<>(regionIds.size(), prepareParser(regionIds));
+            final int regionIdsSize = regionIds.size();
+            if (entry == null || entry.getKey() < regionIdsSize) {
+                entry = new SimpleImmutableEntry<>(regionIdsSize, prepareParser(regionIds));
                 preparedTree.putIfAbsent(matchedGroupId, entry);
                 entry = preparedTree.get(matchedGroupId);
             }
@@ -2547,9 +2547,13 @@ public final class DateTimeFormatterBuilder {
             }
 
             if (parsedZoneId == null || regionIds.contains(parsedZoneId) == false) {
+                if (remainder.startsWith("Z")) {
+                    context.setParsed(ZoneOffset.UTC);
+                    return position + 1;
+                }
                 return ~position;
             }
-            context.setParsed(ZoneId.of(matchedGroupId + ':' + parsedZoneId));
+            context.setParsed(ZoneId.of(parsedZoneId));
             return position + parsedZoneId.length();
         }
 

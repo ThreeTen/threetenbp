@@ -841,13 +841,13 @@ public class TCKDateTimeFormatters {
     @Test(groups={"tck"})
     public void test_print_isoOrdinalDate_zoned() {
         DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), ZoneOffset.UTC);
-        assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "2008-155Z[UTC:Z]");
+        assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "2008-155Z[Z]");
     }
 
     @Test(groups={"tck"})
     public void test_print_isoOrdinalDate_zoned_largeYear() {
         DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(123456, 6, 3, 11, 5, 30), ZoneOffset.UTC);
-        assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "+123456-155Z[UTC:Z]");
+        assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "+123456-155Z[Z]");
     }
 
     @Test(groups={"tck"})
@@ -893,7 +893,7 @@ public class TCKDateTimeFormatters {
     @Test(groups={"tck"})
     public void test_print_basicIsoDate_zoned() {
         DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), ZoneOffset.UTC);
-        assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080603Z[UTC:Z]");
+        assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080603Z[Z]");
     }
 
     @Test(expectedExceptions=DateTimePrintException.class, groups={"tck"})
@@ -952,7 +952,7 @@ public class TCKDateTimeFormatters {
                 if (week < 10) {
                     sb.append('0');
                 }
-                sb.append(week).append('-').append(day).append("Z[UTC:Z]");
+                sb.append(week).append('-').append(day).append("Z[Z]");
                 Object[] ret = new Object[] {date, sb.toString()};
                 date = date.plusDays(1);
                 day += 1;
@@ -976,7 +976,7 @@ public class TCKDateTimeFormatters {
     @Test(groups={"tck"})
     public void test_print_isoWeekDate_zoned_largeYear() {
         DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(123456, 6, 3, 11, 5, 30), ZoneOffset.UTC);
-        assertEquals(DateTimeFormatters.isoWeekDate().print(test), "+123456-W23-2Z[UTC:Z]");
+        assertEquals(DateTimeFormatters.isoWeekDate().print(test), "+123456-W23-2Z[Z]");
     }
 
     @Test(groups={"tck"})
