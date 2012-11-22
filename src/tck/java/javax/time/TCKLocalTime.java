@@ -78,7 +78,8 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.JulianDayField;
 import javax.time.calendrical.MockFieldNoValue;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.format.CalendricalFormatter;
+import javax.time.format.DateTimeFormatter;
+import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
 
 import org.testng.annotations.BeforeMethod;
@@ -584,40 +585,18 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // parse(CalendricalFormatter)
+    // parse(DateTimeFormatter)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void factory_parse_formatter() {
-        final LocalTime time = LocalTime.of(12, 30, 40);
-        CalendricalFormatter f = new CalendricalFormatter() {
-            @Override
-            public String print(DateTimeAccessor accessor) {
-                throw new AssertionError();
-            }
-            @SuppressWarnings({ "rawtypes", "unchecked" })
-            @Override
-            public Object parse(CharSequence text, Class type) {
-                return time;
-            }
-        };
-        LocalTime test = LocalTime.parse("ANY", f);
-        assertEquals(test, time);
+        DateTimeFormatter f = DateTimeFormatters.pattern("H m s");
+        LocalTime test = LocalTime.parse("14 30 40", f);
+        assertEquals(test, LocalTime.of(14, 30, 40));
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_parse_formatter_nullText() {
-        CalendricalFormatter f = new CalendricalFormatter() {
-            @Override
-            public String print(DateTimeAccessor accessor) {
-                throw new AssertionError();
-            }
-            @SuppressWarnings({ "rawtypes", "unchecked" })
-            @Override
-            public Object parse(CharSequence text, Class type) {
-                assertEquals(text, null);
-                throw new NullPointerException();
-            }
-        };
+        DateTimeFormatter f = DateTimeFormatters.pattern("H m s");
         LocalTime.parse((String) null, f);
     }
 
@@ -2084,24 +2063,13 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // toString(CalendricalFormatter)
+    // toString(DateTimeFormatter)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_toString_formatter() {
-        final LocalTime time = LocalTime.of(11, 30, 45);
-        CalendricalFormatter f = new CalendricalFormatter() {
-            @Override
-            public String print(DateTimeAccessor accessor) {
-                assertEquals(accessor, time);
-                return "PRINTED";
-            }
-            @Override
-            public <T> T parse(CharSequence text, Class<T> type) {
-                throw new AssertionError();
-            }
-        };
-        String t = time.toString(f);
-        assertEquals(t, "PRINTED");
+        DateTimeFormatter f = DateTimeFormatters.pattern("H m s");
+        String t = LocalTime.of(11, 30, 45).toString(f);
+        assertEquals(t, "11 30 45");
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})

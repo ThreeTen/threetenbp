@@ -65,7 +65,8 @@ import javax.time.Year;
 import javax.time.YearMonth;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
-import javax.time.format.CalendricalFormatter;
+import javax.time.format.DateTimeFormatter;
+import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
 
 import org.testng.annotations.BeforeMethod;
@@ -353,40 +354,18 @@ public class TCKYearMonth extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // parse(CalendricalFormatter)
+    // parse(DateTimeFormatter)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void factory_parse_formatter() {
-        final YearMonth date = YearMonth.of(2010, 12);
-        CalendricalFormatter f = new CalendricalFormatter() {
-            @Override
-            public String print(DateTimeAccessor accessor) {
-                throw new AssertionError();
-            }
-            @SuppressWarnings({ "rawtypes", "unchecked" })
-            @Override
-            public Object parse(CharSequence text, Class type) {
-                return date;
-            }
-        };
-        YearMonth test = YearMonth.parse("ANY", f);
-        assertEquals(test, date);
+        DateTimeFormatter f = DateTimeFormatters.pattern("y M");
+        YearMonth test = YearMonth.parse("2010 12", f);
+        assertEquals(test, YearMonth.of(2010, 12));
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_parse_formatter_nullText() {
-        CalendricalFormatter f = new CalendricalFormatter() {
-            @Override
-            public String print(DateTimeAccessor accessor) {
-                throw new AssertionError();
-            }
-            @SuppressWarnings({ "rawtypes", "unchecked" })
-            @Override
-            public Object parse(CharSequence text, Class type) {
-                assertEquals(text, null);
-                throw new NullPointerException();
-            }
-        };
+        DateTimeFormatter f = DateTimeFormatters.pattern("y M");
         YearMonth.parse((String) null, f);
     }
 
@@ -1037,24 +1016,13 @@ public class TCKYearMonth extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // toString(CalendricalFormatter)
+    // toString(DateTimeFormatter)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_toString_formatter() {
-        final YearMonth date = YearMonth.of(2010, 12);
-        CalendricalFormatter f = new CalendricalFormatter() {
-            @Override
-            public String print(DateTimeAccessor accessor) {
-                assertEquals(accessor, date);
-                return "PRINTED";
-            }
-            @Override
-            public <T> T parse(CharSequence text, Class<T> type) {
-                throw new AssertionError();
-            }
-        };
-        String t = date.toString(f);
-        assertEquals(t, "PRINTED");
+        DateTimeFormatter f = DateTimeFormatters.pattern("y M");
+        String t = YearMonth.of(2010, 12).toString(f);
+        assertEquals(t, "2010 12");
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})

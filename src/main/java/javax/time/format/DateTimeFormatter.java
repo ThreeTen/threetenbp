@@ -62,7 +62,7 @@ import javax.time.format.DateTimeFormatterBuilder.CompositePrinterParser;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class DateTimeFormatter implements CalendricalFormatter {
+public final class DateTimeFormatter {
 
     /**
      * The locale to use for formatting, not null.
@@ -213,7 +213,6 @@ public final class DateTimeFormatter implements CalendricalFormatter {
      * @return the parsed date-time, not null
      * @throws DateTimeParseException if the parse fails
      */
-    @Override
     public <T> T parse(CharSequence text, Class<T> type) {
         Objects.requireNonNull(text, "text");
         Objects.requireNonNull(type, "type");

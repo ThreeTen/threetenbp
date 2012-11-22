@@ -45,7 +45,7 @@ import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.format.CalendricalFormatter;
+import javax.time.format.DateTimeFormatter;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneResolvers;
 
@@ -418,6 +418,6 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
      * @return the formatted date-time string, not null
      * @throws DateTimeException if an error occurs during printing
      */
-    String toString(CalendricalFormatter formatter) ;
+    String toString(DateTimeFormatter formatter) ;
 
 }

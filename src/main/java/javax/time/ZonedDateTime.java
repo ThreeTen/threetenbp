@@ -52,7 +52,7 @@ import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.ChronoZonedDateTime;
 import javax.time.chrono.ISOChrono;
-import javax.time.format.CalendricalFormatter;
+import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
 import javax.time.jdk8.DefaultInterfaceChronoZonedDateTime;
@@ -539,7 +539,7 @@ public final class ZonedDateTime
      * @return the parsed zoned date-time, not null
      * @throws DateTimeParseException if the text cannot be parsed
      */
-    public static ZonedDateTime parse(CharSequence text, CalendricalFormatter formatter) {
+    public static ZonedDateTime parse(CharSequence text, DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
         return formatter.parse(text, ZonedDateTime.class);
     }

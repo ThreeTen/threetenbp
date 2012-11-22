@@ -51,7 +51,6 @@ import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.Chrono;
 import javax.time.chrono.ISOChrono;
-import javax.time.format.CalendricalFormatter;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
 import javax.time.format.DateTimeParseException;
@@ -226,7 +225,7 @@ public final class Year
      * @return the parsed year, not null
      * @throws DateTimeParseException if the text cannot be parsed
      */
-    public static Year parse(CharSequence text, CalendricalFormatter formatter) {
+    public static Year parse(CharSequence text, DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
         return formatter.parse(text, Year.class);
     }
@@ -693,7 +692,7 @@ public final class Year
      * @return the formatted year string, not null
      * @throws DateTimeException if an error occurs during printing
      */
-    public String toString(CalendricalFormatter formatter) {
+    public String toString(DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
         return formatter.print(this);
     }
