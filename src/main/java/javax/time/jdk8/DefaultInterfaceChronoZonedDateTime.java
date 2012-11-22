@@ -49,7 +49,7 @@ import javax.time.chrono.Chrono;
 import javax.time.chrono.ChronoLocalDate;
 import javax.time.chrono.ChronoLocalDateTime;
 import javax.time.chrono.ChronoZonedDateTime;
-import javax.time.format.CalendricalFormatter;
+import javax.time.format.DateTimeFormatter;
 
 /**
  * A temporary class providing implementations that will become default interface
@@ -209,7 +209,7 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chrono<C>>
     }
 
     @Override
-    public String toString(CalendricalFormatter formatter) {
+    public String toString(DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
         return formatter.print(this);
     }

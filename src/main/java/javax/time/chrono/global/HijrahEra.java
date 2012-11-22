@@ -36,7 +36,6 @@ import static javax.time.calendrical.ChronoField.ERA;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
-
 import java.util.Locale;
 
 import javax.time.DateTimeException;

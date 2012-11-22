@@ -31,15 +31,14 @@
  */
 package javax.time.chrono.global;
 
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
-
 import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
 import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
 import static javax.time.calendrical.ChronoField.YEAR;
 import static javax.time.chrono.global.MinguoChrono.YEARS_DIFFERENCE;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
 

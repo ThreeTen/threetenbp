@@ -102,7 +102,6 @@
         <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/3">
             <compilation-unit>
                 <package-root>src/main/java</package-root>
-                <classpath mode="compile"></classpath>
                 <built-to>build/main/core</built-to>
                 <javadoc-built-to>build/javadoc</javadoc-built-to>
                 <source-level>1.7</source-level>
@@ -141,6 +140,8 @@
                                 <property name="indent-shift-width" value="4"/>
                                 <property name="text-limit-width" value="136"/>
                                 <property name="expand-tabs" value="true"/>
+                                <property name="separateStaticImports" value="true"/>
+                                <property name="importGroupsOrder" value="static *;java;javax;org;*"/>
                             </node>
                         </node>
                     </node>

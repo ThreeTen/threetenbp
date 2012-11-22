@@ -62,7 +62,8 @@ import javax.time.OffsetDateTime;
 import javax.time.YearMonth;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
-import javax.time.format.CalendricalFormatter;
+import javax.time.format.DateTimeFormatter;
+import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
 
 import org.testng.annotations.BeforeMethod;
@@ -349,40 +350,18 @@ public class TCKMonthDay extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // parse(CalendricalFormatter)
+    // parse(DateTimeFormatter)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void factory_parse_formatter() {
-        final MonthDay date = MonthDay.of(12, 3);
-        CalendricalFormatter f = new CalendricalFormatter() {
-            @Override
-            public String print(DateTimeAccessor accessor) {
-                throw new AssertionError();
-            }
-            @SuppressWarnings({ "rawtypes", "unchecked" })
-            @Override
-            public Object parse(CharSequence text, Class type) {
-                return date;
-            }
-        };
-        MonthDay test = MonthDay.parse("ANY", f);
-        assertEquals(test, date);
+        DateTimeFormatter f = DateTimeFormatters.pattern("M d");
+        MonthDay test = MonthDay.parse("12 3", f);
+        assertEquals(test, MonthDay.of(12, 3));
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_parse_formatter_nullText() {
-        CalendricalFormatter f = new CalendricalFormatter() {
-            @Override
-            public String print(DateTimeAccessor accessor) {
-                throw new AssertionError();
-            }
-            @SuppressWarnings({ "rawtypes", "unchecked" })
-            @Override
-            public Object parse(CharSequence text, Class type) {
-                assertEquals(text, null);
-                throw new NullPointerException();
-            }
-        };
+        DateTimeFormatter f = DateTimeFormatters.pattern("M d");
         MonthDay.parse((String) null, f);
     }
 
@@ -751,24 +730,13 @@ public class TCKMonthDay extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // toString(CalendricalFormatter)
+    // toString(DateTimeFormatter)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_toString_formatter() {
-        final MonthDay date = MonthDay.of(12, 3);
-        CalendricalFormatter f = new CalendricalFormatter() {
-            @Override
-            public String print(DateTimeAccessor accessor) {
-                assertEquals(accessor, date);
-                return "PRINTED";
-            }
-            @Override
-            public <T> T parse(CharSequence text, Class<T> type) {
-                throw new AssertionError();
-            }
-        };
-        String t = date.toString(f);
-        assertEquals(t, "PRINTED");
+        DateTimeFormatter f = DateTimeFormatters.pattern("M d");
+        String t = MonthDay.of(12, 3).toString(f);
+        assertEquals(t, "12 3");
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})

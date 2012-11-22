@@ -35,6 +35,8 @@ import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 
@@ -43,11 +45,10 @@ import org.testng.annotations.Test;
 /**
  * Test DateTimeAdjusters.
  */
-@Test
+@Test(groups={"implementation"})
 public class TestDateTimeAdjusters {
 
     @SuppressWarnings("rawtypes")
-    @Test(groups={"implementation"})
     public void test_constructor() throws Exception {
         for (Constructor constructor : DateTimeAdjusters.class.getDeclaredConstructors()) {
             assertTrue(Modifier.isPrivate(constructor.getModifiers()));
@@ -56,32 +57,36 @@ public class TestDateTimeAdjusters {
         }
     }
 
-    @Test(groups={"implementation"})
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Test(expectedExceptions = InvocationTargetException.class, groups={"tck"})
+    public void test_forceCoverage() throws Exception {
+        Enum en = (Enum) DateTimeAdjusters.lastDayOfYear();
+        Class cls = en.getClass();
+        Method m = cls.getMethod("valueOf", String.class);
+        m.invoke(null, en.name());
+        m.invoke(null, "NOTREAL");
+    }
+
     public void factory_firstDayOfMonthSame() {
         assertSame(DateTimeAdjusters.firstDayOfMonth(), DateTimeAdjusters.firstDayOfMonth());
     }
 
-    @Test(groups={"implementation"})
     public void factory_lastDayOfMonthSame() {
         assertSame(DateTimeAdjusters.lastDayOfMonth(), DateTimeAdjusters.lastDayOfMonth());
     }
 
-    @Test(groups={"implementation"})
     public void factory_firstDayOfNextMonthSame() {
         assertSame(DateTimeAdjusters.firstDayOfNextMonth(), DateTimeAdjusters.firstDayOfNextMonth());
     }
 
-    @Test(groups={"implementation"})
     public void factory_firstDayOfYearSame() {
         assertSame(DateTimeAdjusters.firstDayOfYear(), DateTimeAdjusters.firstDayOfYear());
     }
 
-    @Test(groups={"implementation"})
     public void factory_lastDayOfYearSame() {
         assertSame(DateTimeAdjusters.lastDayOfYear(), DateTimeAdjusters.lastDayOfYear());
     }
 
-    @Test(groups={"implementation"})
     public void factory_firstDayOfNextYearSame() {
         assertSame(DateTimeAdjusters.firstDayOfNextYear(), DateTimeAdjusters.firstDayOfNextYear());
     }

@@ -64,6 +64,11 @@ import javax.time.LocalDateTime;
  */
 final class Ser implements Externalizable {
 
+    /**
+     * Serialization version.
+     */
+    private static final long serialVersionUID = -6103370247208168577L;
+
     static final byte CHRONO_TYPE = 1;
     static final byte CHRONO_LOCALDATETIME_TYPE = 2;
     static final byte CHRONO_OFFSETDATETIME_TYPE = 3;

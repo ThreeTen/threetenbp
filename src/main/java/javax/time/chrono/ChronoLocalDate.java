@@ -32,6 +32,8 @@
 package javax.time.chrono;
 
 import java.util.Comparator;
+
+import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.calendrical.ChronoField;
@@ -39,7 +41,7 @@ import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.format.CalendricalFormatter;
+import javax.time.format.DateTimeFormatter;
 
 /**
  * A date without time-of-day or time-zone in an arbitrary chronology, intended
@@ -440,6 +442,6 @@ public interface ChronoLocalDate<C extends Chrono<C>>
      * @return the formatted date-time string, not null
      * @throws DateTimeException if an error occurs during printing
      */
-    String toString(CalendricalFormatter formatter);
+    String toString(DateTimeFormatter formatter);
 
 }

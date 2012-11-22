@@ -58,7 +58,7 @@ import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.ChronoLocalDateTime;
 import javax.time.chrono.ISOChrono;
-import javax.time.format.CalendricalFormatter;
+import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
 import javax.time.jdk8.DefaultInterfaceChronoLocalDateTime;
@@ -380,7 +380,7 @@ public final class LocalDateTime
      * @return the parsed local date-time, not null
      * @throws DateTimeParseException if the text cannot be parsed
      */
-    public static LocalDateTime parse(CharSequence text, CalendricalFormatter formatter) {
+    public static LocalDateTime parse(CharSequence text, DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
         return formatter.parse(text, LocalDateTime.class);
     }

@@ -52,7 +52,7 @@ import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.format.CalendricalFormatter;
+import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
 import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
@@ -254,7 +254,7 @@ public final class OffsetTime
      * @return the parsed offset time, not null
      * @throws DateTimeParseException if the text cannot be parsed
      */
-    public static OffsetTime parse(CharSequence text, CalendricalFormatter formatter) {
+    public static OffsetTime parse(CharSequence text, DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
         return formatter.parse(text, OffsetTime.class);
     }
@@ -928,7 +928,7 @@ public final class OffsetTime
      * @return the formatted time string, not null
      * @throws DateTimeException if an error occurs during printing
      */
-    public String toString(CalendricalFormatter formatter) {
+    public String toString(DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
         return formatter.print(this);
     }
