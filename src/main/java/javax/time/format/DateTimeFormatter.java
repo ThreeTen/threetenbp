@@ -218,7 +218,8 @@ public final class DateTimeFormatter {
         Objects.requireNonNull(type, "type");
         String str = text.toString();  // parsing whole String, so this makes sense
         try {
-            DateTimeBuilder builder = parseToBuilder(str).resolve();
+            DateTimeBuilder builder = parseToBuilder(str);
+            builder.resolve();
             return builder.build(type);
         } catch (DateTimeParseException ex) {
             throw ex;

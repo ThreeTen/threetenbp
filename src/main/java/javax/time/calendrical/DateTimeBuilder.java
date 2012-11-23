@@ -55,7 +55,6 @@ import static javax.time.calendrical.ChronoField.MINUTE_OF_HOUR;
 import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
 import static javax.time.calendrical.ChronoField.NANO_OF_DAY;
 import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
-import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
 import static javax.time.calendrical.ChronoField.SECOND_OF_DAY;
 import static javax.time.calendrical.ChronoField.SECOND_OF_MINUTE;
 import static javax.time.calendrical.ChronoField.YEAR;
@@ -346,9 +345,7 @@ public final class DateTimeBuilder
             }
             return this;
         }
-        if (object instanceof ZoneOffset) {
-            addFieldValue(OFFSET_SECONDS, ((ZoneOffset) object).getTotalSeconds());
-        } else if (object instanceof Instant) {
+        if (object instanceof Instant) {
             addFieldValue(INSTANT_SECONDS, ((Instant) object).getEpochSecond());
             addFieldValue(NANO_OF_SECOND, ((Instant) object).getNano());
         } else {

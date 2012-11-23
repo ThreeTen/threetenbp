@@ -38,6 +38,7 @@ import static javax.time.calendrical.ChronoField.HOUR_OF_DAY;
 import static javax.time.calendrical.ChronoField.MINUTE_OF_HOUR;
 import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
 import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
+import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
 import static javax.time.calendrical.ChronoField.SECOND_OF_MINUTE;
 import static javax.time.calendrical.ChronoField.YEAR;
 import static org.testng.Assert.assertEquals;
@@ -317,7 +318,7 @@ public class TCKDateTimeFormatters {
         if (input != null) {
             DateTimeBuilder expected = createDate(year, month, day);
             if (offsetId != null) {
-                expected.addCalendrical(ZoneOffset.of(offsetId));
+                expected.addFieldValue(OFFSET_SECONDS, ZoneOffset.of(offsetId).getTotalSeconds());
                 if (zoneId != null) {
                     expected.addCalendrical(ZoneId.of(zoneId));
                 }
@@ -514,7 +515,7 @@ public class TCKDateTimeFormatters {
         if (input != null) {
             DateTimeBuilder expected = createTime(hour, min, sec, nano);
             if (offsetId != null) {
-                expected.addCalendrical(ZoneOffset.of(offsetId));
+                expected.addFieldValue(OFFSET_SECONDS, ZoneOffset.of(offsetId).getTotalSeconds());
                 if (zoneId != null) {
                     expected.addCalendrical(ZoneId.of(zoneId));
                 }
@@ -814,7 +815,7 @@ public class TCKDateTimeFormatters {
         if (input != null) {
             DateTimeBuilder expected = createDateTime(year, month, day, hour, min, sec, nano);
             if (offsetId != null) {
-                expected.addCalendrical(ZoneOffset.of(offsetId));
+                expected.addFieldValue(OFFSET_SECONDS, ZoneOffset.of(offsetId).getTotalSeconds());
                 if (zoneId != null) {
                     expected.addCalendrical(ZoneId.of(zoneId));
                 }
@@ -1085,7 +1086,7 @@ public class TCKDateTimeFormatters {
 
     private void buildCalendrical(DateTimeBuilder cal, String offsetId, String zoneId) {
         if (offsetId != null) {
-            cal.addCalendrical(ZoneOffset.of(offsetId));
+            cal.addFieldValue(OFFSET_SECONDS, ZoneOffset.of(offsetId).getTotalSeconds());
         }
         if (zoneId != null) {
             cal.addCalendrical(ZoneId.of(zoneId));
