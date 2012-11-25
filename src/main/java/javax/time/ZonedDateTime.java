@@ -1171,8 +1171,8 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param field  the field to set in the returned date-time, not null
-     * @param newValue  the new value of the field in the returned date-time, not null
+     * @param field  the field to set in the result, not null
+     * @param newValue  the new value of the field in the result
      * @return a {@code ZonedDateTime} based on this date-time with the specified field set, not null
      * @throws DateTimeException if the value is invalid
      */
@@ -1203,7 +1203,7 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param year  the year to set in the result, from MIN_YEAR to MAX_YEAR
      * @return a {@code ZonedDateTime} based on this date-time with the requested year, not null
      * @throws DateTimeException if the year value is invalid
      */
@@ -1220,9 +1220,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
+     * @param month  the month-of-year to set in the result, from 1 (January) to 12 (December)
      * @return a {@code ZonedDateTime} based on this date-time with the requested month, not null
-     * @throws DateTimeException if the month value is invalid
+     * @throws DateTimeException if the month-of-year value is invalid
      */
     public ZonedDateTime withMonth(int month) {
         return resolveLocal(dateTime.withMonth(month));
@@ -1236,7 +1236,7 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
+     * @param dayOfMonth  the day-of-month to set in the result, from 1 to 28-31
      * @return a {@code ZonedDateTime} based on this date-time with the requested day, not null
      * @throws DateTimeException if the day-of-month value is invalid
      * @throws DateTimeException if the day-of-month is invalid for the month-year
@@ -1253,7 +1253,7 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfYear  the day-of-year to set in the returned date, from 1 to 365-366
+     * @param dayOfYear  the day-of-year to set in the result, from 1 to 365-366
      * @return a {@code ZonedDateTime} based on this date with the requested day, not null
      * @throws DateTimeException if the day-of-year value is invalid
      * @throws DateTimeException if the day-of-year is invalid for the year
@@ -1274,11 +1274,11 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
+     * @param year  the year to set in the result, from MIN_YEAR to MAX_YEAR
+     * @param month  the month-of-year to set in the result, from 1 (January) to 12 (December)
+     * @param dayOfMonth  the day-of-month to set in the result, from 1 to 31
      * @return a {@code ZonedDateTime} based on this date-time with the requested date, not null
-     * @throws DateTimeException if the any field value is invalid
+     * @throws DateTimeException if any field value is invalid
      * @throws DateTimeException if the day-of-month is invalid for the month-year
      */
     public ZonedDateTime withDate(int year, int month, int dayOfMonth) {
@@ -1294,7 +1294,7 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param hour  the hour-of-day to set in the result, from 0 to 23
      * @return a {@code ZonedDateTime} based on this date-time with the requested hour, not null
      * @throws DateTimeException if the hour value is invalid
      */
@@ -1310,7 +1310,7 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param minute  the minute-of-hour to set in the result, from 0 to 59
      * @return a {@code ZonedDateTime} based on this date-time with the requested minute, not null
      * @throws DateTimeException if the minute value is invalid
      */
@@ -1326,7 +1326,7 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param second  the second-of-minute to represent, from 0 to 59
+     * @param second  the second-of-minute to set in the result, from 0 to 59
      * @return a {@code ZonedDateTime} based on this date-time with the requested second, not null
      * @throws DateTimeException if the second value is invalid
      */
@@ -1342,9 +1342,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
+     * @param nanoOfSecond  the nano-of-second to set in the result, from 0 to 999,999,999
      * @return a {@code ZonedDateTime} based on this date-time with the requested nanosecond, not null
-     * @throws DateTimeException if the nanos value is invalid
+     * @throws DateTimeException if the nano value is invalid
      */
     public ZonedDateTime withNano(int nanoOfSecond) {
         return resolveLocal(dateTime.withNano(nanoOfSecond));
@@ -1363,8 +1363,8 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hour  the hour-of-day to represent, from 0 to 23
-     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param hour  the hour-of-day to set in the result, from 0 to 23
+     * @param minute  the minute-of-hour to set in the result, from 0 to 59
      * @return a {@code ZonedDateTime} based on this date-time with the requested time, not null
      * @throws DateTimeException if any field value is invalid
      */
@@ -1380,9 +1380,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hour  the hour-of-day to represent, from 0 to 23
-     * @param minute  the minute-of-hour to represent, from 0 to 59
-     * @param second  the second-of-minute to represent, from 0 to 59
+     * @param hour  the hour-of-day to set in the result, from 0 to 23
+     * @param minute  the minute-of-hour to set in the result, from 0 to 59
+     * @param second  the second-of-minute to set in the result, from 0 to 59
      * @return a {@code ZonedDateTime} based on this date-time with the requested time, not null
      * @throws DateTimeException if any field value is invalid
      */
@@ -1398,10 +1398,10 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hour  the hour-of-day to represent, from 0 to 23
-     * @param minute  the minute-of-hour to represent, from 0 to 59
-     * @param second  the second-of-minute to represent, from 0 to 59
-     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
+     * @param hour  the hour-of-day to set in the result, from 0 to 23
+     * @param minute  the minute-of-hour to set in the result, from 0 to 59
+     * @param second  the second-of-minute to set in the result, from 0 to 59
+     * @param nanoOfSecond  the nano-of-second to set in the result, from 0 to 999,999,999
      * @return a {@code ZonedDateTime} based on this date-time with the requested time, not null
      * @throws DateTimeException if any field value is invalid
      */
@@ -1447,7 +1447,7 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amountToAdd  the amount of the unit to add to the returned date-time, not null
+     * @param amountToAdd  the amount of the unit to add to the result, may be negative
      * @param unit  the unit of the period to add, not null
      * @return a {@code ZonedDateTime} based on this date-time with the specified period added, not null
      * @throws DateTimeException if the unit cannot be added to this type
@@ -1463,7 +1463,7 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this {@code ZonedDateTime} with the specified period in years added.
      * <p>
-     * This method add the specified amount to the years field in four steps:
+     * This method adds the specified amount to the years field in four steps:
      * <ol>
      * <li>Add the input years to the year field</li>
      * <li>Check if the resulting date would be invalid</li>
@@ -1477,9 +1477,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the years to add, positive or negative
+     * @param years  the years to add, may be negative
      * @return a {@code ZonedDateTime} based on this date-time with the years added, not null
-     * @throws DateTimeException if the result exceeds the supported range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public ZonedDateTime plusYears(long years) {
         return resolveLocal(dateTime.plusYears(years));
@@ -1502,9 +1502,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param months  the months to add, positive or negative
+     * @param months  the months to add, may be negative
      * @return a {@code ZonedDateTime} based on this date-time with the months added, not null
-     * @throws DateTimeException if the result exceeds the supported range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public ZonedDateTime plusMonths(long months) {
         return resolveLocal(dateTime.plusMonths(months));
@@ -1524,9 +1524,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param weeks  the weeks to add, positive or negative
+     * @param weeks  the weeks to add, may be negative
      * @return a {@code ZonedDateTime} based on this date-time with the weeks added, not null
-     * @throws DateTimeException if the result exceeds the supported range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public ZonedDateTime plusWeeks(long weeks) {
         return resolveLocal(dateTime.plusWeeks(weeks));
@@ -1539,16 +1539,16 @@ public final class ZonedDateTime
      * month and year fields as necessary to ensure the result remains valid.
      * The result is only invalid if the maximum/minimum year is exceeded.
      * <p>
-     * For example, 2008-12-31 plus one day would result in the 2009-01-01.
+     * For example, 2008-12-31 plus one day would result in 2009-01-01.
      * <p>
      * If the resulting local date-time is invalid for the offset and zone ID, then
      * it is adjusted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param days  the days to add, positive or negative
+     * @param days  the days to add, may be negative
      * @return a {@code ZonedDateTime} based on this date-time with the days added, not null
-     * @throws DateTimeException if the result exceeds the supported range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public ZonedDateTime plusDays(long days) {
         return resolveLocal(dateTime.plusDays(days));
@@ -1572,9 +1572,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hours  the hours to add, positive or negative
+     * @param hours  the hours to add, may be negative
      * @return a {@code ZonedDateTime} based on this date-time with the hours added, not null
-     * @throws DateTimeException if the result exceeds the supported range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public ZonedDateTime plusHours(long hours) {
         return resolveLocal(dateTime.plusHours(hours));
@@ -1592,9 +1592,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param minutes  the minutes to add, positive or negative
+     * @param minutes  the minutes to add, may be negative
      * @return a {@code ZonedDateTime} based on this date-time with the minutes added, not null
-     * @throws DateTimeException if the result exceeds the supported range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public ZonedDateTime plusMinutes(long minutes) {
         return resolveLocal(dateTime.plusMinutes(minutes));
@@ -1612,9 +1612,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param seconds  the seconds to add, positive or negative
+     * @param seconds  the seconds to add, may be negative
      * @return a {@code ZonedDateTime} based on this date-time with the seconds added, not null
-     * @throws DateTimeException if the result exceeds the supported range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public ZonedDateTime plusSeconds(long seconds) {
         return resolveLocal(dateTime.plusSeconds(seconds));
@@ -1632,9 +1632,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param nanos  the nanos to add, positive or negative
+     * @param nanos  the nanos to add, may be negative
      * @return a {@code ZonedDateTime} based on this date-time with the nanoseconds added, not null
-     * @throws DateTimeException if the result exceeds the supported range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public ZonedDateTime plusNanos(long nanos) {
         return resolveLocal(dateTime.plusNanos(nanos));
@@ -1652,13 +1652,13 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hours  the hours to add, positive or negative
-     * @param minutes  the minutes to add, positive or negative
-     * @param seconds  the seconds to add, positive or negative
-     * @param nanos  the nanos to add, positive or negative
+     * @param hours  the hours to add, may be negative
+     * @param minutes  the minutes to add, may be negative
+     * @param seconds  the seconds to add, may be negative
+     * @param nanos  the nanos to add, may be negative
      * @return a {@code ZonedDateTime} based on this date-time with the duration added, not null
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
-     * @throws DateTimeException if the result exceeds the supported range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public ZonedDateTime plusDuration(int hours, int minutes, int seconds, long nanos) {
         if ((hours | minutes | seconds | nanos) == 0) {
@@ -1707,7 +1707,7 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amountToSubtract  the amount of the unit to subtract from the returned date-time, not null
+     * @param amountToSubtract  the amount of the unit to subtract from the result, may be negative
      * @param unit  the unit of the period to subtract, not null
      * @return a {@code ZonedDateTime} based on this date-time with the specified period subtracted, not null
      * @throws DateTimeException if the unit cannot be added to this type
@@ -1723,7 +1723,7 @@ public final class ZonedDateTime
      * <p>
      * This method subtracts the specified amount to the years field in four steps:
      * <ol>
-     * <li>Add the input years to the year field</li>
+     * <li>Subtract the input years from the year field</li>
      * <li>Check if the resulting date would be invalid</li>
      * <li>Adjust the day-of-month to the last valid day if necessary</li>
      * <li>Adjust the local date-time to be valid for the time-zone</li>
@@ -1735,9 +1735,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the years to subtract, positive or negative
+     * @param years  the years to subtract, may be negative
      * @return a {@code ZonedDateTime} based on this date-time with the years subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public ZonedDateTime minusYears(long years) {
         return (years == Long.MIN_VALUE ? plusYears(Long.MAX_VALUE).plusYears(1) : plusYears(-years));
@@ -1748,7 +1748,7 @@ public final class ZonedDateTime
      * <p>
      * This method subtracts the specified amount to the months field in four steps:
      * <ol>
-     * <li>Add the input months to the month-of-year field</li>
+     * <li>Subtract the input months from the month-of-year field</li>
      * <li>Check if the resulting date would be invalid</li>
      * <li>Adjust the day-of-month to the last valid day if necessary</li>
      * <li>Adjust the local date-time to be valid for the time-zone</li>
@@ -1760,9 +1760,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param months  the months to subtract, positive or negative
+     * @param months  the months to subtract, may be negative
      * @return a {@code ZonedDateTime} based on this date-time with the months subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public ZonedDateTime minusMonths(long months) {
         return (months == Long.MIN_VALUE ? plusMonths(Long.MAX_VALUE).plusMonths(1) : plusMonths(-months));
@@ -1771,7 +1771,7 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this {@code ZonedDateTime} with the specified period in weeks subtracted.
      * <p>
-     * This method subtracts the specified amount in weeks to the days field incrementing
+     * This method subtracts the specified amount in weeks from the days field decrementing
      * the month and year fields as necessary to ensure the result remains valid.
      * The result is only invalid if the maximum/minimum year is exceeded.
      * <p>
@@ -1782,9 +1782,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param weeks  the weeks to subtract, positive or negative
+     * @param weeks  the weeks to subtract, may be negative
      * @return a {@code ZonedDateTime} based on this date-time with the weeks subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public ZonedDateTime minusWeeks(long weeks) {
         return (weeks == Long.MIN_VALUE ? plusWeeks(Long.MAX_VALUE).plusWeeks(1) : plusWeeks(-weeks));
@@ -1793,7 +1793,7 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this {@code ZonedDateTime} with the specified period in days subtracted.
      * <p>
-     * This method subtracts the specified amount to the days field incrementing the
+     * This method subtracts the specified amount from the days field incrementing the
      * month and year fields as necessary to ensure the result remains valid.
      * The result is only invalid if the maximum/minimum year is exceeded.
      * <p>
@@ -1804,9 +1804,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param days  the days to subtract, positive or negative
+     * @param days  the days to subtract, may be negative
      * @return a {@code ZonedDateTime} based on this date-time with the days subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public ZonedDateTime minusDays(long days) {
         return (days == Long.MIN_VALUE ? plusDays(Long.MAX_VALUE).plusDays(1) : plusDays(-days));
@@ -1830,9 +1830,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hours  the hours to subtract, positive or negative
+     * @param hours  the hours to subtract, may be negative
      * @return a {@code ZonedDateTime} based on this date-time with the hours subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public ZonedDateTime minusHours(long hours) {
         return (hours == Long.MIN_VALUE ? plusHours(Long.MAX_VALUE).plusHours(1) : plusHours(-hours));
@@ -1850,9 +1850,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param minutes  the minutes to subtract, positive or negative
+     * @param minutes  the minutes to subtract, may be negative
      * @return a {@code ZonedDateTime} based on this date-time with the minutes subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public ZonedDateTime minusMinutes(long minutes) {
         return (minutes == Long.MIN_VALUE ? plusMinutes(Long.MAX_VALUE).plusMinutes(1) : plusMinutes(-minutes));
@@ -1870,9 +1870,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param seconds  the seconds to subtract, positive or negative
+     * @param seconds  the seconds to subtract, may be negative
      * @return a {@code ZonedDateTime} based on this date-time with the seconds subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public ZonedDateTime minusSeconds(long seconds) {
         return (seconds == Long.MIN_VALUE ? plusSeconds(Long.MAX_VALUE).plusSeconds(1) : plusSeconds(-seconds));
@@ -1890,9 +1890,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param nanos  the nanos to subtract, positive or negative
+     * @param nanos  the nanos to subtract, may be negative
      * @return a {@code ZonedDateTime} based on this date-time with the nanoseconds subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public ZonedDateTime minusNanos(long nanos) {
         return (nanos == Long.MIN_VALUE ? plusNanos(Long.MAX_VALUE).plusNanos(1) : plusNanos(-nanos));
@@ -1910,13 +1910,13 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hours  the hours to subtract, positive or negative
-     * @param minutes  the minutes to subtract, positive or negative
-     * @param seconds  the seconds to subtract, positive or negative
-     * @param nanos  the nanos to subtract, positive or negative
+     * @param hours  the hours to subtract, may be negative
+     * @param minutes  the minutes to subtract, may be negative
+     * @param seconds  the seconds to subtract, may be negative
+     * @param nanos  the nanos to subtract, may be negative
      * @return a {@code ZonedDateTime} based on this date-time with the duration subtracted, not null
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
-     * @throws DateTimeException if the result exceeds the supported range
+     * @throws DateTimeException if the result exceeds the supported date range
      */
     public ZonedDateTime minusDuration(int hours, int minutes, int seconds, long nanos) {
         if ((hours | minutes | seconds | nanos) == 0) {

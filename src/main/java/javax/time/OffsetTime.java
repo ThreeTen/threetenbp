@@ -449,8 +449,8 @@ public final class OffsetTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param field  the field to set in the returned time, not null
-     * @param newValue  the new value of the field in the returned time, not null
+     * @param field  the field to set in the result, not null
+     * @param newValue  the new value of the field in the result
      * @return an {@code OffsetTime} based on this time with the specified field set, not null
      * @throws DateTimeException if the value is invalid
      */
@@ -471,7 +471,7 @@ public final class OffsetTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param hour  the hour-of-day to set in the result, from 0 to 23
      * @return an {@code OffsetTime} based on this time with the requested hour, not null
      * @throws DateTimeException if the hour value is invalid
      */
@@ -484,7 +484,7 @@ public final class OffsetTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param minute  the minute-of-hour to set in the result, from 0 to 59
      * @return an {@code OffsetTime} based on this time with the requested minute, not null
      * @throws DateTimeException if the minute value is invalid
      */
@@ -497,7 +497,7 @@ public final class OffsetTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param second  the second-of-minute to represent, from 0 to 59
+     * @param second  the second-of-minute to set in the result, from 0 to 59
      * @return an {@code OffsetTime} based on this time with the requested second, not null
      * @throws DateTimeException if the second value is invalid
      */
@@ -510,7 +510,7 @@ public final class OffsetTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
+     * @param nanoOfSecond  the nano-of-second to set in the result, from 0 to 999,999,999
      * @return an {@code OffsetTime} based on this time with the requested nanosecond, not null
      * @throws DateTimeException if the nanos value is invalid
      */
@@ -551,7 +551,7 @@ public final class OffsetTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amountToAdd  the amount of the unit to add to the returned time, not null
+     * @param amountToAdd  the amount of the unit to add to the result, may be negative
      * @param unit  the unit of the period to add, not null
      * @return an {@code OffsetTime} based on this time with the specified period added, not null
      * @throws DateTimeException if the unit cannot be added to this type
@@ -657,7 +657,7 @@ public final class OffsetTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amountToSubtract  the amount of the unit to subtract from the returned time, not null
+     * @param amountToSubtract  the amount of the unit to subtract from the result, may be negative
      * @param unit  the unit of the period to subtract, not null
      * @return an {@code OffsetTime} based on this time with the specified period subtracted, not null
      * @throws DateTimeException if the unit cannot be added to this type

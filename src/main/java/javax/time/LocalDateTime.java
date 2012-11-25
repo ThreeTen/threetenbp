@@ -644,8 +644,8 @@ public final class LocalDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param field  the field to set in the returned date-time, not null
-     * @param newValue  the new value of the field in the returned date-time, not null
+     * @param field  the field to set in the result, not null
+     * @param newValue  the new value of the field in the result
      * @return a {@code LocalDateTime} based on this date-time with the specified field set, not null
      * @throws DateTimeException if the value is invalid
      */
@@ -670,7 +670,7 @@ public final class LocalDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param year  the year to set in the returned date, from MIN_YEAR to MAX_YEAR
+     * @param year  the year to set in the result, from MIN_YEAR to MAX_YEAR
      * @return a {@code LocalDateTime} based on this date-time with the requested year, not null
      * @throws DateTimeException if the year value is invalid
      */
@@ -685,7 +685,7 @@ public final class LocalDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param month  the month-of-year to set in the returned date, from 1 (January) to 12 (December)
+     * @param month  the month-of-year to set in the result, from 1 (January) to 12 (December)
      * @return a {@code LocalDateTime} based on this date-time with the requested month, not null
      * @throws DateTimeException if the month-of-year value is invalid
      */
@@ -700,7 +700,7 @@ public final class LocalDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfMonth  the day-of-month to set in the returned date, from 1 to 28-31
+     * @param dayOfMonth  the day-of-month to set in the result, from 1 to 28-31
      * @return a {@code LocalDateTime} based on this date-time with the requested day, not null
      * @throws DateTimeException if the day-of-month value is invalid
      * @throws DateTimeException if the day-of-month is invalid for the month-year
@@ -715,7 +715,7 @@ public final class LocalDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfYear  the day-of-year to set in the returned date, from 1 to 365-366
+     * @param dayOfYear  the day-of-year to set in the result, from 1 to 365-366
      * @return a {@code LocalDateTime} based on this date with the requested day, not null
      * @throws DateTimeException if the day-of-year value is invalid
      * @throws DateTimeException if the day-of-year is invalid for the year
@@ -733,9 +733,9 @@ public final class LocalDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param month  the month-of-year to represent, not null
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
+     * @param year  the year to set in the result, from MIN_YEAR to MAX_YEAR
+     * @param month  the month-of-year to set in the result, not null
+     * @param dayOfMonth  the day-of-month to set in the result, from 1 to 31
      * @return a {@code LocalDateTime} based on this date-time with the requested date, not null
      * @throws DateTimeException if any field value is invalid
      * @throws DateTimeException if the day-of-month is invalid for the month-year
@@ -758,9 +758,9 @@ public final class LocalDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
+     * @param year  the year to set in the result, from MIN_YEAR to MAX_YEAR
+     * @param month  the month-of-year to set in the result, from 1 (January) to 12 (December)
+     * @param dayOfMonth  the day-of-month to set in the result, from 1 to 31
      * @return a {@code LocalDateTime} based on this date-time with the requested date, not null
      * @throws DateTimeException if any field value is invalid
      * @throws DateTimeException if the day-of-month is invalid for the month-year
@@ -781,7 +781,7 @@ public final class LocalDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param hour  the hour-of-day to set in the result, from 0 to 23
      * @return a {@code LocalDateTime} based on this date-time with the requested hour, not null
      * @throws DateTimeException if the hour value is invalid
      */
@@ -795,7 +795,7 @@ public final class LocalDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param minute  the minute-of-hour to set in the result, from 0 to 59
      * @return a {@code LocalDateTime} based on this date-time with the requested minute, not null
      * @throws DateTimeException if the minute value is invalid
      */
@@ -809,7 +809,7 @@ public final class LocalDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param second  the second-of-minute to represent, from 0 to 59
+     * @param second  the second-of-minute to set in the result, from 0 to 59
      * @return a {@code LocalDateTime} based on this date-time with the requested second, not null
      * @throws DateTimeException if the second value is invalid
      */
@@ -823,7 +823,7 @@ public final class LocalDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
+     * @param nanoOfSecond  the nano-of-second to set in the result, from 0 to 999,999,999
      * @return a {@code LocalDateTime} based on this date-time with the requested nanosecond, not null
      * @throws DateTimeException if the nano value is invalid
      */
@@ -842,8 +842,8 @@ public final class LocalDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hour  the hour-of-day to represent, from 0 to 23
-     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param hour  the hour-of-day to set in the result, from 0 to 23
+     * @param minute  the minute-of-hour to set in the result, from 0 to 59
      * @return a {@code LocalDateTime} based on this date-time with the requested time, not null
      * @throws DateTimeException if any field value is invalid
      */
@@ -861,9 +861,9 @@ public final class LocalDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hour  the hour-of-day to represent, from 0 to 23
-     * @param minute  the minute-of-hour to represent, from 0 to 59
-     * @param second  the second-of-minute to represent, from 0 to 59
+     * @param hour  the hour-of-day to set in the result, from 0 to 23
+     * @param minute  the minute-of-hour to set in the result, from 0 to 59
+     * @param second  the second-of-minute to set in the result, from 0 to 59
      * @return a {@code LocalDateTime} based on this date-time with the requested time, not null
      * @throws DateTimeException if any field value is invalid
      */
@@ -879,10 +879,10 @@ public final class LocalDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hour  the hour-of-day to represent, from 0 to 23
-     * @param minute  the minute-of-hour to represent, from 0 to 59
-     * @param second  the second-of-minute to represent, from 0 to 59
-     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
+     * @param hour  the hour-of-day to set in the result, from 0 to 23
+     * @param minute  the minute-of-hour to set in the result, from 0 to 59
+     * @param second  the second-of-minute to set in the result, from 0 to 59
+     * @param nanoOfSecond  the nano-of-second to set in the result, from 0 to 999,999,999
      * @return a {@code LocalDateTime} based on this date-time with the requested time, not null
      * @throws DateTimeException if any field value is invalid
      */
@@ -927,7 +927,7 @@ public final class LocalDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amountToAdd  the amount of the unit to add to the returned date-time, not null
+     * @param amountToAdd  the amount of the unit to add to the result, may be negative
      * @param unit  the unit of the period to add, not null
      * @return a {@code LocalDateTime} based on this date-time with the specified period added, not null
      * @throws DateTimeException if the unit cannot be added to this type
@@ -1126,7 +1126,7 @@ public final class LocalDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amountToSubtract  the amount of the unit to subtract from the returned date-time, not null
+     * @param amountToSubtract  the amount of the unit to subtract from the result, may be negative
      * @param unit  the unit of the period to subtract, not null
      * @return a {@code LocalDateTime} based on this date-time with the specified period subtracted, not null
      * @throws DateTimeException if the unit cannot be added to this type
@@ -1142,7 +1142,7 @@ public final class LocalDateTime
      * <p>
      * This method subtracts the specified amount from the years field in three steps:
      * <ol>
-     * <li>Subtract the input years to the year field</li>
+     * <li>Subtract the input years from the year field</li>
      * <li>Check if the resulting date would be invalid</li>
      * <li>Adjust the day-of-month to the last valid day if necessary</li>
      * </ol>
@@ -1158,8 +1158,7 @@ public final class LocalDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public LocalDateTime minusYears(long years) {
-        LocalDate newDate = date.minusYears(years);
-        return with(newDate, time);
+        return (years == Long.MIN_VALUE ? plusYears(Long.MAX_VALUE).plusYears(1) : plusYears(-years));
     }
 
     /**
@@ -1167,7 +1166,7 @@ public final class LocalDateTime
      * <p>
      * This method subtracts the specified amount from the months field in three steps:
      * <ol>
-     * <li>Subtract the input months to the month-of-year field</li>
+     * <li>Subtract the input months from the month-of-year field</li>
      * <li>Check if the resulting date would be invalid</li>
      * <li>Adjust the day-of-month to the last valid day if necessary</li>
      * </ol>
@@ -1183,8 +1182,7 @@ public final class LocalDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public LocalDateTime minusMonths(long months) {
-        LocalDate newDate = date.minusMonths(months);
-        return with(newDate, time);
+        return (months == Long.MIN_VALUE ? plusMonths(Long.MAX_VALUE).plusMonths(1) : plusMonths(-months));
     }
 
     /**
@@ -1203,8 +1201,7 @@ public final class LocalDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public LocalDateTime minusWeeks(long weeks) {
-        LocalDate newDate = date.minusWeeks(weeks);
-        return with(newDate, time);
+        return (weeks == Long.MIN_VALUE ? plusWeeks(Long.MAX_VALUE).plusWeeks(1) : plusWeeks(-weeks));
     }
 
     /**
@@ -1223,8 +1220,7 @@ public final class LocalDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public LocalDateTime minusDays(long days) {
-        LocalDate newDate = date.minusDays(days);
-        return with(newDate, time);
+        return (days == Long.MIN_VALUE ? plusDays(Long.MAX_VALUE).plusDays(1) : plusDays(-days));
     }
 
     //-----------------------------------------------------------------------
@@ -1474,7 +1470,6 @@ public final class LocalDateTime
      * Checks if this date-time is equal to another date-time.
      * <p>
      * Compares this {@code LocalDateTime} with another ensuring that the date-time is the same.
-     * <p>
      * Only objects of type {@code LocalDateTime} are compared, other types return false.
      *
      * @param obj  the object to check, null returns false
