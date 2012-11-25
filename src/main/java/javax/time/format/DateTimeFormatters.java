@@ -621,6 +621,7 @@ public final class DateTimeFormatters {
         ISO_ZONED_DATE_TIME = new DateTimeFormatterBuilder()
             .append(ISO_LOCAL_DATE_TIME)
             .appendOffsetId()
+            .optionalStart()
             .appendLiteral('[')
             .appendZoneId()
             .appendLiteral(']')

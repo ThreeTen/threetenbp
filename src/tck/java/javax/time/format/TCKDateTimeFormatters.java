@@ -54,7 +54,6 @@ import java.util.Map;
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
-import javax.time.OffsetDateTime;
 import javax.time.Year;
 import javax.time.YearMonth;
 import javax.time.ZoneId;
@@ -834,15 +833,15 @@ public class TCKDateTimeFormatters {
     }
 
     @Test(groups={"tck"})
-    public void test_print_isoOrdinalDate_offset() {
-        DateTimeAccessor test = OffsetDateTime.of(2008, 6, 3, 11, 5, 30, ZoneOffset.UTC);
+    public void test_print_isoOrdinalDate_zonedOffset() {
+        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), ZoneOffset.UTC);
         assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "2008-155Z");
     }
 
     @Test(groups={"tck"})
     public void test_print_isoOrdinalDate_zoned() {
-        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), ZoneOffset.UTC);
-        assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "2008-155Z[Z]");
+        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), ZoneId.of("Europe/Paris"));
+        assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "2008-155+02:00[Europe/Paris]");
     }
 
     @Test(groups={"tck"})
@@ -886,15 +885,15 @@ public class TCKDateTimeFormatters {
     }
 
     @Test(groups={"tck"})
-    public void test_print_basicIsoDate_offset() {
-        DateTimeAccessor test = OffsetDateTime.of(2008, 6, 3, 11, 5, 30, ZoneOffset.UTC);
+    public void test_print_basicIsoDate_zonedOffset() {
+        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), ZoneOffset.UTC);
         assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080603Z");
     }
 
     @Test(groups={"tck"})
     public void test_print_basicIsoDate_zoned() {
-        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), ZoneOffset.UTC);
-        assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080603Z[Z]");
+        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), ZoneId.of("Europe/Paris"));
+        assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080603+0200[Europe/Paris]");
     }
 
     @Test(expectedExceptions=DateTimePrintException.class, groups={"tck"})

@@ -58,9 +58,9 @@ import javax.time.Clock;
 import javax.time.DateTimeException;
 import javax.time.Instant;
 import javax.time.LocalDate;
+import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.Month;
-import javax.time.OffsetDateTime;
 import javax.time.Year;
 import javax.time.YearMonth;
 import javax.time.ZoneId;
@@ -192,7 +192,7 @@ public class TCKYearMonth extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void now_Clock() {
-        Instant instant = OffsetDateTime.of(2010, 12, 31, 0, 0, ZoneOffset.UTC).toInstant();
+        Instant instant = LocalDateTime.of(2010, 12, 31, 0, 0).toInstant(ZoneOffset.UTC);
         Clock clock = Clock.fixed(instant, ZoneOffset.UTC);
         YearMonth test = YearMonth.now(clock);
         assertEquals(test.getYear(), 2010);
