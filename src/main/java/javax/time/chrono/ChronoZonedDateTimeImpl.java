@@ -110,11 +110,10 @@ import javax.time.zone.ZoneRules;
      *
      * @param dateTime  the local date-time, not null
      * @param zone  the time-zone, not null
-     * @param resolver  the resolver from local date-time to zoned, not null
      * @return the zoned date-time, not null
      * @throws DateTimeException if the resolver cannot resolve an invalid local date-time
      */
-    static <R extends Chrono<R>> ChronoZonedDateTime<R> of(ChronoDateTimeImpl<R> dateTime, ZoneId zone, ZoneResolver resolver) {
+    static <R extends Chrono<R>> ChronoZonedDateTime<R> of(ChronoDateTimeImpl<R> dateTime, ZoneId zone) {
         return resolve(dateTime, zone, null, resolver);
     }
 

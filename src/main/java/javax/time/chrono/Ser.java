@@ -71,8 +71,7 @@ final class Ser implements Externalizable {
 
     static final byte CHRONO_TYPE = 1;
     static final byte CHRONO_LOCALDATETIME_TYPE = 2;
-    static final byte CHRONO_OFFSETDATETIME_TYPE = 3;
-    static final byte CHRONO_ZONEDDATETIME_TYPE = 4;
+    static final byte CHRONO_ZONEDDATETIME_TYPE = 3;
 
     /** The type being serialized. */
     private byte type;
@@ -116,9 +115,6 @@ final class Ser implements Externalizable {
             case CHRONO_LOCALDATETIME_TYPE:
                 ((ChronoDateTimeImpl<?>) object).writeExternal(out);
                 break;
-            case CHRONO_OFFSETDATETIME_TYPE:
-                ((ChronoOffsetDateTimeImpl<?>) object).writeExternal(out);
-                break;
             case CHRONO_ZONEDDATETIME_TYPE:
                 ((ChronoZonedDateTimeImpl<?>) object).writeExternal(out);
                 break;
@@ -150,8 +146,6 @@ final class Ser implements Externalizable {
                 return Chrono.readExternal(in);
             case CHRONO_LOCALDATETIME_TYPE:
                 return ChronoDateTimeImpl.readExternal(in);
-            case CHRONO_OFFSETDATETIME_TYPE:
-                return ChronoOffsetDateTimeImpl.readExternal(in);
             case CHRONO_ZONEDDATETIME_TYPE:
                 return ChronoZonedDateTimeImpl.readExternal(in);
             default:

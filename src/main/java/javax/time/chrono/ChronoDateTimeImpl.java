@@ -52,7 +52,6 @@ import javax.time.DateTimeException;
 import javax.time.DayOfWeek;
 import javax.time.LocalTime;
 import javax.time.ZoneId;
-import javax.time.ZoneOffset;
 import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
@@ -62,8 +61,6 @@ import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.jdk8.DefaultInterfaceChronoLocalDateTime;
 import javax.time.jdk8.Jdk8Methods;
-import javax.time.zone.ZoneResolver;
-import javax.time.zone.ZoneResolvers;
 
 /**
  * A date-time without a time-zone for the calendar neutral API.
@@ -846,67 +843,9 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Returns an offset date-time formed from this date-time and the specified offset.
-     * <p>
-     * This merges the two objects - {@code this} and the specified offset -
-     * to form an instance of {@code OffsetDateTime}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param offset  the offset to use, not null
-     * @return the offset date-time formed from this date-time and the specified offset, not null
-     */
     @Override
-    public ChronoOffsetDateTime<C> atOffset(ZoneOffset offset) {
-        return ChronoOffsetDateTimeImpl.of(this, offset);
-    }
-
-    /**
-     * Returns a zoned date-time formed from this date-time and the specified time-zone.
-     * <p>
-     * Time-zone rules, such as daylight savings, mean that not every time on the
-     * local time-line exists. If the local date-time is in a gap or overlap according to
-     * the rules then a resolver is used to determine the resultant local time and offset.
-     * This method uses the {@link ZoneResolvers#postGapPreOverlap() post-gap pre-overlap} resolver.
-     * This selects the date-time immediately after a gap and the earlier offset in overlaps.
-     * <p>
-     * Finer control over gaps and overlaps is available in two ways.
-     * If you simply want to use the later offset at overlaps then call
-     * {@link javax.time.ZonedDateTime#withLaterOffsetAtOverlap()} immediately after this method.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param zone  the time-zone to use, not null
-     * @return the zoned date-time formed from this date-time, not null
-     */
-    @Override
-    public ChronoZonedDateTime<C> atZone(ZoneId zone) {
-        return ChronoZonedDateTimeImpl.of(this, zone, ZoneResolvers.postGapPreOverlap());
-    }
-
-
-    /**
-     * Returns a zoned date-time formed from this date-time and the specified time-zone.
-     * <p>
-     * Time-zone rules, such as daylight savings, mean that not every time on the
-     * local time-line exists. If the local date-time is in a gap or overlap according to
-     * the rules then a resolver is used to determine the resultant local time and offset.
-     * This method uses the {@link ZoneResolvers#postGapPreOverlap() post-gap pre-overlap} resolver.
-     * This selects the date-time immediately after a gap and the earlier offset in overlaps.
-     * <p>
-     * Finer control over gaps and overlaps is available in two ways.
-     * If you simply want to use the later offset at overlaps then call
-     * {@link javax.time.ZonedDateTime#withLaterOffsetAtOverlap()} immediately after this method.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param zone  the time-zone to use, not null
-     * @return the zoned date-time formed from this date-time, not null
-     */
-    @Override
-    public ChronoZonedDateTime<C> atZone(ZoneId zone, ZoneResolver resolver) {
-        return ChronoZonedDateTimeImpl.of(this, zone, resolver);
+    public ChronoZonedDateTime<C> atZone(ZoneId zoneId) {
+        return ChronoZonedDateTimeImpl.of(this, zoneId);
     }
 
     //-----------------------------------------------------------------------

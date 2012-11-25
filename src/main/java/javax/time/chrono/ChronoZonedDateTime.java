@@ -82,7 +82,7 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
         extends DateTime, WithAdjuster, Comparable<ChronoZonedDateTime<?>> {
 
     /**
-     * Comparator for two {@code ChronoZonedDateTime}s ignoring the chronology.
+     * Comparator for two {@code ChronoZonedDateTime} instances ignoring the chronology.
      * <p>
      * This method differs from the comparison in {@link #compareTo} in that it
      * only compares the underlying date and not the chronology.
@@ -93,12 +93,14 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
      * @see #isBefore
      * @see #isEqual
      */
-    Comparator<ChronoZonedDateTime<?>> INSTANT_COMPARATOR =
-            new Comparator<ChronoZonedDateTime<?>>() {
+    Comparator<ChronoZonedDateTime<?>> INSTANT_COMPARATOR = new Comparator<ChronoZonedDateTime<?>>() {
         @Override
         public int compare(ChronoZonedDateTime<?> datetime1, ChronoZonedDateTime<?> datetime2) {
-            return ChronoOffsetDateTime.INSTANT_COMPARATOR
-                    .compare(datetime1.getOffsetDateTime(), datetime2.getOffsetDateTime());
+            int cmp = Long.compare(datetime1.toEpochSecond(), datetime2.toEpochSecond());
+            if (cmp == 0) {
+                cmp = Long.compare(datetime1.getTime().toNanoOfDay(), datetime2.getTime().toNanoOfDay());
+            }
+            return cmp;
         }
     };
 
@@ -306,13 +308,6 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
      * @return an {@code Instant} representing the same instant, not null
      */
     Instant toInstant() ;
-
-    /**
-     * Converts this date-time to an {@code OffsetDateTime}.
-     *
-     * @return an {@code OffsetDateTime} representing the fields of this date-time, not null
-     */
-    ChronoOffsetDateTime<C> getOffsetDateTime();
 
     /**
      * Converts this {@code ZoneChronoDateTime} to the number of seconds from the epoch

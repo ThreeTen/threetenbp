@@ -56,9 +56,9 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.time.DateTimeException;
 import javax.time.Instant;
-import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
+import javax.time.ZonedDateTime;
 import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeAccessor.Query;
 import javax.time.calendrical.DateTimeBuilder;
@@ -2277,7 +2277,7 @@ public final class DateTimeFormatterBuilder {
         public boolean print(DateTimePrintContext context, StringBuilder buf) {
             // TODO: implement this from INSTANT_SECONDS, handling big numbers
             Instant instant = Instant.from(context.getDateTime());
-            OffsetDateTime odt = OffsetDateTime.ofInstantUTC(instant);
+            ZonedDateTime odt = ZonedDateTime.ofInstant(instant, ZoneOffset.UTC);
             buf.append(odt);
             return true;
         }
@@ -2285,7 +2285,7 @@ public final class DateTimeFormatterBuilder {
         @Override
         public int parse(DateTimeParseContext context, CharSequence text, int position) {
             // TODO: implement this from INSTANT_SECONDS, handling big numbers
-            OffsetDateTime odt = OffsetDateTime.parse(text.subSequence(position, text.length()));
+            ZonedDateTime odt = ZonedDateTime.parse(text.subSequence(position, text.length()));
             context.setParsedField(INSTANT_SECONDS, odt.getLong(INSTANT_SECONDS));
             context.setParsedField(NANO_OF_SECOND, odt.getLong(NANO_OF_SECOND));
             return text.length();
