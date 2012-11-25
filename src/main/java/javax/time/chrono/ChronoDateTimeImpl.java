@@ -314,7 +314,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param year  the year to set in the returned date, from MIN_YEAR to MAX_YEAR
+     * @param year  the year to set in the result, from MIN_YEAR to MAX_YEAR
      * @return a {@code ChronoLocalDateTime} based on this date-time with the requested year, not null
      * @throws DateTimeException if the year value is invalid
      */
@@ -329,7 +329,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param month  the month-of-year to set in the returned date, from 1 (January) to 12 (December)
+     * @param month  the month-of-year to set in the result, from 1 (January) to 12 (December)
      * @return a {@code ChronoLocalDateTime} based on this date-time with the requested month, not null
      * @throws DateTimeException if the month-of-year value is invalid
      */
@@ -344,7 +344,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfMonth  the day-of-month to set in the returned date, from 1 to 28-31
+     * @param dayOfMonth  the day-of-month to set in the result, from 1 to 28-31
      * @return a {@code ChronoLocalDateTime} based on this date-time with the requested day, not null
      * @throws DateTimeException if the day-of-month value is invalid
      * @throws DateTimeException if the day-of-month is invalid for the month-year
@@ -359,7 +359,7 @@ class ChronoDateTimeImpl<C extends Chrono<C>>
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfYear  the day-of-year to set in the returned date, from 1 to 365-366
+     * @param dayOfYear  the day-of-year to set in the result, from 1 to 365-366
      * @return a {@code ChronoLocalDateTime} based on this date with the requested day, not null
      * @throws DateTimeException if the day-of-year value is invalid
      * @throws DateTimeException if the day-of-year is invalid for the year

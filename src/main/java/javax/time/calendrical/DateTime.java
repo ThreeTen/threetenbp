@@ -126,8 +126,8 @@ public interface DateTime extends DateTimeAccessor {
      * If the implementing class is immutable, then this method must return an updated copy of the original.
      * If the class is mutable, then this method must update the original and return it.
      *
-     * @param field  the field to set in the returned date, not null
-     * @param newValue  the new value of the field in the returned date, not null
+     * @param field  the field to set in the result, not null
+     * @param newValue  the new value of the field in the result
      * @return an object of the same type with the specified field set, not null
      * @throws DateTimeException if the field cannot be set
      * @throws ArithmeticException if numeric overflow occurs
@@ -184,7 +184,7 @@ public interface DateTime extends DateTimeAccessor {
      * If the implementing class is immutable, then this method must return an updated copy of the original.
      * If the class is mutable, then this method must update the original and return it.
      *
-     * @param amountToAdd  the amount of the specified unit to add, not null
+     * @param amountToAdd  the amount of the specified unit to add, may be negative
      * @param unit  the unit of the period to add, not null
      * @return an object of the same type with the specified period added, not null
      * @throws DateTimeException if the unit cannot be added
@@ -244,7 +244,7 @@ public interface DateTime extends DateTimeAccessor {
      * This method is normally implemented by delegating to {@link #plus(long, PeriodUnit)} with
      * the amount negated.
      *
-     * @param amountToSubtract  the amount of the specified unit to subtract, not null
+     * @param amountToSubtract  the amount of the specified unit to subtract, may be negative
      * @param unit  the unit of the period to subtract, not null
      * @return an object of the same type with the specified period subtracted, not null
      * @throws DateTimeException if the unit cannot be subtracted

@@ -517,8 +517,8 @@ import javax.time.zone.ZoneRules;
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param field  the field to set in the returned date-time, not null
-     * @param newValue  the new value of the field in the returned date-time, not null
+     * @param field  the field to set in the result, not null
+     * @param newValue  the new value of the field in the result, not null
      * @return a {@code ZoneChronoDateTime} based on this date-time with the specified field set, not null
      * @throws DateTimeException if the value is invalid
      */
@@ -610,7 +610,7 @@ import javax.time.zone.ZoneRules;
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfYear  the day-of-year to set in the returned date, from 1 to 365-366
+     * @param dayOfYear  the day-of-year to set in the result, from 1 to 365-366
      * @return a {@code ZoneChronoDateTime} based on this date with the requested day, not null
      * @throws DateTimeException if the day-of-year value is invalid
      * @throws DateTimeException if the day-of-year is invalid for the year

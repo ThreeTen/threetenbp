@@ -266,7 +266,7 @@ final class JapaneseDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param era  the era to set in the returned date, not null
+     * @param era  the era to set in the result, not null
      * @param year  the year-of-era to set in the returned date
      * @return a {@code JapaneseDate} based on this date with the requested year, never null
      * @throws DateTimeException if {@code year} is invalid

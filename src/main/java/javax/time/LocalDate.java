@@ -721,8 +721,8 @@ public final class LocalDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param field  the field to set in the returned date, not null
-     * @param newValue  the new value of the field in the returned date, not null
+     * @param field  the field to set in the result, not null
+     * @param newValue  the new value of the field in the result
      * @return a {@code LocalDate} based on this date with the specified field set, not null
      * @throws DateTimeException if the value is invalid
      */
@@ -760,7 +760,7 @@ public final class LocalDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param year  the year to set in the returned date, from MIN_YEAR to MAX_YEAR
+     * @param year  the year to set in the result, from MIN_YEAR to MAX_YEAR
      * @return a {@code LocalDate} based on this date with the requested year, not null
      * @throws DateTimeException if the year value is invalid
      */
@@ -778,7 +778,7 @@ public final class LocalDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param month  the month-of-year to set in the returned date, from 1 (January) to 12 (December)
+     * @param month  the month-of-year to set in the result, from 1 (January) to 12 (December)
      * @return a {@code LocalDate} based on this date with the requested month, not null
      * @throws DateTimeException if the month-of-year value is invalid
      */
@@ -796,7 +796,7 @@ public final class LocalDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfMonth  the day-of-month to set in the returned date, from 1 to 28-31
+     * @param dayOfMonth  the day-of-month to set in the result, from 1 to 28-31
      * @return a {@code LocalDate} based on this date with the requested day, not null
      * @throws DateTimeException if the day-of-month value is invalid
      * @throws DateTimeException if the day-of-month is invalid for the month-year
@@ -814,7 +814,7 @@ public final class LocalDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfYear  the day-of-year to set in the returned date, from 1 to 365-366
+     * @param dayOfYear  the day-of-year to set in the result, from 1 to 365-366
      * @return a {@code LocalDate} based on this date with the requested day, not null
      * @throws DateTimeException if the day-of-year value is invalid
      * @throws DateTimeException if the day-of-year is invalid for the year
@@ -858,7 +858,7 @@ public final class LocalDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amountToAdd  the amount of the unit to add to the returned date, not null
+     * @param amountToAdd  the amount of the unit to add to the result, may be negative
      * @param unit  the unit of the period to add, not null
      * @return a {@code LocalDate} based on this date with the specified period added, not null
      * @throws DateTimeException if the unit cannot be added to this type
@@ -1018,7 +1018,7 @@ public final class LocalDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amountToSubtract  the amount of the unit to subtract from the returned date, not null
+     * @param amountToSubtract  the amount of the unit to subtract from the result, may be negative
      * @param unit  the unit of the period to subtract, not null
      * @return a {@code LocalDate} based on this date with the specified period subtracted, not null
      * @throws DateTimeException if the unit cannot be added to this type
