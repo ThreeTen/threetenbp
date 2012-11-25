@@ -313,7 +313,7 @@ public final class LocalDateTime
 
     //-------------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code OffsetDateTime} using seconds from the
+     * Obtains an instance of {@code LocalDateTime} using seconds from the
      * epoch of 1970-01-01T00:00:00Z.
      * <p>
      * This allows the {@link ChronoField#INSTANT_SECONDS epoch-seconds} field
@@ -322,6 +322,7 @@ public final class LocalDateTime
      *
      * @param epochSecond  the number of seconds from the epoch of 1970-01-01T00:00:00Z
      * @param nanoOfSecond  the nanosecond within the second, from 0 to 999,999,999
+     * @param offset  the zone offset, not null
      * @return the local date-time, not null
      * @throws DateTimeException if the result exceeds the supported range
      */
@@ -389,8 +390,8 @@ public final class LocalDateTime
     /**
      * Constructor.
      *
-     * @param date  the date part of the date-time, not null
-     * @param time  the time part of the date-time, not null
+     * @param date  the date part of the date-time, validated not null
+     * @param time  the time part of the date-time, validated not null
      */
     private LocalDateTime(LocalDate date, LocalTime time) {
         this.date = date;
@@ -1009,7 +1010,7 @@ public final class LocalDateTime
      * the month and year fields as necessary to ensure the result remains valid.
      * The result is only invalid if the maximum/minimum year is exceeded.
      * <p>
-     * For example, 2008-12-31 plus one week would result in the 2009-01-07.
+     * For example, 2008-12-31 plus one week would result in 2009-01-07.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1029,7 +1030,7 @@ public final class LocalDateTime
      * month and year fields as necessary to ensure the result remains valid.
      * The result is only invalid if the maximum/minimum year is exceeded.
      * <p>
-     * For example, 2008-12-31 plus one day would result in the 2009-01-01.
+     * For example, 2008-12-31 plus one day would result in 2009-01-01.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1042,6 +1043,7 @@ public final class LocalDateTime
         return with(newDate, time);
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this {@code LocalDateTime} with the specified period in hours added.
      * <p>
@@ -1194,7 +1196,7 @@ public final class LocalDateTime
      * the month and year fields as necessary to ensure the result remains valid.
      * The result is only invalid if the maximum/minimum year is exceeded.
      * <p>
-     * For example, 2008-12-31 minus one week would result in the 2009-01-07.
+     * For example, 2009-01-07 minus one week would result in 2008-12-31.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1214,7 +1216,7 @@ public final class LocalDateTime
      * month and year fields as necessary to ensure the result remains valid.
      * The result is only invalid if the maximum/minimum year is exceeded.
      * <p>
-     * For example, 2008-12-31 minus one day would result in the 2009-01-01.
+     * For example, 2009-01-01 minus one day would result in 2008-12-31.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1227,6 +1229,7 @@ public final class LocalDateTime
         return with(newDate, time);
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this {@code LocalDateTime} with the specified period in hours subtracted.
      * <p>
