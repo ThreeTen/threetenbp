@@ -1160,8 +1160,7 @@ public final class LocalDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public LocalDateTime minusYears(long years) {
-        LocalDate newDate = date.minusYears(years);
-        return with(newDate, time);
+        return (years == Long.MIN_VALUE ? plusYears(Long.MAX_VALUE).plusYears(1) : plusYears(-years));
     }
 
     /**
@@ -1185,8 +1184,7 @@ public final class LocalDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public LocalDateTime minusMonths(long months) {
-        LocalDate newDate = date.minusMonths(months);
-        return with(newDate, time);
+        return (months == Long.MIN_VALUE ? plusMonths(Long.MAX_VALUE).plusMonths(1) : plusMonths(-months));
     }
 
     /**
@@ -1205,8 +1203,7 @@ public final class LocalDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public LocalDateTime minusWeeks(long weeks) {
-        LocalDate newDate = date.minusWeeks(weeks);
-        return with(newDate, time);
+        return (weeks == Long.MIN_VALUE ? plusWeeks(Long.MAX_VALUE).plusWeeks(1) : plusWeeks(-weeks));
     }
 
     /**
@@ -1225,8 +1222,7 @@ public final class LocalDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public LocalDateTime minusDays(long days) {
-        LocalDate newDate = date.minusDays(days);
-        return with(newDate, time);
+        return (days == Long.MIN_VALUE ? plusDays(Long.MAX_VALUE).plusDays(1) : plusDays(-days));
     }
 
     //-----------------------------------------------------------------------

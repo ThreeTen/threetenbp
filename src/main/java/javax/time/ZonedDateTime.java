@@ -1665,9 +1665,7 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public ZonedDateTime minusYears(long years) {
-        LocalDateTime newDT = dateTime.getDateTime().minusYears(years);
-        return (newDT == dateTime.getDateTime() ? this :
-            resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
+        return (years == Long.MIN_VALUE ? plusYears(Long.MAX_VALUE).plusYears(1) : plusYears(-years));
     }
 
     /**
@@ -1692,9 +1690,7 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public ZonedDateTime minusMonths(long months) {
-        LocalDateTime newDT = dateTime.getDateTime().minusMonths(months);
-        return (newDT == dateTime.getDateTime() ? this :
-            resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
+        return (months == Long.MIN_VALUE ? plusMonths(Long.MAX_VALUE).plusMonths(1) : plusMonths(-months));
     }
 
     /**
@@ -1716,9 +1712,7 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public ZonedDateTime minusWeeks(long weeks) {
-        LocalDateTime newDT = dateTime.getDateTime().minusWeeks(weeks);
-        return (newDT == dateTime.getDateTime() ? this :
-            resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
+        return (weeks == Long.MIN_VALUE ? plusWeeks(Long.MAX_VALUE).plusWeeks(1) : plusWeeks(-weeks));
     }
 
     /**
@@ -1740,9 +1734,7 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public ZonedDateTime minusDays(long days) {
-        LocalDateTime newDT = dateTime.getDateTime().minusDays(days);
-        return (newDT == dateTime.getDateTime() ? this :
-            resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
+        return (days == Long.MIN_VALUE ? plusDays(Long.MAX_VALUE).plusDays(1) : plusDays(-days));
     }
 
     /**
@@ -1768,9 +1760,7 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public ZonedDateTime minusHours(long hours) {
-        LocalDateTime newDT = dateTime.getDateTime().minusHours(hours);
-        return (newDT == dateTime.getDateTime() ? this :
-            resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
+        return (hours == Long.MIN_VALUE ? plusHours(Long.MAX_VALUE).plusHours(1) : plusHours(-hours));
     }
 
     /**
@@ -1786,9 +1776,7 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public ZonedDateTime minusMinutes(long minutes) {
-        LocalDateTime newDT = dateTime.getDateTime().minusMinutes(minutes);
-        return (newDT == dateTime.getDateTime() ? this :
-            resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
+        return (minutes == Long.MIN_VALUE ? plusMinutes(Long.MAX_VALUE).plusMinutes(1) : plusMinutes(-minutes));
     }
 
     /**
@@ -1804,9 +1792,7 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public ZonedDateTime minusSeconds(long seconds) {
-        LocalDateTime newDT = dateTime.getDateTime().minusSeconds(seconds);
-        return (newDT == dateTime.getDateTime() ? this :
-            resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
+        return (seconds == Long.MIN_VALUE ? plusSeconds(Long.MAX_VALUE).plusSeconds(1) : plusSeconds(-seconds));
     }
 
     /**
@@ -1822,9 +1808,7 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public ZonedDateTime minusNanos(long nanos) {
-        LocalDateTime newDT = dateTime.getDateTime().minusNanos(nanos);
-        return (newDT == dateTime.getDateTime() ? this :
-            resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
+        return (nanos == Long.MIN_VALUE ? plusNanos(Long.MAX_VALUE).plusNanos(1) : plusNanos(-nanos));
     }
 
     //-----------------------------------------------------------------------
