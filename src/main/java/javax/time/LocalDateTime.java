@@ -1010,7 +1010,7 @@ public final class LocalDateTime
      * the month and year fields as necessary to ensure the result remains valid.
      * The result is only invalid if the maximum/minimum year is exceeded.
      * <p>
-     * For example, 2008-12-31 plus one week would result in the 2009-01-07.
+     * For example, 2008-12-31 plus one week would result in 2009-01-07.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1030,7 +1030,7 @@ public final class LocalDateTime
      * month and year fields as necessary to ensure the result remains valid.
      * The result is only invalid if the maximum/minimum year is exceeded.
      * <p>
-     * For example, 2008-12-31 plus one day would result in the 2009-01-01.
+     * For example, 2008-12-31 plus one day would result in 2009-01-01.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
