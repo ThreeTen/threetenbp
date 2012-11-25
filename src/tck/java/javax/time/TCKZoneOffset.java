@@ -428,7 +428,7 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_factory_CalendricalObject() {
         assertEquals(ZoneOffset.from(OffsetDate.of(2012, 5, 2, ZoneOffset.ofHours(6))), ZoneOffset.ofHours(6));
-        assertEquals(ZoneOffset.from(OffsetDateTime.of(2007, 7, 15, 17, 30, 0, 0, ZoneOffset.ofHours(2))), ZoneOffset.ofHours(2));
+        assertEquals(ZoneOffset.from(ZonedDateTime.of(LocalDateTime.of(2007, 7, 15, 17, 30), ZoneOffset.ofHours(2))), ZoneOffset.ofHours(2));
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})

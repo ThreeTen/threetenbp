@@ -52,7 +52,7 @@ public class TestClock_Tick {
 
     private static final ZoneId MOSCOW = ZoneId.of("Europe/Moscow");
     private static final ZoneId PARIS = ZoneId.of("Europe/Paris");
-    private static final OffsetDateTime ODT = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, ZoneOffset.ofHours(2));
+    private static final ZonedDateTime ZDT = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500).atZone(ZoneOffset.ofHours(2));
 
     //-----------------------------------------------------------------------
     public void test_tick_isSerializable() throws IOException, ClassNotFoundException {
@@ -127,8 +127,8 @@ public class TestClock_Tick {
 
     public void test_tick_clockDuration() {
         for (int i = 0; i < 1000; i++) {
-            Clock test = Clock.tick(Clock.fixed(ODT.withNano(i * 1000000).toInstant(), PARIS), Duration.ofMillis(250));
-            assertEquals(test.instant(), ODT.withNano((i / 250) * 250 * 1000000).toInstant());
+            Clock test = Clock.tick(Clock.fixed(ZDT.withNano(i * 1000000).toInstant(), PARIS), Duration.ofMillis(250));
+            assertEquals(test.instant(), ZDT.withNano((i / 250) * 250 * 1000000).toInstant());
             assertEquals(test.getZone(), PARIS);
         }
     }

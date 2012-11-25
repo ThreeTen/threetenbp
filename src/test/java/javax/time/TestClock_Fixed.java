@@ -51,7 +51,7 @@ public class TestClock_Fixed {
 
     private static final ZoneId MOSCOW = ZoneId.of("Europe/Moscow");
     private static final ZoneId PARIS = ZoneId.of("Europe/Paris");
-    private static final Instant INSTANT = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, ZoneOffset.ofHours(2)).toInstant();
+    private static final Instant INSTANT = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500).atZone(ZoneOffset.ofHours(2)).toInstant();
 
     //-----------------------------------------------------------------------
     public void test_fixed_isSerializable() throws IOException, ClassNotFoundException {

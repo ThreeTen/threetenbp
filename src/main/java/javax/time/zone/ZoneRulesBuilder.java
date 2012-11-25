@@ -49,7 +49,6 @@ import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.Month;
-import javax.time.OffsetDateTime;
 import javax.time.ZoneOffset;
 import javax.time.chrono.ISOChrono;
 import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
@@ -331,7 +330,8 @@ class ZoneRulesBuilder {
             loopSavings = firstWindow.fixedSavingAmountSecs;
         }
         final ZoneOffset firstWallOffset = deduplicate(ZoneOffset.ofTotalSeconds(loopStandardOffset.getTotalSeconds() + loopSavings));
-        OffsetDateTime loopWindowStart = deduplicate(OffsetDateTime.of(DateTimeConstants.MIN_YEAR, 1, 1, 0, 0, firstWallOffset));
+        LocalDateTime loopWindowStart = deduplicate(LocalDateTime.of(DateTimeConstants.MIN_YEAR, 1, 1, 0, 0));
+        ZoneOffset loopWindowOffset = firstWallOffset;
 
         // build the windows and rules to interesting data
         for (TZWindow window : windowList) {
@@ -347,7 +347,7 @@ class ZoneRulesBuilder {
                 effectiveSavings = 0;
                 for (TZRule rule : window.ruleList) {
                     ZoneOffsetTransition trans = rule.toTransition(loopStandardOffset, loopSavings);
-                    if (trans.toEpochSecond() > loopWindowStart.toEpochSecond()) {
+                    if (trans.toEpochSecond() > loopWindowStart.toEpochSecond(loopWindowOffset)) {
                         // previous savings amount found, which could be the savings amount at
                         // the instant that the window starts (hence isAfter)
                         break;
@@ -360,16 +360,16 @@ class ZoneRulesBuilder {
             if (loopStandardOffset.equals(window.standardOffset) == false) {
                 standardTransitionList.add(deduplicate(
                     new ZoneOffsetTransition(
-                        loopWindowStart.withOffsetSameInstant(loopStandardOffset).getDateTime(),
+                        LocalDateTime.ofEpochSecond(loopWindowStart.toEpochSecond(loopWindowOffset), 0, loopStandardOffset),
                         loopStandardOffset, window.standardOffset)));
                 loopStandardOffset = deduplicate(window.standardOffset);
             }
 
             // check if the start of the window represents a transition
             ZoneOffset effectiveWallOffset = deduplicate(ZoneOffset.ofTotalSeconds(loopStandardOffset.getTotalSeconds() + effectiveSavings));
-            if (loopWindowStart.getOffset().equals(effectiveWallOffset) == false) {
+            if (loopWindowOffset.equals(effectiveWallOffset) == false) {
                 ZoneOffsetTransition trans = deduplicate(
-                    new ZoneOffsetTransition(loopWindowStart.getDateTime(), loopWindowStart.getOffset(), effectiveWallOffset));
+                    new ZoneOffsetTransition(loopWindowStart, loopWindowOffset, effectiveWallOffset));
                 transitionList.add(trans);
             }
             loopSavings = effectiveSavings;
@@ -377,8 +377,8 @@ class ZoneRulesBuilder {
             // apply rules within the window
             for (TZRule rule : window.ruleList) {
                 ZoneOffsetTransition trans = deduplicate(rule.toTransition(loopStandardOffset, loopSavings));
-                if (trans.toEpochSecond() < loopWindowStart.toEpochSecond() == false &&
-                        trans.toEpochSecond() < window.createDateTime(loopSavings).toEpochSecond() &&
+                if (trans.toEpochSecond() < loopWindowStart.toEpochSecond(loopWindowOffset) == false &&
+                        trans.toEpochSecond() < window.createDateTimeEpochSecond(loopSavings) &&
                         trans.getOffsetBefore().equals(trans.getOffsetAfter()) == false) {
                     transitionList.add(trans);
                     loopSavings = rule.savingAmountSecs;
@@ -393,7 +393,9 @@ class ZoneRulesBuilder {
             }
 
             // finally we can calculate the true end of the window, passing it to the next window
-            loopWindowStart = deduplicate(window.createDateTime(loopSavings));
+            loopWindowOffset = deduplicate(window.createWallOffset(loopSavings));
+            loopWindowStart = deduplicate(LocalDateTime.ofEpochSecond(
+                    window.createDateTimeEpochSecond(loopSavings), 0, loopWindowOffset));
         }
         return new StandardZoneRules(
                 firstWindow.standardOffset, firstWallOffset, standardTransitionList,
@@ -589,15 +591,25 @@ class ZoneRulesBuilder {
         }
 
         /**
+         * Creates the wall offset for the local date-time at the end of the window.
+         *
+         * @param savingsSecs  the amount of savings in use in seconds
+         * @return the created date-time epoch second in the wall offset, not null
+         */
+        ZoneOffset createWallOffset(int savingsSecs) {
+            return ZoneOffset.ofTotalSeconds(standardOffset.getTotalSeconds() + savingsSecs);
+        }
+
+        /**
          * Creates the offset date-time for the local date-time at the end of the window.
          *
          * @param savingsSecs  the amount of savings in use in seconds
-         * @return the created offset date-time in the wall offset, not null
+         * @return the created date-time epoch second in the wall offset, not null
          */
-        OffsetDateTime createDateTime(int savingsSecs) {
-            ZoneOffset wallOffset = ZoneOffset.ofTotalSeconds(standardOffset.getTotalSeconds() + savingsSecs);
+        long createDateTimeEpochSecond(int savingsSecs) {
+            ZoneOffset wallOffset = createWallOffset(savingsSecs);
             LocalDateTime ldt = timeDefinition.createDateTime(windowEnd, standardOffset, wallOffset);
-            return OffsetDateTime.of(ldt, wallOffset);
+            return ldt.toEpochSecond(wallOffset);
         }
     }
 

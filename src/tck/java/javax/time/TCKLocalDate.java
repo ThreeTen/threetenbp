@@ -87,7 +87,6 @@ import org.testng.annotations.Test;
 public class TCKLocalDate extends AbstractDateTimeTest {
 
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
-    private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
     private static final ZoneId ZONE_PARIS = ZoneId.of("Europe/Paris");
     private static final ZoneId ZONE_GAZA = ZoneId.of("Asia/Gaza");
 
@@ -109,8 +108,8 @@ public class TCKLocalDate extends AbstractDateTimeTest {
         MIN_VALID_EPOCHDAYS = min.toEpochDay();
         MAX_DATE = max;
         MIN_DATE = min;
-        MAX_INSTANT = max.atOffset(ZoneOffset.UTC).atTime(LocalTime.MIDNIGHT).toInstant();
-        MIN_INSTANT = min.atOffset(ZoneOffset.UTC).atTime(LocalTime.MIDNIGHT).toInstant();
+        MAX_INSTANT = max.atStartOfDay(ZoneOffset.UTC).toInstant();
+        MIN_INSTANT = min.atStartOfDay(ZoneOffset.UTC).toInstant();
     }
 
     //-----------------------------------------------------------------------
@@ -1563,18 +1562,6 @@ public class TCKLocalDate extends AbstractDateTimeTest {
     // atTime()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_atTime_OffsetTime() {
-        LocalDate t = LocalDate.of(2008, 6, 30);
-        assertEquals(t.atTime(OffsetTime.of(11, 30, OFFSET_PONE)), OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_PONE));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_atTime_OffsetTime_null() {
-        LocalDate t = LocalDate.of(2008, 6, 30);
-        t.atTime((OffsetTime) null);
-    }
-
-    @Test(groups={"tck"})
     public void test_atTime_LocalTime() {
         LocalDate t = LocalDate.of(2008, 6, 30);
         assertEquals(t.atTime(LocalTime.of(11, 30)), LocalDateTime.of(2008, 6, 30, 11, 30));
@@ -1714,41 +1701,26 @@ public class TCKLocalDate extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // atOffset()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_atOffset() {
-        LocalDate t = LocalDate.of(2008, 6, 30);
-        assertEquals(t.atOffset(OFFSET_PTWO), OffsetDate.of(2008, 6, 30, OFFSET_PTWO));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_atOffset_nullZoneOffset() {
-        LocalDate t = LocalDate.of(2008, 6, 30);
-        t.atOffset((ZoneOffset) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // atStartOfDayInZone()
+    // atStartOfDay()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_atStartOfDayInZone() {
         LocalDate t = LocalDate.of(2008, 6, 30);
-        assertEquals(t.atStartOfDayInZone(ZONE_PARIS),
+        assertEquals(t.atStartOfDay(ZONE_PARIS),
                 ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 0, 0), ZONE_PARIS));
     }
 
     @Test(groups={"tck"})
     public void test_atStartOfDayInZone_dstGap() {
         LocalDate t = LocalDate.of(2007, 4, 1);
-        assertEquals(t.atStartOfDayInZone(ZONE_GAZA),
+        assertEquals(t.atStartOfDay(ZONE_GAZA),
                 ZonedDateTime.of(LocalDateTime.of(2007, 4, 1, 1, 0), ZONE_GAZA));
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_atStartOfDayInZone_nullTimeZone() {
         LocalDate t = LocalDate.of(2008, 6, 30);
-        t.atStartOfDayInZone((ZoneId) null);
+        t.atStartOfDay((ZoneId) null);
     }
 
     //-----------------------------------------------------------------------

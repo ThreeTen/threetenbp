@@ -34,6 +34,7 @@ package javax.time.format;
 import java.util.Locale;
 
 import javax.time.DateTimeException;
+import javax.time.LocalDateTime;
 import javax.time.ZoneId;
 import javax.time.ZonedDateTime;
 import javax.time.calendrical.DateTimeAccessor;
@@ -57,7 +58,8 @@ public class AbstractTestPrinterParser {
     @BeforeMethod(groups={"tck"})
     public void setUp() {
         printEmptyContext = new DateTimePrintContext(EMPTY, Locale.ENGLISH, DateTimeFormatSymbols.STANDARD);
-        printContext = new DateTimePrintContext(ZonedDateTime.of(2011, 6, 30, 12, 30, 40, 0, ZoneId.of("Europe/Paris")), Locale.ENGLISH, DateTimeFormatSymbols.STANDARD);
+        ZonedDateTime zdt = LocalDateTime.of(2011, 6, 30, 12, 30, 40, 0).atZone(ZoneId.of("Europe/Paris"));
+        printContext = new DateTimePrintContext(zdt, Locale.ENGLISH, DateTimeFormatSymbols.STANDARD);
         parseContext = new DateTimeParseContext(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD);
         buf = new StringBuilder();
     }

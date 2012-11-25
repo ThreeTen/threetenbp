@@ -62,16 +62,15 @@ public class TCKClock {
         }
     }
 
-    private static final ZoneOffset OFFSET = ZoneOffset.ofHours(2);
-    private static final OffsetDateTime DATE_TIME = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500000000, OFFSET);
+    private static final Instant INSTANT = Instant.ofEpochSecond(1873687, 357000000);
     private static final ZoneId ZONE = ZoneId.of("Europe/Paris");
-    private static final Clock MOCK_INSTANT = new MockInstantClock(DATE_TIME.toInstant().toEpochMilli(), ZONE);
+    private static final Clock MOCK_INSTANT = new MockInstantClock(INSTANT.toEpochMilli(), ZONE);
 
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_mockInstantClock_get() {
-        assertEquals(MOCK_INSTANT.instant(), DATE_TIME.toInstant());
-        assertEquals(MOCK_INSTANT.millis(), DATE_TIME.toInstant().toEpochMilli());
+        assertEquals(MOCK_INSTANT.instant(), INSTANT);
+        assertEquals(MOCK_INSTANT.millis(), INSTANT.toEpochMilli());
         assertEquals(MOCK_INSTANT.getZone(), ZONE);
     }
 
@@ -79,8 +78,8 @@ public class TCKClock {
     public void test_mockInstantClock_withZone() {
         ZoneId london = ZoneId.of("Europe/London");
         Clock changed = MOCK_INSTANT.withZone(london);
-        assertEquals(MOCK_INSTANT.instant(), DATE_TIME.toInstant());
-        assertEquals(MOCK_INSTANT.millis(), DATE_TIME.toInstant().toEpochMilli());
+        assertEquals(MOCK_INSTANT.instant(), INSTANT);
+        assertEquals(MOCK_INSTANT.millis(), INSTANT.toEpochMilli());
         assertEquals(changed.getZone(), london);
     }
 

@@ -348,6 +348,8 @@ public final class LocalDateTime
     public static LocalDateTime from(DateTimeAccessor dateTime) {
         if (dateTime instanceof LocalDateTime) {
             return (LocalDateTime) dateTime;
+        } else if (dateTime instanceof ZonedDateTime) {
+            return ((ZonedDateTime) dateTime).getDateTime();
         }
         LocalDate date = LocalDate.from(dateTime);
         LocalTime time = LocalTime.from(dateTime);
@@ -1347,6 +1349,19 @@ public final class LocalDateTime
     }
 
     //-------------------------------------------------------------------------
+    /**
+     * Converts this date-time to an {@code Instant}.
+     * <p>
+     * This converts the date-time to an {@code Instant} using the specified
+     * offset from UTC/Greenwich.
+     *
+     * @param offset  the offset to use for the conversion, not null
+     * @return the instant equivalent to this local date-time with the specified offset, not null
+     */
+    public Instant toInstant(ZoneOffset offset) {
+        return Instant.ofEpochSecond(toEpochSecond(offset), getNano());
+    }
+
     /**
      * Converts this date-time to the number of seconds from the epoch of 1970-01-01T00:00:00Z.
      * <p>

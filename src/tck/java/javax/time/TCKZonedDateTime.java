@@ -65,7 +65,6 @@ import static javax.time.calendrical.ChronoField.WEEK_OF_YEAR;
 import static javax.time.calendrical.ChronoField.YEAR;
 import static javax.time.calendrical.ChronoField.YEAR_OF_ERA;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
 import java.lang.reflect.Field;
@@ -86,8 +85,7 @@ import javax.time.calendrical.MockFieldNoValue;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
-import javax.time.zone.ZoneResolver;
-import javax.time.zone.ZoneResolvers;
+import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -105,12 +103,19 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     private static final ZoneId ZONE_0100 = OFFSET_0100;
     private static final ZoneId ZONE_0200 = OFFSET_0200;
     private static final ZoneId ZONE_PARIS = ZoneId.of("Europe/Paris");
+    private LocalDateTime TEST_PARIS_GAP_2008_03_30_02_30;
+    private LocalDateTime TEST_PARIS_OVERLAP_2008_10_26_02_30;
+    private LocalDateTime TEST_LOCAL_2008_06_30_11_30_59_500;
     private ZonedDateTime TEST_DATE_TIME;
+    private ZonedDateTime TEST_DATE_TIME_PARIS;
 
     @BeforeMethod(groups={"tck","implementation"})
     public void setUp() {
-        LocalDateTime dt = LocalDateTime.of(2008, 6, 30, 11, 30, 59, 500);
-        TEST_DATE_TIME = ZonedDateTime.of(dt, ZONE_0100);
+        TEST_LOCAL_2008_06_30_11_30_59_500 = LocalDateTime.of(2008, 6, 30, 11, 30, 59, 500);
+        TEST_DATE_TIME = ZonedDateTime.of(TEST_LOCAL_2008_06_30_11_30_59_500, ZONE_0100);
+        TEST_DATE_TIME_PARIS = ZonedDateTime.of(TEST_LOCAL_2008_06_30_11_30_59_500, ZONE_PARIS);
+        TEST_PARIS_OVERLAP_2008_10_26_02_30 = LocalDateTime.of(2008, 10, 26, 2, 30);
+        TEST_PARIS_GAP_2008_03_30_02_30 = LocalDateTime.of(2008, 3, 30, 2, 30);
     }
 
     //-----------------------------------------------------------------------
@@ -201,6 +206,29 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
+    // now(ZoneId)
+    //-----------------------------------------------------------------------
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void now_ZoneId_nullZoneId() {
+        ZonedDateTime.now((ZoneId) null);
+    }
+
+    @Test(groups={"tck"})
+    public void now_ZoneId() {
+        ZoneId zone = ZoneId.of("UTC+01:02:03");
+        ZonedDateTime expected = ZonedDateTime.now(Clock.system(zone));
+        ZonedDateTime test = ZonedDateTime.now(zone);
+        for (int i = 0; i < 100; i++) {
+            if (expected.equals(test)) {
+                return;
+            }
+            expected = ZonedDateTime.now(Clock.system(zone));
+            test = ZonedDateTime.now(zone);
+        }
+        assertEquals(test, expected);
+    }
+
+    //-----------------------------------------------------------------------
     // now(Clock)
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
@@ -257,7 +285,7 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void now_Clock_offsets() {
-        ZonedDateTime base = ZonedDateTime.of(OffsetDateTime.of(1970, 1, 1, 12, 0, ZoneOffset.UTC), ZoneOffset.UTC);
+        ZonedDateTime base = ZonedDateTime.of(LocalDateTime.of(1970, 1, 1, 12, 0), ZoneOffset.UTC);
         for (int i = -9; i < 15; i++) {
             ZoneOffset offset = ZoneOffset.ofHours(i);
             Clock clock = Clock.fixed(base.toInstant(), offset);
@@ -287,137 +315,12 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_of_intMonthIntHMSN() {
-        ZonedDateTime test = ZonedDateTime.of(2008, Month.JUNE, 30, 11, 30, 10, 500, ZONE_PARIS);
-        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void factory_of_intMonthIntHMSN_gap() {
-        ZonedDateTime.of(2008, Month.MARCH, 30, 02, 30, 0, 0, ZONE_PARIS);
-    }
-
+    // of(LocalDateTime, ZoneId)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void factory_of_intMonthIntHMSNResolver() {
-        ZonedDateTime test = ZonedDateTime.of(2008, Month.JUNE, 30, 11, 30, 10, 500, ZONE_PARIS, ZoneResolvers.postTransition());
-        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
-    }
-
-    @Test(groups={"tck"})
-    public void factory_of_intMonthIntHMSNResolver_gap() {
-        ZonedDateTime test = ZonedDateTime.of(2008, Month.MARCH, 30, 2, 30, 0, 0, ZONE_PARIS, ZoneResolvers.postTransition());
-        check(test, 2008, 3, 30, 3, 0, 0, 0, OFFSET_0200, ZONE_PARIS);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_of_intsHMSN() {
-        ZonedDateTime test = ZonedDateTime.of(2008, 6, 30, 11, 30, 10, 500, ZONE_PARIS);
-        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void factory_of_intsHMSN_gap() {
-        ZonedDateTime.of(2008, 3, 30, 02, 30, 0, 0, ZONE_PARIS);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_of_intsHMSNResolver() {
-        ZonedDateTime test = ZonedDateTime.of(2008, 6, 30, 11, 30, 10, 500, ZONE_PARIS, ZoneResolvers.postTransition());
-        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
-    }
-
-    @Test(groups={"tck"})
-    public void factory_of_intsHMSNResolver_gap() {
-        ZonedDateTime test = ZonedDateTime.of(2008, 3, 30, 2, 30, 0, 0, ZONE_PARIS, ZoneResolvers.postTransition());
-        check(test, 2008, 3, 30, 3, 0, 0, 0, OFFSET_0200, ZONE_PARIS);
-    }
-
-    //-----------------------------------------------------------------------
-    // of(DateProvider, TimeProvider, TimeZone)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_of_LocalDateLocalTime() {
-        LocalDate date = LocalDate.of(2008, 6, 30);
-        LocalTime time = LocalTime.of(11, 30, 10, 500);
-        ZonedDateTime test = ZonedDateTime.of(date, time, ZONE_PARIS);
-        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_of_LocalDateLocalTime_nullDate() {
-        LocalTime time = LocalTime.of(11, 30, 10, 500);
-        ZonedDateTime.of((LocalDate) null, time, ZONE_PARIS);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_of_LocalDateLocalTime_nullTime() {
-        LocalDate date = LocalDate.of(2008, 6, 30);
-        ZonedDateTime.of(date, (LocalTime) null, ZONE_PARIS);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_of_LocalDateLocalTime_nullZone() {
-        LocalDate dateProvider = LocalDate.of(2008, 6, 30);
-        LocalTime timeProvider = LocalTime.of(11, 30, 10, 500);
-        ZonedDateTime.of(dateProvider, timeProvider, null);
-    }
-
-    //-----------------------------------------------------------------------
-    // of(DateProvider, LocalTime, TimeZone, ZoneResolver)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_of_LocalDateLocalTimeResolver() {
-        LocalDate dateProvider = LocalDate.of(2008, 6, 30);
-        LocalTime timeProvider = LocalTime.of(11, 30, 10, 500);
-        ZonedDateTime test = ZonedDateTime.of(dateProvider, timeProvider, ZONE_PARIS, ZoneResolvers.postTransition());
-        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
-    }
-
-    @Test(groups={"tck"})
-    public void factory_of_LocalDateLocalTimeResolver_resolverUsed() {
-        LocalDate date = LocalDate.of(2008, 3, 30);
-        LocalTime time = LocalTime.of(2, 30, 10, 500);
-        ZonedDateTime test = ZonedDateTime.of(date, time, ZONE_PARIS, ZoneResolvers.postTransition());
-        check(test, 2008, 3, 30, 3, 0, 0, 0, OFFSET_0200, ZONE_PARIS);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_of_LocalDateLocalTimeResolver_nullDate() {
-        LocalTime time = LocalTime.of(11, 30, 10, 500);
-        ZonedDateTime.of((LocalDate) null, time, ZONE_PARIS, ZoneResolvers.strict());
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_of_LocalDateLocalTimeResolver_nullTime() {
-        LocalDate date = LocalDate.of(2008, 6, 30);
-        ZonedDateTime.of(date, (LocalTime) null, ZONE_PARIS, ZoneResolvers.strict());
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_of_LocalDateLocalTimeResolver_nullZone() {
-        LocalDate date = LocalDate.of(2008, 6, 30);
-        LocalTime time = LocalTime.of(11, 30, 10, 500);
-        ZonedDateTime.of(date, time, null, ZoneResolvers.strict());
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_of_LocalDateLocalTimeResolver_nullResolver() {
-        LocalDate date = LocalDate.of(2008, 6, 30);
-        LocalTime time = LocalTime.of(11, 30, 10, 500);
-        ZonedDateTime.of(date, time, ZONE_PARIS, (ZoneResolver) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // of(DateLocalTime, TimeZone)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_of_DateLocalTime() {
-        LocalDateTime provider = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
-        ZonedDateTime test = ZonedDateTime.of(provider, ZONE_PARIS);
+    public void factory_of_LocalDateTime() {
+        LocalDateTime base = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
+        ZonedDateTime test = ZonedDateTime.of(base, ZONE_PARIS);
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
     }
 
@@ -428,118 +331,53 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_of_LocalDateTime_nullZone() {
-        LocalDateTime provider = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
-        ZonedDateTime.of(provider, null);
+        LocalDateTime base = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
+        ZonedDateTime.of(base, null);
     }
 
     //-----------------------------------------------------------------------
-    // of(LocalDateTime, TimeZone, ZoneResolver)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_of_LocalDateTimeResolver() {
-        LocalDateTime provider = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
-        ZonedDateTime test = ZonedDateTime.of(provider, ZONE_PARIS, ZoneResolvers.postTransition());
-        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
-    }
-
-    @Test(groups={"tck"})
-    public void factory_of_LocalDateTimeResolver_resolverUsed() {
-        LocalDateTime provider = LocalDateTime.of(2008, 3, 30, 2, 30, 10, 500);
-        ZonedDateTime test = ZonedDateTime.of(provider, ZONE_PARIS, ZoneResolvers.postTransition());
-        check(test, 2008, 3, 30, 3, 0, 0, 0, OFFSET_0200, ZONE_PARIS);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_of_LocalDateTimeResolver_nullDateTime() {
-        ZonedDateTime.of((LocalDateTime) null, ZONE_PARIS, ZoneResolvers.strict());
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_of_LocalDateTimeResolver_nullZone() {
-        LocalDateTime provider = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
-        ZonedDateTime.of(provider, null, ZoneResolvers.strict());
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_of_LocalDateTimeResolver_nullResolver() {
-        LocalDateTime provider = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
-        ZonedDateTime.of(provider, null, (ZoneResolver) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // of(OffsetDateTime, TimeZone)
+    // ofInstant(Instant, ZoneId)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void factory_of_OffsetDateTime() {
-        OffsetDateTime odt = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, OFFSET_0200);
-        ZonedDateTime test = ZonedDateTime.of(odt, ZONE_PARIS);
-        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void factory_of_OffsetDateTime_inGap() {
-        OffsetDateTime odt = OffsetDateTime.of(2008, 3, 30, 2, 30, OFFSET_0100);
-        try {
-            ZonedDateTime.of(odt, ZONE_PARIS);
-        } catch (DateTimeException ex) {
-            assertEquals(ex.getMessage().contains("daylight savings gap"), true);
-            throw ex;
-        }
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void factory_of_OffsetDateTime_inOverlap_invalidOfset() {
-        OffsetDateTime odt = OffsetDateTime.of(2008, 10, 26, 2, 30, OFFSET_0130);
-        try {
-            ZonedDateTime.of(odt, ZONE_PARIS);
-        } catch (DateTimeException ex) {
-            assertEquals(ex.getMessage().contains("invalid for time-zone"), true);
-            throw ex;
-        }
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void factory_of_OffsetDateTime_invalidOffset() {
-        OffsetDateTime odt = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, OFFSET_0130);
-        try {
-            ZonedDateTime.of(odt, ZONE_PARIS);
-        } catch (DateTimeException ex) {
-            assertEquals(ex.getMessage().contains("invalid for time-zone"), true);
-            throw ex;
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_of_OffsetDateTime_nullDateTime() {
-        ZonedDateTime.of((OffsetDateTime) null, ZONE_0100);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_of_OffsetDateTime_nullZone() {
-        OffsetDateTime odt = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, OFFSET_0100);
-        ZonedDateTime.of(odt, null);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factoryUTC_ofInstant() {
-        Instant instant = Instant.ofEpochSecond(86400 + 5 * 3600 + 10 * 60 + 20);
-        ZonedDateTime test = ZonedDateTime.ofInstantUTC(instant);
-        check(test, 1970, 1, 2, 5, 10, 20, 0, ZoneOffset.UTC, ZoneOffset.UTC);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factoryUTC_ofInstant_nullInstant() {
-        ZonedDateTime.ofInstantUTC((Instant) null);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_ofInstant_Instant() {
-        OffsetDateTime odt = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, OFFSET_0200);
-        Instant instant = odt.toInstant();
+    public void factory_ofInstant_Instant_ZR() {
+        Instant instant = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 35).toInstant(OFFSET_0200);
         ZonedDateTime test = ZonedDateTime.ofInstant(instant, ZONE_PARIS);
-        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
+        check(test, 2008, 6, 30, 11, 30, 10, 35, OFFSET_0200, ZONE_PARIS);
+    }
+
+    @Test(groups={"tck"})
+    public void factory_ofInstant_Instant_ZO() {
+        Instant instant = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 45).toInstant(OFFSET_0200);
+        ZonedDateTime test = ZonedDateTime.ofInstant(instant, OFFSET_0200);
+        check(test, 2008, 6, 30, 11, 30, 10, 45, OFFSET_0200, OFFSET_0200);
+    }
+
+    @Test(groups={"tck"})
+    public void factory_ofInstant_Instant_inGap() {
+        Instant instant = TEST_PARIS_GAP_2008_03_30_02_30.toInstant(OFFSET_0100);
+        ZonedDateTime test = ZonedDateTime.ofInstant(instant, ZONE_PARIS);
+        check(test, 2008, 3, 30, 3, 30, 0, 0, OFFSET_0200, ZONE_PARIS);  // one hour later in summer offset
+    }
+
+    @Test(groups={"tck"})
+    public void factory_ofInstant_Instant_inOverlap_earlier() {
+        Instant instant = TEST_PARIS_OVERLAP_2008_10_26_02_30.toInstant(OFFSET_0200);
+        ZonedDateTime test = ZonedDateTime.ofInstant(instant, ZONE_PARIS);
+        check(test, 2008, 10, 26, 2, 30, 0, 0, OFFSET_0200, ZONE_PARIS);  // same time and offset
+    }
+
+    @Test(groups={"tck"})
+    public void factory_ofInstant_Instant_inOverlap_later() {
+        Instant instant = TEST_PARIS_OVERLAP_2008_10_26_02_30.toInstant(OFFSET_0100);
+        ZonedDateTime test = ZonedDateTime.ofInstant(instant, ZONE_PARIS);
+        check(test, 2008, 10, 26, 2, 30, 0, 0, OFFSET_0100, ZONE_PARIS);  // same time and offset
+    }
+
+    @Test(groups={"tck"})
+    public void factory_ofInstant_Instant_invalidOffset() {
+        Instant instant = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500).toInstant(OFFSET_0130);
+        ZonedDateTime test = ZonedDateTime.ofInstant(instant, ZONE_PARIS);
+        check(test, 2008, 6, 30, 12, 0, 10, 500, OFFSET_0200, ZONE_PARIS);  // corrected offset, thus altered time
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
@@ -549,66 +387,35 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_ofInstant_Instant_nullZone() {
-        Instant instant = Instant.ofEpochSecond(0L);
-        ZonedDateTime.ofInstant(instant, null);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_ofInstant_OffsetDateTime() {
-        OffsetDateTime odt = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, OFFSET_0200);
-        ZonedDateTime test = ZonedDateTime.ofInstant(odt, ZONE_PARIS);
-        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
-    }
-
-    @Test(groups={"tck"})
-    public void factory_ofInstant_OffsetDateTime_inGap() {
-        OffsetDateTime odt = OffsetDateTime.of(2008, 3, 30, 2, 30, OFFSET_0100);  // DST gap
-        ZonedDateTime test = ZonedDateTime.ofInstant(odt, ZONE_PARIS);
-        check(test, 2008, 3, 30, 3, 30, 0, 0, OFFSET_0200, ZONE_PARIS);  // one hour later in summer offset
-    }
-
-    @Test(groups={"tck"})
-    public void factory_ofInstant_OffsetDateTime_inOverlap_earlier() {
-        OffsetDateTime odt = OffsetDateTime.of(2008, 10, 26, 2, 30, OFFSET_0200);  // DST overlap
-        ZonedDateTime test = ZonedDateTime.ofInstant(odt, ZONE_PARIS);
-        check(test, 2008, 10, 26, 2, 30, 0, 0, OFFSET_0200, ZONE_PARIS);  // same time and offset
-    }
-
-    @Test(groups={"tck"})
-    public void factory_ofInstant_OffsetDateTime_inOverlap_later() {
-        OffsetDateTime odt = OffsetDateTime.of(2008, 10, 26, 2, 30, OFFSET_0100);  // DST overlap
-        ZonedDateTime test = ZonedDateTime.ofInstant(odt, ZONE_PARIS);
-        check(test, 2008, 10, 26, 2, 30, 0, 0, OFFSET_0100, ZONE_PARIS);  // same time and offset
-    }
-
-    @Test(groups={"tck"})
-    public void factory_ofInstant_OffsetDateTime_invalidOffset() {
-        OffsetDateTime odt = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, OFFSET_0130);
-        ZonedDateTime test = ZonedDateTime.ofInstant(odt, ZONE_PARIS);
-        check(test, 2008, 6, 30, 12, 0, 10, 500, OFFSET_0200, ZONE_PARIS);  // corrected offset, thus altered time
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_ofInstant_OffsetDateTime_nullDateTime() {
-        ZonedDateTime.ofInstant((OffsetDateTime) null, ZONE_0100);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_ofInstant_OffsetDateTime_nullZone() {
-        OffsetDateTime odt = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, OFFSET_0100);
-        ZonedDateTime.ofInstant(odt, null);
+        ZonedDateTime.ofInstant(Instant.EPOCH, null);
     }
 
     //-----------------------------------------------------------------------
     // ofEpochSecond()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
+    public void factory_ofEpochSecond_Instant_ZR() {
+        LocalDateTime base = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
+        long epSec = base.toEpochSecond(OFFSET_0200);
+        ZonedDateTime test = ZonedDateTime.ofEpochSecond(epSec, 35, ZONE_PARIS);
+        check(test, 2008, 6, 30, 11, 30, 10, 35, OFFSET_0200, ZONE_PARIS);
+    }
+
+    @Test(groups={"tck"})
+    public void factory_ofEpochSecond_Instant_ZO() {
+        LocalDateTime base = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
+        long epSec = base.toEpochSecond(OFFSET_0200);
+        ZonedDateTime test = ZonedDateTime.ofEpochSecond(epSec, 45, OFFSET_0200);
+        check(test, 2008, 6, 30, 11, 30, 10, 45, OFFSET_0200, OFFSET_0200);
+    }
+
+    @Test(groups={"tck"})
     public void factory_ofEpochSecond_longOffset_afterEpoch() {
         for (int i = 0; i < 100000; i++) {
-            ZonedDateTime test = ZonedDateTime.ofEpochSecond(i, ZONE_0200);
-            OffsetDateTime odt = OffsetDateTime.of(1970, 1, 1, 0, 0, ZoneOffset.UTC).withOffsetSameInstant(OFFSET_0200).plusSeconds(i);
-            assertEquals(test.getOffsetDateTime(), odt);
+            ZonedDateTime test = ZonedDateTime.ofEpochSecond(i, 0, ZONE_0200);
+            LocalDateTime ldt = LocalDateTime.of(1970, 1, 1, 0, 0).plusSeconds(OFFSET_0200.getTotalSeconds()).plusSeconds(i);
+            assertEquals(test.getDateTime(), ldt);
+            assertEquals(test.getOffset(), ZONE_0200);
             assertEquals(test.getZone(), ZONE_0200);
         }
     }
@@ -616,43 +423,143 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void factory_ofEpochSecond_longOffset_beforeEpoch() {
         for (int i = 0; i < 100000; i++) {
-            ZonedDateTime test = ZonedDateTime.ofEpochSecond(-i, ZONE_0200);
-            OffsetDateTime odt = OffsetDateTime.of(1970, 1, 1, 0, 0, ZoneOffset.UTC).withOffsetSameInstant(OFFSET_0200).minusSeconds(i);
-            assertEquals(test.getOffsetDateTime(), odt);
+            ZonedDateTime test = ZonedDateTime.ofEpochSecond(-i, 0, ZONE_0200);
+            LocalDateTime ldt = LocalDateTime.of(1970, 1, 1, 0, 0).plusSeconds(OFFSET_0200.getTotalSeconds()).minusSeconds(i);
+            assertEquals(test.getDateTime(), ldt);
+            assertEquals(test.getOffset(), ZONE_0200);
             assertEquals(test.getZone(), ZONE_0200);
         }
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_ofEpochSecond_longOffset_tooBig() {
-        ZonedDateTime.ofEpochSecond(Long.MAX_VALUE, ZONE_PARIS);  // TODO: better test
+        ZonedDateTime.ofEpochSecond(Long.MAX_VALUE, 0, ZONE_PARIS);  // TODO: better test
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_ofEpochSecond_longOffset_tooSmall() {
-        ZonedDateTime.ofEpochSecond(Long.MIN_VALUE, ZONE_PARIS);  // TODO: better test
+        ZonedDateTime.ofEpochSecond(Long.MIN_VALUE, 0, ZONE_PARIS);  // TODO: better test
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_ofEpochSecond_longOffset_nullOffset() {
-        ZonedDateTime.ofEpochSecond(0L, null);
+        ZonedDateTime.ofEpochSecond(0L, 0, null);
+    }
+
+    //-----------------------------------------------------------------------
+    // ofStrict(LocalDateTime, ZoneId, ZoneOffset)
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void factory_ofStrict_LDT_ZI_ZO() {
+        LocalDateTime normal = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
+        ZonedDateTime test = ZonedDateTime.ofStrict(normal, OFFSET_0200, ZONE_PARIS);
+        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
+    }
+
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    public void factory_ofStrict_LDT_ZI_ZO_inGap() {
+        try {
+            ZonedDateTime.ofStrict(TEST_PARIS_GAP_2008_03_30_02_30, OFFSET_0100, ZONE_PARIS);
+        } catch (DateTimeException ex) {
+            assertEquals(ex.getMessage().contains(" gap"), true);
+            throw ex;
+        }
+    }
+
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    public void factory_ofStrict_LDT_ZI_ZO_inOverlap_invalidOfset() {
+        try {
+            ZonedDateTime.ofStrict(TEST_PARIS_OVERLAP_2008_10_26_02_30, OFFSET_0130, ZONE_PARIS);
+        } catch (DateTimeException ex) {
+            assertEquals(ex.getMessage().contains(" is not valid for "), true);
+            throw ex;
+        }
+    }
+
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    public void factory_ofStrict_LDT_ZI_ZO_invalidOffset() {
+        try {
+            ZonedDateTime.ofStrict(TEST_LOCAL_2008_06_30_11_30_59_500, OFFSET_0130, ZONE_PARIS);
+        } catch (DateTimeException ex) {
+            assertEquals(ex.getMessage().contains(" is not valid for "), true);
+            throw ex;
+        }
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void factory_ofStrict_LDT_ZI_ZO_nullLDT() {
+        ZonedDateTime.ofStrict((LocalDateTime) null, OFFSET_0100, ZONE_PARIS);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void factory_ofStrict_LDT_ZI_ZO_nullZO() {
+        ZonedDateTime.ofStrict(TEST_LOCAL_2008_06_30_11_30_59_500, null, ZONE_PARIS);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void factory_ofStrict_LDT_ZI_ZO_nullZI() {
+        ZonedDateTime.ofStrict(TEST_LOCAL_2008_06_30_11_30_59_500, OFFSET_0100, null);
     }
 
     //-----------------------------------------------------------------------
     // from()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_factory_CalendricalObject() {
-        assertEquals(ZonedDateTime.from(ZonedDateTime.of(2007, 7, 15, 17, 30, 0, 0, ZONE_PARIS)), ZonedDateTime.of(2007, 7, 15, 17, 30, 0, 0, ZONE_PARIS));
+    public void factory_from_DateTimeAccessor_ZDT() {
+        assertEquals(ZonedDateTime.from(TEST_DATE_TIME_PARIS), TEST_DATE_TIME_PARIS);
+    }
+
+    @Test(groups={"tck"})
+    public void factory_from_DateTimeAccessor_LDT_ZoneId() {
+        assertEquals(ZonedDateTime.from(new DefaultInterfaceDateTimeAccessor() {
+            @Override
+            public boolean isSupported(DateTimeField field) {
+                return TEST_DATE_TIME_PARIS.getDateTime().isSupported(field);
+            }
+            @Override
+            public long getLong(DateTimeField field) {
+                return TEST_DATE_TIME_PARIS.getDateTime().getLong(field);
+            }
+            @SuppressWarnings("unchecked")
+            @Override
+            public <R> R query(Query<R> query) {
+                if (query == Query.ZONE_ID) {
+                    return (R) TEST_DATE_TIME_PARIS.getZone();
+                }
+                return super.query(query);
+            }
+        }), TEST_DATE_TIME_PARIS);
+    }
+
+    @Test(groups={"tck"})
+    public void factory_from_DateTimeAccessor_Instant_ZoneId() {
+        assertEquals(ZonedDateTime.from(new DefaultInterfaceDateTimeAccessor() {
+            @Override
+            public boolean isSupported(DateTimeField field) {
+                return field == INSTANT_SECONDS || field == NANO_OF_SECOND;
+            }
+            @Override
+            public long getLong(DateTimeField field) {
+                return TEST_DATE_TIME_PARIS.toInstant().getLong(field);
+            }
+            @SuppressWarnings("unchecked")
+            @Override
+            public <R> R query(Query<R> query) {
+                if (query == Query.ZONE_ID) {
+                    return (R) TEST_DATE_TIME_PARIS.getZone();
+                }
+                return super.query(query);
+            }
+        }), TEST_DATE_TIME_PARIS);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_factory_CalendricalObject_invalid_noDerive() {
+    public void factory_from_DateTimeAccessor_invalid_noDerive() {
         ZonedDateTime.from(LocalTime.of(12, 30));
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_factory_CalendricalObject_null() {
+    public void factory_from_DateTimeAccessor_null() {
         ZonedDateTime.from((DateTimeAccessor) null);
     }
 
@@ -716,6 +623,8 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
         return new Object[][] {
             {2008, 6, 30, 11, 30, 20, 500, ZONE_0100},
             {2008, 6, 30, 11, 0, 0, 0, ZONE_0100},
+            {2008, 6, 30, 11, 30, 20, 500, ZONE_PARIS},
+            {2008, 6, 30, 11, 0, 0, 0, ZONE_PARIS},
             {2008, 6, 30, 23, 59, 59, 999999999, ZONE_0100},
             {-1, 1, 1, 0, 0, 0, 0, ZONE_0100},
         };
@@ -740,10 +649,14 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
         assertEquals(a.getSecond(), localDateTime.getSecond());
         assertEquals(a.getNano(), localDateTime.getNano());
 
-        assertEquals(a.toOffsetDate(), OffsetDate.of(localDate, offset));
-        assertEquals(a.toOffsetTime(), OffsetTime.of(localTime, offset));
-        assertEquals(a.getOffsetDateTime(), OffsetDateTime.of(localDateTime, offset));
-        assertEquals(a.toString(), a.getOffsetDateTime().toString() + "[" + zone.toString() + "]");
+        assertEquals(a.getDate(), localDate);
+        assertEquals(a.getTime(), localTime);
+        assertEquals(a.getDateTime(), localDateTime);
+        if (zone instanceof ZoneOffset) {
+            assertEquals(a.toString(), localDateTime.toString() + offset.toString());
+        } else {
+            assertEquals(a.toString(), localDateTime.toString() + offset.toString() + "[" + zone.toString() + "]");
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -751,6 +664,43 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_get_DateTimeField() {
+        ZonedDateTime test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 12, 30, 40, 987654321), ZONE_0100);
+        assertEquals(test.get(ChronoField.YEAR), 2008);
+        assertEquals(test.get(ChronoField.MONTH_OF_YEAR), 6);
+        assertEquals(test.get(ChronoField.DAY_OF_MONTH), 30);
+        assertEquals(test.get(ChronoField.DAY_OF_WEEK), 1);
+        assertEquals(test.get(ChronoField.DAY_OF_YEAR), 182);
+
+        assertEquals(test.get(ChronoField.HOUR_OF_DAY), 12);
+        assertEquals(test.get(ChronoField.MINUTE_OF_HOUR), 30);
+        assertEquals(test.get(ChronoField.SECOND_OF_MINUTE), 40);
+        assertEquals(test.get(ChronoField.NANO_OF_SECOND), 987654321);
+        assertEquals(test.get(ChronoField.HOUR_OF_AMPM), 0);
+        assertEquals(test.get(ChronoField.AMPM_OF_DAY), 1);
+
+        assertEquals(test.get(ChronoField.OFFSET_SECONDS), 3600);
+    }
+
+    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    public void test_get_DateTimeField_long() {
+        TEST_DATE_TIME.get(ChronoField.INSTANT_SECONDS);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
+    public void test_get_DateTimeField_null() {
+        TEST_DATE_TIME.get((DateTimeField) null);
+    }
+
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
+    public void test_get_DateTimeField_invalidField() {
+        TEST_DATE_TIME.get(MockFieldNoValue.INSTANCE);
+    }
+
+    //-----------------------------------------------------------------------
+    // getLong(DateTimeField)
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_getLong_DateTimeField() {
         ZonedDateTime test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 12, 30, 40, 987654321), ZONE_0100);
         assertEquals(test.getLong(ChronoField.YEAR), 2008);
         assertEquals(test.getLong(ChronoField.MONTH_OF_YEAR), 6);
@@ -764,16 +714,18 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
         assertEquals(test.getLong(ChronoField.NANO_OF_SECOND), 987654321);
         assertEquals(test.getLong(ChronoField.HOUR_OF_AMPM), 0);
         assertEquals(test.getLong(ChronoField.AMPM_OF_DAY), 1);
+
+        assertEquals(test.getLong(ChronoField.OFFSET_SECONDS), 3600);
+        assertEquals(test.getLong(ChronoField.INSTANT_SECONDS), test.toEpochSecond());
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
-    public void test_get_DateTimeField_null() {
-        ZonedDateTime test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 12, 30, 40, 987654321), ZONE_0100);
-        test.getLong((DateTimeField) null);
+    public void test_getLong_DateTimeField_null() {
+        TEST_DATE_TIME.getLong((DateTimeField) null);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
-    public void test_get_DateTimeField_invalidField() {
+    public void test_getLong_DateTimeField_invalidField() {
         TEST_DATE_TIME.getLong(MockFieldNoValue.INSTANCE);
     }
 
@@ -786,79 +738,21 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // withDateTime()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_withDateTime() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        LocalDateTime dt = LocalDateTime.of(2008, 6, 30, 11, 31, 0);
-        ZonedDateTime test = base.withDateTime(dt);
-        assertEquals(test.getDateTime(), dt);
-    }
-
-    @Test(groups={"tck"})
-    public void test_withDateTime_retainOffsetResolver1() {
-        ZoneId newYork = ZoneId.of("America/New_York");
-        LocalDateTime ldt = LocalDateTime.of(2008, 11, 2, 1, 30);
-        ZonedDateTime base = ZonedDateTime.of(ldt, newYork, ZoneResolvers.preTransition());
-        assertEquals(base.getOffset(), ZoneOffset.ofHours(-4));
-        ZonedDateTime test = base.withDateTime(LocalDateTime.of(2008, 11, 2, 1, 25));
-        assertEquals(test.getOffset(), ZoneOffset.ofHours(-4));
-    }
-
-    @Test(groups={"tck"})
-    public void test_withDateTime_retainOffsetResolver2() {
-        ZoneId newYork = ZoneId.of("America/New_York");
-        LocalDateTime ldt = LocalDateTime.of(2008, 11, 2, 1, 30);
-        ZonedDateTime base = ZonedDateTime.of(ldt, newYork, ZoneResolvers.postTransition());
-        assertEquals(base.getOffset(), ZoneOffset.ofHours(-5));
-        ZonedDateTime test = base.withDateTime(LocalDateTime.of(2008, 11, 2, 1, 25));
-        assertEquals(test.getOffset(), ZoneOffset.ofHours(-5));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_withDateTime_null() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        base.withDateTime(null);
-    }
-
-    //-----------------------------------------------------------------------
-    // withDateTime(LocalDateTime,ZoneResolver)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_withDateTime_resolver() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        LocalDateTime dt = LocalDateTime.of(2008, 6, 30, 11, 31, 0);
-        ZonedDateTime test = base.withDateTime(dt, ZoneResolvers.retainOffset());
-        assertEquals(test.getDateTime(), dt);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_withDateTime_resolver_nullDT() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        base.withDateTime(null, ZoneResolvers.retainOffset());
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_withDateTime_resolver_nullResolver() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        base.withDateTime(ldt, null);
-    }
-
-    //-----------------------------------------------------------------------
     // withEarlierOffsetAtOverlap()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_withEarlierOffsetAtOverlap() {
-        OffsetDateTime odt = OffsetDateTime.of(2008, 10, 26, 2, 30, OFFSET_0100);
-        ZonedDateTime base = ZonedDateTime.of(odt, ZONE_PARIS);
+        ZonedDateTime base = ZonedDateTime.ofStrict(TEST_PARIS_OVERLAP_2008_10_26_02_30, OFFSET_0100, ZONE_PARIS);
         ZonedDateTime test = base.withEarlierOffsetAtOverlap();
         assertEquals(test.getOffset(), OFFSET_0200);  // offset changed to earlier
+        assertEquals(test.getDateTime(), base.getDateTime());  // date-time not changed
+    }
+
+    @Test(groups={"tck"})
+    public void test_withEarlierOffsetAtOverlap_noChange() {
+        ZonedDateTime base = ZonedDateTime.ofStrict(TEST_PARIS_OVERLAP_2008_10_26_02_30, OFFSET_0200, ZONE_PARIS);
+        ZonedDateTime test = base.withEarlierOffsetAtOverlap();
+        assertEquals(test, base);  // not changed
     }
 
     //-----------------------------------------------------------------------
@@ -866,26 +760,33 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_withLaterOffsetAtOverlap() {
-        OffsetDateTime odt = OffsetDateTime.of(2008, 10, 26, 2, 30, OFFSET_0200);
-        ZonedDateTime base = ZonedDateTime.of(odt, ZONE_PARIS);
+        ZonedDateTime base = ZonedDateTime.ofStrict(TEST_PARIS_OVERLAP_2008_10_26_02_30, OFFSET_0200, ZONE_PARIS);
         ZonedDateTime test = base.withLaterOffsetAtOverlap();
         assertEquals(test.getOffset(), OFFSET_0100);  // offset changed to later
+        assertEquals(test.getDateTime(), base.getDateTime());  // date-time not changed
+    }
+
+    @Test(groups={"tck"})
+    public void test_withLaterOffsetAtOverlap_noChange() {
+        ZonedDateTime base = ZonedDateTime.ofStrict(TEST_PARIS_OVERLAP_2008_10_26_02_30, OFFSET_0100, ZONE_PARIS);
+        ZonedDateTime test = base.withLaterOffsetAtOverlap();
+        assertEquals(test, base);  // not changed
     }
 
     //-----------------------------------------------------------------------
-    // withZoneSameLocal()
+    // withZoneSameLocal(ZoneId)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_withZoneSameLocal() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withZoneSameLocal(ZONE_0200);
-        assertEquals(test.getTime(), base.getTime());
+        assertEquals(test.getDateTime(), base.getDateTime());
     }
 
     @Test(groups={"tck"})
-    public void test_withZoneSameLocal_retainOffsetResolver1() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 11, 2, 1, 30, 59, 0);
+    public void test_withZoneSameLocal_retainOffset1() {
+        LocalDateTime ldt = LocalDateTime.of(2008, 11, 2, 1, 30, 59, 0);  // overlap
         ZonedDateTime base = ZonedDateTime.of(ldt, ZoneId.of("UTC-04:00") );
         ZonedDateTime test = base.withZoneSameLocal(ZoneId.of("America/New_York"));
         assertEquals(base.getOffset(), ZoneOffset.ofHours(-4));
@@ -893,8 +794,8 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     }
 
     @Test(groups={"tck"})
-    public void test_withZoneSameLocal_retainOffsetResolver2() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 11, 2, 1, 30, 59, 0);
+    public void test_withZoneSameLocal_retainOffset2() {
+        LocalDateTime ldt = LocalDateTime.of(2008, 11, 2, 1, 30, 59, 0);  // overlap
         ZonedDateTime base = ZonedDateTime.of(ldt, ZoneId.of("UTC-05:00") );
         ZonedDateTime test = base.withZoneSameLocal(ZoneId.of("America/New_York"));
         assertEquals(base.getOffset(), ZoneOffset.ofHours(-5));
@@ -906,49 +807,6 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         base.withZoneSameLocal(null);
-    }
-
-    //-----------------------------------------------------------------------
-    // withZoneSameLocal(TimeZone,ZoneResolver)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_withZoneSameLocal_ZoneResolver() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        ZonedDateTime test = base.withZoneSameLocal(ZONE_0200, ZoneResolvers.retainOffset());
-        assertEquals(test.getTime(), base.getTime());
-    }
-
-    @Test(groups={"tck"})
-    public void test_withZoneSameLocal_ZoneResolver_retainOffsetResolver1() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 11, 2, 1, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.of(ldt, ZoneId.of("UTC-04:00") );
-        ZonedDateTime test = base.withZoneSameLocal(ZoneId.of("America/New_York"), ZoneResolvers.retainOffset());
-        assertEquals(base.getOffset(), ZoneOffset.ofHours(-4));
-        assertEquals(test.getOffset(), ZoneOffset.ofHours(-4));
-    }
-
-    @Test(groups={"tck"})
-    public void test_withZoneSameLocal_ZoneResolver_retainOffsetResolver2() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 11, 2, 1, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.of(ldt, ZoneId.of("UTC-05:00") );
-        ZonedDateTime test = base.withZoneSameLocal(ZoneId.of("America/New_York"), ZoneResolvers.retainOffset());
-        assertEquals(base.getOffset(), ZoneOffset.ofHours(-5));
-        assertEquals(test.getOffset(), ZoneOffset.ofHours(-5));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_withZoneSameLocal_ZoneResolver_nullZone() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        base.withZoneSameLocal(null, ZoneResolvers.retainOffset());
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_withZoneSameLocal_ZoneResolver_nullResolver() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        base.withZoneSameLocal(ZONE_0100, (ZoneResolver) null);
     }
 
     //-----------------------------------------------------------------------
@@ -974,7 +832,7 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     // with(WithAdjuster)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_with_DateAdjuster() {
+    public void test_with_WithAdjuster_Year() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.with(Year.of(2007));
@@ -982,7 +840,14 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     }
 
     @Test(groups={"tck"})
-    public void test_with_DateAdjuster_retainOffsetResolver1() {
+    public void test_with_WithAdjuster_LocalTime() {
+        ZonedDateTime base = ZonedDateTime.of(TEST_PARIS_OVERLAP_2008_10_26_02_30, ZONE_PARIS);
+        ZonedDateTime test = base.with(LocalTime.of(2, 29));
+        check(test, 2008, 10, 26, 2, 29, 0, 0, OFFSET_0200, ZONE_PARIS);
+    }
+
+    @Test(groups={"tck"})
+    public void test_with_WithAdjuster_LocalDate_retainOffset1() {
         ZoneId newYork = ZoneId.of("America/New_York");
         LocalDateTime ldt = LocalDateTime.of(2008, 11, 1, 1, 30);
         ZonedDateTime base = ZonedDateTime.of(ldt, newYork);
@@ -992,7 +857,7 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     }
 
     @Test(groups={"tck"})
-    public void test_with_DateAdjuster_retainOffsetResolver2() {
+    public void test_with_WithAdjuster_LocalDate_retainOffset2() {
         ZoneId newYork = ZoneId.of("America/New_York");
         LocalDateTime ldt = LocalDateTime.of(2008, 11, 3, 1, 30);
         ZonedDateTime base = ZonedDateTime.of(ldt, newYork);
@@ -1002,35 +867,10 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_with_DateAdjuster_null() {
+    public void test_with_WithAdjuster_null() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         base.with((WithAdjuster) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // with(DateAdjuster,ZoneResolver)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_with_DateAdjuster_resolver() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        ZonedDateTime test = base.with(Year.of(2007), ZoneResolvers.retainOffset());
-        assertEquals(test, ZonedDateTime.of(ldt.withYear(2007), ZONE_0100));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_with_DateAdjuster_resolver_nullAdjuster() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        base.with((WithAdjuster) null, ZoneResolvers.retainOffset());
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_with_DateAdjuster_resolver_nullResolver() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        base.with(ldt.getDate(), null);
     }
 
     //-----------------------------------------------------------------------
@@ -1111,11 +951,17 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     // withHour()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_withHourr_normal() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
+    public void test_withHour_normal() {
+        ZonedDateTime base = ZonedDateTime.of(TEST_LOCAL_2008_06_30_11_30_59_500, ZONE_0100);
         ZonedDateTime test = base.withHour(15);
-        assertEquals(test, ZonedDateTime.of(ldt.withHour(15), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(TEST_LOCAL_2008_06_30_11_30_59_500.withHour(15), ZONE_0100));
+    }
+
+    @Test(groups={"tck"})
+    public void test_withHour_noChange() {
+        ZonedDateTime base = ZonedDateTime.of(TEST_LOCAL_2008_06_30_11_30_59_500, ZONE_0100);
+        ZonedDateTime test = base.withHour(11);
+        assertEquals(test, base);
     }
 
     //-----------------------------------------------------------------------
@@ -1123,18 +969,33 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_withMinute_normal() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(TEST_LOCAL_2008_06_30_11_30_59_500, ZONE_0100);
         ZonedDateTime test = base.withMinute(15);
-        assertEquals(test, ZonedDateTime.of(ldt.withMinute(15), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(TEST_LOCAL_2008_06_30_11_30_59_500.withMinute(15), ZONE_0100));
+    }
+
+    @Test(groups={"tck"})
+    public void test_withMinute_noChange() {
+        ZonedDateTime base = ZonedDateTime.of(TEST_LOCAL_2008_06_30_11_30_59_500, ZONE_0100);
+        ZonedDateTime test = base.withMinute(30);
+        assertEquals(test, base);
+    }
+
+    //-----------------------------------------------------------------------
+    // withSecond()
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_withSecond_normal() {
+        ZonedDateTime base = ZonedDateTime.of(TEST_LOCAL_2008_06_30_11_30_59_500, ZONE_0100);
+        ZonedDateTime test = base.withSecond(12);
+        assertEquals(test, ZonedDateTime.of(TEST_LOCAL_2008_06_30_11_30_59_500.withSecond(12), ZONE_0100));
     }
 
     @Test(groups={"tck"})
     public void test_withSecond_noChange() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(TEST_LOCAL_2008_06_30_11_30_59_500, ZONE_0100);
         ZonedDateTime test = base.withSecond(59);
-        assertSame(test, base);
+        assertEquals(test, base);
     }
 
     //-----------------------------------------------------------------------
@@ -1142,10 +1003,16 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_withNanoOfSecond_normal() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 1);
-        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(TEST_LOCAL_2008_06_30_11_30_59_500, ZONE_0100);
         ZonedDateTime test = base.withNano(15);
-        assertEquals(test, ZonedDateTime.of(ldt.withNano(15), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(TEST_LOCAL_2008_06_30_11_30_59_500.withNano(15), ZONE_0100));
+    }
+
+    @Test(groups={"tck"})
+    public void test_withNanoOfSecond_noChange() {
+        ZonedDateTime base = ZonedDateTime.of(TEST_LOCAL_2008_06_30_11_30_59_500, ZONE_0100);
+        ZonedDateTime test = base.withNano(500);
+        assertEquals(test, base);
     }
 
     //-----------------------------------------------------------------------
@@ -1453,17 +1320,21 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_toEpochSecond_afterEpoch() {
+        LocalDateTime ldt = LocalDateTime.of(1970, 1, 1, 0, 0).plusHours(1);
         for (int i = 0; i < 100000; i++) {
-            OffsetDateTime a = OffsetDateTime.of(1970, 1, 1, 0, 0, ZoneOffset.UTC).plusSeconds(i);
+            ZonedDateTime a = ZonedDateTime.of(ldt, ZONE_PARIS);
             assertEquals(a.toEpochSecond(), i);
+            ldt = ldt.plusSeconds(1);
         }
     }
 
     @Test(groups={"tck"})
     public void test_toEpochSecond_beforeEpoch() {
+        LocalDateTime ldt = LocalDateTime.of(1970, 1, 1, 0, 0).plusHours(1);
         for (int i = 0; i < 100000; i++) {
-            OffsetDateTime a = OffsetDateTime.of(1970, 1, 1, 0, 0, ZoneOffset.UTC).minusSeconds(i);
+            ZonedDateTime a = ZonedDateTime.of(ldt, ZONE_PARIS);
             assertEquals(a.toEpochSecond(), -i);
+            ldt = ldt.minusSeconds(1);
         }
     }
 
@@ -1672,16 +1543,17 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     @DataProvider(name="sampleToString")
     Object[][] provider_sampleToString() {
         return new Object[][] {
-            {2008, 6, 30, 11, 30, 59, 0, "Z", "2008-06-30T11:30:59Z[Z]"},
-            {2008, 6, 30, 11, 30, 59, 0, "+01:00", "2008-06-30T11:30:59+01:00[+01:00]"},
-            {2008, 6, 30, 11, 30, 59, 999000000, "Z", "2008-06-30T11:30:59.999Z[Z]"},
-            {2008, 6, 30, 11, 30, 59, 999000000, "+01:00", "2008-06-30T11:30:59.999+01:00[+01:00]"},
-            {2008, 6, 30, 11, 30, 59, 999000, "Z", "2008-06-30T11:30:59.000999Z[Z]"},
-            {2008, 6, 30, 11, 30, 59, 999000, "+01:00", "2008-06-30T11:30:59.000999+01:00[+01:00]"},
-            {2008, 6, 30, 11, 30, 59, 999, "Z", "2008-06-30T11:30:59.000000999Z[Z]"},
-            {2008, 6, 30, 11, 30, 59, 999, "+01:00", "2008-06-30T11:30:59.000000999+01:00[+01:00]"},
+            {2008, 6, 30, 11, 30, 59, 0, "Z", "2008-06-30T11:30:59Z"},
+            {2008, 6, 30, 11, 30, 59, 0, "+01:00", "2008-06-30T11:30:59+01:00"},
+            {2008, 6, 30, 11, 30, 59, 999000000, "Z", "2008-06-30T11:30:59.999Z"},
+            {2008, 6, 30, 11, 30, 59, 999000000, "+01:00", "2008-06-30T11:30:59.999+01:00"},
+            {2008, 6, 30, 11, 30, 59, 999000, "Z", "2008-06-30T11:30:59.000999Z"},
+            {2008, 6, 30, 11, 30, 59, 999000, "+01:00", "2008-06-30T11:30:59.000999+01:00"},
+            {2008, 6, 30, 11, 30, 59, 999, "Z", "2008-06-30T11:30:59.000000999Z"},
+            {2008, 6, 30, 11, 30, 59, 999, "+01:00", "2008-06-30T11:30:59.000000999+01:00"},
 
             {2008, 6, 30, 11, 30, 59, 999, "Europe/London", "2008-06-30T11:30:59.000000999+01:00[Europe/London]"},
+            {2008, 6, 30, 11, 30, 59, 999, "Europe/Paris", "2008-06-30T11:30:59.000000999+02:00[Europe/Paris]"},
         };
     }
 

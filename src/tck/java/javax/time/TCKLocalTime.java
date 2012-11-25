@@ -92,8 +92,6 @@ import org.testng.annotations.Test;
 @Test
 public class TCKLocalTime extends AbstractDateTimeTest {
 
-    private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
-
     private LocalTime TEST_12_30_40_987654321;
 
     private static final PeriodUnit[] INVALID_UNITS;
@@ -1787,18 +1785,17 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // atOffset()
+    // atDate()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_atOffset() {
+    public void test_atDate() {
         LocalTime t = LocalTime.of(11, 30);
-        assertEquals(t.atOffset(OFFSET_PTWO), OffsetTime.of(11, 30, OFFSET_PTWO));
+        assertEquals(t.atDate(LocalDate.of(2012, 6, 30)), LocalDateTime.of(2012, 6, 30, 11, 30));
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_atOffset_nullZoneOffset() {
-        LocalTime t = LocalTime.of(11, 30);
-        t.atOffset((ZoneOffset) null);
+    public void test_atOffset_nullDate() {
+        TEST_12_30_40_987654321.atDate((LocalDate) null);
     }
 
     //-----------------------------------------------------------------------
