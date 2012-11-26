@@ -98,7 +98,6 @@ public class TestFluentAPI {
         date.getMonth().maxLength();
         date.range(DAY_OF_MONTH).getMaximum();
         FEBRUARY.maxLength();
-        FEBRUARY.range(DAY_OF_MONTH);
 
         DayOfWeek dow = MONDAY;
         dow = dow.plus(1);
@@ -119,9 +118,8 @@ public class TestFluentAPI {
         System.out.println("Summer time Paris ends: " + paris.getRules().getTransitionRules().get(1));
 
         LocalDateTime ldt = date.atTime(tod);
-        OffsetDateTime odt = date.atTime(tod).atOffset(offset);
-        ZonedDateTime zdt1 = date.atStartOfDayInZone(paris);
-        ZonedDateTime zdt2 = date.atTime(0, 0).atZone(paris);
+        ZonedDateTime zdt1 = date.atStartOfDay(paris);
+        ZonedDateTime zdt2 = date.atTime(12, 0).atZone(paris);
 
         {
             Year year = Year.of(2002);
