@@ -48,7 +48,6 @@ import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.OffsetDate;
-import javax.time.OffsetDateTime;
 import javax.time.OffsetTime;
 import javax.time.ZoneOffset;
 
@@ -140,7 +139,7 @@ public class TestDateTimeBuilderCombinations {
         assertEquals(builder.build(LocalDateTime.class), LocalDateTime.of(2012, 6, 30, 12, 30));
         assertEquals(builder.build(OffsetDate.class), OffsetDate.of(2012, 6, 30, ZoneOffset.ofHours(2)));
         assertEquals(builder.build(OffsetTime.class), OffsetTime.of(12, 30, ZoneOffset.ofHours(2)));
-        assertEquals(builder.build(OffsetDateTime.class), OffsetDateTime.of(2012, 6, 30, 12, 30, ZoneOffset.ofHours(2)));
+//        assertEquals(builder.build(OffsetDateTime.class), OffsetDateTime.of(2012, 6, 30, 12, 30, ZoneOffset.ofHours(2)));
     }
 
 }
