@@ -61,6 +61,8 @@ import javax.time.LocalDateTime;
  * element in the index, an ordering which is defined by JSR-310.
  * <p>
  * This class is mutable and should be created once per serialization.
+ *
+ * @serial include
  */
 final class Ser implements Externalizable {
 

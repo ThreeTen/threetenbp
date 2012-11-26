@@ -59,6 +59,8 @@ import java.io.StreamCorruptedException;
  * {@link LocalDateTime} are serialised as one object.
  * <p>
  * This class is mutable and should be created once per serialization.
+ *
+ * @serial include
  */
 final class Ser implements Externalizable {
 

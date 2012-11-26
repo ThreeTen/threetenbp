@@ -1460,6 +1460,18 @@ public final class LocalDate
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Writes the object using a
+     * <a href="../../serialized-form.html#javax.time.Ser">dedicated serialized form</a>.
+     * <pre>
+     *  out.writeByte(3);  // identifies this as a LocalDate
+     *  out.writeInt(year);
+     *  out.writeByte(month);
+     *  out.writeByte(day);
+     * </pre>
+     *
+     * @return the instance of {@code Ser}, not null
+     */
     private Object writeReplace() {
         return new Ser(Ser.LOCAL_DATE_TYPE, this);
     }

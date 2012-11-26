@@ -47,6 +47,8 @@ import javax.time.ZoneOffset;
  *
  * <h4>Implementation notes</h4>
  * This class is mutable and should be created once per serialization.
+ *
+ * @serial include
  */
 final class Ser implements Externalizable {
 

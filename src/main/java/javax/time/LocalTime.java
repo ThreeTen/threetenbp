@@ -416,14 +416,6 @@ public final class LocalTime
         this.nano = nanoOfSecond;
     }
 
-    /**
-     * Handle singletons on deserialization.
-     * @return the resolved object.
-     */
-    private Object readResolve() {
-        return create(hour, minute, second, nano);
-    }
-
     //-----------------------------------------------------------------------
     @Override
     public boolean isSupported(DateTimeField field) {
@@ -1127,6 +1119,19 @@ public final class LocalTime
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Writes the object using a
+     * <a href="../../serialized-form.html#javax.time.Ser">dedicated serialized form</a>.
+     * <pre>
+     *  out.writeByte(5);  // identifies this as a LocalTime
+     *  out.writeByte(hour);
+     *  out.writeByte(minute);
+     *  out.writeByte(second);
+     *  out.writeInt(nano);
+     * </pre>
+     *
+     * @return the instance of {@code Ser}, not null
+     */
     private Object writeReplace() {
         return new Ser(Ser.LOCAL_TIME_TYPE, this);
     }
