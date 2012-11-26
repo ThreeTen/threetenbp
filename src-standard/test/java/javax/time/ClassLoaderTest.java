@@ -34,6 +34,8 @@ package javax.time;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.TreeMap;
@@ -50,13 +52,13 @@ import javax.time.calendrical.DateTimeAccessor;
  */
 public class ClassLoaderTest {
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public static void main(String[] args) {
         Object a = new ConcurrentHashMap();
         a.toString();
         a = new ReentrantLock();
         a.toString();
-        a = Pattern.compile("hello[a-z][^f]{2}");
+        a = Pattern.compile("hello[a-z][^f]{2}").matcher("goo").matches();
         a.toString();
         a = new HashMap().entrySet();
         a.toString();
@@ -69,6 +71,16 @@ public class ClassLoaderTest {
         a = new TreeMap().values();
         a.toString();
         a = new TreeMap().keySet();
+        a.toString();
+        a = Collections.unmodifiableMap(new HashMap()).entrySet();
+        a.toString();
+        a = Collections.unmodifiableMap(new HashMap()).values();
+        a.toString();
+        a = Collections.unmodifiableMap(new HashMap()).keySet();
+        a.toString();
+        a = Collections.unmodifiableList(new ArrayList());
+        a.toString();
+        a = Collections.unmodifiableList(new ArrayList()).iterator();
         a.toString();
         try {
             a = new DataInputStream(new ZipInputStream(new FileInputStream("/a.zip")));
@@ -93,7 +105,7 @@ public class ClassLoaderTest {
         LocalTime t = LocalTime.of(12, 20);
 
         System.out.println("************************************************************");
-        LocalDateTime.of(d, t);
+        LocalDateTime ldt = LocalDateTime.of(d, t);
 
         System.out.println("************************************************************");
         a = GregorianCalendar.class;
@@ -102,7 +114,7 @@ public class ClassLoaderTest {
         new GregorianCalendar();
 
         System.out.println("************************************************************");
-        ZonedDateTime.of(2011, 6, 5, 13, 30, 0, 0, ZoneId.of("Europe/Paris"));
+        ldt.atZone(ZoneId.of("Europe/Paris"));
 
         System.out.println("************************************************************");
     }
