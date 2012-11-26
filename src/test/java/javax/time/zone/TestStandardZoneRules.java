@@ -40,9 +40,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.List;
 
@@ -77,45 +74,6 @@ public class TestStandardZoneRules {
     //-----------------------------------------------------------------------
     // Basics
     //-----------------------------------------------------------------------
-    public void test_interfaces() {
-        assertTrue(Serializable.class.isAssignableFrom(StandardZoneRules.class));
-    }
-
-    public void test_immutable() {
-        Class<StandardZoneRules> cls = StandardZoneRules.class;
-        assertFalse(Modifier.isPublic(cls.getModifiers()));
-        assertFalse(Modifier.isProtected(cls.getModifiers()));
-        assertFalse(Modifier.isPrivate(cls.getModifiers()));
-        Field[] fields = cls.getDeclaredFields();
-        for (Field field : fields) {
-            if (Modifier.isStatic(field.getModifiers()) == false) {
-                assertTrue(Modifier.isPrivate(field.getModifiers()));
-                assertTrue(Modifier.isFinal(field.getModifiers()) ||
-                        (Modifier.isVolatile(field.getModifiers()) && Modifier.isTransient(field.getModifiers())), "" + field);
-            }
-        }
-    }
-
-    public void test_serialization_simple() throws Exception {
-        ZoneRulesBuilder b = new ZoneRulesBuilder()
-            .addWindow(OFFSET_PONE, LocalDateTime.of(1980, 3, 1, 1, 0), TimeDefinition.STANDARD)
-            .setFixedSavingsToWindow(1 * 60 * 60)
-            .addWindowForever(OFFSET_PONE)
-            .setFixedSavingsToWindow(2 * 60 * 60);
-        ZoneRules test = b.toRules("Test");
-        assertSerialization(test);
-    }
-
-    public void test_serialization_unusual() throws Exception {
-        ZoneRulesBuilder b = new ZoneRulesBuilder()
-            .addWindow(ZoneOffset.of("-17:49:23"), LocalDateTime.of(1980, 3, 1, 1, 34, 56), TimeDefinition.WALL)
-            .setFixedSavingsToWindow(((1 * 60 + 34) * 60) + 23)
-            .addWindowForever(ZoneOffset.of("+04:23"))
-            .setFixedSavingsToWindow(((13 * 60 + 22) * 60) + 9);
-        ZoneRules test = b.toRules("Test");
-        assertSerialization(test);
-    }
-
     public void test_serialization_loaded() throws Exception {
         assertSerialization(europeLondon());
         assertSerialization(europeParis());
@@ -131,7 +89,7 @@ public class TestStandardZoneRules {
 
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         ObjectInputStream in = new ObjectInputStream(bais);
-        StandardZoneRules result = (StandardZoneRules) in.readObject();
+        ZoneRules result = (ZoneRules) in.readObject();
 
         assertEquals(result, test);
     }
@@ -139,17 +97,17 @@ public class TestStandardZoneRules {
     //-----------------------------------------------------------------------
     // Europe/London
     //-----------------------------------------------------------------------
-    private StandardZoneRules europeLondon() {
-        return (StandardZoneRules) ZoneId.of("Europe/London").getRules();
+    private ZoneRules europeLondon() {
+        return ZoneId.of("Europe/London").getRules();
     }
 
     public void test_London() {
-        StandardZoneRules test = europeLondon();
+        ZoneRules test = europeLondon();
         assertEquals(test.isFixedOffset(), false);
     }
 
     public void test_London_preTimeZones() {
-        StandardZoneRules test = europeLondon();
+        ZoneRules test = europeLondon();
         OffsetDateTime old = createDateMidnight(1800, 1, 1, ZoneOffset.UTC);
         Instant instant = old.toInstant();
         ZoneOffset offset = ZoneOffset.ofHoursMinutesSeconds(0, -1, -15);
@@ -161,7 +119,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_London_getOffset() {
-        StandardZoneRules test = europeLondon();
+        ZoneRules test = europeLondon();
         assertEquals(test.getOffset(createDateMidnight(2008, 1, 1, ZoneOffset.UTC).toInstant()), OFFSET_ZERO);
         assertEquals(test.getOffset(createDateMidnight(2008, 2, 1, ZoneOffset.UTC).toInstant()), OFFSET_ZERO);
         assertEquals(test.getOffset(createDateMidnight(2008, 3, 1, ZoneOffset.UTC).toInstant()), OFFSET_ZERO);
@@ -177,7 +135,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_London_getOffset_toDST() {
-        StandardZoneRules test = europeLondon();
+        ZoneRules test = europeLondon();
         assertEquals(test.getOffset(createDateMidnight(2008, 3, 24, ZoneOffset.UTC).toInstant()), OFFSET_ZERO);
         assertEquals(test.getOffset(createDateMidnight(2008, 3, 25, ZoneOffset.UTC).toInstant()), OFFSET_ZERO);
         assertEquals(test.getOffset(createDateMidnight(2008, 3, 26, ZoneOffset.UTC).toInstant()), OFFSET_ZERO);
@@ -192,7 +150,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_London_getOffset_fromDST() {
-        StandardZoneRules test = europeLondon();
+        ZoneRules test = europeLondon();
         assertEquals(test.getOffset(createDateMidnight(2008, 10, 24, ZoneOffset.UTC).toInstant()), OFFSET_PONE);
         assertEquals(test.getOffset(createDateMidnight(2008, 10, 25, ZoneOffset.UTC).toInstant()), OFFSET_PONE);
         assertEquals(test.getOffset(createDateMidnight(2008, 10, 26, ZoneOffset.UTC).toInstant()), OFFSET_PONE);
@@ -207,7 +165,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_London_getOffsetInfo() {
-        StandardZoneRules test = europeLondon();
+        ZoneRules test = europeLondon();
         checkOffset(test, createDateMidnight(2008, 1, 1), OFFSET_ZERO, 1);
         checkOffset(test, createDateMidnight(2008, 2, 1), OFFSET_ZERO, 1);
         checkOffset(test, createDateMidnight(2008, 3, 1), OFFSET_ZERO, 1);
@@ -223,7 +181,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_London_getOffsetInfo_toDST() {
-        StandardZoneRules test = europeLondon();
+        ZoneRules test = europeLondon();
         checkOffset(test, createDateMidnight(2008, 3, 24), OFFSET_ZERO, 1);
         checkOffset(test, createDateMidnight(2008, 3, 25), OFFSET_ZERO, 1);
         checkOffset(test, createDateMidnight(2008, 3, 26), OFFSET_ZERO, 1);
@@ -238,7 +196,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_London_getOffsetInfo_fromDST() {
-        StandardZoneRules test = europeLondon();
+        ZoneRules test = europeLondon();
         checkOffset(test, createDateMidnight(2008, 10, 24), OFFSET_PONE, 1);
         checkOffset(test, createDateMidnight(2008, 10, 25), OFFSET_PONE, 1);
         checkOffset(test, createDateMidnight(2008, 10, 26), OFFSET_PONE, 1);
@@ -253,7 +211,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_London_getOffsetInfo_gap() {
-        StandardZoneRules test = europeLondon();
+        ZoneRules test = europeLondon();
         final LocalDateTime dateTime = LocalDateTime.of(2008, 3, 30, 1, 0, 0, 0);
         ZoneOffsetTransition trans = checkOffset(test, dateTime, OFFSET_ZERO, GAP);
         assertEquals(trans.isGap(), true);
@@ -278,7 +236,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_London_getOffsetInfo_overlap() {
-        StandardZoneRules test = europeLondon();
+        ZoneRules test = europeLondon();
         final LocalDateTime dateTime = LocalDateTime.of(2008, 10, 26, 1, 0, 0, 0);
         ZoneOffsetTransition trans = checkOffset(test, dateTime, OFFSET_PONE, OVERLAP);
         assertEquals(trans.isGap(), false);
@@ -304,7 +262,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_London_getStandardOffset() {
-        StandardZoneRules test = europeLondon();
+        ZoneRules test = europeLondon();
         OffsetDateTime dateTime = createDateMidnight(1840, 1, 1).atOffset(ZoneOffset.UTC);
         while (dateTime.getYear() < 2010) {
             Instant instant = dateTime.toInstant();
@@ -320,7 +278,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_London_getTransitions() {
-        StandardZoneRules test = europeLondon();
+        ZoneRules test = europeLondon();
         List<ZoneOffsetTransition> trans = test.getTransitions();
 
         ZoneOffsetTransition first = trans.get(0);
@@ -397,7 +355,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_London_getTransitionRules() {
-        StandardZoneRules test = europeLondon();
+        ZoneRules test = europeLondon();
         List<ZoneOffsetTransitionRule> rules = test.getTransitionRules();
         assertEquals(rules.size(), 2);
 
@@ -424,7 +382,7 @@ public class TestStandardZoneRules {
 
     //-----------------------------------------------------------------------
     public void test_London_nextTransition_historic() {
-        StandardZoneRules test = europeLondon();
+        ZoneRules test = europeLondon();
         List<ZoneOffsetTransition> trans = test.getTransitions();
 
         ZoneOffsetTransition first = trans.get(0);
@@ -440,7 +398,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_London_nextTransition_rulesBased() {
-        StandardZoneRules test = europeLondon();
+        ZoneRules test = europeLondon();
         List<ZoneOffsetTransitionRule> rules = test.getTransitionRules();
         List<ZoneOffsetTransition> trans = test.getTransitions();
 
@@ -461,7 +419,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_London_nextTransition_lastYear() {
-        StandardZoneRules test = europeLondon();
+        ZoneRules test = europeLondon();
         List<ZoneOffsetTransitionRule> rules = test.getTransitionRules();
         ZoneOffsetTransition zot = rules.get(1).createTransition(Year.MAX_YEAR);
         assertEquals(test.nextTransition(zot.getInstant()), null);
@@ -469,7 +427,7 @@ public class TestStandardZoneRules {
 
     //-----------------------------------------------------------------------
     public void test_London_previousTransition_historic() {
-        StandardZoneRules test = europeLondon();
+        ZoneRules test = europeLondon();
         List<ZoneOffsetTransition> trans = test.getTransitions();
 
         ZoneOffsetTransition first = trans.get(0);
@@ -487,7 +445,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_London_previousTransition_rulesBased() {
-        StandardZoneRules test = europeLondon();
+        ZoneRules test = europeLondon();
         List<ZoneOffsetTransitionRule> rules = test.getTransitionRules();
         List<ZoneOffsetTransition> trans = test.getTransitions();
 
@@ -519,17 +477,17 @@ public class TestStandardZoneRules {
     //-----------------------------------------------------------------------
     // Europe/Paris
     //-----------------------------------------------------------------------
-    private StandardZoneRules europeParis() {
-        return (StandardZoneRules) ZoneId.of("Europe/Paris").getRules();
+    private ZoneRules europeParis() {
+        return ZoneId.of("Europe/Paris").getRules();
     }
 
     public void test_Paris() {
-        StandardZoneRules test = europeParis();
+        ZoneRules test = europeParis();
         assertEquals(test.isFixedOffset(), false);
     }
 
     public void test_Paris_preTimeZones() {
-        StandardZoneRules test = europeParis();
+        ZoneRules test = europeParis();
         OffsetDateTime old = createDateMidnight(1800, 1, 1, ZoneOffset.UTC);
         Instant instant = old.toInstant();
         ZoneOffset offset = ZoneOffset.ofHoursMinutesSeconds(0, 9, 21);
@@ -541,7 +499,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_Paris_getOffset() {
-        StandardZoneRules test = europeParis();
+        ZoneRules test = europeParis();
         assertEquals(test.getOffset(createDateMidnight(2008, 1, 1, ZoneOffset.UTC).toInstant()), OFFSET_PONE);
         assertEquals(test.getOffset(createDateMidnight(2008, 2, 1, ZoneOffset.UTC).toInstant()), OFFSET_PONE);
         assertEquals(test.getOffset(createDateMidnight(2008, 3, 1, ZoneOffset.UTC).toInstant()), OFFSET_PONE);
@@ -557,7 +515,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_Paris_getOffset_toDST() {
-        StandardZoneRules test = europeParis();
+        ZoneRules test = europeParis();
         assertEquals(test.getOffset(createDateMidnight(2008, 3, 24, ZoneOffset.UTC).toInstant()), OFFSET_PONE);
         assertEquals(test.getOffset(createDateMidnight(2008, 3, 25, ZoneOffset.UTC).toInstant()), OFFSET_PONE);
         assertEquals(test.getOffset(createDateMidnight(2008, 3, 26, ZoneOffset.UTC).toInstant()), OFFSET_PONE);
@@ -572,7 +530,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_Paris_getOffset_fromDST() {
-        StandardZoneRules test = europeParis();
+        ZoneRules test = europeParis();
         assertEquals(test.getOffset(createDateMidnight(2008, 10, 24, ZoneOffset.UTC).toInstant()), OFFSET_PTWO);
         assertEquals(test.getOffset(createDateMidnight(2008, 10, 25, ZoneOffset.UTC).toInstant()), OFFSET_PTWO);
         assertEquals(test.getOffset(createDateMidnight(2008, 10, 26, ZoneOffset.UTC).toInstant()), OFFSET_PTWO);
@@ -587,7 +545,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_Paris_getOffsetInfo() {
-        StandardZoneRules test = europeParis();
+        ZoneRules test = europeParis();
         checkOffset(test, createDateMidnight(2008, 1, 1), OFFSET_PONE, 1);
         checkOffset(test, createDateMidnight(2008, 2, 1), OFFSET_PONE, 1);
         checkOffset(test, createDateMidnight(2008, 3, 1), OFFSET_PONE, 1);
@@ -603,7 +561,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_Paris_getOffsetInfo_toDST() {
-        StandardZoneRules test = europeParis();
+        ZoneRules test = europeParis();
         checkOffset(test, createDateMidnight(2008, 3, 24), OFFSET_PONE, 1);
         checkOffset(test, createDateMidnight(2008, 3, 25), OFFSET_PONE, 1);
         checkOffset(test, createDateMidnight(2008, 3, 26), OFFSET_PONE, 1);
@@ -618,7 +576,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_Paris_getOffsetInfo_fromDST() {
-        StandardZoneRules test = europeParis();
+        ZoneRules test = europeParis();
         checkOffset(test, createDateMidnight(2008, 10, 24), OFFSET_PTWO, 1);
         checkOffset(test, createDateMidnight(2008, 10, 25), OFFSET_PTWO, 1);
         checkOffset(test, createDateMidnight(2008, 10, 26), OFFSET_PTWO, 1);
@@ -633,7 +591,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_Paris_getOffsetInfo_gap() {
-        StandardZoneRules test = europeParis();
+        ZoneRules test = europeParis();
         final LocalDateTime dateTime = LocalDateTime.of(2008, 3, 30, 2, 0, 0, 0);
         ZoneOffsetTransition trans = checkOffset(test, dateTime, OFFSET_PONE, GAP);
         assertEquals(trans.isGap(), true);
@@ -656,7 +614,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_Paris_getOffsetInfo_overlap() {
-        StandardZoneRules test = europeParis();
+        ZoneRules test = europeParis();
         final LocalDateTime dateTime = LocalDateTime.of(2008, 10, 26, 2, 0, 0, 0);
         ZoneOffsetTransition trans = checkOffset(test, dateTime, OFFSET_PTWO, OVERLAP);
         assertEquals(trans.isGap(), false);
@@ -680,7 +638,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_Paris_getStandardOffset() {
-        StandardZoneRules test = europeParis();
+        ZoneRules test = europeParis();
         OffsetDateTime dateTime = createDateMidnight(1840, 1, 1).atOffset(ZoneOffset.UTC);
         while (dateTime.getYear() < 2010) {
             Instant instant = dateTime.toInstant();
@@ -702,17 +660,17 @@ public class TestStandardZoneRules {
     //-----------------------------------------------------------------------
     // America/New_York
     //-----------------------------------------------------------------------
-    private StandardZoneRules americaNewYork() {
-        return (StandardZoneRules) ZoneId.of("America/New_York").getRules();
+    private ZoneRules americaNewYork() {
+        return ZoneId.of("America/New_York").getRules();
     }
 
     public void test_NewYork() {
-        StandardZoneRules test = americaNewYork();
+        ZoneRules test = americaNewYork();
         assertEquals(test.isFixedOffset(), false);
     }
 
     public void test_NewYork_preTimeZones() {
-        StandardZoneRules test = americaNewYork();
+        ZoneRules test = americaNewYork();
         OffsetDateTime old = createDateMidnight(1800, 1, 1, ZoneOffset.UTC);
         Instant instant = old.toInstant();
         ZoneOffset offset = ZoneOffset.of("-04:56:02");
@@ -724,7 +682,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_NewYork_getOffset() {
-        StandardZoneRules test = americaNewYork();
+        ZoneRules test = americaNewYork();
         ZoneOffset offset = ZoneOffset.ofHours(-5);
         assertEquals(test.getOffset(createDateMidnight(2008, 1, 1, offset).toInstant()), ZoneOffset.ofHours(-5));
         assertEquals(test.getOffset(createDateMidnight(2008, 2, 1, offset).toInstant()), ZoneOffset.ofHours(-5));
@@ -753,7 +711,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_NewYork_getOffset_toDST() {
-        StandardZoneRules test = americaNewYork();
+        ZoneRules test = americaNewYork();
         ZoneOffset offset = ZoneOffset.ofHours(-5);
         assertEquals(test.getOffset(createDateMidnight(2008, 3, 8, offset).toInstant()), ZoneOffset.ofHours(-5));
         assertEquals(test.getOffset(createDateMidnight(2008, 3, 9, offset).toInstant()), ZoneOffset.ofHours(-5));
@@ -768,7 +726,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_NewYork_getOffset_fromDST() {
-        StandardZoneRules test = americaNewYork();
+        ZoneRules test = americaNewYork();
         ZoneOffset offset = ZoneOffset.ofHours(-4);
         assertEquals(test.getOffset(createDateMidnight(2008, 11, 1, offset).toInstant()), ZoneOffset.ofHours(-4));
         assertEquals(test.getOffset(createDateMidnight(2008, 11, 2, offset).toInstant()), ZoneOffset.ofHours(-4));
@@ -783,7 +741,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_NewYork_getOffsetInfo() {
-        StandardZoneRules test = americaNewYork();
+        ZoneRules test = americaNewYork();
         checkOffset(test, createDateMidnight(2008, 1, 1), ZoneOffset.ofHours(-5), 1);
         checkOffset(test, createDateMidnight(2008, 2, 1), ZoneOffset.ofHours(-5), 1);
         checkOffset(test, createDateMidnight(2008, 3, 1), ZoneOffset.ofHours(-5), 1);
@@ -811,7 +769,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_NewYork_getOffsetInfo_toDST() {
-        StandardZoneRules test = americaNewYork();
+        ZoneRules test = americaNewYork();
         checkOffset(test, createDateMidnight(2008, 3, 8), ZoneOffset.ofHours(-5), 1);
         checkOffset(test, createDateMidnight(2008, 3, 9), ZoneOffset.ofHours(-5), 1);
         checkOffset(test, createDateMidnight(2008, 3, 10), ZoneOffset.ofHours(-4), 1);
@@ -825,7 +783,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_NewYork_getOffsetInfo_fromDST() {
-        StandardZoneRules test = americaNewYork();
+        ZoneRules test = americaNewYork();
         checkOffset(test, createDateMidnight(2008, 11, 1), ZoneOffset.ofHours(-4), 1);
         checkOffset(test, createDateMidnight(2008, 11, 2), ZoneOffset.ofHours(-4), 1);
         checkOffset(test, createDateMidnight(2008, 11, 3), ZoneOffset.ofHours(-5), 1);
@@ -839,7 +797,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_NewYork_getOffsetInfo_gap() {
-        StandardZoneRules test = americaNewYork();
+        ZoneRules test = americaNewYork();
         final LocalDateTime dateTime = LocalDateTime.of(2008, 3, 9, 2, 0, 0, 0);
         ZoneOffsetTransition trans = checkOffset(test, dateTime, ZoneOffset.ofHours(-5), GAP);
         assertEquals(trans.isGap(), true);
@@ -862,7 +820,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_NewYork_getOffsetInfo_overlap() {
-        StandardZoneRules test = americaNewYork();
+        ZoneRules test = americaNewYork();
         final LocalDateTime dateTime = LocalDateTime.of(2008, 11, 2, 1, 0, 0, 0);
         ZoneOffsetTransition trans = checkOffset(test, dateTime, ZoneOffset.ofHours(-4), OVERLAP);
         assertEquals(trans.isGap(), false);
@@ -886,7 +844,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_NewYork_getStandardOffset() {
-        StandardZoneRules test = americaNewYork();
+        ZoneRules test = americaNewYork();
         OffsetDateTime dateTime = createDateMidnight(1860, 1, 1).atOffset(ZoneOffset.UTC);
         while (dateTime.getYear() < 2010) {
             Instant instant = dateTime.toInstant();
@@ -902,12 +860,12 @@ public class TestStandardZoneRules {
     //-----------------------------------------------------------------------
     // Kathmandu
     //-----------------------------------------------------------------------
-    private StandardZoneRules asiaKathmandu() {
-        return (StandardZoneRules) ZoneId.of("Asia/Kathmandu").getRules();
+    private ZoneRules asiaKathmandu() {
+        return ZoneId.of("Asia/Kathmandu").getRules();
     }
 
     public void test_Kathmandu_nextTransition_historic() {
-        StandardZoneRules test = asiaKathmandu();
+        ZoneRules test = asiaKathmandu();
         List<ZoneOffsetTransition> trans = test.getTransitions();
 
         ZoneOffsetTransition first = trans.get(0);
@@ -923,7 +881,7 @@ public class TestStandardZoneRules {
     }
 
     public void test_Kathmandu_nextTransition_noRules() {
-        StandardZoneRules test = asiaKathmandu();
+        ZoneRules test = asiaKathmandu();
         List<ZoneOffsetTransition> trans = test.getTransitions();
 
         ZoneOffsetTransition last = trans.get(trans.size() - 1);
@@ -947,9 +905,9 @@ public class TestStandardZoneRules {
     // equals() / hashCode()
     //-----------------------------------------------------------------------
     public void test_equals() {
-        StandardZoneRules test1 = europeLondon();
-        StandardZoneRules test2 = europeParis();
-        StandardZoneRules test2b = europeParis();
+        ZoneRules test1 = europeLondon();
+        ZoneRules test2 = europeParis();
+        ZoneRules test2b = europeParis();
         assertEquals(test1.equals(test2), false);
         assertEquals(test2.equals(test1), false);
 
@@ -966,13 +924,12 @@ public class TestStandardZoneRules {
         assertEquals(europeLondon().equals(null), false);
     }
 
-    public void test_equals_notStandardZoneRules() {
+    public void test_equals_notZoneRules() {
         assertEquals(europeLondon().equals("Europe/London"), false);
     }
 
     public void test_toString() {
-        assertEquals(europeLondon().toString().startsWith("StandardZoneRules["), true);
-        assertEquals(europeLondon().toString().endsWith("]"), true);
+        assertEquals(europeLondon().toString().contains("ZoneRules"), true);
     }
 
     //-----------------------------------------------------------------------
