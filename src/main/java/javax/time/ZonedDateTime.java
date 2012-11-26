@@ -105,6 +105,7 @@ import javax.time.zone.ZoneRules;
 public final class ZonedDateTime
         extends DefaultInterfaceChronoZonedDateTime<ISOChrono>
         implements ChronoZonedDateTime<ISOChrono>, DateTime, Serializable {
+    // TODO: method to lock offset ZoneId = ZoneOffset - lockOffset() withLockedOffset()
 
     /**
      * Serialization version.

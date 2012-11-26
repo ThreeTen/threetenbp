@@ -597,7 +597,7 @@ public final class ZoneOffset
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = -8733721350312276297L;
         /** The offset. */
-        private final transient ZoneOffset offset;
+        private final ZoneOffset offset;
 
         /**
          * Constructor.
