@@ -322,15 +322,6 @@ public final class Instant
         this.nanos = nanos;
     }
 
-    /**
-     * Resolves singletons.
-     *
-     * @return the resolved instance, not null
-     */
-    private Object readResolve() {
-        return (seconds | nanos) == 0 ? EPOCH : this;
-    }
-
     //-----------------------------------------------------------------------
     @Override
     public boolean isSupported(DateTimeField field) {
@@ -708,6 +699,17 @@ public final class Instant
     }
 
     // -----------------------------------------------------------------------
+    /**
+     * Writes the object using a
+     * <a href="../../serialized-form.html#javax.time.Ser">dedicated serialized form</a>.
+     * <pre>
+     *  out.writeByte(2);  // identifies this as an Instant
+     *  out.writeLong(seconds);
+     *  out.writeInt(nanos);
+     * </pre>
+     *
+     * @return the instance of {@code Ser}, not null
+     */
     private Object writeReplace() {
         return new Ser(Ser.INSTANT_TYPE, this);
     }

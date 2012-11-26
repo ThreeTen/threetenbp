@@ -387,15 +387,6 @@ public final class Duration
         this.nanos = nanos;
     }
 
-    /**
-     * Resolves singletons.
-     *
-     * @return the resolved instance, not null
-     */
-    private Object readResolve() {
-        return (seconds | nanos) == 0 ? ZERO : this;
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Checks if this duration is zero length.
@@ -958,6 +949,17 @@ public final class Duration
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Writes the object using a
+     * <a href="../../serialized-form.html#javax.time.Ser">dedicated serialized form</a>.
+     * <pre>
+     *  out.writeByte(1);  // identifies this as a Duration
+     *  out.writeLong(seconds);
+     *  out.writeInt(nanos);
+     * </pre>
+     *
+     * @return the instance of {@code Ser}, not null
+     */
     private Object writeReplace() {
         return new Ser(Ser.DURATION_TYPE, this);
     }

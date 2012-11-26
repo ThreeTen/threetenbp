@@ -1535,6 +1535,22 @@ public final class LocalDateTime
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Writes the object using a
+     * <a href="../../serialized-form.html#javax.time.Ser">dedicated serialized form</a>.
+     * <pre>
+     *  out.writeByte(4);  // identifies this as a LocalDateTime
+     *  out.writeInt(year);
+     *  out.writeByte(month);
+     *  out.writeByte(day);
+     *  out.writeByte(hour);
+     *  out.writeByte(minute);
+     *  out.writeByte(second);
+     *  out.writeInt(nano);
+     * </pre>
+     *
+     * @return the instance of {@code Ser}, not null
+     */
     private Object writeReplace() {
         return new Ser(Ser.LOCAL_DATE_TIME_TYPE, this);
     }
