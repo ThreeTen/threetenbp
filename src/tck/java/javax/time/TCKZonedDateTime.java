@@ -863,26 +863,34 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_withZoneSameInstant() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(TEST_LOCAL_2008_06_30_11_30_59_500, ZONE_0100);
         ZonedDateTime test = base.withZoneSameInstant(ZONE_0200);
-        ZonedDateTime expected = ZonedDateTime.of(ldt.plusHours(1), ZONE_0200);
+        ZonedDateTime expected = ZonedDateTime.of(TEST_LOCAL_2008_06_30_11_30_59_500.plusHours(1), ZONE_0200);
         assertEquals(test, expected);
     }
 
     @Test(groups={"tck"})
     public void test_withZoneSameInstant_noChange() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(TEST_LOCAL_2008_06_30_11_30_59_500, ZONE_0100);
         ZonedDateTime test = base.withZoneSameInstant(ZONE_0100);
         assertEquals(test, base);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_withZoneSameInstant_null() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(TEST_LOCAL_2008_06_30_11_30_59_500, ZONE_0100);
         base.withZoneSameInstant(null);
+    }
+
+    //-----------------------------------------------------------------------
+    // withZoneLocked()
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_withZoneLocked() {
+        ZonedDateTime base = ZonedDateTime.of(TEST_LOCAL_2008_06_30_11_30_59_500, ZONE_PARIS);
+        ZonedDateTime test = base.withZoneLocked();
+        ZonedDateTime expected = ZonedDateTime.of(TEST_LOCAL_2008_06_30_11_30_59_500, ZONE_0200);
+        assertEquals(test, expected);
     }
 
     //-----------------------------------------------------------------------

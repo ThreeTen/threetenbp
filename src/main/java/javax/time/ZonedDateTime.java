@@ -105,7 +105,6 @@ import javax.time.zone.ZoneRules;
 public final class ZonedDateTime
         extends DefaultInterfaceChronoZonedDateTime<ISOChrono>
         implements ChronoZonedDateTime<ISOChrono>, DateTime, Serializable {
-    // TODO: method to lock offset ZoneId = ZoneOffset - lockOffset() withLockedOffset()
 
     /**
      * Serialization version.
@@ -939,6 +938,26 @@ public final class ZonedDateTime
         Objects.requireNonNull(zoneId, "zoneId");
         return this.zoneId.equals(zoneId) ? this :
             create(dateTime.toEpochSecond(offset), dateTime.getNano(), zoneId);
+    }
+
+    /**
+     * Returns a copy of this date-time with the zone ID set to offset.
+     * <p>
+     * This locks the zone ID to the current value of the offset.
+     * The local date-time, offset and instant are not changed.
+     * <p>
+     * Locking the date-time to a single offset means that any future calculations,
+     * such as addition or subtraction, are guaranteed to work without any complex
+     * side effects due to time-zone rules.
+     * This might also be useful when sending a zoned date-time across a network,
+     * as most protocols, such as ISO-8601, only handle offsets, and not zone IDs.
+     * <p>
+     * This is equivalent to {@code zdt.withOffsetSameInstant(zdt.getOffset())}.
+     *
+     * @return a {@code ZonedDateTime} with the zone ID set to the offset, not null
+     */
+    public ZonedDateTime withZoneLocked() {
+        return this.zoneId.equals(offset) ? this : new ZonedDateTime(dateTime, offset, offset);
     }
 
     //-----------------------------------------------------------------------
