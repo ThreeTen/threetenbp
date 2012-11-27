@@ -288,6 +288,9 @@ final class ChronoDateTimeImpl<C extends Chrono<C>>
         }
         @SuppressWarnings("unchecked")
         ChronoLocalDateTime<C> end = (ChronoLocalDateTime<C>) endDateTime;
+        if (getDate().getChrono().equals(end.getDate().getChrono()) == false) {
+            throw new DateTimeException("Unable to calculate period between two different chronologies");
+        }
         if (unit instanceof ChronoUnit) {
             ChronoUnit f = (ChronoUnit) unit;
             if (f.isTimeUnit()) {
