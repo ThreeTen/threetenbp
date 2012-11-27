@@ -103,8 +103,12 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     private static final ZoneOffset OFFSET_0100 = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_0200 = ZoneOffset.ofHours(2);
     private static final ZoneOffset OFFSET_0130 = ZoneOffset.of("+01:30");
+    private static final ZoneOffset OFFSET_MAX = ZoneOffset.ofHours(18);
+    private static final ZoneOffset OFFSET_MIN = ZoneOffset.ofHours(-18);
+
     private static final ZoneId ZONE_0100 = OFFSET_0100;
     private static final ZoneId ZONE_0200 = OFFSET_0200;
+    private static final ZoneId ZONE_M0100 = ZoneOffset.ofHours(-1);
     private static final ZoneId ZONE_PARIS = ZoneId.of("Europe/Paris");
     private LocalDateTime TEST_PARIS_GAP_2008_03_30_02_30;
     private LocalDateTime TEST_PARIS_OVERLAP_2008_10_26_02_30;
@@ -395,6 +399,131 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
         Instant instant = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500).toInstant(OFFSET_0130);
         ZonedDateTime test = ZonedDateTime.ofInstant(instant, ZONE_PARIS);
         check(test, 2008, 6, 30, 12, 0, 10, 500, OFFSET_0200, ZONE_PARIS);  // corrected offset, thus altered time
+    }
+
+    @Test(groups={"tck"})
+    public void factory_ofInstant_allSecsInDay() {
+        for (int i = 0; i < (24 * 60 * 60); i++) {
+            Instant instant = Instant.ofEpochSecond(i);
+            ZonedDateTime test = ZonedDateTime.ofInstant(instant, OFFSET_0100);
+            assertEquals(test.getYear(), 1970);
+            assertEquals(test.getMonth(), Month.JANUARY);
+            assertEquals(test.getDayOfMonth(), 1 + (i >= 23 * 60 * 60 ? 1 : 0));
+            assertEquals(test.getHour(), ((i / (60 * 60)) + 1) % 24);
+            assertEquals(test.getMinute(), (i / 60) % 60);
+            assertEquals(test.getSecond(), i % 60);
+        }
+    }
+
+    @Test(groups={"tck"})
+    public void factory_ofInstant_allDaysInCycle() {
+        // sanity check using different algorithm
+        ZonedDateTime expected = LocalDateTime.of(1970, 1, 1, 0, 0, 0, 0).atZone(ZoneOffset.UTC);
+        for (long i = 0; i < 146097; i++) {
+            Instant instant = Instant.ofEpochSecond(i * 24L * 60L * 60L);
+            ZonedDateTime test = ZonedDateTime.ofInstant(instant, ZoneOffset.UTC);
+            assertEquals(test, expected);
+            expected = expected.plusDays(1);
+        }
+    }
+
+    @Test(groups={"tck"})
+    public void factory_ofInstant_minWithMinOffset() {
+        long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
+        int year = Year.MIN_YEAR;
+        long days = (year * 365L + (year / 4 - year / 100 + year / 400)) - days_0000_to_1970;
+        Instant instant = Instant.ofEpochSecond(days * 24L * 60L * 60L - OFFSET_MIN.getTotalSeconds());
+        ZonedDateTime test = ZonedDateTime.ofInstant(instant, OFFSET_MIN);
+        assertEquals(test.getYear(), Year.MIN_YEAR);
+        assertEquals(test.getMonth().getValue(), 1);
+        assertEquals(test.getDayOfMonth(), 1);
+        assertEquals(test.getOffset(), OFFSET_MIN);
+        assertEquals(test.getHour(), 0);
+        assertEquals(test.getMinute(), 0);
+        assertEquals(test.getSecond(), 0);
+        assertEquals(test.getNano(), 0);
+    }
+
+    @Test(groups={"tck"})
+    public void factory_ofInstant_minWithMaxOffset() {
+        long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
+        int year = Year.MIN_YEAR;
+        long days = (year * 365L + (year / 4 - year / 100 + year / 400)) - days_0000_to_1970;
+        Instant instant = Instant.ofEpochSecond(days * 24L * 60L * 60L - OFFSET_MAX.getTotalSeconds());
+        ZonedDateTime test = ZonedDateTime.ofInstant(instant, OFFSET_MAX);
+        assertEquals(test.getYear(), Year.MIN_YEAR);
+        assertEquals(test.getMonth().getValue(), 1);
+        assertEquals(test.getDayOfMonth(), 1);
+        assertEquals(test.getOffset(), OFFSET_MAX);
+        assertEquals(test.getHour(), 0);
+        assertEquals(test.getMinute(), 0);
+        assertEquals(test.getSecond(), 0);
+        assertEquals(test.getNano(), 0);
+    }
+
+    @Test(groups={"tck"})
+    public void factory_ofInstant_maxWithMinOffset() {
+        long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
+        int year = Year.MAX_YEAR;
+        long days = (year * 365L + (year / 4 - year / 100 + year / 400)) + 365 - days_0000_to_1970;
+        Instant instant = Instant.ofEpochSecond((days + 1) * 24L * 60L * 60L - 1 - OFFSET_MIN.getTotalSeconds());
+        ZonedDateTime test = ZonedDateTime.ofInstant(instant, OFFSET_MIN);
+        assertEquals(test.getYear(), Year.MAX_YEAR);
+        assertEquals(test.getMonth().getValue(), 12);
+        assertEquals(test.getDayOfMonth(), 31);
+        assertEquals(test.getOffset(), OFFSET_MIN);
+        assertEquals(test.getHour(), 23);
+        assertEquals(test.getMinute(), 59);
+        assertEquals(test.getSecond(), 59);
+        assertEquals(test.getNano(), 0);
+    }
+
+    @Test(groups={"tck"})
+    public void factory_ofInstant_maxWithMaxOffset() {
+        long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
+        int year = Year.MAX_YEAR;
+        long days = (year * 365L + (year / 4 - year / 100 + year / 400)) + 365 - days_0000_to_1970;
+        Instant instant = Instant.ofEpochSecond((days + 1) * 24L * 60L * 60L - 1 - OFFSET_MAX.getTotalSeconds());
+        ZonedDateTime test = ZonedDateTime.ofInstant(instant, OFFSET_MAX);
+        assertEquals(test.getYear(), Year.MAX_YEAR);
+        assertEquals(test.getMonth().getValue(), 12);
+        assertEquals(test.getDayOfMonth(), 31);
+        assertEquals(test.getOffset(), OFFSET_MAX);
+        assertEquals(test.getHour(), 23);
+        assertEquals(test.getMinute(), 59);
+        assertEquals(test.getSecond(), 59);
+        assertEquals(test.getNano(), 0);
+    }
+
+    //-----------------------------------------------------------------------
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    public void factory_ofInstant_maxInstantWithMaxOffset() {
+        Instant instant = Instant.ofEpochSecond(Long.MAX_VALUE);
+        ZonedDateTime.ofInstant(instant, OFFSET_MAX);
+    }
+
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    public void factory_ofInstant_maxInstantWithMinOffset() {
+        Instant instant = Instant.ofEpochSecond(Long.MAX_VALUE);
+        ZonedDateTime.ofInstant(instant, OFFSET_MIN);
+    }
+
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    public void factory_ofInstant_tooBig() {
+        long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
+        long year = Year.MAX_YEAR + 1L;
+        long days = (year * 365L + (year / 4 - year / 100 + year / 400)) - days_0000_to_1970;
+        Instant instant = Instant.ofEpochSecond(days * 24L * 60L * 60L);
+        ZonedDateTime.ofInstant(instant, ZoneOffset.UTC);
+    }
+
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    public void factory_ofInstant_tooLow() {
+        long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
+        int year = Year.MIN_YEAR - 1;
+        long days = (year * 365L + (year / 4 - year / 100 + year / 400)) - days_0000_to_1970;
+        Instant instant = Instant.ofEpochSecond(days * 24L * 60L * 60L);
+        ZonedDateTime.ofInstant(instant, ZoneOffset.UTC);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
@@ -1655,6 +1784,46 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
+    // toInstant()
+    //-----------------------------------------------------------------------
+    Object[][] data_toInstant() {
+        return new Object[][] {
+            {LocalDateTime.of(1970, 1, 1, 0, 0, 0, 0), 0L, 0},
+            {LocalDateTime.of(1970, 1, 1, 0, 0, 0, 1), 0L, 1},
+            {LocalDateTime.of(1970, 1, 1, 0, 0, 0, 999_999_999), 0L, 999_999_999},
+            {LocalDateTime.of(1970, 1, 1, 0, 0, 1, 0), 1L, 0},
+            {LocalDateTime.of(1970, 1, 1, 0, 0, 1, 1), 1L, 1},
+            {LocalDateTime.of(1969, 12, 31, 23, 59, 59, 999999999), -1L, 999_999_999},
+            {LocalDateTime.of(1970, 1, 2, 0, 0), 24L * 60L * 60L, 0},
+            {LocalDateTime.of(1969, 12, 31, 0, 0), -24L * 60L * 60L, 0},
+        };
+    }
+
+    @Test(groups={"tck"})
+    public void test_toInstant_UTC(LocalDateTime ldt, long expectedEpSec, int expectedNos) {
+        ZonedDateTime dt = ldt.atZone(ZoneOffset.UTC);
+        Instant test = dt.toInstant();
+        assertEquals(test.getEpochSecond(), expectedEpSec);
+        assertEquals(test.getNano(), expectedNos);
+    }
+
+    @Test(groups={"tck"})
+    public void test_toInstant_P0100(LocalDateTime ldt, long expectedEpSec, int expectedNos) {
+        ZonedDateTime dt = ldt.atZone(ZONE_0100);
+        Instant test = dt.toInstant();
+        assertEquals(test.getEpochSecond(), expectedEpSec + 3600);
+        assertEquals(test.getNano(), expectedNos);
+    }
+
+    @Test(groups={"tck"})
+    public void test_toInstant_M0100(LocalDateTime ldt, long expectedEpSec, int expectedNos) {
+        ZonedDateTime dt = ldt.atZone(ZONE_M0100);
+        Instant test = dt.toInstant();
+        assertEquals(test.getEpochSecond(), expectedEpSec - 3600);
+        assertEquals(test.getNano(), expectedNos);
+    }
+
+    //-----------------------------------------------------------------------
     // toEpochSecond()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
@@ -1675,6 +1844,24 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
             assertEquals(a.toEpochSecond(), -i);
             ldt = ldt.minusSeconds(1);
         }
+    }
+
+    @Test(groups={"tck"})
+    public void test_toEpochSecond_UTC(LocalDateTime ldt, long expectedEpSec, int expectedNos) {
+        ZonedDateTime dt = ldt.atZone(ZoneOffset.UTC);
+        assertEquals(dt.toEpochSecond(), expectedEpSec);
+    }
+
+    @Test(groups={"tck"})
+    public void test_toEpochSecond_P0100(LocalDateTime ldt, long expectedEpSec, int expectedNos) {
+        ZonedDateTime dt = ldt.atZone(ZONE_0100);
+        assertEquals(dt.toEpochSecond(), expectedEpSec + 3600);
+    }
+
+    @Test(groups={"tck"})
+    public void test_toEpochSecond_M0100(LocalDateTime ldt, long expectedEpSec, int expectedNos) {
+        ZonedDateTime dt = ldt.atZone(ZONE_M0100);
+        assertEquals(dt.toEpochSecond(), expectedEpSec - 3600);
     }
 
     //-----------------------------------------------------------------------
