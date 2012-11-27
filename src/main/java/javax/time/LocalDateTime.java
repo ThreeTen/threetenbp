@@ -1348,38 +1348,6 @@ public final class LocalDateTime
         return ZonedDateTime.of(this, zone);
     }
 
-    //-------------------------------------------------------------------------
-    /**
-     * Converts this date-time to an {@code Instant}.
-     * <p>
-     * This converts the date-time to an {@code Instant} using the specified
-     * offset from UTC/Greenwich.
-     *
-     * @param offset  the offset to use for the conversion, not null
-     * @return the instant equivalent to this local date-time with the specified offset, not null
-     */
-    public Instant toInstant(ZoneOffset offset) {
-        return Instant.ofEpochSecond(toEpochSecond(offset), getNano());
-    }
-
-    /**
-     * Converts this date-time to the number of seconds from the epoch of 1970-01-01T00:00:00Z.
-     * <p>
-     * This allows this date-time to be converted to a value of the
-     * {@link ChronoField#INSTANT_SECONDS epoch-seconds} field. This is primarily
-     * intended for low-level conversions rather than general application usage.
-     *
-     * @param offset  the offset to use for the conversion, not null
-     * @return the number of seconds from the epoch of 1970-01-01T00:00:00Z
-     */
-    public long toEpochSecond(ZoneOffset offset) {
-        Objects.requireNonNull(offset, "offset");
-        long epochDay = date.toEpochDay();
-        long secs = epochDay * SECONDS_PER_DAY + time.toSecondOfDay();
-        secs -= offset.getTotalSeconds();
-        return secs;
-    }
-
     //-----------------------------------------------------------------------
     @Override
     public long periodUntil(DateTime endDateTime, PeriodUnit unit) {

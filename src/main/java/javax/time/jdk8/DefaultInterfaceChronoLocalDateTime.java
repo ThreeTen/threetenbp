@@ -31,11 +31,14 @@
  */
 package javax.time.jdk8;
 
+import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
 import static javax.time.calendrical.ChronoField.EPOCH_DAY;
 import static javax.time.calendrical.ChronoField.NANO_OF_DAY;
 
 import java.util.Objects;
 
+import javax.time.Instant;
+import javax.time.ZoneOffset;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.Chrono;
@@ -90,7 +93,22 @@ public abstract class DefaultInterfaceChronoLocalDateTime<C extends Chrono<C>>
         return query.doQuery(this);
     }
 
-    //-------------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    @Override
+    public Instant toInstant(ZoneOffset offset) {
+        return Instant.ofEpochSecond(toEpochSecond(offset), getTime().getNano());
+    }
+
+    @Override
+    public long toEpochSecond(ZoneOffset offset) {
+        Objects.requireNonNull(offset, "offset");
+        long epochDay = getDate().toEpochDay();
+        long secs = epochDay * SECONDS_PER_DAY + getTime().toSecondOfDay();
+        secs -= offset.getTotalSeconds();
+        return secs;
+    }
+
+    //-----------------------------------------------------------------------
     @Override
     public int compareTo(ChronoLocalDateTime<?> other) {
         int cmp = getDate().compareTo(other.getDate());

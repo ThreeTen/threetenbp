@@ -256,7 +256,7 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
      *
      * @return an {@code Instant} representing the same instant, not null
      */
-    Instant toInstant() ;
+    Instant toInstant();
 
     /**
      * Converts this date-time to the number of seconds from the epoch

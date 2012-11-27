@@ -34,6 +34,7 @@ package javax.time.chrono;
 import java.util.Comparator;
 
 import javax.time.DateTimeException;
+import javax.time.Instant;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.ZoneId;
@@ -173,6 +174,32 @@ public interface ChronoLocalDateTime<C extends Chrono<C>>
      * @return the zoned date-time formed from this date-time, not null
      */
     ChronoZonedDateTime<C> atZone(ZoneId zone);
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts this date-time to an {@code Instant}.
+     * <p>
+     * This combines this {@link #getDateTime() local date-time} and
+     * the specified offset to form an {@code Instant}.
+     *
+     * @param offset  the offset to use for the conversion, not null
+     * @return an {@code Instant} representing the same instant, not null
+     */
+    Instant toInstant(ZoneOffset offset);
+
+    /**
+     * Converts this date-time to the number of seconds from the epoch
+     * of 1970-01-01T00:00:00Z.
+     * <p>
+     * This uses this {@link #getDateTime() local date-time} and
+     * the specified offset to calculate the epoch-second value,
+     * which is the number of elapsed seconds from 1970-01-01T00:00:00Z.
+     * Instants on the time-line after the epoch are positive, earlier are negative.
+     *
+     * @param offset  the offset to use for the conversion, not null
+     * @return the number of seconds from the epoch of 1970-01-01T00:00:00Z
+     */
+    long toEpochSecond(ZoneOffset offset);
 
     //-----------------------------------------------------------------------
     /**
