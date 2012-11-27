@@ -54,13 +54,7 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -147,41 +141,22 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_serialization_format() throws ClassNotFoundException, IOException {
+        assertEqualsSerialisedForm(LocalTime.of(22, 17, 59, 460 * 1000000));
+    }
+
+    @Test(groups={"tck"})
+    public void test_serialization() throws IOException, ClassNotFoundException {
+        assertSerializable(TEST_12_30_40_987654321);
+    }
+
+    //-----------------------------------------------------------------------
     private void check(LocalTime time, int h, int m, int s, int n) {
         assertEquals(time.getHour(), h);
         assertEquals(time.getMinute(), m);
         assertEquals(time.getSecond(), s);
         assertEquals(time.getNano(), n);
-    }
-
-    @Test(groups={"tck"})
-    public void test_serialization() throws IOException, ClassNotFoundException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(TEST_12_30_40_987654321);
-        oos.close();
-
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
-                baos.toByteArray()));
-        assertEquals(ois.readObject(), TEST_12_30_40_987654321);
-    }
-
-    @Test(groups={"tck"})
-    public void test_immutable() {
-        Class<LocalTime> cls = LocalTime.class;
-        assertTrue(Modifier.isPublic(cls.getModifiers()));
-        assertTrue(Modifier.isFinal(cls.getModifiers()));
-        Field[] fields = cls.getDeclaredFields();
-        for (Field field : fields) {
-            if (field.getName().contains("$") == false) {
-                if (Modifier.isStatic(field.getModifiers())) {
-                    assertTrue(Modifier.isFinal(field.getModifiers()), "Field:" + field.getName());
-                } else {
-                    assertTrue(Modifier.isPrivate(field.getModifiers()), "Field:" + field.getName());
-                    assertTrue(Modifier.isFinal(field.getModifiers()), "Field:" + field.getName());
-                }
-            }
-        }
     }
 
     //-----------------------------------------------------------------------
@@ -514,18 +489,18 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     // from()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_factory_CalendricalObject() {
+    public void factory_from_DateTimeAccessor() {
         assertEquals(LocalTime.from(LocalTime.of(17, 30)), LocalTime.of(17, 30));
         assertEquals(LocalTime.from(LocalDateTime.of(2012, 5, 1, 17, 30)), LocalTime.of(17, 30));
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_factory_CalendricalObject_invalid_noDerive() {
+    public void factory_from_DateTimeAccessor_invalid_noDerive() {
         LocalTime.from(LocalDate.of(2007, 7, 15));
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_factory_CalendricalObject_null() {
+    public void factory_from_DateTimeAccessor_null() {
         LocalTime.from((DateTimeAccessor) null);
     }
 
@@ -877,31 +852,45 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // plus(Period)
+    // plus(PlusAdjuster)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_plus_Period_positiveHours() {
-        MockSimplePeriod period = MockSimplePeriod.of(7, ChronoUnit.HOURS);
+    public void test_plus_Adjuster_positiveHours() {
+        PlusAdjuster period = MockSimplePeriod.of(7, ChronoUnit.HOURS);
         LocalTime t = TEST_12_30_40_987654321.plus(period);
         assertEquals(t, LocalTime.of(19, 30, 40, 987654321));
     }
 
     @Test(groups={"tck"})
-    public void test_plus_Period_negativeMinutes() {
-        MockSimplePeriod period = MockSimplePeriod.of(-25, ChronoUnit.MINUTES);
+    public void test_plus_Adjuster_negativeMinutes() {
+        PlusAdjuster period = MockSimplePeriod.of(-25, ChronoUnit.MINUTES);
         LocalTime t = TEST_12_30_40_987654321.plus(period);
         assertEquals(t, LocalTime.of(12, 5, 40, 987654321));
     }
 
+    @Test(groups={"tck"})
+    public void test_plus_Adjuster_zero() {
+        PlusAdjuster period = Period.ZERO;
+        LocalTime t = TEST_12_30_40_987654321.plus(period);
+        assertEquals(t, TEST_12_30_40_987654321);
+    }
+
+    @Test(groups={"tck"})
+    public void test_plus_Adjuster_wrap() {
+        PlusAdjuster p = Period.ofTime(1, 0, 0);
+        LocalTime t = LocalTime.of(23, 30).plus(p);
+        assertEquals(t, LocalTime.of(0, 30));
+    }
+
     @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
-    public void test_plus_Period_dateNotAllowed() {
-        MockSimplePeriod period = MockSimplePeriod.of(7, ChronoUnit.MONTHS);
+    public void test_plus_Adjuster_dateNotAllowed() {
+        PlusAdjuster period = MockSimplePeriod.of(7, ChronoUnit.MONTHS);
         TEST_12_30_40_987654321.plus(period);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_plus_Period_null() {
-        TEST_12_30_40_987654321.plus((MockSimplePeriod) null);
+    public void test_plus_Adjuster_null() {
+        TEST_12_30_40_987654321.plus((PlusAdjuster) null);
     }
 
     //-----------------------------------------------------------------------
@@ -917,6 +906,12 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     public void test_plus_longPeriodUnit_negativeMinutes() {
         LocalTime t = TEST_12_30_40_987654321.plus(-25, ChronoUnit.MINUTES);
         assertEquals(t, LocalTime.of(12, 5, 40, 987654321));
+    }
+
+    @Test(groups={"tck"})
+    public void test_plus_longPeriodUnit_zero() {
+        LocalTime t = TEST_12_30_40_987654321.plus(0, ChronoUnit.MINUTES);
+        assertEquals(t, TEST_12_30_40_987654321);
     }
 
     @Test(groups={"tck"})
@@ -1326,66 +1321,59 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // minus(adjuster)
+    // minus(MinusAdjuster)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_minus_adjuster() {
-        Period p = Period.ofTime(0, 0, 62, 3);
+    public void test_minus_Adjuster() {
+        MinusAdjuster p = Period.ofTime(0, 0, 62, 3);
         LocalTime t = TEST_12_30_40_987654321.minus(p);
         assertEquals(t, LocalTime.of(12, 29, 38, 987654318));
     }
 
     @Test(groups={"tck"})
-    public void test_minus_adjuster_big1() {
-        Period p = Period.ofTime(0, 0, 0, Long.MAX_VALUE);
-        LocalTime t = TEST_12_30_40_987654321.minus(p);
-        assertEquals(t, TEST_12_30_40_987654321.minusNanos(Long.MAX_VALUE));
-    }
-
-    @Test(groups={"tck"})
-    public void test_minus_adjuster_zero_equal() {
-        LocalTime t = TEST_12_30_40_987654321.minus(Period.ZERO);
-        assertEquals(t, TEST_12_30_40_987654321);
-    }
-
-    @Test(groups={"tck"})
-    public void test_minus_adjuster_wrap() {
-        Period p = Period.ofTime(1, 0, 0);
-        LocalTime t = LocalTime.of(0, 30).minus(p);
-        assertEquals(t, LocalTime.of(23, 30));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_minus_Duration_null() {
-        TEST_12_30_40_987654321.minus((MinusAdjuster) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // minus(Period)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_minus_Period_positiveHours() {
-        MockSimplePeriod period = MockSimplePeriod.of(7, ChronoUnit.HOURS);
+    public void test_minus_Adjuster_positiveHours() {
+        MinusAdjuster period = MockSimplePeriod.of(7, ChronoUnit.HOURS);
         LocalTime t = TEST_12_30_40_987654321.minus(period);
         assertEquals(t, LocalTime.of(5, 30, 40, 987654321));
     }
 
     @Test(groups={"tck"})
-    public void test_minus_Period_negativeMinutes() {
-        MockSimplePeriod period = MockSimplePeriod.of(-25, ChronoUnit.MINUTES);
+    public void test_minus_Adjuster_negativeMinutes() {
+        MinusAdjuster period = MockSimplePeriod.of(-25, ChronoUnit.MINUTES);
         LocalTime t = TEST_12_30_40_987654321.minus(period);
         assertEquals(t, LocalTime.of(12, 55, 40, 987654321));
     }
 
+    @Test(groups={"tck"})
+    public void test_minus_Adjuster_big1() {
+        MinusAdjuster p = Period.ofTime(0, 0, 0, Long.MAX_VALUE);
+        LocalTime t = TEST_12_30_40_987654321.minus(p);
+        assertEquals(t, TEST_12_30_40_987654321.minusNanos(Long.MAX_VALUE));
+    }
+
+    @Test(groups={"tck"})
+    public void test_minus_Adjuster_zero() {
+        MinusAdjuster p = Period.ZERO;
+        LocalTime t = TEST_12_30_40_987654321.minus(p);
+        assertEquals(t, TEST_12_30_40_987654321);
+    }
+
+    @Test(groups={"tck"})
+    public void test_minus_Adjuster_wrap() {
+        MinusAdjuster p = Period.ofTime(1, 0, 0);
+        LocalTime t = LocalTime.of(0, 30).minus(p);
+        assertEquals(t, LocalTime.of(23, 30));
+    }
+
     @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
-    public void test_minus_Period_dateNowAllowed() {
-        MockSimplePeriod period = MockSimplePeriod.of(7, ChronoUnit.MONTHS);
+    public void test_minus_Adjuster_dateNotAllowed() {
+        MinusAdjuster period = MockSimplePeriod.of(7, ChronoUnit.MONTHS);
         TEST_12_30_40_987654321.minus(period);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_minus_Period_null() {
-        TEST_12_30_40_987654321.minus((MockSimplePeriod) null);
+    public void test_minus_Adjuster_null() {
+        TEST_12_30_40_987654321.minus((MinusAdjuster) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1401,6 +1389,12 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     public void test_minus_longPeriodUnit_negativeMinutes() {
         LocalTime t = TEST_12_30_40_987654321.minus(-25, ChronoUnit.MINUTES);
         assertEquals(t, LocalTime.of(12, 55, 40, 987654321));
+    }
+
+    @Test(groups={"tck"})
+    public void test_minus_longPeriodUnit_zero() {
+        LocalTime t = TEST_12_30_40_987654321.minus(0, ChronoUnit.MINUTES);
+        assertEquals(t, TEST_12_30_40_987654321);
     }
 
     @Test(groups={"tck"})
