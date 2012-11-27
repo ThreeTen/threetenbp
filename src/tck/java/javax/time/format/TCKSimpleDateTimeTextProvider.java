@@ -153,7 +153,7 @@ public class TCKSimpleDateTimeTextProvider {
 
     @Test(dataProvider = "Text", groups={"tck"})
     public void test_getText(DateTimeField field, Number value, TextStyle style, Locale locale, String expected) {
-        SimpleDateTimeTextProvider tp = new SimpleDateTimeTextProvider();
+        DateTimeTextProvider tp = DateTimeFormatters.getTextProvider();
         assertEquals(tp.getText(field, value.longValue(), style, locale), expected);
     }
 
