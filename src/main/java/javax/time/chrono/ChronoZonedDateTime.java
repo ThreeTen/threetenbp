@@ -302,10 +302,13 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
     //-----------------------------------------------------------------------
     /**
      * Converts this date-time to an {@code Instant}.
+     * <p>
+     * This combines the {@link #getDateTime() local date-time} and
+     * {@link #getOffset() offset} to form an {@code Instant}.
      *
      * @return an {@code Instant} representing the same instant, not null
      */
-    Instant toInstant() ;
+    Instant toInstant();
 
     /**
      * Converts this date-time to an {@code OffsetDateTime}.
@@ -315,9 +318,12 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
     ChronoOffsetDateTime<C> getOffsetDateTime();
 
     /**
-     * Converts this {@code ZoneChronoDateTime} to the number of seconds from the epoch
+     * Converts this date-time to the number of seconds from the epoch
      * of 1970-01-01T00:00:00Z.
      * <p>
+     * This uses the {@link #getDateTime() local date-time} and
+     * {@link #getOffset() offset} to calculate the epoch-second value,
+     * which is the number of elapsed seconds from 1970-01-01T00:00:00Z.
      * Instants on the time-line after the epoch are positive, earlier are negative.
      *
      * @return the number of seconds from the epoch of 1970-01-01T00:00:00Z
