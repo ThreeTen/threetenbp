@@ -68,6 +68,7 @@ import javax.time.calendrical.DateTime.MinusAdjuster;
 import javax.time.calendrical.DateTime.PlusAdjuster;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
+import javax.time.calendrical.DateTimeAccessor.Query;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.JulianDayField;
 import javax.time.calendrical.MockFieldNoValue;
@@ -617,6 +618,16 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // query(Query)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_query_chrono() {
+        assertEquals(TEST_12_30_40_987654321.query(Query.CHRONO), null);
+    }
+
+    @Test(groups={"tck"})
+    public void test_query_zone() {
+        assertEquals(TEST_12_30_40_987654321.query(Query.ZONE_ID), null);
+    }
+
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_query_null() {
         TEST_12_30_40_987654321.query(null);

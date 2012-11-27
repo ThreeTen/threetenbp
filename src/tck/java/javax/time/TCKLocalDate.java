@@ -68,10 +68,12 @@ import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
+import javax.time.calendrical.DateTimeAccessor.Query;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.JulianDayField;
 import javax.time.calendrical.MockFieldNoValue;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.chrono.ISOChrono;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
@@ -598,6 +600,16 @@ public class TCKLocalDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // query(Query)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_query_chrono() {
+        assertEquals(TEST_2007_07_15.query(Query.CHRONO), ISOChrono.INSTANCE);
+    }
+
+    @Test(groups={"tck"})
+    public void test_query_zone() {
+        assertEquals(TEST_2007_07_15.query(Query.ZONE_ID), null);
+    }
+
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_query_null() {
         TEST_2007_07_15.query(null);

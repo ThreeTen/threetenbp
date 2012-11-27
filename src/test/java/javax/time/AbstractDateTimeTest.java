@@ -37,6 +37,7 @@ import static org.testng.Assert.fail;
 import java.util.List;
 
 import javax.time.calendrical.DateTimeAccessor;
+import javax.time.calendrical.DateTimeAccessor.Query;
 import javax.time.calendrical.DateTimeField;
 
 import org.testng.annotations.Test;
@@ -215,6 +216,19 @@ public abstract class AbstractDateTimeTest extends AbstractTest {
             } catch (NullPointerException ex) {
                 // expected
             }
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void basicTest_query() {
+        for (DateTimeAccessor sample : samples()) {
+            assertEquals(sample.query(new Query<String>() {
+                @Override
+                public String doQuery(DateTimeAccessor dateTime) {
+                    return "foo";
+                }
+            }), "foo");
         }
     }
 
