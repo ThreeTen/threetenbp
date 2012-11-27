@@ -89,22 +89,16 @@ public class TestChronoZonedDateTime {
         for (Chrono[] clist : data_of_calendars()) {
             Chrono chrono2 = clist[0];
             ChronoZonedDateTime<?> czdt2 = chrono2.date(refDate).atTime(LocalTime.MIDDAY).atZone(ZoneOffset.UTC);
-            // TODO: debug the class cast exception when the Adjuster return a ChronoZonedDateTime
-            DateTime.WithAdjuster adjuster = new FixedAdjuster(czdt2.getDateTime());
+            DateTime.WithAdjuster adjuster = new FixedAdjuster(czdt2);
             if (chrono != chrono2) {
                 try {
-                    ChronoZonedDateTime<?> notreached = czdt.with(adjuster);
+                    czdt.with(adjuster);
                     Assert.fail("WithAdjuster should have thrown a ClassCastException, "
                             + "required: " + czdt + ", supplied: " + czdt2);
                 } catch (ClassCastException cce) {
                     // Expected exception; not an error
                 }
             } else {
-                // Same chronology, the date-time should be replaced
-                // This test fails because ChronoZoneDateTime attempts
-                // to check and resolve the date
-                // Usually the adjuster is adjusting the ChronoOffsetDateTime
-                // and does expects the return value to be a ChronoOffsetDateTime
                 ChronoZonedDateTime<?> result = czdt.with(adjuster);
                 assertEquals(result, czdt2, "WithAdjuster failed to replace date");
             }
