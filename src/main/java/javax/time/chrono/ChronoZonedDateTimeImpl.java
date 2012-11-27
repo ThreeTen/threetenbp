@@ -41,7 +41,6 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.time.DateTimeException;
-import javax.time.DayOfWeek;
 import javax.time.LocalDateTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
@@ -79,7 +78,7 @@ import javax.time.zone.ZoneRules;
  *
  * @param <C> the chronology of this date
  */
- class ChronoZonedDateTimeImpl<C extends Chrono<C>>
+final class ChronoZonedDateTimeImpl<C extends Chrono<C>>
         extends DefaultInterfaceChronoZonedDateTime<C>
         implements ChronoZonedDateTime<C>, WithAdjuster, Serializable {
 
@@ -172,8 +171,8 @@ import javax.time.zone.ZoneRules;
      * @return the zoned date-time, not null
      * @throws DateTimeException if the result exceeds the supported range
      */
-    private static <R extends Chrono<R>> ChronoZonedDateTimeImpl<R>
-            ofInstant(ChronoOffsetDateTimeImpl<R> instantDateTime, ZoneId zone) {
+    private static <R extends Chrono<R>> ChronoZonedDateTimeImpl<R> ofInstant(
+                ChronoOffsetDateTimeImpl<R> instantDateTime, ZoneId zone) {
         Objects.requireNonNull(instantDateTime, "instantDateTime");
         Objects.requireNonNull(zone, "zone");
         ZoneRules rules = zone.getRules();  // latest rules version
@@ -230,7 +229,7 @@ import javax.time.zone.ZoneRules;
      * @param offset  the zone offset, not null
      * @param zone  the zone ID, not null
      */
-    protected ChronoZonedDateTimeImpl(ChronoDateTimeImpl<C> dateTime, ZoneOffset offset, ZoneId zoneId) {
+    private ChronoZonedDateTimeImpl(ChronoDateTimeImpl<C> dateTime, ZoneOffset offset, ZoneId zoneId) {
         Objects.requireNonNull(dateTime, "dateTime");
         Objects.requireNonNull(offset, "offset");
         Objects.requireNonNull(zoneId, "zoneId");
@@ -240,13 +239,6 @@ import javax.time.zone.ZoneRules;
     }
 
     //-----------------------------------------------------------------------
-    @Override
-    public boolean isSupported(DateTimeField field) {
-        return field instanceof ChronoField || (field != null && field.doIsSupported(this));
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
     public ZoneOffset getOffset() {
         return offset;
     }
@@ -281,54 +273,14 @@ import javax.time.zone.ZoneRules;
         return dateTime;
     }
 
-    /**
-     * Gets the time-zone, such as 'Europe/Paris'.
-     * <p>
-     * This returns the stored time-zone id used to determine the time-zone rules.
-     *
-     * @return the time-zone, not null
-     */
     public ZoneId getZone() {
         return zoneId;
     }
 
-    /**
-     * Returns a copy of this ZoneChronoDateTime with a different time-zone,
-     * retaining the local date-time if possible.
-     * <p>
-     * This method changes the time-zone and retains the local date-time.
-     * The local date-time is only changed if it is invalid for the new zone.
-     * In that case, the {@link ZoneResolvers#retainOffset() retain offset} resolver is used.
-     * <p>
-     * To change the zone and adjust the local date-time,
-     * use {@link #withZoneSameInstant(ZoneId)}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param zone  the time-zone to change to, not null
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the requested zone, not null
-     */
     public ChronoZonedDateTime<C> withZoneSameLocal(ZoneId zone) {
         return withZoneSameLocal(zone, ZoneResolvers.retainOffset());
     }
 
-    /**
-     * Returns a copy of this ZoneChronoDateTime with a different time-zone,
-     * retaining the local date-time if possible.
-     * <p>
-     * This method changes the time-zone and retains the local date-time.
-     * The local date-time is only changed if it is invalid for the new zone.
-     * In that case, the specified resolver is used.
-     * <p>
-     * To change the zone and adjust the local date-time,
-     * use {@link #withZoneSameInstant(ZoneId)}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param zone  the time-zone to change to, not null
-     * @param resolver  the resolver to use, not null
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the requested zone, not null
-     */
     @Override
     public ChronoZonedDateTime<C> withZoneSameLocal(ZoneId zone, ZoneResolver resolver) {
         Objects.requireNonNull(zone, "zone");
@@ -337,122 +289,15 @@ import javax.time.zone.ZoneRules;
             resolve(dateTime.getDateTime(), zone, dateTime, resolver);
     }
 
-    /**
-     * Returns a copy of this ZoneChronoDateTime with a different time-zone,
-     * retaining the instant.
-     * <p>
-     * This method changes the time-zone and retains the instant.
-     * This normally results in a change to the local date-time.
-     * <p>
-     * This method is based on retaining the same instant, thus gaps and overlaps
-     * in the local time-line have no effect on the result.
-     * <p>
-     * To change the offset while keeping the local time,
-     * use {@link #withZoneSameLocal(ZoneId)}.
-     *
-     * @param zone  the time-zone to change to, not null
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the requested zone, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
     @Override
     public ChronoZonedDateTime<C> withZoneSameInstant(ZoneId zone) {
         return zone == this.zoneId ? this : ofInstant(dateTime, zone);
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the year field.
-     * <p>
-     * This method returns the primitive {@code int} value for the year.
-     *
-     * @return the year, from MIN_YEAR to MAX_YEAR
-     */
-    int getYear() {
-        return dateTime.getYear();
-    }
-
-    /**
-     * Gets the month-of-year field from 1 to 12 or 13 depending on the chronology.
-     *
-     * @return the month-of-year, from 1 to 12 or 13
-     */
-    int getMonthValue() {
-        return dateTime.getMonthValue();
-    }
-
-    /**
-     * Gets the day-of-month field.
-     * This method returns the primitive {@code int} value for the day-of-month.
-     *
-     * @return the day-of-month, from 1 to 31
-     */
-    int getDayOfMonth() {
-        return dateTime.getDayOfMonth();
-    }
-
-    /**
-     * Gets the day-of-year field.
-     * <p>
-     * This method returns the primitive {@code int} value for the day-of-year.
-     *
-     * @return the day-of-year, from 1 to 365, or 366 in a leap year
-     */
-    int getDayOfYear() {
-        return dateTime.getDayOfYear();
-    }
-
-    /**
-     * Gets the day-of-week field, which is an enum {@code DayOfWeek}.
-     * <p>
-     * This method returns the enum {@link DayOfWeek} for the day-of-week.
-     * This avoids confusion as to what {@code int} values mean.
-     * If you need access to the primitive {@code int} value then the enum
-     * provides the {@link DayOfWeek#getValue() int value}.
-     * <p>
-     * Additional information can be obtained from the {@code DayOfWeek}.
-     * This includes textual names of the values.
-     *
-     * @return the day-of-week, not null
-     */
-    DayOfWeek getDayOfWeek() {
-        return dateTime.getDayOfWeek();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the hour-of-day field.
-     *
-     * @return the hour-of-day, from 0 to 23
-     */
-    int getHour() {
-        return dateTime.getHour();
-    }
-
-    /**
-     * Gets the minute-of-hour field.
-     *
-     * @return the minute-of-hour, from 0 to 59
-     */
-    int getMinute() {
-        return dateTime.getMinute();
-    }
-
-    /**
-     * Gets the second-of-minute field.
-     *
-     * @return the second-of-minute, from 0 to 59
-     */
-    int getSecond() {
-        return dateTime.getSecond();
-    }
-
-    /**
-     * Gets the nano-of-second field.
-     *
-     * @return the nano-of-second, from 0 to 999,999,999
-     */
-    int getNano() {
-        return dateTime.getNano();
+    @Override
+    public boolean isSupported(DateTimeField field) {
+        return field instanceof ChronoField || (field != null && field.doIsSupported(this));
     }
 
     //-----------------------------------------------------------------------
@@ -469,28 +314,6 @@ import javax.time.zone.ZoneRules;
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this date-time with the specified field altered.
-     * <p>
-     * This method returns a new date-time based on this date-time with a new value for the specified field.
-     * This can be used to change any field, for example to set the year, month of day-of-month.
-     * The offset is not part of the calculation and will be unchanged in the result.
-     * <p>
-     * In some cases, changing the specified field can cause the resulting date-time to become invalid,
-     * such as changing the month from January to February would make the day-of-month 31 invalid.
-     * In cases like this, the field is responsible for resolving the date. Typically it will choose
-     * the previous valid date, which would be the last valid day of February in this example.
-     * <p>
-     * If the adjustment results in a date-time that is invalid for the zone,
-     * then the {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param field  the field to set in the result, not null
-     * @param newValue  the new value of the field in the result, not null
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the specified field set, not null
-     * @throws DateTimeException if the value is invalid
-     */
     @Override
     public ChronoZonedDateTime<C> with(DateTimeField field, long newValue) {
         if (field instanceof ChronoField) {
@@ -511,536 +334,12 @@ import javax.time.zone.ZoneRules;
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this {@code ZoneChronoDateTime} with the year value altered.
-     * <p>
-     * If the day-of-month is invalid for the year, it will be changed to the last valid day of the month.
-     * If the adjustment results in a date-time that is invalid for the zone,
-     * then the {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the requested year, not null
-     * @throws DateTimeException if the year value is invalid
-     */
-    ChronoZonedDateTime<C> withYear(int year) {
-        ChronoOffsetDateTime<C> newDT = dateTime.withYear(year);
-        if (newDT == dateTime) {
-            return this;
-        }
-        return (newDT == dateTime ? this :
-            resolve(newDT.getDateTime(), zoneId, dateTime, ZoneResolvers.retainOffset()));
-    }
-
-    /**
-     * Returns a copy of this {@code ZoneChronoDateTime} with the month-of-year value altered.
-     * <p>
-     * If the day-of-month is invalid for the year, it will be changed to the last valid day of the month.
-     * If the adjustment results in a date-time that is invalid for the zone,
-     * then the {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the requested month, not null
-     * @throws DateTimeException if the month value is invalid
-     */
-    ChronoZonedDateTime<C> withMonth(int month) {
-        ChronoOffsetDateTime<C> newDT = dateTime.withMonth(month);
-        return (newDT == dateTime ? this :
-            resolve(newDT.getDateTime(), zoneId, dateTime, ZoneResolvers.retainOffset()));
-    }
-
-    /**
-     * Returns a copy of this {@code ZoneChronoDateTime} with the day-of-month value altered.
-     * <p>
-     * If the adjustment results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the requested day, not null
-     * @throws DateTimeException if the day-of-month value is invalid
-     * @throws DateTimeException if the day-of-month is invalid for the month-year
-     */
-    ChronoZonedDateTime<C> withDayOfMonth(int dayOfMonth) {
-        ChronoOffsetDateTime<C> newDT = dateTime.withDayOfMonth(dayOfMonth);
-        return (newDT == dateTime ? this :
-            resolve(newDT.getDateTime(), zoneId, dateTime, ZoneResolvers.retainOffset()));
-    }
-
-    /**
-     * Returns a copy of this {@code ZoneChronoDateTime} with the day-of-year altered.
-     * <p>
-     * If the adjustment results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param dayOfYear  the day-of-year to set in the result, from 1 to 365-366
-     * @return a {@code ZoneChronoDateTime} based on this date with the requested day, not null
-     * @throws DateTimeException if the day-of-year value is invalid
-     * @throws DateTimeException if the day-of-year is invalid for the year
-     */
-    ChronoZonedDateTime<C> withDayOfYear(int dayOfYear) {
-        ChronoOffsetDateTime<C> newDT = dateTime.withDayOfYear(dayOfYear);
-        return (newDT == dateTime ? this :
-            resolve(newDT.getDateTime(), zoneId, dateTime, ZoneResolvers.retainOffset()));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this {@code ZoneChronoDateTime} with the hour-of-day value altered.
-     * <p>
-     * If the adjustment results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hour  the hour-of-day to represent, from 0 to 23
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the requested hour, not null
-     * @throws DateTimeException if the hour value is invalid
-     */
-    ChronoZonedDateTime<C> withHour(int hour) {
-        ChronoOffsetDateTime<C> newDT = dateTime.withHour(hour);
-        return (newDT == dateTime ? this :
-            resolve(newDT.getDateTime(), zoneId, dateTime, ZoneResolvers.retainOffset()));
-    }
-
-    /**
-     * Returns a copy of this {@code ZoneChronoDateTime} with the minute-of-hour value altered.
-     * <p>
-     * If the adjustment results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param minute  the minute-of-hour to represent, from 0 to 59
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the requested minute, not null
-     * @throws DateTimeException if the minute value is invalid
-     */
-    ChronoZonedDateTime<C> withMinute(int minute) {
-        ChronoOffsetDateTime<C> newDT = dateTime.withMinute(minute);
-        return (newDT == dateTime ? this :
-            resolve(newDT.getDateTime(), zoneId, dateTime, ZoneResolvers.retainOffset()));
-    }
-
-    /**
-     * Returns a copy of this {@code ZoneChronoDateTime} with the second-of-minute value altered.
-     * <p>
-     * If the adjustment results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param second  the second-of-minute to represent, from 0 to 59
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the requested second, not null
-     * @throws DateTimeException if the second value is invalid
-     */
-    ChronoZonedDateTime<C> withSecond(int second) {
-        ChronoOffsetDateTime<C> newDT = dateTime.withSecond(second);
-        return (newDT == dateTime ? this :
-            resolve(newDT.getDateTime(), zoneId, dateTime, ZoneResolvers.retainOffset()));
-    }
-
-    /**
-     * Returns a copy of this {@code ZoneChronoDateTime} with the nano-of-second value altered.
-     * <p>
-     * If the adjustment results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the requested nanosecond, not null
-     * @throws DateTimeException if the nanos value is invalid
-     */
-    ChronoZonedDateTime<C> withNano(int nanoOfSecond) {
-        ChronoOffsetDateTime<C> newDT = dateTime.withNano(nanoOfSecond);
-        return (newDT == dateTime ? this :
-            resolve(newDT.getDateTime(), zoneId, dateTime, ZoneResolvers.retainOffset()));
-    }
-
-
-    //-----------------------------------------------------------------------
     @Override
     public ChronoZonedDateTime<C> plus(long amountToAdd, PeriodUnit unit) {
         if (unit instanceof ChronoUnit) {
             return with(dateTime.plus(amountToAdd, unit));
         }
         return getDate().getChrono().ensureChronoZonedDateTime(unit.doPlus(this, amountToAdd));   /// TODO: Generics replacement Risk!
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this {@code ZoneChronoDateTime} with the specified period in years added.
-     * <p>
-     * This method add the specified amount to the years field in four steps:
-     * <ol>
-     * <li>Add the input years to the year field</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the day-of-month to the last valid day if necessary</li>
-     * <li>Resolve the date-time using {@link ZoneResolvers#retainOffset()}</li>
-     * </ol>
-     * <p>
-     * For example, 2008-02-29 (leap year) plus one year would result in the
-     * invalid date 2009-02-29 (standard year). Instead of returning an invalid
-     * result, the last valid day of the month, 2009-02-28, is selected instead.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param years  the years to add, positive or negative
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the years added, not null
-     * @throws DateTimeException if the result exceeds the supported range
-     */
-    ChronoZonedDateTime<C> plusYears(long years) {
-        ChronoOffsetDateTime<C> newDT = dateTime.plusYears(years);
-        return (newDT == dateTime ? this :
-            resolve(newDT.getDateTime(), zoneId, dateTime, ZoneResolvers.retainOffset()));
-    }
-
-    /**
-     * Returns a copy of this {@code ZoneChronoDateTime} with the specified period in months added.
-     * <p>
-     * This method adds the specified amount to the months field in four steps:
-     * <ol>
-     * <li>Add the input months to the month-of-year field</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the day-of-month to the last valid day if necessary</li>
-     * <li>Resolve the date-time using {@link ZoneResolvers#retainOffset()}</li>
-     * </ol>
-     * <p>
-     * For example, 2007-03-31 plus one month would result in the invalid date
-     * 2007-04-31. Instead of returning an invalid result, the last valid day
-     * of the month, 2007-04-30, is selected instead.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param months  the months to add, positive or negative
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the months added, not null
-     * @throws DateTimeException if the result exceeds the supported range
-     */
-    ChronoZonedDateTime<C> plusMonths(long months) {
-        ChronoOffsetDateTime<C> newDT = dateTime.plusMonths(months);
-        return (newDT == dateTime ? this :
-            resolve(newDT.getDateTime(), zoneId, dateTime, ZoneResolvers.retainOffset()));
-    }
-
-    /**
-     * Returns a copy of this {@code ZoneChronoDateTime} with the specified period in weeks added.
-     * <p>
-     * This method adds the specified amount in weeks to the days field incrementing
-     * the month and year fields as necessary to ensure the result remains valid.
-     * The result is only invalid if the maximum/minimum year is exceeded.
-     * <p>
-     * For example, 2008-12-31 plus one week would result in the 2009-01-07.
-     * <p>
-     * If the adjustment results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param weeks  the weeks to add, positive or negative
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the weeks added, not null
-     * @throws DateTimeException if the result exceeds the supported range
-     */
-    ChronoZonedDateTime<C> plusWeeks(long weeks) {
-        ChronoOffsetDateTimeImpl<C> newDT = dateTime.plusWeeks(weeks);
-        return (newDT == dateTime ? this :
-            resolve(newDT.getDateTime(), zoneId, dateTime, ZoneResolvers.retainOffset()));
-    }
-
-    /**
-     * Returns a copy of this {@code ZoneChronoDateTime} with the specified period in days added.
-     * <p>
-     * This method adds the specified amount to the days field incrementing the
-     * month and year fields as necessary to ensure the result remains valid.
-     * The result is only invalid if the maximum/minimum year is exceeded.
-     * <p>
-     * For example, 2008-12-31 plus one day would result in the 2009-01-01.
-     * <p>
-     * If the adjustment results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param days  the days to add, positive or negative
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the days added, not null
-     * @throws DateTimeException if the result exceeds the supported range
-     */
-    ChronoZonedDateTime<C> plusDays(long days) {
-        ChronoOffsetDateTimeImpl<C> newDT = dateTime.plusDays(days);
-        return (newDT == dateTime ? this :
-            resolve(newDT.getDateTime(), zoneId, dateTime, ZoneResolvers.retainOffset()));
-    }
-
-    /**
-     * Returns a copy of this {@code ZoneChronoDateTime} with the specified period in hours added.
-     * <p>
-     * This method uses field based addition.
-     * This method changes the field by the specified number of hours.
-     * This may, at daylight savings cutover, result in a duration being added
-     * that is more or less than the specified number of hours.
-     * <p>
-     * For example, consider a time-zone where the spring DST cutover means that
-     * the local times 01:00 to 01:59 do not exist. Using this method, adding
-     * a period of 2 hours to 00:30 will result in 02:30, but it is important
-     * to note that the change in duration was only 1 hour.
-     * <p>
-     * If the adjustment results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hours  the hours to add, positive or negative
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the hours added, not null
-     * @throws DateTimeException if the result exceeds the supported range
-     */
-    ChronoZonedDateTime<C> plusHours(long hours) {
-        ChronoOffsetDateTime<C> newDT = dateTime.plusHours(hours);
-        return (newDT == dateTime ? this :
-            resolve(newDT.getDateTime(), zoneId, dateTime, ZoneResolvers.retainOffset()));
-    }
-
-    /**
-     * Returns a copy of this {@code ZoneChronoDateTime} with the specified period in minutes added.
-     * <p>
-     * If the adjustment results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param minutes  the minutes to add, positive or negative
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the minutes added, not null
-     * @throws DateTimeException if the result exceeds the supported range
-     */
-    ChronoZonedDateTime<C> plusMinutes(long minutes) {
-        ChronoOffsetDateTime<C> newDT = dateTime.plusMinutes(minutes);
-        return (newDT == dateTime ? this :
-            resolve(newDT.getDateTime(), zoneId, dateTime, ZoneResolvers.retainOffset()));
-    }
-
-    /**
-     * Returns a copy of this {@code ZoneChronoDateTime} with the specified period in seconds added.
-     * <p>
-     * If the adjustment results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param seconds  the seconds to add, positive or negative
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the seconds added, not null
-     * @throws DateTimeException if the result exceeds the supported range
-     */
-    ChronoZonedDateTime<C> plusSeconds(long seconds) {
-        ChronoOffsetDateTime<C> newDT = dateTime.plusSeconds(seconds);
-        return (newDT == dateTime ? this :
-            resolve(newDT.getDateTime(), zoneId, dateTime, ZoneResolvers.retainOffset()));
-    }
-
-    /**
-     * Returns a copy of this {@code ZoneChronoDateTime} with the specified period in nanoseconds added.
-     * <p>
-     * If the adjustment results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param nanos  the nanos to add, positive or negative
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the nanoseconds added, not null
-     * @throws DateTimeException if the result exceeds the supported range
-     */
-    ChronoZonedDateTime<C> plusNanos(long nanos) {
-        ChronoOffsetDateTime<C> newDT = dateTime.plusNanos(nanos);
-        return (newDT == dateTime ? this :
-            resolve(newDT.getDateTime(), zoneId, dateTime, ZoneResolvers.retainOffset()));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this {@code ZoneChronoDateTime} with the specified period in years subtracted.
-     * <p>
-     * This method subtracts the specified amount to the years field in four steps:
-     * <ol>
-     * <li>Add the input years to the year field</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the day-of-month to the last valid day if necessary</li>
-     * <li>Resolve the date-time using {@link ZoneResolvers#retainOffset()}</li>
-     * </ol>
-     * <p>
-     * For example, 2008-02-29 (leap year) minus one year would result in the
-     * invalid date 2009-02-29 (standard year). Instead of returning an invalid
-     * result, the last valid day of the month, 2009-02-28, is selected instead.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param years  the years to subtract, positive or negative
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the years subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported range
-     */
-    ChronoZonedDateTime<C> minusYears(long years) {
-        ChronoOffsetDateTime<C> newDT = dateTime.minusYears(years);
-        return (newDT == dateTime ? this :
-            resolve(newDT.getDateTime(), zoneId, dateTime, ZoneResolvers.retainOffset()));
-    }
-
-    /**
-     * Returns a copy of this {@code ZoneChronoDateTime} with the specified period in months subtracted.
-     * <p>
-     * This method subtracts the specified amount to the months field in four steps:
-     * <ol>
-     * <li>Add the input months to the month-of-year field</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the day-of-month to the last valid day if necessary</li>
-     * <li>Resolve the date-time using {@link ZoneResolvers#retainOffset()}</li>
-     * </ol>
-     * <p>
-     * For example, 2007-03-31 minus one month would result in the invalid date
-     * 2007-04-31. Instead of returning an invalid result, the last valid day
-     * of the month, 2007-04-30, is selected instead.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param months  the months to subtract, positive or negative
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the months subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported range
-     */
-    ChronoZonedDateTime<C> minusMonths(long months) {
-        ChronoOffsetDateTime<C> newDT = dateTime.minusMonths(months);
-        return (newDT == dateTime ? this :
-            resolve(newDT.getDateTime(), zoneId, dateTime, ZoneResolvers.retainOffset()));
-    }
-
-    /**
-     * Returns a copy of this {@code ZoneChronoDateTime} with the specified period in weeks subtracted.
-     * <p>
-     * This method subtracts the specified amount in weeks to the days field incrementing
-     * the month and year fields as necessary to ensure the result remains valid.
-     * The result is only invalid if the maximum/minimum year is exceeded.
-     * <p>
-     * For example, 2008-12-31 minus one week would result in the 2009-01-07.
-     * <p>
-     * If the adjustment results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param weeks  the weeks to subtract, positive or negative
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the weeks subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported range
-     */
-    ChronoZonedDateTime<C> minusWeeks(long weeks) {
-        ChronoOffsetDateTime<C> newDT = dateTime.minusWeeks(weeks);
-        return (newDT == dateTime ? this :
-            resolve(newDT.getDateTime(), zoneId, dateTime, ZoneResolvers.retainOffset()));
-    }
-
-    /**
-     * Returns a copy of this {@code ZoneChronoDateTime} with the specified period in days subtracted.
-     * <p>
-     * This method subtracts the specified amount to the days field incrementing the
-     * month and year fields as necessary to ensure the result remains valid.
-     * The result is only invalid if the maximum/minimum year is exceeded.
-     * <p>
-     * For example, 2008-12-31 minus one day would result in the 2009-01-01.
-     * <p>
-     * If the adjustment results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param days  the days to subtract, positive or negative
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the days subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported range
-     */
-    ChronoZonedDateTime<C> minusDays(long days) {
-        ChronoOffsetDateTime<C> newDT = dateTime.minusDays(days);
-        return (newDT == dateTime ? this :
-            resolve(newDT.getDateTime(), zoneId, dateTime, ZoneResolvers.retainOffset()));
-    }
-
-    /**
-     * Returns a copy of this {@code ZoneChronoDateTime} with the specified period in hours subtracted.
-     * <p>
-     * This method uses field based subtraction.
-     * This method changes the field by the specified number of hours.
-     * This may, at daylight savings cutover, result in a duration being subtracted
-     * that is more or less than the specified number of hours.
-     * <p>
-     * For example, consider a time-zone where the spring DST cutover means that
-     * the local times 01:00 to 01:59 do not exist. Using this method, subtracting
-     * a period of 2 hours from 02:30 will result in 00:30, but it is important
-     * to note that the change in duration was only 1 hour.
-     * <p>
-     * If the adjustment results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hours  the hours to subtract, positive or negative
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the hours subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported range
-     */
-    ChronoZonedDateTime<C> minusHours(long hours) {
-        ChronoOffsetDateTime<C> newDT = dateTime.minusHours(hours);
-        return (newDT == dateTime ? this :
-            resolve(newDT.getDateTime(), zoneId, dateTime, ZoneResolvers.retainOffset()));
-    }
-
-    /**
-     * Returns a copy of this {@code ZoneChronoDateTime} with the specified period in minutes subtracted.
-     * <p>
-     * If the adjustment results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param minutes  the minutes to subtract, positive or negative
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the minutes subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported range
-     */
-    ChronoZonedDateTime<C> minusMinutes(long minutes) {
-        ChronoOffsetDateTime<C> newDT = dateTime.minusMinutes(minutes);
-        return (newDT == dateTime ? this :
-            resolve(newDT.getDateTime(), zoneId, dateTime, ZoneResolvers.retainOffset()));
-    }
-
-    /**
-     * Returns a copy of this {@code ZoneChronoDateTime} with the specified period in seconds subtracted.
-     * <p>
-     * If the adjustment results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param seconds  the seconds to subtract, positive or negative
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the seconds subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported range
-     */
-    ChronoZonedDateTime<C> minusSeconds(long seconds) {
-        ChronoOffsetDateTime<C> newDT = dateTime.minusSeconds(seconds);
-        return (newDT == dateTime ? this :
-            resolve(newDT.getDateTime(), zoneId, dateTime, ZoneResolvers.retainOffset()));
-    }
-
-    /**
-     * Returns a copy of this {@code ZoneChronoDateTime} with the specified period in nanoseconds subtracted.
-     * <p>
-     * If the adjustment results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param nanos  the nanos to subtract, positive or negative
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the nanoseconds subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported range
-     */
-    ChronoZonedDateTime<C> minusNanos(long nanos) {
-        ChronoOffsetDateTime<C> newDT = dateTime.minusNanos(nanos);
-        return (newDT == dateTime ? this :
-            resolve(newDT.getDateTime(), zoneId, dateTime, ZoneResolvers.retainOffset()));
     }
 
     //-----------------------------------------------------------------------
