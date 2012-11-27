@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.time.DateTimeException;
+import javax.time.Instant;
 import javax.time.LocalDateTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
@@ -99,124 +100,58 @@ final class ChronoZonedDateTimeImpl<C extends Chrono<C>>
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code ZoneChronoDateTime} from a local date-time
-     * providing a resolver to handle an invalid date-time.
-     * <p>
-     * This factory creates a {@code ZoneChronoDateTime} from a date-time and time-zone.
-     * If the time is invalid for the zone, due to either being a gap or an overlap,
-     * then the resolver will determine what action to take.
-     * See {@link ZoneResolvers} for common resolver implementations.
+     * Obtains an instance of {@code ZonedDateTime} from a local date-time
+     * using the preferred offset if possible.
      *
-     * @param dateTime  the local date-time, not null
-     * @param zoneId  the time-zone, not null
+     * @param localDateTime  the local date-time, not null
+     * @param zoneId  the zone identifier, not null
+     * @param preferredOffset  the zone offset, null if no preference
      * @return the zoned date-time, not null
-     * @throws DateTimeException if the resolver cannot resolve an invalid local date-time
      */
-    static <R extends Chrono<R>> ChronoZonedDateTime<R> of(ChronoDateTimeImpl<R> dateTime, ZoneId zoneId) {
-        return resolve(dateTime, zoneId, null, resolver);
+    static <R extends Chrono<R>> ChronoZonedDateTime<R> ofBest(
+            ChronoDateTimeImpl<R> localDateTime, ZoneId zoneId, ZoneOffset preferredOffset) {
+        Objects.requireNonNull(localDateTime, "localDateTime");
+        Objects.requireNonNull(zoneId, "zoneId");
+        if (zoneId instanceof ZoneOffset) {
+            return new ChronoZonedDateTimeImpl<R>(localDateTime, (ZoneOffset) zoneId, zoneId);
+        }
+        ZoneRules rules = zoneId.getRules();
+        LocalDateTime isoLDT = LocalDateTime.from(localDateTime);
+        List<ZoneOffset> validOffsets = rules.getValidOffsets(isoLDT);
+        ZoneOffset offset;
+        if (validOffsets.size() == 1) {
+            offset = validOffsets.get(0);
+        } else if (validOffsets.size() == 0) {
+            ZoneOffsetTransition trans = rules.getTransition(isoLDT);
+            localDateTime = localDateTime.plusSeconds(trans.getDuration().getSeconds());
+            offset = trans.getOffsetAfter();
+        } else {
+            if (preferredOffset != null && validOffsets.contains(preferredOffset)) {
+                offset = preferredOffset;
+            } else {
+                offset = validOffsets.get(0);
+            }
+        }
+        Objects.requireNonNull(offset, "offset");  // protect against bad ZoneRules
+        return new ChronoZonedDateTimeImpl<R>(localDateTime, offset, zoneId);
     }
 
     /**
-     * Obtains an instance of {@code ZoneChronoDateTime} from an {@code ChronoOffsetDateTime}
-     * ensuring that the offset provided is valid for the time-zone.
-     * <p>
-     * This factory creates a {@code ZoneChronoDateTime} from an offset date-time and time-zone.
-     * If the date-time is invalid for the zone due to a time-line gap then an exception is thrown.
-     * Otherwise, the offset is checked against the zone to ensure it is valid.
-     * <p>
-     * An alternative to this method is {@link #ofInstant}. This method will retain
-     * the date and time and throw an exception if the offset is invalid.
-     * The {@code ofInstant} method will change the date and time if necessary
-     * to retain the same instant.
+     * Obtains an instance of {@code ZoneChronoDateTime} from an {@code Instant}.
      *
-     * @param dateTime  the offset date-time to use, not null
-     * @param zoneId  the time-zone, not null
+     * @param instant  the instant to create the date-time from, not null
+     * @param zoneId  the time-zone to use, not null
      * @return the zoned date-time, not null
-     * @throws DateTimeException if no rules can be found for the zone
-     * @throws DateTimeException if the date-time is invalid due to a gap in the local time-line
-     * @throws DateTimeException if the offset is invalid for the time-zone at the date-time
      */
-    static <R extends Chrono<R>> ChronoZonedDateTimeImpl<R> ofStrict(ChronoDateTimeImpl<R> dateTime, ZoneId zoneId) {
-        Objects.requireNonNull(dateTime, "dateTime");
+    private ChronoZonedDateTimeImpl<C> ofInstant(Instant instant, ZoneId zoneId) {
+        Objects.requireNonNull(instant, "instant");
         Objects.requireNonNull(zoneId, "zoneId");
-        LocalDateTime inputLDT = LocalDateTime.from(dateTime.getDateTime());
-        ZoneOffset inputOffset = dateTime.getOffset();
-        ZoneRules rules = zoneId.getRules();  // latest rules version
-        List<ZoneOffset> validOffsets = rules.getValidOffsets(inputLDT);
-        if (validOffsets.contains(inputOffset) == false) {
-            if (validOffsets.size() == 0) {
-                throw new DateTimeException("The local time " + inputLDT +
-                        " does not exist in time-zone " + zoneId + " due to a daylight savings gap");
-            }
-            throw new DateTimeException("The offset in the date-time " + dateTime +
-                    " is invalid for time-zone " + zoneId);
-        }
-        return new ChronoZonedDateTimeImpl<>(dateTime, zoneId);
+        ZoneRules rules = zoneId.getRules();
+        ZoneOffset offset = rules.getOffset(instant);
+        LocalDateTime ldt = LocalDateTime.ofEpochSecond(instant.getEpochSecond(), instant.getNano(), offset);
+        ChronoDateTimeImpl<C> cldt = getDate().getChrono().ensureChronoLocalDateTime(getDateTime().with(ldt));
+        return new ChronoZonedDateTimeImpl<C>(cldt, offset, zoneId);
     }
-
-//    /**
-//     * Obtains an instance of {@code ZoneChronoDateTime} from an {@code ChronoOffsetDateTime}.
-//     * <p>
-//     * The resulting date-time represents exactly the same instant on the time-line.
-//     * As such, the resulting local date-time may be different from the input.
-//     * <p>
-//     * If the instant represents a point on the time-line outside the supported year
-//     * range then an exception will be thrown.
-//     *
-//     * @param instantDateTime  the instant to create the date-time from, not null
-//     * @param zoneId  the time-zone to use, not null
-//     * @return the zoned date-time, not null
-//     * @throws DateTimeException if the result exceeds the supported range
-//     */
-//    private static <R extends Chrono<R>> ChronoZonedDateTimeImpl<R> ofInstant(
-//                ChronoOffsetDateTimeImpl<R> instantDateTime, ZoneId zoneId) {
-//        Objects.requireNonNull(instantDateTime, "instantDateTime");
-//        Objects.requireNonNull(zoneId, "zoneId");
-//        ZoneRules rules = zoneId.getRules();  // latest rules version
-//        // Add optimization to avoid toInstant
-//        instantDateTime = instantDateTime.withOffsetSameInstant(rules.getOffset(instantDateTime.toInstant()));
-//        instantDateTime.atZoneSameInstant(zoneId); ///recurse
-//        return new ChronoZonedDateTimeImpl<R>(instantDateTime, zoneId);
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Obtains an instance of {@code ZoneChronoDateTime}.
-//     *
-//     * @param desiredLocalDateTime  the date-time, not null
-//     * @param zoneId  the time-zone, not null
-//     * @param oldDateTime  the old date-time prior to the calculation, may be null
-//     * @param resolver  the resolver from local date-time to zoned, not null
-//     * @return the zoned date-time, not null
-//     * @throws DateTimeException if the date-time cannot be resolved
-//     */
-//    private static <R extends Chrono<R>> ChronoZonedDateTime<R>
-//            resolve(ChronoLocalDateTime<R> desiredLocalDateTime, ZoneId zoneId,
-//                    ChronoOffsetDateTime<?> oldDateTime, ZoneResolver resolver) {
-//        Objects.requireNonNull(desiredLocalDateTime, "desiredLocalDateTime");
-//        Objects.requireNonNull(zoneId, "zoneId");
-//        Objects.requireNonNull(resolver, "resolver");
-//        ZoneRules rules = zoneId.getRules();
-//        LocalDateTime desired = LocalDateTime.from(desiredLocalDateTime);
-//        OffsetDateTime old = (oldDateTime == null ? null : OffsetDateTime.from(oldDateTime));
-//        List<ZoneOffset> validOffsets = rules.getValidOffsets(desired);
-//        OffsetDateTime offsetDT;
-//        if (validOffsets.size() == 1) {
-//            offsetDT = OffsetDateTime.of(desired, validOffsets.get(0));
-//        } else {
-//            ZoneOffsetTransition trans = rules.getTransition(desired);
-//            offsetDT = resolver.resolve(desired, trans, rules, zoneId, old);
-//            if (((offsetDT.getDateTime() == desired && validOffsets.contains(offsetDT.getOffset())) ||
-//                    rules.isValidOffset(offsetDT.getDateTime(), offsetDT.getOffset())) == false) {
-//                throw new DateTimeException(
-//                    "ZoneResolver implementation must return a valid date-time and offset for the zone: " + resolver.getClass().getName());
-//            }
-//        }
-//        // Convert the date back to the current chronology and set the time.
-//        ChronoLocalDateTime<R> cdt = desiredLocalDateTime.with(EPOCH_DAY, offsetDT.getDate().toEpochDay()).with(offsetDT.getTime());
-//        ChronoOffsetDateTime<R> codt = cdt.atOffset(offsetDT.getOffset());
-//        return codt.atZoneSimilarLocal(zoneId);
-//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -233,15 +168,6 @@ final class ChronoZonedDateTimeImpl<C extends Chrono<C>>
         this.dateTime = dateTime;
         this.offset = offset;
         this.zoneId = zoneId;
-    }
-
-    private ChronoZonedDateTime<C> resolveLocal(ChronoLocalDateTime<C> newDateTime) {
-        return ofBest(newDateTime, zoneId, offset);
-    }
-
-    private ChronoZonedDateTime<C> resolveOffset(ZoneOffset offset) {
-        long epSec = dateTime.toEpochSecond(offset);
-        return create(epSec, dateTime.getTime().getNano(), zoneId);
     }
 
     //-----------------------------------------------------------------------
@@ -290,8 +216,7 @@ final class ChronoZonedDateTimeImpl<C extends Chrono<C>>
     @Override
     public ChronoZonedDateTime<C> withZoneSameInstant(ZoneId zoneId) {
         Objects.requireNonNull(zoneId, "zoneId");
-        return this.zoneId.equals(zoneId) ? this :
-            create(dateTime.toEpochSecond(offset), dateTime.getTime().getNano(), zoneId);
+        return this.zoneId.equals(zoneId) ? this : ofInstant(dateTime.toInstant(offset), zoneId);
     }
 
     //-----------------------------------------------------------------------
@@ -309,10 +234,10 @@ final class ChronoZonedDateTimeImpl<C extends Chrono<C>>
                 case INSTANT_SECONDS: return plus(newValue - toEpochSecond(), SECONDS);
                 case OFFSET_SECONDS: {
                     ZoneOffset offset = ZoneOffset.ofTotalSeconds(f.checkValidIntValue(newValue));
-                    return resolveOffset(offset);
+                    return ofInstant(dateTime.toInstant(offset), zoneId);
                 }
             }
-            return resolveLocal(dateTime.with(field, newValue));
+            return ofBest(dateTime.with(field, newValue), zoneId, offset);
         }
         return getDate().getChrono().ensureChronoZonedDateTime(field.doWith(this, newValue));
     }
