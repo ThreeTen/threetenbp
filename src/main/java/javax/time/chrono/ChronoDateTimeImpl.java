@@ -51,6 +51,7 @@ import java.util.Objects;
 import javax.time.DateTimeException;
 import javax.time.LocalTime;
 import javax.time.ZoneId;
+import javax.time.ZoneOffset;
 import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
@@ -313,6 +314,14 @@ final class ChronoDateTimeImpl<C extends Chrono<C>>
             return date.periodUntil(endDate, unit);
         }
         return unit.between(this, endDateTime).getAmount();
+    }
+
+    long toEpochSecond(ZoneOffset offset) {
+        Objects.requireNonNull(offset, "offset");
+        long epochDay = date.toEpochDay();
+        long secs = epochDay * SECONDS_PER_DAY + time.toSecondOfDay();
+        secs -= offset.getTotalSeconds();
+        return secs;
     }
 
     //-----------------------------------------------------------------------
