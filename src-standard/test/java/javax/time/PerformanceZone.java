@@ -87,8 +87,7 @@ public class PerformanceZone {
 
     //-----------------------------------------------------------------------
     private static void jsrInstantGetOffset() {
-        OffsetDateTime dt = OffsetDateTime.of(YEAR, 6, 1, 12, 0, ZoneOffset.ofHours(1));
-        Instant instant = dt.toInstant();
+        Instant instant = LocalDateTime.of(YEAR, 6, 1, 12, 0).toInstant(ZoneOffset.ofHours(1));
         ZoneId tz = ZoneId.of("Europe/London");
         ZoneOffset[] list = new ZoneOffset[SIZE];
         long start = System.nanoTime();
@@ -114,8 +113,7 @@ public class PerformanceZone {
 
     //-----------------------------------------------------------------------
     private static void jsrRulesInstantGetOffset() {
-        OffsetDateTime dt = OffsetDateTime.of(YEAR, 6, 1, 12, 0, ZoneOffset.ofHours(1));
-        Instant instant = dt.toInstant();
+        Instant instant = LocalDateTime.of(YEAR, 6, 1, 12, 0).toInstant(ZoneOffset.ofHours(1));
         ZoneRules tz = ZoneId.of("Europe/London").getRules();
         ZoneOffset[] list = new ZoneOffset[SIZE];
         long start = System.nanoTime();

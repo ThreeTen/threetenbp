@@ -186,7 +186,7 @@ public final class ZoneOffsetTransition
      * @return the transition instant, not null
      */
     public Instant getInstant() {
-        return Instant.ofEpochSecond(toEpochSecond());
+        return transition.toInstant(offsetBefore);
     }
 
     /**
