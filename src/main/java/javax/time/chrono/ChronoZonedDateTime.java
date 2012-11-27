@@ -140,11 +140,11 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
     ZoneOffset getOffset();
 
     /**
-     * Gets the time-zone, such as 'Europe/Paris'.
+     * Gets the zone ID, such as 'Europe/Paris'.
      * <p>
      * This returns the stored time-zone id used to determine the time-zone rules.
      *
-     * @return the time-zone, not null
+     * @return the zone ID, not null
      */
     ZoneId getZone();
 
@@ -183,7 +183,7 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the later offset, not null
+     * @return a {@code ChronoZonedDateTime} based on this date-time with the later offset, not null
      * @throws DateTimeException if no rules can be found for the zone
      * @throws DateTimeException if no rules are valid for this date-time
      */
@@ -204,7 +204,7 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
      * This instance is immutable and unaffected by this method call.
      *
      * @param zone  the time-zone to change to, not null
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the requested zone, not null
+     * @return a {@code ChronoZonedDateTime} based on this date-time with the requested zone, not null
      */
     ChronoZonedDateTime<C> withZoneSameLocal(ZoneId zone);
 
@@ -222,7 +222,7 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
      * use {@link #withZoneSameLocal(ZoneId)}.
      *
      * @param zone  the time-zone to change to, not null
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the requested zone, not null
+     * @return a {@code ChronoZonedDateTime} based on this date-time with the requested zone, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
     ChronoZonedDateTime<C> withZoneSameInstant(ZoneId zone);
@@ -256,7 +256,7 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
     Instant toInstant() ;
 
     /**
-     * Converts this {@code ZoneChronoDateTime} to the number of seconds from the epoch
+     * Converts this date-time to the number of seconds from the epoch
      * of 1970-01-01T00:00:00Z.
      * <p>
      * Instants on the time-line after the epoch are positive, earlier are negative.

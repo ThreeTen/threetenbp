@@ -73,7 +73,6 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.JulianDayField;
 import javax.time.calendrical.MockFieldNoValue;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.chrono.ISOChrono;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
@@ -1800,7 +1799,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_atOffset_nullDate() {
+    public void test_atDate_nullDate() {
         TEST_12_30_40_987654321.atDate((LocalDate) null);
     }
 

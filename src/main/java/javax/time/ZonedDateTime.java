@@ -889,7 +889,7 @@ public final class ZonedDateTime
      * The zone ID may be a fixed offset, in which case the result of
      * this method and {@link #getOffset()} should be equivalent.
      *
-     * @return the time-zone ID, not null
+     * @return the zone ID, not null
      */
     @Override
     public ZoneId getZone() {
