@@ -1786,6 +1786,7 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // toInstant()
     //-----------------------------------------------------------------------
+    @DataProvider(name="toInstant")
     Object[][] data_toInstant() {
         return new Object[][] {
             {LocalDateTime.of(1970, 1, 1, 0, 0, 0, 0), 0L, 0},
@@ -1799,7 +1800,7 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
         };
     }
 
-    @Test(groups={"tck"})
+    @Test(groups={"tck"}, dataProvider="toInstant")
     public void test_toInstant_UTC(LocalDateTime ldt, long expectedEpSec, int expectedNos) {
         ZonedDateTime dt = ldt.atZone(ZoneOffset.UTC);
         Instant test = dt.toInstant();
@@ -1807,19 +1808,19 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
         assertEquals(test.getNano(), expectedNos);
     }
 
-    @Test(groups={"tck"})
+    @Test(groups={"tck"}, dataProvider="toInstant")
     public void test_toInstant_P0100(LocalDateTime ldt, long expectedEpSec, int expectedNos) {
         ZonedDateTime dt = ldt.atZone(ZONE_0100);
         Instant test = dt.toInstant();
-        assertEquals(test.getEpochSecond(), expectedEpSec + 3600);
+        assertEquals(test.getEpochSecond(), expectedEpSec - 3600);
         assertEquals(test.getNano(), expectedNos);
     }
 
-    @Test(groups={"tck"})
+    @Test(groups={"tck"}, dataProvider="toInstant")
     public void test_toInstant_M0100(LocalDateTime ldt, long expectedEpSec, int expectedNos) {
         ZonedDateTime dt = ldt.atZone(ZONE_M0100);
         Instant test = dt.toInstant();
-        assertEquals(test.getEpochSecond(), expectedEpSec - 3600);
+        assertEquals(test.getEpochSecond(), expectedEpSec + 3600);
         assertEquals(test.getNano(), expectedNos);
     }
 
@@ -1846,22 +1847,22 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
         }
     }
 
-    @Test(groups={"tck"})
+    @Test(groups={"tck"}, dataProvider="toInstant")
     public void test_toEpochSecond_UTC(LocalDateTime ldt, long expectedEpSec, int expectedNos) {
         ZonedDateTime dt = ldt.atZone(ZoneOffset.UTC);
         assertEquals(dt.toEpochSecond(), expectedEpSec);
     }
 
-    @Test(groups={"tck"})
+    @Test(groups={"tck"}, dataProvider="toInstant")
     public void test_toEpochSecond_P0100(LocalDateTime ldt, long expectedEpSec, int expectedNos) {
         ZonedDateTime dt = ldt.atZone(ZONE_0100);
-        assertEquals(dt.toEpochSecond(), expectedEpSec + 3600);
+        assertEquals(dt.toEpochSecond(), expectedEpSec - 3600);
     }
 
-    @Test(groups={"tck"})
+    @Test(groups={"tck"}, dataProvider="toInstant")
     public void test_toEpochSecond_M0100(LocalDateTime ldt, long expectedEpSec, int expectedNos) {
         ZonedDateTime dt = ldt.atZone(ZONE_M0100);
-        assertEquals(dt.toEpochSecond(), expectedEpSec - 3600);
+        assertEquals(dt.toEpochSecond(), expectedEpSec + 3600);
     }
 
     //-----------------------------------------------------------------------
