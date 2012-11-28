@@ -272,10 +272,7 @@ public final class Instant
      */
     public static Instant from(DateTimeAccessor dateTime) {
         long instantSecs = dateTime.getLong(INSTANT_SECONDS);
-        int nanoOfSecond = 0;
-        if (dateTime.isSupported(NANO_OF_SECOND)) {
-            nanoOfSecond = dateTime.get(NANO_OF_SECOND);
-        }
+        int nanoOfSecond = dateTime.get(NANO_OF_SECOND);
         return Instant.ofEpochSecond(instantSecs, nanoOfSecond);
     }
 
@@ -548,11 +545,7 @@ public final class Instant
     //-------------------------------------------------------------------------
     @Override
     public DateTime doWithAdjustment(DateTime dateTime) {
-        DateTime result = dateTime.with(INSTANT_SECONDS, seconds);
-        if (result.isSupported(NANO_OF_SECOND)) {  // TODO: fraction of second field?
-            result = result.with(NANO_OF_SECOND, nanos);
-        }
-        return result;
+        return dateTime.with(INSTANT_SECONDS, seconds).with(NANO_OF_SECOND, nanos);
     }
 
     @Override
