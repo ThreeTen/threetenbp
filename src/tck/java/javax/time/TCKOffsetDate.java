@@ -1722,25 +1722,25 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // isAfter() / isBefore() / equalInstant()
+    // isAfter() / isBefore() / isEqual()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_isBeforeIsAfterIsEqual1() {
         OffsetDate a = OffsetDate.of(2008, 6, 29, OFFSET_PONE);
         OffsetDate b = OffsetDate.of(2008, 6, 30, OFFSET_PONE);  // a is before b due to time
         assertEquals(a.isBefore(b), true);
-        assertEquals(a.equalInstant(b), false);
+        assertEquals(a.isEqual(b), false);
         assertEquals(a.isAfter(b), false);
 
         assertEquals(b.isBefore(a), false);
-        assertEquals(b.equalInstant(a), false);
+        assertEquals(b.isEqual(a), false);
         assertEquals(b.isAfter(a), true);
 
         assertEquals(a.isBefore(a), false);
         assertEquals(b.isBefore(b), false);
 
-        assertEquals(a.equalInstant(a), true);
-        assertEquals(b.equalInstant(b), true);
+        assertEquals(a.isEqual(a), true);
+        assertEquals(b.isEqual(b), true);
 
         assertEquals(a.isAfter(a), false);
         assertEquals(b.isAfter(b), false);
@@ -1751,18 +1751,18 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         OffsetDate a = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         OffsetDate b = OffsetDate.of(2008, 6, 30, OFFSET_PONE);  // a is before b due to offset
         assertEquals(a.isBefore(b), true);
-        assertEquals(a.equalInstant(b), false);
+        assertEquals(a.isEqual(b), false);
         assertEquals(a.isAfter(b), false);
 
         assertEquals(b.isBefore(a), false);
-        assertEquals(b.equalInstant(a), false);
+        assertEquals(b.isEqual(a), false);
         assertEquals(b.isAfter(a), true);
 
         assertEquals(a.isBefore(a), false);
         assertEquals(b.isBefore(b), false);
 
-        assertEquals(a.equalInstant(a), true);
-        assertEquals(b.equalInstant(b), true);
+        assertEquals(a.isEqual(a), true);
+        assertEquals(b.isEqual(b), true);
 
         assertEquals(a.isAfter(a), false);
         assertEquals(b.isAfter(b), false);
@@ -1773,18 +1773,18 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         OffsetDate a = OffsetDate.of(2008, 6, 30, ZoneOffset.ofHours(12));
         OffsetDate b = OffsetDate.of(2008, 6, 29, ZoneOffset.ofHours(-12));  // a is same instant as b
         assertEquals(a.isBefore(b), false);
-        assertEquals(a.equalInstant(b), true);
+        assertEquals(a.isEqual(b), true);
         assertEquals(a.isAfter(b), false);
 
         assertEquals(b.isBefore(a), false);
-        assertEquals(b.equalInstant(a), true);
+        assertEquals(b.isEqual(a), true);
         assertEquals(b.isAfter(a), false);
 
         assertEquals(a.isBefore(a), false);
         assertEquals(b.isBefore(b), false);
 
-        assertEquals(a.equalInstant(a), true);
-        assertEquals(b.equalInstant(b), true);
+        assertEquals(a.isEqual(a), true);
+        assertEquals(b.isEqual(b), true);
 
         assertEquals(a.isAfter(a), false);
         assertEquals(b.isAfter(b), false);
@@ -1803,9 +1803,9 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_equalInstant_null() {
+    public void test_isEqual_null() {
         OffsetDate a = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
-        a.equalInstant(null);
+        a.isEqual(null);
     }
 
     //-----------------------------------------------------------------------
