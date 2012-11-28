@@ -64,12 +64,6 @@ import javax.time.zone.ZoneRules;
  * The purpose of storing the time-zone is to distinguish the ambiguous case where
  * the local time-line overlaps, typically as a result of the end of daylight time.
  * Information about the local-time can be obtained using methods on the time-zone.
- * <p>
- * This class provides control over what happens at these cutover points
- * (typically a gap in spring and an overlap in autumn). The {@link ZoneResolver}
- * interface and implementations in {@link ZoneResolvers} provide strategies for
- * handling these cases. The methods {@link #withEarlierOffsetAtOverlap()} and
- * {@link #withLaterOffsetAtOverlap()} provide further control for overlaps.
  *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.

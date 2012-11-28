@@ -120,7 +120,7 @@ public final class ZonedDateTime
      */
     private final ZoneOffset offset;
     /**
-     * The zone identifier.
+     * The zone ID.
      */
     private final ZoneId zoneId;
 
@@ -178,7 +178,7 @@ public final class ZonedDateTime
     /**
      * Obtains an instance of {@code ZonedDateTime} from a local date-time.
      * <p>
-     * This creates a zoned date-time matching the input date-time as closely as possible.
+     * This creates a zoned date-time matching the input local date-time as closely as possible.
      * Time-zone rules, such as daylight savings, mean that not every local date-time
      * is valid for the specified zone, thus the local date-time may be adjusted.
      * <p>
@@ -196,25 +196,78 @@ public final class ZonedDateTime
      * long the gap is, using the later offset typically corresponding to "summer".
      *
      * @param localDateTime  the local date-time, not null
-     * @param zoneId  the zone identifier, not null
+     * @param zoneId  the zone ID, not null
      * @return the zoned date-time, not null
      */
     public static ZonedDateTime of(LocalDateTime localDateTime, ZoneId zoneId) {
-        return ofBest(localDateTime, zoneId, null);
+        return ofLocal(localDateTime, zoneId, null);
+    }
+
+    /**
+     * Obtains an instance of {@code ZonedDateTime} from a local date-time
+     * using the preferred offset if possible.
+     * <p>
+     * This creates a zoned date-time matching the input local date-time as closely as possible.
+     * Time-zone rules, such as daylight savings, mean that not every local date-time
+     * is valid for the specified zone, thus the local date-time may be adjusted.
+     * <p>
+     * The local date-time is resolved to a single instant on the time-line.
+     * This is achieved by finding a valid offset for the local date-time.
+     * If the {@code ZoneId} is a {@link ZoneOffset} then that offset is used, however if
+     * it is a {@link ZoneRegion} where the offset can vary, an offset must be calculated.
+     *<p>
+     * In most cases, there is only one valid offset for a local date-time.
+     * In the case of an overlap, there are two valid offsets. If the preferred offset
+     * is one of the valid offsets then it is used. Otherwise the earlier valid offset
+     * is used, typically corresponding to "summer".
+     * <p>
+     * In the case of a gap, the earlier offset is used to calculate the instant.
+     * The instant is then used to find the valid offset, adjusting the local date-time.
+     * The result will typically be a local date-time that is one hour later, or however
+     * long the gap is, using the later offset typically corresponding to "summer".
+     *
+     * @param localDateTime  the local date-time, not null
+     * @param zoneId  the zone ID, not null
+     * @param preferredOffset  the zone offset, null if no preference
+     * @return the zoned date-time, not null
+     */
+    public static ZonedDateTime ofLocal(LocalDateTime localDateTime, ZoneId zoneId, ZoneOffset preferredOffset) {
+        Objects.requireNonNull(localDateTime, "localDateTime");
+        Objects.requireNonNull(zoneId, "zoneId");
+        if (zoneId instanceof ZoneOffset) {
+            return new ZonedDateTime(localDateTime, (ZoneOffset) zoneId, zoneId);
+        }
+        ZoneRules rules = zoneId.getRules();
+        List<ZoneOffset> validOffsets = rules.getValidOffsets(localDateTime);
+        ZoneOffset offset;
+        if (validOffsets.size() == 1) {
+            offset = validOffsets.get(0);
+        } else if (validOffsets.size() == 0) {
+            ZoneOffsetTransition trans = rules.getTransition(localDateTime);
+            localDateTime = localDateTime.plusSeconds(trans.getDuration().getSeconds());
+            offset = trans.getOffsetAfter();
+        } else {
+            if (preferredOffset != null && validOffsets.contains(preferredOffset)) {
+                offset = preferredOffset;
+            } else {
+                offset = Objects.requireNonNull(validOffsets.get(0), "offset");  // protect against bad ZoneRules
+            }
+        }
+        return new ZonedDateTime(localDateTime, offset, zoneId);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code ZonedDateTime} from an {@code Instant}.
      * <p>
-     * The resulting date-time represents exactly the same instant on the time-line.
+     * This creates a zoned date-time with the same instant as that specified.
      * Calling {@link #toInstant()} will return an instant equal to the one used here.
      * <p>
      * Converting an instant to a zoned date-time is simple as there is only one valid
      * offset for each instant.
      *
      * @param instant  the instant to create the date-time from, not null
-     * @param zoneId  the zone identifier, not null
+     * @param zoneId  the zone ID, not null
      * @return the zoned date-time, not null
      * @throws DateTimeException if the result exceeds the supported range
      */
@@ -228,8 +281,9 @@ public final class ZonedDateTime
      * Obtains an instance of {@code ZonedDateTime} from the instant formed by combining
      * the local date-time and offset.
      * <p>
-     * The combination of a local date-time and an offset uniquely specify an instant,
-     * which is used to create the {@code ZonedDateTime}.
+     * This creates a zoned date-time by {@link LocalDateTime#toInstant(ZoneOffset) combining}
+     * the {@code LocalDateTime} and {@code ZoneOffset}.
+     * This combination uniquely specifies an instant without ambiguity.
      * <p>
      * Converting an instant to a zoned date-time is simple as there is only one valid
      * offset for each instant. If the valid offset is different to the offset specified,
@@ -240,7 +294,7 @@ public final class ZonedDateTime
      *
      * @param localDateTime  the local date-time, not null
      * @param offset  the zone offset, not null
-     * @param zoneId  the zone identifier, not null
+     * @param zoneId  the zone ID, not null
      * @return the zoned date-time, not null
      */
     public static ZonedDateTime ofInstant(LocalDateTime localDateTime, ZoneOffset offset, ZoneId zoneId) {
@@ -261,7 +315,7 @@ public final class ZonedDateTime
      *
      * @param epochSecond  the number of seconds from the epoch of 1970-01-01T00:00:00Z
      * @param nanoOfSecond  the nanosecond within the second, from 0 to 999,999,999
-     * @param zoneId  the zone identifier, not null
+     * @param zoneId  the zone ID, not null
      * @return the zoned date-time, not null
      * @throws DateTimeException if the result exceeds the supported range
      */
@@ -276,7 +330,7 @@ public final class ZonedDateTime
      *
      * @param epochSecond  the number of seconds from the epoch of 1970-01-01T00:00:00Z
      * @param nanoOfSecond  the nanosecond within the second, from 0 to 999,999,999
-     * @param zoneId  the zone identifier, not null
+     * @param zoneId  the zone ID, not null
      * @return the zoned date-time, not null
      * @throws DateTimeException if the result exceeds the supported range
      */
@@ -291,7 +345,7 @@ public final class ZonedDateTime
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code ZonedDateTime} strictly validating the
-     * combination of local date-time, offset and zone identifier.
+     * combination of local date-time, offset and zone ID.
      * <p>
      * This creates a zoned date-time ensuring that the offset is valid for the
      * local date-time according to the rules of the specified zone.
@@ -299,7 +353,7 @@ public final class ZonedDateTime
      *
      * @param localDateTime  the local date-time, not null
      * @param offset  the zone offset, not null
-     * @param zoneId  the zone identifier, not null
+     * @param zoneId  the zone ID, not null
      * @return the zoned date-time, not null
      */
     public static ZonedDateTime ofStrict(LocalDateTime localDateTime, ZoneOffset offset, ZoneId zoneId) {
@@ -313,7 +367,8 @@ public final class ZonedDateTime
                 // error message says daylight savings for simplicity
                 // even though there are other kinds of gaps
                 throw new DateTimeException("LocalDateTime '" + localDateTime +
-                        "' does not exist in zone '" + zoneId + "' due to a daylight savings gap");
+                        "' does not exist in zone '" + zoneId +
+                        "' due to a gap in the local time-line, typically caused by daylight savings");
             }
             throw new DateTimeException("ZoneOffset '" + offset + "' is not valid for LocalDateTime '" +
                     localDateTime + "' in zone '" + zoneId + "'");
@@ -323,7 +378,7 @@ public final class ZonedDateTime
 
     /**
      * Obtains an instance of {@code ZonedDateTime} leniently, for advanced use cases,
-     * allowing any combination of local date-time, offset and zone identifier.
+     * allowing any combination of local date-time, offset and zone ID.
      * <p>
      * This creates a zoned date-time with no checks other than no nulls.
      * This means that the resulting zoned date-time may have an offset that is in conflict
@@ -339,67 +394,13 @@ public final class ZonedDateTime
      *
      * @param localDateTime  the local date-time, not null
      * @param offset  the zone offset, not null
-     * @param zoneId  the zone identifier, not null
+     * @param zoneId  the zone ID, not null
      * @return the zoned date-time, not null
      */
     private static ZonedDateTime ofLenient(LocalDateTime localDateTime, ZoneOffset offset, ZoneId zoneId) {
         Objects.requireNonNull(localDateTime, "localDateTime");
         Objects.requireNonNull(offset, "offset");
         Objects.requireNonNull(zoneId, "zoneId");
-        return new ZonedDateTime(localDateTime, offset, zoneId);
-    }
-
-    /**
-     * Obtains an instance of {@code ZonedDateTime} from a local date-time
-     * using the preferred offset if possible.
-     * <p>
-     * This creates a zoned date-time matching the input date-time as closely as possible.
-     * Time-zone rules, such as daylight savings, mean that not every local date-time
-     * is valid for the specified zone, thus the local date-time may be adjusted.
-     * <p>
-     * The local date-time is resolved to a single instant on the time-line.
-     * This is achieved by finding a valid offset for the local date-time.
-     * If the {@code ZoneId} is a {@link ZoneOffset} then that offset is used, however if
-     * it is a {@link ZoneRegion} where the offset can vary, an offset must be calculated.
-     *<p>
-     * In most cases, there is only one valid offset for a local date-time.
-     * In the case of an overlap, there are two valid offsets. If the preferred offset
-     * is one of the valid offsets then it is used. Otherwise the earlier valid offset
-     * is used, typically corresponding to "summer".
-     * <p>
-     * In the case of a gap, the earlier offset is used to calculate the instant.
-     * The instant is then used to find the valid offset, adjusting the local date-time.
-     * The result will typically be a local date-time that is one hour later, or however
-     * long the gap is, using the later offset typically corresponding to "summer".
-     *
-     * @param localDateTime  the local date-time, not null
-     * @param zoneId  the zone identifier, not null
-     * @param preferredOffset  the zone offset, null if no preference
-     * @return the zoned date-time, not null
-     */
-    private static ZonedDateTime ofBest(LocalDateTime localDateTime, ZoneId zoneId, ZoneOffset preferredOffset) {
-        Objects.requireNonNull(localDateTime, "localDateTime");
-        Objects.requireNonNull(zoneId, "zoneId");
-        if (zoneId instanceof ZoneOffset) {
-            return new ZonedDateTime(localDateTime, (ZoneOffset) zoneId, zoneId);
-        }
-        ZoneRules rules = zoneId.getRules();
-        List<ZoneOffset> validOffsets = rules.getValidOffsets(localDateTime);
-        ZoneOffset offset;
-        if (validOffsets.size() == 1) {
-            offset = validOffsets.get(0);
-        } else if (validOffsets.size() == 0) {
-            ZoneOffsetTransition trans = rules.getTransition(localDateTime);
-            localDateTime = localDateTime.plusSeconds(trans.getDuration().getSeconds());
-            offset = trans.getOffsetAfter();
-        } else {
-            if (preferredOffset != null && validOffsets.contains(preferredOffset)) {
-                offset = preferredOffset;
-            } else {
-                offset = validOffsets.get(0);
-            }
-        }
-        Objects.requireNonNull(offset, "offset");  // protect against bad ZoneRules
         return new ZonedDateTime(localDateTime, offset, zoneId);
     }
 
@@ -474,7 +475,7 @@ public final class ZonedDateTime
      *
      * @param dateTime  the date-time, validated as not null
      * @param offset  the zone offset, validated as not null
-     * @param zoneId  the zone identifier, validated as not null
+     * @param zoneId  the zone ID, validated as not null
      */
     ZonedDateTime(LocalDateTime dateTime, ZoneOffset offset, ZoneId zoneId) {
         this.dateTime = dateTime;
@@ -489,7 +490,7 @@ public final class ZonedDateTime
      * @return the zoned date-time, not null
      */
     private ZonedDateTime resolveLocal(LocalDateTime newDateTime) {
-        return ofBest(newDateTime, zoneId, offset);
+        return ofLocal(newDateTime, zoneId, offset);
     }
 
     /**
@@ -619,8 +620,10 @@ public final class ZonedDateTime
      * <p>
      * This returns the zone ID. This identifies the time-zone rules that
      * determine when and how the offset from UTC/Greenwich changes.
-     * The zone ID may be a fixed offset, in which case the result of
-     * this method and {@link #getOffset()} should be equivalent.
+     * <p>
+     * The zone ID may be {@link #withLockedOffset() locked} to a fixed offset,
+     * in which case the result of this method and {@link #getOffset()} will
+     * be the same.
      *
      * @return the zone ID, not null
      */
@@ -634,8 +637,9 @@ public final class ZonedDateTime
      * retaining the local date-time if possible.
      * <p>
      * This method changes the time-zone and retains the local date-time.
-     * The local date-time is only changed if it is invalid for the new zone.
-     * In that case, the {@link ZoneResolvers#retainOffset() retain offset} resolver is used.
+     * The local date-time is only changed if it is invalid for the new zone,
+     * determined using the same approach as
+     * {@link #ofLocal(LocalDateTime, ZoneId, ZoneOffset)}.
      * <p>
      * To change the zone and adjust the local date-time,
      * use {@link #withZoneSameInstant(ZoneId)}.
@@ -647,7 +651,8 @@ public final class ZonedDateTime
      */
     @Override
     public ZonedDateTime withZoneSameLocal(ZoneId zoneId) {
-        return ofBest(dateTime, zoneId, offset);
+        Objects.requireNonNull(zoneId, "zoneId");
+        return this.zoneId.equals(zoneId) ? this : ofLocal(dateTime, zoneId, offset);
     }
 
     /**
@@ -675,10 +680,11 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this date-time with the zone ID set to offset.
+     * Returns a copy of this date-time with the zone ID locked to the offset.
      * <p>
-     * This locks the zone ID to the current value of the offset.
-     * The local date-time, offset and instant are not changed.
+     * This locks the offset of the zoned date-time by returning a date-time that
+     * has the zone ID equal to the offset. The local date-time, offset and
+     * instant of the result will be the same as in this date-time.
      * <p>
      * Locking the date-time to a single offset means that any future calculations,
      * such as addition or subtraction, are guaranteed to work without any complex
@@ -690,7 +696,7 @@ public final class ZonedDateTime
      *
      * @return a {@code ZonedDateTime} with the zone ID set to the offset, not null
      */
-    public ZonedDateTime withZoneLocked() {
+    public ZonedDateTime withLockedOffset() {
         return this.zoneId.equals(offset) ? this : new ZonedDateTime(dateTime, offset, offset);
     }
 
@@ -873,9 +879,6 @@ public final class ZonedDateTime
      *  dateTime.with(date);
      * </pre>
      * <p>
-     * If the adjusted date results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster the adjuster to use, not null
@@ -909,8 +912,9 @@ public final class ZonedDateTime
      * In cases like this, the field is responsible for resolving the date. Typically it will choose
      * the previous valid date, which would be the last valid day of February in this example.
      * <p>
-     * If the adjustment results in a date-time that is invalid for the zone,
-     * then the {@link ZoneResolvers#retainOffset()} resolver is used.
+     * When converting back to {@code ZonedDateTime}, if the local date-time is in an overlap,
+     * then the offset will be retained if possible, otherwise the earlier offset will be used.
+     * If in a gap, the local date-time will be adjusted forward by the length of the gap.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1056,8 +1060,14 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this {@code ZonedDateTime} with the hour-of-day value altered.
      * <p>
-     * If the adjustment results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
+     * This operates on the local time-line,
+     * {@link LocalDateTime#withHour(int) changing the time} of the local date-time.
+     * This is then converted back to a {@code ZonedDateTime}, using the zone ID
+     * to obtain the offset.
+     * <p>
+     * When converting back to {@code ZonedDateTime}, if the local date-time is in an overlap,
+     * then the offset will be retained if possible, otherwise the earlier offset will be used.
+     * If in a gap, the local date-time will be adjusted forward by the length of the gap.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1072,8 +1082,14 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this {@code ZonedDateTime} with the minute-of-hour value altered.
      * <p>
-     * If the adjustment results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
+     * This operates on the local time-line,
+     * {@link LocalDateTime#withMinute(int) changing the time} of the local date-time.
+     * This is then converted back to a {@code ZonedDateTime}, using the zone ID
+     * to obtain the offset.
+     * <p>
+     * When converting back to {@code ZonedDateTime}, if the local date-time is in an overlap,
+     * then the offset will be retained if possible, otherwise the earlier offset will be used.
+     * If in a gap, the local date-time will be adjusted forward by the length of the gap.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1088,8 +1104,14 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this {@code ZonedDateTime} with the second-of-minute value altered.
      * <p>
-     * If the adjustment results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
+     * This operates on the local time-line,
+     * {@link LocalDateTime#withSecond(int) changing the time} of the local date-time.
+     * This is then converted back to a {@code ZonedDateTime}, using the zone ID
+     * to obtain the offset.
+     * <p>
+     * When converting back to {@code ZonedDateTime}, if the local date-time is in an overlap,
+     * then the offset will be retained if possible, otherwise the earlier offset will be used.
+     * If in a gap, the local date-time will be adjusted forward by the length of the gap.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1104,8 +1126,14 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this {@code ZonedDateTime} with the nano-of-second value altered.
      * <p>
-     * If the adjustment results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
+     * This operates on the local time-line,
+     * {@link LocalDateTime#withNano(int) changing the time} of the local date-time.
+     * This is then converted back to a {@code ZonedDateTime}, using the zone ID
+     * to obtain the offset.
+     * <p>
+     * When converting back to {@code ZonedDateTime}, if the local date-time is in an overlap,
+     * then the offset will be retained if possible, otherwise the earlier offset will be used.
+     * If in a gap, the local date-time will be adjusted forward by the length of the gap.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1120,13 +1148,15 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this {@code ZonedDateTime} with the time values altered.
      * <p>
-     * This method will return a new instance with the same date fields,
-     * but altered time fields.
-     * This is a shorthand for {@link #withTime(int,int,int)} and sets
-     * the second field to zero.
+     * This operates on the local time-line,
+     * {@link LocalDateTime#withTime(int, int) changing the time} of the local date-time,
+     * setting the seconds and nanoseconds to zero.
+     * This is then converted back to a {@code ZonedDateTime}, using the zone ID
+     * to obtain the offset.
      * <p>
-     * If the adjustment results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
+     * When converting back to {@code ZonedDateTime}, if the local date-time is in an overlap,
+     * then the offset will be retained if possible, otherwise the earlier offset will be used.
+     * If in a gap, the local date-time will be adjusted forward by the length of the gap.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1142,8 +1172,15 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this {@code ZonedDateTime} with the time values altered.
      * <p>
-     * If the adjustment results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
+     * This operates on the local time-line,
+     * {@link LocalDateTime#withTime(int, int, int) changing the time} of the local date-time,
+     * setting the nanoseconds to zero.
+     * This is then converted back to a {@code ZonedDateTime}, using the zone ID
+     * to obtain the offset.
+     * <p>
+     * When converting back to {@code ZonedDateTime}, if the local date-time is in an overlap,
+     * then the offset will be retained if possible, otherwise the earlier offset will be used.
+     * If in a gap, the local date-time will be adjusted forward by the length of the gap.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1160,8 +1197,14 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this {@code ZonedDateTime} with the time values altered.
      * <p>
-     * If the adjustment results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
+     * This operates on the local time-line,
+     * {@link LocalDateTime#withTime(int, int, int, int) changing the time} of the local date-time.
+     * This is then converted back to a {@code ZonedDateTime}, using the zone ID
+     * to obtain the offset.
+     * <p>
+     * When converting back to {@code ZonedDateTime}, if the local date-time is in an overlap,
+     * then the offset will be retained if possible, otherwise the earlier offset will be used.
+     * If in a gap, the local date-time will be adjusted forward by the length of the gap.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1186,9 +1229,6 @@ public final class ZonedDateTime
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #plus(long, PeriodUnit)}.
      * <p>
-     * If the adjustment results in a date-time that is invalid for the zone,
-     * then the {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
@@ -1209,8 +1249,9 @@ public final class ZonedDateTime
      * The unit is responsible for the details of the calculation, including the resolution
      * of any edge cases in the calculation.
      * <p>
-     * If the adjustment results in a date-time that is invalid for the zone,
-     * then the {@link ZoneResolvers#retainOffset()} resolver is used.
+     * When converting back to {@code ZonedDateTime}, if the local date-time is in an overlap,
+     * then the offset will be retained if possible, otherwise the earlier offset will be used.
+     * If in a gap, the local date-time will be adjusted forward by the length of the gap.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1439,9 +1480,6 @@ public final class ZonedDateTime
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #minus(long, PeriodUnit)}.
      * <p>
-     * If the adjustment results in a date-time that is invalid for the zone,
-     * then the {@link ZoneResolvers#retainOffset()} resolver is used.
-     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
@@ -1462,8 +1500,9 @@ public final class ZonedDateTime
      * The unit is responsible for the details of the calculation, including the resolution
      * of any edge cases in the calculation.
      * <p>
-     * If the adjustment results in a date-time that is invalid for the zone,
-     * then the {@link ZoneResolvers#retainOffset()} resolver is used.
+     * When converting back to {@code ZonedDateTime}, if the local date-time is in an overlap,
+     * then the offset will be retained if possible, otherwise the earlier offset will be used.
+     * If in a gap, the local date-time will be adjusted forward by the length of the gap.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *

@@ -191,22 +191,21 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this date-time with a different time-zone,
+     * Returns a copy of this ZonedDateTime with a different time-zone,
      * retaining the local date-time if possible.
      * <p>
      * This method changes the time-zone and retains the local date-time.
      * The local date-time is only changed if it is invalid for the new zone.
-     * In that case, the {@link ZoneResolvers#retainOffset() retain offset} resolver is used.
      * <p>
      * To change the zone and adjust the local date-time,
      * use {@link #withZoneSameInstant(ZoneId)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param zone  the time-zone to change to, not null
+     * @param zoneId  the time-zone to change to, not null
      * @return a {@code ChronoZonedDateTime} based on this date-time with the requested zone, not null
      */
-    ChronoZonedDateTime<C> withZoneSameLocal(ZoneId zone);
+    ChronoZonedDateTime<C> withZoneSameLocal(ZoneId zoneId);
 
     /**
      * Returns a copy of this date-time with a different time-zone,
@@ -221,11 +220,11 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
      * To change the offset while keeping the local time,
      * use {@link #withZoneSameLocal(ZoneId)}.
      *
-     * @param zone  the time-zone to change to, not null
+     * @param zoneId  the time-zone to change to, not null
      * @return a {@code ChronoZonedDateTime} based on this date-time with the requested zone, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    ChronoZonedDateTime<C> withZoneSameInstant(ZoneId zone);
+    ChronoZonedDateTime<C> withZoneSameInstant(ZoneId zoneId);
 
     //-------------------------------------------------------------------------
     // override for covariant return type
