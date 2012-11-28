@@ -43,7 +43,6 @@ import java.util.TimeZone;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAccessor.Query;
 import javax.time.format.TextStyle;
-import javax.time.zone.TimeZoneException;
 import javax.time.zone.ZoneRules;
 import javax.time.zone.ZoneRulesProvider;
 
@@ -249,7 +248,7 @@ public abstract class ZoneId {
      * @param zoneId  the time-zone ID, not null
      * @param aliasMap  a map of alias zone IDs (typically abbreviations) to real zone IDs, not null
      * @return the zone ID, not null
-     * @throws TimeZoneException if the zone ID is malformed or cannot be found
+     * @throws DateTimeException if the zone ID is malformed or cannot be found
      */
     public static ZoneId of(String zoneId, Map<String, String> aliasMap) {
         Objects.requireNonNull(zoneId, "zoneId");
@@ -282,7 +281,7 @@ public abstract class ZoneId {
      *
      * @param zoneId  the time-zone ID, not null
      * @return the zone ID, not null
-     * @throws TimeZoneException if the zone ID is malformed or cannot be found
+     * @throws DateTimeException if the zone ID is malformed or cannot be found
      */
     public static ZoneId of(String zoneId) {
         Objects.requireNonNull(zoneId, "zoneId");
