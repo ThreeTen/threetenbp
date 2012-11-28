@@ -1716,21 +1716,21 @@ public class TCKLocalDate extends AbstractDateTimeTest {
     // atStartOfDay()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_atStartOfDayInZone() {
+    public void test_atStartOfDay() {
         LocalDate t = LocalDate.of(2008, 6, 30);
         assertEquals(t.atStartOfDay(ZONE_PARIS),
                 ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 0, 0), ZONE_PARIS));
     }
 
     @Test(groups={"tck"})
-    public void test_atStartOfDayInZone_dstGap() {
+    public void test_atStartOfDay_dstGap() {
         LocalDate t = LocalDate.of(2007, 4, 1);
         assertEquals(t.atStartOfDay(ZONE_GAZA),
                 ZonedDateTime.of(LocalDateTime.of(2007, 4, 1, 1, 0), ZONE_GAZA));
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_atStartOfDayInZone_nullTimeZone() {
+    public void test_atStartOfDay_nullTimeZone() {
         LocalDate t = LocalDate.of(2008, 6, 30);
         t.atStartOfDay((ZoneId) null);
     }

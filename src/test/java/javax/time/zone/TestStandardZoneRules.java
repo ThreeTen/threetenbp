@@ -845,7 +845,7 @@ public class TestStandardZoneRules {
 
     public void test_NewYork_getStandardOffset() {
         ZoneRules test = americaNewYork();
-        ZonedDateTime dateTime = createLDT(1860, 1, 1).atZone(ZoneOffset.UTC);
+        ZonedDateTime dateTime = createZDT(1860, 1, 1, ZoneOffset.UTC);
         while (dateTime.getYear() < 2010) {
             Instant instant = dateTime.toInstant();
             if (dateTime.getDate().isBefore(LocalDate.of(1883, 11, 18))) {
@@ -949,10 +949,6 @@ public class TestStandardZoneRules {
 
     private ZonedDateTime createZDT(int year, int month, int day, ZoneId zone) {
         return LocalDateTime.of(year, month, day, 0, 0).atZone(zone);
-    }
-
-    private ZonedDateTime createZDT(int year, int month, int day, int hour, int min, int sec, int nano, ZoneId zone) {
-        return LocalDateTime.of(year, month, day, hour, min, sec, nano).atZone(zone);
     }
 
     private LocalDateTime createLDT(int year, int month, int day) {

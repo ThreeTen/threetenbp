@@ -929,7 +929,7 @@ public final class OffsetDate
      * @param other  the other date to compare to, not null
      * @return true if the instant equals the instant of the specified date
      */
-    public boolean equalInstant(OffsetDate other) {
+    public boolean isEqual(OffsetDate other) {
         return toEpochSecond() == other.toEpochSecond();
     }
 
@@ -938,7 +938,7 @@ public final class OffsetDate
      * Checks if this date is equal to another date.
      * <p>
      * The comparison is based on the local-date and the offset.
-     * To compare for the same instant on the time-line, use {@link #equalInstant}.
+     * To compare for the same instant on the time-line, use {@link #isEqual(OffsetDate)}.
      * <p>
      * Only objects of type {@code OffsetDate} are compared, other types return false.
      * To compare the underlying local date of two {@code DateTimeAccessor} instances,

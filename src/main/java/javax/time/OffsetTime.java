@@ -875,7 +875,7 @@ public final class OffsetTime
      * @param other  the other time to compare to, not null
      * @return true if this is equal to the instant of the specified time
      */
-    public boolean equalInstant(OffsetTime other) {
+    public boolean isEqual(OffsetTime other) {
         return toEpochNano() == other.toEpochNano();
     }
 
@@ -884,7 +884,7 @@ public final class OffsetTime
      * Checks if this time is equal to another time.
      * <p>
      * The comparison is based on the local-time and the offset.
-     * To compare for the same instant on the time-line, use {@link #equalInstant}.
+     * To compare for the same instant on the time-line, use {@link #isEqual(OffsetTime)}.
      * <p>
      * Only objects of type {@code OffsetTime} are compared, other types return false.
      * To compare the underlying local time of two {@code DateTimeAccessor} instances,
