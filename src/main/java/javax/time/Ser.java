@@ -74,14 +74,15 @@ final class Ser implements Externalizable {
     static final byte LOCAL_DATE_TYPE = 3;
     static final byte LOCAL_DATE_TIME_TYPE = 4;
     static final byte LOCAL_TIME_TYPE = 5;
-    static final byte MONTH_DAY_TYPE = 6;
-    static final byte OFFSET_DATE_TYPE = 7;
-    static final byte OFFSET_TIME_TYPE = 9;
-    static final byte YEAR_TYPE = 10;
-    static final byte YEAR_MONTH_TYPE = 11;
-    static final byte ZONED_DATE_TIME_TYPE = 12;
-    static final byte ZONE_REGION_TYPE = 13;
-    static final byte ZONE_OFFSET_TYPE = 14;
+    static final byte ZONED_DATE_TIME_TYPE = 6;
+    static final byte ZONE_REGION_TYPE = 7;
+    static final byte ZONE_OFFSET_TYPE = 8;
+
+    static final byte MONTH_DAY_TYPE = 64;
+    static final byte OFFSET_DATE_TYPE = 65;
+    static final byte OFFSET_TIME_TYPE = 66;
+    static final byte YEAR_TYPE = 67;
+    static final byte YEAR_MONTH_TYPE = 68;
 
     /** The type being serialized. */
     private byte type;
