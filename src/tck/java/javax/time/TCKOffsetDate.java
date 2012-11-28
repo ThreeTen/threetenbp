@@ -1630,26 +1630,26 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // atStartOfDayInZone()
+    // atStartOfDay()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_atStartOfDayInZone() {
+    public void test_atStartOfDay() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        assertEquals(t.atStartOfDayInZone(ZONE_PARIS),
+        assertEquals(t.atStartOfDay(ZONE_PARIS),
                 ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 0, 0), ZONE_PARIS));
     }
 
     @Test(groups={"tck"})
-    public void test_atStartOfDayInZone_dstGap() {
+    public void test_atStartOfDay_dstGap() {
         OffsetDate t = OffsetDate.of(2007, 4, 1, OFFSET_PTWO);
-        assertEquals(t.atStartOfDayInZone(ZONE_GAZA),
+        assertEquals(t.atStartOfDay(ZONE_GAZA),
                 ZonedDateTime.of(LocalDateTime.of(2007, 4, 1, 1, 0), ZONE_GAZA));
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_atStartOfDayInZone_nullZoneOffset() {
+    public void test_atStartOfDay_nullZoneOffset() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        t.atStartOfDayInZone((ZoneId) null);
+        t.atStartOfDay((ZoneId) null);
     }
 
     //-----------------------------------------------------------------------
