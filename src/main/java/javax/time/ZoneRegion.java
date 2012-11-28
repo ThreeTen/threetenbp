@@ -38,7 +38,6 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import javax.time.zone.TimeZoneException;
 import javax.time.zone.ZoneRules;
 import javax.time.zone.ZoneRulesProvider;
 
@@ -121,7 +120,8 @@ public final class ZoneRegion extends ZoneId implements Serializable {
     }
 
     private static void checkNotZoneOffset(String zoneId) {
-        if (zoneId.equals("Z") || zoneId.startsWith("UTC") || zoneId.startsWith("GMT")) {
+        if (zoneId.length() < 2 || zoneId.startsWith("UTC") ||
+                zoneId.startsWith("GMT") || (PATTERN.matcher(zoneId).matches() == false)) {
             throw new DateTimeException("Identifier is not valid for ZoneRegion");
         }
     }
@@ -137,14 +137,10 @@ public final class ZoneRegion extends ZoneId implements Serializable {
      */
     static ZoneRegion ofId(String zoneId, boolean checkAvailable) {
         Objects.requireNonNull(zoneId, "zoneId");
-        // check valid format
-        if (PATTERN.matcher(zoneId).matches() == false) {
-            throw new DateTimeException("Invalid time-zone ID: " + zoneId);
-        }
         ZoneRulesProvider provider = null;
         try {
             // always attempt load for better behavior after deserialization
-            provider = ZoneRulesProvider.getProvider("TZDB");
+            provider = ZoneRulesProvider.getProvider("TZDB");  // TODO: no support for pluggable time-zones
             if (checkAvailable && provider.isValid(zoneId, null) == false) {
                 throw new DateTimeException("Unknown time-zone: " + zoneId);
             }
@@ -191,17 +187,23 @@ public final class ZoneRegion extends ZoneId implements Serializable {
     }
 
     //-----------------------------------------------------------------------
+    private Object writeReplace() {
+        return new Ser(Ser.ZONE_REGION_TYPE, this);
+    }
+
+    @Override
+    void write(DataOutput out) throws IOException {
+        out.writeByte(Ser.ZONE_REGION_TYPE);
+        writeExternal(out);
+    }
+
     void writeExternal(DataOutput out) throws IOException {
-        out.writeUTF(getId());
+        out.writeUTF(id);
     }
 
     static ZoneId readExternal(DataInput in) throws IOException {
         String id = in.readUTF();
         return ofUnchecked(id);
-    }
-
-    private Object writeReplace() {
-        return new Ser(Ser.ZONE_REGION_TYPE, this);
     }
 
 }

@@ -104,7 +104,7 @@ public class TestZoneId extends AbstractTest {
 
     @Test(groups={"tck"})
     public void test_serialization_format() throws ClassNotFoundException, IOException {
-        assertEqualsSerialisedForm(ZoneId.of("Europe/London"), ZoneId.class);
+        assertEqualsSerialisedForm(ZoneId.of("Europe/London"), ZoneRegion.class);
     }
 
     //-----------------------------------------------------------------------

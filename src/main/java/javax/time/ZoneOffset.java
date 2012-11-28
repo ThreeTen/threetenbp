@@ -575,6 +575,12 @@ public final class ZoneOffset
         return new Ser(Ser.ZONE_OFFSET_TYPE, this);
     }
 
+    @Override
+    void write(DataOutput out) throws IOException {
+        out.writeByte(Ser.ZONE_OFFSET_TYPE);
+        writeExternal(out);
+    }
+
     void writeExternal(DataOutput out) throws IOException {
         final int offsetSecs = totalSeconds;
         int offsetByte = offsetSecs % 900 == 0 ? offsetSecs / 900 : 127;  // compress to -72 to +72

@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import java.io.DataOutput;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
@@ -41,6 +43,7 @@ import java.util.TimeZone;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAccessor.Query;
 import javax.time.format.TextStyle;
+import javax.time.zone.TimeZoneException;
 import javax.time.zone.ZoneRules;
 import javax.time.zone.ZoneRulesProvider;
 
@@ -432,5 +435,8 @@ public abstract class ZoneId {
     public String toString() {
         return getId();
     }
+
+    //-----------------------------------------------------------------------
+    abstract void write(DataOutput out) throws IOException;
 
 }

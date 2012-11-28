@@ -1794,11 +1794,8 @@ public final class ZonedDateTime
 
     void writeExternal(DataOutput out) throws IOException {
         dateTime.writeExternal(out);
-        if (zoneId instanceof ZoneOffset) {
-            ((ZoneOffset) zoneId).writeExternal(out);
-        } else {
-            ((ZoneRegion) zoneId).writeExternal(out);
-        }
+        offset.writeExternal(out);
+        zoneId.write(out);
     }
 
     static ZonedDateTime readExternal(DataInput in) throws IOException {

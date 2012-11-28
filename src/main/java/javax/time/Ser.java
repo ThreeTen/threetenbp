@@ -116,7 +116,7 @@ final class Ser implements Externalizable {
         writeInternal(type, object, out);
     }
 
-    private static void writeInternal(byte type, Object object, DataOutput out) throws IOException {
+    static void writeInternal(byte type, Object object, DataOutput out) throws IOException {
         out.writeByte(type);
         switch (type) {
             case DURATION_TYPE:
