@@ -31,8 +31,8 @@
  */
 package javax.time.jdk8;
 
-import static javax.time.calendrical.ChronoField.EPOCH_DAY;
-import static javax.time.calendrical.ChronoField.NANO_OF_DAY;
+import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
+import static javax.time.calendrical.ChronoField.INSTANT_SECONDS;
 import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
 
 import java.util.Objects;
@@ -41,13 +41,11 @@ import javax.time.DateTimeException;
 import javax.time.Instant;
 import javax.time.LocalTime;
 import javax.time.calendrical.ChronoField;
-import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.Chrono;
 import javax.time.chrono.ChronoLocalDate;
-import javax.time.chrono.ChronoLocalDateTime;
 import javax.time.chrono.ChronoZonedDateTime;
 import javax.time.format.DateTimeFormatter;
 
@@ -64,7 +62,10 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chrono<C>>
     @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof ChronoField) {
-            return getOffsetDateTime().range(field);
+            if (field == INSTANT_SECONDS || field == OFFSET_SECONDS) {
+                return field.range();
+            }
+            return getDateTime().range(field);
         }
         return field.doRange(this);
     }
@@ -76,7 +77,7 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chrono<C>>
                 case INSTANT_SECONDS: throw new DateTimeException("Field too large for an int: " + field);
                 case OFFSET_SECONDS: return getOffset().getTotalSeconds();
             }
-            return getOffsetDateTime().get(field);
+            return getDateTime().get(field);
         }
         return super.get(field);
     }
@@ -88,17 +89,12 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chrono<C>>
                 case INSTANT_SECONDS: return toEpochSecond();
                 case OFFSET_SECONDS: return getOffset().getTotalSeconds();
             }
-            return getOffsetDateTime().getLong(field);
+            return getDateTime().getLong(field);
         }
         return field.doGet(this);
     }
 
     //-----------------------------------------------------------------------
-    @Override
-    public ChronoLocalDateTime<C> getDateTime() {
-        return getOffsetDateTime().getDateTime();
-    }
-
     @Override
     public ChronoLocalDate<C> getDate() {
         return getDateTime().getDate();
@@ -132,14 +128,6 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chrono<C>>
 
     //-------------------------------------------------------------------------
     @Override
-    public DateTime doWithAdjustment(DateTime dateTime) {
-        return dateTime
-                .with(OFFSET_SECONDS, getOffset().getTotalSeconds())  // needs to be first
-                .with(EPOCH_DAY, getDate().toEpochDay())
-                .with(NANO_OF_DAY, getTime().toNanoOfDay());
-    }
-
-    @Override
     public <R> R query(Query<R> query) {
         if (query == Query.ZONE_ID) {
             return (R) getZone();
@@ -152,37 +140,56 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chrono<C>>
     //-------------------------------------------------------------------------
     @Override
     public Instant toInstant() {
-        return getOffsetDateTime().toInstant();
+        return Instant.ofEpochSecond(toEpochSecond(), getTime().getNano());
     }
 
     @Override
     public long toEpochSecond() {
-        return getOffsetDateTime().toEpochSecond();
+        long epochDay = getDate().toEpochDay();
+        long secs = epochDay * SECONDS_PER_DAY + getTime().toSecondOfDay();
+        secs -= getOffset().getTotalSeconds();
+        return secs;
     }
 
     //-------------------------------------------------------------------------
     @Override
     public int compareTo(ChronoZonedDateTime<?> other) {
-        int cmp = getOffsetDateTime().compareTo(other.getOffsetDateTime());
+        int cmp = Long.compare(toEpochSecond(), other.toEpochSecond());
         if (cmp == 0) {
-            cmp = getZone().getId().compareTo(other.getZone().getId());
+            cmp = getTime().getNano() - other.getTime().getNano();
+            if (cmp == 0) {
+                cmp = getDateTime().compareTo(other.getDateTime());
+                if (cmp == 0) {
+                    cmp = getZone().getId().compareTo(other.getZone().getId());
+                    if (cmp == 0) {
+                        cmp = getDate().getChrono().compareTo(other.getDate().getChrono());
+                    }
+                }
+            }
         }
         return cmp;
     }
 
     @Override
     public boolean isAfter(ChronoZonedDateTime<?> other) {
-        return getOffsetDateTime().isAfter(other.getOffsetDateTime());
+        long thisEpochSec = toEpochSecond();
+        long otherEpochSec = other.toEpochSecond();
+        return thisEpochSec > otherEpochSec ||
+            (thisEpochSec == otherEpochSec && getTime().getNano() > other.getTime().getNano());
     }
 
     @Override
     public boolean isBefore(ChronoZonedDateTime<?> other) {
-        return getOffsetDateTime().isBefore(other.getOffsetDateTime());
+        long thisEpochSec = toEpochSecond();
+        long otherEpochSec = other.toEpochSecond();
+        return thisEpochSec < otherEpochSec ||
+            (thisEpochSec == otherEpochSec && getTime().getNano() < other.getTime().getNano());
     }
 
     @Override
     public boolean isEqual(ChronoZonedDateTime<?> other) {
-        return getOffsetDateTime().isEqual(other.getOffsetDateTime());
+        return toEpochSecond() == other.toEpochSecond() &&
+                getTime().getNano() == other.getTime().getNano();
     }
 
     //-------------------------------------------------------------------------
@@ -199,13 +206,17 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chrono<C>>
 
     @Override
     public int hashCode() {
-        return getOffsetDateTime().hashCode() ^ getZone().hashCode();
+        return getDateTime().hashCode() ^ getOffset().hashCode() ^ Integer.rotateLeft(getZone().hashCode(), 3);
     }
 
     //-------------------------------------------------------------------------
     @Override
     public String toString() {
-        return getOffsetDateTime().toString() + '[' + getZone().toString() + ']';
+        String str = getDateTime().toString() + getOffset().toString();
+        if (getOffset() != getZone()) {
+            str += '[' + getZone().toString() + ']';
+        }
+        return str;
     }
 
     @Override

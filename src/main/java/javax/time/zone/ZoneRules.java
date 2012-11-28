@@ -36,12 +36,8 @@ import java.util.List;
 import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.LocalDateTime;
-import javax.time.OffsetDate;
-import javax.time.OffsetDateTime;
-import javax.time.OffsetTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
-import javax.time.ZonedDateTime;
 
 /**
  * The rules defining how the zone offset varies for a single time-zone.
@@ -74,10 +70,6 @@ public interface ZoneRules {
 
     /**
      * Checks of the zone rules are fixed, such that the offset never varies.
-     * <p>
-     * It is intended that {@link OffsetDateTime}, {@link OffsetDate} and
-     * {@link OffsetTime} are used in preference to fixed offset time-zones
-     * in {@link ZonedDateTime}.
      *
      * @return true if the time-zone is fixed and the offset never changes
      */

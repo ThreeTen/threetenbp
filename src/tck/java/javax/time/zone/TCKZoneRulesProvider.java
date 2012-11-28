@@ -43,7 +43,6 @@ import java.util.TreeSet;
 import javax.time.DateTimeException;
 import javax.time.DayOfWeek;
 import javax.time.Month;
-import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 
 import org.testng.annotations.Test;
@@ -151,7 +150,7 @@ public class TCKZoneRulesProvider {
         @Override
         public ZoneRules getRules(String regionId, String versionId) {
             if (isValid(regionId, versionId)) {
-                return ZoneId.of(ZoneOffset.of("+01:45")).getRules();
+                return ZoneOffset.of("+01:45").getRules();
             }
             throw new DateTimeException("Invalid");
         }
@@ -347,9 +346,9 @@ public class TCKZoneRulesProvider {
         public ZoneRules getRules(String regionId, String versionId) {
             if (isValid(regionId, versionId)) {
                 if (regionId.equals("NewPlace")) {
-                    return ZoneId.of(ZoneOffset.of("+01:00")).getRules();
+                    return ZoneOffset.of("+01:00").getRules();
                 } else {
-                    return ZoneId.of(ZoneOffset.of("+02:45")).getRules();
+                    return ZoneOffset.of("+02:45").getRules();
                 }
             }
             throw new DateTimeException("Invalid");

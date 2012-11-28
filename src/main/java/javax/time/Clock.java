@@ -108,7 +108,7 @@ public abstract class Clock {
      * @return a clock that uses the best available system clock in the UTC zone, not null
      */
     public static Clock systemUTC() {
-        return new SystemClock(ZoneId.UTC);
+        return new SystemClock(ZoneOffset.UTC);
     }
 
     /**
@@ -234,7 +234,7 @@ public abstract class Clock {
      */
     public static Clock fixedUTC(Instant fixedInstant) {
         Objects.requireNonNull(fixedInstant, "fixedInstant");
-        return new FixedClock(fixedInstant, ZoneId.UTC);
+        return new FixedClock(fixedInstant, ZoneOffset.UTC);
     }
 
     /**

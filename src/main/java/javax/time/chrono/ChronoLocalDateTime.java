@@ -39,14 +39,14 @@ import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
+import javax.time.ZoneRegion;
+import javax.time.ZonedDateTime;
 import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.DateTimeFormatter;
-import javax.time.zone.ZoneResolver;
-import javax.time.zone.ZoneResolvers;
 
 /**
  * A date-time without a time-zone in an arbitrary chronology, intended
@@ -81,7 +81,7 @@ public interface ChronoLocalDateTime<C extends Chrono<C>>
         extends  DateTime, WithAdjuster, Comparable<ChronoLocalDateTime<?>> {
 
    /**
-     * Comparator for two {@code ChronoLocalDateTime}s ignoring the chronology.
+     * Comparator for two {@code ChronoLocalDateTime} instances ignoring the chronology.
      * <p>
      * This method differs from the comparison in {@link #compareTo} in that it
      * only compares the underlying date and not the chronology.
@@ -146,29 +146,27 @@ public interface ChronoLocalDateTime<C extends Chrono<C>>
 
     //-----------------------------------------------------------------------
     /**
-     * Returns an offset date-time formed from this date-time and the specified offset.
-     * <p>
-     * The result will be the combination of this date-time and the specified offset.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param offset  the offset to use, not null
-     * @return the offset date-time formed from this date-time and the specified offset, not null
-     */
-    ChronoOffsetDateTime<C> atOffset(ZoneOffset offset);
-
-    /**
      * Returns a zoned date-time formed from this date-time and the specified time-zone.
      * <p>
-     * Time-zone rules, such as daylight savings, mean that not every time on the
-     * local time-line exists. If the local date-time is in a gap or overlap according to
-     * the rules then a resolver is used to determine the resultant local time and offset.
-     * This method uses the {@link ZoneResolvers#postGapPreOverlap() post-gap pre-overlap} resolver.
-     * This selects the date-time immediately after a gap and the earlier offset in overlaps.
+     * This creates a zoned date-time matching the input date-time as closely as possible.
+     * Time-zone rules, such as daylight savings, mean that not every local date-time
+     * is valid for the specified zone, thus the local date-time may be adjusted.
      * <p>
-     * Finer control over gaps and overlaps is available in two ways.
-     * If you simply want to use the later offset at overlaps then call
-     * {@link javax.time.ZonedDateTime#withLaterOffsetAtOverlap()} immediately after this method.
+     * The local date-time is resolved to a single instant on the time-line.
+     * This is achieved by finding a valid offset for the local date-time.
+     * If the {@code ZoneId} is a {@link ZoneOffset} then that offset is used, however if
+     * it is a {@link ZoneRegion} where the offset can vary, an offset must be calculated.
+     *<p>
+     * In most cases, there is only one valid offset for a local date-time.
+     * In the case of an overlap, there are two valid offsets, and the earlier one is used,
+     * typically corresponding to "summer".
+     * In the case of a gap, the earlier offset is used to calculate the instant.
+     * The instant is then used to find the valid offset, adjusting the local date-time.
+     * The result will typically be a local date-time that is one hour later, or however
+     * long the gap is, using the later offset typically corresponding to "summer".
+     * <p>
+     * To obtain the later offset during an overlap, call
+     * {@link ZonedDateTime#withLaterOffsetAtOverlap()} on the result of this method.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -176,26 +174,6 @@ public interface ChronoLocalDateTime<C extends Chrono<C>>
      * @return the zoned date-time formed from this date-time, not null
      */
     ChronoZonedDateTime<C> atZone(ZoneId zone);
-
-    /**
-     * Returns a zoned date-time formed from this date-time and the specified time-zone.
-     * <p>
-     * Time-zone rules, such as daylight savings, mean that not every time on the
-     * local time-line exists. If the local date-time is in a gap or overlap according to
-     * the rules then a resolver is used to determine the resultant local time and offset.
-     * This method uses the {@link ZoneResolvers#postGapPreOverlap() post-gap pre-overlap} resolver.
-     * This selects the date-time immediately after a gap and the earlier offset in overlaps.
-     * <p>
-     * Finer control over gaps and overlaps is available in two ways.
-     * If you simply want to use the later offset at overlaps then call
-     * {@link javax.time.ZonedDateTime#withLaterOffsetAtOverlap()} immediately after this method.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param zone  the time-zone to use, not null
-     * @return the zoned date-time formed from this date-time, not null
-     */
-    ChronoZonedDateTime<C> atZone(ZoneId zone, ZoneResolver resolver);
 
     //-----------------------------------------------------------------------
     /**

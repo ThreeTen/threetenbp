@@ -51,7 +51,6 @@ import java.util.Objects;
 import javax.time.DateTimeException;
 import javax.time.LocalTime;
 import javax.time.ZoneId;
-import javax.time.ZoneOffset;
 import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
@@ -61,8 +60,6 @@ import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.jdk8.DefaultInterfaceChronoLocalDateTime;
 import javax.time.jdk8.Jdk8Methods;
-import javax.time.zone.ZoneResolver;
-import javax.time.zone.ZoneResolvers;
 
 /**
  * A date-time without a time-zone for the calendar neutral API.
@@ -279,18 +276,8 @@ final class ChronoDateTimeImpl<C extends Chrono<C>>
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoOffsetDateTime<C> atOffset(ZoneOffset offset) {
-        return ChronoOffsetDateTimeImpl.of(this, offset);
-    }
-
-    @Override
-    public ChronoZonedDateTime<C> atZone(ZoneId zone) {
-        return ChronoZonedDateTimeImpl.of(this, zone, ZoneResolvers.postGapPreOverlap());
-    }
-
-    @Override
-    public ChronoZonedDateTime<C> atZone(ZoneId zone, ZoneResolver resolver) {
-        return ChronoZonedDateTimeImpl.of(this, zone, resolver);
+    public ChronoZonedDateTime<C> atZone(ZoneId zoneId) {
+        return ChronoZonedDateTimeImpl.ofBest(this, zoneId, null);
     }
 
     //-----------------------------------------------------------------------
@@ -301,6 +288,9 @@ final class ChronoDateTimeImpl<C extends Chrono<C>>
         }
         @SuppressWarnings("unchecked")
         ChronoLocalDateTime<C> end = (ChronoLocalDateTime<C>) endDateTime;
+        if (getDate().getChrono().equals(end.getDate().getChrono()) == false) {
+            throw new DateTimeException("Unable to calculate period between two different chronologies");
+        }
         if (unit instanceof ChronoUnit) {
             ChronoUnit f = (ChronoUnit) unit;
             if (f.isTimeUnit()) {

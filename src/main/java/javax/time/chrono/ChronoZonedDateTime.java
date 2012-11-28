@@ -41,13 +41,9 @@ import javax.time.ZoneOffset;
 import javax.time.ZonedDateTime;
 import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTime.WithAdjuster;
-import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.DateTimeFormatter;
-import javax.time.zone.ZoneResolver;
-import javax.time.zone.ZoneResolvers;
 
 /**
  * A date-time with a time-zone in an arbitrary chronology,
@@ -79,10 +75,10 @@ import javax.time.zone.ZoneResolvers;
  * @param <C> the chronology of this date-time
  */
 public interface ChronoZonedDateTime<C extends Chrono<C>>
-        extends DateTime, WithAdjuster, Comparable<ChronoZonedDateTime<?>> {
+        extends DateTime, Comparable<ChronoZonedDateTime<?>> {
 
     /**
-     * Comparator for two {@code ChronoZonedDateTime}s ignoring the chronology.
+     * Comparator for two {@code ChronoZonedDateTime} instances ignoring the chronology.
      * <p>
      * This method differs from the comparison in {@link #compareTo} in that it
      * only compares the underlying date and not the chronology.
@@ -93,12 +89,14 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
      * @see #isBefore
      * @see #isEqual
      */
-    Comparator<ChronoZonedDateTime<?>> INSTANT_COMPARATOR =
-            new Comparator<ChronoZonedDateTime<?>>() {
+    Comparator<ChronoZonedDateTime<?>> INSTANT_COMPARATOR = new Comparator<ChronoZonedDateTime<?>>() {
         @Override
         public int compare(ChronoZonedDateTime<?> datetime1, ChronoZonedDateTime<?> datetime2) {
-            return ChronoOffsetDateTime.INSTANT_COMPARATOR
-                    .compare(datetime1.getOffsetDateTime(), datetime2.getOffsetDateTime());
+            int cmp = Long.compare(datetime1.toEpochSecond(), datetime2.toEpochSecond());
+            if (cmp == 0) {
+                cmp = Long.compare(datetime1.getTime().toNanoOfDay(), datetime2.getTime().toNanoOfDay());
+            }
+            return cmp;
         }
     };
 
@@ -142,11 +140,11 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
     ZoneOffset getOffset();
 
     /**
-     * Gets the time-zone, such as 'Europe/Paris'.
+     * Gets the zone ID, such as 'Europe/Paris'.
      * <p>
      * This returns the stored time-zone id used to determine the time-zone rules.
      *
-     * @return the time-zone, not null
+     * @return the zone ID, not null
      */
     ZoneId getZone();
 
@@ -185,7 +183,7 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the later offset, not null
+     * @return a {@code ChronoZonedDateTime} based on this date-time with the later offset, not null
      * @throws DateTimeException if no rules can be found for the zone
      * @throws DateTimeException if no rules are valid for this date-time
      */
@@ -193,41 +191,21 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this date-time with a different time-zone,
+     * Returns a copy of this ZonedDateTime with a different time-zone,
      * retaining the local date-time if possible.
      * <p>
      * This method changes the time-zone and retains the local date-time.
      * The local date-time is only changed if it is invalid for the new zone.
-     * In that case, the {@link ZoneResolvers#retainOffset() retain offset} resolver is used.
      * <p>
      * To change the zone and adjust the local date-time,
      * use {@link #withZoneSameInstant(ZoneId)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param zone  the time-zone to change to, not null
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the requested zone, not null
+     * @param zoneId  the time-zone to change to, not null
+     * @return a {@code ChronoZonedDateTime} based on this date-time with the requested zone, not null
      */
-    ChronoZonedDateTime<C> withZoneSameLocal(ZoneId zone);
-
-    /**
-     * Returns a copy of this date-time with a different time-zone,
-     * retaining the local date-time if possible.
-     * <p>
-     * This method changes the time-zone and retains the local date-time.
-     * The local date-time is only changed if it is invalid for the new zone.
-     * In that case, the specified resolver is used.
-     * <p>
-     * To change the zone and adjust the local date-time,
-     * use {@link #withZoneSameInstant(ZoneId)}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param zone  the time-zone to change to, not null
-     * @param resolver  the resolver to use, not null
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the requested zone, not null
-     */
-    ChronoZonedDateTime<C> withZoneSameLocal(ZoneId zone, ZoneResolver resolver);
+    ChronoZonedDateTime<C> withZoneSameLocal(ZoneId zoneId);
 
     /**
      * Returns a copy of this date-time with a different time-zone,
@@ -242,42 +220,11 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
      * To change the offset while keeping the local time,
      * use {@link #withZoneSameLocal(ZoneId)}.
      *
-     * @param zone  the time-zone to change to, not null
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the requested zone, not null
+     * @param zoneId  the time-zone to change to, not null
+     * @return a {@code ChronoZonedDateTime} based on this date-time with the requested zone, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    ChronoZonedDateTime<C> withZoneSameInstant(ZoneId zone);
-
-    /**
-     * Returns an adjusted date-time based on this date-time
-     * providing a resolver for invalid date-times.
-     * <p>
-     * This adjusts the date-time according to the rules of the specified adjuster.
-     * A simple adjuster might simply set the one of the fields, such as the year field.
-     * A more complex adjuster might set the date-time to the last day of the month.
-     * A selection of common adjustments is provided in {@link DateTimeAdjusters}.
-     * These include finding the "last day of the month" and "next Wednesday".
-     * The adjuster is responsible for handling special cases, such as the varying
-     * lengths of month and leap years.
-     * <p>
-     * In addition, all principal classes implement the {@link WithAdjuster} interface,
-     * including this one. For example, {@link ChronoLocalDate} implements the adjuster interface.
-     * As such, this code will compile and run:
-     * <pre>
-     *  dateTime.with(date);
-     * </pre>
-     * <p>
-     * If the adjusted date results in a date-time that is invalid, then the
-     * specified resolver is used.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param adjuster the adjuster to use, not null
-     * @param resolver  the resolver to use, not null
-     * @return a {@code ZoneChronoDateTime} based on this date-time with the adjustment made, not null
-     * @throws DateTimeException if the adjustment cannot be made
-     */
-    ChronoZonedDateTime<C> with(WithAdjuster adjuster, ZoneResolver resolver);
+    ChronoZonedDateTime<C> withZoneSameInstant(ZoneId zoneId);
 
     //-------------------------------------------------------------------------
     // override for covariant return type
@@ -309,13 +256,6 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
      * @return an {@code Instant} representing the same instant, not null
      */
     Instant toInstant();
-
-    /**
-     * Converts this date-time to an {@code OffsetDateTime}.
-     *
-     * @return an {@code OffsetDateTime} representing the fields of this date-time, not null
-     */
-    ChronoOffsetDateTime<C> getOffsetDateTime();
 
     /**
      * Converts this date-time to the number of seconds from the epoch

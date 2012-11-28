@@ -56,7 +56,6 @@ import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
 import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
 import javax.time.jdk8.Jdk8Methods;
-import javax.time.zone.ZoneResolvers;
 
 /**
  * A date with a zone offset from UTC/Greenwich in the ISO-8601 calendar system,
@@ -786,115 +785,18 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns an offset date-time formed from this date at the specified time.
+     * Returns a zoned date-time formed from this date at the specified time.
      * <p>
      * This merges the two objects - {@code this} and the specified time -
-     * to form an instance of {@code OffsetDateTime}.
-     * If the offset of the time differs from the offset of the date, then the
-     * result will have the offset of the date and the time will be adjusted to match.
+     * to form an instance of {@code ZonedDateTime}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param time  the time to use, not null
-     * @return the offset date-time formed from this date and the specified time, not null
+     * @param time  the time to combine with, not null
+     * @return the zoned date-time formed from this date and the specified time, not null
      */
-    public OffsetDateTime atTime(OffsetTime time) {
-        return date.atTime(time.withOffsetSameInstant(offset));
-    }
-
-    /**
-     * Returns an offset date-time formed from this date at the specified time.
-     * <p>
-     * This merges the two objects - {@code this} and the specified time -
-     * to form an instance of {@code OffsetDateTime}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param time  the time to use, not null
-     * @return the offset date-time formed from this date and the specified time, not null
-     */
-    public OffsetDateTime atTime(LocalTime time) {
-        return OffsetDateTime.of(date, time, offset);
-    }
-
-    /**
-     * Returns an offset date-time formed from this date at the specified time.
-     * <p>
-     * This merges the three values - {@code this} and the specified time -
-     * to form an instance of {@code OffsetDateTime}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hour  the hour-of-day to use, from 0 to 23
-     * @param minute  the minute-of-hour to use, from 0 to 59
-     * @return the offset date-time formed from this date and the specified time, not null
-     * @throws DateTimeException if the value of any field is out of range
-     */
-    public OffsetDateTime atTime(int hour, int minute) {
-        return atTime(LocalTime.of(hour, minute));
-    }
-
-    /**
-     * Returns an offset date-time formed from this date at the specified time.
-     * <p>
-     * This merges the four values - {@code this} and the specified time -
-     * to form an instance of {@code OffsetDateTime}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hour  the hour-of-day to use, from 0 to 23
-     * @param minute  the minute-of-hour to use, from 0 to 59
-     * @param second  the second-of-minute to represent, from 0 to 59
-     * @return the offset date-time formed from this date and the specified time, not null
-     * @throws DateTimeException if the value of any field is out of range
-     */
-    public OffsetDateTime atTime(int hour, int minute, int second) {
-        return atTime(LocalTime.of(hour, minute, second));
-    }
-
-    /**
-     * Returns an offset date-time formed from this date at the specified time.
-     * <p>
-     * This merges the five values - {@code this} and the specified time -
-     * to form an instance of {@code OffsetDateTime}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hour  the hour-of-day to use, from 0 to 23
-     * @param minute  the minute-of-hour to use, from 0 to 59
-     * @param second  the second-of-minute to represent, from 0 to 59
-     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
-     * @return the offset date-time formed from this date and the specified time, not null
-     * @throws DateTimeException if the value of any field is out of range
-     */
-    public OffsetDateTime atTime(int hour, int minute, int second, int nanoOfSecond) {
-        return atTime(LocalTime.of(hour, minute, second, nanoOfSecond));
-    }
-
-    /**
-     * Returns a zoned date-time from this date at the earliest valid time according
-     * to the rules in the time-zone ignoring the current offset.
-     * <p>
-     * Time-zone rules, such as daylight savings, mean that not every time on the
-     * local time-line exists. If the local date is in a gap or overlap according to
-     * the rules then a resolver is used to determine the resultant local time and offset.
-     * This method uses the {@link ZoneResolvers#postGapPreOverlap() post-gap pre-overlap} resolver.
-     * This selects the date-time immediately after a gap and the earlier offset in overlaps.
-     * This combination chooses the earliest valid local time on the date, typically midnight.
-     * <p>
-     * To convert to a specific time in a given time-zone call {@link #atTime(LocalTime)}
-     * followed by {@link OffsetDateTime#atZoneSimilarLocal(ZoneId)}.
-     * <p>
-     * The offset from this date is ignored during the conversion.
-     * This ensures that the resultant date-time has the same date as this.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param zone  the time-zone to use, not null
-     * @return the zoned date-time formed from this date and the earliest valid time for the zone, not null
-     */
-    public ZonedDateTime atStartOfDay(ZoneId zone) {
-        return ZonedDateTime.of(date, LocalTime.MIDNIGHT, zone, ZoneResolvers.postGapPreOverlap());
+    public ZonedDateTime atTime(LocalTime time) {
+        return date.atTime(time).atZone(offset);
     }
 
     //-----------------------------------------------------------------------

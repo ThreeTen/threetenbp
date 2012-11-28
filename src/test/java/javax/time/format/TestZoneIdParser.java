@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.time.ZoneId;
+import javax.time.ZoneOffset;
 import javax.time.format.DateTimeFormatterBuilder.ZoneIdPrinterParser;
 import javax.time.zone.ZoneRulesProvider;
 
@@ -115,13 +116,7 @@ public class TestZoneIdParser extends AbstractTestPrinterParser {
         List<String> ids = new ArrayList<>();
         Set<String> groupIds = ZoneRulesProvider.getAvailableGroupIds();
         for (String groupId : groupIds) {
-            Set<String> regionIds = ZoneRulesProvider.getProvider(groupId).getAvailableRegionIds();
-            for (String regionId : regionIds) {
-                ids.add(groupId + ":" + regionId);
-                if (groupId.equals("TZDB")) {
-                    ids.add(regionId);
-                }
-            }
+            ids.addAll(ZoneRulesProvider.getProvider(groupId).getAvailableRegionIds());
         }
         Object[][] rtnval = new Object[ids.size()][];
         int i = 0;
@@ -142,30 +137,30 @@ public class TestZoneIdParser extends AbstractTestPrinterParser {
     //-----------------------------------------------------------------------
     public void test_parse_endStringMatch_utc() throws Exception {
         ZoneIdPrinterParser pp = new ZoneIdPrinterParser(null);
-        int result = pp.parse(parseContext, "OTHERUTC", 5);
-        assertEquals(result, 8);
-        assertParsed(ZoneId.UTC);
+        int result = pp.parse(parseContext, "OTHERZ", 5);
+        assertEquals(result, 6);
+        assertParsed(ZoneOffset.UTC);
     }
 
     public void test_parse_endStringMatch_utc_plus1() throws Exception {
         ZoneIdPrinterParser pp = new ZoneIdPrinterParser(null);
-        int result = pp.parse(parseContext, "OTHERUTC+01:00", 5);
-        assertEquals(result, 14);
+        int result = pp.parse(parseContext, "OTHER+01:00", 5);
+        assertEquals(result, 11);
         assertParsed(ZoneId.of("UTC+01:00"));
     }
 
     //-----------------------------------------------------------------------
     public void test_parse_midStringMatch_utc() throws Exception {
         ZoneIdPrinterParser pp = new ZoneIdPrinterParser(null);
-        int result = pp.parse(parseContext, "OTHERUTCOTHER", 5);
-        assertEquals(result, 8);
-        assertParsed(ZoneId.UTC);
+        int result = pp.parse(parseContext, "OTHERZOTHER", 5);
+        assertEquals(result, 6);
+        assertParsed(ZoneOffset.UTC);
     }
 
     public void test_parse_midStringMatch_utc_plus1() throws Exception {
         ZoneIdPrinterParser pp = new ZoneIdPrinterParser(null);
-        int result = pp.parse(parseContext, "OTHERUTC+01:00OTHER", 5);
-        assertEquals(result, 14);
+        int result = pp.parse(parseContext, "OTHER+01:00OTHER", 5);
+        assertEquals(result, 11);
         assertParsed(ZoneId.of("UTC+01:00"));
     }
 

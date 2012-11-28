@@ -43,8 +43,6 @@ import javax.time.Instant;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.Month;
-import javax.time.OffsetDateTime;
-import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
@@ -61,11 +59,10 @@ public class TCKFixedZoneRules {
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
     private static final ZoneOffset OFFSET_M18 = ZoneOffset.ofHours(-18);
     private static final LocalDateTime LDT = LocalDateTime.of(2010, 12, 3, 11, 30);
-    private static final OffsetDateTime ODT = OffsetDateTime.of(2010, 12, 3, 11, 30, OFFSET_PONE);
-    private static final Instant INSTANT = ODT.toInstant();
+    private static final Instant INSTANT = LDT.toInstant(OFFSET_PONE);
 
     private ZoneRules make(ZoneOffset offset) {
-        return ZoneId.of(offset).getRules();
+        return offset.getRules();
     }
 
     @DataProvider(name="rules")

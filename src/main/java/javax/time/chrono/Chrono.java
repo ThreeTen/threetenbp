@@ -305,23 +305,6 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
     }
 
     /**
-     * Casts the {@code DateTime} to {@code ChronoOffsetDateTime} with the same chronology.
-     *
-     * @param dateTime  a date-time to cast, not null
-     * @return the date-time checked and cast to {@code ChronoOffsetDateTime}, not null
-     * @throws ClassCastException if the date-time cannot be cast to ChronoOffsetDateTimeImpl
-     *  or the chronology is not equal this Chrono
-     */
-    public /* package-scoped */ ChronoOffsetDateTimeImpl<C> ensureChronoOffsetDateTime(DateTime dateTime) {
-        ChronoOffsetDateTimeImpl<C> other = (ChronoOffsetDateTimeImpl<C>) dateTime;
-        if (this.equals(other.getDate().getChrono()) == false) {
-            throw new ClassCastException("Chrono mismatch, required: " + getId()
-                    + ", supplied: " + other.getDate().getChrono().getId());
-        }
-        return other;
-    }
-
-    /**
      * Casts the {@code DateTime} to {@code ChronoZonedDateTimeImpl} with the same chronology.
      *
      * @param dateTime  a date-time to cast, not null

@@ -336,8 +336,6 @@ public final class LocalTime
             return (LocalTime) dateTime;
         } else if (dateTime instanceof LocalDateTime) {
             return ((LocalDateTime) dateTime).getTime();
-        } else if (dateTime instanceof OffsetDateTime) {
-            return ((OffsetDateTime) dateTime).getTime();
         } else if (dateTime instanceof ZonedDateTime) {
             return ((ZonedDateTime) dateTime).getTime();
         }
@@ -906,18 +904,18 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns an offset time formed from this time and the specified offset.
+     * Returns a local date-time formed from this time at the specified date.
      * <p>
-     * This merges the two objects - {@code this} and the specified offset -
-     * to form an instance of {@code OffsetTime}.
+     * This merges the two objects - {@code this} and the specified date -
+     * to form an instance of {@code LocalDateTime}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param offset  the offset to use, not null
-     * @return the offset time formed from this time and the specified offset, not null
+     * @param date  the date to combine with, not null
+     * @return the local date-time formed from this time and the specified date, not null
      */
-    public OffsetTime atOffset(ZoneOffset offset) {
-        return OffsetTime.of(this, offset);
+    public LocalDateTime atDate(LocalDate date) {
+        return LocalDateTime.of(date, this);
     }
 
     //-----------------------------------------------------------------------

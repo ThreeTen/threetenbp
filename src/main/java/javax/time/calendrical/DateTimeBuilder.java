@@ -55,7 +55,6 @@ import static javax.time.calendrical.ChronoField.MINUTE_OF_HOUR;
 import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
 import static javax.time.calendrical.ChronoField.NANO_OF_DAY;
 import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
-import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
 import static javax.time.calendrical.ChronoField.SECOND_OF_DAY;
 import static javax.time.calendrical.ChronoField.SECOND_OF_MINUTE;
 import static javax.time.calendrical.ChronoField.YEAR;
@@ -346,9 +345,7 @@ public final class DateTimeBuilder
             }
             return this;
         }
-        if (object instanceof ZoneOffset) {
-            addFieldValue(OFFSET_SECONDS, ((ZoneOffset) object).getTotalSeconds());
-        } else if (object instanceof Instant) {
+        if (object instanceof Instant) {
             addFieldValue(INSTANT_SECONDS, ((Instant) object).getEpochSecond());
             addFieldValue(NANO_OF_SECOND, ((Instant) object).getNano());
         } else {
@@ -605,7 +602,11 @@ public final class DateTimeBuilder
     @Override
     public <R> R query(Query<R> query) {
         if (query == Query.ZONE_ID) {
-            return extract(ZoneId.class);
+            R zone = extract(ZoneId.class);
+            if (zone == null) {
+                zone = extract(ZoneOffset.class);
+            }
+            return zone;
         }
         if (query == Query.CHRONO) {
             return extract(Chrono.class);

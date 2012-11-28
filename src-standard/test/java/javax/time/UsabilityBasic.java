@@ -183,7 +183,7 @@ public final class UsabilityBasic {
     private static void resolve3() {
         DateTimeBuilder builder = new DateTimeBuilder();
         builder.addCalendrical(LocalDate.of(2012, 1, 2));
-        builder.addCalendrical(OffsetDateTime.of(2012, 4, 3, 12, 30, ZoneOffset.ofHours(2)));
+        builder.addCalendrical(ZonedDateTime.of(LocalDateTime.of(2012, 4, 3, 12, 30), ZoneOffset.ofHours(2)));
         System.out.println("Setup: " + builder);
         try {
             builder.resolve();

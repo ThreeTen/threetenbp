@@ -73,6 +73,7 @@ public class TestZoneOffset extends AbstractDateTimeTest {
         assertEqualsSerialisedForm(ZoneOffset.of("+18:00"));
     }
 
+    //-----------------------------------------------------------------------
     @Override
     protected List<DateTimeField> validFields() {
         DateTimeField[] array = {

@@ -728,6 +728,22 @@ public final class OffsetTime
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Returns a zoned date-time formed from this time at the specified date.
+     * <p>
+     * This merges the two objects - {@code this} and the specified date -
+     * to form an instance of {@code ZonedDateTime}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param date  the date to combine with, not null
+     * @return the zoned date-time formed from this time and the specified date, not null
+     */
+    public ZonedDateTime atDate(LocalDate date) {
+        return date.atTime(time).atZone(offset);
+    }
+
+    //-----------------------------------------------------------------------
     @Override
     public DateTime doWithAdjustment(DateTime dateTime) {
         return dateTime

@@ -74,15 +74,15 @@ final class Ser implements Externalizable {
     static final byte LOCAL_DATE_TYPE = 3;
     static final byte LOCAL_DATE_TIME_TYPE = 4;
     static final byte LOCAL_TIME_TYPE = 5;
-    static final byte MONTH_DAY_TYPE = 6;
-    static final byte OFFSET_DATE_TYPE = 7;
-    static final byte OFFSET_DATE_TIME_TYPE = 8;
-    static final byte OFFSET_TIME_TYPE = 9;
-    static final byte YEAR_TYPE = 10;
-    static final byte YEAR_MONTH_TYPE = 11;
-    static final byte ZONED_DATE_TIME_TYPE = 12;
-    static final byte ZONE_ID_TYPE = 13;
-    static final byte ZONE_OFFSET_TYPE = 14;
+    static final byte ZONED_DATE_TIME_TYPE = 6;
+    static final byte ZONE_REGION_TYPE = 7;
+    static final byte ZONE_OFFSET_TYPE = 8;
+
+    static final byte MONTH_DAY_TYPE = 64;
+    static final byte OFFSET_DATE_TYPE = 65;
+    static final byte OFFSET_TIME_TYPE = 66;
+    static final byte YEAR_TYPE = 67;
+    static final byte YEAR_MONTH_TYPE = 68;
 
     /** The type being serialized. */
     private byte type;
@@ -116,7 +116,7 @@ final class Ser implements Externalizable {
         writeInternal(type, object, out);
     }
 
-    private static void writeInternal(byte type, Object object, DataOutput out) throws IOException {
+    static void writeInternal(byte type, Object object, DataOutput out) throws IOException {
         out.writeByte(type);
         switch (type) {
             case DURATION_TYPE:
@@ -140,9 +140,6 @@ final class Ser implements Externalizable {
             case OFFSET_DATE_TYPE:
                 ((OffsetDate) object).writeExternal(out);
                 break;
-            case OFFSET_DATE_TIME_TYPE:
-                ((OffsetDateTime) object).writeExternal(out);
-                break;
             case OFFSET_TIME_TYPE:
                 ((OffsetTime) object).writeExternal(out);
                 break;
@@ -152,8 +149,8 @@ final class Ser implements Externalizable {
             case YEAR_TYPE:
                 ((Year) object).writeExternal(out);
                 break;
-            case ZONE_ID_TYPE:
-                ((ZoneId) object).writeExternal(out);
+            case ZONE_REGION_TYPE:
+                ((ZoneRegion) object).writeExternal(out);
                 break;
             case ZONE_OFFSET_TYPE:
                 ((ZoneOffset) object).writeExternal(out);
@@ -172,17 +169,17 @@ final class Ser implements Externalizable {
      *
      * @param in  the data to read, not null
      */
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    public void readExternal(ObjectInput in) throws IOException {
         type = in.readByte();
         object = readInternal(type, in);
     }
 
-    static Object read(DataInput in) throws IOException, ClassNotFoundException {
+    static Object read(DataInput in) throws IOException {
         byte type = in.readByte();
         return readInternal(type, in);
     }
 
-    private static Object readInternal(byte type, DataInput in) throws IOException, ClassNotFoundException {
+    private static Object readInternal(byte type, DataInput in) throws IOException {
         switch (type) {
             case DURATION_TYPE: return Duration.readExternal(in);
             case INSTANT_TYPE: return Instant.readExternal(in);
@@ -191,13 +188,12 @@ final class Ser implements Externalizable {
             case LOCAL_TIME_TYPE: return LocalTime.readExternal(in);
             case MONTH_DAY_TYPE: return MonthDay.readExternal(in);
             case OFFSET_DATE_TYPE: return OffsetDate.readExternal(in);
-            case OFFSET_DATE_TIME_TYPE: return OffsetDateTime.readExternal(in);
             case OFFSET_TIME_TYPE: return OffsetTime.readExternal(in);
             case YEAR_TYPE: return Year.readExternal(in);
             case YEAR_MONTH_TYPE: return YearMonth.readExternal(in);
             case ZONED_DATE_TIME_TYPE: return ZonedDateTime.readExternal(in);
             case ZONE_OFFSET_TYPE: return ZoneOffset.readExternal(in);
-            case ZONE_ID_TYPE: return ZoneId.readExternal(in);
+            case ZONE_REGION_TYPE: return ZoneRegion.readExternal(in);
             default:
                 throw new StreamCorruptedException("Unknown serialized type");
         }

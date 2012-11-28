@@ -454,7 +454,7 @@ public class TestStandardZoneRules {
         assertEquals(test.previousTransition(last.getInstant().plusNanos(1)), last);
 
         // Jan 1st of year between transitions and rules
-        ZonedDateTime odt = ZonedDateTime.ofInstant(last.getInstant(), ZoneId.of(last.getOffsetAfter()));
+        ZonedDateTime odt = ZonedDateTime.ofInstant(last.getInstant(), last.getOffsetAfter());
         odt = odt.withDayOfYear(1).plusYears(1).withTime(0, 0);
         assertEquals(test.previousTransition(odt.toInstant()), last);
 
@@ -947,8 +947,8 @@ public class TestStandardZoneRules {
         return LocalDateTime.of(year, month, day, hour, min, sec, nano).toInstant(offset);
     }
 
-    private ZonedDateTime createZDT(int year, int month, int day, ZoneOffset offset) {
-        return LocalDateTime.of(year, month, day, 0, 0).atZone(ZoneId.of(offset));
+    private ZonedDateTime createZDT(int year, int month, int day, ZoneId zone) {
+        return LocalDateTime.of(year, month, day, 0, 0).atZone(zone);
     }
 
     private LocalDateTime createLDT(int year, int month, int day) {

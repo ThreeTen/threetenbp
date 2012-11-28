@@ -44,7 +44,6 @@ import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatterBuilder;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.SignStyle;
-import javax.time.zone.ZoneResolvers;
 
 /**
  * Examples for this project.
@@ -103,7 +102,7 @@ public class Examples {
         LocalDateTime dt = LocalDateTime.of(2008, 3, 30, 1, 30);
         System.out.println("Local date-time in Spring DST gap: " + dt);
 
-        ZonedDateTime resolved = ZonedDateTime.of(dt, ZoneId.of("Europe/London"), ZoneResolvers.postTransition());
+        ZonedDateTime resolved = ZonedDateTime.of(dt, ZoneId.of("Europe/London"));
         System.out.println("...resolved to valid date-time in Europe/London: " + resolved);
 
         String formattedRFC = DateTimeFormatters.rfc1123().print(resolved);

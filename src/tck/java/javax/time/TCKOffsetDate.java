@@ -88,8 +88,6 @@ import org.testng.annotations.Test;
 public class TCKOffsetDate extends AbstractDateTimeTest {
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
-    private static final ZoneId ZONE_PARIS = ZoneId.of("Europe/Paris");
-    private static final ZoneId ZONE_GAZA = ZoneId.of("Asia/Gaza");
 
     private OffsetDate TEST_2007_07_15_PONE;
 
@@ -185,7 +183,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     public void now_Clock_allSecsInDay_utc() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSecond(i);
-            Clock clock = Clock.fixed(instant, ZoneId.UTC);
+            Clock clock = Clock.fixed(instant, ZoneOffset.UTC);
             OffsetDate test = OffsetDate.now(clock);
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonth(), Month.JANUARY);
@@ -198,7 +196,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     public void now_Clock_allSecsInDay_beforeEpoch() {
         for (int i =-1; i >= -(2 * 24 * 60 * 60); i--) {
             Instant instant = Instant.ofEpochSecond(i);
-            Clock clock = Clock.fixed(instant, ZoneId.UTC);
+            Clock clock = Clock.fixed(instant, ZoneOffset.UTC);
             OffsetDate test = OffsetDate.now(clock);
             assertEquals(test.getYear(), 1969);
             assertEquals(test.getMonth(), Month.DECEMBER);
@@ -209,10 +207,10 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void now_Clock_offsets() {
-        OffsetDateTime base = OffsetDateTime.of(1970, 1, 1, 12, 0, ZoneOffset.UTC);
+        Instant base = LocalDateTime.of(1970, 1, 1, 12, 0).toInstant(ZoneOffset.UTC);
         for (int i = -9; i < 15; i++) {
             ZoneOffset offset = ZoneOffset.ofHours(i);
-            Clock clock = Clock.fixed(base.toInstant(), ZoneId.of(offset));
+            Clock clock = Clock.fixed(base, offset);
             OffsetDate test = OffsetDate.now(clock);
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonth(), Month.JANUARY);
@@ -338,7 +336,8 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_factory_CalendricalObject() {
         assertEquals(OffsetDate.from(OffsetDate.of(2007, 7, 15, OFFSET_PONE)), OffsetDate.of(2007, 7, 15, OFFSET_PONE));
-        assertEquals(OffsetDate.from(OffsetDateTime.of(2007, 7, 15, 17, 30, OFFSET_PONE)), OffsetDate.of(2007, 7, 15, OFFSET_PONE));
+        LocalDateTime base = LocalDateTime.of(2007, 7, 15, 17, 30);
+        assertEquals(OffsetDate.from(base.atZone(OFFSET_PONE)), OffsetDate.of(2007, 7, 15, OFFSET_PONE));
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
@@ -1465,191 +1464,15 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     // atTime()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_atTime_Offset_sameOffset() {
-        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        OffsetTime time = OffsetTime.of(11, 30, OFFSET_PTWO);
-        assertEquals(t.atTime(time), OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_PTWO));
-    }
-
-    @Test(groups={"tck"})
-    public void test_atTime_Offset_differentOffset1() {
-        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        OffsetTime time = OffsetTime.of(11, 30, OFFSET_PONE);  // 10:30Z, 12:30+02:00
-        assertEquals(t.atTime(time), OffsetDateTime.of(2008, 6, 30, 12, 30, OFFSET_PTWO));
-    }
-
-    @Test(groups={"tck"})
-    public void test_atTime_Offset_differentOffset2() {
-        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        OffsetTime time = OffsetTime.of(11, 30, 5, 6, ZoneOffset.ofHours(-3));  // 14:30Z, 16:30+02:00
-        assertEquals(t.atTime(time), OffsetDateTime.of(2008, 6, 30, 16, 30, 5, 6, OFFSET_PTWO));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_atTime_Offset_nullOffsetTime() {
-        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        t.atTime((OffsetTime) null);
-    }
-
-    @Test(groups={"tck"})
     public void test_atTime_Local() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        assertEquals(t.atTime(LocalTime.of(11, 30)), OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_PTWO));
+        assertEquals(t.atTime(LocalTime.of(11, 30)), LocalDateTime.of(2008, 6, 30, 11, 30).atZone(OFFSET_PTWO));
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_atTime_Local_nullLocalTime() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime((LocalTime) null);
-    }
-
-    @Test(groups={"tck"})
-    public void test_atTime_int_int() {
-        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        assertEquals(t.atTime(11, 30), OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_PTWO));
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_atTime_int_int_hourTooSmall() {
-        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        t.atTime(-1, 30);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_atTime_int_int_hourTooBig() {
-        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        t.atTime(24, 30);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_atTime_int_int_minuteTooSmall() {
-        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        t.atTime(11, -1);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_atTime_int_int_minuteTooBig() {
-        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        t.atTime(11, 60);
-    }
-
-    @Test(groups={"tck"})
-    public void test_atTime_int_int_int() {
-        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        assertEquals(t.atTime(11, 30, 40), OffsetDateTime.of(2008, 6, 30, 11, 30, 40, OFFSET_PTWO));
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_atTime_int_int_int_hourTooSmall() {
-        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        t.atTime(-1, 30, 40);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_atTime_int_int_int_hourTooBig() {
-        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        t.atTime(24, 30, 40);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_atTime_int_int_int_minuteTooSmall() {
-        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        t.atTime(11, -1, 40);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_atTime_int_int_int_minuteTooBig() {
-        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        t.atTime(11, 60, 40);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_atTime_int_int_int_secondTooSmall() {
-        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        t.atTime(11, 30, -1);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_atTime_int_int_int_secondTooBig() {
-        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        t.atTime(11, 30, 60);
-    }
-
-    @Test(groups={"tck"})
-    public void test_atTime_int_int_int_int() {
-        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        assertEquals(t.atTime(11, 30, 40, 50), OffsetDateTime.of(2008, 6, 30, 11, 30, 40, 50, OFFSET_PTWO));
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_atTime_int_int_int_int_hourTooSmall() {
-        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        t.atTime(-1, 30, 40, 50);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_atTime_int_int_int_int_hourTooBig() {
-        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        t.atTime(24, 30, 40, 50);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_atTime_int_int_int_int_minuteTooSmall() {
-        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        t.atTime(11, -1, 40, 50);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_atTime_int_int_int_int_minuteTooBig() {
-        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        t.atTime(11, 60, 40, 50);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_atTime_int_int_int_int_secondTooSmall() {
-        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        t.atTime(11, 30, -1, 50);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_atTime_int_int_int_int_secondTooBig() {
-        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        t.atTime(11, 30, 60, 50);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_atTime_int_int_int_int_nanoTooSmall() {
-        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        t.atTime(11, 30, 40, -1);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_atTime_int_int_int_int_nanoTooBig() {
-        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        t.atTime(11, 30, 40, 1000000000);
-    }
-
-    //-----------------------------------------------------------------------
-    // atStartOfDay()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_atStartOfDay() {
-        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        assertEquals(t.atStartOfDay(ZONE_PARIS),
-                ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 0, 0), ZONE_PARIS));
-    }
-
-    @Test(groups={"tck"})
-    public void test_atStartOfDay_dstGap() {
-        OffsetDate t = OffsetDate.of(2007, 4, 1, OFFSET_PTWO);
-        assertEquals(t.atStartOfDay(ZONE_GAZA),
-                ZonedDateTime.of(LocalDateTime.of(2007, 4, 1, 1, 0), ZONE_GAZA));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_atStartOfDay_nullZoneOffset() {
-        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        t.atStartOfDay((ZoneId) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1672,7 +1495,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
-        assertEquals(a.atTime(0, 0).toInstant().compareTo(b.atTime(0, 0).toInstant()) < 0, true);
+        assertEquals(a.atTime(LocalTime.MIDNIGHT).toInstant().compareTo(b.atTime(LocalTime.MIDNIGHT).toInstant()) < 0, true);
     }
 
     @Test(groups={"tck"})
@@ -1683,7 +1506,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
-        assertEquals(a.atTime(0, 0).toInstant().compareTo(b.atTime(0, 0).toInstant()) < 0, true);
+        assertEquals(a.atTime(LocalTime.MIDNIGHT).toInstant().compareTo(b.atTime(LocalTime.MIDNIGHT).toInstant()) < 0, true);
     }
 
     @Test(groups={"tck"})
@@ -1694,7 +1517,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
-        assertEquals(a.atTime(0, 0).toInstant().compareTo(b.atTime(0, 0).toInstant()) < 0, true);
+        assertEquals(a.atTime(LocalTime.MIDNIGHT).toInstant().compareTo(b.atTime(LocalTime.MIDNIGHT).toInstant()) < 0, true);
     }
 
     @Test(groups={"tck"})
@@ -1705,7 +1528,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
-        assertEquals(a.atTime(0, 0).toInstant().compareTo(b.atTime(0, 0).toInstant()) == 0, true);
+        assertEquals(a.atTime(LocalTime.MIDNIGHT).toInstant().compareTo(b.atTime(LocalTime.MIDNIGHT).toInstant()) == 0, true);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})

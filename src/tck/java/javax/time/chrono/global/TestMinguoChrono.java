@@ -40,14 +40,12 @@ import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.Month;
-import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.chrono.Chrono;
 import javax.time.chrono.ChronoLocalDate;
 import javax.time.chrono.ChronoLocalDateTime;
-import javax.time.chrono.ChronoOffsetDateTime;
 import javax.time.chrono.ChronoZonedDateTime;
 import javax.time.chrono.ISOChrono;
 
@@ -113,8 +111,7 @@ public class TestMinguoChrono {
         ChronoLocalDate<MinguoChrono> hd = minguoDate;
         ChronoLocalDateTime<MinguoChrono> hdt = hd.atTime(LocalTime.MIDDAY);
         ZoneOffset zo = ZoneOffset.ofHours(1);
-        ChronoOffsetDateTime<MinguoChrono> hodt = hdt.atOffset(zo);
-        ChronoZonedDateTime<MinguoChrono> hzdt = hodt.atZoneSameInstant(ZoneId.UTC);
+        ChronoZonedDateTime<MinguoChrono> hzdt = hdt.atZone(zo);
         hdt = hdt.plus(1, ChronoUnit.YEARS);
         hdt = hdt.plus(1, ChronoUnit.MONTHS);
         hdt = hdt.plus(1, ChronoUnit.DAYS);
@@ -122,10 +119,9 @@ public class TestMinguoChrono {
         hdt = hdt.plus(1, ChronoUnit.MINUTES);
         hdt = hdt.plus(1, ChronoUnit.SECONDS);
         hdt = hdt.plus(1, ChronoUnit.NANOS);
-        ChronoOffsetDateTime<MinguoChrono> a1 = hzdt.getOffsetDateTime();
-        ChronoLocalDateTime<MinguoChrono> a2 = a1.getDateTime();
+        ChronoLocalDateTime<MinguoChrono> a2 = hzdt.getDateTime();
         ChronoLocalDate<MinguoChrono> a3 = a2.getDate();
-        ChronoLocalDate<MinguoChrono> a5 = a1.getDate();
+        ChronoLocalDate<MinguoChrono> a5 = hzdt.getDate();
         //System.out.printf(" d: %s, dt: %s; odt: %s; zodt: %s; a4: %s%n", date, hdt, hodt, hzdt, a5);
     }
 
@@ -134,9 +130,8 @@ public class TestMinguoChrono {
         ChronoLocalDate<MinguoChrono> h1 = MinguoChrono.ERA_ROC.date(1, 2, 3);
         ChronoLocalDate<MinguoChrono> h2 = h1;
         ChronoLocalDateTime<MinguoChrono> h3 = h2.atTime(LocalTime.MIDDAY);
-        ChronoOffsetDateTime<MinguoChrono> h4 = h3.atOffset(ZoneOffset.UTC);
         @SuppressWarnings("unused")
-        ChronoZonedDateTime<MinguoChrono> h5 = h4.atZoneSameInstant(ZoneId.UTC);
+        ChronoZonedDateTime<MinguoChrono> h4 = h3.atZone(ZoneOffset.UTC);
     }
 
     @DataProvider(name="badDates")

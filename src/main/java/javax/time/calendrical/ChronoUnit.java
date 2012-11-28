@@ -32,9 +32,8 @@
 package javax.time.calendrical;
 
 import javax.time.Duration;
-import javax.time.LocalDateTime;
-import javax.time.OffsetDateTime;
-import javax.time.ZonedDateTime;
+import javax.time.chrono.ChronoLocalDateTime;
+import javax.time.chrono.ChronoZonedDateTime;
 
 /**
  * A standard set of date periods units.
@@ -252,7 +251,7 @@ public enum ChronoUnit implements PeriodUnit {
         if (this == FOREVER) {
             return false;
         }
-        if (dateTime instanceof LocalDateTime || dateTime instanceof OffsetDateTime || dateTime instanceof ZonedDateTime) {
+        if (dateTime instanceof ChronoLocalDateTime || dateTime instanceof ChronoZonedDateTime) {
             return true;
         }
         try {

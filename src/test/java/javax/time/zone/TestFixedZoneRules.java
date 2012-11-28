@@ -36,7 +36,6 @@ import static org.testng.Assert.assertEquals;
 import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.LocalDateTime;
-import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 
 import org.testng.annotations.Test;
@@ -50,7 +49,7 @@ public class TestFixedZoneRules {
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
 
     private ZoneRules make(ZoneOffset offset) {
-        return ZoneId.of(offset).getRules();
+        return offset.getRules();
     }
 
     //-----------------------------------------------------------------------
