@@ -401,6 +401,9 @@ public final class ZonedDateTime
         Objects.requireNonNull(localDateTime, "localDateTime");
         Objects.requireNonNull(offset, "offset");
         Objects.requireNonNull(zoneId, "zoneId");
+        if (zoneId instanceof ZoneOffset && offset.equals(zoneId) == false) {
+            throw new IllegalArgumentException("ZoneId must match ZoneOffset");
+        }
         return new ZonedDateTime(localDateTime, offset, zoneId);
     }
 
