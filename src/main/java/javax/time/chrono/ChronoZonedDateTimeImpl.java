@@ -270,6 +270,7 @@ final class ChronoZonedDateTimeImpl<C extends Chrono<C>>
 
     void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(dateTime);
+        out.writeObject(offset);
         out.writeObject(zoneId);
     }
 
