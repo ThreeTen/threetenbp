@@ -448,7 +448,7 @@ public final class DateTimeFormatters {
             .appendLiteral(':')
             .appendValue(SECOND_OF_MINUTE, 2)
             .optionalStart()
-            .appendFraction(NANO_OF_SECOND, 0, 9)
+            .appendFraction(NANO_OF_SECOND, 0, 9, true)
             .toFormatter();
     }
 

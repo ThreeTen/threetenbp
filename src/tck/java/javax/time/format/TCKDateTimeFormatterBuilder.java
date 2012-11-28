@@ -252,44 +252,44 @@ public class TCKDateTimeFormatterBuilder {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_appendFraction_3arg() throws Exception {
-        builder.appendFraction(MINUTE_OF_HOUR, 1, 9);
+        builder.appendFraction(MINUTE_OF_HOUR, 1, 9, false);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Fraction(MinuteOfHour,1,9)");
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_appendFraction_3arg_nullRule() throws Exception {
-        builder.appendFraction(null, 1, 9);
+        builder.appendFraction(null, 1, 9, false);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_appendFraction_3arg_invalidRuleNotFixedSet() throws Exception {
-        builder.appendFraction(DAY_OF_MONTH, 1, 9);
+        builder.appendFraction(DAY_OF_MONTH, 1, 9, false);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_appendFraction_3arg_minTooSmall() throws Exception {
-        builder.appendFraction(MINUTE_OF_HOUR, -1, 9);
+        builder.appendFraction(MINUTE_OF_HOUR, -1, 9, false);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_appendFraction_3arg_minTooBig() throws Exception {
-        builder.appendFraction(MINUTE_OF_HOUR, 10, 9);
+        builder.appendFraction(MINUTE_OF_HOUR, 10, 9, false);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_appendFraction_3arg_maxTooSmall() throws Exception {
-        builder.appendFraction(MINUTE_OF_HOUR, 0, -1);
+        builder.appendFraction(MINUTE_OF_HOUR, 0, -1, false);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_appendFraction_3arg_maxTooBig() throws Exception {
-        builder.appendFraction(MINUTE_OF_HOUR, 1, 10);
+        builder.appendFraction(MINUTE_OF_HOUR, 1, 10, false);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_appendFraction_3arg_maxWidthMinWidth() throws Exception {
-        builder.appendFraction(MINUTE_OF_HOUR, 9, 3);
+        builder.appendFraction(MINUTE_OF_HOUR, 9, 3, false);
     }
 
     //-----------------------------------------------------------------------

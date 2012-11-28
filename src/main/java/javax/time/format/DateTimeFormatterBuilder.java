@@ -417,11 +417,15 @@ public final class DateTimeFormatterBuilder {
      * preceeding decimal point. The preceeding value is not output.
      * For example, the second-of-minute value of 15 would be output as {@code .25}.
      * <p>
-     * The width of the output fraction can be controlled. Setting the
+     * The width of the printed fraction can be controlled. Setting the
      * minimum width to zero will cause no output to be generated.
-     * The output fraction will have the minimum width necessary between
+     * The printed fraction will have the minimum width necessary between
      * the minimum and maximum widths - trailing zeroes are omitted.
      * No rounding occurs due to the maximum width - digits are simply dropped.
+     * <p>
+     * When parsing in strict mode, the number of parsed digits must be between
+     * the minimum and maximum width. When parsing in lenient mode, the number
+     * of parsed digits must be at least the minimum width, up to 9 digits.
      * <p>
      * If the value cannot be obtained then an exception will be thrown.
      * If the value is negative an exception will be thrown.
@@ -433,13 +437,14 @@ public final class DateTimeFormatterBuilder {
      * @param field  the field to append, not null
      * @param minWidth  the minimum width of the field excluding the decimal point, from 0 to 9
      * @param maxWidth  the maximum width of the field excluding the decimal point, from 1 to 9
+     * @param decimalPoint  whether to output the localized decimal point symbol
      * @return this, for chaining, not null
      * @throws IllegalArgumentException if the field has a variable set of valid values
      * @throws IllegalArgumentException if either width is invalid
      */
     public DateTimeFormatterBuilder appendFraction(
-            DateTimeField field, int minWidth, int maxWidth) {
-        appendInternal(new FractionPrinterParser(field, minWidth, maxWidth));
+            DateTimeField field, int minWidth, int maxWidth, boolean decimalPoint) {
+        appendInternal(new FractionPrinterParser(field, minWidth, maxWidth, decimalPoint));
         return this;
     }
 
@@ -808,23 +813,22 @@ public final class DateTimeFormatterBuilder {
      *
      *   a       am-pm-of-day                text              PM
      *   h       clock-hour-of-am-pm (1-12)  number            12
-     *   K       hour-of-am-pm (0-11)        number/fraction   0
+     *   K       hour-of-am-pm (0-11)        number            0
      *   k       clock-hour-of-am-pm (1-24)  number            0
      *
-     *   H       hour-of-day (0-23)          number/fraction   0
-     *   m       minute-of-hour              number/fraction   30
-     *   s       second-of-minute            number/fraction   55
-     *   S       milli-of-second             number/fraction   978
-     *   A       milli-of-day                number/fraction   1234
-     *   n       nano-of-second              number/fraction   987654321
-     *   N       nano-of-day                 number/fraction   1234000000
+     *   H       hour-of-day (0-23)          number            0
+     *   m       minute-of-hour              number            30
+     *   s       second-of-minute            number            55
+     *   S       fraction-of-second          fraction          978
+     *   A       milli-of-day                number            1234
+     *   n       nano-of-second              number            987654321
+     *   N       nano-of-day                 number            1234000000
      *
      *   I       time-zone ID                zoneId            America/Los_Angeles
      *   z       time-zone name              text              Pacific Standard Time; PST
      *   Z       zone-offset                 offset-Z          +0000; -0800; -08:00;
      *   X       zone-offset 'Z' for zero    offset-X          Z; -0800; -08:00;
      *
-     *   f       make next a fraction        fraction modifier .123
      *   p       pad next                    pad modifier      1
      *
      *   '       escape for text             delimiter
@@ -847,16 +851,13 @@ public final class DateTimeFormatterBuilder {
      * <b>Number/Text</b>: If the count of pattern letters is 3 or greater, use the Text rules above.
      * Otherwise use the Number rules above.
      * <p>
-     * <b>Fraction modifier</b>: Modifies the pattern that immediately follows to be a fraction.
-     * All fractional values must use the 'f' prefix to ensure correct parsing.
-     * The fraction also outputs the decimal point.
-     * If the count of 'f' is one, then the fractional value has the exact number of digits defined by
-     * the count of the value being output.
-     * If the count of 'f' is two or more, then the fractional value has the a minimum number of digits
-     * defined by the count of the value being output and a maximum output of nine digits.
-     * <p>
-     * For example, 'ssffnnn' outputs the second followed by 3-9 digits of the nanosecond, while
-     * 'mmfss' outputs the minute followed by exactly 2 digits representing the second.
+     * <b>Fraction</b>: Outputs the nano-of-second field as a fraction-of-second.
+     * The nano-of-second value has nine digits, thus the count of pattern letters is from 1 to 9.
+     * If it is less than 9, then the nano-of-second value is truncated, with only the most
+     * significant digits being output.
+     * When parsing in strict mode, the number of parsed digits must match the count of pattern letters.
+     * When parsing in lenient mode, the number of parsed digits must be at least the count of pattern
+     * letters, up to 9 digits.
      * <p>
      * <b>Year</b>: The count of letters determines the minimum field width below which padding is used.
      * If the count of letters is two, then a {@link #appendValueReduced reduced} two digit form is used.
@@ -940,28 +941,10 @@ public final class DateTimeFormatterBuilder {
                     }
                     padNext(pad); // pad and continue parsing
                 }
-                // fractions
-                int fraction = 0;
-                if (cur == 'f') {
-                    if (pos < pattern.length()) {
-                        cur = pattern.charAt(pos);
-                        if (cur == 'H' || cur == 'K' || cur == 'm' || cur == 's' || cur == 'S' || cur == 'A' || cur == 'n' || cur == 'N') {
-                            fraction = count;
-                            start = pos++;
-                            for ( ; pos < pattern.length() && pattern.charAt(pos) == cur; pos++);  // short loop
-                            count = pos - start;
-                        }
-                    }
-                    if (fraction == 0) {
-                        throw new IllegalArgumentException(
-                                "Fraction letter 'f' must be followed by valid fraction pattern: " + pattern);
-                    }
-                }
                 // main rules
                 DateTimeField field = FIELD_MAP.get(cur);
                 if (field != null) {
-                    field = checkDuplicateFractionPattern(field, pattern, cur, start, fraction);
-                    parseField(cur, count, field, fraction);
+                    parseField(cur, count, field);
                 } else if (cur == 'z') {
                     if (count < 4) {
                         appendZoneText(TextStyle.SHORT);
@@ -987,7 +970,6 @@ public final class DateTimeFormatterBuilder {
                 } else {
                     throw new IllegalArgumentException("Unknown pattern letter: " + cur);
                 }
-                fraction = 0;
                 pos--;
 
             } else if (cur == '\'') {
@@ -1027,37 +1009,7 @@ public final class DateTimeFormatterBuilder {
         }
     }
 
-    private DateTimeField checkDuplicateFractionPattern(DateTimeField field, String pattern, char cur, int start, int fraction) {
-        if (fraction == 0) {
-            return field;
-        }
-
-        if (!charBeforeFractionEqualsAfter(pattern, cur, start, fraction)) {
-            return field;
-        }
-
-        switch ((ChronoField) field) {
-        case SECOND_OF_MINUTE:
-            return ChronoField.NANO_OF_SECOND;
-        case MINUTE_OF_HOUR:
-            return ChronoField.SECOND_OF_MINUTE;
-        default:
-            throw new DateTimeException(field + " is an invalid field to have a duplicate of");
-        }
-    }
-
-    private boolean charBeforeFractionEqualsAfter(String pattern, char cur, int start, int fraction) {
-        int beforeFraction = start - (1 + fraction);
-        if (beforeFraction > 0) {
-            char charBefore = pattern.charAt(beforeFraction);
-            if (charBefore == cur) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void parseField(char cur, int count, DateTimeField field, int fraction) {
+    private void parseField(char cur, int count, DateTimeField field) {
         switch (cur) {
             case 'y':
             case 'Y':
@@ -1110,15 +1062,14 @@ public final class DateTimeFormatterBuilder {
                         throw new IllegalArgumentException("Too many pattern letters: " + cur);
                 }
                 break;
+            case 'S':
+                appendFraction(NANO_OF_SECOND, count, count, false);
+                break;
             default:
-                if (fraction > 0) {
-                    appendFraction(field, count, fraction == 1 ? count : 9);
+                if (count == 1) {
+                    appendValue(field);
                 } else {
-                    if (count == 1) {
-                        appendValue(field);
-                    } else {
-                        appendValue(field, count);
-                    }
+                    appendValue(field, count);
                 }
                 break;
         }
@@ -1150,11 +1101,11 @@ public final class DateTimeFormatterBuilder {
         FIELD_MAP.put('h', ChronoField.CLOCK_HOUR_OF_AMPM);        // Java, CLDR
         FIELD_MAP.put('m', ChronoField.MINUTE_OF_HOUR);            // Java, CLDR
         FIELD_MAP.put('s', ChronoField.SECOND_OF_MINUTE);          // Java, CLDR
-        FIELD_MAP.put('S', ChronoField.MILLI_OF_SECOND);           // Java, CLDR (CLDR fraction-of-second)
+        FIELD_MAP.put('S', ChronoField.NANO_OF_SECOND);            // CLDR (Java uses milli-of-second number)
         FIELD_MAP.put('A', ChronoField.MILLI_OF_DAY);              // CLDR
         FIELD_MAP.put('n', ChronoField.NANO_OF_SECOND);            // 310
         FIELD_MAP.put('N', ChronoField.NANO_OF_DAY);               // 310
-        // reserved - z,Z,X,I,f,p
+        // reserved - z,Z,X,I,p
         // Java - X - compatible, but extended to 4 and 5 letters
         // Java - u - clashes with CLDR, go with CLDR (year-proleptic) here
         // CLDR - U - cycle year name, not supported by 310 yet
@@ -1166,7 +1117,6 @@ public final class DateTimeFormatterBuilder {
         // CLDR - Z - different approach here  // TODO bring 310 in line with CLDR
         // CLDR - v,V - extended time-zone names
         //  310 - I - time-zone id
-        //  310 - f - prefix for fractions
         //  310 - p - prefix for padding
     }
 
@@ -2025,6 +1975,7 @@ public final class DateTimeFormatterBuilder {
         private final DateTimeField field;
         private final int minWidth;
         private final int maxWidth;
+        private final boolean decimalPoint;
 
         /**
          * Constructor.
@@ -2032,8 +1983,9 @@ public final class DateTimeFormatterBuilder {
          * @param field  the field to output, not null
          * @param minWidth  the minimum width to output, from 0 to 9
          * @param maxWidth  the maximum width to output, from 0 to 9
+     * @param decimalPoint  whether to output the localized decimal point symbol
          */
-        FractionPrinterParser(DateTimeField field, int minWidth, int maxWidth) {
+        FractionPrinterParser(DateTimeField field, int minWidth, int maxWidth, boolean decimalPoint) {
             Objects.requireNonNull(field, "field");
             if (field.range().isFixed() == false) {
                 throw new IllegalArgumentException("Field must have a fixed set of values: " + field.getName());
@@ -2051,6 +2003,7 @@ public final class DateTimeFormatterBuilder {
             this.field = field;
             this.minWidth = minWidth;
             this.maxWidth = maxWidth;
+            this.decimalPoint = decimalPoint;
         }
 
         @Override
@@ -2063,7 +2016,9 @@ public final class DateTimeFormatterBuilder {
             BigDecimal fraction = convertToFraction(value);
             if (fraction.scale() == 0) {  // scale is zero if value is zero
                 if (minWidth > 0) {
-                    buf.append(symbols.getDecimalSeparator());
+                    if (decimalPoint) {
+                        buf.append(symbols.getDecimalSeparator());
+                    }
                     for (int i = 0; i < minWidth; i++) {
                         buf.append(symbols.getZeroDigit());
                     }
@@ -2073,7 +2028,9 @@ public final class DateTimeFormatterBuilder {
                 fraction = fraction.setScale(outputScale, RoundingMode.FLOOR);
                 String str = fraction.toPlainString().substring(2);
                 str = symbols.convertNumberToI18N(str);
-                buf.append(symbols.getDecimalSeparator());
+                if (decimalPoint) {
+                    buf.append(symbols.getDecimalSeparator());
+                }
                 buf.append(str);
             }
             return true;
@@ -2082,17 +2039,23 @@ public final class DateTimeFormatterBuilder {
         @Override
         public int parse(DateTimeParseContext context, CharSequence text, int position) {
             int length = text.length();
-            if (position == length ||
-                    text.charAt(position) != context.getSymbols().getDecimalSeparator()) {
+            if (position == length) {
                 // valid if whole field is optional, invalid if minimum width
                 return (minWidth > 0 ? ~position : position);
             }
-            position++;
+            if (decimalPoint) {
+                if (text.charAt(position) != context.getSymbols().getDecimalSeparator()) {
+                    // valid if whole field is optional, invalid if minimum width
+                    return (minWidth > 0 ? ~position : position);
+                }
+                position++;
+            }
             int minEndPos = position + minWidth;
             if (minEndPos > length) {
                 return ~position;  // need at least min width digits
             }
-            int maxEndPos = Math.min(position + maxWidth, length);
+            int effectiveMax = (context.isStrict() ? maxWidth : 9);
+            int maxEndPos = Math.min(position + effectiveMax, length);
             int total = 0;  // can use int because we are only parsing up to 9 digits
             int pos = position;
             while (pos < maxEndPos) {
@@ -2174,7 +2137,8 @@ public final class DateTimeFormatterBuilder {
 
         @Override
         public String toString() {
-            return "Fraction(" + field.getName() + "," + minWidth + "," + maxWidth + ")";
+            String decimal = (decimalPoint ? ",DecimalPoint" : "");
+            return "Fraction(" + field.getName() + "," + minWidth + "," + maxWidth + decimal + ")";
         }
     }
 
