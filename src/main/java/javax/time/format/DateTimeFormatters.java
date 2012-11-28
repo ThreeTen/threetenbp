@@ -98,23 +98,22 @@ public final class DateTimeFormatters {
      *
      *   a       am-pm-of-day                text              PM
      *   h       clock-hour-of-am-pm (1-12)  number            12
-     *   K       hour-of-am-pm (0-11)        number/fraction   0
+     *   K       hour-of-am-pm (0-11)        number            0
      *   k       clock-hour-of-am-pm (1-24)  number            0
      *
-     *   H       hour-of-day (0-23)          number/fraction   0
-     *   m       minute-of-hour              number/fraction   30
-     *   s       second-of-minute            number/fraction   55
-     *   S       milli-of-second             number/fraction   978
-     *   A       milli-of-day                number/fraction   1234
-     *   n       nano-of-second              number/fraction   987654321
-     *   N       nano-of-day                 number/fraction   1234000000
+     *   H       hour-of-day (0-23)          number            0
+     *   m       minute-of-hour              number            30
+     *   s       second-of-minute            number            55
+     *   S       fraction-of-second          fraction          978
+     *   A       milli-of-day                number            1234
+     *   n       nano-of-second              number            987654321
+     *   N       nano-of-day                 number            1234000000
      *
      *   I       time-zone ID                zoneId            America/Los_Angeles
      *   z       time-zone name              text              Pacific Standard Time; PST
      *   Z       zone-offset                 offset-Z          +0000; -0800; -08:00;
      *   X       zone-offset 'Z' for zero    offset-X          Z; -0800; -08:00;
      *
-     *   f       make next a fraction        fraction modifier .123
      *   p       pad next                    pad modifier      1
      *
      *   '       escape for text             delimiter
@@ -138,16 +137,13 @@ public final class DateTimeFormatters {
      * <b>Number/Text</b>: If the count of pattern letters is 3 or greater, use the Text rules above.
      * Otherwise use the Number rules above.
      * <p>
-     * <b>Fraction modifier</b>: Modifies the pattern that immediately follows to be a fraction.
-     * All fractional values must use the 'f' prefix to ensure correct parsing.
-     * The fraction also outputs the decimal point.
-     * If the count of 'f' is one, then the fractional value has the exact number of digits defined by
-     * the count of the value being output.
-     * If the count of 'f' is two or more, then the fractional value has the a minimum number of digits
-     * defined by the count of the value being output and a maximum output of nine digits.
-     * <p>
-     * For example, 'ssffnnn' outputs the second followed by 3-9 digits of the nanosecond, while
-     * 'mmfss' outputs the minute followed by exactly 2 digits representing the second.
+     * <b>Fraction</b>: Outputs the nano-of-second field as a fraction-of-second.
+     * The nano-of-second value has nine digits, thus the count of pattern letters is from 1 to 9.
+     * If it is less than 9, then the nano-of-second value is truncated, with only the most
+     * significant digits being output.
+     * When parsing in strict mode, the number of parsed digits must match the count of pattern letters.
+     * When parsing in lenient mode, the number of parsed digits must be at least the count of pattern
+     * letters, up to 9 digits.
      * <p>
      * <b>Year</b>: The count of letters determines the minimum field width below which padding is used.
      * If the count of letters is two, then a {@link DateTimeFormatterBuilder#appendValueReduced reduced}
@@ -448,7 +444,7 @@ public final class DateTimeFormatters {
             .appendLiteral(':')
             .appendValue(SECOND_OF_MINUTE, 2)
             .optionalStart()
-            .appendFraction(NANO_OF_SECOND, 0, 9)
+            .appendFraction(NANO_OF_SECOND, 0, 9, true)
             .toFormatter();
     }
 

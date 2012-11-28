@@ -56,13 +56,13 @@ public class TestFractionPrinterParser extends AbstractTestPrinterParser {
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=DateTimeException.class)
     public void test_print_emptyCalendrical() throws Exception {
-        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 0, 9);
+        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 0, 9, true);
         pp.print(printEmptyContext, buf);
     }
 
     public void test_print_append() throws Exception {
         printContext.setDateTime(LocalTime.of(12, 30, 40, 3));
-        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 0, 9);
+        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 0, 9, true);
         buf.append("EXISTING");
         pp.print(printContext, buf);
         assertEquals(buf.toString(), "EXISTING.000000003");
@@ -148,12 +148,23 @@ public class TestFractionPrinterParser extends AbstractTestPrinterParser {
     @Test(dataProvider="Nanos")
     public void test_print_nanos(int minWidth, int maxWidth, int value, String result) throws Exception {
         printContext.setDateTime(new MockFieldValue(NANO_OF_SECOND, value));
-        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, minWidth, maxWidth);
+        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, minWidth, maxWidth, true);
         pp.print(printContext, buf);
         if (result == null) {
             fail("Expected exception");
         }
         assertEquals(buf.toString(), result);
+    }
+
+    @Test(dataProvider="Nanos")
+    public void test_print_nanos_noDecimalPoint(int minWidth, int maxWidth, int value, String result) throws Exception {
+        printContext.setDateTime(new MockFieldValue(NANO_OF_SECOND, value));
+        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, minWidth, maxWidth, false);
+        pp.print(printContext, buf);
+        if (result == null) {
+            fail("Expected exception");
+        }
+        assertEquals(buf.toString(), (result.startsWith(".") ? result.substring(1) : result));
     }
 
     //-----------------------------------------------------------------------
@@ -183,7 +194,7 @@ public class TestFractionPrinterParser extends AbstractTestPrinterParser {
     @Test(dataProvider="Seconds")
     public void test_print_seconds(int minWidth, int maxWidth, int value, String result) throws Exception {
         printContext.setDateTime(new MockFieldValue(SECOND_OF_MINUTE, value));
-        FractionPrinterParser pp = new FractionPrinterParser(SECOND_OF_MINUTE, minWidth, maxWidth);
+        FractionPrinterParser pp = new FractionPrinterParser(SECOND_OF_MINUTE, minWidth, maxWidth, true);
         pp.print(printContext, buf);
         if (result == null) {
             fail("Expected exception");
@@ -191,12 +202,23 @@ public class TestFractionPrinterParser extends AbstractTestPrinterParser {
         assertEquals(buf.toString(), result);
     }
 
+    @Test(dataProvider="Seconds")
+    public void test_print_seconds_noDecimalPoint(int minWidth, int maxWidth, int value, String result) throws Exception {
+        printContext.setDateTime(new MockFieldValue(SECOND_OF_MINUTE, value));
+        FractionPrinterParser pp = new FractionPrinterParser(SECOND_OF_MINUTE, minWidth, maxWidth, false);
+        pp.print(printContext, buf);
+        if (result == null) {
+            fail("Expected exception");
+        }
+        assertEquals(buf.toString(), (result.startsWith(".") ? result.substring(1) : result));
+    }
+
     //-----------------------------------------------------------------------
     // parse
     //-----------------------------------------------------------------------
     @Test(dataProvider="Nanos")
     public void test_reverseParse(int minWidth, int maxWidth, int value, String result) throws Exception {
-        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, minWidth, maxWidth);
+        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, minWidth, maxWidth, true);
         int newPos = pp.parse(parseContext, result, 0);
         assertEquals(newPos, result.length());
         int expectedValue = fixParsedValue(maxWidth, value);
@@ -204,17 +226,35 @@ public class TestFractionPrinterParser extends AbstractTestPrinterParser {
     }
 
     @Test(dataProvider="Nanos")
-    public void test_reverseParse_followedByNonDigit(int minWidth, int maxWidth, int value, String result) throws Exception {
-        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, minWidth, maxWidth);
-        int newPos = pp.parse(parseContext, result + " ", 0);
+    public void test_reverseParse_noDecimalPoint(int minWidth, int maxWidth, int value, String result) throws Exception {
+        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, minWidth, maxWidth, false);
+        int newPos = pp.parse(parseContext, result, (result.startsWith(".") ? 1 : 0));
         assertEquals(newPos, result.length());
         int expectedValue = fixParsedValue(maxWidth, value);
         assertParsed(parseContext, NANO_OF_SECOND, value == 0 && minWidth == 0 ? null : (long) expectedValue);
     }
 
     @Test(dataProvider="Nanos")
+    public void test_reverseParse_followedByNonDigit(int minWidth, int maxWidth, int value, String result) throws Exception {
+        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, minWidth, maxWidth, true);
+        int newPos = pp.parse(parseContext, result + " ", 0);
+        assertEquals(newPos, result.length());
+        int expectedValue = fixParsedValue(maxWidth, value);
+        assertParsed(parseContext, NANO_OF_SECOND, value == 0 && minWidth == 0 ? null : (long) expectedValue);
+    }
+
+//    @Test(dataProvider="Nanos")
+//    public void test_reverseParse_followedByNonDigit_noDecimalPoint(int minWidth, int maxWidth, int value, String result) throws Exception {
+//        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, minWidth, maxWidth, false);
+//        int newPos = pp.parse(parseContext, result + " ", (result.startsWith(".") ? 1 : 0));
+//        assertEquals(newPos, result.length());
+//        int expectedValue = fixParsedValue(maxWidth, value);
+//        assertParsed(parseContext, NANO_OF_SECOND, value == 0 && minWidth == 0 ? null : (long) expectedValue);
+//    }
+
+    @Test(dataProvider="Nanos")
     public void test_reverseParse_preceededByNonDigit(int minWidth, int maxWidth, int value, String result) throws Exception {
-        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, minWidth, maxWidth);
+        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, minWidth, maxWidth, true);
         int newPos = pp.parse(parseContext, " " + result, 1);
         assertEquals(newPos, result.length() + 1);
         int expectedValue = fixParsedValue(maxWidth, value);
@@ -231,7 +271,7 @@ public class TestFractionPrinterParser extends AbstractTestPrinterParser {
 
     @Test(dataProvider="Seconds")
     public void test_reverseParse_seconds(int minWidth, int maxWidth, int value, String result) throws Exception {
-        FractionPrinterParser pp = new FractionPrinterParser(SECOND_OF_MINUTE, minWidth, maxWidth);
+        FractionPrinterParser pp = new FractionPrinterParser(SECOND_OF_MINUTE, minWidth, maxWidth, true);
         int newPos = pp.parse(parseContext, result, 0);
         assertEquals(newPos, result.length());
         assertParsed(parseContext, SECOND_OF_MINUTE, value == 0 && minWidth == 0 ? null : (long) value);
@@ -249,13 +289,13 @@ public class TestFractionPrinterParser extends AbstractTestPrinterParser {
     @DataProvider(name="ParseNothing")
     Object[][] provider_parseNothing() {
         return new Object[][] {
-            {new FractionPrinterParser(NANO_OF_SECOND, 3, 6), "", 0, ~0},
-            {new FractionPrinterParser(NANO_OF_SECOND, 3, 6), "A", 0, ~0},
-            {new FractionPrinterParser(NANO_OF_SECOND, 3, 6), ".", 0, ~1},
-            {new FractionPrinterParser(NANO_OF_SECOND, 3, 6), ".5", 0, ~1},
-            {new FractionPrinterParser(NANO_OF_SECOND, 3, 6), ".51", 0, ~1},
-            {new FractionPrinterParser(NANO_OF_SECOND, 3, 6), ".A23456", 0, ~1},
-            {new FractionPrinterParser(NANO_OF_SECOND, 3, 6), ".1A3456", 0, ~1},
+            {new FractionPrinterParser(NANO_OF_SECOND, 3, 6, true), "", 0, ~0},
+            {new FractionPrinterParser(NANO_OF_SECOND, 3, 6, true), "A", 0, ~0},
+            {new FractionPrinterParser(NANO_OF_SECOND, 3, 6, true), ".", 0, ~1},
+            {new FractionPrinterParser(NANO_OF_SECOND, 3, 6, true), ".5", 0, ~1},
+            {new FractionPrinterParser(NANO_OF_SECOND, 3, 6, true), ".51", 0, ~1},
+            {new FractionPrinterParser(NANO_OF_SECOND, 3, 6, true), ".A23456", 0, ~1},
+            {new FractionPrinterParser(NANO_OF_SECOND, 3, 6, true), ".1A3456", 0, ~1},
         };
     }
 
@@ -268,7 +308,12 @@ public class TestFractionPrinterParser extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
     public void test_toString() throws Exception {
-        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 3, 6);
+        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 3, 6, true);
+        assertEquals(pp.toString(), "Fraction(NanoOfSecond,3,6,DecimalPoint)");
+    }
+
+    public void test_toString_noDecimalPoint() throws Exception {
+        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 3, 6, false);
         assertEquals(pp.toString(), "Fraction(NanoOfSecond,3,6)");
     }
 
