@@ -121,8 +121,8 @@ enum ISOEra implements Era<ISOChrono> {
     }
 
     @Override
-    public ChronoLocalDate<ISOChrono> dateFromYearDay(int year, int dayOfYear) {
-        return getChrono().dateFromYearDay(this, year, dayOfYear);
+    public ChronoLocalDate<ISOChrono> dateYearDay(int year, int dayOfYear) {
+        return getChrono().dateYearDay(this, year, dayOfYear);
     }
 
     //-----------------------------------------------------------------------

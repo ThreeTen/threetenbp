@@ -150,7 +150,7 @@ public final class ISOChrono extends Chrono<ISOChrono> implements Serializable {
     }
 
     @Override
-    public LocalDate dateFromYearDay(int prolepticYear, int dayOfYear) {
+    public LocalDate dateYearDay(int prolepticYear, int dayOfYear) {
         return LocalDate.ofYearDay(prolepticYear, dayOfYear);
     }
 

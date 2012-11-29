@@ -121,8 +121,8 @@ enum HijrahEra implements Era<HijrahChrono> {
     }
 
     @Override
-    public ChronoLocalDate<HijrahChrono> dateFromYearDay(int year, int dayOfYear) {
-        return getChrono().dateFromYearDay(this, year, dayOfYear);
+    public ChronoLocalDate<HijrahChrono> dateYearDay(int year, int dayOfYear) {
+        return getChrono().dateYearDay(this, year, dayOfYear);
     }
 
     //-----------------------------------------------------------------------

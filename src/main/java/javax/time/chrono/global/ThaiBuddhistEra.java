@@ -120,8 +120,8 @@ enum ThaiBuddhistEra implements Era<ThaiBuddhistChrono> {
     }
 
     @Override
-    public ChronoLocalDate<ThaiBuddhistChrono> dateFromYearDay(int year, int dayOfYear) {
-        return getChrono().dateFromYearDay(this, year, dayOfYear);
+    public ChronoLocalDate<ThaiBuddhistChrono> dateYearDay(int year, int dayOfYear) {
+        return getChrono().dateYearDay(this, year, dayOfYear);
     }
 
     //-----------------------------------------------------------------------
