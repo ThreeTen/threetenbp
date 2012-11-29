@@ -35,10 +35,13 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
+import javax.time.Clock;
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
+import javax.time.ZoneId;
 import javax.time.ZonedDateTime;
 import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeAccessor;
@@ -144,29 +147,161 @@ public final class ISOChrono extends Chrono<ISOChrono> implements Serializable {
     }
 
     //-----------------------------------------------------------------------
-    @Override
+    /**
+     * Obtains an ISO local date from the era, year-of-era, month-of-year
+     * and day-of-month fields.
+     *
+     * @param era  the ISO era, not null
+     * @param yearOfEra  the ISO year-of-era
+     * @param month  the ISO month-of-year
+     * @param dayOfMonth  the ISO day-of-month
+     * @return the ISO local date, not null
+     * @throws DateTimeException if unable to create the date
+     */
+    @Override  // override with covariant return type
+    public LocalDate date(Era<ISOChrono> era, int yearOfEra, int month, int dayOfMonth) {
+        return date(prolepticYear(era, yearOfEra), month, dayOfMonth);
+    }
+
+    /**
+     * Obtains an ISO local date from the proleptic-year, month-of-year
+     * and day-of-month fields.
+     * <p>
+     * This is equivalent to {@link LocalDate#of(int, int, int)}.
+     *
+     * @param prolepticYear  the ISO proleptic-year
+     * @param month  the ISO month-of-year
+     * @param dayOfMonth  the ISO day-of-month
+     * @return the ISO local date, not null
+     * @throws DateTimeException if unable to create the date
+     */
+    @Override  // override with covariant return type
     public LocalDate date(int prolepticYear, int month, int dayOfMonth) {
         return LocalDate.of(prolepticYear, month, dayOfMonth);
     }
 
-    @Override
+    /**
+     * Obtains an ISO local date from the era, year-of-era and day-of-year fields.
+     *
+     * @param era  the ISO era, not null
+     * @param yearOfEra  the ISO year-of-era
+     * @param dayOfYear  the ISO day-of-year
+     * @return the ISO local date, not null
+     * @throws DateTimeException if unable to create the date
+     */
+    @Override  // override with covariant return type
+    public LocalDate dateYearDay(Era<ISOChrono> era, int yearOfEra, int dayOfYear) {
+        return dateYearDay(prolepticYear(era, yearOfEra), dayOfYear);
+    }
+
+    /**
+     * Obtains an ISO local date from the proleptic-year and day-of-year fields.
+     * <p>
+     * This is equivalent to {@link LocalDate#ofYearDay(int, int)}.
+     *
+     * @param prolepticYear  the ISO proleptic-year
+     * @param dayOfYear  the ISO day-of-year
+     * @return the ISO local date, not null
+     * @throws DateTimeException if unable to create the date
+     */
+    @Override  // override with covariant return type
     public LocalDate dateYearDay(int prolepticYear, int dayOfYear) {
         return LocalDate.ofYearDay(prolepticYear, dayOfYear);
     }
 
-    @Override
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an ISO local date from another date-time object.
+     * <p>
+     * This is equivalent to {@link LocalDate#from(DateTimeAccessor)}.
+     *
+     * @param dateTime  the date-time object to convert, not null
+     * @return the ISO local date, not null
+     * @throws DateTimeException if unable to create the date
+     */
+    @Override  // override with covariant return type
     public LocalDate date(DateTimeAccessor dateTime) {
         return LocalDate.from(dateTime);
     }
 
-    @Override
+    /**
+     * Obtains an ISO local date-time from another date-time object.
+     * <p>
+     * This is equivalent to {@link LocalDateTime#from(DateTimeAccessor)}.
+     *
+     * @param dateTime  the date-time object to convert, not null
+     * @return the ISO local date-time, not null
+     * @throws DateTimeException if unable to create the date-time
+     */
+    @Override  // override with covariant return type
     public LocalDateTime localDateTime(DateTimeAccessor dateTime) {
         return LocalDateTime.from(dateTime);
     }
 
-    @Override
+    /**
+     * Obtains an ISO zoned date-time from another date-time object.
+     * <p>
+     * This is equivalent to {@link ZonedDateTime#from(DateTimeAccessor)}.
+     *
+     * @param dateTime  the date-time object to convert, not null
+     * @return the ISO zoned date-time, not null
+     * @throws DateTimeException if unable to create the date-time
+     */
+    @Override  // override with covariant return type
     public ZonedDateTime zonedDateTime(DateTimeAccessor dateTime) {
         return ZonedDateTime.from(dateTime);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains the current ISO local date from the system clock in the default time-zone.
+     * <p>
+     * This will query the {@link Clock#systemDefaultZone() system clock} in the default
+     * time-zone to obtain the current date.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @return the current ISO local date using the system clock and default time-zone, not null
+     * @throws DateTimeException if unable to create the date
+     */
+    @Override  // override with covariant return type
+    public LocalDate dateNow() {
+        return dateNow(Clock.systemDefaultZone());
+    }
+
+    /**
+     * Obtains the current ISO local date from the system clock in the specified time-zone.
+     * <p>
+     * This will query the {@link Clock#system(ZoneId) system clock} to obtain the current date.
+     * Specifying the time-zone avoids dependence on the default time-zone.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @return the current ISO local date using the system clock, not null
+     * @throws DateTimeException if unable to create the date
+     */
+    @Override  // override with covariant return type
+    public LocalDate dateNow(ZoneId zone) {
+        return dateNow(Clock.system(zone));
+    }
+
+    /**
+     * Obtains the current ISO local date from the specified clock.
+     * <p>
+     * This will query the specified clock to obtain the current date - today.
+     * Using this method allows the use of an alternate clock for testing.
+     * The alternate clock may be introduced using {@link Clock dependency injection}.
+     *
+     * @param clock  the clock to use, not null
+     * @return the current ISO local date, not null
+     * @throws DateTimeException if unable to create the date
+     */
+    @Override  // override with covariant return type
+    public LocalDate dateNow(Clock clock) {
+        Objects.requireNonNull(clock, "clock");
+        return date(LocalDate.now(clock));
     }
 
     //-----------------------------------------------------------------------
