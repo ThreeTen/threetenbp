@@ -437,7 +437,7 @@ public final class ZonedDateTime
                 return of(ldt, zoneId);
             }
         } catch (DateTimeException ex) {
-            throw new DateTimeException("Unable to convert date-time to ZonedDateTime: " + dateTime.getClass(), ex);
+            throw new DateTimeException("Unable to convert DateTimeAccessor to ZonedDateTime: " + dateTime.getClass(), ex);
         }
     }
 
