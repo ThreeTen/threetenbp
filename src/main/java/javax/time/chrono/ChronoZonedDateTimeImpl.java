@@ -134,16 +134,11 @@ final class ChronoZonedDateTimeImpl<C extends Chrono<C>>
      * Obtains an instance of {@code ZoneChronoDateTime} from an {@code Instant}.
      *
      * @param instant  the instant to create the date-time from, not null
-     * @param zoneId  the time-zone to use, not null
-     * @return the zoned date-time, not null
+     * @param zoneId  the time-zone to use, validated not null
+     * @return the zoned date-time, validated not null
      */
-    private ChronoZonedDateTimeImpl<C> ofInstant(Instant instant, ZoneId zoneId) {
-        Objects.requireNonNull(instant, "instant");
-        Objects.requireNonNull(zoneId, "zoneId");
-        ZoneRules rules = zoneId.getRules();
-        ZoneOffset offset = rules.getOffset(instant);
-        LocalDateTime ldt = LocalDateTime.ofEpochSecond(instant.getEpochSecond(), instant.getNano(), offset);
-        ChronoDateTimeImpl<C> cldt = getDate().getChrono().ensureChronoLocalDateTime(getDateTime().with(ldt));
+    private ChronoZonedDateTimeImpl<C> create(Instant instant, ZoneId zoneId) {
+        ChronoDateTimeImpl<C> cldt = getDate().getChrono().localInstant(instant, zoneId);
         return new ChronoZonedDateTimeImpl<C>(cldt, offset, zoneId);
     }
 
@@ -156,12 +151,9 @@ final class ChronoZonedDateTimeImpl<C extends Chrono<C>>
      * @param zone  the zone ID, not null
      */
     private ChronoZonedDateTimeImpl(ChronoDateTimeImpl<C> dateTime, ZoneOffset offset, ZoneId zoneId) {
-        Objects.requireNonNull(dateTime, "dateTime");
-        Objects.requireNonNull(offset, "offset");
-        Objects.requireNonNull(zoneId, "zoneId");
-        this.dateTime = dateTime;
-        this.offset = offset;
-        this.zoneId = zoneId;
+        this.dateTime = Objects.requireNonNull(dateTime, "dateTime");
+        this.offset = Objects.requireNonNull(offset, "offset");
+        this.zoneId = Objects.requireNonNull(zoneId, "zoneId");
     }
 
     //-----------------------------------------------------------------------
@@ -210,7 +202,7 @@ final class ChronoZonedDateTimeImpl<C extends Chrono<C>>
     @Override
     public ChronoZonedDateTime<C> withZoneSameInstant(ZoneId zoneId) {
         Objects.requireNonNull(zoneId, "zoneId");
-        return this.zoneId.equals(zoneId) ? this : ofInstant(dateTime.toInstant(offset), zoneId);
+        return this.zoneId.equals(zoneId) ? this : create(dateTime.toInstant(offset), zoneId);
     }
 
     //-----------------------------------------------------------------------
@@ -228,7 +220,7 @@ final class ChronoZonedDateTimeImpl<C extends Chrono<C>>
                 case INSTANT_SECONDS: return plus(newValue - toEpochSecond(), SECONDS);
                 case OFFSET_SECONDS: {
                     ZoneOffset offset = ZoneOffset.ofTotalSeconds(f.checkValidIntValue(newValue));
-                    return ofInstant(dateTime.toInstant(offset), zoneId);
+                    return create(dateTime.toInstant(offset), zoneId);
                 }
             }
             return ofBest(dateTime.with(field, newValue), zoneId, offset);

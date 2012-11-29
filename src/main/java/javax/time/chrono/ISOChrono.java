@@ -31,8 +31,6 @@
  */
 package javax.time.chrono;
 
-import static javax.time.calendrical.ChronoField.EPOCH_DAY;
-
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -40,6 +38,8 @@ import java.util.Locale;
 
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
+import javax.time.LocalDateTime;
+import javax.time.ZonedDateTime;
 import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeValueRange;
@@ -156,10 +156,17 @@ public final class ISOChrono extends Chrono<ISOChrono> implements Serializable {
 
     @Override
     public LocalDate date(DateTimeAccessor dateTime) {
-        if (dateTime instanceof LocalDate) {
-            return (LocalDate) dateTime;
-        }
-        return LocalDate.ofEpochDay(dateTime.getLong(EPOCH_DAY));
+        return LocalDate.from(dateTime);
+    }
+
+    @Override
+    public LocalDateTime localDateTime(DateTimeAccessor dateTime) {
+        return LocalDateTime.from(dateTime);
+    }
+
+    @Override
+    public ZonedDateTime zonedDateTime(DateTimeAccessor dateTime) {
+        return ZonedDateTime.from(dateTime);
     }
 
     //-----------------------------------------------------------------------

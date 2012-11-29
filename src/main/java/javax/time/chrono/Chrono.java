@@ -44,7 +44,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.time.Clock;
 import javax.time.DateTimeException;
+import javax.time.Instant;
 import javax.time.LocalDate;
+import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
@@ -57,6 +59,7 @@ import javax.time.calendrical.DateTimeValueRange;
 import javax.time.format.DateTimeFormatterBuilder;
 import javax.time.format.TextStyle;
 import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
+import javax.time.zone.ZoneRules;
 
 /**
  * A calendar system, defining a set of human-scale date fields.
@@ -250,8 +253,8 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * This combines a {@link ChronoLocalDate}, which provides the {@code Chrono},
      * with a {@link LocalTime} to produce a {@link ChronoLocalDateTime}.
      * <p>
-     * This method is intended for chronology implementations. It uses a standard
-     * implementation that can be shared for all chronologies.
+     * This method is intended for chronology implementations.
+     * It uses a standard implementation that is shared for all chronologies.
      *
      * @param <R>  the chronology of the date
      * @param date  the date, not null
@@ -473,6 +476,68 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
 
     //-----------------------------------------------------------------------
     /**
+     * Creates a local date-time in this chronology from another date-time object.
+     * <p>
+     * This creates a date-time in this chronology based on the specified {@code DateTimeAccessor}.
+     * <p>
+     * The date of the date-time should be equivalent to that obtained by calling
+     * {@link #date(DateTimeAccessor)}.
+     * The standard mechanism for conversion between time types is the
+     * {@link ChronoField#NANO_OF_DAY nano-of-day} field.
+     *
+     * @param dateTime  the date-time object to convert, not null
+     * @return the local date-time in this chronology, not null
+     * @throws DateTimeException if unable to create the date-time
+     */
+    public ChronoLocalDateTime<C> localDateTime(DateTimeAccessor dateTime) {
+        return date(dateTime).atTime(LocalTime.from(dateTime));
+    }
+
+    /**
+     * Creates a local date-time in this chronology from an instant and zone.
+     *
+     * @param instant  the instant, not null
+     * @param zoneId  the zone ID, not null
+     * @return the local date-time, not null
+     */
+    ChronoDateTimeImpl<C> localInstant(Instant instant, ZoneId zoneId) {
+        ZoneRules rules = zoneId.getRules();
+        ZoneOffset offset = rules.getOffset(instant);
+        LocalDateTime ldt = LocalDateTime.ofEpochSecond(instant.getEpochSecond(), instant.getNano(), offset);
+        return ChronoDateTimeImpl.of(dateNow(), LocalTime.MIDNIGHT).with(ldt);  // not very efficient...
+    }
+
+    /**
+     * Creates a zoned date-time in this chronology from another date-time object.
+     * <p>
+     * This creates a date-time in this chronology based on the specified {@code DateTimeAccessor}.
+     * <p>
+     * This should obtain a {@code ZoneId} using {@link ZoneId#from(DateTimeAccessor)}.
+     * The date-time should be obtained by obtaining an {@code Instant}.
+     * If that fails, the local date-time should be used.
+     *
+     * @param dateTime  the date-time object to convert, not null
+     * @return the zoned date-time in this chronology, not null
+     * @throws DateTimeException if unable to create the date-time
+     */
+    public ChronoZonedDateTime<C> zonedDateTime(DateTimeAccessor dateTime) {
+        try {
+            ZoneId zoneId = ZoneId.from(dateTime);
+            ChronoDateTimeImpl<C> cldt;
+            try {
+                Instant instant = Instant.from(dateTime);
+                cldt = localInstant(instant, zoneId);
+            } catch (DateTimeException ex1) {
+                cldt = ensureChronoLocalDateTime(localDateTime(dateTime));
+            }
+            return ChronoZonedDateTimeImpl.ofBest(cldt, zoneId, null);
+        } catch (DateTimeException ex) {
+            throw new DateTimeException("Unable to convert DateTimeAccessor to ZonedDateTime: " + dateTime.getClass(), ex);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Checks if the specified year is a leap year.
      * <p>
      * A leap-year is a year of a longer length than normal.
@@ -655,8 +720,9 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
         out.writeUTF(getId());
     }
 
-    static Chrono readExternal(DataInput in) throws IOException {
+    static Chrono<?> readExternal(DataInput in) throws IOException {
         String id = in.readUTF();
         return Chrono.of(id);
     }
+
 }
