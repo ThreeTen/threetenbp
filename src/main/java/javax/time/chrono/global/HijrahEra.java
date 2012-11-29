@@ -171,9 +171,7 @@ enum HijrahEra implements Era<HijrahChrono> {
     @SuppressWarnings("unchecked")
     @Override
     public <R> R query(Query<R> query) {
-        if (query == Query.ZONE_ID) {
-            return null;
-        } else if (query == Query.CHRONO) {
+        if (query == Query.CHRONO) {
             return (R) getChrono();
         }
         return query.doQuery(this);

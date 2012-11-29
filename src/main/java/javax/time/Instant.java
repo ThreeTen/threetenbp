@@ -38,6 +38,7 @@ import static javax.time.calendrical.ChronoField.INSTANT_SECONDS;
 import static javax.time.calendrical.ChronoField.MICRO_OF_SECOND;
 import static javax.time.calendrical.ChronoField.MILLI_OF_SECOND;
 import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
+import static javax.time.calendrical.ChronoUnit.NANOS;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -578,6 +579,15 @@ public final class Instant
 
     private long secondsUntil(Instant end) {
         return Jdk8Methods.safeSubtract(end.seconds, seconds);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R query(Query<R> query) {
+        if (query == Query.TIME_PRECISION) {
+            return (R) NANOS;
+        }
+        return super.query(query);
     }
 
     //-----------------------------------------------------------------------

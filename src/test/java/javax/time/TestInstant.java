@@ -31,6 +31,7 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.ChronoUnit.NANOS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -43,6 +44,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Locale;
 
+import javax.time.calendrical.DateTimeAccessor.Query;
 import javax.time.format.DateTimeParseException;
 
 import org.testng.annotations.DataProvider;
@@ -288,6 +290,29 @@ public class TestInstant extends AbstractTest {
         ObjectInputStream in = new ObjectInputStream(bais);
         Instant ser = (Instant) in.readObject();
         assertEquals(Instant.ofEpochSecond(2), ser);
+    }
+
+    //-----------------------------------------------------------------------
+    // query(Query)
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_query_chrono() {
+        assertEquals(Instant.EPOCH.query(Query.CHRONO), null);
+    }
+
+    @Test(groups={"tck"})
+    public void test_query_zone() {
+        assertEquals(Instant.EPOCH.query(Query.ZONE_ID), null);
+    }
+
+    @Test(groups={"tck"})
+    public void test_query_timePrecision() {
+        assertEquals(Instant.EPOCH.query(Query.TIME_PRECISION), NANOS);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_query_null() {
+        Instant.EPOCH.query(null);
     }
 
     //-----------------------------------------------------------------------

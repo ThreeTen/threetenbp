@@ -138,20 +138,34 @@ public interface DateTimeAccessor {
      * Queries this date-time.
      * <p>
      * This queries this date-time using the specified query strategy object.
-     * The Query interface defines two constants, {@code Query.ZONE_ID} and {@code Query.CHRONO},
-     * which can be used to obtain the {@code ZoneId} and {@code Chrono}.
+     * The Query interface has three special predefined constants -
+     * {@code Query.ZONE_ID}, {@code Query.CHRONO} and {@code Query.TIME_PRECISION}.
      * Other queries may be defined by applications.
      *
      * <h4>Implementation notes</h4>
-     * The two special constant implementations of {@code Query} must be handled directly.
-     * The code must follow a pattern equivalent to the following:
+     * Queries are used for two purposes - general application specific logic,
+     * and providing a way to query those parts of a {@code DateTimeAccessor}
+     * that cannot be returned as a {@code long} using a field.
+     * <p>
+     * In use, there is no difference between the two purposes.
+     * However, there is a difference in implementation.
+     * It is the responsibility of implementations of this method to return a
+     * value for the three special constants if applicable.
+     * Future JDKs are permitted to add further special constants.
+     * <p>
+     * The standard implementation of this method will be similar to the following:
      * <pre>
      *   public &lt;R&gt; R query(Query&lt;R&gt; type) {
-     *     if (query == Query.ZONE_ID)  return // either ZoneId or null
-     *     if (query == Query.CHRONO)  return // either Chrono or null
-     *     return query.doQuery(this);
+     *     // only include an if statement if the implementation can return it
+     *     if (query == Query.ZONE_ID)  return // the ZoneId
+     *     if (query == Query.CHRONO)  return // the Chrono
+     *     if (query == Query.PRECISION)  return // the precision
+     *     // call default method
+     *     return super.query(query);
      *   }
      * </pre>
+     * If the implementation class has no zone, chronology or precision, then
+     * the class can rely totally on the default implementation.
      *
      * @param <R> the type of the result
      * @param query  the query to invoke, not null
@@ -181,24 +195,51 @@ public interface DateTimeAccessor {
      * All implementations that can be instantiated must be final, immutable and thread-safe.
      */
     public interface Query<R> {
+        // special constants should be used to extract information from a DateTimeAccessor
+        // that cannot be derived in other ways
         /**
          * The special constant for the query for {@code ZoneId}.
+         * <p>
+         * If the target {@code DateTimeAccessor} has a zone ID, then querying
+         * it with this constant must return the chronology.
          */
         Query<ZoneId> ZONE_ID = new Query<ZoneId>() {
             @Override
             public ZoneId doQuery(DateTimeAccessor dateTime) {
-                throw new DateTimeException("Cannot invoke dateTime.query(Query.ZONE_ID) directly");
+                return null;
             }
         };
         /**
          * The special constant for the query for {@code Chrono}.
+         * <p>
+         * If the target {@code DateTimeAccessor} has a chronology, then querying
+         * it with this constant must return the chronology.
          */
         Query<Chrono<?>> CHRONO = new Query<Chrono<?>>() {
             @Override
             public Chrono<?> doQuery(DateTimeAccessor dateTime) {
-                throw new DateTimeException("Cannot invoke dateTime.query(Query.CHRONO) directly");
+                return null;
             }
         };
+        /**
+         * The special constant for the query for the minimum supported time unit.
+         * <p>
+         * If the target {@code DateTimeAccessor} represents a consistent or complete
+         * date-time, date or time then this must return the smallest precision actually
+         * supported. Note that fields such as {@code NANO_OF_DAY} and {@code NANO_OF_SECOND}
+         * are defined to always return ignoring the precision, thus this is the only
+         * way to find the accurate minimum supported unit.
+         * <p>
+         * For example, {@code GregorianCalendar} has a precision of {@code MILLIS}, whereas
+         * {@code LocalDate} and {@code ZoneOffset} have no time precision and thus returns null.
+         */
+        Query<ChronoUnit> TIME_PRECISION = new Query<ChronoUnit>() {
+            @Override
+            public ChronoUnit doQuery(DateTimeAccessor dateTime) {
+                return null;
+            }
+        };
+
         /**
          * Implementation of the strategy to query the specified date-time object.
          * <p>

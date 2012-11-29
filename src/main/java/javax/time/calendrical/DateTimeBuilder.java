@@ -610,7 +610,8 @@ public final class DateTimeBuilder
         if (query == Query.CHRONO) {
             return extract(Chrono.class);
         }
-        return query.doQuery(this);
+        // incomplete, so no need to handle TIME_PRECISION
+        return super.query(query);
     }
 
     @SuppressWarnings("unchecked")

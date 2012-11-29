@@ -34,6 +34,7 @@ package javax.time.jdk8;
 import static javax.time.calendrical.ChronoField.EPOCH_DAY;
 import static javax.time.calendrical.ChronoField.NANO_OF_DAY;
 import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
+import static javax.time.calendrical.ChronoUnit.NANOS;
 
 import java.util.Objects;
 
@@ -139,14 +140,17 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chrono<C>>
                 .with(NANO_OF_DAY, getTime().toNanoOfDay());
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <R> R query(Query<R> query) {
         if (query == Query.ZONE_ID) {
             return (R) getZone();
         } else if (query == Query.CHRONO) {
             return (R) getDate().getChrono();
+        } else if (query == Query.TIME_PRECISION) {
+            return (R) NANOS;
         }
-        return query.doQuery(this);
+        return super.query(query);
     }
 
     //-------------------------------------------------------------------------
