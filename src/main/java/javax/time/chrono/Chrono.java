@@ -286,7 +286,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * @throws ClassCastException if the date-time cannot be cast to ChronoLocalDate
      *  or the chronology is not equal this Chrono
      */
-    public /* protected */ ChronoLocalDate<C> ensureChronoLocalDate(DateTime dateTime) {
+    public /* package-scoped */ ChronoLocalDate<C> ensureChronoLocalDate(DateTime dateTime) {  // TODO: non-public
         @SuppressWarnings("unchecked")
         ChronoLocalDate<C> other = (ChronoLocalDate<C>) dateTime;
         if (this.equals(other.getChrono()) == false) {
@@ -303,7 +303,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * @throws ClassCastException if the date-time cannot be cast to ChronoDateTimeImpl
      *  or the chronology is not equal this Chrono
      */
-    public /* package-scoped */ ChronoDateTimeImpl<C> ensureChronoLocalDateTime(DateTime dateTime) {
+    public /* package-scoped */ ChronoDateTimeImpl<C> ensureChronoLocalDateTime(DateTime dateTime) {  // TODO: non-public
         @SuppressWarnings("unchecked")
         ChronoDateTimeImpl<C> other = (ChronoDateTimeImpl<C>) dateTime;
         if (this.equals(other.getDate().getChrono()) == false) {
@@ -321,7 +321,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * @throws ClassCastException if the date-time cannot be cast to ChronoZonedDateTimeImpl
      *  or the chronology is not equal this Chrono
      */
-    public /* package-scoped */ ChronoZonedDateTimeImpl<C> ensureChronoZonedDateTime(DateTime dateTime) {
+    public /* package-scoped */ ChronoZonedDateTimeImpl<C> ensureChronoZonedDateTime(DateTime dateTime) {  // TODO: non-public
         @SuppressWarnings("unchecked")
         ChronoZonedDateTimeImpl<C> other = (ChronoZonedDateTimeImpl<C>) dateTime;
         if (this.equals(other.getDate().getChrono()) == false) {
