@@ -118,7 +118,7 @@ public interface Era<C extends Chrono<C>> extends DateTimeAccessor, WithAdjuster
      * @param dayOfYear  the calendar system day-of-year
      * @return a new date based on this era and the specified year-of-era and day-of-year
      */
-    ChronoLocalDate<C> dateFromYearDay(int yearOfEra, int dayOfYear);
+    ChronoLocalDate<C> dateYearDay(int yearOfEra, int dayOfYear);
 
     //-----------------------------------------------------------------------
     /**

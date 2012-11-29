@@ -121,8 +121,8 @@ enum MinguoEra implements Era<MinguoChrono>  {
     }
 
     @Override
-    public ChronoLocalDate<MinguoChrono> dateFromYearDay(int year, int dayOfYear) {
-        return getChrono().dateFromYearDay(this, year, dayOfYear);
+    public ChronoLocalDate<MinguoChrono> dateYearDay(int year, int dayOfYear) {
+        return getChrono().dateYearDay(this, year, dayOfYear);
     }
 
     //-----------------------------------------------------------------------

@@ -97,8 +97,8 @@ import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
  * <li> {@link #dateNow(ZoneId) dateNow(zone)}
  * <li> {@link #date(int, int, int) date(yearProleptic, month, day)}
  * <li> {@link #date(javax.time.chrono.Era, int, int, int) date(era, yearOfEra, month, day)}
- * <li> {@link #dateFromYearDay(int, int) date(yearProleptic, dayOfYear)}
- * <li> {@link #dateFromYearDay(Era, int, int) date(era, yearOfEra, dayOfYear)}
+ * <li> {@link #dateYearDay(int, int) dateYearDay(yearProleptic, dayOfYear)}
+ * <li> {@link #dateYearDay(Era, int, int) dateYearDay(era, yearOfEra, dayOfYear)}
  * <li> {@link #date(DateTimeAccessor) date(DateTimeAccessor)}
  * </ul><p>
  *
@@ -399,8 +399,8 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * @return the date in this chronology, not null
      * @throws DateTimeException if unable to create the date
      */
-    public ChronoLocalDate<C> dateFromYearDay(Era<C> era, int yearOfEra, int dayOfYear) {
-        return dateFromYearDay(prolepticYear(era, yearOfEra), dayOfYear);
+    public ChronoLocalDate<C> dateYearDay(Era<C> era, int yearOfEra, int dayOfYear) {
+        return dateYearDay(prolepticYear(era, yearOfEra), dayOfYear);
     }
 
     /**
@@ -411,7 +411,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * @return the date in this chronology, not null
      * @throws DateTimeException if unable to create the date
      */
-    public abstract ChronoLocalDate<C> dateFromYearDay(int prolepticYear, int dayOfYear);
+    public abstract ChronoLocalDate<C> dateYearDay(int prolepticYear, int dayOfYear);
 
     /**
      * Creates a date in this chronology from another date-time object.

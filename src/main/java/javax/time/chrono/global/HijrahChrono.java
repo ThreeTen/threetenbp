@@ -250,7 +250,7 @@ public final class HijrahChrono extends Chrono<HijrahChrono> implements Serializ
     }
 
     @Override
-    public ChronoLocalDate<HijrahChrono> dateFromYearDay(int prolepticYear, int dayOfYear) {
+    public ChronoLocalDate<HijrahChrono> dateYearDay(int prolepticYear, int dayOfYear) {
         return HijrahDate.of(prolepticYear, 1, 1).plusDays(dayOfYear - 1);  // TODO better
     }
 

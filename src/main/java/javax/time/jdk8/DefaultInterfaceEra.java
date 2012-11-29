@@ -61,8 +61,8 @@ public abstract class DefaultInterfaceEra<C extends Chrono<C>>
     }
 
     @Override
-    public ChronoLocalDate<C> dateFromYearDay(int year, int dayOfYear) {
-        return getChrono().dateFromYearDay(this, year, dayOfYear);
+    public ChronoLocalDate<C> dateYearDay(int year, int dayOfYear) {
+        return getChrono().dateYearDay(this, year, dayOfYear);
     }
 
     //-----------------------------------------------------------------------

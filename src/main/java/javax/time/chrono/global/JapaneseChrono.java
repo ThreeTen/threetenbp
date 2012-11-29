@@ -209,7 +209,7 @@ public final class JapaneseChrono extends Chrono<JapaneseChrono> implements Seri
     }
 
     @Override
-    public ChronoLocalDate<JapaneseChrono> dateFromYearDay(int prolepticYear, int dayOfYear) {
+    public ChronoLocalDate<JapaneseChrono> dateYearDay(int prolepticYear, int dayOfYear) {
         LocalDate date = LocalDate.ofYearDay(prolepticYear, dayOfYear);
         return date(prolepticYear, date.getMonthValue(), date.getDayOfMonth());
     }

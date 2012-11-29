@@ -154,7 +154,7 @@ public final class MinguoChrono extends Chrono<MinguoChrono> implements Serializ
     }
 
     @Override
-    public ChronoLocalDate<MinguoChrono> dateFromYearDay(int prolepticYear, int dayOfYear) {
+    public ChronoLocalDate<MinguoChrono> dateYearDay(int prolepticYear, int dayOfYear) {
         return new MinguoDate(LocalDate.ofYearDay(prolepticYear + YEARS_DIFFERENCE, dayOfYear));
     }
 
