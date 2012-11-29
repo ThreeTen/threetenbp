@@ -159,7 +159,7 @@ public final class ZonedDateTime
     /**
      * Obtains the current date-time from the specified clock.
      * <p>
-     * This will query the specified clock to obtain the current time.
+     * This will query the specified clock to obtain the current date-time.
      * The zone and offset will be set based on the time-zone in the clock.
      * <p>
      * Using this method allows the use of an alternate clock for testing.
@@ -309,9 +309,12 @@ public final class ZonedDateTime
      * Obtains an instance of {@code ZonedDateTime} using seconds from the
      * epoch of 1970-01-01T00:00:00Z.
      * <p>
-     * This allows the {@link ChronoField#INSTANT_SECONDS epoch-seconds} field
+     * This allows the {@link ChronoField#INSTANT_SECONDS epoch-second} field
      * to be converted to a zoned date-time. This is primarily intended for
      * low-level conversions rather than general application usage.
+     * <p>
+     * The epoch-second is equivalent to an instant and there is only one valid
+     * offset for each instant.
      *
      * @param epochSecond  the number of seconds from the epoch of 1970-01-01T00:00:00Z
      * @param nanoOfSecond  the nanosecond within the second, from 0 to 999,999,999

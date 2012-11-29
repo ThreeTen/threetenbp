@@ -83,6 +83,7 @@ final class Ser implements Externalizable {
     static final byte OFFSET_TIME_TYPE = 66;
     static final byte YEAR_TYPE = 67;
     static final byte YEAR_MONTH_TYPE = 68;
+    static final byte OFFSET_DATE_TIME_TYPE = 69;
 
     /** The type being serialized. */
     private byte type;
