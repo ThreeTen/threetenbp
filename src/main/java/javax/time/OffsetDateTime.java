@@ -1592,9 +1592,9 @@ public final class OffsetDateTime
      * <p><ul>
      * <li>{@code yyyy-MM-dd'T'HH:mmXXXXX}</li>
      * <li>{@code yyyy-MM-dd'T'HH:mm:ssXXXXX}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnXXXXX}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnnnnXXXXX}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnnnnnnnXXXXX}</li>
+     * <li>{@code yyyy-MM-dd'T'HH:mm:ss.SSSXXXXX}</li>
+     * <li>{@code yyyy-MM-dd'T'HH:mm:ss.SSSSSSXXXXX}</li>
+     * <li>{@code yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXXXX}</li>
      * </ul><p>
      * The format used will be the shortest that outputs the full value of
      * the time where the omitted parts are implied to be zero.

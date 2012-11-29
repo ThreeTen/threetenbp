@@ -1925,9 +1925,9 @@ public final class ZonedDateTime
      * <p><ul>
      * <li>{@code yyyy-MM-dd'T'HH:mmXXXXX'['I']'}</li>
      * <li>{@code yyyy-MM-dd'T'HH:mm:ssXXXXX'['I']'}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnXXXXX'['I']'}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnnnnXXXXX'['I']'}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnnnnnnnXXXXX'['I']'}</li>
+     * <li>{@code yyyy-MM-dd'T'HH:mm:ss.SSSXXXXX'['I']'}</li>
+     * <li>{@code yyyy-MM-dd'T'HH:mm:ss.SSSSSSXXXXX'['I']'}</li>
+     * <li>{@code yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXXXX'['I']'}</li>
      * </ul><p>
      * The format used will be the shortest that outputs the full value of
      * the time where the omitted parts are implied to be zero.

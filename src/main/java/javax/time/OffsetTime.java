@@ -917,9 +917,9 @@ public final class OffsetTime
      * <p><ul>
      * <li>{@code HH:mmXXXXX}</li>
      * <li>{@code HH:mm:ssXXXXX}</li>
-     * <li>{@code HH:mm:ssfnnnXXXXX}</li>
-     * <li>{@code HH:mm:ssfnnnnnnXXXXX}</li>
-     * <li>{@code HH:mm:ssfnnnnnnnnnXXXXX}</li>
+     * <li>{@code HH:mm:ss.SSSXXXXX}</li>
+     * <li>{@code HH:mm:ss.SSSSSSXXXXX}</li>
+     * <li>{@code HH:mm:ss.SSSSSSSSSXXXXX}</li>
      * </ul><p>
      * The format used will be the shortest that outputs the full value of
      * the time where the omitted parts are implied to be zero.
