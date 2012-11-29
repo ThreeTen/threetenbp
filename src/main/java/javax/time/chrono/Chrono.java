@@ -47,7 +47,6 @@ import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.ZoneId;
-import javax.time.ZoneOffset;
 import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
@@ -439,6 +438,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      */
     public abstract ChronoLocalDate<C> date(DateTimeAccessor dateTime);
 
+    //-----------------------------------------------------------------------
     /**
      * Obtains the current local date in this chronology from the system clock in the default time-zone.
      * <p>
@@ -673,8 +673,9 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
         out.writeUTF(getId());
     }
 
-    static Chrono readExternal(DataInput in) throws IOException {
+    static Chrono<?> readExternal(DataInput in) throws IOException {
         String id = in.readUTF();
         return Chrono.of(id);
     }
+
 }
