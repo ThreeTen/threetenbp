@@ -47,6 +47,7 @@ import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.ZoneId;
+import javax.time.ZoneOffset;
 import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTimeAccessor;
@@ -244,15 +245,18 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new {@code ChronoLocalDateTime} with the {@code date} and {@code time}.
+     * Obtains a local date-time from the a date and time.
+     * <p>
+     * This combines a {@link ChronoLocalDate}, which provides the {@code Chrono},
+     * with a {@link LocalTime} to produce a {@link ChronoLocalDateTime}.
      * <p>
      * This method is intended for chronology implementations. It uses a standard
-     * local date-time implementation that can be shared for all chronologies.
+     * implementation that can be shared for all chronologies.
      *
      * @param <R>  the chronology of the date
      * @param date  the date, not null
      * @param time  the time, not null
-     * @return a new {@code ChronoLocalDateTime} with the {@code date} and {@code time}, not null
+     * @return the local date-time combining the input date and time, not null
      */
     public static <R extends Chrono<R>> ChronoLocalDateTime<R> dateTime(ChronoLocalDate<R> date, LocalTime time) {
         return ChronoDateTimeImpl.of(date, time);
@@ -280,6 +284,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      *  or the chronology is not equal this Chrono
      */
     public /* protected */ ChronoLocalDate<C> ensureChronoLocalDate(DateTime dateTime) {
+        @SuppressWarnings("unchecked")
         ChronoLocalDate<C> other = (ChronoLocalDate<C>) dateTime;
         if (this.equals(other.getChrono()) == false) {
             throw new ClassCastException("Chrono mismatch, expected: " + getId() + ", actual: " + other.getChrono().getId());
@@ -296,6 +301,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      *  or the chronology is not equal this Chrono
      */
     public /* package-scoped */ ChronoDateTimeImpl<C> ensureChronoLocalDateTime(DateTime dateTime) {
+        @SuppressWarnings("unchecked")
         ChronoDateTimeImpl<C> other = (ChronoDateTimeImpl<C>) dateTime;
         if (this.equals(other.getDate().getChrono()) == false) {
             throw new ClassCastException("Chrono mismatch, required: " + getId()
@@ -313,6 +319,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      *  or the chronology is not equal this Chrono
      */
     public /* package-scoped */ ChronoOffsetDateTimeImpl<C> ensureChronoOffsetDateTime(DateTime dateTime) {
+        @SuppressWarnings("unchecked")
         ChronoOffsetDateTimeImpl<C> other = (ChronoOffsetDateTimeImpl<C>) dateTime;
         if (this.equals(other.getDate().getChrono()) == false) {
             throw new ClassCastException("Chrono mismatch, required: " + getId()
@@ -330,6 +337,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      *  or the chronology is not equal this Chrono
      */
     public /* package-scoped */ ChronoZonedDateTimeImpl<C> ensureChronoZonedDateTime(DateTime dateTime) {
+        @SuppressWarnings("unchecked")
         ChronoZonedDateTimeImpl<C> other = (ChronoZonedDateTimeImpl<C>) dateTime;
         if (this.equals(other.getDate().getChrono()) == false) {
             throw new ClassCastException("Chrono mismatch, required: " + getId()
@@ -366,13 +374,14 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
 
     //-----------------------------------------------------------------------
     /**
-     * Creates a date in this chronology from the era, year-of-era, month-of-year and day-of-month fields.
+     * Obtains a local date in this chronology from the era, year-of-era,
+     * month-of-year and day-of-month fields.
      *
      * @param era  the era of the correct type for the chronology, not null
      * @param yearOfEra  the chronology year-of-era
      * @param month  the chronology month-of-year
      * @param dayOfMonth  the chronology day-of-month
-     * @return the date in this chronology, not null
+     * @return the local date in this chronology, not null
      * @throws DateTimeException if unable to create the date
      */
     public ChronoLocalDate<C> date(Era<C> era, int yearOfEra, int month, int dayOfMonth) {
@@ -380,23 +389,25 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
     }
 
     /**
-     * Creates a date in this chronology from the proleptic-year, month-of-year and day-of-month fields.
+     * Obtains a local date in this chronology from the proleptic-year,
+     * month-of-year and day-of-month fields.
      *
      * @param prolepticYear  the chronology proleptic-year
      * @param month  the chronology month-of-year
      * @param dayOfMonth  the chronology day-of-month
-     * @return the date in this chronology, not null
+     * @return the local date in this chronology, not null
      * @throws DateTimeException if unable to create the date
      */
     public abstract ChronoLocalDate<C> date(int prolepticYear, int month, int dayOfMonth);
 
     /**
-     * Creates a date in this chronology from the era, year-of-era and day-of-year fields.
+     * Obtains a local date in this chronology from the era, year-of-era and
+     * day-of-year fields.
      *
      * @param era  the era of the correct type for the chronology, not null
      * @param yearOfEra  the chronology year-of-era
      * @param dayOfYear  the chronology day-of-year
-     * @return the date in this chronology, not null
+     * @return the local date in this chronology, not null
      * @throws DateTimeException if unable to create the date
      */
     public ChronoLocalDate<C> dateYearDay(Era<C> era, int yearOfEra, int dayOfYear) {
@@ -404,29 +415,32 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
     }
 
     /**
-     * Creates a date in this chronology from the proleptic-year and day-of-year fields.
+     * Obtains a local date in this chronology from the proleptic-year and
+     * day-of-year fields.
      *
      * @param prolepticYear  the chronology proleptic-year
      * @param dayOfYear  the chronology day-of-year
-     * @return the date in this chronology, not null
+     * @return the local date in this chronology, not null
      * @throws DateTimeException if unable to create the date
      */
     public abstract ChronoLocalDate<C> dateYearDay(int prolepticYear, int dayOfYear);
 
     /**
-     * Creates a date in this chronology from another date-time object.
+     * Obtains a local date in this chronology from another date-time object.
      * <p>
-     * This creates a date in this chronology by extracting the
+     * This creates a date in this chronology based on the specified {@code DateTimeAccessor}.
+     * <p>
+     * The standard mechanism for conversion between date types is the
      * {@link ChronoField#EPOCH_DAY local epoch-day} field.
      *
      * @param dateTime  the date-time object to convert, not null
-     * @return the date in this chronology, not null
+     * @return the local date in this chronology, not null
      * @throws DateTimeException if unable to create the date
      */
     public abstract ChronoLocalDate<C> date(DateTimeAccessor dateTime);
 
     /**
-     * Creates the current date in this chronology from the system clock in the default time-zone.
+     * Obtains the current local date in this chronology from the system clock in the default time-zone.
      * <p>
      * This will query the {@link Clock#systemDefaultZone() system clock} in the default
      * time-zone to obtain the current date.
@@ -436,7 +450,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * <p>
      * This implementation uses {@link #dateNow(Clock)}.
      *
-     * @return the current date using the system clock and default time-zone, not null
+     * @return the current local date using the system clock and default time-zone, not null
      * @throws DateTimeException if unable to create the date
      */
     public ChronoLocalDate<C> dateNow() {
@@ -444,7 +458,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
     }
 
     /**
-     * Creates the current date in this chronology from the system clock in the specified time-zone.
+     * Obtains the current local date in this chronology from the system clock in the specified time-zone.
      * <p>
      * This will query the {@link Clock#system(ZoneId) system clock} to obtain the current date.
      * Specifying the time-zone avoids dependence on the default time-zone.
@@ -452,7 +466,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      *
-     * @return the current date using the system clock, not null
+     * @return the current local date using the system clock, not null
      * @throws DateTimeException if unable to create the date
      */
     public ChronoLocalDate<C> dateNow(ZoneId zone) {
@@ -460,14 +474,14 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
     }
 
     /**
-     * Creates the current date in this chronology from the specified clock.
+     * Obtains the current local date in this chronology from the specified clock.
      * <p>
      * This will query the specified clock to obtain the current date - today.
      * Using this method allows the use of an alternate clock for testing.
      * The alternate clock may be introduced using {@link Clock dependency injection}.
      *
      * @param clock  the clock to use, not null
-     * @return the current date, not null
+     * @return the current local date, not null
      * @throws DateTimeException if unable to create the date
      */
     public ChronoLocalDate<C> dateNow(Clock clock) {
