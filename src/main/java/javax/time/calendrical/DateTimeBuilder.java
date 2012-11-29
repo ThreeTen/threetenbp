@@ -55,6 +55,7 @@ import static javax.time.calendrical.ChronoField.MINUTE_OF_HOUR;
 import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
 import static javax.time.calendrical.ChronoField.NANO_OF_DAY;
 import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
+import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
 import static javax.time.calendrical.ChronoField.SECOND_OF_DAY;
 import static javax.time.calendrical.ChronoField.SECOND_OF_MINUTE;
 import static javax.time.calendrical.ChronoField.YEAR;
@@ -605,6 +606,9 @@ public final class DateTimeBuilder
             R zone = extract(ZoneId.class);
             if (zone == null) {
                 zone = extract(ZoneOffset.class);
+                if (zone == null && standardFields.containsKey(OFFSET_SECONDS)) {
+                    zone = (R) ZoneOffset.from(this);
+                }
             }
             return zone;
         }

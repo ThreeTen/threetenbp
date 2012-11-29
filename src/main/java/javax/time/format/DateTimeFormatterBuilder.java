@@ -2285,10 +2285,16 @@ public final class DateTimeFormatterBuilder {
         @Override
         public int parse(DateTimeParseContext context, CharSequence text, int position) {
             // TODO: implement this from INSTANT_SECONDS, handling big numbers
-            ZonedDateTime odt = ZonedDateTime.parse(text.subSequence(position, text.length()));
+            DateTimeFormatter f = DateTimeFormatters.isoOffsetDateTime();
+            ZonedDateTime odt = f.parse(text.subSequence(position, text.length()), ZonedDateTime.class);
             context.setParsedField(INSTANT_SECONDS, odt.getLong(INSTANT_SECONDS));
             context.setParsedField(NANO_OF_SECOND, odt.getLong(NANO_OF_SECOND));
             return text.length();
+        }
+
+        @Override
+        public String toString() {
+            return "Instant()";
         }
     }
 
