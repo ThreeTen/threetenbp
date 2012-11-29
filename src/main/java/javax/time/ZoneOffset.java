@@ -291,6 +291,9 @@ public final class ZoneOffset
      * @throws DateTimeException if unable to convert to an {@code ZoneOffset}
      */
     public static ZoneOffset from(DateTimeAccessor dateTime) {
+        if (dateTime instanceof ZoneOffset) {
+            return (ZoneOffset) dateTime;
+        }
         return ofTotalSeconds(dateTime.get(OFFSET_SECONDS));
     }
 
