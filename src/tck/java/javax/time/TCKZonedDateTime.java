@@ -64,6 +64,7 @@ import static javax.time.calendrical.ChronoField.WEEK_OF_MONTH;
 import static javax.time.calendrical.ChronoField.WEEK_OF_YEAR;
 import static javax.time.calendrical.ChronoField.YEAR;
 import static javax.time.calendrical.ChronoField.YEAR_OF_ERA;
+import static javax.time.calendrical.ChronoUnit.NANOS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -886,6 +887,11 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_query_zone() {
         assertEquals(TEST_DATE_TIME.query(Query.ZONE_ID), TEST_DATE_TIME.getZone());
+    }
+
+    @Test(groups={"tck"})
+    public void test_query_timePrecision() {
+        assertEquals(TEST_DATE_TIME.query(Query.TIME_PRECISION), NANOS);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})

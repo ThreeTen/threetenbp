@@ -53,6 +53,8 @@ import javax.time.DateTimeException;
 
 /**
  * Loads time-zone rules for 'TZDB'.
+ * <p>
+ * This class is public for the service loader to access.
  *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.

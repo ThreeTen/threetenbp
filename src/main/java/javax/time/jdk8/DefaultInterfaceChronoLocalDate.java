@@ -108,12 +108,10 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
 
     @Override
     public <R> R query(Query<R> query) {
-        if (query == Query.ZONE_ID) {
-            return null;
-        } else if (query == Query.CHRONO) {
+        if (query == Query.CHRONO) {
             return (R) getChrono();
         }
-        return query.doQuery(this);
+        return super.query(query);
     }
 
     @Override

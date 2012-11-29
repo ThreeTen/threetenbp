@@ -44,8 +44,10 @@ import java.util.Locale;
 
 import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeAccessor;
+import javax.time.calendrical.DateTimeAccessor.Query;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.JulianDayField;
+import javax.time.chrono.ISOChrono;
 import javax.time.format.TextStyle;
 
 import org.testng.annotations.DataProvider;
@@ -117,6 +119,29 @@ public class TCKMonth extends AbstractDateTimeTest {
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_CalendricalObject_null() {
         Month.from((DateTimeAccessor) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // query(Query)
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_query_chrono() {
+        assertEquals(Month.JUNE.query(Query.CHRONO), ISOChrono.INSTANCE);
+    }
+
+    @Test(groups={"tck"})
+    public void test_query_zone() {
+        assertEquals(Month.JUNE.query(Query.ZONE_ID), null);
+    }
+
+    @Test(groups={"tck"})
+    public void test_query_timePrecision() {
+        assertEquals(Month.JUNE.query(Query.TIME_PRECISION), null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_query_null() {
+        Month.JUNE.query(null);
     }
 
     //-----------------------------------------------------------------------

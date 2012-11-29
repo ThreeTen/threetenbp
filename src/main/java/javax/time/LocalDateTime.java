@@ -1488,9 +1488,9 @@ public final class LocalDateTime
      * <p><ul>
      * <li>{@code yyyy-MM-dd'T'HH:mm}</li>
      * <li>{@code yyyy-MM-dd'T'HH:mm:ss}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnn}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnnnn}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnnnnnnn}</li>
+     * <li>{@code yyyy-MM-dd'T'HH:mm:ss.SSS}</li>
+     * <li>{@code yyyy-MM-dd'T'HH:mm:ss.SSSSSS}</li>
+     * <li>{@code yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS}</li>
      * </ul><p>
      * The format used will be the shortest that outputs the full value of
      * the time where the omitted parts are implied to be zero.

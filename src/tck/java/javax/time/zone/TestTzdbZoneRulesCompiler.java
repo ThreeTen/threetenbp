@@ -44,141 +44,141 @@ import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.Month;
 import javax.time.Year;
-import javax.time.zone.TZDBZoneRulesCompiler.LeapSecondRule;
-import javax.time.zone.TZDBZoneRulesCompiler.TZDBMonthDayTime;
-import javax.time.zone.TZDBZoneRulesCompiler.TZDBRule;
+import javax.time.zone.TzdbZoneRulesCompiler.LeapSecondRule;
+import javax.time.zone.TzdbZoneRulesCompiler.TZDBMonthDayTime;
+import javax.time.zone.TzdbZoneRulesCompiler.TZDBRule;
 import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 import org.testng.annotations.Test;
 
 /**
- * Test TZDBZoneRulesCompiler.
+ * Test TzdbZoneRulesCompiler.
  */
 @Test
-public class TestTZDBZoneRulesCompiler {
+public class TestTzdbZoneRulesCompiler {
 
     //-----------------------------------------------------------------------
     // parseYear()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_parseYear_specific() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         assertEquals(parseYear(test, "2010", 2000), 2010);
     }
 
     @Test(groups={"tck"})
     public void test_parseYear_min() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         assertEquals(parseYear(test, "min", 2000), Year.MIN_YEAR);
     }
 
     @Test(groups={"tck"})
     public void test_parseYear_mini() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         assertEquals(parseYear(test, "mini", 2000), Year.MIN_YEAR);
     }
 
     @Test(groups={"tck"})
     public void test_parseYear_minim() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         assertEquals(parseYear(test, "minim", 2000), Year.MIN_YEAR);
     }
 
     @Test(groups={"tck"})
     public void test_parseYear_minimu() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         assertEquals(parseYear(test, "minimu", 2000), Year.MIN_YEAR);
     }
 
     @Test(groups={"tck"})
     public void test_parseYear_minimum() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         assertEquals(parseYear(test, "minimum", 2000), Year.MIN_YEAR);
     }
 
 
     @Test(expectedExceptions=NumberFormatException.class, groups={"tck"})
     public void test_parseYear_minTooShort() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         parseYear(test, "mi", 2000);
     }
 
     @Test(expectedExceptions=NumberFormatException.class, groups={"tck"})
     public void test_parseYear_minTooLong() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         parseYear(test, "minimuma", 2000);
     }
 
     @Test(groups={"tck"})
     public void test_parseYear_max() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         assertEquals(parseYear(test, "max", 2000), Year.MAX_YEAR);
     }
 
     @Test(groups={"tck"})
     public void test_parseYear_maxi() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         assertEquals(parseYear(test, "maxi", 2000), Year.MAX_YEAR);
     }
 
     @Test(groups={"tck"})
     public void test_parseYear_maxim() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         assertEquals(parseYear(test, "maxim", 2000), Year.MAX_YEAR);
     }
 
     @Test(groups={"tck"})
     public void test_parseYear_maximu() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         assertEquals(parseYear(test, "maximu", 2000), Year.MAX_YEAR);
     }
 
     @Test(groups={"tck"})
     public void test_parseYear_maximum() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         assertEquals(parseYear(test, "maximum", 2000), Year.MAX_YEAR);
     }
 
     @Test(expectedExceptions=NumberFormatException.class, groups={"tck"})
     public void test_parseYear_maxTooShort() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         parseYear(test, "ma", 2000);
     }
 
     @Test(expectedExceptions=NumberFormatException.class, groups={"tck"})
     public void test_parseYear_maxTooLong() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         parseYear(test, "maximuma", 2000);
     }
 
     @Test(groups={"tck"})
     public void test_parseYear_only() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         assertEquals(parseYear(test, "only", 2000), 2000);
     }
 
     @Test(groups={"tck"})
     public void test_parseYear_only_uppercase() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         assertEquals(parseYear(test, "ONLY", 2000), 2000);
     }
 
     @Test(expectedExceptions=NumberFormatException.class, groups={"tck"})
     public void test_parseYear_invalidYear() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         parseYear(test, "ABC", 2000);
     }
 
     static final Method PARSE_YEAR;
     static {
         try {
-            PARSE_YEAR = TZDBZoneRulesCompiler.class.getDeclaredMethod("parseYear", String.class, Integer.TYPE);
+            PARSE_YEAR = TzdbZoneRulesCompiler.class.getDeclaredMethod("parseYear", String.class, Integer.TYPE);
             PARSE_YEAR.setAccessible(true);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
     }
-    private int parseYear(TZDBZoneRulesCompiler test, String str, int year) throws Exception {
+    private int parseYear(TzdbZoneRulesCompiler test, String str, int year) throws Exception {
         try {
             return (Integer) PARSE_YEAR.invoke(test, str, year);
         } catch (InvocationTargetException ex) {
@@ -194,7 +194,7 @@ public class TestTZDBZoneRulesCompiler {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_parseMonth() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         assertEquals(parseMonth(test, "Jan"), Month.JANUARY);
         assertEquals(parseMonth(test, "Feb"), Month.FEBRUARY);
         assertEquals(parseMonth(test, "Mar"), Month.MARCH);
@@ -226,20 +226,20 @@ public class TestTZDBZoneRulesCompiler {
 
     @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_parseMonth_invalidMonth() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         parseMonth(test, "ABC");
     }
 
     static final Method PARSE_MONTH;
     static {
         try {
-            PARSE_MONTH = TZDBZoneRulesCompiler.class.getDeclaredMethod("parseMonth", String.class);
+            PARSE_MONTH = TzdbZoneRulesCompiler.class.getDeclaredMethod("parseMonth", String.class);
             PARSE_MONTH.setAccessible(true);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
     }
-    private Month parseMonth(TZDBZoneRulesCompiler test, String str) throws Exception {
+    private Month parseMonth(TzdbZoneRulesCompiler test, String str) throws Exception {
         try {
             return (Month) PARSE_MONTH.invoke(test, str);
         } catch (InvocationTargetException ex) {
@@ -255,7 +255,7 @@ public class TestTZDBZoneRulesCompiler {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_parseDayOfWeek() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         assertEquals(parseDayOfWeek(test, "Mon"), DayOfWeek.MONDAY);
         assertEquals(parseDayOfWeek(test, "Tue"), DayOfWeek.TUESDAY);
         assertEquals(parseDayOfWeek(test, "Wed"), DayOfWeek.WEDNESDAY);
@@ -276,20 +276,20 @@ public class TestTZDBZoneRulesCompiler {
 
     @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_parseDayOfWeek_invalidMonth() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         parseMonth(test, "ABC");
     }
 
     static final Method PARSE_DOW;
     static {
         try {
-            PARSE_DOW = TZDBZoneRulesCompiler.class.getDeclaredMethod("parseDayOfWeek", String.class);
+            PARSE_DOW = TzdbZoneRulesCompiler.class.getDeclaredMethod("parseDayOfWeek", String.class);
             PARSE_DOW.setAccessible(true);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
     }
-    private DayOfWeek parseDayOfWeek(TZDBZoneRulesCompiler test, String str) throws Exception {
+    private DayOfWeek parseDayOfWeek(TzdbZoneRulesCompiler test, String str) throws Exception {
         try {
             return (DayOfWeek) PARSE_DOW.invoke(test, str);
         } catch (InvocationTargetException ex) {
@@ -305,7 +305,7 @@ public class TestTZDBZoneRulesCompiler {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_parseMonthDayTime_marLastSun0220() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         TZDBRule mdt = parseMonthDayTime(test, "Mar lastSun 2:20");
         assertEquals(mdt.month, Month.MARCH);
         assertEquals(mdt.dayOfWeek, DayOfWeek.SUNDAY);
@@ -318,7 +318,7 @@ public class TestTZDBZoneRulesCompiler {
 
     @Test(groups={"tck"})
     public void test_parseMonthDayTime_jun50220s() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         TZDBRule mdt = parseMonthDayTime(test, "Jun 5 2:20s");
         assertEquals(mdt.month, Month.JUNE);
         assertEquals(mdt.dayOfWeek, null);
@@ -331,7 +331,7 @@ public class TestTZDBZoneRulesCompiler {
 
     @Test(groups={"tck"})
     public void test_parseMonthDayTime_maySatAfter50220u() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         TZDBRule mdt = parseMonthDayTime(test, "May Sat>=5 2:20u");
         assertEquals(mdt.month, Month.MAY);
         assertEquals(mdt.dayOfWeek, DayOfWeek.SATURDAY);
@@ -344,7 +344,7 @@ public class TestTZDBZoneRulesCompiler {
 
     @Test(groups={"tck"})
     public void test_parseMonthDayTime_maySatBefore50220u() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         TZDBRule mdt = parseMonthDayTime(test, "May Sat<=5 24:00g");
         assertEquals(mdt.month, Month.MAY);
         assertEquals(mdt.dayOfWeek, DayOfWeek.SATURDAY);
@@ -357,7 +357,7 @@ public class TestTZDBZoneRulesCompiler {
 
     @Test(groups={"tck"})
     public void test_parseMonthDayTime_maySatBefore15Dash() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         TZDBRule mdt = parseMonthDayTime(test, "May Sat<=15 -");
         assertEquals(mdt.month, Month.MAY);
         assertEquals(mdt.dayOfWeek, DayOfWeek.SATURDAY);
@@ -370,7 +370,7 @@ public class TestTZDBZoneRulesCompiler {
 
     @Test(groups={"tck"})
     public void test_parseMonthDayTime_maylastSunShortTime() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         TZDBRule mdt = parseMonthDayTime(test, "May lastSun 3z");
         assertEquals(mdt.month, Month.MAY);
         assertEquals(mdt.dayOfWeek, DayOfWeek.SUNDAY);
@@ -384,13 +384,13 @@ public class TestTZDBZoneRulesCompiler {
     static final Method PARSE_MDT;
     static {
         try {
-            PARSE_MDT = TZDBZoneRulesCompiler.class.getDeclaredMethod("parseMonthDayTime", StringTokenizer.class, TZDBMonthDayTime.class);
+            PARSE_MDT = TzdbZoneRulesCompiler.class.getDeclaredMethod("parseMonthDayTime", StringTokenizer.class, TZDBMonthDayTime.class);
             PARSE_MDT.setAccessible(true);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
     }
-    private TZDBRule parseMonthDayTime(TZDBZoneRulesCompiler test, String str) throws Exception {
+    private TZDBRule parseMonthDayTime(TzdbZoneRulesCompiler test, String str) throws Exception {
         try {
             TZDBRule mdt = test.new TZDBRule();  // create a bound inner class
             PARSE_MDT.invoke(test, new StringTokenizer(str), mdt);
@@ -406,7 +406,7 @@ public class TestTZDBZoneRulesCompiler {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_parseLeapSecondRule_at_midnight() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         LeapSecondRule lsr = parseLeapSecondRule(test, "Leap\t1972 Jun\t30   23:59:60 +   S");
         assertEquals(lsr.leapDate, LocalDate.of(1972, Month.JUNE, 30));
         assertEquals(lsr.secondAdjustment, +1);
@@ -414,7 +414,7 @@ public class TestTZDBZoneRulesCompiler {
 
     @Test(groups={"tck"})
     public void test_parseLeapSecondRule_just_before_midnight() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         LeapSecondRule lsr = parseLeapSecondRule(test, "Leap\t2009 May\t1   23:59:59 - S");
         assertEquals(lsr.leapDate, LocalDate.of(2009, Month.MAY, 1));
         assertEquals(lsr.secondAdjustment, -1);
@@ -422,32 +422,32 @@ public class TestTZDBZoneRulesCompiler {
 
     @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_parseLeapSecondRule_too_short() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         parseLeapSecondRule(test, "Leap\t2009 May\t1  23:59:60 S");
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_parseLeapSecondRule_bad_adjustment() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         parseLeapSecondRule(test, "Leap\t2009 May\t1   23:59:60 % S");
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_parseLeapSecondRule_rolling() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         parseLeapSecondRule(test, "Leap\t2009 May\t1   23:59:60 - R");
     }
 
     static final Method PARSE_LSR;
     static {
         try {
-            PARSE_LSR = TZDBZoneRulesCompiler.class.getDeclaredMethod("parseLeapSecondRule", String.class);
+            PARSE_LSR = TzdbZoneRulesCompiler.class.getDeclaredMethod("parseLeapSecondRule", String.class);
             PARSE_LSR.setAccessible(true);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
     }
-    private LeapSecondRule parseLeapSecondRule(TZDBZoneRulesCompiler test, String str) throws Exception {
+    private LeapSecondRule parseLeapSecondRule(TzdbZoneRulesCompiler test, String str) throws Exception {
         try {
             return (LeapSecondRule)PARSE_LSR.invoke(test, str);
         } catch (InvocationTargetException ex) {

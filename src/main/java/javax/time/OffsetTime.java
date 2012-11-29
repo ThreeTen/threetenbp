@@ -37,6 +37,7 @@ import static javax.time.DateTimeConstants.NANOS_PER_SECOND;
 import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
 import static javax.time.calendrical.ChronoField.NANO_OF_DAY;
 import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
+import static javax.time.calendrical.ChronoUnit.NANOS;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -773,6 +774,15 @@ public final class OffsetTime
         return unit.between(this, endDateTime).getAmount();
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R query(Query<R> query) {
+        if (query == Query.TIME_PRECISION) {
+            return (R) NANOS;
+        }
+        return super.query(query);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Converts this time to a {@code LocalTime}.
@@ -923,9 +933,9 @@ public final class OffsetTime
      * <p><ul>
      * <li>{@code HH:mmXXXXX}</li>
      * <li>{@code HH:mm:ssXXXXX}</li>
-     * <li>{@code HH:mm:ssfnnnXXXXX}</li>
-     * <li>{@code HH:mm:ssfnnnnnnXXXXX}</li>
-     * <li>{@code HH:mm:ssfnnnnnnnnnXXXXX}</li>
+     * <li>{@code HH:mm:ss.SSSXXXXX}</li>
+     * <li>{@code HH:mm:ss.SSSSSSXXXXX}</li>
+     * <li>{@code HH:mm:ss.SSSSSSSSSXXXXX}</li>
      * </ul><p>
      * The format used will be the shortest that outputs the full value of
      * the time where the omitted parts are implied to be zero.

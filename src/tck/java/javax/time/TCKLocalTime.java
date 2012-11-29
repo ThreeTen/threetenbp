@@ -48,6 +48,7 @@ import static javax.time.calendrical.ChronoField.SECOND_OF_DAY;
 import static javax.time.calendrical.ChronoField.SECOND_OF_MINUTE;
 import static javax.time.calendrical.ChronoUnit.DAYS;
 import static javax.time.calendrical.ChronoUnit.FOREVER;
+import static javax.time.calendrical.ChronoUnit.NANOS;
 import static javax.time.calendrical.ChronoUnit.WEEKS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
@@ -624,6 +625,11 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_query_zone() {
         assertEquals(TEST_12_30_40_987654321.query(Query.ZONE_ID), null);
+    }
+
+    @Test(groups={"tck"})
+    public void test_query_timePrecision() {
+        assertEquals(TEST_12_30_40_987654321.query(Query.TIME_PRECISION), NANOS);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})

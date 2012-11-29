@@ -50,6 +50,7 @@ import static javax.time.calendrical.ChronoField.NANO_OF_DAY;
 import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
 import static javax.time.calendrical.ChronoField.SECOND_OF_DAY;
 import static javax.time.calendrical.ChronoField.SECOND_OF_MINUTE;
+import static javax.time.calendrical.ChronoUnit.NANOS;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -946,6 +947,15 @@ public final class LocalTime
         return unit.between(this, endDateTime).getAmount();
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R query(Query<R> query) {
+        if (query == Query.TIME_PRECISION) {
+            return (R) NANOS;
+        }
+        return super.query(query);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Extracts the time as seconds of day,
@@ -1070,9 +1080,9 @@ public final class LocalTime
      * <p><ul>
      * <li>{@code HH:mm}</li>
      * <li>{@code HH:mm:ss}</li>
-     * <li>{@code HH:mm:ssfnnn}</li>
-     * <li>{@code HH:mm:ssfnnnnnn}</li>
-     * <li>{@code HH:mm:ssfnnnnnnnnn}</li>
+     * <li>{@code HH:mm:ss.SSS}</li>
+     * <li>{@code HH:mm:ss.SSSSSS}</li>
+     * <li>{@code HH:mm:ss.SSSSSSSSS}</li>
      * </ul><p>
      * The format used will be the shortest that outputs the full value of
      * the time where the omitted parts are implied to be zero.

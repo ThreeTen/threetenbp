@@ -34,6 +34,7 @@ package javax.time.jdk8;
 import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
 import static javax.time.calendrical.ChronoField.INSTANT_SECONDS;
 import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
+import static javax.time.calendrical.ChronoUnit.NANOS;
 
 import java.util.Objects;
 
@@ -133,8 +134,10 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chrono<C>>
             return (R) getZone();
         } else if (query == Query.CHRONO) {
             return (R) getDate().getChrono();
+        } else if (query == Query.TIME_PRECISION) {
+            return (R) NANOS;
         }
-        return query.doQuery(this);
+        return super.query(query);
     }
 
     //-------------------------------------------------------------------------
