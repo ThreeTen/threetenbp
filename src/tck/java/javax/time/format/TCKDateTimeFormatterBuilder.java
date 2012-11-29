@@ -635,9 +635,10 @@ public class TCKDateTimeFormatterBuilder {
             {"ss", "Value(SecondOfMinute,2)"},
             {"sss", "Value(SecondOfMinute,3)"},
 
-            {"S", "Value(MilliOfSecond)"},
-            {"SS", "Value(MilliOfSecond,2)"},
-            {"SSS", "Value(MilliOfSecond,3)"},
+            {"S", "Fraction(NanoOfSecond,1,1)"},
+            {"SS", "Fraction(NanoOfSecond,2,2)"},
+            {"SSS", "Fraction(NanoOfSecond,3,3)"},
+            {"SSSSSSSSS", "Fraction(NanoOfSecond,9,9)"},
 
             {"A", "Value(MilliOfDay)"},
             {"AA", "Value(MilliOfDay,2)"},
@@ -675,55 +676,13 @@ public class TCKDateTimeFormatterBuilder {
 
             {"ppH", "Pad(Value(HourOfDay),2)"},
             {"pppDD", "Pad(Value(DayOfYear,2),3)"},
-            {"pppffn", "Pad(Fraction(NanoOfSecond,1,9),3)"},
-
-            {"ssfn", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,1,1)"},
-            {"ssfnn", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,2,2)"},
-            {"ssfnnn", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,3,3)"},
-
-            {"ssfs", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,1,1)"},
-            {"ssfss", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,2,2)"},
-            {"ssfsss", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,3,3)"},
-
-            {"ssffn", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,1,9)"},
-            {"ssffnn", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,2,9)"},
-            {"ssffnnn", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,3,9)"},
-
-            {"ssffs", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,1,9)"},
-            {"ssffss", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,2,9)"},
-            {"ssffsss", "Value(SecondOfMinute,2)Fraction(NanoOfSecond,3,9)"},
-
-            {"mmfs", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,1,1)"},
-            {"mmfss", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,2,2)"},
-            {"mmfsss", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,3,3)"},
-
-            {"mmfm", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,1,1)"},
-            {"mmfmm", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,2,2)"},
-            {"mmfmmm", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,3,3)"},
-
-            {"mmffs", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,1,9)"},
-            {"mmffss", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,2,9)"},
-            {"mmffsss", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,3,9)"},
-
-            {"mmffm", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,1,9)"},
-            {"mmffmm", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,2,9)"},
-            {"mmffmmm", "Value(MinuteOfHour,2)Fraction(SecondOfMinute,3,9)"},
-
-            {"fH", "Fraction(HourOfDay,1,1)"},
-            {"fK", "Fraction(HourOfAmPm,1,1)"},
-            {"fm", "Fraction(MinuteOfHour,1,1)"},
-            {"fs", "Fraction(SecondOfMinute,1,1)"},
-            {"fS", "Fraction(MilliOfSecond,1,1)"},
-            {"fA", "Fraction(MilliOfDay,1,1)"},
-            {"fn", "Fraction(NanoOfSecond,1,1)"},
-            {"fN", "Fraction(NanoOfDay,1,1)"},
 
             {"yyyy[-MM[-dd", "Value(Year,4,19,EXCEEDS_PAD)['-'Value(MonthOfYear,2)['-'Value(DayOfMonth,2)]]"},
             {"yyyy[-MM[-dd]]", "Value(Year,4,19,EXCEEDS_PAD)['-'Value(MonthOfYear,2)['-'Value(DayOfMonth,2)]]"},
             {"yyyy[-MM[]-dd]", "Value(Year,4,19,EXCEEDS_PAD)['-'Value(MonthOfYear,2)'-'Value(DayOfMonth,2)]"},
 
             {"yyyy-MM-dd'T'HH:mm:ss.SSS", "Value(Year,4,19,EXCEEDS_PAD)'-'Value(MonthOfYear,2)'-'Value(DayOfMonth,2)" +
-                "'T'Value(HourOfDay,2)':'Value(MinuteOfHour,2)':'Value(SecondOfMinute,2)'.'Value(MilliOfSecond,3)"},
+                "'T'Value(HourOfDay,2)':'Value(MinuteOfHour,2)':'Value(SecondOfMinute,2)'.'Fraction(NanoOfSecond,3,3)"},
         };
     }
 
