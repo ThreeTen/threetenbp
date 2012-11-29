@@ -310,7 +310,7 @@ public final class ZonedDateTime
      * epoch of 1970-01-01T00:00:00Z.
      * <p>
      * This allows the {@link ChronoField#INSTANT_SECONDS epoch-seconds} field
-     * to be converted to a local date-time. This is primarily intended for
+     * to be converted to a zoned date-time. This is primarily intended for
      * low-level conversions rather than general application usage.
      *
      * @param epochSecond  the number of seconds from the epoch of 1970-01-01T00:00:00Z
