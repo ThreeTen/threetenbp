@@ -68,6 +68,8 @@ import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
 import javax.time.jdk8.DefaultInterfaceChronoLocalDate;
 import javax.time.jdk8.Jdk8Methods;
+import javax.time.zone.ZoneOffsetTransition;
+import javax.time.zone.ZoneRules;
 
 /**
  * A date without a time-zone in the ISO-8601 calendar system,
@@ -1206,8 +1208,18 @@ public final class LocalDate
      * @return the zoned date-time formed from this date and the earliest valid time for the zone, not null
      */
     public ZonedDateTime atStartOfDay(ZoneId zoneId) {
-        // TODO: this is not correct, as a gap of 11:30 to 00:30 would result in 01:00 rather than 00:30
-        return atTime(LocalTime.MIDNIGHT).atZone(zoneId);
+        Objects.requireNonNull(zoneId, "zoneId");
+        // need to handle case where there is a gap from 11:30 to 00:30
+        // standard ZDT factory would result in 01:00 rather than 00:30
+        LocalDateTime ldt = atTime(LocalTime.MIDNIGHT);
+        if (zoneId instanceof ZoneOffset == false) {
+            ZoneRules rules = zoneId.getRules();
+            ZoneOffsetTransition trans = rules.getTransition(ldt);
+            if (trans != null && trans.isGap()) {
+                ldt = trans.getDateTimeAfter();
+            }
+        }
+        return ZonedDateTime.of(ldt, zoneId);
     }
 
     //-----------------------------------------------------------------------
