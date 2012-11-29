@@ -147,7 +147,7 @@
         <subant genericantfile="build.xml" target="tzdb-unpack">
             <dirset dir="${tzdata.main.workarea}" includes="*" />
         </subant>
-        <java classpathref="main.path" classname="javax.time.zone.TZDBZoneRulesCompiler" fork="true" failonerror="true">
+        <java classpathref="main.path" classname="javax.time.zone.TzdbZoneRulesCompiler" fork="true" failonerror="true">
             <arg line="-srcdir ${tzdata.main.workarea}" />
             <arg line="-dstdir ${lib.optional}" />
             <arg line="${tzdb.files}" />

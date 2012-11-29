@@ -77,7 +77,7 @@ import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
  * <h4>Implementation notes</h4>
  * This class is a mutable builder. A new instance must be created for each compile.
  */
-final class TZDBZoneRulesCompiler {
+final class TzdbZoneRulesCompiler {
 
     /**
      * Time parser.
@@ -205,7 +205,7 @@ final class TZDBZoneRulesCompiler {
      * Output usage text for the command line.
      */
     private static void outputHelp() {
-        System.out.println("Usage: TZDBZoneRulesCompiler <options> <tzdb source filenames>");
+        System.out.println("Usage: TzdbZoneRulesCompiler <options> <tzdb source filenames>");
         System.out.println("where options include:");
         System.out.println("   -srcdir <directory>   Where to find source directories (required)");
         System.out.println("   -dstdir <directory>   Where to output generated files (default srcdir)");
@@ -251,7 +251,7 @@ final class TZDBZoneRulesCompiler {
 
             // compile
             String loopVersion = srcDir.getName();
-            TZDBZoneRulesCompiler compiler = new TZDBZoneRulesCompiler(loopVersion, srcFiles, leapSecondsFile, verbose);
+            TzdbZoneRulesCompiler compiler = new TzdbZoneRulesCompiler(loopVersion, srcFiles, leapSecondsFile, verbose);
             compiler.setDeduplicateMap(deduplicateMap);
             try {
                 // compile
@@ -445,7 +445,7 @@ final class TZDBZoneRulesCompiler {
      * @param sourceFiles  the list of source files, not empty, not null
      * @param verbose  whether to output verbose messages
      */
-    public TZDBZoneRulesCompiler(String version, List<File> sourceFiles, File leapSecondsFile, boolean verbose) {
+    public TzdbZoneRulesCompiler(String version, List<File> sourceFiles, File leapSecondsFile, boolean verbose) {
         this.version = version;
         this.sourceFiles = sourceFiles;
         this.leapSecondsFile = leapSecondsFile;
