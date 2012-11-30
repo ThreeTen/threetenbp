@@ -110,6 +110,22 @@ public final class OffsetDateTime
     }
 
     /**
+     * Obtains the current date-time from the system clock in the specified time-zone.
+     * <p>
+     * This will query the {@link Clock#system(ZoneId) system clock} to obtain the current date-time.
+     * Specifying the time-zone avoids dependence on the default time-zone.
+     * The offset will be calculated from the specified time-zone.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @return the current date-time using the system clock, not null
+     */
+    public static OffsetDateTime now(ZoneId zone) {
+        return now(Clock.system(zone));
+    }
+
+    /**
      * Obtains the current date-time from the specified clock.
      * <p>
      * This will query the specified clock to obtain the current date-time.

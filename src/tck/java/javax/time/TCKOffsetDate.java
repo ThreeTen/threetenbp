@@ -221,6 +221,16 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         }
     }
 
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void now_Clock_nullZoneId() {
+        OffsetDate.now((ZoneId) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void now_Clock_nullClock() {
+        OffsetDate.now((Clock) null);
+    }
+
     //-----------------------------------------------------------------------
     // factories
     //-----------------------------------------------------------------------

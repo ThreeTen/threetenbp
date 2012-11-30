@@ -143,14 +143,6 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // now(Clock)
-    //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class, groups={"implementation"})
-    public void now_Clock_nullClock() {
-        OffsetDate.now(null);
-    }
-
-    //-----------------------------------------------------------------------
     // factories
     //-----------------------------------------------------------------------
     void check(OffsetDate test, int y, int mo, int d, ZoneOffset offset) {

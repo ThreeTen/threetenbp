@@ -179,11 +179,6 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // now(Clock)
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void now_Clock_nullClock() {
-        OffsetTime.now(null);
-    }
-
     @Test(groups={"tck"})
     public void now_Clock_allSecsInDay() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
@@ -225,6 +220,16 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
             assertEquals(test.getNano(), 0);
             assertEquals(test.getOffset(), offset);
         }
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void now_Clock_nullZoneId() {
+        OffsetTime.now((ZoneId) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void now_Clock_nullClock() {
+        OffsetTime.now((Clock) null);
     }
 
     //-----------------------------------------------------------------------
