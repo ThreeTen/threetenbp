@@ -254,13 +254,6 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
     }
 
     @Test(groups={"implementation"})
-    public void test_withDate_noChange() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_PONE);
-        OffsetDateTime test = base.withDate(2008, 6, 30);
-        assertSame(test, base);
-    }
-
-    @Test(groups={"implementation"})
     public void test_withHour_noChange() {
         OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.withHour(11);
@@ -285,27 +278,6 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
     public void test_withNanoOfSecond_noChange() {
         OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 1, OFFSET_PONE);
         OffsetDateTime test = base.withNano(1);
-        assertSame(test, base);
-    }
-
-    @Test(groups={"implementation"})
-    public void test_withTime_HM_noChange() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_PONE);
-        OffsetDateTime test = base.withTime(11, 30);
-        assertSame(test, base);
-    }
-
-    @Test(groups={"implementation"})
-    public void test_withTime_HMS_noChange() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        OffsetDateTime test = base.withTime(11, 30, 59);
-        assertSame(test, base);
-    }
-
-    @Test(groups={"implementation"})
-    public void test_withTime_HMSN_noChange() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 500, OFFSET_PONE);
-        OffsetDateTime test = base.withTime(11, 30, 59, 500);
         assertSame(test, base);
     }
 

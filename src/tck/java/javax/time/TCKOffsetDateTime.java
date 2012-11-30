@@ -784,17 +784,6 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // withDate()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_withDate() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        OffsetDateTime test = base.withDate(2007, 1, 1);
-        OffsetDateTime expected = OffsetDateTime.of(2007, 1, 1, 11, 30, 59, OFFSET_PONE);
-        assertEquals(test, expected);
-    }
-
-    //-----------------------------------------------------------------------
     // withHour()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
@@ -832,35 +821,6 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 1, OFFSET_PONE);
         OffsetDateTime test = base.withNano(15);
         assertEquals(test, OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 15, OFFSET_PONE));
-    }
-
-    //-----------------------------------------------------------------------
-    // withTime()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_withTime_HM() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 0, OFFSET_PONE);
-        OffsetDateTime test = base.withTime(12, 10);
-        OffsetDateTime expected = OffsetDateTime.of(2008, 6, 30, 12, 10, 0, 0, OFFSET_PONE);
-        assertEquals(test, expected);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_withTime_HMS() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 0, OFFSET_PONE);
-        OffsetDateTime test = base.withTime(12, 10, 9);
-        OffsetDateTime expected = OffsetDateTime.of(2008, 6, 30, 12, 10, 9, 0, OFFSET_PONE);
-        assertEquals(test, expected);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_withTime_HMSN() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        OffsetDateTime test = base.withTime(12, 10, 9, 8);
-        OffsetDateTime expected = OffsetDateTime.of(2008, 6, 30, 12, 10, 9, 8, OFFSET_PONE);
-        assertEquals(test, expected);
     }
 
     //-----------------------------------------------------------------------
