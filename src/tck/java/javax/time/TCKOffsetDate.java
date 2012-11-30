@@ -50,17 +50,10 @@ import static javax.time.calendrical.ChronoField.YEAR;
 import static javax.time.calendrical.ChronoField.YEAR_OF_ERA;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -68,6 +61,8 @@ import java.util.List;
 import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTime.MinusAdjuster;
+import javax.time.calendrical.DateTime.PlusAdjuster;
 import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
@@ -138,30 +133,15 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         return list;
     }
 
+    //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_serialization() throws IOException, ClassNotFoundException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(TEST_2007_07_15_PONE);
-        oos.close();
-
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
-                baos.toByteArray()));
-        assertEquals(ois.readObject(), TEST_2007_07_15_PONE);
+    public void test_serialization() throws ClassNotFoundException, IOException {
+        assertSerializable(TEST_2007_07_15_PONE);
     }
 
     @Test(groups={"tck"})
-    public void test_immutable() {
-        Class<OffsetDate> cls = OffsetDate.class;
-        assertTrue(Modifier.isPublic(cls.getModifiers()));
-        assertTrue(Modifier.isFinal(cls.getModifiers()));
-        Field[] fields = cls.getDeclaredFields();
-        for (Field field : fields) {
-            if (field.getName().contains("$") == false) {
-                assertTrue(Modifier.isPrivate(field.getModifiers()));
-                assertTrue(Modifier.isFinal(field.getModifiers()));
-            }
-        }
+    public void test_serialization_format() throws ClassNotFoundException, IOException {
+        assertEqualsSerialisedForm(OffsetDate.of(LocalDate.of(2012, 9, 16), ZoneOffset.of("+01:00")));
     }
 
     //-----------------------------------------------------------------------
@@ -187,10 +167,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
             Instant instant = Instant.ofEpochSecond(i);
             Clock clock = Clock.fixed(instant, ZoneId.UTC);
             OffsetDate test = OffsetDate.now(clock);
-            assertEquals(test.getYear(), 1970);
-            assertEquals(test.getMonth(), Month.JANUARY);
-            assertEquals(test.getDayOfMonth(), (i < 24 * 60 * 60 ? 1 : 2));
-            assertEquals(test.getOffset(), ZoneOffset.UTC);
+            check(test, 1970, 1, (i < 24 * 60 * 60 ? 1 : 2), ZoneOffset.UTC);
         }
     }
 
@@ -200,24 +177,18 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
             Instant instant = Instant.ofEpochSecond(i);
             Clock clock = Clock.fixed(instant, ZoneId.UTC);
             OffsetDate test = OffsetDate.now(clock);
-            assertEquals(test.getYear(), 1969);
-            assertEquals(test.getMonth(), Month.DECEMBER);
-            assertEquals(test.getDayOfMonth(), (i >= -24 * 60 * 60 ? 31 : 30));
-            assertEquals(test.getOffset(), ZoneOffset.UTC);
+            check(test, 1969, 12, (i >= -24 * 60 * 60 ? 31 : 30), ZoneOffset.UTC);
         }
     }
 
     @Test(groups={"tck"})
     public void now_Clock_offsets() {
-        OffsetDateTime base = OffsetDateTime.of(1970, 1, 1, 12, 0, ZoneOffset.UTC);
+        Instant base = LocalDateTime.of(1970, 1, 1, 12, 0).toInstant(ZoneOffset.UTC);
         for (int i = -9; i < 15; i++) {
             ZoneOffset offset = ZoneOffset.ofHours(i);
-            Clock clock = Clock.fixed(base.toInstant(), ZoneId.of(offset));
+            Clock clock = Clock.fixed(base, ZoneId.of(offset));
             OffsetDate test = OffsetDate.now(clock);
-            assertEquals(test.getYear(), 1970);
-            assertEquals(test.getMonth(), Month.JANUARY);
-            assertEquals(test.getDayOfMonth(), i >= 12 ? 2 : 1);
-            assertEquals(test.getOffset(), offset);
+            check(test, 1970, 1, (i >= 12 ? 2 : 1), offset);
         }
     }
 
@@ -235,10 +206,11 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     // factories
     //-----------------------------------------------------------------------
     void check(OffsetDate test, int y, int mo, int d, ZoneOffset offset) {
+        assertEquals(test.getDate(), LocalDate.of(y, mo, d));
+        assertEquals(test.getOffset(), offset);
         assertEquals(test.getYear(), y);
         assertEquals(test.getMonth().getValue(), mo);
         assertEquals(test.getDayOfMonth(), d);
-        assertEquals(test.getOffset(), offset);
     }
 
     //-----------------------------------------------------------------------
@@ -343,21 +315,26 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // from()
+    // from(DateTimeAccessor)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_factory_CalendricalObject() {
-        assertEquals(OffsetDate.from(OffsetDate.of(2007, 7, 15, OFFSET_PONE)), OffsetDate.of(2007, 7, 15, OFFSET_PONE));
-        assertEquals(OffsetDate.from(OffsetDateTime.of(2007, 7, 15, 17, 30, OFFSET_PONE)), OffsetDate.of(2007, 7, 15, OFFSET_PONE));
+    public void test_from_DateTimeAccessor_OD() {
+        assertEquals(OffsetDate.from(TEST_2007_07_15_PONE), TEST_2007_07_15_PONE);
+    }
+
+    @Test(groups={"tck"})
+    public void test_from_DateTimeAccessor_ZDT() {
+        ZonedDateTime base = ZonedDateTime.of(2007, 7, 15, 17, 30, 0, 0, ZoneId.of(OFFSET_PONE));
+        assertEquals(OffsetDate.from(base), TEST_2007_07_15_PONE);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_factory_CalendricalObject_invalid_noDerive() {
+    public void test_from_DateTimeAccessor_invalid_noDerive() {
         OffsetDate.from(LocalTime.of(12, 30));
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_factory_CalendricalObject_null() {
+    public void test_from_DateTimeAccessor_null() {
         OffsetDate.from((DateTimeAccessor) null);
     }
 
@@ -483,25 +460,14 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         LocalDate localDate = LocalDate.of(y, m, d);
         OffsetDate a = OffsetDate.of(localDate, offset);
 
+        assertEquals(a.getDate(), localDate);
+        assertEquals(a.getOffset(), offset);
+        assertEquals(a.toString(), localDate.toString() + offset.toString());
         assertEquals(a.getYear(), localDate.getYear());
         assertEquals(a.getMonth(), localDate.getMonth());
         assertEquals(a.getDayOfMonth(), localDate.getDayOfMonth());
         assertEquals(a.getDayOfYear(), localDate.getDayOfYear());
         assertEquals(a.getDayOfWeek(), localDate.getDayOfWeek());
-
-        assertEquals(a.toString(), localDate.toString() + offset.toString());
-        assertEquals(a.getOffset(), offset);
-    }
-
-    @Test(dataProvider="sampleDates", groups={"tck"})
-    public void test_getDOY(int y, int m, int d, ZoneOffset offset) {
-        OffsetDate a = OffsetDate.of(y, m, d, offset);
-        int total = 0;
-        for (int i = 1; i < m; i++) {
-            total += Month.of(i).length(isIsoLeap(y));
-        }
-        int doy = total + d;
-        assertEquals(a.getDayOfYear(), doy);
     }
 
     //-----------------------------------------------------------------------
@@ -547,11 +513,27 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         TEST_2007_07_15_PONE.query(null);
     }
 
-    //-------------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // withOffset()
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_withOffset() {
+        OffsetDate base = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
+        OffsetDate test = base.withOffset(OFFSET_PTWO);
+        assertEquals(test.getDate(), base.getDate());
+        assertEquals(test.getOffset(), OFFSET_PTWO);
+    }
+
+    @Test(groups={"tck"})
+    public void test_withOffset_noChange() {
+        OffsetDate base = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
+        OffsetDate test = base.withOffset(OFFSET_PONE);
+        assertEquals(test, base);
+    }
+
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_withOffset_null() {
-        OffsetDate base = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
-        base.withOffset(null);
+        TEST_2007_07_15_PONE.withOffset(null);
     }
 
     //-----------------------------------------------------------------------
@@ -593,6 +575,21 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         assertEquals(test, OffsetDate.of(2007, 12, 15, OFFSET_PONE));
     }
 
+    @Test(groups={"tck"})
+    public void test_with_adjustment_offsetUnchanged() {
+        OffsetDate base = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
+        OffsetDate test = base.with(Year.of(2008));
+        assertEquals(test, base);
+    }
+
+    @Test(groups={"tck"})
+    public void test_with_adjustment_noChange() {
+        LocalDate date = LocalDate.of(2008, 6, 30);
+        OffsetDate base = OffsetDate.of(date, OFFSET_PONE);
+        OffsetDate test = base.with(date);
+        assertEquals(test, base);
+    }
+
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_with_adjustment_null() {
         TEST_2007_07_15_PONE.with((WithAdjuster) null);
@@ -632,6 +629,12 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         assertEquals(t, OffsetDate.of(2008, 7, 15, OFFSET_PONE));
     }
 
+    @Test(groups={"tck"})
+    public void test_withYear_int_noChange() {
+        OffsetDate t = TEST_2007_07_15_PONE.withYear(2007);
+        assertEquals(t, TEST_2007_07_15_PONE);
+    }
+
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withYear_int_invalid() {
         TEST_2007_07_15_PONE.withYear(Year.MIN_YEAR - 1);
@@ -651,6 +654,12 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     public void test_withMonth_int_normal() {
         OffsetDate t = TEST_2007_07_15_PONE.withMonth(1);
         assertEquals(t, OffsetDate.of(2007, 1, 15, OFFSET_PONE));
+    }
+
+    @Test(groups={"tck"})
+    public void test_withMonth_int_noChange() {
+        OffsetDate t = TEST_2007_07_15_PONE.withMonth(7);
+        assertEquals(t, TEST_2007_07_15_PONE);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
@@ -699,6 +708,12 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         assertEquals(t, OffsetDate.of(2007, 2, 2, OFFSET_PONE));
     }
 
+    @Test(groups={"tck"})
+    public void test_withDayOfYear_noChange() {
+        OffsetDate t = TEST_2007_07_15_PONE.withDayOfYear(31 + 28 + 31 + 30 + 31 + 30 + 15);
+        assertEquals(t, TEST_2007_07_15_PONE);
+    }
+
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withDayOfYear_illegal() {
         TEST_2007_07_15_PONE.withDayOfYear(367);
@@ -710,13 +725,31 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // plus(Period)
+    // plus(PlusAdjuster)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_plus_Period() {
+    public void test_plus_PlusAdjuster() {
         MockSimplePeriod period = MockSimplePeriod.of(7, ChronoUnit.MONTHS);
         OffsetDate t = TEST_2007_07_15_PONE.plus(period);
         assertEquals(t, OffsetDate.of(2008, 2, 15, OFFSET_PONE));
+    }
+
+    @Test(groups={"tck"})
+    public void test_plus_PlusAdjuster_noChange() {
+        MockSimplePeriod period = MockSimplePeriod.of(0, ChronoUnit.MONTHS);
+        OffsetDate t = TEST_2007_07_15_PONE.plus(period);
+        assertEquals(t, TEST_2007_07_15_PONE);
+    }
+
+    @Test(groups={"tck"})
+    public void test_plus_PlusAdjuster_zero() {
+        OffsetDate t = TEST_2007_07_15_PONE.plus(Period.ZERO);
+        assertEquals(t, TEST_2007_07_15_PONE);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_plus_PlusAdjuster_null() {
+        TEST_2007_07_15_PONE.plus((PlusAdjuster) null);
     }
 
     //-----------------------------------------------------------------------
@@ -732,6 +765,12 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     public void test_plusYears_long_negative() {
         OffsetDate t = TEST_2007_07_15_PONE.plusYears(-1);
         assertEquals(t, OffsetDate.of(2006, 7, 15, OFFSET_PONE));
+    }
+
+    @Test(groups={"tck"})
+    public void test_plusYears_long_noChange() {
+        OffsetDate t = TEST_2007_07_15_PONE.plusYears(0);
+        assertEquals(t, TEST_2007_07_15_PONE);
     }
 
     @Test(groups={"tck"})
@@ -801,6 +840,12 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     public void test_plusMonths_long_negativeOverYears() {
         OffsetDate t = TEST_2007_07_15_PONE.plusMonths(-31);
         assertEquals(t, OffsetDate.of(2004, 12, 15, OFFSET_PONE));
+    }
+
+    @Test(groups={"tck"})
+    public void test_plusMonths_long_noChange() {
+        OffsetDate t = TEST_2007_07_15_PONE.plusMonths(0);
+        assertEquals(t, TEST_2007_07_15_PONE);
     }
 
     @Test(groups={"tck"})
@@ -935,6 +980,12 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     }
 
     @Test(groups={"tck"})
+    public void test_plusWeeks_noChange() {
+        OffsetDate t = TEST_2007_07_15_PONE.plusWeeks(0);
+        assertEquals(t, TEST_2007_07_15_PONE);
+    }
+
+    @Test(groups={"tck"})
     public void test_plusWeeks_maximum() {
         OffsetDate t = OffsetDate.of(Year.MAX_YEAR, 12, 24, OFFSET_PONE).plusWeeks(1);
         OffsetDate expected = OffsetDate.of(Year.MAX_YEAR, 12, 31, OFFSET_PONE);
@@ -1057,6 +1108,12 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     }
 
     @Test(groups={"tck"})
+    public void test_plusDays_noChange() {
+        OffsetDate t = TEST_2007_07_15_PONE.plusDays(0);
+        assertEquals(t, TEST_2007_07_15_PONE);
+    }
+
+    @Test(groups={"tck"})
     public void test_plusDays_maximum() {
         OffsetDate t = OffsetDate.of(Year.MAX_YEAR, 12, 30, OFFSET_PONE).plusDays(1);
         OffsetDate expected = OffsetDate.of(Year.MAX_YEAR, 12, 31, OFFSET_PONE);
@@ -1091,13 +1148,31 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // minus(Period)
+    // minus(MinusAdjuster)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_minus_PeriodProvider() {
+    public void test_minus_MinusAdjuster() {
         MockSimplePeriod period = MockSimplePeriod.of(7, ChronoUnit.MONTHS);
         OffsetDate t = TEST_2007_07_15_PONE.minus(period);
         assertEquals(t, OffsetDate.of(2006, 12, 15, OFFSET_PONE));
+    }
+
+    @Test(groups={"tck"})
+    public void test_minus_MinusAdjuster_noChange() {
+        MockSimplePeriod period = MockSimplePeriod.of(0, ChronoUnit.MONTHS);
+        OffsetDate t = TEST_2007_07_15_PONE.minus(period);
+        assertEquals(t, TEST_2007_07_15_PONE);
+    }
+
+    @Test(groups={"tck"})
+    public void test_minus_MinusAdjuster_zero() {
+        OffsetDate t = TEST_2007_07_15_PONE.minus(Period.ZERO);
+        assertEquals(t, TEST_2007_07_15_PONE);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_plus_MinusAdjuster_null() {
+        TEST_2007_07_15_PONE.minus((MinusAdjuster) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1113,6 +1188,12 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     public void test_minusYears_long_negative() {
         OffsetDate t = TEST_2007_07_15_PONE.minusYears(-1);
         assertEquals(t, OffsetDate.of(2008, 7, 15, OFFSET_PONE));
+    }
+
+    @Test(groups={"tck"})
+    public void test_minusYears_long_noChange() {
+        OffsetDate t = TEST_2007_07_15_PONE.minusYears(0);
+        assertEquals(t, TEST_2007_07_15_PONE);
     }
 
     @Test(groups={"tck"})
@@ -1182,6 +1263,12 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     public void test_minusMonths_long_negativeOverYears() {
         OffsetDate t = TEST_2007_07_15_PONE.minusMonths(-31);
         assertEquals(t, OffsetDate.of(2010, 2, 15, OFFSET_PONE));
+    }
+
+    @Test(groups={"tck"})
+    public void test_minusMonths_long_noChange() {
+        OffsetDate t = TEST_2007_07_15_PONE.minusMonths(0);
+        assertEquals(t, TEST_2007_07_15_PONE);
     }
 
     @Test(groups={"tck"})
@@ -1316,6 +1403,12 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     }
 
     @Test(groups={"tck"})
+    public void test_minusWeeks_noChange() {
+        OffsetDate t = TEST_2007_07_15_PONE.minusWeeks(0);
+        assertEquals(t, TEST_2007_07_15_PONE);
+    }
+
+    @Test(groups={"tck"})
     public void test_minusWeeks_maximum() {
         OffsetDate t = OffsetDate.of(Year.MAX_YEAR, 12, 24, OFFSET_PONE).minusWeeks(-1);
         OffsetDate expected = OffsetDate.of(Year.MAX_YEAR, 12, 31, OFFSET_PONE);
@@ -1435,6 +1528,12 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     public void test_minusDays_negativeOverYears() {
         OffsetDate t = TEST_2007_07_15_PONE.minusDays(-731);
         assertEquals(t, OffsetDate.of(2009, 7, 15, OFFSET_PONE));
+    }
+
+    @Test(groups={"tck"})
+    public void test_minusDays_noChange() {
+        OffsetDate t = TEST_2007_07_15_PONE.minusDays(0);
+        assertEquals(t, TEST_2007_07_15_PONE);
     }
 
     @Test(groups={"tck"})
@@ -1682,7 +1781,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
-        assertEquals(a.atTime(0, 0).toInstant().compareTo(b.atTime(0, 0).toInstant()) < 0, true);
+        assertEquals(a.atTime(LocalTime.MIDNIGHT).toInstant().compareTo(b.atTime(LocalTime.MIDNIGHT).toInstant()) < 0, true);
     }
 
     @Test(groups={"tck"})
@@ -1693,7 +1792,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
-        assertEquals(a.atTime(0, 0).toInstant().compareTo(b.atTime(0, 0).toInstant()) < 0, true);
+        assertEquals(a.atTime(LocalTime.MIDNIGHT).toInstant().compareTo(b.atTime(LocalTime.MIDNIGHT).toInstant()) < 0, true);
     }
 
     @Test(groups={"tck"})
@@ -1704,7 +1803,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
-        assertEquals(a.atTime(0, 0).toInstant().compareTo(b.atTime(0, 0).toInstant()) < 0, true);
+        assertEquals(a.atTime(LocalTime.MIDNIGHT).toInstant().compareTo(b.atTime(LocalTime.MIDNIGHT).toInstant()) < 0, true);
     }
 
     @Test(groups={"tck"})
@@ -1715,7 +1814,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
-        assertEquals(a.atTime(0, 0).toInstant().compareTo(b.atTime(0, 0).toInstant()) == 0, true);
+        assertEquals(a.atTime(LocalTime.MIDNIGHT).toInstant().compareTo(b.atTime(LocalTime.MIDNIGHT).toInstant()) == 0, true);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
