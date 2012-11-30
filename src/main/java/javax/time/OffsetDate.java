@@ -139,11 +139,7 @@ public final class OffsetDate
     public static OffsetDate now(Clock clock) {
         Objects.requireNonNull(clock, "clock");
         final Instant now = clock.instant();  // called once
-        ZoneOffset offset = clock.getZone().getRules().getOffset(now);
-        long epochSec = now.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
-        long epochDay = Jdk8Methods.floorDiv(epochSec, SECONDS_PER_DAY);
-        LocalDate date = LocalDate.ofEpochDay(epochDay);
-        return new OffsetDate(date, offset);
+        return ofInstant(now, clock.getZone().getRules().getOffset(now));
     }
 
     //-----------------------------------------------------------------------
@@ -192,6 +188,26 @@ public final class OffsetDate
      * @return the offset date, not null
      */
     public static OffsetDate of(LocalDate date, ZoneOffset offset) {
+        return new OffsetDate(date, offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of {@code OffsetDate} from an {@code Instant}.
+     * <p>
+     * This creates an offset date representing midnight at the start of the day
+     * using the offset from UTC/Greenwich.
+     *
+     * @param instant  the instant to create the time from, not null
+     * @param offset  the zone offset to use, not null
+     * @return the offset time, not null
+     */
+    public static OffsetDate ofInstant(Instant instant, ZoneOffset offset) {
+        Objects.requireNonNull(instant, "instant");
+        Objects.requireNonNull(offset, "offset");
+        long epochSec = instant.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
+        long epochDay = Jdk8Methods.floorDiv(epochSec, SECONDS_PER_DAY);
+        LocalDate date = LocalDate.ofEpochDay(epochDay);
         return new OffsetDate(date, offset);
     }
 
