@@ -761,6 +761,22 @@ public final class OffsetTime
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Returns an offset date-time formed from this time at the specified date.
+     * <p>
+     * This merges the two objects - {@code this} and the specified date -
+     * to form an instance of {@code OffsetDateTime}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param date  the date to combine with, not null
+     * @return the offset date-time formed from this time and the specified date, not null
+     */
+    public OffsetDateTime atDate(LocalDate date) {
+        return OffsetDateTime.of(date, time, offset);
+    }
+
+    //-----------------------------------------------------------------------
     @Override
     public DateTime doWithAdjustment(DateTime dateTime) {
         return dateTime
