@@ -333,6 +333,19 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the {@code LocalDate} part of this date-time.
+     * <p>
+     * This returns a {@code LocalDate} with the same year, month and day
+     * as this date-time.
+     *
+     * @return the date part of this date-time, not null
+     */
+    public LocalDate getDate() {
+        return date;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the year field.
      * <p>
      * This method returns the primitive {@code int} value for the year.
@@ -917,15 +930,6 @@ public final class OffsetDate
     }
 
     //-----------------------------------------------------------------------
-    @SuppressWarnings("unchecked")
-    @Override
-    public <R> R query(Query<R> query) {
-        if (query == Query.CHRONO) {
-            return (R) ISOChrono.INSTANCE;
-        }
-        return super.query(query);
-    }
-
     @Override
     public DateTime doWithAdjustment(DateTime dateTime) {
         return dateTime
@@ -947,16 +951,16 @@ public final class OffsetDate
         return unit.between(this, endDateTime).getAmount();
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this date to a {@code LocalDate}.
-     *
-     * @return a local date with the same date as this instance, not null
-     */
-    public LocalDate getDate() {
-        return date;
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R query(Query<R> query) {
+        if (query == Query.CHRONO) {
+            return (R) ISOChrono.INSTANCE;
+        }
+        return super.query(query);
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Converts this date to midnight at the start of day in epoch seconds.
      *

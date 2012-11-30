@@ -395,6 +395,19 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the {@code LocalTime} part of this date-time.
+     * <p>
+     * This returns a {@code LocalTime} with the same hour, minute, second and
+     * nanosecond as this date-time.
+     *
+     * @return the time part of this date-time, not null
+     */
+    public LocalTime getTime() {
+        return time;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the hour-of-day field.
      *
      * @return the hour-of-day, from 0 to 23
@@ -787,15 +800,6 @@ public final class OffsetTime
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Converts this time to a {@code LocalTime}.
-     *
-     * @return a LocalTime with the same time as this instance, not null
-     */
-    public LocalTime getTime() {
-        return time;
-    }
-
     /**
      * Converts this time to epoch nanos based on 1970-01-01Z.
      *
