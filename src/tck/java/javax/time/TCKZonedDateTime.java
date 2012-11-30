@@ -624,8 +624,8 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void factory_ofEpochSecond_longOffset_afterEpoch() {
         for (int i = 0; i < 100000; i++) {
-            ZonedDateTime test = ZonedDateTime.ofEpochSecond(i, ZONE_0200);
-            OffsetDateTime odt = OffsetDateTime.of(1970, 1, 1, 0, 0, ZoneOffset.UTC).withOffsetSameInstant(OFFSET_0200).plusSeconds(i);
+            ZonedDateTime test = ZonedDateTime.ofEpochSecond(i, 45, ZONE_0200);
+            OffsetDateTime odt = OffsetDateTime.of(1970, 1, 1, 0, 0, 0, 45, ZoneOffset.UTC).withOffsetSameInstant(OFFSET_0200).plusSeconds(i);
             assertEquals(test.getOffsetDateTime(), odt);
             assertEquals(test.getZone(), ZONE_0200);
         }
@@ -634,8 +634,8 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void factory_ofEpochSecond_longOffset_beforeEpoch() {
         for (int i = 0; i < 100000; i++) {
-            ZonedDateTime test = ZonedDateTime.ofEpochSecond(-i, ZONE_0200);
-            OffsetDateTime odt = OffsetDateTime.of(1970, 1, 1, 0, 0, ZoneOffset.UTC).withOffsetSameInstant(OFFSET_0200).minusSeconds(i);
+            ZonedDateTime test = ZonedDateTime.ofEpochSecond(-i, 45, ZONE_0200);
+            OffsetDateTime odt = OffsetDateTime.of(1970, 1, 1, 0, 0, 0, 45, ZoneOffset.UTC).withOffsetSameInstant(OFFSET_0200).minusSeconds(i);
             assertEquals(test.getOffsetDateTime(), odt);
             assertEquals(test.getZone(), ZONE_0200);
         }
@@ -643,17 +643,17 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_ofEpochSecond_longOffset_tooBig() {
-        ZonedDateTime.ofEpochSecond(Long.MAX_VALUE, ZONE_PARIS);  // TODO: better test
+        ZonedDateTime.ofEpochSecond(Long.MAX_VALUE, 999_999_999, ZONE_PARIS);  // TODO: better test
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_ofEpochSecond_longOffset_tooSmall() {
-        ZonedDateTime.ofEpochSecond(Long.MIN_VALUE, ZONE_PARIS);  // TODO: better test
+        ZonedDateTime.ofEpochSecond(Long.MIN_VALUE, 0, ZONE_PARIS);  // TODO: better test
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_ofEpochSecond_longOffset_nullOffset() {
-        ZonedDateTime.ofEpochSecond(0L, null);
+        ZonedDateTime.ofEpochSecond(0L, 0, null);
     }
 
     //-----------------------------------------------------------------------
