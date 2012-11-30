@@ -56,7 +56,7 @@ import javax.time.zone.ZoneResolvers;
 import javax.time.zone.ZoneRules;
 
 /**
- * A date-time with a zone offset from UTC/Greenwich in the ISO-8601 calendar system,
+ * A date-time with an offset from UTC/Greenwich in the ISO-8601 calendar system,
  * such as {@code 2007-12-03T10:15:30+01:00}.
  * <p>
  * {@code OffsetDateTime} is an immutable representation of a date-time with an offset.
@@ -84,11 +84,11 @@ public final class OffsetDateTime
     private static final long serialVersionUID = 2287754244819255394L;
 
     /**
-     * The local date-time, not null.
+     * The local date-time.
      */
     private final LocalDateTime dateTime;
     /**
-     * The zone offset, not null.
+     * The offset from UTC/Greenwich.
      */
     private final ZoneOffset offset;
 
@@ -460,14 +460,12 @@ public final class OffsetDateTime
     /**
      * Constructor.
      *
-     * @param dateTime  the date-time, not null
+     * @param time  the local date-time, not null
      * @param offset  the zone offset, not null
      */
     private OffsetDateTime(LocalDateTime dateTime, ZoneOffset offset) {
-        Objects.requireNonNull(dateTime, "dateTime");
-        Objects.requireNonNull(offset, "offset");
-        this.dateTime = dateTime;
-        this.offset = offset;
+        this.dateTime = Objects.requireNonNull(dateTime, "dateTime");
+        this.offset = Objects.requireNonNull(offset, "offset");
     }
 
     /**

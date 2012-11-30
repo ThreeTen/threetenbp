@@ -122,7 +122,7 @@ public final class ZonedDateTime
     /**
      * Obtains the current date-time from the specified clock.
      * <p>
-     * This will query the specified clock to obtain the current time.
+     * This will query the specified clock to obtain the current date-time.
      * The zone and offset will be set based on the time-zone in the clock.
      * <p>
      * Using this method allows the use of an alternate clock for testing.
@@ -483,6 +483,9 @@ public final class ZonedDateTime
      * <p>
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code ZonedDateTime}.
+     * <p>
+     * The conversion will try to obtain an instant first, then try to obtain the
+     * local date-time.
      *
      * @param dateTime  the date-time object to convert, not null
      * @return the zoned date-time, not null
@@ -705,7 +708,8 @@ public final class ZonedDateTime
     /**
      * Gets the time-zone, such as 'Europe/Paris'.
      * <p>
-     * This returns the stored time-zone ID used to determine the time-zone rules.
+     * This returns the zone ID. This identifies the time-zone rules that
+     * determine when and how the offset from UTC/Greenwich changes.
      *
      * @return the time-zone, not null
      */
@@ -715,7 +719,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with a different time-zone,
+     * Returns a copy of this date-time with a different time-zone,
      * retaining the local date-time if possible.
      * <p>
      * This method changes the time-zone and retains the local date-time.
@@ -736,7 +740,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with a different time-zone,
+     * Returns a copy of this date-time with a different time-zone,
      * retaining the local date-time if possible.
      * <p>
      * This method changes the time-zone and retains the local date-time.
@@ -761,7 +765,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with a different time-zone,
+     * Returns a copy of this date-time with a different time-zone,
      * retaining the instant.
      * <p>
      * This method changes the time-zone and retains the instant.
@@ -1483,6 +1487,7 @@ public final class ZonedDateTime
             resolve(newDT, zone, dateTime, ZoneResolvers.retainOffset()));
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this {@code ZonedDateTime} with the specified period in hours added.
      * <p>
@@ -1569,12 +1574,11 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this {@code ZonedDateTime} with the specified duration added.
      * <p>
-     * Adding a duration differs from adding a period as gaps and overlaps in
-     * the local time-line are taken into account. For example, if there is a
-     * gap in the local time-line of one hour from 01:00 to 02:00, then adding a
-     * duration of one hour to 00:30 will yield 02:30.
+     * The addition is performed on the underlying instant using the zone ID.
+     * For example, if there is a gap in the local time-line of one hour from
+     * 01:00 to 02:00, then adding a duration of one hour to 00:30 will yield 02:30.
      * <p>
-     * The addition of a duration is always absolute and zone-resolvers are not required.
+     * The addition of a duration is always absolute with no special cases due to time-zones.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1737,6 +1741,7 @@ public final class ZonedDateTime
         return (days == Long.MIN_VALUE ? plusDays(Long.MAX_VALUE).plusDays(1) : plusDays(-days));
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this {@code ZonedDateTime} with the specified period in hours subtracted.
      * <p>
@@ -1815,12 +1820,11 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this {@code ZonedDateTime} with the specified duration subtracted.
      * <p>
-     * Subtracting a duration differs from subtracting a period as gaps and overlaps in
-     * the local time-line are taken into account. For example, if there is a
-     * gap in the local time-line of one hour from 01:00 to 02:00, then subtracting a
-     * duration of one hour from 02:30 will yield 00:30.
+     * The subtraction is performed on the underlying instant using the zone ID.
+     * For example, if there is a gap in the local time-line of one hour from
+     * 01:00 to 02:00, then subtracting a duration of one hour from 02:30 will yield 00:30.
      * <p>
-     * The subtraction of a duration is always absolute and zone-resolvers are not required.
+     * The subtraction of a duration is always absolute with no special cases due to time-zones.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *

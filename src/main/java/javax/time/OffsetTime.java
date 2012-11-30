@@ -59,7 +59,7 @@ import javax.time.format.DateTimeParseException;
 import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
 
 /**
- * A time with a zone offset from UTC/Greenwich in the ISO-8601 calendar system,
+ * A time with an offset from UTC/Greenwich in the ISO-8601 calendar system,
  * such as {@code 10:15:30+01:00}.
  * <p>
  * {@code OffsetTime} is an immutable date-time object that represents a time, often
@@ -82,11 +82,11 @@ public final class OffsetTime
     private static final long serialVersionUID = 7264499704384272492L;
 
     /**
-     * The local time, not null.
+     * The local date-time.
      */
     private final LocalTime time;
     /**
-     * The zone offset, not null.
+     * The offset from UTC/Greenwich.
      */
     private final ZoneOffset offset;
 
@@ -175,6 +175,7 @@ public final class OffsetTime
         return new OffsetTime(time, offset);
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code OffsetTime} from a local time and an offset.
      *
@@ -264,8 +265,8 @@ public final class OffsetTime
     /**
      * Constructor.
      *
-     * @param time  the time, validated as not null
-     * @param offset  the zone offset, validated as not null
+     * @param time  the local time, not null
+     * @param offset  the zone offset, not null
      */
     private OffsetTime(LocalTime time, ZoneOffset offset) {
         this.time = Objects.requireNonNull(time, "time");
@@ -318,7 +319,9 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the zone offset representing how far ahead or behind UTC the time is.
+     * Gets the zone offset, such as '+01:00'.
+     * <p>
+     * This is the offset of the local time from UTC/Greenwich.
      *
      * @return the zone offset, not null
      */

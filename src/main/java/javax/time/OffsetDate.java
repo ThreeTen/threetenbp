@@ -59,7 +59,7 @@ import javax.time.jdk8.Jdk8Methods;
 import javax.time.zone.ZoneResolvers;
 
 /**
- * A date with a zone offset from UTC/Greenwich in the ISO-8601 calendar system,
+ * A date with an offset from UTC/Greenwich in the ISO-8601 calendar system,
  * such as {@code 2007-12-03+01:00}.
  * <p>
  * {@code OffsetDate} is an immutable date-time object that represents a date, often viewed
@@ -83,11 +83,11 @@ public final class OffsetDate
     private static final long serialVersionUID = -4382054179074397774L;
 
     /**
-     * The date, not null.
+     * The local date.
      */
     private final LocalDate date;
     /**
-     * The zone offset, not null.
+     * The offset from UTC/Greenwich.
      */
     private final ZoneOffset offset;
 
@@ -167,6 +167,7 @@ public final class OffsetDate
         return new OffsetDate(date, offset);
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code OffsetDate} from a local date and an offset.
      *
@@ -232,8 +233,8 @@ public final class OffsetDate
     /**
      * Constructor.
      *
-     * @param date  the date, validated as not null
-     * @param offset  the zone offset, validated as not null
+     * @param date  the local date, not null
+     * @param offset  the zone offset, not null
      */
     private OffsetDate(LocalDate date, ZoneOffset offset) {
         this.date = Objects.requireNonNull(date, "date");
@@ -286,7 +287,9 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the zone offset.
+     * Gets the zone offset, such as '+01:00'.
+     * <p>
+     * This is the offset of the local date from UTC/Greenwich.
      *
      * @return the zone offset, not null
      */
@@ -795,7 +798,7 @@ public final class OffsetDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param time  the time to use, not null
+     * @param time  the time to combine with, not null
      * @return the offset date-time formed from this date and the specified time, not null
      */
     public OffsetDateTime atTime(OffsetTime time) {
@@ -810,7 +813,7 @@ public final class OffsetDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param time  the time to use, not null
+     * @param time  the time to combine with, not null
      * @return the offset date-time formed from this date and the specified time, not null
      */
     public OffsetDateTime atTime(LocalTime time) {
@@ -1098,14 +1101,14 @@ public final class OffsetDate
     }
 
     void writeExternal(DataOutput out) throws IOException {
-    	date.writeExternal(out);
-    	offset.writeExternal(out);
+        date.writeExternal(out);
+        offset.writeExternal(out);
     }
 
     static OffsetDate readExternal(DataInput in) throws IOException {
-    	LocalDate date = LocalDate.readExternal(in);
-    	ZoneOffset offset = ZoneOffset.readExternal(in);
-    	return OffsetDate.of(date, offset);
+        LocalDate date = LocalDate.readExternal(in);
+        ZoneOffset offset = ZoneOffset.readExternal(in);
+        return OffsetDate.of(date, offset);
     }
 
 }
