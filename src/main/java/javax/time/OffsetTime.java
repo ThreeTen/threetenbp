@@ -82,11 +82,11 @@ public final class OffsetTime
     private static final long serialVersionUID = 7264499704384272492L;
 
     /**
-     * The local time, not null.
+     * The local time.
      */
     private final LocalTime time;
     /**
-     * The zone offset, not null.
+     * The offset from UTC/Greenwich.
      */
     private final ZoneOffset offset;
 
@@ -105,6 +105,22 @@ public final class OffsetTime
      */
     public static OffsetTime now() {
         return now(Clock.systemDefaultZone());
+    }
+
+    /**
+     * Obtains the current time from the system clock in the specified time-zone.
+     * <p>
+     * This will query the {@link Clock#system(ZoneId) system clock} to obtain the current time.
+     * Specifying the time-zone avoids dependence on the default time-zone.
+     * The offset will be calculated from the specified time-zone.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @return the current time using the system clock, not null
+     */
+    public static OffsetTime now(ZoneId zone) {
+        return now(Clock.system(zone));
     }
 
     /**
@@ -175,6 +191,7 @@ public final class OffsetTime
         return new OffsetTime(time, offset);
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code OffsetTime} from a local time and an offset.
      *
@@ -264,8 +281,8 @@ public final class OffsetTime
     /**
      * Constructor.
      *
-     * @param time  the time, validated as not null
-     * @param offset  the zone offset, validated as not null
+     * @param time  the time, not null
+     * @param offset  the zone offset, not null
      */
     private OffsetTime(LocalTime time, ZoneOffset offset) {
         this.time = Objects.requireNonNull(time, "time");
@@ -318,7 +335,9 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the zone offset representing how far ahead or behind UTC the time is.
+     * Gets the zone offset.
+     * <p>
+     * This is the offset of the local time from UTC/Greenwich.
      *
      * @return the zone offset, not null
      */
@@ -376,39 +395,15 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the hour-of-day field.
+     * Gets the {@code LocalTime} part of this date-time.
+     * <p>
+     * This returns a {@code LocalTime} with the same hour, minute, second and
+     * nanosecond as this date-time.
      *
-     * @return the hour-of-day, from 0 to 23
+     * @return the time part of this date-time, not null
      */
-    public int getHour() {
-        return time.getHour();
-    }
-
-    /**
-     * Gets the minute-of-hour field.
-     *
-     * @return the minute-of-hour, from 0 to 59
-     */
-    public int getMinute() {
-        return time.getMinute();
-    }
-
-    /**
-     * Gets the second-of-minute field.
-     *
-     * @return the second-of-minute, from 0 to 59
-     */
-    public int getSecond() {
-        return time.getSecond();
-    }
-
-    /**
-     * Gets the nano-of-second field.
-     *
-     * @return the nano-of-second, from 0 to 999,999,999
-     */
-    public int getNano() {
-        return time.getNano();
+    public LocalTime getTime() {
+        return time;
     }
 
     //-----------------------------------------------------------------------
@@ -468,59 +463,6 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code OffsetTime} with the hour-of-day value altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hour  the hour-of-day to set in the result, from 0 to 23
-     * @return an {@code OffsetTime} based on this time with the requested hour, not null
-     * @throws DateTimeException if the hour value is invalid
-     */
-    public OffsetTime withHour(int hour) {
-        return with(time.withHour(hour), offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetTime} with the minute-of-hour value altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param minute  the minute-of-hour to set in the result, from 0 to 59
-     * @return an {@code OffsetTime} based on this time with the requested minute, not null
-     * @throws DateTimeException if the minute value is invalid
-     */
-    public OffsetTime withMinute(int minute) {
-        return with(time.withMinute(minute), offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetTime} with the second-of-minute value altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param second  the second-of-minute to set in the result, from 0 to 59
-     * @return an {@code OffsetTime} based on this time with the requested second, not null
-     * @throws DateTimeException if the second value is invalid
-     */
-    public OffsetTime withSecond(int second) {
-        return with(time.withSecond(second), offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetTime} with the nano-of-second value altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param nanoOfSecond  the nano-of-second to set in the result, from 0 to 999,999,999
-     * @return an {@code OffsetTime} based on this time with the requested nanosecond, not null
-     * @throws DateTimeException if the nanos value is invalid
-     */
-    public OffsetTime withNano(int nanoOfSecond) {
-        return with(time.withNano(nanoOfSecond), offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Returns a copy of this date with the specified period added.
      * <p>
      * This method returns a new time based on this time with the specified period added.
@@ -562,67 +504,6 @@ public final class OffsetTime
             return with(time.plus(amountToAdd, unit), offset);
         }
         return unit.doPlus(this, amountToAdd);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this {@code OffsetTime} with the specified period in hours added.
-     * <p>
-     * This adds the specified number of hours to this time, returning a new time.
-     * The calculation wraps around midnight.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hours  the hours to add, may be negative
-     * @return an {@code OffsetTime} based on this time with the hours added, not null
-     */
-    public OffsetTime plusHours(long hours) {
-        return with(time.plusHours(hours), offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetTime} with the specified period in minutes added.
-     * <p>
-     * This adds the specified number of minutes to this time, returning a new time.
-     * The calculation wraps around midnight.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param minutes  the minutes to add, may be negative
-     * @return an {@code OffsetTime} based on this time with the minutes added, not null
-     */
-    public OffsetTime plusMinutes(long minutes) {
-        return with(time.plusMinutes(minutes), offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetTime} with the specified period in seconds added.
-     * <p>
-     * This adds the specified number of seconds to this time, returning a new time.
-     * The calculation wraps around midnight.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param seconds  the seconds to add, may be negative
-     * @return an {@code OffsetTime} based on this time with the seconds added, not null
-     */
-    public OffsetTime plusSeconds(long seconds) {
-        return with(time.plusSeconds(seconds), offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetTime} with the specified period in nanoseconds added.
-     * <p>
-     * This adds the specified number of nanoseconds to this time, returning a new time.
-     * The calculation wraps around midnight.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param nanos  the nanos to add, may be negative
-     * @return an {@code OffsetTime} based on this time with the nanoseconds added, not null
-     */
-    public OffsetTime plusNanos(long nanos) {
-        return with(time.plusNanos(nanos), offset);
     }
 
     //-----------------------------------------------------------------------
@@ -669,79 +550,18 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code OffsetTime} with the specified period in hours subtracted.
-     * <p>
-     * This subtracts the specified number of hours from this time, returning a new time.
-     * The calculation wraps around midnight.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hours  the hours to subtract, may be negative
-     * @return an {@code OffsetTime} based on this time with the hours subtracted, not null
-     */
-    public OffsetTime minusHours(long hours) {
-        return with(time.minusHours(hours), offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetTime} with the specified period in minutes subtracted.
-     * <p>
-     * This subtracts the specified number of minutes from this time, returning a new time.
-     * The calculation wraps around midnight.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param minutes  the minutes to subtract, may be negative
-     * @return an {@code OffsetTime} based on this time with the minutes subtracted, not null
-     */
-    public OffsetTime minusMinutes(long minutes) {
-        return with(time.minusMinutes(minutes), offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetTime} with the specified period in seconds subtracted.
-     * <p>
-     * This subtracts the specified number of seconds from this time, returning a new time.
-     * The calculation wraps around midnight.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param seconds  the seconds to subtract, may be negative
-     * @return an {@code OffsetTime} based on this time with the seconds subtracted, not null
-     */
-    public OffsetTime minusSeconds(long seconds) {
-        return with(time.minusSeconds(seconds), offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetTime} with the specified period in nanoseconds subtracted.
-     * <p>
-     * This subtracts the specified number of nanoseconds from this time, returning a new time.
-     * The calculation wraps around midnight.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param nanos  the nanos to subtract, may be negative
-     * @return an {@code OffsetTime} based on this time with the nanoseconds subtracted, not null
-     */
-    public OffsetTime minusNanos(long nanos) {
-        return with(time.minusNanos(nanos), offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a zoned date-time formed from this time at the specified date.
+     * Returns an offset date-time formed from this time at the specified date.
      * <p>
      * This merges the two objects - {@code this} and the specified date -
-     * to form an instance of {@code ZonedDateTime}.
+     * to form an instance of {@code OffsetDateTime}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param date  the date to combine with, not null
-     * @return the zoned date-time formed from this time and the specified date, not null
+     * @return the offset date-time formed from this time and the specified date, not null
      */
-    public ZonedDateTime atDate(LocalDate date) {
-        return date.atTime(time).atZone(offset);
+    public OffsetDateTime atDate(LocalDate date) {
+        return OffsetDateTime.of(date, time, offset);
     }
 
     //-----------------------------------------------------------------------
@@ -784,15 +604,6 @@ public final class OffsetTime
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Converts this time to a {@code LocalTime}.
-     *
-     * @return a LocalTime with the same time as this instance, not null
-     */
-    public LocalTime getTime() {
-        return time;
-    }
-
     /**
      * Converts this time to epoch nanos based on 1970-01-01Z.
      *

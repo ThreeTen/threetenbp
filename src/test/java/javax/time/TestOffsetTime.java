@@ -145,13 +145,26 @@ public class TestOffsetTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
+    // now(ZoneId)
+    //-----------------------------------------------------------------------
+    @Test(expectedExceptions=NullPointerException.class, groups={"implementation"})
+    public void now_Clock_nullZoneId() {
+        OffsetTime.now((ZoneId) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // now(Clock)
+    //-----------------------------------------------------------------------
+    @Test(expectedExceptions=NullPointerException.class, groups={"implementation"})
+    public void now_Clock_nullClock() {
+        OffsetTime.now((Clock) null);
+    }
+
+    //-----------------------------------------------------------------------
     // factories
     //-----------------------------------------------------------------------
     void check(OffsetTime test, int h, int m, int s, int n, ZoneOffset offset) {
-        assertEquals(test.getHour(), h);
-        assertEquals(test.getMinute(), m);
-        assertEquals(test.getSecond(), s);
-        assertEquals(test.getNano(), n);
+        assertEquals(test.getTime(), LocalTime.of(h, m, s, n));
         assertEquals(test.getOffset(), offset);
     }
 
@@ -202,99 +215,15 @@ public class TestOffsetTime extends AbstractDateTimeTest {
     }
 
     @Test(groups={"implementation"})
-    public void test_withHour_noChange() {
-        OffsetTime base = OffsetTime.of(11, 30, 59, OFFSET_PONE);
-        OffsetTime test = base.withHour(11);
-        assertSame(test, base);
-    }
-
-    @Test(groups={"implementation"})
-    public void test_withMinute_noChange() {
-        OffsetTime base = OffsetTime.of(11, 30, 59, OFFSET_PONE);
-        OffsetTime test = base.withMinute(30);
-        assertSame(test, base);
-    }
-
-    @Test(groups={"implementation"})
-    public void test_withSecond_noChange() {
-        OffsetTime base = OffsetTime.of(11, 30, 59, OFFSET_PONE);
-        OffsetTime test = base.withSecond(59);
-        assertSame(test, base);
-    }
-
-    @Test(groups={"implementation"})
-    public void test_withNanoOfSecond_noChange() {
-        OffsetTime base = OffsetTime.of(11, 30, 59, 1, OFFSET_PONE);
-        OffsetTime test = base.withNano(1);
-        assertSame(test, base);
-    }
-
-    @Test(groups={"implementation"})
     public void test_plus_Period_zero() {
         OffsetTime t = TEST_11_30_59_500_PONE.plus(MockSimplePeriod.ZERO_SECONDS);
         assertSame(t, TEST_11_30_59_500_PONE);
     }
 
     @Test(groups={"implementation"})
-    public void test_plusHours_zero() {
-        OffsetTime base = OffsetTime.of(11, 30, 59, OFFSET_PONE);
-        OffsetTime test = base.plusHours(0);
-        assertSame(test, base);
-    }
-
-    @Test(groups={"implementation"})
-    public void test_plusMinutes_zero() {
-        OffsetTime base = OffsetTime.of(11, 30, 59, OFFSET_PONE);
-        OffsetTime test = base.plusMinutes(0);
-        assertSame(test, base);
-    }
-
-    @Test(groups={"implementation"})
-    public void test_plusSeconds_zero() {
-        OffsetTime base = OffsetTime.of(11, 30, 59, OFFSET_PONE);
-        OffsetTime test = base.plusSeconds(0);
-        assertSame(test, base);
-    }
-
-    @Test(groups={"implementation"})
-    public void test_plusNanos_zero() {
-        OffsetTime base = OffsetTime.of(11, 30, 59, OFFSET_PONE);
-        OffsetTime test = base.plusNanos(0);
-        assertSame(test, base);
-    }
-
-    @Test(groups={"implementation"})
     public void test_minus_Period_zero() {
         OffsetTime t = TEST_11_30_59_500_PONE.minus(MockSimplePeriod.ZERO_SECONDS);
         assertSame(t, TEST_11_30_59_500_PONE);
-    }
-
-    @Test(groups={"implementation"})
-    public void test_minusHours_zero() {
-        OffsetTime base = OffsetTime.of(11, 30, 59, OFFSET_PONE);
-        OffsetTime test = base.minusHours(0);
-        assertSame(test, base);
-    }
-
-    @Test(groups={"implementation"})
-    public void test_minusMinutes_zero() {
-        OffsetTime base = OffsetTime.of(11, 30, 59, OFFSET_PONE);
-        OffsetTime test = base.minusMinutes(0);
-        assertSame(test, base);
-    }
-
-    @Test(groups={"implementation"})
-    public void test_minusSeconds_zero() {
-        OffsetTime base = OffsetTime.of(11, 30, 59, OFFSET_PONE);
-        OffsetTime test = base.minusSeconds(0);
-        assertSame(test, base);
-    }
-
-    @Test(groups={"implementation"})
-    public void test_minusNanos_zero() {
-        OffsetTime base = OffsetTime.of(11, 30, 59, OFFSET_PONE);
-        OffsetTime test = base.minusNanos(0);
-        assertSame(test, base);
     }
 
 }

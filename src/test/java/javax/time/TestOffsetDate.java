@@ -31,46 +31,17 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
-import static javax.time.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
-import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_MONTH;
-import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_YEAR;
-import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
-import static javax.time.calendrical.ChronoField.DAY_OF_WEEK;
-import static javax.time.calendrical.ChronoField.DAY_OF_YEAR;
-import static javax.time.calendrical.ChronoField.EPOCH_DAY;
-import static javax.time.calendrical.ChronoField.EPOCH_MONTH;
-import static javax.time.calendrical.ChronoField.ERA;
-import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
-import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
-import static javax.time.calendrical.ChronoField.WEEK_OF_MONTH;
-import static javax.time.calendrical.ChronoField.WEEK_OF_YEAR;
-import static javax.time.calendrical.ChronoField.YEAR;
-import static javax.time.calendrical.ChronoField.YEAR_OF_ERA;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.time.calendrical.ChronoField;
-import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.JulianDayField;
 
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
  * Test OffsetDate.
  */
 @Test
-public class TestOffsetDate extends AbstractDateTimeTest {
+public class TestOffsetDate {
 
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
@@ -79,129 +50,15 @@ public class TestOffsetDate extends AbstractDateTimeTest {
 
     @BeforeMethod(groups={"tck","implementation"})
     public void setUp() {
-        TEST_2007_07_15_PONE = OffsetDate.of(2007, 7, 15, OFFSET_PONE);
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    protected List<DateTimeAccessor> samples() {
-        DateTimeAccessor[] array = {TEST_2007_07_15_PONE, };
-        return Arrays.asList(array);
-    }
-
-    @Override
-    protected List<DateTimeField> validFields() {
-        DateTimeField[] array = {
-            DAY_OF_WEEK,
-            ALIGNED_DAY_OF_WEEK_IN_MONTH,
-            ALIGNED_DAY_OF_WEEK_IN_YEAR,
-            DAY_OF_MONTH,
-            DAY_OF_YEAR,
-            EPOCH_DAY,
-            ALIGNED_WEEK_OF_MONTH,
-            WEEK_OF_MONTH,
-            ALIGNED_WEEK_OF_YEAR,
-            WEEK_OF_YEAR,
-            MONTH_OF_YEAR,
-            EPOCH_MONTH,
-            YEAR_OF_ERA,
-            YEAR,
-            ERA,
-            OFFSET_SECONDS,
-            JulianDayField.JULIAN_DAY,
-            JulianDayField.MODIFIED_JULIAN_DAY,
-            JulianDayField.RATA_DIE,
-        };
-        return Arrays.asList(array);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_serialization_format() throws ClassNotFoundException, IOException {
-        assertEqualsSerialisedForm(OffsetDate.of(2012, 9, 16, ZoneOffset.of("+01:00")));
-    }
-
-    @Test(groups={"tck"})
-    public void test_serialization() throws ClassNotFoundException, IOException {
-        assertSerializable(TEST_2007_07_15_PONE);
-    }
-
-    @Override
-    protected List<DateTimeField> invalidFields() {
-        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(ChronoField.values()));
-        list.removeAll(validFields());
-        return list;
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"implementation"})
-    public void test_interfaces() {
-        Object obj = TEST_2007_07_15_PONE;
-        assertTrue(obj instanceof DateTimeAccessor);
-        assertTrue(obj instanceof Serializable);
-        assertTrue(obj instanceof Comparable<?>);
-    }
-
-    //-----------------------------------------------------------------------
-    // now(Clock)
-    //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class, groups={"implementation"})
-    public void now_Clock_nullClock() {
-        OffsetDate.now(null);
+        TEST_2007_07_15_PONE = OffsetDate.of(LocalDate.of(2007, 7, 15), OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     // factories
     //-----------------------------------------------------------------------
     void check(OffsetDate test, int y, int mo, int d, ZoneOffset offset) {
-        assertEquals(test.getYear(), y);
-        assertEquals(test.getMonth().getValue(), mo);
-        assertEquals(test.getDayOfMonth(), d);
+        assertEquals(test.getDate(), LocalDate.of(y, mo, d));
         assertEquals(test.getOffset(), offset);
-    }
-
-    //-----------------------------------------------------------------------
-    // basics
-    //-----------------------------------------------------------------------
-    @DataProvider(name="sampleDates")
-    Object[][] provider_sampleDates() {
-        return new Object[][] {
-            {2008, 7, 5, OFFSET_PTWO},
-            {2007, 7, 5, OFFSET_PONE},
-            {2006, 7, 5, OFFSET_PTWO},
-            {2005, 7, 5, OFFSET_PONE},
-            {2004, 1, 1, OFFSET_PTWO},
-            {-1, 1, 2, OFFSET_PONE},
-            {999999, 11, 20, ZoneOffset.ofHoursMinutesSeconds(6, 9, 12)},
-        };
-    }
-
-    @Test(dataProvider="sampleDates", groups={"implementation"})
-    public void test_get_Offset_LocalDate(int y, int m, int d, ZoneOffset offset) {
-        LocalDate localDate = LocalDate.of(y, m, d);
-        OffsetDate a = OffsetDate.of(localDate, offset);
-
-        assertSame(a.getOffset(), offset);
-        assertSame(a.getDate(), localDate);
-    }
-
-
-    //-----------------------------------------------------------------------
-    // getDayOfWeek()
-    //-----------------------------------------------------------------------
-    @Test(groups={"implementation"})
-    public void test_getDayOfWeek() {
-        DayOfWeek dow = DayOfWeek.MONDAY;
-        ZoneOffset[] offsets = new ZoneOffset[] {OFFSET_PONE, OFFSET_PTWO};
-
-        for (Month month : Month.values()) {
-            int length = month.length(false);
-            for (int i = 1; i <= length; i++) {
-                OffsetDate d = OffsetDate.of(2007, month, i, offsets[i % 2]);
-                assertSame(d.getDayOfWeek(), dow);
-                dow = dow.plus(1);
-            }
-        }
     }
 
     //-----------------------------------------------------------------------
@@ -238,80 +95,14 @@ public class TestOffsetDate extends AbstractDateTimeTest {
     }
 
     @Test(groups={"implementation"})
-    public void test_withYear_int_noChange() {
-        OffsetDate t = TEST_2007_07_15_PONE.withYear(2007);
-        assertSame(t, TEST_2007_07_15_PONE);
-    }
-
-    @Test(groups={"implementation"})
-    public void test_withMonth_int_noChange() {
-        OffsetDate t = TEST_2007_07_15_PONE.withMonth(7);
-        assertSame(t, TEST_2007_07_15_PONE);
-    }
-
-    @Test(groups={"implementation"})
-    public void test_withDayOfYear_noChange() {
-        OffsetDate t = TEST_2007_07_15_PONE.withDayOfYear(31 + 28 + 31 + 30 + 31 + 30 + 15);
-        assertSame(t, TEST_2007_07_15_PONE);
-    }
-
-    @Test(groups={"implementation"})
     public void test_plus_Period_zero() {
         OffsetDate t = TEST_2007_07_15_PONE.plus(MockSimplePeriod.ZERO_DAYS);
         assertSame(t, TEST_2007_07_15_PONE);
     }
 
     @Test(groups={"implementation"})
-    public void test_plusYears_long_noChange() {
-        OffsetDate t = TEST_2007_07_15_PONE.plusYears(0);
-        assertSame(t, TEST_2007_07_15_PONE);
-    }
-
-    @Test(groups={"implementation"})
-    public void test_plusMonths_long_noChange() {
-        OffsetDate t = TEST_2007_07_15_PONE.plusMonths(0);
-        assertSame(t, TEST_2007_07_15_PONE);
-    }
-
-    @Test(groups={"implementation"})
-    public void test_plusWeeks_noChange() {
-        OffsetDate t = TEST_2007_07_15_PONE.plusWeeks(0);
-        assertSame(t, TEST_2007_07_15_PONE);
-    }
-
-    @Test(groups={"implementation"})
-    public void test_plusDays_noChange() {
-        OffsetDate t = TEST_2007_07_15_PONE.plusDays(0);
-        assertSame(t, TEST_2007_07_15_PONE);
-    }
-
-    @Test(groups={"implementation"})
     public void test_minus_PeriodProvider_zero() {
         OffsetDate t = TEST_2007_07_15_PONE.minus(MockSimplePeriod.ZERO_DAYS);
-        assertSame(t, TEST_2007_07_15_PONE);
-    }
-
-    @Test(groups={"implementation"})
-    public void test_minusYears_long_noChange() {
-        OffsetDate t = TEST_2007_07_15_PONE.minusYears(0);
-        assertSame(t, TEST_2007_07_15_PONE);
-    }
-
-    @Test(groups={"implementation"})
-    public void test_minusMonths_long_noChange() {
-        OffsetDate t = TEST_2007_07_15_PONE.minusMonths(0);
-        assertSame(t, TEST_2007_07_15_PONE);
-    }
-
-    @Test(groups={"implementation"})
-    public void test_minusWeeks_noChange() {
-        OffsetDate t = TEST_2007_07_15_PONE.minusWeeks(0);
-        assertSame(t, TEST_2007_07_15_PONE);
-    }
-
-    @Test(groups={"implementation"})
-    public void test_minusDays_noChange() {
-        OffsetDate t = TEST_2007_07_15_PONE.minusDays(0);
         assertSame(t, TEST_2007_07_15_PONE);
     }
 

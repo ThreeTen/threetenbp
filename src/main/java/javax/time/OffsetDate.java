@@ -82,11 +82,11 @@ public final class OffsetDate
     private static final long serialVersionUID = -4382054179074397774L;
 
     /**
-     * The date, not null.
+     * The local date.
      */
     private final LocalDate date;
     /**
-     * The zone offset, not null.
+     * The offset from UTC/Greenwich.
      */
     private final ZoneOffset offset;
 
@@ -108,6 +108,22 @@ public final class OffsetDate
     }
 
     /**
+     * Obtains the current date from the system clock in the specified time-zone.
+     * <p>
+     * This will query the {@link Clock#system(ZoneId) system clock} to obtain the current date.
+     * Specifying the time-zone avoids dependence on the default time-zone.
+     * The offset will be calculated from the specified time-zone.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @return the current date using the system clock, not null
+     */
+    public static OffsetDate now(ZoneId zone) {
+        return now(Clock.system(zone));
+    }
+
+    /**
      * Obtains the current date from the specified clock.
      * <p>
      * This will query the specified clock to obtain the current date - today.
@@ -122,11 +138,7 @@ public final class OffsetDate
     public static OffsetDate now(Clock clock) {
         Objects.requireNonNull(clock, "clock");
         final Instant now = clock.instant();  // called once
-        ZoneOffset offset = clock.getZone().getRules().getOffset(now);
-        long epochSec = now.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
-        long epochDay = Jdk8Methods.floorDiv(epochSec, SECONDS_PER_DAY);
-        LocalDate date = LocalDate.ofEpochDay(epochDay);
-        return new OffsetDate(date, offset);
+        return ofInstant(now, clock.getZone().getRules().getOffset(now));
     }
 
     //-----------------------------------------------------------------------
@@ -166,6 +178,7 @@ public final class OffsetDate
         return new OffsetDate(date, offset);
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code OffsetDate} from a local date and an offset.
      *
@@ -174,6 +187,26 @@ public final class OffsetDate
      * @return the offset date, not null
      */
     public static OffsetDate of(LocalDate date, ZoneOffset offset) {
+        return new OffsetDate(date, offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of {@code OffsetDate} from an {@code Instant}.
+     * <p>
+     * This creates an offset date representing midnight at the start of the day
+     * using the offset from UTC/Greenwich.
+     *
+     * @param instant  the instant to create the time from, not null
+     * @param offset  the zone offset to use, not null
+     * @return the offset time, not null
+     */
+    public static OffsetDate ofInstant(Instant instant, ZoneOffset offset) {
+        Objects.requireNonNull(instant, "instant");
+        Objects.requireNonNull(offset, "offset");
+        long epochSec = instant.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
+        long epochDay = Jdk8Methods.floorDiv(epochSec, SECONDS_PER_DAY);
+        LocalDate date = LocalDate.ofEpochDay(epochDay);
         return new OffsetDate(date, offset);
     }
 
@@ -231,8 +264,8 @@ public final class OffsetDate
     /**
      * Constructor.
      *
-     * @param date  the date, validated as not null
-     * @param offset  the zone offset, validated as not null
+     * @param date  the date, not null
+     * @param offset  the zone offset, not null
      */
     private OffsetDate(LocalDate date, ZoneOffset offset) {
         this.date = Objects.requireNonNull(date, "date");
@@ -286,6 +319,8 @@ public final class OffsetDate
     //-----------------------------------------------------------------------
     /**
      * Gets the zone offset.
+     * <p>
+     * This is the offset of the local date from UTC/Greenwich.
      *
      * @return the zone offset, not null
      */
@@ -313,85 +348,15 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the year field.
+     * Gets the {@code LocalDate} part of this date-time.
      * <p>
-     * This method returns the primitive {@code int} value for the year.
-     * <p>
-     * The year returned by this method is proleptic as per {@code get(YEAR)}.
-     * To obtain the year-of-era, use {@code get(YEAR_OF_ERA}.
+     * This returns a {@code LocalDate} with the same year, month and day
+     * as this date-time.
      *
-     * @return the year, from MIN_YEAR to MAX_YEAR
+     * @return the date part of this date-time, not null
      */
-    public int getYear() {
-        return date.getYear();
-    }
-
-    /**
-     * Gets the month-of-year field from 1 to 12.
-     * <p>
-     * This method returns the month as an {@code int} from 1 to 12.
-     * Application code is frequently clearer if the enum {@link Month}
-     * is used by calling {@link #getMonth()}.
-     *
-     * @return the month-of-year, from 1 to 12
-     * @see #getMonth()
-     */
-    public int getMonthValue() {
-        return date.getMonthValue();
-    }
-
-    /**
-     * Gets the month-of-year field using the {@code Month} enum.
-     * <p>
-     * This method returns the enum {@link Month} for the month.
-     * This avoids confusion as to what {@code int} values mean.
-     * If you need access to the primitive {@code int} value then the enum
-     * provides the {@link Month#getValue() int value}.
-     *
-     * @return the month-of-year, not null
-     * @see #getMonthValue()
-     */
-    public Month getMonth() {
-        return date.getMonth();
-    }
-
-    /**
-     * Gets the day-of-month field.
-     * <p>
-     * This method returns the primitive {@code int} value for the day-of-month.
-     *
-     * @return the day-of-month, from 1 to 31
-     */
-    public int getDayOfMonth() {
-        return date.getDayOfMonth();
-    }
-
-    /**
-     * Gets the day-of-year field.
-     * <p>
-     * This method returns the primitive {@code int} value for the day-of-year.
-     *
-     * @return the day-of-year, from 1 to 365, or 366 in a leap year
-     */
-    public int getDayOfYear() {
-        return date.getDayOfYear();
-    }
-
-    /**
-     * Gets the day-of-week field, which is an enum {@code DayOfWeek}.
-     * <p>
-     * This method returns the enum {@link DayOfWeek} for the day-of-week.
-     * This avoids confusion as to what {@code int} values mean.
-     * If you need access to the primitive {@code int} value then the enum
-     * provides the {@link DayOfWeek#getValue() int value}.
-     * <p>
-     * Additional information can be obtained from the {@code DayOfWeek}.
-     * This includes textual names of the values.
-     *
-     * @return the day-of-week, not null
-     */
-    public DayOfWeek getDayOfWeek() {
-        return date.getDayOfWeek();
+    public LocalDate getDate() {
+        return date;
     }
 
     //-----------------------------------------------------------------------
@@ -462,68 +427,6 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code OffsetDate} with the year altered.
-     * The offset does not affect the calculation and will be the same in the result.
-     * If the day-of-month is invalid for the year, it will be changed to the last valid day of the month.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param year  the year to set in the result, from MIN_YEAR to MAX_YEAR
-     * @return an {@code OffsetDate} based on this date with the requested year, not null
-     * @throws DateTimeException if the year value is invalid
-     */
-    public OffsetDate withYear(int year) {
-        return with(date.withYear(year), offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDate} with the month-of-year altered.
-     * The offset does not affect the calculation and will be the same in the result.
-     * If the day-of-month is invalid for the year, it will be changed to the last valid day of the month.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param month  the month-of-year to set in the result, from 1 (January) to 12 (December)
-     * @return an {@code OffsetDate} based on this date with the requested month, not null
-     * @throws DateTimeException if the month-of-year value is invalid
-     */
-    public OffsetDate withMonth(int month) {
-        return with(date.withMonth(month), offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDate} with the day-of-month altered.
-     * If the resulting date is invalid, an exception is thrown.
-     * The offset does not affect the calculation and will be the same in the result.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param dayOfMonth  the day-of-month to set in the result, from 1 to 28-31
-     * @return an {@code OffsetDate} based on this date with the requested day, not null
-     * @throws DateTimeException if the day-of-month value is invalid
-     * @throws DateTimeException if the day-of-month is invalid for the month-year
-     */
-    public OffsetDate withDayOfMonth(int dayOfMonth) {
-        return with(date.withDayOfMonth(dayOfMonth), offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDate} with the day-of-year altered.
-     * If the resulting date is invalid, an exception is thrown.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param dayOfYear  the day-of-year to set in the result, from 1 to 365-366
-     * @return an {@code OffsetDate} based on this date with the requested day, not null
-     * @throws DateTimeException if the day-of-year value is invalid
-     * @throws DateTimeException if the day-of-year is invalid for the year
-     */
-    public OffsetDate withDayOfYear(int dayOfYear) {
-        return with(date.withDayOfYear(dayOfYear), offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Returns a copy of this date with the specified period added.
      * <p>
      * This method returns a new date based on this date with the specified period added.
@@ -565,93 +468,6 @@ public final class OffsetDate
             return with(date.plus(amountToAdd, unit), offset);
         }
         return unit.doPlus(this, amountToAdd);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this {@code OffsetDate} with the specified period in years added.
-     * <p>
-     * This method adds the specified amount to the years field in three steps:
-     * <ol>
-     * <li>Add the input years to the year field</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the day-of-month to the last valid day if necessary</li>
-     * </ol>
-     * <p>
-     * For example, 2008-02-29 (leap year) plus one year would result in the
-     * invalid date 2009-02-29 (standard year). Instead of returning an invalid
-     * result, the last valid day of the month, 2009-02-28, is selected instead.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param years  the years to add, may be negative
-     * @return an {@code OffsetDate} based on this date with the years added, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    public OffsetDate plusYears(long years) {
-        return with(date.plusYears(years), offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDate} with the specified period in months added.
-     * <p>
-     * This method adds the specified amount to the months field in three steps:
-     * <ol>
-     * <li>Add the input months to the month-of-year field</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the day-of-month to the last valid day if necessary</li>
-     * </ol>
-     * <p>
-     * For example, 2007-03-31 plus one month would result in the invalid date
-     * 2007-04-31. Instead of returning an invalid result, the last valid day
-     * of the month, 2007-04-30, is selected instead.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param months  the months to add, may be negative
-     * @return an {@code OffsetDate} based on this date with the months added, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    public OffsetDate plusMonths(long months) {
-        return with(date.plusMonths(months), offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDate} with the specified period in weeks added.
-     * <p>
-     * This method adds the specified amount in weeks to the days field incrementing
-     * the month and year fields as necessary to ensure the result remains valid.
-     * The result is only invalid if the maximum/minimum year is exceeded.
-     * <p>
-     * For example, 2008-12-31 plus one week would result in 2009-01-07.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param weeks  the weeks to add, may be negative
-     * @return an {@code OffsetDate} based on this date with the weeks added, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    public OffsetDate plusWeeks(long weeks) {
-        return with(date.plusWeeks(weeks), offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDate} with the specified period in days added.
-     * <p>
-     * This method adds the specified amount to the days field incrementing the
-     * month and year fields as necessary to ensure the result remains valid.
-     * The result is only invalid if the maximum/minimum year is exceeded.
-     * <p>
-     * For example, 2008-12-31 plus one day would result in 2009-01-01.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param days  the days to add, may be negative
-     * @return an {@code OffsetDate} based on this date with the days added, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    public OffsetDate plusDays(long days) {
-        return with(date.plusDays(days), offset);
     }
 
     //-----------------------------------------------------------------------
@@ -698,117 +514,21 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code OffsetDate} with the specified period in years subtracted.
-     * <p>
-     * This method subtracts the specified amount from the years field in three steps:
-     * <ol>
-     * <li>Subtract the input years to the year field</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the day-of-month to the last valid day if necessary</li>
-     * </ol>
-     * <p>
-     * For example, 2008-02-29 (leap year) minus one year would result in the
-     * invalid date 2007-02-29 (standard year). Instead of returning an invalid
-     * result, the last valid day of the month, 2007-02-28, is selected instead.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param years  the years to subtract, may be negative
-     * @return an {@code OffsetDate} based on this date with the years subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    public OffsetDate minusYears(long years) {
-        return with(date.minusYears(years), offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDate} with the specified period in months subtracted.
-     * <p>
-     * This method subtracts the specified amount from the months field in three steps:
-     * <ol>
-     * <li>Subtract the input months to the month-of-year field</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the day-of-month to the last valid day if necessary</li>
-     * </ol>
-     * <p>
-     * For example, 2007-03-31 minus one month would result in the invalid date
-     * 2007-02-31. Instead of returning an invalid result, the last valid day
-     * of the month, 2007-02-28, is selected instead.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param months  the months to subtract, may be negative
-     * @return an {@code OffsetDate} based on this date with the months subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    public OffsetDate minusMonths(long months) {
-        return with(date.minusMonths(months), offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDate} with the specified period in weeks subtracted.
-     * <p>
-     * This method subtracts the specified amount in weeks from the days field decrementing
-     * the month and year fields as necessary to ensure the result remains valid.
-     * The result is only invalid if the maximum/minimum year is exceeded.
-     * <p>
-     * For example, 2009-01-07 minus one week would result in 2008-12-31.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param weeks  the weeks to subtract, may be negative
-     * @return an {@code OffsetDate} based on this date with the weeks subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    public OffsetDate minusWeeks(long weeks) {
-        return with(date.minusWeeks(weeks), offset);
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDate} with the specified number of days subtracted.
-     * <p>
-     * This method subtracts the specified amount from the days field decrementing the
-     * month and year fields as necessary to ensure the result remains valid.
-     * The result is only invalid if the maximum/minimum year is exceeded.
-     * <p>
-     * For example, 2009-01-01 minus one day would result in 2008-12-31.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param days  the days to subtract, may be negative
-     * @return an {@code OffsetDate} based on this date with the days subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    public OffsetDate minusDays(long days) {
-        return with(date.minusDays(days), offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a zoned date-time formed from this date at the specified time.
+     * Returns an offset date-time formed from this date at the specified time.
      * <p>
      * This merges the two objects - {@code this} and the specified time -
-     * to form an instance of {@code ZonedDateTime}.
+     * to form an instance of {@code OffsetDateTime}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param time  the time to combine with, not null
-     * @return the zoned date-time formed from this date and the specified time, not null
+     * @return the offset date-time formed from this date and the specified time, not null
      */
-    public ZonedDateTime atTime(LocalTime time) {
-        return date.atTime(time).atZone(offset);
+    public OffsetDateTime atTime(LocalTime time) {
+        return OffsetDateTime.of(date, time, offset);
     }
 
     //-----------------------------------------------------------------------
-    @SuppressWarnings("unchecked")
-    @Override
-    public <R> R query(Query<R> query) {
-        if (query == Query.CHRONO) {
-            return (R) ISOChrono.INSTANCE;
-        }
-        return super.query(query);
-    }
-
     @Override
     public DateTime doWithAdjustment(DateTime dateTime) {
         return dateTime
@@ -830,16 +550,16 @@ public final class OffsetDate
         return unit.between(this, endDateTime).getAmount();
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this date to a {@code LocalDate}.
-     *
-     * @return a local date with the same date as this instance, not null
-     */
-    public LocalDate getDate() {
-        return date;
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R query(Query<R> query) {
+        if (query == Query.CHRONO) {
+            return (R) ISOChrono.INSTANCE;
+        }
+        return super.query(query);
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Converts this date to midnight at the start of day in epoch seconds.
      *

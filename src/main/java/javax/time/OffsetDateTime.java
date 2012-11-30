@@ -171,155 +171,155 @@ public final class OffsetDateTime
         return ofInstant(now, clock.getZone().getRules().getOffset(now));
     }
 
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Obtains an instance of {@code OffsetDateTime} from year, month,
-//     * day, hour and minute, setting the second and nanosecond to zero.
-//     * <p>
-//     * The day must be valid for the year and month, otherwise an exception will be thrown.
-//     * The second and nanosecond fields will be set to zero.
-//     *
-//     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-//     * @param month  the month-of-year to represent, not null
-//     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-//     * @param hour  the hour-of-day to represent, from 0 to 23
-//     * @param minute  the minute-of-hour to represent, from 0 to 59
-//     * @param offset  the zone offset, not null
-//     * @return the offset date-time, not null
-//     * @throws DateTimeException if the value of any field is out of range
-//     * @throws DateTimeException if the day-of-month is invalid for the month-year
-//     */
-//    public static OffsetDateTime of(
-//            int year, Month month, int dayOfMonth,
-//            int hour, int minute, ZoneOffset offset) {
-//        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute);
-//        return new OffsetDateTime(dt, offset);
-//    }
-//
-//    /**
-//     * Obtains an instance of {@code OffsetDateTime} from year, month,
-//     * day, hour, minute and second, setting the nanosecond to zero.
-//     * <p>
-//     * The day must be valid for the year and month, otherwise an exception will be thrown.
-//     * The nanosecond field will be set to zero.
-//     *
-//     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-//     * @param month  the month-of-year to represent, not null
-//     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-//     * @param hour  the hour-of-day to represent, from 0 to 23
-//     * @param minute  the minute-of-hour to represent, from 0 to 59
-//     * @param second  the second-of-minute to represent, from 0 to 59
-//     * @param offset  the zone offset, not null
-//     * @return the offset date-time, not null
-//     * @throws DateTimeException if the value of any field is out of range
-//     * @throws DateTimeException if the day-of-month is invalid for the month-year
-//     */
-//    public static OffsetDateTime of(
-//            int year, Month month, int dayOfMonth,
-//            int hour, int minute, int second, ZoneOffset offset) {
-//        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute, second);
-//        return new OffsetDateTime(dt, offset);
-//    }
-//
-//    /**
-//     * Obtains an instance of {@code OffsetDateTime} from year, month,
-//     * day, hour, minute, second and nanosecond.
-//     * <p>
-//     * The day must be valid for the year and month, otherwise an exception will be thrown.
-//     *
-//     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-//     * @param month  the month-of-year to represent, not null
-//     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-//     * @param hour  the hour-of-day to represent, from 0 to 23
-//     * @param minute  the minute-of-hour to represent, from 0 to 59
-//     * @param second  the second-of-minute to represent, from 0 to 59
-//     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
-//     * @param offset  the zone offset, not null
-//     * @return the offset date-time, not null
-//     * @throws DateTimeException if the value of any field is out of range
-//     * @throws DateTimeException if the day-of-month is invalid for the month-year
-//     */
-//    public static OffsetDateTime of(
-//            int year, Month month, int dayOfMonth,
-//            int hour, int minute, int second, int nanoOfSecond, ZoneOffset offset) {
-//        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute, second, nanoOfSecond);
-//        return new OffsetDateTime(dt, offset);
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Obtains an instance of {@code OffsetDateTime} from year, month,
-//     * day, hour and minute, setting the second and nanosecond to zero.
-//     * <p>
-//     * The day must be valid for the year and month, otherwise an exception will be thrown.
-//     * The second and nanosecond fields will be set to zero.
-//     *
-//     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-//     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
-//     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-//     * @param hour  the hour-of-day to represent, from 0 to 23
-//     * @param minute  the minute-of-hour to represent, from 0 to 59
-//     * @param offset  the zone offset, not null
-//     * @return the offset date-time, not null
-//     * @throws DateTimeException if the value of any field is out of range
-//     * @throws DateTimeException if the day-of-month is invalid for the month-year
-//     */
-//    public static OffsetDateTime of(
-//            int year, int month, int dayOfMonth,
-//            int hour, int minute, ZoneOffset offset) {
-//        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute);
-//        return new OffsetDateTime(dt, offset);
-//    }
-//
-//    /**
-//     * Obtains an instance of {@code OffsetDateTime} from year, month,
-//     * day, hour, minute and second, setting the nanosecond to zero.
-//     * <p>
-//     * The day must be valid for the year and month, otherwise an exception will be thrown.
-//     * The nanosecond field will be set to zero.
-//     *
-//     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-//     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
-//     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-//     * @param hour  the hour-of-day to represent, from 0 to 23
-//     * @param minute  the minute-of-hour to represent, from 0 to 59
-//     * @param second  the second-of-minute to represent, from 0 to 59
-//     * @param offset  the zone offset, not null
-//     * @return the offset date-time, not null
-//     * @throws DateTimeException if the value of any field is out of range
-//     * @throws DateTimeException if the day-of-month is invalid for the month-year
-//     */
-//    public static OffsetDateTime of(
-//            int year, int month, int dayOfMonth,
-//            int hour, int minute, int second, ZoneOffset offset) {
-//        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute, second);
-//        return new OffsetDateTime(dt, offset);
-//    }
-//
-//    /**
-//     * Obtains an instance of {@code OffsetDateTime} from year, month,
-//     * day, hour, minute, second and nanosecond.
-//     * <p>
-//     * The day must be valid for the year and month, otherwise an exception will be thrown.
-//     *
-//     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-//     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
-//     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-//     * @param hour  the hour-of-day to represent, from 0 to 23
-//     * @param minute  the minute-of-hour to represent, from 0 to 59
-//     * @param second  the second-of-minute to represent, from 0 to 59
-//     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
-//     * @param offset  the zone offset, not null
-//     * @return the offset date-time, not null
-//     * @throws DateTimeException if the value of any field is out of range
-//     * @throws DateTimeException if the day-of-month is invalid for the month-year
-//     */
-//    public static OffsetDateTime of(
-//            int year, int month, int dayOfMonth,
-//            int hour, int minute, int second, int nanoOfSecond, ZoneOffset offset) {
-//        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute, second, nanoOfSecond);
-//        return new OffsetDateTime(dt, offset);
-//    }
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of {@code OffsetDateTime} from year, month,
+     * day, hour and minute, setting the second and nanosecond to zero.
+     * <p>
+     * The day must be valid for the year and month, otherwise an exception will be thrown.
+     * The second and nanosecond fields will be set to zero.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param month  the month-of-year to represent, not null
+     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param offset  the zone offset, not null
+     * @return the offset date-time, not null
+     * @throws DateTimeException if the value of any field is out of range
+     * @throws DateTimeException if the day-of-month is invalid for the month-year
+     */
+    public static OffsetDateTime of(
+            int year, Month month, int dayOfMonth,
+            int hour, int minute, ZoneOffset offset) {
+        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute);
+        return new OffsetDateTime(dt, offset);
+    }
+
+    /**
+     * Obtains an instance of {@code OffsetDateTime} from year, month,
+     * day, hour, minute and second, setting the nanosecond to zero.
+     * <p>
+     * The day must be valid for the year and month, otherwise an exception will be thrown.
+     * The nanosecond field will be set to zero.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param month  the month-of-year to represent, not null
+     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
+     * @param offset  the zone offset, not null
+     * @return the offset date-time, not null
+     * @throws DateTimeException if the value of any field is out of range
+     * @throws DateTimeException if the day-of-month is invalid for the month-year
+     */
+    public static OffsetDateTime of(
+            int year, Month month, int dayOfMonth,
+            int hour, int minute, int second, ZoneOffset offset) {
+        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute, second);
+        return new OffsetDateTime(dt, offset);
+    }
+
+    /**
+     * Obtains an instance of {@code OffsetDateTime} from year, month,
+     * day, hour, minute, second and nanosecond.
+     * <p>
+     * The day must be valid for the year and month, otherwise an exception will be thrown.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param month  the month-of-year to represent, not null
+     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
+     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
+     * @param offset  the zone offset, not null
+     * @return the offset date-time, not null
+     * @throws DateTimeException if the value of any field is out of range
+     * @throws DateTimeException if the day-of-month is invalid for the month-year
+     */
+    public static OffsetDateTime of(
+            int year, Month month, int dayOfMonth,
+            int hour, int minute, int second, int nanoOfSecond, ZoneOffset offset) {
+        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute, second, nanoOfSecond);
+        return new OffsetDateTime(dt, offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of {@code OffsetDateTime} from year, month,
+     * day, hour and minute, setting the second and nanosecond to zero.
+     * <p>
+     * The day must be valid for the year and month, otherwise an exception will be thrown.
+     * The second and nanosecond fields will be set to zero.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
+     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param offset  the zone offset, not null
+     * @return the offset date-time, not null
+     * @throws DateTimeException if the value of any field is out of range
+     * @throws DateTimeException if the day-of-month is invalid for the month-year
+     */
+    public static OffsetDateTime of(
+            int year, int month, int dayOfMonth,
+            int hour, int minute, ZoneOffset offset) {
+        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute);
+        return new OffsetDateTime(dt, offset);
+    }
+
+    /**
+     * Obtains an instance of {@code OffsetDateTime} from year, month,
+     * day, hour, minute and second, setting the nanosecond to zero.
+     * <p>
+     * The day must be valid for the year and month, otherwise an exception will be thrown.
+     * The nanosecond field will be set to zero.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
+     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
+     * @param offset  the zone offset, not null
+     * @return the offset date-time, not null
+     * @throws DateTimeException if the value of any field is out of range
+     * @throws DateTimeException if the day-of-month is invalid for the month-year
+     */
+    public static OffsetDateTime of(
+            int year, int month, int dayOfMonth,
+            int hour, int minute, int second, ZoneOffset offset) {
+        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute, second);
+        return new OffsetDateTime(dt, offset);
+    }
+
+    /**
+     * Obtains an instance of {@code OffsetDateTime} from year, month,
+     * day, hour, minute, second and nanosecond.
+     * <p>
+     * The day must be valid for the year and month, otherwise an exception will be thrown.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
+     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
+     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
+     * @param offset  the zone offset, not null
+     * @return the offset date-time, not null
+     * @throws DateTimeException if the value of any field is out of range
+     * @throws DateTimeException if the day-of-month is invalid for the month-year
+     */
+    public static OffsetDateTime of(
+            int year, int month, int dayOfMonth,
+            int hour, int minute, int second, int nanoOfSecond, ZoneOffset offset) {
+        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute, second, nanoOfSecond);
+        return new OffsetDateTime(dt, offset);
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -595,7 +595,7 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the {@code LocalDateTime} part of this offset date-time.
+     * Gets the local date-time underlying this offset date-time.
      * <p>
      * This returns a {@code LocalDateTime} with the same year, month, day and time
      * as this date-time.
@@ -619,89 +619,6 @@ public final class OffsetDateTime
         return dateTime.getDate();
     }
 
-//    /**
-//     * Gets the year field.
-//     * <p>
-//     * This method returns the primitive {@code int} value for the year.
-//     * <p>
-//     * The year returned by this method is proleptic as per {@code get(YEAR)}.
-//     * To obtain the year-of-era, use {@code get(YEAR_OF_ERA}.
-//     *
-//     * @return the year, from MIN_YEAR to MAX_YEAR
-//     */
-//    public int getYear() {
-//        return dateTime.getYear();
-//    }
-//
-//    /**
-//     * Gets the month-of-year field from 1 to 12.
-//     * <p>
-//     * This method returns the month as an {@code int} from 1 to 12.
-//     * Application code is frequently clearer if the enum {@link Month}
-//     * is used by calling {@link #getMonth()}.
-//     *
-//     * @return the month-of-year, from 1 to 12
-//     * @see #getMonth()
-//     */
-//    public int getMonthValue() {
-//        return dateTime.getMonthValue();
-//    }
-//
-//    /**
-//     * Gets the month-of-year field using the {@code Month} enum.
-//     * <p>
-//     * This method returns the enum {@link Month} for the month.
-//     * This avoids confusion as to what {@code int} values mean.
-//     * If you need access to the primitive {@code int} value then the enum
-//     * provides the {@link Month#getValue() int value}.
-//     *
-//     * @return the month-of-year, not null
-//     * @see #getMonthValue()
-//     */
-//    public Month getMonth() {
-//        return dateTime.getMonth();
-//    }
-//
-//    /**
-//     * Gets the day-of-month field.
-//     * <p>
-//     * This method returns the primitive {@code int} value for the day-of-month.
-//     *
-//     * @return the day-of-month, from 1 to 31
-//     */
-//    public int getDayOfMonth() {
-//        return dateTime.getDayOfMonth();
-//    }
-//
-//    /**
-//     * Gets the day-of-year field.
-//     * <p>
-//     * This method returns the primitive {@code int} value for the day-of-year.
-//     *
-//     * @return the day-of-year, from 1 to 365, or 366 in a leap year
-//     */
-//    public int getDayOfYear() {
-//        return dateTime.getDayOfYear();
-//    }
-//
-//    /**
-//     * Gets the day-of-week field, which is an enum {@code DayOfWeek}.
-//     * <p>
-//     * This method returns the enum {@link DayOfWeek} for the day-of-week.
-//     * This avoids confusion as to what {@code int} values mean.
-//     * If you need access to the primitive {@code int} value then the enum
-//     * provides the {@link DayOfWeek#getValue() int value}.
-//     * <p>
-//     * Additional information can be obtained from the {@code DayOfWeek}.
-//     * This includes textual names of the values.
-//     *
-//     * @return the day-of-week, not null
-//     */
-//    public DayOfWeek getDayOfWeek() {
-//        return dateTime.getDayOfWeek();
-//    }
-
-    //-----------------------------------------------------------------------
     /**
      * Gets the {@code LocalTime} part of this date-time.
      * <p>
@@ -713,42 +630,6 @@ public final class OffsetDateTime
     public LocalTime getTime() {
         return dateTime.getTime();
     }
-
-//    /**
-//     * Gets the hour-of-day field.
-//     *
-//     * @return the hour-of-day, from 0 to 23
-//     */
-//    public int getHour() {
-//        return dateTime.getHour();
-//    }
-//
-//    /**
-//     * Gets the minute-of-hour field.
-//     *
-//     * @return the minute-of-hour, from 0 to 59
-//     */
-//    public int getMinute() {
-//        return dateTime.getMinute();
-//    }
-//
-//    /**
-//     * Gets the second-of-minute field.
-//     *
-//     * @return the second-of-minute, from 0 to 59
-//     */
-//    public int getSecond() {
-//        return dateTime.getSecond();
-//    }
-//
-//    /**
-//     * Gets the nano-of-second field.
-//     *
-//     * @return the nano-of-second, from 0 to 999,999,999
-//     */
-//    public int getNano() {
-//        return dateTime.getNano();
-//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -822,218 +703,6 @@ public final class OffsetDateTime
     }
 
     //-----------------------------------------------------------------------
-//    /**
-//     * Returns a copy of this {@code OffsetDateTime} with the year altered.
-//     * The offset does not affect the calculation and will be the same in the result.
-//     * If the day-of-month is invalid for the year, it will be changed to the last valid day of the month.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param year  the year to set in the result, from MIN_YEAR to MAX_YEAR
-//     * @return an {@code OffsetDateTime} based on this date-time with the requested year, not null
-//     * @throws DateTimeException if the year value is invalid
-//     */
-//    public OffsetDateTime withYear(int year) {
-//        return with(dateTime.withYear(year), offset);
-//    }
-//
-//    /**
-//     * Returns a copy of this {@code OffsetDateTime} with the month-of-year altered.
-//     * The offset does not affect the calculation and will be the same in the result.
-//     * If the day-of-month is invalid for the year, it will be changed to the last valid day of the month.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param month  the month-of-year to set in the result, from 1 (January) to 12 (December)
-//     * @return an {@code OffsetDateTime} based on this date-time with the requested month, not null
-//     * @throws DateTimeException if the month-of-year value is invalid
-//     */
-//    public OffsetDateTime withMonth(int month) {
-//        return with(dateTime.withMonth(month), offset);
-//    }
-//
-//    /**
-//     * Returns a copy of this {@code OffsetDateTime} with the day-of-month altered.
-//     * If the resulting {@code OffsetDateTime} is invalid, an exception is thrown.
-//     * The offset does not affect the calculation and will be the same in the result.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param dayOfMonth  the day-of-month to set in the result, from 1 to 28-31
-//     * @return an {@code OffsetDateTime} based on this date-time with the requested day, not null
-//     * @throws DateTimeException if the day-of-month value is invalid
-//     * @throws DateTimeException if the day-of-month is invalid for the month-year
-//     */
-//    public OffsetDateTime withDayOfMonth(int dayOfMonth) {
-//        return with(dateTime.withDayOfMonth(dayOfMonth), offset);
-//    }
-//
-//    /**
-//     * Returns a copy of this {@code OffsetDateTime} with the day-of-year altered.
-//     * If the resulting {@code OffsetDateTime} is invalid, an exception is thrown.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param dayOfYear  the day-of-year to set in the result, from 1 to 365-366
-//     * @return an {@code OffsetDateTime} based on this date with the requested day, not null
-//     * @throws DateTimeException if the day-of-year value is invalid
-//     * @throws DateTimeException if the day-of-year is invalid for the year
-//     */
-//    public OffsetDateTime withDayOfYear(int dayOfYear) {
-//        return with(dateTime.withDayOfYear(dayOfYear), offset);
-//    }
-
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Returns a copy of this {@code OffsetDateTime} with the date values altered.
-//     * <p>
-//     * This method will return a new instance with the same time fields,
-//     * but altered date fields.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param year  the year to set in the result, from MIN_YEAR to MAX_YEAR
-//     * @param month  the month-of-year to set in the result, not null
-//     * @param dayOfMonth  the day-of-month to set in the result, from 1 to 31
-//     * @return an {@code OffsetDateTime} based on this date-time with the requested date, not null
-//     * @throws DateTimeException if any field value is invalid
-//     * @throws DateTimeException if the day-of-month is invalid for the month-year
-//     */
-//      public OffsetDateTime withDate(int year, Month month, int dayOfMonth) {
-//          return with(dateTime.withDate(year, month, dayOfMonth), offset);
-//      }
-//
-//    /**
-//     * Returns a copy of this {@code OffsetDateTime} with the date values altered.
-//     * <p>
-//     * This method will return a new instance with the same time fields,
-//     * but altered date fields.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param year  the year to set in the result, from MIN_VALUE + 1 to MAX_VALUE
-//     * @param month  the month-of-year to set in the result, from 1 (January) to 12 (December)
-//     * @param dayOfMonth  the day-of-month to set in the result, from 1 to 31
-//     * @return an {@code OffsetDateTime} based on this date-time with the requested date, not null
-//     * @throws DateTimeException if any field value is invalid
-//     * @throws DateTimeException if the day-of-month is invalid for the month-year
-//     */
-//    public OffsetDateTime withDate(int year, int month, int dayOfMonth) {
-//        return with(dateTime.withDate(year, month, dayOfMonth), offset);
-//    }
-
-    //-----------------------------------------------------------------------
-//    /**
-//     * Returns a copy of this {@code OffsetDateTime} with the hour-of-day value altered.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param hour  the hour-of-day to set in the result, from 0 to 23
-//     * @return an {@code OffsetDateTime} based on this date-time with the requested hour, not null
-//     * @throws DateTimeException if the hour value is invalid
-//     */
-//    public OffsetDateTime withHour(int hour) {
-//        return with(dateTime.withHour(hour), offset);
-//    }
-//
-//    /**
-//     * Returns a copy of this {@code OffsetDateTime} with the minute-of-hour value altered.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param minute  the minute-of-hour to set in the result, from 0 to 59
-//     * @return an {@code OffsetDateTime} based on this date-time with the requested minute, not null
-//     * @throws DateTimeException if the minute value is invalid
-//     */
-//    public OffsetDateTime withMinute(int minute) {
-//        return with(dateTime.withMinute(minute), offset);
-//    }
-//
-//    /**
-//     * Returns a copy of this {@code OffsetDateTime} with the second-of-minute value altered.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param second  the second-of-minute to set in the result, from 0 to 59
-//     * @return an {@code OffsetDateTime} based on this date-time with the requested second, not null
-//     * @throws DateTimeException if the second value is invalid
-//     */
-//    public OffsetDateTime withSecond(int second) {
-//        return with(dateTime.withSecond(second), offset);
-//    }
-//
-//    /**
-//     * Returns a copy of this {@code OffsetDateTime} with the nano-of-second value altered.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param nanoOfSecond  the nano-of-second to set in the result, from 0 to 999,999,999
-//     * @return an {@code OffsetDateTime} based on this date-time with the requested nanosecond, not null
-//     * @throws DateTimeException if the nanos value is invalid
-//     */
-//    public OffsetDateTime withNano(int nanoOfSecond) {
-//        return with(dateTime.withNano(nanoOfSecond), offset);
-//    }
-
-//    /**
-//     * Returns a copy of this {@code OffsetDateTime} with the time values altered.
-//     * <p>
-//     * This method will return a new instance with the same date fields,
-//     * but altered time fields.
-//     * This is a shorthand for {@link #withTime(int,int,int,int)} and sets
-//     * the second and nanosecond fields to zero.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param hour  the hour-of-day to set in the result, from 0 to 23
-//     * @param minute  the minute-of-hour to set in the result, from 0 to 59
-//     * @return an {@code OffsetDateTime} based on this date-time with the requested time, not null
-//     * @throws DateTimeException if any field value is invalid
-//     */
-//    public OffsetDateTime withTime(int hour, int minute) {
-//        LocalDateTime newDT = dateTime.withTime(hour, minute);
-//        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
-//    }
-//
-//    /**
-//     * Returns a copy of this {@code OffsetDateTime} with the time values altered.
-//     * <p>
-//     * This method will return a new instance with the same date fields,
-//     * but altered time fields.
-//     * This is a shorthand for {@link #withTime(int,int,int,int)} and sets
-//     * the nanosecond fields to zero.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param hour  the hour-of-day to set in the result, from 0 to 23
-//     * @param minute  the minute-of-hour to set in the result, from 0 to 59
-//     * @param second  the second-of-minute to set in the result, from 0 to 59
-//     * @return an {@code OffsetDateTime} based on this date-time with the requested time, not null
-//     * @throws DateTimeException if any field value is invalid
-//     */
-//    public OffsetDateTime withTime(int hour, int minute, int second) {
-//        LocalDateTime newDT = dateTime.withTime(hour, minute, second);
-//        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
-//    }
-//
-//    /**
-//     * Returns a copy of this OffsetDateTime with the time values altered.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param hour  the hour-of-day to set in the result, from 0 to 23
-//     * @param minute  the minute-of-hour to set in the result, from 0 to 59
-//     * @param second  the second-of-minute to set in the result, from 0 to 59
-//     * @param nanoOfSecond  the nano-of-second to set in the result, from 0 to 999,999,999
-//     * @return an {@code OffsetDateTime} based on this date-time with the requested time, not null
-//     * @throws DateTimeException if any field value is invalid
-//     */
-//    public OffsetDateTime withTime(int hour, int minute, int second, int nanoOfSecond) {
-//        LocalDateTime newDT = dateTime.withTime(hour, minute, second, nanoOfSecond);
-//        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
-//    }
-
-    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this date-time with the specified period added.
      * <p>
@@ -1080,153 +749,6 @@ public final class OffsetDateTime
         return unit.doPlus(this, amountToAdd);
     }
 
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Returns a copy of this {@code OffsetDateTime} with the specified period in years added.
-//     * <p>
-//     * This method adds the specified amount to the years field in three steps:
-//     * <ol>
-//     * <li>Add the input years to the year field</li>
-//     * <li>Check if the resulting date would be invalid</li>
-//     * <li>Adjust the day-of-month to the last valid day if necessary</li>
-//     * </ol>
-//     * <p>
-//     * For example, 2008-02-29 (leap year) plus one year would result in the
-//     * invalid date 2009-02-29 (standard year). Instead of returning an invalid
-//     * result, the last valid day of the month, 2009-02-28, is selected instead.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param years  the years to add, may be negative
-//     * @return an {@code OffsetDateTime} based on this date-time with the years added, not null
-//     * @throws DateTimeException if the result exceeds the supported date range
-//     */
-//    public OffsetDateTime plusYears(long years) {
-//        LocalDateTime newDT = dateTime.plusYears(years);
-//        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
-//    }
-//
-//    /**
-//     * Returns a copy of this {@code OffsetDateTime} with the specified period in months added.
-//     * <p>
-//     * This method adds the specified amount to the months field in three steps:
-//     * <ol>
-//     * <li>Add the input months to the month-of-year field</li>
-//     * <li>Check if the resulting date would be invalid</li>
-//     * <li>Adjust the day-of-month to the last valid day if necessary</li>
-//     * </ol>
-//     * <p>
-//     * For example, 2007-03-31 plus one month would result in the invalid date
-//     * 2007-04-31. Instead of returning an invalid result, the last valid day
-//     * of the month, 2007-04-30, is selected instead.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param months  the months to add, may be negative
-//     * @return an {@code OffsetDateTime} based on this date-time with the months added, not null
-//     * @throws DateTimeException if the result exceeds the supported date range
-//     */
-//    public OffsetDateTime plusMonths(long months) {
-//        LocalDateTime newDT = dateTime.plusMonths(months);
-//        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
-//    }
-//
-//    /**
-//     * Returns a copy of this OffsetDateTime with the specified period in weeks added.
-//     * <p>
-//     * This method adds the specified amount in weeks to the days field incrementing
-//     * the month and year fields as necessary to ensure the result remains valid.
-//     * The result is only invalid if the maximum/minimum year is exceeded.
-//     * <p>
-//     * For example, 2008-12-31 plus one week would result in the 2009-01-07.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param weeks  the weeks to add, may be negative
-//     * @return an {@code OffsetDateTime} based on this date-time with the weeks added, not null
-//     * @throws DateTimeException if the result exceeds the supported date range
-//     */
-//    public OffsetDateTime plusWeeks(long weeks) {
-//        LocalDateTime newDT = dateTime.plusWeeks(weeks);
-//        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
-//    }
-//
-//    /**
-//     * Returns a copy of this OffsetDateTime with the specified period in days added.
-//     * <p>
-//     * This method adds the specified amount to the days field incrementing the
-//     * month and year fields as necessary to ensure the result remains valid.
-//     * The result is only invalid if the maximum/minimum year is exceeded.
-//     * <p>
-//     * For example, 2008-12-31 plus one day would result in the 2009-01-01.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param days  the days to add, may be negative
-//     * @return an {@code OffsetDateTime} based on this date-time with the days added, not null
-//     * @throws DateTimeException if the result exceeds the supported date range
-//     */
-//    public OffsetDateTime plusDays(long days) {
-//        LocalDateTime newDT = dateTime.plusDays(days);
-//        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
-//    }
-//
-//    /**
-//     * Returns a copy of this {@code OffsetDateTime} with the specified period in hours added.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param hours  the hours to add, may be negative
-//     * @return an {@code OffsetDateTime} based on this date-time with the hours added, not null
-//     * @throws DateTimeException if the result exceeds the supported date range
-//     */
-//    public OffsetDateTime plusHours(long hours) {
-//        LocalDateTime newDT = dateTime.plusHours(hours);
-//        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
-//    }
-//
-//    /**
-//     * Returns a copy of this {@code OffsetDateTime} with the specified period in minutes added.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param minutes  the minutes to add, may be negative
-//     * @return an {@code OffsetDateTime} based on this date-time with the minutes added, not null
-//     * @throws DateTimeException if the result exceeds the supported date range
-//     */
-//    public OffsetDateTime plusMinutes(long minutes) {
-//        LocalDateTime newDT = dateTime.plusMinutes(minutes);
-//        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
-//    }
-//
-//    /**
-//     * Returns a copy of this {@code OffsetDateTime} with the specified period in seconds added.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param seconds  the seconds to add, may be negative
-//     * @return an {@code OffsetDateTime} based on this date-time with the seconds added, not null
-//     * @throws DateTimeException if the result exceeds the supported date range
-//     */
-//    public OffsetDateTime plusSeconds(long seconds) {
-//        LocalDateTime newDT = dateTime.plusSeconds(seconds);
-//        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
-//    }
-//
-//    /**
-//     * Returns a copy of this {@code OffsetDateTime} with the specified period in nanoseconds added.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param nanos  the nanos to add, may be negative
-//     * @return an {@code OffsetDateTime} based on this date-time with the nanoseconds added, not null
-//     * @throws DateTimeException if the unit cannot be added to this type
-//     */
-//    public OffsetDateTime plusNanos(long nanos) {
-//        LocalDateTime newDT = dateTime.plusNanos(nanos);
-//        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
-//    }
-
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this date-time with the specified period subtracted.
@@ -1269,145 +791,6 @@ public final class OffsetDateTime
     public OffsetDateTime minus(long amountToSubtract, PeriodUnit unit) {
         return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
-
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Returns a copy of this {@code OffsetDateTime} with the specified period in years subtracted.
-//     * <p>
-//     * This method subtracts the specified amount from the years field in three steps:
-//     * <ol>
-//     * <li>Subtract the input years to the year field</li>
-//     * <li>Check if the resulting date would be invalid</li>
-//     * <li>Adjust the day-of-month to the last valid day if necessary</li>
-//     * </ol>
-//     * <p>
-//     * For example, 2008-02-29 (leap year) minus one year would result in the
-//     * invalid date 2009-02-29 (standard year). Instead of returning an invalid
-//     * result, the last valid day of the month, 2009-02-28, is selected instead.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param years  the years to subtract, may be negative
-//     * @return an {@code OffsetDateTime} based on this date-time with the years subtracted, not null
-//     * @throws DateTimeException if the result exceeds the supported date range
-//     */
-//    public OffsetDateTime minusYears(long years) {
-//        return (years == Long.MIN_VALUE ? plusYears(Long.MAX_VALUE).plusYears(1) : plusYears(-years));
-//    }
-//
-//    /**
-//     * Returns a copy of this {@code OffsetDateTime} with the specified period in months subtracted.
-//     * <p>
-//     * This method subtracts the specified amount from the months field in three steps:
-//     * <ol>
-//     * <li>Subtract the input months to the month-of-year field</li>
-//     * <li>Check if the resulting date would be invalid</li>
-//     * <li>Adjust the day-of-month to the last valid day if necessary</li>
-//     * </ol>
-//     * <p>
-//     * For example, 2007-03-31 minus one month would result in the invalid date
-//     * 2007-04-31. Instead of returning an invalid result, the last valid day
-//     * of the month, 2007-04-30, is selected instead.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param months  the months to subtract, may be negative
-//     * @return an {@code OffsetDateTime} based on this date-time with the months subtracted, not null
-//     * @throws DateTimeException if the result exceeds the supported date range
-//     */
-//    public OffsetDateTime minusMonths(long months) {
-//        return (months == Long.MIN_VALUE ? plusMonths(Long.MAX_VALUE).plusMonths(1) : plusMonths(-months));
-//    }
-//
-//    /**
-//     * Returns a copy of this {@code OffsetDateTime} with the specified period in weeks subtracted.
-//     * <p>
-//     * This method subtracts the specified amount in weeks from the days field decrementing
-//     * the month and year fields as necessary to ensure the result remains valid.
-//     * The result is only invalid if the maximum/minimum year is exceeded.
-//     * <p>
-//     * For example, 2008-12-31 minus one week would result in the 2009-01-07.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param weeks  the weeks to subtract, may be negative
-//     * @return an {@code OffsetDateTime} based on this date-time with the weeks subtracted, not null
-//     * @throws DateTimeException if the result exceeds the supported date range
-//     */
-//    public OffsetDateTime minusWeeks(long weeks) {
-//        return (weeks == Long.MIN_VALUE ? plusWeeks(Long.MAX_VALUE).plusWeeks(1) : plusWeeks(-weeks));
-//    }
-//
-//    /**
-//     * Returns a copy of this {@code OffsetDateTime} with the specified period in days subtracted.
-//     * <p>
-//     * This method subtracts the specified amount from the days field incrementing the
-//     * month and year fields as necessary to ensure the result remains valid.
-//     * The result is only invalid if the maximum/minimum year is exceeded.
-//     * <p>
-//     * For example, 2008-12-31 minus one day would result in the 2009-01-01.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param days  the days to subtract, may be negative
-//     * @return an {@code OffsetDateTime} based on this date-time with the days subtracted, not null
-//     * @throws DateTimeException if the result exceeds the supported date range
-//     */
-//    public OffsetDateTime minusDays(long days) {
-//        return (days == Long.MIN_VALUE ? plusDays(Long.MAX_VALUE).plusDays(1) : plusDays(-days));
-//    }
-//
-//    /**
-//     * Returns a copy of this {@code OffsetDateTime} with the specified period in hours subtracted.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param hours  the hours to subtract, may be negative
-//     * @return an {@code OffsetDateTime} based on this date-time with the hours subtracted, not null
-//     * @throws DateTimeException if the result exceeds the supported date range
-//     */
-//    public OffsetDateTime minusHours(long hours) {
-//        return (hours == Long.MIN_VALUE ? plusHours(Long.MAX_VALUE).plusHours(1) : plusHours(-hours));
-//    }
-//
-//    /**
-//     * Returns a copy of this {@code OffsetDateTime} with the specified period in minutes subtracted.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param minutes  the minutes to subtract, may be negative
-//     * @return an {@code OffsetDateTime} based on this date-time with the minutes subtracted, not null
-//     * @throws DateTimeException if the result exceeds the supported date range
-//     */
-//    public OffsetDateTime minusMinutes(long minutes) {
-//        return (minutes == Long.MIN_VALUE ? plusMinutes(Long.MAX_VALUE).plusMinutes(1) : plusMinutes(-minutes));
-//    }
-//
-//    /**
-//     * Returns a copy of this {@code OffsetDateTime} with the specified period in seconds subtracted.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param seconds  the seconds to subtract, may be negative
-//     * @return an {@code OffsetDateTime} based on this date-time with the seconds subtracted, not null
-//     * @throws DateTimeException if the result exceeds the supported date range
-//     */
-//    public OffsetDateTime minusSeconds(long seconds) {
-//        return (seconds == Long.MIN_VALUE ? plusSeconds(Long.MAX_VALUE).plusSeconds(1) : plusSeconds(-seconds));
-//    }
-//
-//    /**
-//     * Returns a copy of this {@code OffsetDateTime} with the specified period in nanoseconds subtracted.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param nanos  the nanos to subtract, may be negative
-//     * @return an {@code OffsetDateTime} based on this date-time with the nanoseconds subtracted, not null
-//     * @throws DateTimeException if the result exceeds the supported date range
-//     */
-//    public OffsetDateTime minusNanos(long nanos) {
-//        return (nanos == Long.MIN_VALUE ? plusNanos(Long.MAX_VALUE).plusNanos(1) : plusNanos(-nanos));
-//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -1480,7 +863,6 @@ public final class OffsetDateTime
                 .with(NANO_OF_DAY, getTime().toNanoOfDay());
     }
 
-    //-------------------------------------------------------------------------
     @SuppressWarnings("unchecked")
     @Override
     public <R> R query(Query<R> query) {
