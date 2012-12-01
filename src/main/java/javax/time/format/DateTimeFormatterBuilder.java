@@ -575,7 +575,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendOffsetId() {
-        return appendOffset("Z", "+HH:MM:ss");
+        return appendOffset("+HH:MM:ss", "Z");
     }
 
     /**
@@ -596,6 +596,8 @@ public final class DateTimeFormatterBuilder {
      * </ul><p>
      * The "no offset" text controls what text is printed when the offset is zero.
      * Example values would be 'Z', '+00:00', 'UTC' or 'GMT'.
+     * Three formats are accepted for parsing UTC - the "no offset" text, and the
+     * plus and minus versions of zero defined by the pattern.
      * <p>
      * The include colon parameter controls whether a colon should separate the
      * numeric fields or not.
@@ -604,11 +606,11 @@ public final class DateTimeFormatterBuilder {
      * If false then seconds are never output.
      * If true then seconds are only output if non-zero.
      *
-     * @param noOffsetText  the text to use when the offset is zero, not null
      * @param pattern  the pattern to use
+     * @param noOffsetText  the text to use when the offset is zero, not null
      * @return this, for chaining, not null
      */
-    public DateTimeFormatterBuilder appendOffset(String noOffsetText, String pattern) {
+    public DateTimeFormatterBuilder appendOffset(String pattern, String noOffsetText) {
         appendInternal(new ZoneOffsetPrinterParser(noOffsetText, pattern));
         return this;
     }
@@ -958,15 +960,15 @@ public final class DateTimeFormatterBuilder {
                         throw new IllegalArgumentException("Too many pattern letters: " + cur);
                     }
                     if (count < 3) {
-                        appendOffset("+0000", "+HHMM");
+                        appendOffset("+HHMM", "+0000");
                     } else {
-                        appendOffset("+00:00", "+HH:MM");
+                        appendOffset("+HH:MM", "+00:00");
                     }
                 } else if (cur == 'X') {
                     if (count > 5) {
                         throw new IllegalArgumentException("Too many pattern letters: " + cur);
                     }
-                    appendOffset("Z", ZoneOffsetPrinterParser.PATTERNS[count - 1]);
+                    appendOffset(ZoneOffsetPrinterParser.PATTERNS[count - 1], "Z");
                 } else {
                     throw new IllegalArgumentException("Unknown pattern letter: " + cur);
                 }

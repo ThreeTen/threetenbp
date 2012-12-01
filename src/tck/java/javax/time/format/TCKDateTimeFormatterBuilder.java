@@ -381,7 +381,7 @@ public class TCKDateTimeFormatterBuilder {
 
     @Test(dataProvider="offsetPatterns", groups={"tck"})
     public void test_appendOffset(String pattern) throws Exception {
-        builder.appendOffset("Z", pattern);
+        builder.appendOffset(pattern, "Z");
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Offset('Z'," + pattern + ")");
     }
@@ -405,17 +405,17 @@ public class TCKDateTimeFormatterBuilder {
 
     @Test(dataProvider="badOffsetPatterns", expectedExceptions = IllegalArgumentException.class, groups={"tck"})
     public void test_appendOffset_badPattern(String pattern) throws Exception {
-        builder.appendOffset("Z", pattern);
+        builder.appendOffset(pattern, "Z");
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_appendOffset_3arg_nullText() throws Exception {
-        builder.appendOffset(null, "+HH:MM");
+        builder.appendOffset("+HH:MM", null);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_appendOffset_3arg_nullPattern() throws Exception {
-        builder.appendOffset("Z", null);
+        builder.appendOffset(null, "Z");
     }
 
     //-----------------------------------------------------------------------

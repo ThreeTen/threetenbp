@@ -819,7 +819,7 @@ public final class DateTimeFormatters {
             .appendValue(MONTH_OF_YEAR, 2)
             .appendValue(DAY_OF_MONTH, 2)
             .optionalStart()
-            .appendOffset("Z", "+HHMMss")
+            .appendOffset("+HHMMss", "Z")
             .toFormatter();
     }
 
@@ -914,7 +914,7 @@ public final class DateTimeFormatters {
             .appendValue(SECOND_OF_MINUTE, 2)
             .optionalEnd()
             .appendLiteral(' ')
-            .appendOffset("GMT", "+HHMM")  // should handle UT/Z/EST/EDT/CST/CDT/MST/MDT/PST/MDT
+            .appendOffset("+HHMM", "GMT")  // should handle UT/Z/EST/EDT/CST/CDT/MST/MDT/PST/MDT
             .toFormatter();
     }
 
