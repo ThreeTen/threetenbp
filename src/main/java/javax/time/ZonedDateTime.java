@@ -473,13 +473,13 @@ public final class ZonedDateTime
      *
      * @param epochSecond  the number of seconds from the epoch of 1970-01-01T00:00:00Z
      * @param nanoOfSecond  the nanosecond within the second, from 0 to 999,999,999
-     * @param zoneId  the zone ID, not null
+     * @param zone  the time-zone, not null
      * @return the zoned date-time, not null
      * @throws DateTimeException if the result exceeds the supported range
      */
-    public static ZonedDateTime ofEpochSecond(long epochSecond, int nanoOfSecond, ZoneId zoneId) {
-        Objects.requireNonNull(zoneId, "zone");
-        return create(epochSecond, nanoOfSecond, zoneId);
+    public static ZonedDateTime ofEpochSecond(long epochSecond, int nanoOfSecond, ZoneId zone) {
+        Objects.requireNonNull(zone, "zone");
+        return create(epochSecond, nanoOfSecond, zone);
     }
 
     /**
