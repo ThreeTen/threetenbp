@@ -1128,7 +1128,7 @@ public final class LocalDate
      * @return the offset date-time formed from this date and the specified time, not null
      */
     public OffsetDateTime atTime(OffsetTime offsetTime) {
-        return OffsetDateTime.of(this, offsetTime);
+        return OffsetDateTime.of(this, offsetTime.getTime(), offsetTime.getOffset());
     }
 
     /**

@@ -399,27 +399,6 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_of_LocalDateOffsetTime() {
-        LocalDate date = LocalDate.of(2008, 6, 30);
-        OffsetTime time = OffsetTime.of(11, 30, 10, 500, OFFSET_PONE);
-        OffsetDateTime test = OffsetDateTime.of(date, time);
-        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_of_LocalDateOffsetTime_nullLocalDate() {
-        OffsetTime time = OffsetTime.of(11, 30, 10, 500, OFFSET_PONE);
-        OffsetDateTime.of((LocalDate) null, time);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_of_LocalDateOffsetTime_nullOffsetTime() {
-        LocalDate date = LocalDate.of(2008, 6, 30);
-        OffsetDateTime.of(date, (OffsetTime) null);
-    }
-
-    //-----------------------------------------------------------------------
     // ofEpochSecond()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})

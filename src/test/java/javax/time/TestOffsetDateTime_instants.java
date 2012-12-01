@@ -46,30 +46,6 @@ public class TestOffsetDateTime_instants {
     private static final ZoneOffset OFFSET_MIN = ZoneOffset.ofHours(-18);
 
     //-----------------------------------------------------------------------
-    private void check(OffsetDateTime test, int y, int mo, int d, int h, int m, int s, int n, ZoneOffset offset) {
-        assertEquals(test.getYear(), y);
-        assertEquals(test.getMonth().getValue(), mo);
-        assertEquals(test.getDayOfMonth(), d);
-        assertEquals(test.getHour(), h);
-        assertEquals(test.getMinute(), m);
-        assertEquals(test.getSecond(), s);
-        assertEquals(test.getNano(), n);
-        assertEquals(test.getOffset(), offset);
-    }
-
-    //-----------------------------------------------------------------------
-    public void factory_ofInstantUTC() {
-        Instant instant = Instant.ofEpochSecond(86400 + 5 * 3600 + 10 * 60 + 20);
-        OffsetDateTime test = OffsetDateTime.ofInstantUTC(instant);
-        check(test, 1970, 1, 2, 5, 10, 20, 0, ZoneOffset.UTC);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_ofInstantUTC_nullInstant() {
-        OffsetDateTime.ofInstantUTC((Instant) null);
-    }
-
-    //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_ofInstant_nullInstant() {
         OffsetDateTime.ofInstant((Instant) null, OFFSET_PONE);

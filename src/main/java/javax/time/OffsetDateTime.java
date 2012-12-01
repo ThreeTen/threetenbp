@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -295,6 +297,8 @@ public final class OffsetDateTime
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code OffsetDateTime} from a date, time and offset.
+     * <p>
+     * This creates an offset date-time with the specified local date, time and offset.
      *
      * @param date  the local date, not null
      * @param time  the local time, not null
@@ -307,19 +311,9 @@ public final class OffsetDateTime
     }
 
     /**
-     * Obtains an instance of {@code OffsetDateTime} from a local date and offset time.
-     *
-     * @param date  the local date, not null
-     * @param offsetTime  the offset time to use, not null
-     * @return the offset date-time, not null
-     */
-    public static OffsetDateTime of(LocalDate date, OffsetTime offsetTime) {
-        LocalDateTime dt = LocalDateTime.of(date, offsetTime.getTime());
-        return new OffsetDateTime(dt, offsetTime.getOffset());
-    }
-
-    /**
      * Obtains an instance of {@code OffsetDateTime} from a date-time and offset.
+     * <p>
+     * This creates an offset date-time with the specified local date-time and offset.
      *
      * @param dateTime  the local date-time, not null
      * @param offset  the zone offset, not null
@@ -329,56 +323,38 @@ public final class OffsetDateTime
         return new OffsetDateTime(dateTime, offset);
     }
 
-    //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code OffsetDateTime} from an {@code Instant}
-     * using the UTC offset.
+     * Obtains an instance of {@code OffsetDateTime} from a {@code ZonedDateTime}.
      * <p>
-     * The resulting date-time represents exactly the same instant on the time-line.
-     * Calling {@link #toInstant()} will return an instant equal to the one used here.
+     * This creates an offset date-time with the same local date-time and offset as
+     * the zoned date-time. The result will have the same instant as the input.
      *
-     * @param instant  the instant to create a date-time from, not null
-     * @return the offset date-time in UTC, not null
+     * @param zonedDateTime  the zoned date-time to convert from, not null
+     * @return the offset date-time, not null
      * @throws DateTimeException if the result exceeds the supported range
      */
-    public static OffsetDateTime ofInstantUTC(Instant instant) {
-        return ofInstant(instant, ZoneOffset.UTC);
+    public static OffsetDateTime of(ZonedDateTime zonedDateTime) {
+        Objects.requireNonNull(zonedDateTime, "zonedDateTime");
+        return new OffsetDateTime(zonedDateTime.getDateTime(), zonedDateTime.getOffset());
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code OffsetDateTime} from an {@code Instant} and offset.
+     * Obtains an instance of {@code OffsetDateTime} from an {@code Instant} and zone ID.
      * <p>
-     * The resulting date-time represents exactly the same instant on the time-line.
-     * Calling {@link #toInstant()} will return an instant equal to the one used here.
+     * This creates an offset date-time with the same instant as that specified.
+     * The result will have the same instant as the input.
      *
      * @param instant  the instant to create the date-time from, not null
-     * @param offset  the zone offset to use, not null
+     * @param offset  the zone offset, not null
      * @return the offset date-time, not null
      * @throws DateTimeException if the result exceeds the supported range
      */
     public static OffsetDateTime ofInstant(Instant instant, ZoneOffset offset) {
         Objects.requireNonNull(instant, "instant");
         Objects.requireNonNull(offset, "offset");
-        return create(instant.getEpochSecond(), instant.getNano(), offset);
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetDateTime} from an {@code Instant} and time-zone.
-     * <p>
-     * The resulting date-time represents exactly the same instant on the time-line.
-     * Calling {@link #toInstant()} will return an instant equal to the one used here.
-     * Converting an instant to a zoned date-time is simple as there is only one valid
-     * offset for each instant.
-     *
-     * @param instant  the instant to create the date-time from, not null
-     * @param zone  the time-zone to use, not null
-     * @return the offset date-time, not null
-     * @throws DateTimeException if the result exceeds the supported range
-     */
-    public static OffsetDateTime ofInstant(Instant instant, ZoneId zone) {
-        Objects.requireNonNull(instant, "instant");
-        Objects.requireNonNull(zone, "zone");
-        return create(instant.getEpochSecond(), instant.getNano(), zone.getRules().getOffset(instant));
+        LocalDateTime ldt = LocalDateTime.ofEpochSecond(instant.getEpochSecond(), instant.getNano(), offset);
+        return new OffsetDateTime(ldt, offset);
     }
 
     //-----------------------------------------------------------------------
@@ -389,9 +365,6 @@ public final class OffsetDateTime
      * This allows the {@link ChronoField#INSTANT_SECONDS epoch-second} field
      * to be converted to an offset date-time. This is primarily intended for
      * low-level conversions rather than general application usage.
-     * <p>
-     * The epoch-second is equivalent to an instant and there is only one valid
-     * offset for each instant.
      *
      * @param epochSecond  the number of seconds from the epoch of 1970-01-01T00:00:00Z
      * @param nanoOfSecond  the nanosecond within the second, from 0 to 999,999,999
@@ -400,22 +373,8 @@ public final class OffsetDateTime
      * @throws DateTimeException if the result exceeds the supported range
      */
     public static OffsetDateTime ofEpochSecond(long epochSecond, int nanoOfSecond, ZoneOffset offset) {
-        Objects.requireNonNull(offset, "offset");
-        return create(epochSecond, nanoOfSecond, offset);
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetDateTime} using seconds from the
-     * epoch of 1970-01-01T00:00:00Z.
-     *
-     * @param epochSecond  the number of seconds from the epoch of 1970-01-01T00:00:00Z
-     * @param nanoOfSecond  the nanosecond within the second, from 0 to 999,999,999
-     * @return the offset date-time, not null
-     * @throws DateTimeException if the result exceeds the supported range
-     */
-    static OffsetDateTime create(long epochSecond, int nanoOfSecond, ZoneOffset offset) {
-        LocalDateTime ldt = LocalDateTime.ofEpochSecond(epochSecond, nanoOfSecond, offset);
-        return new OffsetDateTime(ldt, offset);
+        NANO_OF_SECOND.checkValidValue(nanoOfSecond);
+        return ofInstant(Instant.ofEpochSecond(epochSecond, nanoOfSecond), offset);
     }
 
     //-----------------------------------------------------------------------

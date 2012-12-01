@@ -2241,7 +2241,7 @@ public final class DateTimeFormatterBuilder {
         public boolean print(DateTimePrintContext context, StringBuilder buf) {
             // TODO: implement this from INSTANT_SECONDS, handling big numbers
             Instant instant = Instant.from(context.getDateTime());
-            OffsetDateTime odt = OffsetDateTime.ofInstantUTC(instant);
+            OffsetDateTime odt = OffsetDateTime.ofInstant(instant, ZoneOffset.UTC);
             buf.append(odt);
             return true;
         }

@@ -495,7 +495,7 @@ public final class ZonedDateTime
     private static ZonedDateTime create(long epochSecond, int nanoOfSecond, ZoneId zone) {
         ZoneRules rules = zone.getRules();  // latest rules version
         Instant instant = Instant.ofEpochSecond(epochSecond, nanoOfSecond);  // TODO: rules should be queryable by epochSeconds
-        OffsetDateTime offsetDT = OffsetDateTime.create(epochSecond, nanoOfSecond, rules.getOffset(instant));
+        OffsetDateTime offsetDT = OffsetDateTime.ofInstant(instant, rules.getOffset(instant));
         return new ZonedDateTime(offsetDT, zone);
     }
 
