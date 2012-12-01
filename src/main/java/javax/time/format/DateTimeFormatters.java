@@ -41,9 +41,14 @@ import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
 import static javax.time.calendrical.ChronoField.SECOND_OF_MINUTE;
 import static javax.time.calendrical.ChronoField.YEAR;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
+import javax.time.ZoneId;
+import javax.time.ZoneOffset;
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.ISOWeeks;
 
@@ -320,16 +325,25 @@ public final class DateTimeFormatters {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the ISO date formatter that prints/parses a local date without
-     * an offset, such as '2011-12-03'.
+     * Returns the ISO date formatter that prints/parses a date without an offset,
+     * such as '2011-12-03'.
      * <p>
-     * This is the ISO-8601 extended format:<br />
-     * {@code yyyy-MM-dd}
-     * <p>
-     * The year will print 4 digits, unless this is insufficient, in which
-     * case the full year will be printed together with a positive/negative sign.
+     * This returns an immutable formatter capable of printing and parsing
+     * the ISO-8601 extended local date format.
+     * The format consists of:
+     * <p><ul>
+     * <li>Four digits or more for the {@link ChronoField#YEAR year}.
+     * Years in the range 0000 to 9999 will be pre-padded by zero to ensure four digits.
+     * Years outside that range will have a prefixed positive or negative symbol.
+     * <li>A dash
+     * <li>Two digits for the {@link ChronoField#MONTH_OF_YEAR month-of-year}.
+     *  This is pre-padded by zero to ensure two digits.
+     * <li>A dash
+     * <li>Two digits for the {@link ChronoField#DAY_OF_MONTH day-of-month}.
+     *  This is pre-padded by zero to ensure two digits.
+     * </ul><p>
      *
-     * @return the ISO date formatter, not null
+     * @return the ISO local date formatter, not null
      */
     public static DateTimeFormatter isoLocalDate() {
         return ISO_LOCAL_DATE;
@@ -349,19 +363,19 @@ public final class DateTimeFormatters {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the ISO date formatter that prints/parses an offset date with
-     * an offset, such as '2011-12-03+01:00'.
+     * Returns the ISO date formatter that prints/parses a date with an offset,
+     * such as '2011-12-03+01:00'.
      * <p>
-     * This is the ISO-8601 extended format:<br />
-     * {@code yyyy-MM-ddZZZ}
-     * <p>
-     * The year will print 4 digits, unless this is insufficient, in which
-     * case the full year will be printed together with a positive/negative sign.
-     * <p>
-     * The offset will print and parse an offset with seconds even though that
-     * is not part of the ISO-8601 standard.
+     * This returns an immutable formatter capable of printing and parsing
+     * the ISO-8601 extended offset date format.
+     * The format consists of:
+     * <p><ul>
+     * <li>The {@link #isoLocalDate()}
+     * <li>The {@link ZoneOffset#getId() offset ID}. If the offset has seconds then
+     *  they will be handled even though this is not part of the ISO-8601 standard.
+     * </ul><p>
      *
-     * @return the ISO date formatter, not null
+     * @return the ISO offset date formatter, not null
      */
     public static DateTimeFormatter isoOffsetDate() {
         return ISO_OFFSET_DATE;
@@ -371,7 +385,6 @@ public final class DateTimeFormatters {
     private static final DateTimeFormatter ISO_OFFSET_DATE;
     static {
         ISO_OFFSET_DATE = new DateTimeFormatterBuilder()
-            .parseCaseInsensitive()
             .append(ISO_LOCAL_DATE)
             .appendOffsetId()
             .toFormatter();
@@ -379,19 +392,20 @@ public final class DateTimeFormatters {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the ISO date formatter that prints/parses a date, with the
-     * offset and zone if available, such as '2011-12-03', '2011-12-03+01:00'
-     * or '2011-12-03+01:00[Europe/Paris]'.
+     * Returns the ISO date formatter that prints/parses a date with the
+     * offset if available, such as '2011-12-03' or '2011-12-03+01:00'.
      * <p>
-     * This is the ISO-8601 extended format:<br />
-     * {@code yyyy-MM-dd[ZZZ['['I']']]}
-     * <p>
-     * The year will print 4 digits, unless this is insufficient, in which
-     * case the full year will be printed together with a positive/negative sign.
-     * <p>
-     * The offset and time-zone IDs will be printed or parsed if present.
-     * The offset will print and parse an offset with seconds even though that
-     * is not part of the ISO-8601 standard.
+     * This returns an immutable formatter capable of printing and parsing
+     * the ISO-8601 extended date format.
+     * The format consists of:
+     * <p><ul>
+     * <li>The {@link #isoLocalDate()}
+     * <li>If the offset is not available to print/parse then the format is complete.
+     * <li>The {@link ZoneOffset#getId() offset ID}. If the offset has seconds then
+     *  they will be handled even though this is not part of the ISO-8601 standard.
+     * </ul><p>
+     * As this formatter has an optional element, it may be necessary to parse using
+     * {@link DateTimeFormatter#parseBest(CharSequence, Class...)}.
      *
      * @return the ISO date formatter, not null
      */
@@ -403,31 +417,37 @@ public final class DateTimeFormatters {
     private static final DateTimeFormatter ISO_DATE;
     static {
         ISO_DATE = new DateTimeFormatterBuilder()
-            .parseCaseInsensitive()
             .append(ISO_LOCAL_DATE)
             .optionalStart()
             .appendOffsetId()
-            .optionalStart()
-            .appendLiteral('[')
-            .appendZoneId()
-            .appendLiteral(']')
             .toFormatter();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the ISO time formatter that prints/parses a local time, without
-     * an offset such as '10:15:30'.
+     * Returns the ISO time formatter that prints/parses a time without an offset,
+     * such as '10:15' or '10:15:30'.
      * <p>
-     * This is the ISO-8601 extended format:<br />
-     * {@code HH:mm[:ss[.S]]}
-     * <p>
-     * The seconds will be printed if present in the input, thus a {@code LocalTime}
-     * will always print the seconds.
-     * The nanoseconds will be printed if non-zero.
-     * If non-zero, the minimum number of fractional second digits will printed.
+     * This returns an immutable formatter capable of printing and parsing
+     * the ISO-8601 extended local time format.
+     * The format consists of:
+     * <p><ul>
+     * <li>Two digits for the {@link ChronoField#HOUR_OF_DAY hour-of-day}.
+     *  This is pre-padded by zero to ensure two digits.
+     * <li>A colon
+     * <li>Two digits for the {@link ChronoField#MINUTE_OF_HOUR minute-of-hour}.
+     *  This is pre-padded by zero to ensure two digits.
+     * <li>If the second-of-minute is not available to print/parse then the format is complete.
+     * <li>A colon
+     * <li>Two digits for the {@link ChronoField#SECOND_OF_MINUTE second-of-minute}.
+     *  This is pre-padded by zero to ensure two digits.
+     * <li>If the nano-of-second is zero or not available to print/parse then the format is complete.
+     * <li>A decimal point
+     * <li>One to nine digits for the {@link ChronoField#NANO_OF_SECOND nano-of-second}.
+     *  As many digits will be printed as required.
+     * </ul><p>
      *
-     * @return the ISO time formatter, not null
+     * @return the ISO local time formatter, not null
      */
     public static DateTimeFormatter isoLocalTime() {
         return ISO_LOCAL_TIME;
@@ -450,21 +470,19 @@ public final class DateTimeFormatters {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the ISO time formatter that prints/parses a local time, with
-     * an offset such as '10:15:30+01:00'.
+     * Returns the ISO time formatter that prints/parses a time with an offset,
+     * such as '10:15+01:00' or '10:15:30+01:00'.
      * <p>
-     * This is the ISO-8601 extended format:<br />
-     * {@code HH:mm[:ss[.S]]ZZZ}
-     * <p>
-     * The seconds will be printed if present in the input, thus an {@code OffsetTime}
-     * will always print the seconds.
-     * The nanoseconds will be printed if non-zero.
-     * If non-zero, the minimum number of fractional second digits will printed.
-     * <p>
-     * The offset will print and parse an offset with seconds even though that
-     * is not part of the ISO-8601 standard.
+     * This returns an immutable formatter capable of printing and parsing
+     * the ISO-8601 extended offset time format.
+     * The format consists of:
+     * <p><ul>
+     * <li>The {@link #isoLocalTime()}
+     * <li>The {@link ZoneOffset#getId() offset ID}. If the offset has seconds then
+     *  they will be handled even though this is not part of the ISO-8601 standard.
+     * </ul><p>
      *
-     * @return the ISO time formatter, not null
+     * @return the ISO offset time formatter, not null
      */
     public static DateTimeFormatter isoOffsetTime() {
         return ISO_OFFSET_TIME;
@@ -474,7 +492,6 @@ public final class DateTimeFormatters {
     private static final DateTimeFormatter ISO_OFFSET_TIME;
     static {
         ISO_OFFSET_TIME = new DateTimeFormatterBuilder()
-            .parseCaseInsensitive()
             .append(ISO_LOCAL_TIME)
             .appendOffsetId()
             .toFormatter();
@@ -483,22 +500,21 @@ public final class DateTimeFormatters {
     //-----------------------------------------------------------------------
     /**
      * Returns the ISO time formatter that prints/parses a time, with the
-     * offset and zone if available, such as '10:15:30', '10:15:30+01:00'
-     * or '10:15:30+01:00[Europe/Paris]'.
+     * offset if available, such as '10:15', '10:15:30' or '10:15:30+01:00'.
      * <p>
-     * This is the ISO-8601 extended format:<br />
-     * {@code HH:mm[:ss[.S]][ZZZ['['I']']]}
-     * <p>
-     * The seconds will be printed if present in the input, thus a {@code LocalTime}
-     * will always print the seconds.
-     * The nanoseconds will be printed if non-zero.
-     * If non-zero, the minimum number of fractional second digits will printed.
-     * <p>
-     * The offset and time-zone IDs will be printed or parsed if present.
-     * The offset will print and parse an offset with seconds even though that
-     * is not part of the ISO-8601 standard.
+     * This returns an immutable formatter capable of printing and parsing
+     * the ISO-8601 extended offset time format.
+     * The format consists of:
+     * <p><ul>
+     * <li>The {@link #isoLocalTime()}
+     * <li>If the offset is not available to print/parse then the format is complete.
+     * <li>The {@link ZoneOffset#getId() offset ID}. If the offset has seconds then
+     *  they will be handled even though this is not part of the ISO-8601 standard.
+     * </ul><p>
+     * As this formatter has an optional element, it may be necessary to parse using
+     * {@link DateTimeFormatter#parseBest(CharSequence, Class...)}.
      *
-     * @return the ISO date formatter, not null
+     * @return the ISO time formatter, not null
      */
     public static DateTimeFormatter isoTime() {
         return ISO_TIME;
@@ -508,34 +524,27 @@ public final class DateTimeFormatters {
     private static final DateTimeFormatter ISO_TIME;
     static {
         ISO_TIME = new DateTimeFormatterBuilder()
-            .parseCaseInsensitive()
             .append(ISO_LOCAL_TIME)
             .optionalStart()
             .appendOffsetId()
-            .optionalStart()
-            .appendLiteral('[')
-            .appendZoneId()
-            .appendLiteral(']')
             .toFormatter();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the ISO date formatter that prints/parses a local date without
-     * an offset, such as '2011-12-03T10:15:30'.
+     * Returns the ISO date formatter that prints/parses a date-time
+     * without an offset, such as '2011-12-03T10:15:30'.
      * <p>
-     * This is the ISO-8601 extended format:<br />
-     * {@code yyyy-MM-dd'T'HH:mm[:ss[.S]]}
-     * <p>
-     * The year will print 4 digits, unless this is insufficient, in which
-     * case the full year will be printed together with a positive/negative sign.
-     * <p>
-     * The seconds will be printed if present in the input, thus a {@code LocalDateTime}
-     * will always print the seconds.
-     * The nanoseconds will be printed if non-zero.
-     * If non-zero, the minimum number of fractional second digits will printed.
+     * This returns an immutable formatter capable of printing and parsing
+     * the ISO-8601 extended offset date-time format.
+     * The format consists of:
+     * <p><ul>
+     * <li>The {@link #isoLocalDate()}
+     * <li>The letter 'T'. Parsing is case insensitive.
+     * <li>The {@link #isoLocalTime()}
+     * </ul><p>
      *
-     * @return the ISO date formatter, not null
+     * @return the ISO local date-time formatter, not null
      */
     public static DateTimeFormatter isoLocalDateTime() {
         return ISO_LOCAL_DATE_TIME;
@@ -554,24 +563,19 @@ public final class DateTimeFormatters {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the ISO date formatter that prints/parses an offset date with
-     * an offset, such as '2011-12-03T10:15:30+01:00'.
+     * Returns the ISO date formatter that prints/parses a date-time
+     * with an offset, such as '2011-12-03T10:15:30+01:00'.
      * <p>
-     * This is the ISO-8601 extended format:<br />
-     * {@code yyyy-MM-dd'T'HH:mm[:ss[.S]]ZZZ}
-     * <p>
-     * The year will print 4 digits, unless this is insufficient, in which
-     * case the full year will be printed together with a positive/negative sign.
-     * <p>
-     * The seconds will be printed if present in the input, thus an {@code OffsetDateTime}
-     * will always print the seconds.
-     * The nanoseconds will be printed if non-zero.
-     * If non-zero, the minimum number of fractional second digits will printed.
-     * <p>
-     * The offset will print and parse an offset with seconds even though that
-     * is not part of the ISO-8601 standard.
+     * This returns an immutable formatter capable of printing and parsing
+     * the ISO-8601 extended offset date-time format.
+     * The format consists of:
+     * <p><ul>
+     * <li>The {@link #isoLocalDateTime()}
+     * <li>The {@link ZoneOffset#getId() offset ID}. If the offset has seconds then
+     *  they will be handled even though this is not part of the ISO-8601 standard.
+     * </ul><p>
      *
-     * @return the ISO date formatter, not null
+     * @return the ISO offset date-time formatter, not null
      */
     public static DateTimeFormatter isoOffsetDateTime() {
         return ISO_OFFSET_DATE_TIME;
@@ -588,24 +592,21 @@ public final class DateTimeFormatters {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the ISO date formatter that prints/parses an offset date with
-     * a zone, such as '2011-12-03T10:15:30+01:00[Europe/Paris]'.
+     * Returns the ISO date formatter that prints/parses a date-time with
+     * offset and zone, such as '2011-12-03T10:15:30+01:00[Europe/Paris]'.
      * <p>
-     * This is the ISO-8601 extended format:<br />
-     * {@code yyyy-MM-dd'T'HH:mm[:ss[.S]]ZZZ'['I']'}
-     * <p>
-     * The year will print 4 digits, unless this is insufficient, in which
-     * case the full year will be printed together with a positive/negative sign.
-     * <p>
-     * The seconds will be printed if present in the input, thus a {@code ZonedDateTime}
-     * will always print the seconds.
-     * The nanoseconds will be printed if non-zero.
-     * If non-zero, the minimum number of fractional second digits will printed.
-     * <p>
-     * The offset will print and parse an offset with seconds even though that
-     * is not part of the ISO-8601 standard.
+     * This returns an immutable formatter capable of printing and parsing
+     * a format that extends the ISO-8601 extended offset date-time format
+     * to add the time-zone.
+     * The format consists of:
+     * <p><ul>
+     * <li>The {@link #isoOffsetDateTime()}
+     * <li>An open square bracket '['.
+     * <li>The {@link ZoneId#getId() zone ID}. This is not part of the ISO-8601 standard.
+     * <li>A close square bracket ']'.
+     * </ul><p>
      *
-     * @return the ISO date formatter, not null
+     * @return the ISO zoned date-time formatter, not null
      */
     public static DateTimeFormatter isoZonedDateTime() {
         return ISO_ZONED_DATE_TIME;
@@ -615,9 +616,8 @@ public final class DateTimeFormatters {
     private static final DateTimeFormatter ISO_ZONED_DATE_TIME;
     static {
         ISO_ZONED_DATE_TIME = new DateTimeFormatterBuilder()
-            .append(ISO_LOCAL_DATE_TIME)
-            .appendOffsetId()
-            .optionalStart()
+            .append(ISO_OFFSET_DATE_TIME)
+            .optionalStart()  // TODO: remove
             .appendLiteral('[')
             .appendZoneId()
             .appendLiteral(']')
@@ -626,26 +626,28 @@ public final class DateTimeFormatters {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the ISO date formatter that prints/parses a date, with the
-     * offset and zone if available, such as '2011-12-03T10:15:30',
+     * Returns the ISO date formatter that prints/parses a date-time
+     * with the offset and zone if available, such as '2011-12-03T10:15:30',
      * '2011-12-03T10:15:30+01:00' or '2011-12-03T10:15:30+01:00[Europe/Paris]'.
      * <p>
-     * This is the ISO-8601 extended format:<br />
-     * {@code yyyy-MM-dd'T'HH:mm[:ss[.S]][ZZZ['['I']']]}
-     * <p>
-     * The year will print 4 digits, unless this is insufficient, in which
-     * case the full year will be printed together with a positive/negative sign.
-     * <p>
-     * The seconds will be printed if present in the input, thus a {@code ZonedDateTime}
-     * will always print the seconds.
-     * The nanoseconds will be printed if non-zero.
-     * If non-zero, the minimum number of fractional second digits will printed.
-     * <p>
-     * The offset and time-zone IDs will be printed or parsed if present.
-     * The offset will print and parse an offset with seconds even though that
-     * is not part of the ISO-8601 standard.
+     * This returns an immutable formatter capable of printing and parsing
+     * the ISO-8601 extended offset date-time format.
+     * The format consists of:
+     * <p><ul>
+     * <li>The {@link #isoLocalDateTime()}
+     * <li>The letter 'T'. Parsing is case insensitive.
+     * <li>If the offset is not available to print/parse then the format is complete.
+     * <li>The {@link ZoneOffset#getId() offset ID}. If the offset has seconds then
+     *  they will be handled even though this is not part of the ISO-8601 standard.
+     * <li>If the zone is not available to print/parse then the format is complete.
+     * <li>An open square bracket '['.
+     * <li>The {@link ZoneId#getId() zone ID}. This is not part of the ISO-8601 standard.
+     * <li>A close square bracket ']'.
+     * </ul><p>
+     * As this formatter has an optional element, it may be necessary to parse using
+     * {@link DateTimeFormatter#parseBest(CharSequence, Class...)}.
      *
-     * @return the ISO date formatter, not null
+     * @return the ISO date-time formatter, not null
      */
     public static DateTimeFormatter isoDateTime() {
         return ISO_DATE_TIME;
@@ -667,17 +669,25 @@ public final class DateTimeFormatters {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the ISO date formatter that prints/parses a date without an offset.
+     * Returns the ISO date formatter that prints/parses the ordinal date
+     * without an offset, such as '2012-337'.
      * <p>
-     * This is the ISO-8601 extended format:<br />
-     * {@code yyyy-DDD[ZZZ['['I']']]}
-     * <p>
-     * The year will print 4 digits, unless this is insufficient, in which
-     * case the full year will be printed together with a positive/negative sign.
-     * <p>
-     * The offset and time-zone IDs will be printed or parsed if present.
-     * The offset will print and parse an offset with seconds even though that
-     * is not part of the ISO-8601 standard.
+     * This returns an immutable formatter capable of printing and parsing
+     * the ISO-8601 extended ordinal date format.
+     * The format consists of:
+     * <p><ul>
+     * <li>Four digits or more for the {@link ChronoField#YEAR year}.
+     * Years in the range 0000 to 9999 will be pre-padded by zero to ensure four digits.
+     * Years outside that range will have a prefixed positive or negative symbol.
+     * <li>A dash
+     * <li>Three digits for the {@link ChronoField#DAY_OF_YEAR day-of-year}.
+     *  This is pre-padded by zero to ensure three digits.
+     * <li>If the offset is not available to print/parse then the format is complete.
+     * <li>The {@link ZoneOffset#getId() offset ID}. If the offset has seconds then
+     *  they will be handled even though this is not part of the ISO-8601 standard.
+     * </ul><p>
+     * As this formatter has an optional element, it may be necessary to parse using
+     * {@link DateTimeFormatter#parseBest(CharSequence, Class...)}.
      *
      * @return the ISO ordinal date formatter, not null
      */
@@ -689,34 +699,41 @@ public final class DateTimeFormatters {
     private static final DateTimeFormatter ISO_ORDINAL_DATE;
     static {
         ISO_ORDINAL_DATE = new DateTimeFormatterBuilder()
-            .parseCaseInsensitive()
             .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
             .appendLiteral('-')
             .appendValue(DAY_OF_YEAR, 3)
             .optionalStart()
             .appendOffsetId()
-            .optionalStart()
-            .appendLiteral('[')
-            .appendZoneId()
-            .appendLiteral(']')
             .toFormatter();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the ISO date formatter that prints/parses a date without an offset.
+     * Returns the ISO date formatter that prints/parses the week-based date
+     * without an offset, such as '2012-W48-6'.
      * <p>
-     * This is the ISO-8601 extended format:<br />
-     * {@code yyyy-Www-D[ZZZ['['I']']]}
-     * <p>
-     * The year will print 4 digits, unless this is insufficient, in which
-     * case the full year will be printed together with a positive/negative sign.
-     * <p>
-     * The offset and time-zone IDs will be printed or parsed if present.
-     * The offset will print and parse an offset with seconds even though that
-     * is not part of the ISO-8601 standard.
+     * This returns an immutable formatter capable of printing and parsing
+     * the ISO-8601 extended week-based date format.
+     * The format consists of:
+     * <p><ul>
+     * <li>Four digits or more for the {@link ISOWeeks#WEEK_BASED_YEAR week-based-year}.
+     * Years in the range 0000 to 9999 will be pre-padded by zero to ensure four digits.
+     * Years outside that range will have a prefixed positive or negative symbol.
+     * <li>A dash
+     * <li>The letter 'W'. Parsing is case insensitive.
+     * <li>Two digits for the {@link ISOWeeks#WEEK_OF_WEEK_BASED_YEAR week-of-week-based-year}.
+     *  This is pre-padded by zero to ensure three digits.
+     * <li>A dash
+     * <li>One digit for the {@link ChronoField#DAY_OF_WEEK day-of-week}.
+     *  The value run from Monday (1) to Sunday (7).
+     * <li>If the offset is not available to print/parse then the format is complete.
+     * <li>The {@link ZoneOffset#getId() offset ID}. If the offset has seconds then
+     *  they will be handled even though this is not part of the ISO-8601 standard.
+     * </ul><p>
+     * As this formatter has an optional element, it may be necessary to parse using
+     * {@link DateTimeFormatter#parseBest(CharSequence, Class...)}.
      *
-     * @return the ISO week date formatter, not null
+     * @return the ISO week-based date formatter, not null
      */
     public static DateTimeFormatter isoWeekDate() {
         return ISO_WEEK_DATE;
@@ -734,10 +751,6 @@ public final class DateTimeFormatters {
             .appendValue(DAY_OF_WEEK, 1)
             .optionalStart()
             .appendOffsetId()
-            .optionalStart()
-            .appendLiteral('[')
-            .appendZoneId()
-            .appendLiteral(']')
             .toFormatter();
     }
 
@@ -745,14 +758,14 @@ public final class DateTimeFormatters {
     /**
      * Returns the ISO instant formatter that prints/parses an instant in UTC.
      * <p>
-     * This is the ISO-8601 extended format:<br />
-     * {@code yyyy-MM-dd'T'HH:mm:ss.SZZZ}
-     * <p>
-     * The year will print 4 digits, unless this is insufficient, in which
-     * case the full year will be printed together with a positive/negative sign.
-     * <p>
-     * The offset will print and parse an offset with seconds even though that
-     * is not part of the ISO-8601 standard.
+     * This returns an immutable formatter capable of printing and parsing
+     * the ISO-8601 instant format.
+     * The format consists of:
+     * <p><ul>
+     * <li>The {@link #isoOffsetDateTime()} where the instant is converted from
+     *  {@link ChronoField#INSTANT_SECONDS} and {@link ChronoField#NANO_OF_SECOND}
+     *  using the {@code UTC} offset.
+     * </ul><p>
      *
      * @return the ISO instant formatter, not null
      */
@@ -771,15 +784,27 @@ public final class DateTimeFormatters {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the ISO date formatter that prints/parses a date without an offset.
+     * Returns the ISO date formatter that prints/parses a date without an offset,
+     * such as '20111203'.
      * <p>
-     * This is the ISO-8601 extended format:<br />
-     * {@code yyyyMMdd}
-     * <p>
-     * The year is limited to printing and parsing 4 digits, as the lack of
-     * separators makes it impossible to parse more than 4 digits.
+     * This returns an immutable formatter capable of printing and parsing
+     * the ISO-8601 basic local date format.
+     * The format consists of:
+     * <p><ul>
+     * <li>Four digits for the {@link ChronoField#YEAR year}.
+     *  Only years in the range 0000 to 9999 are supported.
+     * <li>Two digits for the {@link ChronoField#MONTH_OF_YEAR month-of-year}.
+     *  This is pre-padded by zero to ensure two digits.
+     * <li>Two digits for the {@link ChronoField#DAY_OF_MONTH day-of-month}.
+     *  This is pre-padded by zero to ensure two digits.
+     * <li>If the offset is not available to print/parse then the format is complete.
+     * <li>The {@link ZoneOffset#getId() offset ID} without colons. If the offset has
+     *  seconds then they will be handled even though this is not part of the ISO-8601 standard.
+     * </ul><p>
+     * As this formatter has an optional element, it may be necessary to parse using
+     * {@link DateTimeFormatter#parseBest(CharSequence, Class...)}.
      *
-     * @return the ISO date formatter, not null
+     * @return the ISO basic local date formatter, not null
      */
     public static DateTimeFormatter basicIsoDate() {
         return BASIC_ISO_DATE;
@@ -794,24 +819,49 @@ public final class DateTimeFormatters {
             .appendValue(MONTH_OF_YEAR, 2)
             .appendValue(DAY_OF_MONTH, 2)
             .optionalStart()
-            .appendOffset("Z", "+HHMM")
-            .optionalStart()
-            .appendLiteral('[')
-            .appendZoneId()
-            .appendLiteral(']')
+            .appendOffset("Z", "+HHMMss")
             .toFormatter();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the RFC-1123 date-time formatter.
+     * Returns the RFC-1123 date-time formatter, such as 'Tue, 3 Jun 2008 11:05:30 GMT'.
      * <p>
-     * This is the RFC-1123 format: EEE, dd MMM yyyy HH:mm:ss Z.
-     * This is the updated replacement for RFC-822 which had a two digit year.
+     * This returns an immutable formatter capable of printing and parsing
+     * most of the RFC-1123 format.
+     * RFC-1123 updates RFC-822 changing the year from two digits to four.
+     * This implementation requires a four digit year.
+     * This implementation also does not handle North American or military zone
+     * names, only 'GMT' and offset amounts.
      * <p>
-     * The year will print 4 digits, and only the range 0000 to 9999 is supported.
+     * The format consists of:
+     * <p><ul>
+     * <li>If the day-of-week is not available to print/parse then jump to day-of-month.
+     * <li>Three letter {@link ChronoField#DAY_OF_WEEK day-of-week} in English.
+     * <li>A comma
+     * <li>A space
+     * <li>One or two digits for the {@link ChronoField#DAY_OF_MONTH day-of-month}.
+     * <li>A space
+     * <li>Three letter {@link ChronoField#MONTH_OF_YEAR month-of-year} in English.
+     * <li>A space
+     * <li>Four digits for the {@link ChronoField#YEAR year}.
+     *  Only years in the range 0000 to 9999 are supported.
+     * <li>A space
+     * <li>Two digits for the {@link ChronoField#HOUR_OF_DAY hour-of-day}.
+     *  This is pre-padded by zero to ensure two digits.
+     * <li>A colon
+     * <li>Two digits for the {@link ChronoField#MINUTE_OF_HOUR minute-of-hour}.
+     *  This is pre-padded by zero to ensure two digits.
+     * <li>If the second-of-minute is not available to print/parse then jump to the next space.
+     * <li>A colon
+     * <li>Two digits for the {@link ChronoField#SECOND_OF_MINUTE second-of-minute}.
+     *  This is pre-padded by zero to ensure two digits.
+     * <li>A space
+     * <li>The {@link ZoneOffset#getId() offset ID} without colons or seconds.
+     *  An offset of zero uses "GMT". North American zone names and military zone names are not handled.
+     * </ul><p>
      *
-     * @return the ISO date formatter, not null
+     * @return the RFC-1123 formatter, not null
      */
     public static DateTimeFormatter rfc1123() {
         return RFC_1123_DATE_TIME;
@@ -820,24 +870,52 @@ public final class DateTimeFormatters {
     /** Singleton date formatter. */
     private static final DateTimeFormatter RFC_1123_DATE_TIME;
     static {
+        // manually code maps to ensure correct data always used
+        // (locale data can be changed by application code)
+        Map<Long, String> dow = new HashMap<Long, String>();
+        dow.put(1L, "Mon");
+        dow.put(2L, "Tue");
+        dow.put(3L, "Wed");
+        dow.put(4L, "Thu");
+        dow.put(5L, "Fri");
+        dow.put(6L, "Sat");
+        dow.put(7L, "Sun");
+        Map<Long, String> moy = new HashMap<Long, String>();
+        moy.put(1L, "Jan");
+        moy.put(2L, "Feb");
+        moy.put(3L, "Mar");
+        moy.put(4L, "Apr");
+        moy.put(5L, "May");
+        moy.put(6L, "Jun");
+        moy.put(7L, "Jul");
+        moy.put(8L, "Aug");
+        moy.put(9L, "Sep");
+        moy.put(10L, "Oct");
+        moy.put(11L, "Nov");
+        moy.put(12L, "Dec");
         RFC_1123_DATE_TIME = new DateTimeFormatterBuilder()
-            .appendText(DAY_OF_WEEK, TextStyle.SHORT)
+            .parseCaseInsensitive()
+            .parseLenient()
+            .optionalStart()
+            .appendText(DAY_OF_WEEK, dow)
             .appendLiteral(", ")
-            .appendValue(DAY_OF_MONTH, 2)
+            .optionalEnd()
+            .appendValue(DAY_OF_MONTH, 1, 2, SignStyle.NOT_NEGATIVE)
             .appendLiteral(' ')
-            .appendText(MONTH_OF_YEAR, TextStyle.SHORT)
+            .appendText(MONTH_OF_YEAR, moy)
             .appendLiteral(' ')
-            .appendValue(YEAR, 4, 4, SignStyle.NOT_NEGATIVE)
+            .appendValue(YEAR, 4)  // 2 digit year not handled
             .appendLiteral(' ')
             .appendValue(HOUR_OF_DAY, 2)
             .appendLiteral(':')
             .appendValue(MINUTE_OF_HOUR, 2)
+            .optionalStart()
             .appendLiteral(':')
             .appendValue(SECOND_OF_MINUTE, 2)
+            .optionalEnd()
             .appendLiteral(' ')
-            .appendOffset("Z", "+HHMM")
-            .toFormatter()
-            .withLocale(Locale.ENGLISH);
+            .appendOffset("GMT", "+HHMM")  // should handle UT/Z/EST/EDT/CST/CDT/MST/MDT/PST/MDT
+            .toFormatter();
     }
 
     //-------------------------------------------------------------------------
