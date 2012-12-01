@@ -53,7 +53,6 @@ import javax.time.format.DateTimeParseException;
 import javax.time.jdk8.DefaultInterfaceChronoOffsetDateTime;
 import javax.time.zone.ZoneResolver;
 import javax.time.zone.ZoneResolvers;
-import javax.time.zone.ZoneRules;
 
 /**
  * A date-time with an offset from UTC/Greenwich in the ISO-8601 calendar system,
@@ -1285,34 +1284,6 @@ public final class OffsetDateTime
      */
     public OffsetDateTime minusNanos(long nanos) {
         return (nanos == Long.MIN_VALUE ? plusNanos(Long.MAX_VALUE).plusNanos(1) : plusNanos(-nanos));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Resolves this date-time against the specified time-zone updating the offset.
-     * <p>
-     * The resolution will return an {@code OffsetDateTime} based on this one
-     * with the offset resolved to be valid for the time-zone.
-     * The offset selected is the offset that is valid at the instant that this
-     * date-time represents.
-     * <p>
-     * This method can be used to manage time-zones without using {@link ZonedDateTime}.
-     * Simply create an {@code OffsetDateTime} from an instant and resolve the offset
-     * using this method to be accurate. After every calculation, the date-time must
-     * be re-resolved to ensure that the offset is always correct for the zone.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param zone  the time-zone to use to resolve the offset, not null
-     * @return an {@code OffsetDateTime} based on this date-time with the correct offset for the zone, not null
-     * @throws ArithmeticException if numeric overflow occurs
-     */
-    public OffsetDateTime resolveOffset(ZoneId zone) {
-        ZoneRules rules = zone.getRules();
-        if (rules.isValidOffset(dateTime, offset)) {  // avoids toInstant()
-            return this;
-        }
-        return withOffsetSameInstant(rules.getOffset(toInstant()));
     }
 
     //-----------------------------------------------------------------------
