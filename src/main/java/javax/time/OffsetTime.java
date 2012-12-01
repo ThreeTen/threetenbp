@@ -57,6 +57,7 @@ import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
 import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
+import javax.time.zone.ZoneRules;
 
 /**
  * A time with an offset from UTC/Greenwich in the ISO-8601 calendar system,
@@ -205,19 +206,25 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code OffsetTime} from an {@code Instant}.
+     * Obtains an instance of {@code OffsetTime} from an {@code Instant} and zone ID.
+     * <p>
+     * This creates an offset time with the same instant as that specified.
+     * Finding the offset from UTC/Greenwich is simple as there is only one valid
+     * offset for each instant.
      * <p>
      * The date component of the instant is dropped during the conversion.
      * This means that the conversion can never fail due to the instant being
      * out of the valid range of dates.
      *
      * @param instant  the instant to create the time from, not null
-     * @param offset  the zone offset to use, not null
+     * @param zone  the time-zone, which may be an offset, not null
      * @return the offset time, not null
      */
-    public static OffsetTime ofInstant(Instant instant, ZoneOffset offset) {
+    public static OffsetTime ofInstant(Instant instant, ZoneId zone) {
         Objects.requireNonNull(instant, "instant");
-        Objects.requireNonNull(offset, "offset");
+        Objects.requireNonNull(zone, "zone");
+        ZoneRules rules = zone.getRules();
+        ZoneOffset offset = rules.getOffset(instant);
         long secsOfDay = instant.getEpochSecond() % SECONDS_PER_DAY;
         secsOfDay = (secsOfDay + offset.getTotalSeconds()) % SECONDS_PER_DAY;
         if (secsOfDay < 0) {

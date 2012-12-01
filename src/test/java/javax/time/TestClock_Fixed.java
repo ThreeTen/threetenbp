@@ -51,11 +51,11 @@ public class TestClock_Fixed {
 
     private static final ZoneId MOSCOW = ZoneId.of("Europe/Moscow");
     private static final ZoneId PARIS = ZoneId.of("Europe/Paris");
-    private static final Instant INSTANT = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, ZoneOffset.ofHours(2)).toInstant();
+    private static final Instant INSTANT = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500).atZone(ZoneOffset.ofHours(2)).toInstant();
 
     //-----------------------------------------------------------------------
     public void test_fixed_isSerializable() throws IOException, ClassNotFoundException {
-        Clock fixed = Clock.fixed(INSTANT, ZoneId.UTC);
+        Clock fixed = Clock.fixed(INSTANT, ZoneOffset.UTC);
         assertEquals(fixed instanceof Serializable, true);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -71,7 +71,7 @@ public class TestClock_Fixed {
     public void test_fixedUTC() {
         Clock fixed = Clock.fixedUTC(INSTANT);
         assertEquals(fixed.instant(), INSTANT);
-        assertEquals(fixed.getZone(), ZoneId.UTC);
+        assertEquals(fixed.getZone(), ZoneOffset.UTC);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -111,8 +111,8 @@ public class TestClock_Fixed {
 
     //-----------------------------------------------------------------------
     public void test_fixed_equals() {
-        Clock a = Clock.fixed(INSTANT, ZoneId.UTC);
-        Clock b = Clock.fixed(INSTANT, ZoneId.UTC);
+        Clock a = Clock.fixed(INSTANT, ZoneOffset.UTC);
+        Clock b = Clock.fixed(INSTANT, ZoneOffset.UTC);
         assertEquals(a.equals(a), true);
         assertEquals(a.equals(b), true);
         assertEquals(b.equals(a), true);
@@ -121,7 +121,7 @@ public class TestClock_Fixed {
         Clock c = Clock.fixed(INSTANT, PARIS);
         assertEquals(a.equals(c), false);
 
-        Clock d = Clock.fixed(INSTANT.minusNanos(1), ZoneId.UTC);
+        Clock d = Clock.fixed(INSTANT.minusNanos(1), ZoneOffset.UTC);
         assertEquals(a.equals(d), false);
 
         assertEquals(a.equals(null), false);
@@ -130,15 +130,15 @@ public class TestClock_Fixed {
     }
 
     public void test_fixed_hashCode() {
-        Clock a = Clock.fixed(INSTANT, ZoneId.UTC);
-        Clock b = Clock.fixed(INSTANT, ZoneId.UTC);
+        Clock a = Clock.fixed(INSTANT, ZoneOffset.UTC);
+        Clock b = Clock.fixed(INSTANT, ZoneOffset.UTC);
         assertEquals(a.hashCode(), a.hashCode());
         assertEquals(a.hashCode(), b.hashCode());
 
         Clock c = Clock.fixed(INSTANT, PARIS);
         assertEquals(a.hashCode() == c.hashCode(), false);
 
-        Clock d = Clock.fixed(INSTANT.minusNanos(1), ZoneId.UTC);
+        Clock d = Clock.fixed(INSTANT.minusNanos(1), ZoneOffset.UTC);
         assertEquals(a.hashCode() == d.hashCode(), false);
     }
 

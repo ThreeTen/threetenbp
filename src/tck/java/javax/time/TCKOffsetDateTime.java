@@ -67,15 +67,9 @@ import static javax.time.calendrical.ChronoField.YEAR_OF_ERA;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -88,12 +82,9 @@ import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.JulianDayField;
 import javax.time.calendrical.MockFieldNoValue;
-import javax.time.calendrical.MockZoneResolverReturnsNull;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
-import javax.time.zone.ZoneResolver;
-import javax.time.zone.ZoneResolvers;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -174,30 +165,18 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         return list;
     }
 
+    //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_serialization() throws IOException, ClassNotFoundException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(TEST_2008_6_30_11_30_59_000000500);
-        oos.close();
-
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
-                baos.toByteArray()));
-        assertEquals(ois.readObject(), TEST_2008_6_30_11_30_59_000000500);
+    public void test_serialization() throws ClassNotFoundException, IOException {
+        assertSerializable(TEST_2008_6_30_11_30_59_000000500);
     }
 
     @Test(groups={"tck"})
-    public void test_immutable() {
-        Class<OffsetDateTime> cls = OffsetDateTime.class;
-        assertTrue(Modifier.isPublic(cls.getModifiers()));
-        assertTrue(Modifier.isFinal(cls.getModifiers()));
-        Field[] fields = cls.getDeclaredFields();
-        for (Field field : fields) {
-            if (field.getName().contains("$") == false) {
-                assertTrue(Modifier.isPrivate(field.getModifiers()));
-                assertTrue(Modifier.isFinal(field.getModifiers()));
-            }
-        }
+    public void test_serialization_format() throws ClassNotFoundException, IOException {
+        LocalDate date = LocalDate.of(2012, 9, 16);
+        LocalTime time = LocalTime.of(22, 17, 59, 464 * 1000000);
+        ZoneOffset offset = ZoneOffset.of("+01:00");
+        assertEqualsSerialisedForm(OffsetDateTime.of(date, time, offset));
     }
 
     //-----------------------------------------------------------------------
@@ -224,7 +203,7 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
     public void now_Clock_allSecsInDay_utc() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSecond(i).plusNanos(123456789L);
-            Clock clock = Clock.fixed(instant, ZoneId.UTC);
+            Clock clock = Clock.fixed(instant, ZoneOffset.UTC);
             OffsetDateTime test = OffsetDateTime.now(clock);
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonth(), Month.JANUARY);
@@ -241,7 +220,7 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
     public void now_Clock_allSecsInDay_offset() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSecond(i).plusNanos(123456789L);
-            Clock clock = Clock.fixed(instant.minusSeconds(OFFSET_PONE.getTotalSeconds()), ZoneId.of(OFFSET_PONE));
+            Clock clock = Clock.fixed(instant.minusSeconds(OFFSET_PONE.getTotalSeconds()), OFFSET_PONE);
             OffsetDateTime test = OffsetDateTime.now(clock);
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonth(), Month.JANUARY);
@@ -259,7 +238,7 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         LocalTime expected = LocalTime.MIDNIGHT.plusNanos(123456789L);
         for (int i =-1; i >= -(24 * 60 * 60); i--) {
             Instant instant = Instant.ofEpochSecond(i).plusNanos(123456789L);
-            Clock clock = Clock.fixed(instant, ZoneId.UTC);
+            Clock clock = Clock.fixed(instant, ZoneOffset.UTC);
             OffsetDateTime test = OffsetDateTime.now(clock);
             assertEquals(test.getYear(), 1969);
             assertEquals(test.getMonth(), Month.DECEMBER);
@@ -275,7 +254,7 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         OffsetDateTime base = OffsetDateTime.of(1970, 1, 1, 12, 0, ZoneOffset.UTC);
         for (int i = -9; i < 15; i++) {
             ZoneOffset offset = ZoneOffset.ofHours(i);
-            Clock clock = Clock.fixed(base.toInstant(), ZoneId.of(offset));
+            Clock clock = Clock.fixed(base.toInstant(), offset);
             OffsetDateTime test = OffsetDateTime.now(clock);
             assertEquals(test.getHour(), (12 + i) % 24);
             assertEquals(test.getMinute(), 0);
@@ -430,12 +409,12 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void factory_ofEpochSecond_badNanos_toBig() {
+    public void factory_ofEpochSecond_badNanos_tooBig() {
         OffsetDateTime.ofEpochSecond(0, 1_000_000_000, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void factory_ofEpochSecond_badNanos_toSmall() {
+    public void factory_ofEpochSecond_badNanos_tooSmall() {
         OffsetDateTime.ofEpochSecond(0, -1, OFFSET_PONE);
     }
 
@@ -1060,14 +1039,16 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_atZone_dstOverlapSummer() {
         OffsetDateTime t = OffsetDateTime.of(2007, 10, 28, 2, 30, OFFSET_PTWO);
-        assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).getOffsetDateTime(), t);
+        assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).getDateTime(), t.getDateTime());
+        assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).getOffset(), OFFSET_PTWO);
         assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).getZone(), ZONE_PARIS);
     }
 
     @Test(groups={"tck"})
     public void test_atZone_dstOverlapWinter() {
         OffsetDateTime t = OffsetDateTime.of(2007, 10, 28, 2, 30, OFFSET_PONE);
-        assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).getOffsetDateTime(), t);
+        assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).getDateTime(), t.getDateTime());
+        assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).getOffset(), OFFSET_PONE);
         assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).getZone(), ZONE_PARIS);
     }
 
@@ -1075,46 +1056,6 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
     public void test_atZoneSimilarLocal_nullTimeZone() {
         OffsetDateTime t = OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_PTWO);
         t.atZoneSimilarLocal((ZoneId) null);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_atZoneSimilarLocal_resolver() {
-        OffsetDateTime t = OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_MTWO);
-        assertEquals(t.atZoneSimilarLocal(ZONE_PARIS, ZoneResolvers.postTransition()),
-                ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 30), ZONE_PARIS));
-    }
-
-    @Test(groups={"tck"})
-    public void test_atZoneSimilarLocal_resolver_dstGap() {
-        OffsetDateTime t = OffsetDateTime.of(2007, 4, 1, 0, 0, OFFSET_MTWO);
-        assertEquals(t.atZoneSimilarLocal(ZONE_GAZA, ZoneResolvers.postTransition()),
-                ZonedDateTime.of(LocalDateTime.of(2007, 4, 1, 1, 0), ZONE_GAZA));
-    }
-
-    @Test(groups={"tck"})
-    public void test_atZoneSimilarLocal_resolver_dstGap_pre() {
-        OffsetDateTime t = OffsetDateTime.of(2007, 4, 1, 0, 0, OFFSET_MTWO);
-        assertEquals(t.atZoneSimilarLocal(ZONE_GAZA, ZoneResolvers.preTransition()),
-                ZonedDateTime.of(LocalDateTime.of(2007, 3, 31, 23, 59, 59, 999999999), ZONE_GAZA));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_atZoneSimilarLocal_resolver_nullTimeZone() {
-        OffsetDateTime t = OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_PTWO);
-        t.atZoneSimilarLocal((ZoneId) null, ZoneResolvers.strict());
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_atZoneSimilarLocal_resolver_nullResolver() {
-        OffsetDateTime t = OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_PTWO);
-        t.atZoneSimilarLocal(ZONE_PARIS, (ZoneResolver) null);
-    }
-
-    @Test(expectedExceptions=RuntimeException.class, groups={"tck"})
-    public void test_atZoneSimilarLocal_resolver_badResolver() {
-        OffsetDateTime t = OffsetDateTime.of(2007, 4, 1, 0, 0, OFFSET_PTWO);
-        t.atZoneSimilarLocal(ZONE_GAZA, new MockZoneResolverReturnsNull());
     }
 
     //-----------------------------------------------------------------------

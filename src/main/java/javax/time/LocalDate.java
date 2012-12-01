@@ -68,7 +68,8 @@ import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
 import javax.time.jdk8.DefaultInterfaceChronoLocalDate;
 import javax.time.jdk8.Jdk8Methods;
-import javax.time.zone.ZoneResolvers;
+import javax.time.zone.ZoneOffsetTransition;
+import javax.time.zone.ZoneRules;
 
 /**
  * A date without a time-zone in the ISO-8601 calendar system,
@@ -314,8 +315,6 @@ public final class LocalDate
             return (LocalDate) dateTime;
         } else if (dateTime instanceof LocalDateTime) {
             return ((LocalDateTime) dateTime).getDate();
-        } else if (dateTime instanceof OffsetDateTime) {
-            return ((OffsetDateTime) dateTime).getDate();
         } else if (dateTime instanceof ZonedDateTime) {
             return ((ZonedDateTime) dateTime).getDate();
         }
@@ -1117,21 +1116,6 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a local date-time formed from this date at the specified offset time.
-     * <p>
-     * This merges the two objects - {@code this} and the specified time -
-     * to form an instance of {@code OffsetDateTime}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param offsetTime  the offset time to use, not null
-     * @return the offset date-time formed from this date and the specified time, not null
-     */
-    public OffsetDateTime atTime(OffsetTime offsetTime) {
-        return OffsetDateTime.of(this, offsetTime.getTime(), offsetTime.getOffset());
-    }
-
-    /**
      * Returns a local date-time formed from this date at the specified time.
      * <p>
      * This merges the two objects - {@code this} and the specified time -
@@ -1139,12 +1123,12 @@ public final class LocalDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param localTime  the local time to use, not null
+     * @param time  the time to combine with, not null
      * @return the local date-time formed from this date and the specified time, not null
      */
     @Override
-    public LocalDateTime atTime(LocalTime localTime) {
-        return LocalDateTime.of(this, localTime);
+    public LocalDateTime atTime(LocalTime time) {
+        return LocalDateTime.of(this, time);
     }
 
     /**
@@ -1202,41 +1186,40 @@ public final class LocalDate
     }
 
     /**
-     * Returns an offset date formed from this time and the specified offset.
-     * <p>
-     * This merges the two objects - {@code this} and the specified offset -
-     * to form an instance of {@code OffsetDate}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param offset  the offset to use, not null
-     * @return the offset date formed from this date and the specified offset, not null
-     */
-    public OffsetDate atOffset(ZoneOffset offset) {
-        return OffsetDate.of(this, offset);
-    }
-
-    /**
      * Returns a zoned date-time from this date at the earliest valid time according
      * to the rules in the time-zone.
      * <p>
-     * Time-zone rules, such as daylight savings, mean that not every time on the
-     * local time-line exists. If the local date is in a gap or overlap according to
-     * the rules then a resolver is used to determine the resultant local time and offset.
-     * This method uses the {@link ZoneResolvers#postGapPreOverlap() post-gap pre-overlap} resolver.
-     * This selects the date-time immediately after a gap and the earlier offset in overlaps.
-     * This combination chooses the earliest valid local time on the date, typically midnight.
+     * Time-zone rules, such as daylight savings, mean that not every local date-time
+     * is valid for the specified zone, thus the local date-time may not be midnight.
+     * <p>
+     * In most cases, there is only one valid offset for a local date-time.
+     * In the case of an overlap, there are two valid offsets, and the earlier one is used,
+     * corresponding to the first occurrence of midnight on the date.
+     * In the case of a gap, the zoned date-time will represent the instant just after the gap.
+     * <p>
+     * If the zone ID is a {@link ZoneOffset}, then the result always has a time of midnight.
      * <p>
      * To convert to a specific time in a given time-zone call {@link #atTime(LocalTime)}
      * followed by {@link LocalDateTime#atZone(ZoneId)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param zone  the time-zone to use, not null
+     * @param zoneId  the zone ID to use, not null
      * @return the zoned date-time formed from this date and the earliest valid time for the zone, not null
      */
-    public ZonedDateTime atStartOfDay(ZoneId zone) {
-        return ZonedDateTime.of(this, LocalTime.MIDNIGHT, zone, ZoneResolvers.postGapPreOverlap());
+    public ZonedDateTime atStartOfDay(ZoneId zoneId) {
+        Objects.requireNonNull(zoneId, "zoneId");
+        // need to handle case where there is a gap from 11:30 to 00:30
+        // standard ZDT factory would result in 01:00 rather than 00:30
+        LocalDateTime ldt = atTime(LocalTime.MIDNIGHT);
+        if (zoneId instanceof ZoneOffset == false) {
+            ZoneRules rules = zoneId.getRules();
+            ZoneOffsetTransition trans = rules.getTransition(ldt);
+            if (trans != null && trans.isGap()) {
+                ldt = trans.getDateTimeAfter();
+            }
+        }
+        return ZonedDateTime.of(ldt, zoneId);
     }
 
     //-----------------------------------------------------------------------

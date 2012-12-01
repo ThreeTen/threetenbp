@@ -96,7 +96,7 @@ public class TCKZoneOffsetTransition extends AbstractTCKTest {
         assertEquals(test.isOverlap(), false);
         assertEquals(test.getDateTimeBefore(), before);
         assertEquals(test.getDateTimeAfter(), after);
-        assertEquals(test.getInstant(), before.atOffset(OFFSET_0200).toInstant());
+        assertEquals(test.getInstant(), before.toInstant(OFFSET_0200));
         assertEquals(test.getOffsetBefore(), OFFSET_0200);
         assertEquals(test.getOffsetAfter(), OFFSET_0300);
         assertEquals(test.getDuration(), Duration.of(1, HOURS));
@@ -112,7 +112,7 @@ public class TCKZoneOffsetTransition extends AbstractTCKTest {
         assertEquals(test.isOverlap(), true);
         assertEquals(test.getDateTimeBefore(), before);
         assertEquals(test.getDateTimeAfter(), after);
-        assertEquals(test.getInstant(), before.atOffset(OFFSET_0300).toInstant());
+        assertEquals(test.getInstant(), before.toInstant(OFFSET_0300));
         assertEquals(test.getOffsetBefore(), OFFSET_0300);
         assertEquals(test.getOffsetAfter(), OFFSET_0200);
         assertEquals(test.getDuration(), Duration.of(-1, HOURS));

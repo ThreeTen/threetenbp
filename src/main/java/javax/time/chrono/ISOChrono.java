@@ -40,7 +40,9 @@ import java.util.Objects;
 import javax.time.Clock;
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
+import javax.time.LocalDateTime;
 import javax.time.ZoneId;
+import javax.time.ZonedDateTime;
 import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeValueRange;
@@ -220,6 +222,34 @@ public final class ISOChrono extends Chrono<ISOChrono> implements Serializable {
     @Override  // override with covariant return type
     public LocalDate date(DateTimeAccessor dateTime) {
         return LocalDate.from(dateTime);
+    }
+
+    /**
+     * Obtains an ISO local date-time from another date-time object.
+     * <p>
+     * This is equivalent to {@link LocalDateTime#from(DateTimeAccessor)}.
+     *
+     * @param dateTime  the date-time object to convert, not null
+     * @return the ISO local date-time, not null
+     * @throws DateTimeException if unable to create the date-time
+     */
+    @Override  // override with covariant return type
+    public LocalDateTime localDateTime(DateTimeAccessor dateTime) {
+        return LocalDateTime.from(dateTime);
+    }
+
+    /**
+     * Obtains an ISO zoned date-time from another date-time object.
+     * <p>
+     * This is equivalent to {@link ZonedDateTime#from(DateTimeAccessor)}.
+     *
+     * @param dateTime  the date-time object to convert, not null
+     * @return the ISO zoned date-time, not null
+     * @throws DateTimeException if unable to create the date-time
+     */
+    @Override  // override with covariant return type
+    public ZonedDateTime zonedDateTime(DateTimeAccessor dateTime) {
+        return ZonedDateTime.from(dateTime);
     }
 
     //-----------------------------------------------------------------------

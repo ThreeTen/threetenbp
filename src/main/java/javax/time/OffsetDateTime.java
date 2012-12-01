@@ -31,12 +31,17 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.ChronoField.EPOCH_DAY;
+import static javax.time.calendrical.ChronoField.NANO_OF_DAY;
 import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
+import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
+import static javax.time.calendrical.ChronoUnit.NANOS;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Objects;
 
 import javax.time.calendrical.ChronoField;
@@ -46,15 +51,13 @@ import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAdjusters;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.PeriodUnit;
-import javax.time.chrono.ChronoOffsetDateTime;
-import javax.time.chrono.ISOChrono;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
-import javax.time.jdk8.DefaultInterfaceChronoOffsetDateTime;
-import javax.time.zone.ZoneResolver;
-import javax.time.zone.ZoneResolvers;
+import javax.time.jdk8.DefaultInterfaceDateTime;
+import javax.time.zone.ZoneRules;
 
 /**
  * A date-time with an offset from UTC/Greenwich in the ISO-8601 calendar system,
@@ -65,19 +68,44 @@ import javax.time.zone.ZoneResolvers;
  * as well as the offset from UTC/Greenwich. For example, the value
  * "2nd October 2007 at 13:45.30.123456789 +02:00" can be stored in an {@code OffsetDateTime}.
  * <p>
- * {@code OffsetDateTime} and {@link Instant} both store an instant on the time-line
- * to nanosecond precision. The main difference is that this class also stores the
- * offset from UTC/Greenwich. {@code Instant} should be used when you only need to compare the
- * object to other instants. {@code OffsetDateTime} should be used when you want to actively
- * query and manipulate the date and time fields, although you should also consider using
- * {@link ZonedDateTime}.
+ * {@code OffsetDateTime}, {@link ZonedDateTime} and {@link Instant} all store an instant
+ * on the time-line to nanosecond precision.
+ * {@code Instant} is the simplest, simply representing the instant.
+ * {@code OffsetDateTime} adds to the instant the offset from UTC/Greenwich, which allows
+ * the local date-time to be obtained.
+ * {@code ZonedDateTime} adds full time-zone rules.
+ * <p>
+ * It is intended that {@code ZonedDateTime} or {@code Instant} is used to model data
+ * in simpler applications. This class may be used when modeling date-time concepts in
+ * more detail, or when communicating to a database or in a network protocol.
  *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
 public final class OffsetDateTime
-        extends DefaultInterfaceChronoOffsetDateTime<ISOChrono>
-        implements ChronoOffsetDateTime<ISOChrono>, DateTime, WithAdjuster, Serializable {
+        extends DefaultInterfaceDateTime
+        implements DateTime, WithAdjuster, Comparable<OffsetDateTime>, Serializable {
+
+    /**
+     * Comparator for two {@code OffsetDateTime} instances based solely on the instant.
+     * <p>
+     * This method differs from the comparison in {@link #compareTo} in that it
+     * only compares the underlying instant.
+     *
+     * @see #isAfter
+     * @see #isBefore
+     * @see #isEqual
+     */
+    public static final Comparator<OffsetDateTime> INSTANT_COMPARATOR = new Comparator<OffsetDateTime>() {
+        @Override
+        public int compare(OffsetDateTime datetime1, OffsetDateTime datetime2) {
+            int cmp = Long.compare(datetime1.toEpochSecond(), datetime2.toEpochSecond());
+            if (cmp == 0) {
+                cmp = Long.compare(datetime1.getTime().toNanoOfDay(), datetime2.getTime().toNanoOfDay());
+            }
+            return cmp;
+        }
+    };
 
     /**
      * Serialization version.
@@ -343,16 +371,19 @@ public final class OffsetDateTime
      * Obtains an instance of {@code OffsetDateTime} from an {@code Instant} and zone ID.
      * <p>
      * This creates an offset date-time with the same instant as that specified.
-     * The result will have the same instant as the input.
+     * Finding the offset from UTC/Greenwich is simple as there is only one valid
+     * offset for each instant.
      *
      * @param instant  the instant to create the date-time from, not null
-     * @param offset  the zone offset, not null
+     * @param zone  the time-zone, which may be an offset, not null
      * @return the offset date-time, not null
      * @throws DateTimeException if the result exceeds the supported range
      */
-    public static OffsetDateTime ofInstant(Instant instant, ZoneOffset offset) {
+    public static OffsetDateTime ofInstant(Instant instant, ZoneId zone) {
         Objects.requireNonNull(instant, "instant");
-        Objects.requireNonNull(offset, "offset");
+        Objects.requireNonNull(zone, "zone");
+        ZoneRules rules = zone.getRules();
+        ZoneOffset offset = rules.getOffset(instant);
         LocalDateTime ldt = LocalDateTime.ofEpochSecond(instant.getEpochSecond(), instant.getNano(), offset);
         return new OffsetDateTime(ldt, offset);
     }
@@ -365,16 +396,19 @@ public final class OffsetDateTime
      * This allows the {@link ChronoField#INSTANT_SECONDS epoch-second} field
      * to be converted to an offset date-time. This is primarily intended for
      * low-level conversions rather than general application usage.
+     * <p>
+     * The epoch-second is equivalent to an instant and there is only one valid
+     * offset for each instant.
      *
      * @param epochSecond  the number of seconds from the epoch of 1970-01-01T00:00:00Z
      * @param nanoOfSecond  the nanosecond within the second, from 0 to 999,999,999
-     * @param offset  the zone offset, not null
+     * @param zone  the time-zone, which may be an offset, not null
      * @return the offset date-time, not null
      * @throws DateTimeException if the result exceeds the supported range
      */
-    public static OffsetDateTime ofEpochSecond(long epochSecond, int nanoOfSecond, ZoneOffset offset) {
+    public static OffsetDateTime ofEpochSecond(long epochSecond, int nanoOfSecond, ZoneId zone) {
         NANO_OF_SECOND.checkValidValue(nanoOfSecond);
-        return ofInstant(Instant.ofEpochSecond(epochSecond, nanoOfSecond), offset);
+        return ofInstant(Instant.ofEpochSecond(epochSecond, nanoOfSecond), zone);
     }
 
     //-----------------------------------------------------------------------
@@ -468,6 +502,38 @@ public final class OffsetDateTime
         return field instanceof ChronoField || (field != null && field.doIsSupported(this));
     }
 
+    @Override
+    public DateTimeValueRange range(DateTimeField field) {
+        if (field instanceof ChronoField) {
+            return dateTime.range(field);
+        }
+        return field.doRange(this);
+    }
+
+    @Override
+    public int get(DateTimeField field) {
+        if (field instanceof ChronoField) {
+            switch ((ChronoField) field) {
+                case INSTANT_SECONDS: throw new DateTimeException("Field too large for an int: " + field);
+                case OFFSET_SECONDS: return getOffset().getTotalSeconds();
+            }
+            return dateTime.get(field);
+        }
+        return super.get(field);
+    }
+
+    @Override
+    public long getLong(DateTimeField field) {
+        if (field instanceof ChronoField) {
+            switch ((ChronoField) field) {
+                case INSTANT_SECONDS: return toEpochSecond();
+                case OFFSET_SECONDS: return getOffset().getTotalSeconds();
+            }
+            return dateTime.getLong(field);
+        }
+        return field.doGet(this);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the zone offset, such as '+01:00'.
@@ -497,7 +563,6 @@ public final class OffsetDateTime
      * @param offset  the zone offset to change to, not null
      * @return an {@code OffsetDateTime} based on this date-time with the requested offset, not null
      */
-    @Override
     public OffsetDateTime withOffsetSameLocal(ZoneOffset offset) {
         return with(dateTime, offset);
     }
@@ -521,7 +586,6 @@ public final class OffsetDateTime
      * @return an {@code OffsetDateTime} based on this date-time with the requested offset, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    @Override
     public OffsetDateTime withOffsetSameInstant(ZoneOffset offset) {
         if (offset.equals(this.offset)) {
             return this;
@@ -540,7 +604,6 @@ public final class OffsetDateTime
      *
      * @return the local date-time part of this date-time, not null
      */
-    @Override
     public LocalDateTime getDateTime() {
         return dateTime;
     }
@@ -554,7 +617,6 @@ public final class OffsetDateTime
      *
      * @return the date part of this date-time, not null
      */
-    @Override  // override for return type
     public LocalDate getDate() {
         return dateTime.getDate();
     }
@@ -650,7 +712,6 @@ public final class OffsetDateTime
      *
      * @return the time part of this date-time, not null
      */
-    @Override  // override for Javadoc and performance
     public LocalTime getTime() {
         return dateTime.getTime();
     }
@@ -1248,26 +1309,26 @@ public final class OffsetDateTime
     //-----------------------------------------------------------------------
     /**
      * Returns a zoned date-time formed from the instant represented by this
-     * date-time and the specified time-zone.
+     * date-time and the specified zone ID.
      * <p>
      * This conversion will ignore the visible local date-time and use the underlying instant instead.
      * This avoids any problems with local time-line gaps or overlaps.
      * The result might have different values for fields such as hour, minute an even day.
      * <p>
      * To attempt to retain the values of the fields, use {@link #atZoneSimilarLocal(ZoneId)}.
+     * To use the offset as the zone ID, use {@link #toZonedDateTime()}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param zone  the time-zone to use, not null
      * @return the zoned date-time formed from this date-time, not null
      */
-    @Override
     public ZonedDateTime atZoneSameInstant(ZoneId zone) {
-        return ZonedDateTime.ofInstant(this, zone);
+        return ZonedDateTime.ofInstant(dateTime, offset, zone);
     }
 
     /**
-     * Returns a zoned date-time formed from this date-time and the specified time-zone.
+     * Returns a zoned date-time formed from this date-time and the specified zone ID.
      * <p>
      * Time-zone rules, such as daylight savings, mean that not every time on the
      * local time-line exists. If the local date-time is in a gap or overlap according to
@@ -1283,38 +1344,15 @@ public final class OffsetDateTime
      * <p>
      * To create a zoned date-time at the same instant irrespective of the local time-line,
      * use {@link #atZoneSameInstant(ZoneId)}.
+     * To use the offset as the zone ID, use {@link #toZonedDateTime()}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param zone  the time-zone to use, not null
      * @return the zoned date-time formed from this date and the earliest valid time for the zone, not null
      */
-    @Override
     public ZonedDateTime atZoneSimilarLocal(ZoneId zone) {
-        return atZoneSimilarLocal(zone, ZoneResolvers.retainOffset());
-    }
-
-    /**
-     * Returns a zoned date-time formed from this date-time and the specified time-zone
-     * taking control of what occurs in time-line gaps and overlaps.
-     * <p>
-     * Time-zone rules, such as daylight savings, mean that not every time on the
-     * local time-line exists. If the local date-time is in a gap or overlap according to
-     * the rules then the resolver is used to determine the resultant local time and offset.
-     * <p>
-     * To create a zoned date-time at the same instant irrespective of the local time-line,
-     * use {@link #atZoneSameInstant(ZoneId)}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param zone  the time-zone to use, not null
-     * @param resolver  the zone resolver to use for gaps and overlaps, not null
-     * @return the zoned date-time formed from this date and the earliest valid time for the zone, not null
-     * @throws DateTimeException if the date-time cannot be resolved
-     */
-    @Override
-    public ZonedDateTime atZoneSimilarLocal(ZoneId zone, ZoneResolver resolver) {
-        return ZonedDateTime.resolve(dateTime, zone, this, resolver);
+        return ZonedDateTime.ofLocal(dateTime, zone, offset);
     }
 
     //-----------------------------------------------------------------------
@@ -1329,6 +1367,25 @@ public final class OffsetDateTime
             return dateTime.periodUntil(end.dateTime, unit);
         }
         return unit.between(this, endDateTime).getAmount();
+    }
+
+    @Override
+    public DateTime doWithAdjustment(DateTime dateTime) {
+        return dateTime
+                .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
+                .with(EPOCH_DAY, getDate().toEpochDay())
+                .with(NANO_OF_DAY, getTime().toNanoOfDay());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R query(Query<R> query) {
+        if (query == Query.CHRONO) {
+            return (R) getDate().getChrono();
+        } else if (query == Query.TIME_PRECISION) {
+            return (R) NANOS;
+        }
+        return super.query(query);
     }
 
     //-----------------------------------------------------------------------
@@ -1354,6 +1411,43 @@ public final class OffsetDateTime
         return OffsetTime.of(dateTime.getTime(), offset);
     }
 
+    /**
+     * Converts this date-time to a {@code ZonedTime} using the offset as the zone ID.
+     * <p>
+     * This creates the simplest possible {@code ZonedDateTime} using the offset
+     * as the zone ID.
+     * <p>
+     * To control the time-zone used, see {@link #atZoneSameInstant(ZoneId)} and
+     * {@link #atZoneSimilarLocal(ZoneId)}.
+     *
+     * @return a zoned date-time representing the same local date-time and offset, not null
+     */
+    public ZonedDateTime toZonedDateTime() {
+        return ZonedDateTime.of(dateTime, offset);
+    }
+
+    /**
+     * Converts this date-time to an {@code Instant}.
+     *
+     * @return an {@code Instant} representing the same instant, not null
+     */
+    public Instant toInstant() {
+        return dateTime.toInstant(offset);
+    }
+
+    /**
+     * Converts this date-time to the number of seconds from the epoch of 1970-01-01T00:00:00Z.
+     * <p>
+     * This allows this date-time to be converted to a value of the
+     * {@link ChronoField#INSTANT_SECONDS epoch-seconds} field. This is primarily
+     * intended for low-level conversions rather than general application usage.
+     *
+     * @return the number of seconds from the epoch of 1970-01-01T00:00:00Z
+     */
+    public long toEpochSecond() {
+        return dateTime.toEpochSecond(offset);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Compares this {@code OffsetDateTime} to another date-time.
@@ -1374,18 +1468,73 @@ public final class OffsetDateTime
      * When two values represent the same instant, the local date-time is compared
      * to distinguish them. This step is needed to make the ordering
      * consistent with {@code equals()}.
-     * <p>
-     * If all the date-times being compared are instances of {@code OffsetDateTime},
-     * then the comparison will be entirely based on the date-time.
-     * If some dates being compared are in different chronologies, then the
-     * chronology is also considered, see {@link ChronoOffsetDateTime#compareTo}.
      *
      * @param other  the other date-time to compare to, not null
      * @return the comparator value, negative if less, positive if greater
      */
-    @Override  // override for Javadoc
-    public int compareTo(ChronoOffsetDateTime<?> other) {
-        return super.compareTo(other);
+    @Override
+    public int compareTo(OffsetDateTime other) {
+        if (getOffset().equals(other.getOffset())) {
+            return getDateTime().compareTo(other.getDateTime());
+        }
+        int cmp = Long.compare(toEpochSecond(), other.toEpochSecond());
+        if (cmp == 0) {
+            cmp = getTime().getNano() - other.getTime().getNano();
+            if (cmp == 0) {
+                cmp = getDateTime().compareTo(other.getDateTime());
+            }
+        }
+        return cmp;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if the instant of this date-time is after that of the specified date-time.
+     * <p>
+     * This method differs from the comparison in {@link #compareTo} and {@link #equals} in that it
+     * only compares the instant of the date-time. This is equivalent to using
+     * {@code dateTime1.toInstant().isAfter(dateTime2.toInstant());}.
+     *
+     * @param other  the other date-time to compare to, not null
+     * @return true if this is after the instant of the specified date-time
+     */
+    public boolean isAfter(OffsetDateTime other) {
+        long thisEpochSec = toEpochSecond();
+        long otherEpochSec = other.toEpochSecond();
+        return thisEpochSec > otherEpochSec ||
+            (thisEpochSec == otherEpochSec && getTime().getNano() > other.getTime().getNano());
+    }
+
+    /**
+     * Checks if the instant of this date-time is before that of the specified date-time.
+     * <p>
+     * This method differs from the comparison in {@link #compareTo} in that it
+     * only compares the instant of the date-time. This is equivalent to using
+     * {@code dateTime1.toInstant().isBefore(dateTime2.toInstant());}.
+     *
+     * @param other  the other date-time to compare to, not null
+     * @return true if this is before the instant of the specified date-time
+     */
+    public boolean isBefore(OffsetDateTime other) {
+        long thisEpochSec = toEpochSecond();
+        long otherEpochSec = other.toEpochSecond();
+        return thisEpochSec < otherEpochSec ||
+            (thisEpochSec == otherEpochSec && getTime().getNano() < other.getTime().getNano());
+    }
+
+    /**
+     * Checks if the instant of this date-time is equal to that of the specified date-time.
+     * <p>
+     * This method differs from the comparison in {@link #compareTo} and {@link #equals}
+     * in that it only compares the instant of the date-time. This is equivalent to using
+     * {@code dateTime1.toInstant().equals(dateTime2.toInstant());}.
+     *
+     * @param other  the other date-time to compare to, not null
+     * @return true if the instant equals the instant of the specified date-time
+     */
+    public boolean isEqual(OffsetDateTime other) {
+        return toEpochSecond() == other.toEpochSecond() &&
+                getTime().getNano() == other.getTime().getNano();
     }
 
     //-----------------------------------------------------------------------
@@ -1438,9 +1587,21 @@ public final class OffsetDateTime
      *
      * @return a string representation of this date-time, not null
      */
-    @Override  // override for Javadoc
+    @Override
     public String toString() {
         return dateTime.toString() + offset.toString();
+    }
+
+    /**
+     * Outputs this date-time as a {@code String} using the formatter.
+     *
+     * @param formatter  the formatter to use, not null
+     * @return the formatted date-time string, not null
+     * @throws DateTimeException if an error occurs during printing
+     */
+    public String toString(DateTimeFormatter formatter) {
+        Objects.requireNonNull(formatter, "formatter");
+        return formatter.print(this);
     }
 
     //-----------------------------------------------------------------------

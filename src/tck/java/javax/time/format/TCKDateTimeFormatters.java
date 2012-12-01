@@ -38,6 +38,7 @@ import static javax.time.calendrical.ChronoField.HOUR_OF_DAY;
 import static javax.time.calendrical.ChronoField.MINUTE_OF_HOUR;
 import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
 import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
+import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
 import static javax.time.calendrical.ChronoField.SECOND_OF_MINUTE;
 import static javax.time.calendrical.ChronoField.YEAR;
 import static org.testng.Assert.assertEquals;
@@ -53,7 +54,6 @@ import java.util.Map;
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
-import javax.time.OffsetDateTime;
 import javax.time.Year;
 import javax.time.YearMonth;
 import javax.time.ZoneId;
@@ -317,7 +317,7 @@ public class TCKDateTimeFormatters {
         if (input != null) {
             DateTimeBuilder expected = createDate(year, month, day);
             if (offsetId != null) {
-                expected.addCalendrical(ZoneOffset.of(offsetId));
+                expected.addFieldValue(OFFSET_SECONDS, ZoneOffset.of(offsetId).getTotalSeconds());
                 if (zoneId != null) {
                     expected.addCalendrical(ZoneId.of(zoneId));
                 }
@@ -514,7 +514,7 @@ public class TCKDateTimeFormatters {
         if (input != null) {
             DateTimeBuilder expected = createTime(hour, min, sec, nano);
             if (offsetId != null) {
-                expected.addCalendrical(ZoneOffset.of(offsetId));
+                expected.addFieldValue(OFFSET_SECONDS, ZoneOffset.of(offsetId).getTotalSeconds());
                 if (zoneId != null) {
                     expected.addCalendrical(ZoneId.of(zoneId));
                 }
@@ -814,7 +814,7 @@ public class TCKDateTimeFormatters {
         if (input != null) {
             DateTimeBuilder expected = createDateTime(year, month, day, hour, min, sec, nano);
             if (offsetId != null) {
-                expected.addCalendrical(ZoneOffset.of(offsetId));
+                expected.addFieldValue(OFFSET_SECONDS, ZoneOffset.of(offsetId).getTotalSeconds());
                 if (zoneId != null) {
                     expected.addCalendrical(ZoneId.of(zoneId));
                 }
@@ -833,21 +833,21 @@ public class TCKDateTimeFormatters {
     }
 
     @Test(groups={"tck"})
-    public void test_print_isoOrdinalDate_offset() {
-        DateTimeAccessor test = OffsetDateTime.of(2008, 6, 3, 11, 5, 30, ZoneOffset.UTC);
+    public void test_print_isoOrdinalDate_zonedOffset() {
+        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), ZoneOffset.UTC);
         assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "2008-155Z");
     }
 
     @Test(groups={"tck"})
     public void test_print_isoOrdinalDate_zoned() {
-        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), ZoneId.UTC);
-        assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "2008-155Z[UTC:Z]");
+        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), ZoneId.of("Europe/Paris"));
+        assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "2008-155+02:00[Europe/Paris]");
     }
 
     @Test(groups={"tck"})
     public void test_print_isoOrdinalDate_zoned_largeYear() {
-        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(123456, 6, 3, 11, 5, 30), ZoneId.UTC);
-        assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "+123456-155Z[UTC:Z]");
+        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(123456, 6, 3, 11, 5, 30), ZoneOffset.UTC);
+        assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "+123456-155Z[Z]");
     }
 
     @Test(groups={"tck"})
@@ -885,20 +885,20 @@ public class TCKDateTimeFormatters {
     }
 
     @Test(groups={"tck"})
-    public void test_print_basicIsoDate_offset() {
-        DateTimeAccessor test = OffsetDateTime.of(2008, 6, 3, 11, 5, 30, ZoneOffset.UTC);
+    public void test_print_basicIsoDate_zonedOffset() {
+        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), ZoneOffset.UTC);
         assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080603Z");
     }
 
     @Test(groups={"tck"})
     public void test_print_basicIsoDate_zoned() {
-        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), ZoneId.UTC);
-        assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080603Z[UTC:Z]");
+        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), ZoneId.of("Europe/Paris"));
+        assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080603+0200[Europe/Paris]");
     }
 
     @Test(expectedExceptions=DateTimePrintException.class, groups={"tck"})
     public void test_print_basicIsoDate_largeYear() {
-        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(123456, 6, 3, 11, 5, 30), ZoneId.UTC);
+        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(123456, 6, 3, 11, 5, 30), ZoneOffset.UTC);
         DateTimeFormatters.basicIsoDate().print(test);
     }
 
@@ -939,7 +939,7 @@ public class TCKDateTimeFormatters {
     @DataProvider(name="weekDate")
     Iterator<Object[]> weekDate() {
         return new Iterator<Object[]>() {
-            private ZonedDateTime date = ZonedDateTime.of(LocalDateTime.of(2003, 12, 29, 11, 5, 30), ZoneId.UTC);
+            private ZonedDateTime date = ZonedDateTime.of(LocalDateTime.of(2003, 12, 29, 11, 5, 30), ZoneOffset.UTC);
             private ZonedDateTime endDate = date.withDate(2005, 1, 2);
             private int week = 1;
             private int day = 1;
@@ -952,7 +952,7 @@ public class TCKDateTimeFormatters {
                 if (week < 10) {
                     sb.append('0');
                 }
-                sb.append(week).append('-').append(day).append("Z[UTC:Z]");
+                sb.append(week).append('-').append(day).append("Z[Z]");
                 Object[] ret = new Object[] {date, sb.toString()};
                 date = date.plusDays(1);
                 day += 1;
@@ -975,8 +975,8 @@ public class TCKDateTimeFormatters {
 
     @Test(groups={"tck"})
     public void test_print_isoWeekDate_zoned_largeYear() {
-        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(123456, 6, 3, 11, 5, 30), ZoneId.UTC);
-        assertEquals(DateTimeFormatters.isoWeekDate().print(test), "+123456-W23-2Z[UTC:Z]");
+        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(123456, 6, 3, 11, 5, 30), ZoneOffset.UTC);
+        assertEquals(DateTimeFormatters.isoWeekDate().print(test), "+123456-W23-2Z[Z]");
     }
 
     @Test(groups={"tck"})
@@ -1011,7 +1011,7 @@ public class TCKDateTimeFormatters {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_print_rfc1123() {
-        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), ZoneId.UTC);
+        DateTimeAccessor test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), ZoneOffset.UTC);
         assertEquals(DateTimeFormatters.rfc1123().print(test), "Tue, 03 Jun 2008 11:05:30 Z");
     }
 
@@ -1085,7 +1085,7 @@ public class TCKDateTimeFormatters {
 
     private void buildCalendrical(DateTimeBuilder cal, String offsetId, String zoneId) {
         if (offsetId != null) {
-            cal.addCalendrical(ZoneOffset.of(offsetId));
+            cal.addFieldValue(OFFSET_SECONDS, ZoneOffset.of(offsetId).getTotalSeconds());
         }
         if (zoneId != null) {
             cal.addCalendrical(ZoneId.of(zoneId));

@@ -56,6 +56,7 @@ import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
 import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
 import javax.time.jdk8.Jdk8Methods;
+import javax.time.zone.ZoneRules;
 
 /**
  * A date with an offset from UTC/Greenwich in the ISO-8601 calendar system,
@@ -192,18 +193,22 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code OffsetDate} from an {@code Instant}.
+     * Obtains an instance of {@code OffsetDate} from an {@code Instant} and zone ID.
      * <p>
-     * This creates an offset date representing midnight at the start of the day
-     * using the offset from UTC/Greenwich.
+     * This creates an offset date with the same instant as midnight at the
+     * start of day of the instant specified.
+     * Finding the offset from UTC/Greenwich is simple as there is only one valid
+     * offset for each instant.
      *
      * @param instant  the instant to create the time from, not null
-     * @param offset  the zone offset to use, not null
+     * @param zone  the time-zone, which may be an offset, not null
      * @return the offset time, not null
      */
-    public static OffsetDate ofInstant(Instant instant, ZoneOffset offset) {
+    public static OffsetDate ofInstant(Instant instant, ZoneId zone) {
         Objects.requireNonNull(instant, "instant");
-        Objects.requireNonNull(offset, "offset");
+        Objects.requireNonNull(zone, "zone");
+        ZoneRules rules = zone.getRules();
+        ZoneOffset offset = rules.getOffset(instant);
         long epochSec = instant.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
         long epochDay = Jdk8Methods.floorDiv(epochSec, SECONDS_PER_DAY);
         LocalDate date = LocalDate.ofEpochDay(epochDay);

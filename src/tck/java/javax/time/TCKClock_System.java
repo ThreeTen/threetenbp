@@ -70,7 +70,7 @@ public class TCKClock_System {
     //-----------------------------------------------------------------------
     public void test_system_instant() {
         Clock system = Clock.systemUTC();
-        assertEquals(system.getZone(), ZoneId.UTC);
+        assertEquals(system.getZone(), ZoneOffset.UTC);
         for (int i = 0; i < 10000; i++) {
             // assume can eventually get these within 10 milliseconds
             Instant instant = system.instant();
@@ -84,7 +84,7 @@ public class TCKClock_System {
 
     public void test_system_millis() {
         Clock system = Clock.systemUTC();
-        assertEquals(system.getZone(), ZoneId.UTC);
+        assertEquals(system.getZone(), ZoneOffset.UTC);
         for (int i = 0; i < 10000; i++) {
             // assume can eventually get these within 10 milliseconds
             long instant = system.millis();
@@ -99,7 +99,7 @@ public class TCKClock_System {
     //-------------------------------------------------------------------------
     public void test_systemUTC() {
         Clock system = Clock.systemUTC();
-        assertEquals(system.getZone(), ZoneId.UTC);
+        assertEquals(system.getZone(), ZoneOffset.UTC);
     }
 
     public void test_system_zoneId() {
@@ -149,8 +149,8 @@ public class TCKClock_System {
     }
 
     public void test_system_hashCode() {
-        Clock a = Clock.system(ZoneId.UTC);
-        Clock b = Clock.system(ZoneId.UTC);
+        Clock a = Clock.system(ZoneOffset.UTC);
+        Clock b = Clock.system(ZoneOffset.UTC);
         assertEquals(a.hashCode(), a.hashCode());
         assertEquals(a.hashCode(), b.hashCode());
 

@@ -346,9 +346,7 @@ public final class DateTimeBuilder
             }
             return this;
         }
-        if (object instanceof ZoneOffset) {
-            addFieldValue(OFFSET_SECONDS, ((ZoneOffset) object).getTotalSeconds());
-        } else if (object instanceof Instant) {
+        if (object instanceof Instant) {
             addFieldValue(INSTANT_SECONDS, ((Instant) object).getEpochSecond());
             addFieldValue(NANO_OF_SECOND, ((Instant) object).getNano());
         } else {
@@ -605,7 +603,14 @@ public final class DateTimeBuilder
     @Override
     public <R> R query(Query<R> query) {
         if (query == Query.ZONE_ID) {
-            return extract(ZoneId.class);
+            R zone = extract(ZoneId.class);
+            if (zone == null) {
+                zone = extract(ZoneOffset.class);
+                if (zone == null && standardFields.containsKey(OFFSET_SECONDS)) {
+                    zone = (R) ZoneOffset.from(this);
+                }
+            }
+            return zone;
         }
         if (query == Query.CHRONO) {
             return extract(Chrono.class);

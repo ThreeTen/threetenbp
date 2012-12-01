@@ -87,7 +87,7 @@ public class TestClock_Offset {
     //-----------------------------------------------------------------------
     public void test_offset_utc() {
         Clock offset = Clock.offset(Clock.systemUTC(), OFFSET);
-        assertEquals(offset.getZone(), ZoneId.UTC);
+        assertEquals(offset.getZone(), ZoneOffset.UTC);
         for (int i = 0; i < 10000; i++) {
             // assume can eventually get these within 10 milliseconds
             Instant instant = offset.instant();
@@ -163,7 +163,7 @@ public class TestClock_Offset {
     //-----------------------------------------------------------------------
     public void test_offset_toString() {
         Clock offset = Clock.offset(Clock.systemUTC(), OFFSET);
-        assertEquals(offset.toString(), "OffsetClock[SystemClock[UTC:Z],PT2S]");
+        assertEquals(offset.toString(), "OffsetClock[SystemClock[Z],PT2S]");
     }
 
 }

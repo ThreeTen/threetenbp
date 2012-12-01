@@ -56,7 +56,6 @@ import java.util.TreeMap;
 
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatters;
-import javax.time.zone.ZoneResolvers;
 
 /**
  * Test Performance.
@@ -333,10 +332,9 @@ public class Performance {
         List<ZonedDateTime> list = new ArrayList<ZonedDateTime>(SIZE);
         long start = System.nanoTime();
         for (int i = 0; i < SIZE; i++) {
-            ZonedDateTime t = ZonedDateTime.of(
+            ZonedDateTime t = LocalDateTime.of(
                     2008/*random.nextInt(10000)*/, random.nextInt(12) + 1, random.nextInt(28) + 1,
-                    random.nextInt(24), random.nextInt(60), random.nextInt(60), 0,
-                    tz, ZoneResolvers.postTransition());
+                    random.nextInt(24), random.nextInt(60), random.nextInt(60), 0).atZone(tz);
             list.add(t);
         }
         long end = System.nanoTime();

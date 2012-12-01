@@ -88,8 +88,6 @@ import org.testng.annotations.Test;
 @Test
 public class TCKLocalTime extends AbstractDateTimeTest {
 
-    private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
-
     private LocalTime TEST_12_30_40_987654321;
 
     private static final PeriodUnit[] INVALID_UNITS;
@@ -252,7 +250,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     public void now_Clock_allSecsInDay() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSecond(i, 8);
-            Clock clock = Clock.fixed(instant, ZoneId.UTC);
+            Clock clock = Clock.fixed(instant, ZoneOffset.UTC);
             LocalTime test = LocalTime.now(clock);
             assertEquals(test.getHour(), (i / (60 * 60)) % 24);
             assertEquals(test.getMinute(), (i / 60) % 60);
@@ -265,7 +263,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     public void now_Clock_beforeEpoch() {
         for (int i =-1; i >= -(24 * 60 * 60); i--) {
             Instant instant = Instant.ofEpochSecond(i, 8);
-            Clock clock = Clock.fixed(instant, ZoneId.UTC);
+            Clock clock = Clock.fixed(instant, ZoneOffset.UTC);
             LocalTime test = LocalTime.now(clock);
             assertEquals(test.getHour(), ((i + 24 * 60 * 60) / (60 * 60)) % 24);
             assertEquals(test.getMinute(), ((i + 24 * 60 * 60) / 60) % 60);
@@ -277,7 +275,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void now_Clock_maxYear() {
-        Clock clock = Clock.fixed(Instant.ofEpochSecond(Long.MAX_VALUE), ZoneId.UTC);
+        Clock clock = Clock.fixed(Instant.ofEpochSecond(Long.MAX_VALUE), ZoneOffset.UTC);
         LocalTime test = LocalTime.now(clock);
         int hour = (int) ((Long.MAX_VALUE / (60 * 60)) % 24);
         int min = (int) ((Long.MAX_VALUE / 60) % 60);
@@ -293,7 +291,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
         long oneDay = 24 * 60 * 60;
         long addition = ((Long.MAX_VALUE / oneDay) + 2) * oneDay;
 
-        Clock clock = Clock.fixed(Instant.ofEpochSecond(Long.MIN_VALUE), ZoneId.UTC);
+        Clock clock = Clock.fixed(Instant.ofEpochSecond(Long.MIN_VALUE), ZoneOffset.UTC);
         LocalTime test = LocalTime.now(clock);
         long added = Long.MIN_VALUE + addition;
         int hour = (int) ((added / (60 * 60)) % 24);
@@ -1798,18 +1796,17 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // atOffset()
+    // atDate()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_atOffset() {
+    public void test_atDate() {
         LocalTime t = LocalTime.of(11, 30);
-        assertEquals(t.atOffset(OFFSET_PTWO), OffsetTime.of(11, 30, OFFSET_PTWO));
+        assertEquals(t.atDate(LocalDate.of(2012, 6, 30)), LocalDateTime.of(2012, 6, 30, 11, 30));
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_atOffset_nullZoneOffset() {
-        LocalTime t = LocalTime.of(11, 30);
-        t.atOffset((ZoneOffset) null);
+    public void test_atDate_nullDate() {
+        TEST_12_30_40_987654321.atDate((LocalDate) null);
     }
 
     //-----------------------------------------------------------------------

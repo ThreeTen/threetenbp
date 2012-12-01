@@ -37,6 +37,8 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -47,7 +49,9 @@ import javax.time.calendrical.DateTime.WithAdjuster;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
-import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
+import javax.time.zone.ZoneOffsetTransition;
+import javax.time.zone.ZoneOffsetTransitionRule;
+import javax.time.zone.ZoneRules;
 
 /**
  * A time-zone offset from Greenwich/UTC, such as {@code +02:00}.
@@ -82,7 +86,7 @@ import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
  * This class is immutable and thread-safe.
  */
 public final class ZoneOffset
-        extends DefaultInterfaceDateTimeAccessor
+        extends ZoneId
         implements DateTimeAccessor, WithAdjuster, Comparable<ZoneOffset>, Serializable {
 
     /** Cache of time-zone offset by offset in seconds. */
@@ -287,6 +291,9 @@ public final class ZoneOffset
      * @throws DateTimeException if unable to convert to an {@code ZoneOffset}
      */
     public static ZoneOffset from(DateTimeAccessor dateTime) {
+        if (dateTime instanceof ZoneOffset) {
+            return (ZoneOffset) dateTime;
+        }
         return ofTotalSeconds(dateTime.get(OFFSET_SECONDS));
     }
 
@@ -436,8 +443,22 @@ public final class ZoneOffset
      *
      * @return the zone offset ID, not null
      */
+    @Override
     public String getId() {
         return id;
+    }
+
+    /**
+     * Gets the associated time-zone rules.
+     * <p>
+     * The rules will always return this offset when queried.
+     * The implementation class is immutable, thread-safe and serializable.
+     *
+     * @return the rules, not null
+     */
+    @Override
+    public ZoneRules getRules() {
+        return new Rules(this);
     }
 
     //-----------------------------------------------------------------------
@@ -453,24 +474,27 @@ public final class ZoneOffset
     public DateTimeValueRange range(DateTimeField field) {
         if (field == OFFSET_SECONDS) {
             return field.range();
+        } else if (field instanceof ChronoField) {
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return super.range(field);
+        return field.doRange(this);
     }
 
     @Override
     public int get(DateTimeField field) {
         if (field == OFFSET_SECONDS) {
             return totalSeconds;
+        } else if (field instanceof ChronoField) {
+            throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return super.get(field);
+        return range(field).checkValidIntValue(getLong(field), field);
     }
 
     @Override
     public long getLong(DateTimeField field) {
-        if (field instanceof ChronoField) {
-            switch ((ChronoField) field) {
-                case OFFSET_SECONDS: return totalSeconds;
-            }
+        if (field == OFFSET_SECONDS) {
+            return totalSeconds;
+        } else if (field instanceof ChronoField) {
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
         return field.doGet(this);
@@ -481,16 +505,12 @@ public final class ZoneOffset
         return dateTime.with(OFFSET_SECONDS, totalSeconds);
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this offset to a time-zone.
-     * <p>
-     * The returned time-zone will use this offset for all instants.
-     *
-     * @return the time-zone, not null
-     */
-    public ZoneId toZoneId() {
-        return ZoneId.of(this);
+    @Override
+    public <R> R query(Query<R> query) {
+        if (query == Query.ZONE_ID || query == Query.CHRONO) {
+            return null;
+        }
+        return query.doQuery(this);
     }
 
     //-----------------------------------------------------------------------
@@ -516,6 +536,7 @@ public final class ZoneOffset
      * Checks if this offset is equal to another offset.
      * <p>
      * The comparison is based on the amount of the offset in seconds.
+     * This is equivalent to a comparison by ID.
      *
      * @param obj  the object to check, null returns false
      * @return true if this is equal to the other offset
@@ -557,6 +578,12 @@ public final class ZoneOffset
         return new Ser(Ser.ZONE_OFFSET_TYPE, this);
     }
 
+    @Override
+    void write(DataOutput out) throws IOException {
+        out.writeByte(Ser.ZONE_OFFSET_TYPE);
+        writeExternal(out);
+    }
+
     void writeExternal(DataOutput out) throws IOException {
         final int offsetSecs = totalSeconds;
         int offsetByte = offsetSecs % 900 == 0 ? offsetSecs / 900 : 127;  // compress to -72 to +72
@@ -569,6 +596,111 @@ public final class ZoneOffset
     static ZoneOffset readExternal(DataInput in) throws IOException {
         int offsetByte = in.readByte();
         return (offsetByte == 127 ? ZoneOffset.ofTotalSeconds(in.readInt()) : ZoneOffset.ofTotalSeconds(offsetByte * 900));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Fixed time-zone.
+     */
+    static final class Rules implements ZoneRules, Serializable {
+        /** A serialization identifier for this class. */
+        private static final long serialVersionUID = -8733721350312276297L;
+        /** The offset. */
+        private final ZoneOffset offset;
+
+        /**
+         * Constructor.
+         *
+         * @param offset  the offset, not null
+         */
+        Rules(ZoneOffset offset) {
+            this.offset = offset;
+        }
+
+        //-------------------------------------------------------------------------
+        @Override
+        public boolean isFixedOffset() {
+            return true;
+        }
+
+        @Override
+        public ZoneOffset getOffset(Instant instant) {
+            return offset;
+        }
+
+        @Override
+        public ZoneOffset getOffset(LocalDateTime localDateTime) {
+            return offset;
+        }
+
+        @Override
+        public List<ZoneOffset> getValidOffsets(LocalDateTime localDateTime) {
+            return Collections.singletonList(offset);
+        }
+
+        @Override
+        public ZoneOffsetTransition getTransition(LocalDateTime localDateTime) {
+            return null;
+        }
+
+        @Override
+        public boolean isValidOffset(LocalDateTime dateTime, ZoneOffset offset) {
+            return this.offset.equals(offset);
+        }
+
+        //-------------------------------------------------------------------------
+        @Override
+        public ZoneOffset getStandardOffset(Instant instant) {
+            return offset;
+        }
+
+        @Override
+        public Duration getDaylightSavings(Instant instant) {
+            return Duration.ZERO;
+        }
+
+        @Override
+        public boolean isDaylightSavings(Instant instant) {
+            return false;
+        }
+
+        //-------------------------------------------------------------------------
+        @Override
+        public ZoneOffsetTransition nextTransition(Instant instant) {
+            return null;
+        }
+
+        @Override
+        public ZoneOffsetTransition previousTransition(Instant instant) {
+            return null;
+        }
+
+        @Override
+        public List<ZoneOffsetTransition> getTransitions() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public List<ZoneOffsetTransitionRule> getTransitionRules() {
+            return Collections.emptyList();
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+               return true;
+            }
+            if (obj instanceof Rules) {
+                return offset.equals(((Rules) obj).offset);
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return offset.hashCode() + 1;
+        }
     }
 
 }

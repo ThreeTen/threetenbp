@@ -170,7 +170,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void now() {
-        OffsetDateTime nowDT = OffsetDateTime.now();
+        ZonedDateTime nowDT = ZonedDateTime.now();
 
         OffsetTime expected = OffsetTime.now(Clock.systemDefaultZone());
         OffsetTime test = OffsetTime.now();
@@ -186,7 +186,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     public void now_Clock_allSecsInDay() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSecond(i, 8);
-            Clock clock = Clock.fixed(instant, ZoneId.UTC);
+            Clock clock = Clock.fixed(instant, ZoneOffset.UTC);
             OffsetTime test = OffsetTime.now(clock);
             assertEquals(test.getHour(), (i / (60 * 60)) % 24);
             assertEquals(test.getMinute(), (i / 60) % 60);
@@ -200,7 +200,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     public void now_Clock_beforeEpoch() {
         for (int i =-1; i >= -(24 * 60 * 60); i--) {
             Instant instant = Instant.ofEpochSecond(i, 8);
-            Clock clock = Clock.fixed(instant, ZoneId.UTC);
+            Clock clock = Clock.fixed(instant, ZoneOffset.UTC);
             OffsetTime test = OffsetTime.now(clock);
             assertEquals(test.getHour(), ((i + 24 * 60 * 60) / (60 * 60)) % 24);
             assertEquals(test.getMinute(), ((i + 24 * 60 * 60) / 60) % 60);
@@ -212,10 +212,10 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void now_Clock_offsets() {
-        OffsetDateTime base = OffsetDateTime.of(1970, 1, 1, 12, 0, ZoneOffset.UTC);
+        Instant base = LocalDateTime.of(1970, 1, 1, 12, 0).toInstant(ZoneOffset.UTC);
         for (int i = -9; i < 15; i++) {
             ZoneOffset offset = ZoneOffset.ofHours(i);
-            Clock clock = Clock.fixed(base.toInstant(), ZoneId.of(offset));
+            Clock clock = Clock.fixed(base, offset);
             OffsetTime test = OffsetTime.now(clock);
             assertEquals(test.getHour(), (12 + i) % 24);
             assertEquals(test.getMinute(), 0);
@@ -239,11 +239,13 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     // factories
     //-----------------------------------------------------------------------
     void check(OffsetTime test, int h, int m, int s, int n, ZoneOffset offset) {
+        assertEquals(test.getTime(), LocalTime.of(h, m, s, n));
+        assertEquals(test.getOffset(), offset);
+
         assertEquals(test.getHour(), h);
         assertEquals(test.getMinute(), m);
         assertEquals(test.getSecond(), s);
         assertEquals(test.getNano(), n);
-        assertEquals(test.getOffset(), offset);
     }
 
     //-----------------------------------------------------------------------
@@ -363,7 +365,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void test_from_DateTimeAccessor_ZDT() {
-        ZonedDateTime base = ZonedDateTime.of(2007, 7, 15, 11, 30, 59, 500, ZoneId.of(OFFSET_PONE));
+        ZonedDateTime base = LocalDateTime.of(2007, 7, 15, 11, 30, 59, 500).atZone(OFFSET_PONE);
         assertEquals(OffsetTime.from(base), TEST_11_30_59_500_PONE);
     }
 
@@ -384,11 +386,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     public void factory_parse_validText(int h, int m, int s, int n, String offsetId, String parsable) {
         OffsetTime t = OffsetTime.parse(parsable);
         assertNotNull(t, parsable);
-        assertEquals(t.getHour(), h);
-        assertEquals(t.getMinute(), m);
-        assertEquals(t.getSecond(), s);
-        assertEquals(t.getNano(), n);
-        assertEquals(t.getOffset(), ZoneOffset.of(offsetId));
+        check(t, h, m, s, n, ZoneOffset.of(offsetId));
     }
 
     @DataProvider(name="sampleBadParse")
@@ -490,12 +488,13 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
         LocalTime localTime = LocalTime.of(h, m, s, n);
         OffsetTime a = OffsetTime.of(localTime, offset);
 
+        assertEquals(a.getTime(), localTime);
+        assertEquals(a.getOffset(), offset);
+        assertEquals(a.toString(), localTime.toString() + offset.toString());
         assertEquals(a.getHour(), localTime.getHour());
         assertEquals(a.getMinute(), localTime.getMinute());
         assertEquals(a.getSecond(), localTime.getSecond());
         assertEquals(a.getNano(), localTime.getNano());
-
-        assertEquals(a.toString(), localTime.toString() + offset.toString());
     }
 
     //-----------------------------------------------------------------------

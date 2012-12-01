@@ -36,12 +36,8 @@ import java.util.List;
 import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.LocalDateTime;
-import javax.time.OffsetDate;
-import javax.time.OffsetDateTime;
-import javax.time.OffsetTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
-import javax.time.ZonedDateTime;
 
 /**
  * The rules defining how the zone offset varies for a single time-zone.
@@ -74,10 +70,6 @@ public interface ZoneRules {
 
     /**
      * Checks of the zone rules are fixed, such that the offset never varies.
-     * <p>
-     * It is intended that {@link OffsetDateTime}, {@link OffsetDate} and
-     * {@link OffsetTime} are used in preference to fixed offset time-zones
-     * in {@link ZonedDateTime}.
      *
      * @return true if the time-zone is fixed and the offset never changes
      */
@@ -105,10 +97,12 @@ public interface ZoneRules {
      * <p><ul>
      * <li>Normal, with one valid offset. For the vast majority of the year, the normal
      *  case applies, where there is a single valid offset for the local date-time.</li>
-     * <li>Gap, with zero valid offsets. Where there is a gap in the local time-line
-     *  typically caused by the spring cutover to daylight savings.</li>
-     * <li>Overlap, with two valid offsets. Where there is a gap in the local time-line
-     *  typically caused by the autumn cutover from daylight savings.</li>
+     * <li>Gap, with zero valid offsets. This is when clocks jump forward typically
+     *  due to the spring daylight savings change from "winter" to "summer".
+     *  In a gap there are local date-time values with no valid offset.</li>
+     * <li>Overlap, with two valid offsets. This is when clocks are set back typically
+     *  due to the autumn daylight savings change from "summer" to "winter".
+     *  In an overlap there are local date-time values with two valid offsets.</li>
      * </ul><p>
      * Thus, for any given local date-time there can be zero, one or two valid offsets.
      * This method returns the single offset in the Normal case, and in the Gap or Overlap
@@ -133,10 +127,12 @@ public interface ZoneRules {
      * <p><ul>
      * <li>Normal, with one valid offset. For the vast majority of the year, the normal
      *  case applies, where there is a single valid offset for the local date-time.</li>
-     * <li>Gap, with zero valid offsets. Where there is a gap in the local time-line
-     *  typically caused by the spring cutover to daylight savings.</li>
-     * <li>Overlap, with two valid offsets. Where there is a gap in the local time-line
-     *  typically caused by the autumn cutover from daylight savings.</li>
+     * <li>Gap, with zero valid offsets. This is when clocks jump forward typically
+     *  due to the spring daylight savings change from "winter" to "summer".
+     *  In a gap there are local date-time values with no valid offset.</li>
+     * <li>Overlap, with two valid offsets. This is when clocks are set back typically
+     *  due to the autumn daylight savings change from "summer" to "winter".
+     *  In an overlap there are local date-time values with two valid offsets.</li>
      * </ul><p>
      * Thus, for any given local date-time there can be zero, one or two valid offsets.
      * This method returns that list of valid offsets, which is a list of size 0, 1 or 2.
@@ -175,10 +171,12 @@ public interface ZoneRules {
      * <p><ul>
      * <li>Normal, with one valid offset. For the vast majority of the year, the normal
      *  case applies, where there is a single valid offset for the local date-time.</li>
-     * <li>Gap, with zero valid offsets. Where there is a gap in the local time-line
-     *  typically caused by the spring cutover to daylight savings.</li>
-     * <li>Overlap, with two valid offsets. Where there is a gap in the local time-line
-     *  typically caused by the autumn cutover from daylight savings.</li>
+     * <li>Gap, with zero valid offsets. This is when clocks jump forward typically
+     *  due to the spring daylight savings change from "winter" to "summer".
+     *  In a gap there are local date-time values with no valid offset.</li>
+     * <li>Overlap, with two valid offsets. This is when clocks are set back typically
+     *  due to the autumn daylight savings change from "summer" to "winter".
+     *  In an overlap there are local date-time values with two valid offsets.</li>
      * </ul><p>
      * A transition is used to model the cases of a Gap or Overlap.
      * The Normal case will return null.

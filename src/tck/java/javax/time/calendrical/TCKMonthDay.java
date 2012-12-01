@@ -55,10 +55,10 @@ import javax.time.Clock;
 import javax.time.DateTimeException;
 import javax.time.Instant;
 import javax.time.LocalDate;
+import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.Month;
 import javax.time.MonthDay;
-import javax.time.OffsetDateTime;
 import javax.time.YearMonth;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
@@ -188,8 +188,8 @@ public class TCKMonthDay extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void now_Clock() {
-        Instant instant = OffsetDateTime.of(2010, 12, 31, 0, 0, ZoneOffset.UTC).toInstant();
-        Clock clock = Clock.fixed(instant, ZoneId.UTC);
+        Instant instant = LocalDateTime.of(2010, 12, 31, 0, 0).toInstant(ZoneOffset.UTC);
+        Clock clock = Clock.fixed(instant, ZoneOffset.UTC);
         MonthDay test = MonthDay.now(clock);
         assertEquals(test.getMonth(), Month.DECEMBER);
         assertEquals(test.getDayOfMonth(), 31);

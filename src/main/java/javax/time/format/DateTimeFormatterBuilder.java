@@ -56,9 +56,9 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.time.DateTimeException;
 import javax.time.Instant;
-import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
+import javax.time.ZonedDateTime;
 import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTimeAccessor.Query;
 import javax.time.calendrical.DateTimeBuilder;
@@ -2241,7 +2241,7 @@ public final class DateTimeFormatterBuilder {
         public boolean print(DateTimePrintContext context, StringBuilder buf) {
             // TODO: implement this from INSTANT_SECONDS, handling big numbers
             Instant instant = Instant.from(context.getDateTime());
-            OffsetDateTime odt = OffsetDateTime.ofInstant(instant, ZoneOffset.UTC);
+            ZonedDateTime odt = ZonedDateTime.ofInstant(instant, ZoneOffset.UTC);
             buf.append(odt);
             return true;
         }
@@ -2249,10 +2249,16 @@ public final class DateTimeFormatterBuilder {
         @Override
         public int parse(DateTimeParseContext context, CharSequence text, int position) {
             // TODO: implement this from INSTANT_SECONDS, handling big numbers
-            OffsetDateTime odt = OffsetDateTime.parse(text.subSequence(position, text.length()));
+            DateTimeFormatter f = DateTimeFormatters.isoOffsetDateTime();
+            ZonedDateTime odt = f.parse(text.subSequence(position, text.length()), ZonedDateTime.class);
             context.setParsedField(INSTANT_SECONDS, odt.getLong(INSTANT_SECONDS));
             context.setParsedField(NANO_OF_SECOND, odt.getLong(NANO_OF_SECOND));
             return text.length();
+        }
+
+        @Override
+        public String toString() {
+            return "Instant()";
         }
     }
 
@@ -2457,21 +2463,20 @@ public final class DateTimeFormatterBuilder {
             }
 
             // handle fixed time-zone IDs
-            if (text.subSequence(position, text.length()).toString().startsWith("UTC")) {
-                DateTimeParseContext newContext = new DateTimeParseContext(context.getLocale(), DateTimeFormatSymbols.STANDARD);
-                int startPos = position + 3;
-                if (text.length() > startPos && text.charAt(startPos) == ':') {
-                    startPos++;
+            String remainder = text.subSequence(position, text.length()).toString();
+            if (remainder.length() >= 1) {
+                char nextChar = remainder.charAt(0);
+                if (nextChar == '+' || nextChar == '-') {
+                    DateTimeParseContext newContext = new DateTimeParseContext(context.getLocale(), DateTimeFormatSymbols.STANDARD);
+                    int endPos = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss").parse(newContext, text, position);
+                    if (endPos < 0) {
+                        return endPos;
+                    }
+                    int offset = (int) (long) newContext.getParsed(OFFSET_SECONDS);
+                    ZoneId zone = ZoneOffset.ofTotalSeconds(offset);
+                    context.setParsed(zone);
+                    return endPos;
                 }
-                int endPos = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss").parse(newContext, text, startPos);
-                if (endPos < 0) {
-                    context.setParsed(ZoneId.UTC);
-                    return startPos;
-                }
-                int offset = (int) (long) newContext.getParsed(OFFSET_SECONDS);
-                ZoneId zone = ZoneId.of(ZoneOffset.ofTotalSeconds(offset));
-                context.setParsed(zone);
-                return endPos;
             }
 
             // parse group ID
@@ -2492,8 +2497,9 @@ public final class DateTimeFormatterBuilder {
             // parse region ID
             Entry<Integer, SubstringTree> entry = preparedTree.get(matchedGroupId);
             Set<String> regionIds = provider.getAvailableRegionIds();
-            if (entry == null || entry.getKey() < regionIds.size()) {
-                entry = new SimpleImmutableEntry<>(regionIds.size(), prepareParser(regionIds));
+            final int regionIdsSize = regionIds.size();
+            if (entry == null || entry.getKey() < regionIdsSize) {
+                entry = new SimpleImmutableEntry<>(regionIdsSize, prepareParser(regionIds));
                 preparedTree.putIfAbsent(matchedGroupId, entry);
                 entry = preparedTree.get(matchedGroupId);
             }
@@ -2511,9 +2517,13 @@ public final class DateTimeFormatterBuilder {
             }
 
             if (parsedZoneId == null || regionIds.contains(parsedZoneId) == false) {
+                if (remainder.startsWith("Z")) {
+                    context.setParsed(ZoneOffset.UTC);
+                    return position + 1;
+                }
                 return ~position;
             }
-            context.setParsed(ZoneId.of(matchedGroupId + ':' + parsedZoneId));
+            context.setParsed(ZoneId.of(parsedZoneId));
             return position + parsedZoneId.length();
         }
 

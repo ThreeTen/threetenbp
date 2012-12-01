@@ -163,7 +163,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     public void now_Clock_allSecsInDay_utc() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSecond(i);
-            Clock clock = Clock.fixed(instant, ZoneId.UTC);
+            Clock clock = Clock.fixed(instant, ZoneOffset.UTC);
             OffsetDate test = OffsetDate.now(clock);
             check(test, 1970, 1, (i < 24 * 60 * 60 ? 1 : 2), ZoneOffset.UTC);
         }
@@ -173,7 +173,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     public void now_Clock_allSecsInDay_beforeEpoch() {
         for (int i =-1; i >= -(2 * 24 * 60 * 60); i--) {
             Instant instant = Instant.ofEpochSecond(i);
-            Clock clock = Clock.fixed(instant, ZoneId.UTC);
+            Clock clock = Clock.fixed(instant, ZoneOffset.UTC);
             OffsetDate test = OffsetDate.now(clock);
             check(test, 1969, 12, (i >= -24 * 60 * 60 ? 31 : 30), ZoneOffset.UTC);
         }
@@ -184,7 +184,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         Instant base = LocalDateTime.of(1970, 1, 1, 12, 0).toInstant(ZoneOffset.UTC);
         for (int i = -9; i < 15; i++) {
             ZoneOffset offset = ZoneOffset.ofHours(i);
-            Clock clock = Clock.fixed(base, ZoneId.of(offset));
+            Clock clock = Clock.fixed(base, offset);
             OffsetDate test = OffsetDate.now(clock);
             check(test, 1970, 1, (i >= 12 ? 2 : 1), offset);
         }
@@ -322,7 +322,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void test_from_DateTimeAccessor_ZDT() {
-        ZonedDateTime base = ZonedDateTime.of(2007, 7, 15, 17, 30, 0, 0, ZoneId.of(OFFSET_PONE));
+        ZonedDateTime base = LocalDateTime.of(2007, 7, 15, 17, 30).atZone(OFFSET_PONE);
         assertEquals(OffsetDate.from(base), TEST_2007_07_15_PONE);
     }
 

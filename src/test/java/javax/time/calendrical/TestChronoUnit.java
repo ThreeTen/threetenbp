@@ -102,14 +102,14 @@ public class TestChronoUnit {
     }
 
     @Test(dataProvider = "yearsBetween")
-    public void test_yearsBetween_OffsetDateSameOffset(LocalDate start, LocalDate end, long expected) {
-        assertEquals(YEARS.between(start.atOffset(ZoneOffset.ofHours(2)), end.atOffset(ZoneOffset.ofHours(2))).getAmount(), expected);
+    public void test_yearsBetween_ZonedDateSameOffset(LocalDate start, LocalDate end, long expected) {
+        assertEquals(YEARS.between(start.atStartOfDay(ZoneOffset.ofHours(2)), end.atStartOfDay(ZoneOffset.ofHours(2))).getAmount(), expected);
     }
 
     @Test(dataProvider = "yearsBetween")
-    public void test_yearsBetween_OffsetDateLaterOffset(LocalDate start, LocalDate end, long expected) {
+    public void test_yearsBetween_ZonedDateLaterOffset(LocalDate start, LocalDate end, long expected) {
         // +01:00 is later than +02:00
-        assertEquals(YEARS.between(start.atOffset(ZoneOffset.ofHours(2)), end.atOffset(ZoneOffset.ofHours(1))).getAmount(), expected);
+        assertEquals(YEARS.between(start.atStartOfDay(ZoneOffset.ofHours(2)), end.atStartOfDay(ZoneOffset.ofHours(1))).getAmount(), expected);
     }
 
     //-----------------------------------------------------------------------
@@ -169,14 +169,14 @@ public class TestChronoUnit {
     }
 
     @Test(dataProvider = "monthsBetween")
-    public void test_monthsBetween_OffsetDateSameOffset(LocalDate start, LocalDate end, long expected) {
-        assertEquals(MONTHS.between(start.atOffset(ZoneOffset.ofHours(2)), end.atOffset(ZoneOffset.ofHours(2))).getAmount(), expected);
+    public void test_monthsBetween_ZonedDateSameOffset(LocalDate start, LocalDate end, long expected) {
+        assertEquals(MONTHS.between(start.atStartOfDay(ZoneOffset.ofHours(2)), end.atStartOfDay(ZoneOffset.ofHours(2))).getAmount(), expected);
     }
 
     @Test(dataProvider = "monthsBetween")
-    public void test_monthsBetween_OffsetDateLaterOffset(LocalDate start, LocalDate end, long expected) {
+    public void test_monthsBetween_ZonedDateLaterOffset(LocalDate start, LocalDate end, long expected) {
         // +01:00 is later than +02:00
-        assertEquals(MONTHS.between(start.atOffset(ZoneOffset.ofHours(2)), end.atOffset(ZoneOffset.ofHours(1))).getAmount(), expected);
+        assertEquals(MONTHS.between(start.atStartOfDay(ZoneOffset.ofHours(2)), end.atStartOfDay(ZoneOffset.ofHours(1))).getAmount(), expected);
     }
 
     //-----------------------------------------------------------------------
@@ -275,14 +275,14 @@ public class TestChronoUnit {
     }
 
     @Test(dataProvider = "daysBetween")
-    public void test_daysBetween_OffsetDateSameOffset(LocalDate start, LocalDate end, long expected) {
-        assertEquals(DAYS.between(start.atOffset(ZoneOffset.ofHours(2)), end.atOffset(ZoneOffset.ofHours(2))).getAmount(), expected);
+    public void test_daysBetween_ZonedDateSameOffset(LocalDate start, LocalDate end, long expected) {
+        assertEquals(DAYS.between(start.atStartOfDay(ZoneOffset.ofHours(2)), end.atStartOfDay(ZoneOffset.ofHours(2))).getAmount(), expected);
     }
 
     @Test(dataProvider = "daysBetween")
-    public void test_daysBetween_OffsetDateLaterOffset(LocalDate start, LocalDate end, long expected) {
+    public void test_daysBetween_ZonedDateLaterOffset(LocalDate start, LocalDate end, long expected) {
         // +01:00 is later than +02:00
-        assertEquals(DAYS.between(start.atOffset(ZoneOffset.ofHours(2)), end.atOffset(ZoneOffset.ofHours(1))).getAmount(), expected);
+        assertEquals(DAYS.between(start.atStartOfDay(ZoneOffset.ofHours(2)), end.atStartOfDay(ZoneOffset.ofHours(1))).getAmount(), expected);
     }
 
     //-----------------------------------------------------------------------
