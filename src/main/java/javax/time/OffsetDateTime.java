@@ -340,7 +340,7 @@ public final class OffsetDateTime
      *
      * @param instant  the instant to create a date-time from, not null
      * @return the offset date-time in UTC, not null
-     * @throws DateTimeException if the instant exceeds the supported date range
+     * @throws DateTimeException if the result exceeds the supported range
      */
     public static OffsetDateTime ofInstantUTC(Instant instant) {
         return ofInstant(instant, ZoneOffset.UTC);
@@ -355,7 +355,7 @@ public final class OffsetDateTime
      * @param instant  the instant to create the date-time from, not null
      * @param offset  the zone offset to use, not null
      * @return the offset date-time, not null
-     * @throws DateTimeException if the instant exceeds the supported date range
+     * @throws DateTimeException if the result exceeds the supported range
      */
     public static OffsetDateTime ofInstant(Instant instant, ZoneOffset offset) {
         Objects.requireNonNull(instant, "instant");
@@ -368,11 +368,13 @@ public final class OffsetDateTime
      * <p>
      * The resulting date-time represents exactly the same instant on the time-line.
      * Calling {@link #toInstant()} will return an instant equal to the one used here.
+     * Converting an instant to a zoned date-time is simple as there is only one valid
+     * offset for each instant.
      *
      * @param instant  the instant to create the date-time from, not null
      * @param zone  the time-zone to use, not null
      * @return the offset date-time, not null
-     * @throws DateTimeException if the instant exceeds the supported date range
+     * @throws DateTimeException if the result exceeds the supported range
      */
     public static OffsetDateTime ofInstant(Instant instant, ZoneId zone) {
         Objects.requireNonNull(instant, "instant");
@@ -385,12 +387,16 @@ public final class OffsetDateTime
      * Obtains an instance of {@code OffsetDateTime} using seconds from the
      * epoch of 1970-01-01T00:00:00Z.
      * <p>
-     * This allows the {@link ChronoField#INSTANT_SECONDS epoch-seconds} field
+     * This allows the {@link ChronoField#INSTANT_SECONDS epoch-second} field
      * to be converted to an offset date-time. This is primarily intended for
      * low-level conversions rather than general application usage.
+     * <p>
+     * The epoch-second is equivalent to an instant and there is only one valid
+     * offset for each instant.
      *
      * @param epochSecond  the number of seconds from the epoch of 1970-01-01T00:00:00Z
      * @param nanoOfSecond  the nanosecond within the second, from 0 to 999,999,999
+     * @param offset  the zone offset, not null
      * @return the offset date-time, not null
      * @throws DateTimeException if the result exceeds the supported range
      */
@@ -406,7 +412,7 @@ public final class OffsetDateTime
      * @param epochSecond  the number of seconds from the epoch of 1970-01-01T00:00:00Z
      * @param nanoOfSecond  the nanosecond within the second, from 0 to 999,999,999
      * @return the offset date-time, not null
-     * @throws DateTimeException if the instant exceeds the supported date range
+     * @throws DateTimeException if the result exceeds the supported range
      */
     static OffsetDateTime create(long epochSecond, int nanoOfSecond, ZoneOffset offset) {
         LocalDateTime ldt = LocalDateTime.ofEpochSecond(epochSecond, nanoOfSecond, offset);
@@ -432,19 +438,20 @@ public final class OffsetDateTime
         try {
             try {
                 LocalDateTime ldt = LocalDateTime.from(dateTime);
-                return of(ldt, offset);
+                return OffsetDateTime.of(ldt, offset);
             } catch (DateTimeException ignore) {
                 Instant instant = Instant.from(dateTime);
                 return OffsetDateTime.ofInstant(instant, offset);
             }
         } catch (DateTimeException ex) {
-            throw new DateTimeException("Unable to convert date-time to OffsetDateTime: " + dateTime.getClass(), ex);
+            throw new DateTimeException("Unable to convert DateTimeAccessor to OffsetDateTime: " + dateTime.getClass(), ex);
         }
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code OffsetDateTime} from a text string such as {@code 2007-12-03T10:15:30+01:00}.
+     * Obtains an instance of {@code OffsetDateTime} from a text string
+     * such as {@code 2007-12-03T10:15:30+01:00}.
      * <p>
      * The string must represent a valid date-time and is parsed using
      * {@link javax.time.format.DateTimeFormatters#isoOffsetDateTime()}.
@@ -511,7 +518,6 @@ public final class OffsetDateTime
      *
      * @return the zone offset, not null
      */
-    @Override
     public ZoneOffset getOffset() {
         return offset;
     }
@@ -871,8 +877,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if the hour value is invalid
      */
     public OffsetDateTime withHour(int hour) {
-        LocalDateTime newDT = dateTime.withHour(hour);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+        return with(dateTime.withHour(hour), offset);
     }
 
     /**
@@ -885,8 +890,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if the minute value is invalid
      */
     public OffsetDateTime withMinute(int minute) {
-        LocalDateTime newDT = dateTime.withMinute(minute);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+        return with(dateTime.withMinute(minute), offset);
     }
 
     /**
@@ -899,8 +903,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if the second value is invalid
      */
     public OffsetDateTime withSecond(int second) {
-        LocalDateTime newDT = dateTime.withSecond(second);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+        return with(dateTime.withSecond(second), offset);
     }
 
     /**
@@ -913,8 +916,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if the nanos value is invalid
      */
     public OffsetDateTime withNano(int nanoOfSecond) {
-        LocalDateTime newDT = dateTime.withNano(nanoOfSecond);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+        return with(dateTime.withNano(nanoOfSecond), offset);
     }
 
     //-----------------------------------------------------------------------
@@ -986,8 +988,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public OffsetDateTime plusYears(long years) {
-        LocalDateTime newDT = dateTime.plusYears(years);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+        return with(dateTime.plusYears(years), offset);
     }
 
     /**
@@ -1011,8 +1012,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public OffsetDateTime plusMonths(long months) {
-        LocalDateTime newDT = dateTime.plusMonths(months);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+        return with(dateTime.plusMonths(months), offset);
     }
 
     /**
@@ -1031,8 +1031,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public OffsetDateTime plusWeeks(long weeks) {
-        LocalDateTime newDT = dateTime.plusWeeks(weeks);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+        return with(dateTime.plusWeeks(weeks), offset);
     }
 
     /**
@@ -1051,8 +1050,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public OffsetDateTime plusDays(long days) {
-        LocalDateTime newDT = dateTime.plusDays(days);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+        return with(dateTime.plusDays(days), offset);
     }
 
     /**
@@ -1065,8 +1063,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public OffsetDateTime plusHours(long hours) {
-        LocalDateTime newDT = dateTime.plusHours(hours);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+        return with(dateTime.plusHours(hours), offset);
     }
 
     /**
@@ -1079,8 +1076,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public OffsetDateTime plusMinutes(long minutes) {
-        LocalDateTime newDT = dateTime.plusMinutes(minutes);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+        return with(dateTime.plusMinutes(minutes), offset);
     }
 
     /**
@@ -1093,8 +1089,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public OffsetDateTime plusSeconds(long seconds) {
-        LocalDateTime newDT = dateTime.plusSeconds(seconds);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+        return with(dateTime.plusSeconds(seconds), offset);
     }
 
     /**
@@ -1107,8 +1102,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if the unit cannot be added to this type
      */
     public OffsetDateTime plusNanos(long nanos) {
-        LocalDateTime newDT = dateTime.plusNanos(nanos);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+        return with(dateTime.plusNanos(nanos), offset);
     }
 
     //-----------------------------------------------------------------------
@@ -1176,8 +1170,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public OffsetDateTime minusYears(long years) {
-        LocalDateTime newDT = dateTime.minusYears(years);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+        return (years == Long.MIN_VALUE ? plusYears(Long.MAX_VALUE).plusYears(1) : plusYears(-years));
     }
 
     /**
@@ -1201,8 +1194,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public OffsetDateTime minusMonths(long months) {
-        LocalDateTime newDT = dateTime.minusMonths(months);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+        return (months == Long.MIN_VALUE ? plusMonths(Long.MAX_VALUE).plusMonths(1) : plusMonths(-months));
     }
 
     /**
@@ -1221,8 +1213,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public OffsetDateTime minusWeeks(long weeks) {
-        LocalDateTime newDT = dateTime.minusWeeks(weeks);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+        return (weeks == Long.MIN_VALUE ? plusWeeks(Long.MAX_VALUE).plusWeeks(1) : plusWeeks(-weeks));
     }
 
     /**
@@ -1241,8 +1232,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public OffsetDateTime minusDays(long days) {
-        LocalDateTime newDT = dateTime.minusDays(days);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+        return (days == Long.MIN_VALUE ? plusDays(Long.MAX_VALUE).plusDays(1) : plusDays(-days));
     }
 
     /**
@@ -1255,8 +1245,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public OffsetDateTime minusHours(long hours) {
-        LocalDateTime newDT = dateTime.minusHours(hours);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+        return (hours == Long.MIN_VALUE ? plusHours(Long.MAX_VALUE).plusHours(1) : plusHours(-hours));
     }
 
     /**
@@ -1269,8 +1258,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public OffsetDateTime minusMinutes(long minutes) {
-        LocalDateTime newDT = dateTime.minusMinutes(minutes);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+        return (minutes == Long.MIN_VALUE ? plusMinutes(Long.MAX_VALUE).plusMinutes(1) : plusMinutes(-minutes));
     }
 
     /**
@@ -1283,8 +1271,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public OffsetDateTime minusSeconds(long seconds) {
-        LocalDateTime newDT = dateTime.minusSeconds(seconds);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+        return (seconds == Long.MIN_VALUE ? plusSeconds(Long.MAX_VALUE).plusSeconds(1) : plusSeconds(-seconds));
     }
 
     /**
@@ -1297,8 +1284,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public OffsetDateTime minusNanos(long nanos) {
-        LocalDateTime newDT = dateTime.minusNanos(nanos);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+        return (nanos == Long.MIN_VALUE ? plusNanos(Long.MAX_VALUE).plusNanos(1) : plusNanos(-nanos));
     }
 
     //-----------------------------------------------------------------------
@@ -1410,7 +1396,7 @@ public final class OffsetDateTime
         if (unit instanceof ChronoUnit) {
             OffsetDateTime end = (OffsetDateTime) endDateTime;
             end = end.withOffsetSameInstant(offset);
-            return dateTime.periodUntil(end, unit);
+            return dateTime.periodUntil(end.dateTime, unit);
         }
         return unit.between(this, endDateTime).getAmount();
     }
@@ -1418,6 +1404,8 @@ public final class OffsetDateTime
     //-----------------------------------------------------------------------
     /**
      * Converts this date-time to an {@code OffsetDate}.
+     * <p>
+     * This returns an offset date with the same local date and offset.
      *
      * @return an OffsetDate representing the date and offset, not null
      */
@@ -1427,6 +1415,8 @@ public final class OffsetDateTime
 
     /**
      * Converts this date-time to an {@code OffsetTime}.
+     * <p>
+     * This returns an offset time with the same local time and offset.
      *
      * @return an OffsetTime representing the time and offset, not null
      */
