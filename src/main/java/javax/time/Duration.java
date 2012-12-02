@@ -45,6 +45,7 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Objects;
 
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.MinusAdjuster;
@@ -760,6 +761,9 @@ public final class Duration
      * This method is not intended to be called by application code directly.
      * Applications should use the {@code plus(PlusAdjuster)} method
      * on the date-time object passing this duration as the argument.
+     * <p>
+     * A {@code Duration} can only be added to a {@code DateTime} that
+     * represents an instant and can supply {@link ChronoField#INSTANT_SECONDS}.
      *
      * @param dateTime  the date-time object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
@@ -783,6 +787,9 @@ public final class Duration
      * This method is not intended to be called by application code directly.
      * Applications should use the {@code minus(MinusAdjuster)} method
      * on the date-time object passing this duration as the argument.
+     * <p>
+     * A {@code Duration} can only be subtracted from a {@code DateTime} that
+     * represents an instant and can supply {@link ChronoField#INSTANT_SECONDS}.
      *
      * @param dateTime  the date-time object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
