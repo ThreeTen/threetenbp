@@ -617,15 +617,34 @@ public final class DateTimeFormatterBuilder {
 
     //-----------------------------------------------------------------------
     /**
-     * Appends the time-zone ID, such as 'Europe/Paris', to the formatter.
+     * Appends the time-zone ID, such as 'Europe/Paris' or '+02:00', to the formatter.
      * <p>
-     * The time-zone ID will be output during a print.
+     * A {@link ZoneId} can be either a {@code ZoneOffset} or an ID of a region
+     * such as 'America/New_York'. This prints and parses both types.
      * If the zone cannot be obtained then an exception will be thrown.
      *
      * @return this, for chaining, not null
+     * @see #appendZoneRegionId()
      */
     public DateTimeFormatterBuilder appendZoneId() {
-        appendInternal(new ZoneIdPrinterParser(null));
+        appendInternal(new ZoneIdPrinterParser(false));
+        return this;
+    }
+
+    /**
+     * Appends the time-zone region ID, such as 'Europe/Paris', to the formatter,
+     * printing nothing if the zone ID is a {@code ZoneOffset}.
+     * <p>
+     * A {@link ZoneId} can be either a {@code ZoneOffset} or an ID of a region
+     * such as 'America/New_York'. This only prints if the ID is a region.
+     * Both types are parsed, however the parsing of the offset is optional.
+     * If the zone cannot be obtained then an exception will be thrown.
+     *
+     * @return this, for chaining, not null
+     * @see #appendZoneId()
+     */
+    public DateTimeFormatterBuilder appendZoneRegionId() {
+        appendInternal(new ZoneIdPrinterParser(true));
         return this;
     }
 
@@ -646,8 +665,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendZoneText(TextStyle textStyle) {
-        Objects.requireNonNull(textStyle, "textStyle");
-        appendInternal(new ZoneIdPrinterParser(textStyle));
+        appendInternal(new ZoneTextPrinterParser(textStyle));
         return this;
     }
 
@@ -2414,13 +2432,13 @@ public final class DateTimeFormatterBuilder {
     /**
      * Prints or parses a zone ID.
      */
-    static final class ZoneIdPrinterParser implements DateTimePrinterParser {
-        /** The text style to output, null means the ID. */
+    static final class ZoneTextPrinterParser implements DateTimePrinterParser {
+        // TODO: remove this as it is incomplete
+        /** The text style to output. */
         private final TextStyle textStyle;
 
-        ZoneIdPrinterParser(TextStyle textStyle) {
-            // validated by caller
-            this.textStyle = textStyle;
+        ZoneTextPrinterParser(TextStyle textStyle) {
+            this.textStyle = Objects.requireNonNull(textStyle, "textStyle");
         }
 
         //-----------------------------------------------------------------------
@@ -2430,12 +2448,41 @@ public final class DateTimeFormatterBuilder {
             if (zone == null) {
                 return false;
             }
-            if (textStyle == null) {
-                buf.append(zone.getId());
-            } else {
-                // TODO: fix getText(textStyle, context.getLocale())
-                buf.append(zone.getId());  // TODO: Use symbols
+            // TODO: fix getText(textStyle, context.getLocale())
+            buf.append(zone.getId());  // TODO: Use symbols
+            return true;
+        }
+
+        @Override
+        public int parse(DateTimeParseContext context, CharSequence text, int position) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String toString() {
+            return "ZoneText(" + textStyle + ")";
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Prints or parses a zone ID.
+     */
+    static final class ZoneIdPrinterParser implements DateTimePrinterParser {
+        private final boolean regionOnly;
+
+        ZoneIdPrinterParser(boolean regionOnly) {
+            this.regionOnly = regionOnly;
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        public boolean print(DateTimePrintContext context, StringBuilder buf) {
+            ZoneId zone = context.getValue(Query.ZONE_ID);
+            if (zone == null || (regionOnly && zone instanceof ZoneOffset)) {
+                return false;
             }
+            buf.append(zone.getId());
             return true;
         }
 
@@ -2619,10 +2666,7 @@ public final class DateTimeFormatterBuilder {
         //-----------------------------------------------------------------------
         @Override
         public String toString() {
-            if (textStyle == null) {
-                return "ZoneId()";
-            }
-            return "ZoneText(" + textStyle + ")";
+            return (regionOnly ? "ZoneRegionId()" : "ZoneId()");
         }
     }
 

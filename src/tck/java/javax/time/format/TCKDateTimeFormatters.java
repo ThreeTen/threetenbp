@@ -682,21 +682,25 @@ public class TCKDateTimeFormatters {
                 {2008, 6, 30, 11, 5, 30, 500000000, null, null,                 null, DateTimeException.class},
                 {2008, 6, 30, 11, 5, 30, 1, null, null,                         null, DateTimeException.class},
 
-                {2008, 6, 30, 11, 5, null, null, "+01:00", null,                null, DateTimeException.class},
-                {2008, 6, 30, 11, 5, 30, null, "+01:00", null,                  null, DateTimeException.class},
-                {2008, 6, 30, 11, 5, 30, 500000000, "+01:00", null,             null, DateTimeException.class},
-                {2008, 6, 30, 11, 5, 30, 1, "+01:00", null,                     null, DateTimeException.class},
+                // allow OffsetDateTime (no harm comes of this AFAICT)
+                {2008, 6, 30, 11, 5, null, null, "+01:00", null,                "2008-06-30T11:05+01:00", null},
+                {2008, 6, 30, 11, 5, 30, null, "+01:00", null,                  "2008-06-30T11:05:30+01:00", null},
+                {2008, 6, 30, 11, 5, 30, 500000000, "+01:00", null,             "2008-06-30T11:05:30.5+01:00", null},
+                {2008, 6, 30, 11, 5, 30, 1, "+01:00", null,                     "2008-06-30T11:05:30.000000001+01:00", null},
 
+                // ZonedDateTime with ZoneId of ZoneOffset
                 {2008, 6, 30, 11, 5, null, null, "+01:00", "+01:00",            "2008-06-30T11:05+01:00", null},
                 {2008, 6, 30, 11, 5, 30, null, "+01:00", "+01:00",              "2008-06-30T11:05:30+01:00", null},
                 {2008, 6, 30, 11, 5, 30, 500000000, "+01:00", "+01:00",         "2008-06-30T11:05:30.5+01:00", null},
                 {2008, 6, 30, 11, 5, 30, 1, "+01:00", "+01:00",                 "2008-06-30T11:05:30.000000001+01:00", null},
 
+                // ZonedDateTime with ZoneId of ZoneRegion
                 {2008, 6, 30, 11, 5, null, null, "+01:00", "Europe/Paris",      "2008-06-30T11:05+01:00[Europe/Paris]", null},
                 {2008, 6, 30, 11, 5, 30, null, "+01:00", "Europe/Paris",        "2008-06-30T11:05:30+01:00[Europe/Paris]", null},
                 {2008, 6, 30, 11, 5, 30, 500000000, "+01:00", "Europe/Paris",   "2008-06-30T11:05:30.5+01:00[Europe/Paris]", null},
                 {2008, 6, 30, 11, 5, 30, 1, "+01:00", "Europe/Paris",           "2008-06-30T11:05:30.000000001+01:00[Europe/Paris]", null},
 
+                // offset required
                 {2008, 6, 30, 11, 5, null, null, null, "Europe/Paris",          null, DateTimeException.class},
                 {2008, 6, 30, 11, 5, 30, null, null, "Europe/Paris",            null, DateTimeException.class},
                 {2008, 6, 30, 11, 5, 30, 500000000, null, "Europe/Paris",       null, DateTimeException.class},
@@ -731,7 +735,11 @@ public class TCKDateTimeFormatters {
             String input, Class<?> invalid) {
         if (input != null) {
             DateTimeBuilder expected = createDateTime(year, month, day, hour, min, sec, nano);
-            buildCalendrical(expected, offsetId, zoneId);
+            if (offsetId.equals(zoneId)) {
+                buildCalendrical(expected, offsetId, null);
+            } else {
+                buildCalendrical(expected, offsetId, zoneId);
+            }
             assertParseMatch(DateTimeFormatters.isoZonedDateTime().parseToBuilder(input, new ParsePosition(0)), expected);
         }
     }
@@ -742,23 +750,23 @@ public class TCKDateTimeFormatters {
     @DataProvider(name="sample_isoDateTime")
     Object[][] provider_sample_isoDateTime() {
         return new Object[][]{
-//                {2008, null, null, null, null, null, null, null, null, null, DateTimeException.class},
-//                {null, 6, null, null, null, null, null, null, null, null, DateTimeException.class},
-//                {null, null, 30, null, null, null, null, null, null, null, DateTimeException.class},
-//                {null, null, null, 11, null, null, null, null, null, null, DateTimeException.class},
-//                {null, null, null, null, 5, null, null, null, null, null, DateTimeException.class},
-//                {null, null, null, null, null, null, null, "+01:00", null, null, DateTimeException.class},
-//                {null, null, null, null, null, null, null, null, "Europe/Paris", null, DateTimeException.class},
-//                {2008, 6, 30, 11, null, null, null, null, null, null, DateTimeException.class},
-//                {2008, 6, 30, null, 5, null, null, null, null, null, DateTimeException.class},
-//                {2008, 6, null, 11, 5, null, null, null, null, null, DateTimeException.class},
-//                {2008, null, 30, 11, 5, null, null, null, null, null, DateTimeException.class},
-//                {null, 6, 30, 11, 5, null, null, null, null, null, DateTimeException.class},
-//
-//                {2008, 6, 30, 11, 5, null, null, null, null,                    "2008-06-30T11:05", null},
-//                {2008, 6, 30, 11, 5, 30, null, null, null,                      "2008-06-30T11:05:30", null},
-//                {2008, 6, 30, 11, 5, 30, 500000000, null, null,                 "2008-06-30T11:05:30.5", null},
-//                {2008, 6, 30, 11, 5, 30, 1, null, null,                         "2008-06-30T11:05:30.000000001", null},
+                {2008, null, null, null, null, null, null, null, null, null, DateTimeException.class},
+                {null, 6, null, null, null, null, null, null, null, null, DateTimeException.class},
+                {null, null, 30, null, null, null, null, null, null, null, DateTimeException.class},
+                {null, null, null, 11, null, null, null, null, null, null, DateTimeException.class},
+                {null, null, null, null, 5, null, null, null, null, null, DateTimeException.class},
+                {null, null, null, null, null, null, null, "+01:00", null, null, DateTimeException.class},
+                {null, null, null, null, null, null, null, null, "Europe/Paris", null, DateTimeException.class},
+                {2008, 6, 30, 11, null, null, null, null, null, null, DateTimeException.class},
+                {2008, 6, 30, null, 5, null, null, null, null, null, DateTimeException.class},
+                {2008, 6, null, 11, 5, null, null, null, null, null, DateTimeException.class},
+                {2008, null, 30, 11, 5, null, null, null, null, null, DateTimeException.class},
+                {null, 6, 30, 11, 5, null, null, null, null, null, DateTimeException.class},
+
+                {2008, 6, 30, 11, 5, null, null, null, null,                    "2008-06-30T11:05", null},
+                {2008, 6, 30, 11, 5, 30, null, null, null,                      "2008-06-30T11:05:30", null},
+                {2008, 6, 30, 11, 5, 30, 500000000, null, null,                 "2008-06-30T11:05:30.5", null},
+                {2008, 6, 30, 11, 5, 30, 1, null, null,                         "2008-06-30T11:05:30.000000001", null},
 
                 {2008, 6, 30, 11, 5, null, null, "+01:00", null,                "2008-06-30T11:05+01:00", null},
                 {2008, 6, 30, 11, 5, 30, null, "+01:00", null,                  "2008-06-30T11:05:30+01:00", null},

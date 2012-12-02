@@ -601,6 +601,7 @@ public final class DateTimeFormatters {
      * The format consists of:
      * <p><ul>
      * <li>The {@link #isoOffsetDateTime()}
+     * <li>If the zone ID is not available or is a {@code ZoneOffset} then the format is complete.
      * <li>An open square bracket '['.
      * <li>The {@link ZoneId#getId() zone ID}. This is not part of the ISO-8601 standard.
      * <li>A close square bracket ']'.
@@ -617,9 +618,9 @@ public final class DateTimeFormatters {
     static {
         ISO_ZONED_DATE_TIME = new DateTimeFormatterBuilder()
             .append(ISO_OFFSET_DATE_TIME)
-            .optionalStart()  // TODO: remove
+            .optionalStart()
             .appendLiteral('[')
-            .appendZoneId()
+            .appendZoneRegionId()
             .appendLiteral(']')
             .toFormatter();
     }
@@ -639,7 +640,7 @@ public final class DateTimeFormatters {
      * <li>If the offset is not available to print/parse then the format is complete.
      * <li>The {@link ZoneOffset#getId() offset ID}. If the offset has seconds then
      *  they will be handled even though this is not part of the ISO-8601 standard.
-     * <li>If the zone is not available to print/parse then the format is complete.
+     * <li>If the zone ID is not available or is a {@code ZoneOffset} then the format is complete.
      * <li>An open square bracket '['.
      * <li>The {@link ZoneId#getId() zone ID}. This is not part of the ISO-8601 standard.
      * <li>A close square bracket ']'.
@@ -662,7 +663,7 @@ public final class DateTimeFormatters {
             .appendOffsetId()
             .optionalStart()
             .appendLiteral('[')
-            .appendZoneId()
+            .appendZoneRegionId()
             .appendLiteral(']')
             .toFormatter();
     }
