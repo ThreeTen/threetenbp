@@ -631,12 +631,13 @@ public final class ZonedDateTime
     /**
      * Gets the time-zone, such as 'Europe/Paris'.
      * <p>
-     * This returns the zone ID. This identifies the time-zone rules that
-     * determine when and how the offset from UTC/Greenwich changes.
+     * This returns the zone ID. This identifies the time-zone {@link ZoneRules rules}
+     * that determine when and how the offset from UTC/Greenwich changes.
      * <p>
-     * The zone ID may be {@link #withLockedOffset() locked} to a fixed offset,
-     * in which case the result of this method and {@link #getOffset()} will
-     * be the same.
+     * The zone ID may be same as the {@link #getOffset() offset}.
+     * If this is true, then any future calculations, such as addition or subtraction,
+     * have no complex edge cases due to time-zone rules.
+     * See also {@link #withFixedOffsetZone()}.
      *
      * @return the time-zone, not null
      */
@@ -693,23 +694,24 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this date-time with the zone ID locked to the offset.
+     * Returns a copy of this date-time with the zone ID set to the offset.
      * <p>
-     * This locks the offset of the zoned date-time by returning a date-time that
-     * has the zone ID equal to the offset. The local date-time, offset and
+     * This returns a zoned date-time where the zone ID is the same as the current
+     * result of {@link #getOffset()}. The local date-time, offset and
      * instant of the result will be the same as in this date-time.
      * <p>
-     * Locking the date-time to a single offset means that any future calculations,
-     * such as addition or subtraction, are guaranteed to work without any complex
-     * side effects due to time-zone rules.
+     * Setting the date-time to a fixed single offset means that any future
+     * calculations, such as addition or subtraction, have no complex edge cases
+     * due to time-zone rules.
      * This might also be useful when sending a zoned date-time across a network,
-     * as most protocols, such as ISO-8601, only handle offsets, and not zone IDs.
+     * as most protocols, such as ISO-8601, only handle offsets,
+     * and not region-based zone IDs.
      * <p>
-     * This is equivalent to {@code zdt.withOffsetSameInstant(zdt.getOffset())}.
+     * This is equivalent to {@code ZonedDateTime.of(zdt.getDateTime(), zdt.getOffset())}.
      *
      * @return a {@code ZonedDateTime} with the zone ID set to the offset, not null
      */
-    public ZonedDateTime withLockedOffset() {
+    public ZonedDateTime withFixedOffsetZone() {
         return this.zone.equals(offset) ? this : new ZonedDateTime(dateTime, offset, offset);
     }
 
