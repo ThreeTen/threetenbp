@@ -921,7 +921,7 @@ public final class DateTimeFormatterBuilder {
      * Pattern letter 'W' is not available.
      * Pattern letters 'Z' and 'X' are extended.
      * Pattern letter 'y' and 'Y' parse years of two digits and more than 4 digits differently.
-     * Pattern letters 'Q', 'n', 'A', 'N', 'I', 'f' and 'p' are added.
+     * Pattern letters 'n', 'A', 'N', 'I' and 'p' are added.
      * Number types will reject large numbers.
      * The pattern string is also similar, but not identical, to that defined by the
      * Unicode Common Locale Data Repository (CLDR).

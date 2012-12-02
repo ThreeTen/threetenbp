@@ -39,6 +39,7 @@ import javax.time.LocalTime;
 import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
+import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.DateTimeFormatter;
@@ -188,6 +189,10 @@ import javax.time.format.DateTimeFormatter;
  * <li>perform the calculation
  * <li>convert back to {@code LocalDate}
  * </ul><p>
+ * Developers writing low-level frameworks or libraries should also avoid this interface.
+ * Instead, one of the two general purpose access interfaces should be used.
+ * Use {@link DateTimeAccessor} if read-only access is required, or use {@link DateTime}
+ * if read-write access is required.
  *
  * <h4>Implementation notes</h4>
  * This interface must be implemented with care to ensure other classes operate correctly.
