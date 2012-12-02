@@ -1630,22 +1630,6 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // plusDuration(int,int,int,long)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_plusDuration_intintintlong() {
-        ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
-        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 16, 36, 5, 507), ZONE_0100);
-        assertEquals(t.plusDuration(4, 5, 6, 7), expected);
-    }
-
-    @Test(groups={"tck"})
-    public void test_plusDuration_intintintlong_zero() {
-        ZonedDateTime t = TEST_DATE_TIME.plusDuration(0, 0, 0, 0);
-        assertEquals(t, TEST_DATE_TIME);
-    }
-
-    //-----------------------------------------------------------------------
     // minus(adjuster)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"}, dataProvider="plusDays")
@@ -1815,22 +1799,6 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.minusNanos(1);
         assertEquals(test, ZonedDateTime.of(ldt.minusNanos(1), ZONE_0100));
-    }
-
-    //-----------------------------------------------------------------------
-    // minusDuration(int,int,int,long)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_minusDuration_intintintlong() {
-        ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
-        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 8, 25, 53, 493), ZONE_0100);
-        assertEquals(t.minusDuration(4, 5, 6, 7), expected);
-    }
-
-    @Test(groups={"tck"})
-    public void test_minusDuration_intintintlong_zero() {
-        ZonedDateTime t = TEST_DATE_TIME.minusDuration(0, 0, 0, 0);
-        assertEquals(t, TEST_DATE_TIME);
     }
 
     //-----------------------------------------------------------------------

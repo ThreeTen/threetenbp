@@ -31,8 +31,6 @@
  */
 package javax.time;
 
-import static javax.time.DateTimeConstants.SECONDS_PER_HOUR;
-import static javax.time.DateTimeConstants.SECONDS_PER_MINUTE;
 import static javax.time.calendrical.ChronoField.INSTANT_SECONDS;
 import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
 
@@ -1471,34 +1469,6 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code ZonedDateTime} with the specified duration added.
-     * <p>
-     * The addition is performed on the underlying instant using the zone ID.
-     * For example, if there is a gap in the local time-line of one hour from
-     * 01:00 to 02:00, then adding a duration of one hour to 00:30 will yield 02:30.
-     * <p>
-     * The addition of a duration is always absolute with no special cases due to time-zones.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hours  the hours to add, may be negative
-     * @param minutes  the minutes to add, may be negative
-     * @param seconds  the seconds to add, may be negative
-     * @param nanos  the nanos to add, may be negative
-     * @return a {@code ZonedDateTime} based on this date-time with the duration added, not null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    public ZonedDateTime plusDuration(int hours, int minutes, int seconds, long nanos) {
-        if ((hours | minutes | seconds | nanos) == 0) {
-            return this;
-        }
-        long duration = ((long) hours) * SECONDS_PER_HOUR + ((long) minutes) * SECONDS_PER_MINUTE + seconds;
-        return plus(Duration.ofSeconds(duration, nanos));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Returns a copy of this date-time with the specified period subtracted.
      * <p>
      * This method returns a new date-time based on this time with the specified period subtracted.
@@ -1723,34 +1693,6 @@ public final class ZonedDateTime
      */
     public ZonedDateTime minusNanos(long nanos) {
         return (nanos == Long.MIN_VALUE ? plusNanos(Long.MAX_VALUE).plusNanos(1) : plusNanos(-nanos));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this {@code ZonedDateTime} with the specified duration subtracted.
-     * <p>
-     * The subtraction is performed on the underlying instant using the zone ID.
-     * For example, if there is a gap in the local time-line of one hour from
-     * 01:00 to 02:00, then subtracting a duration of one hour from 02:30 will yield 00:30.
-     * <p>
-     * The subtraction of a duration is always absolute with no special cases due to time-zones.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hours  the hours to subtract, may be negative
-     * @param minutes  the minutes to subtract, may be negative
-     * @param seconds  the seconds to subtract, may be negative
-     * @param nanos  the nanos to subtract, may be negative
-     * @return a {@code ZonedDateTime} based on this date-time with the duration subtracted, not null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    public ZonedDateTime minusDuration(int hours, int minutes, int seconds, long nanos) {
-        if ((hours | minutes | seconds | nanos) == 0) {
-            return this;
-        }
-        long duration = ((long) hours) * SECONDS_PER_HOUR + ((long) minutes) * SECONDS_PER_MINUTE + seconds;
-        return minus(Duration.ofSeconds(duration, nanos));
     }
 
     //-----------------------------------------------------------------------
