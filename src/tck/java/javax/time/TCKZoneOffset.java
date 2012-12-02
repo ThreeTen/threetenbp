@@ -344,52 +344,52 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
         doTestOffset(test2, 18, 0, 0);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_int_hours_minutes_seconds_plusHoursMinusMinutes() {
         ZoneOffset.ofHoursMinutesSeconds(1, -1, 0);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_int_hours_minutes_seconds_plusHoursMinusSeconds() {
         ZoneOffset.ofHoursMinutesSeconds(1, 0, -1);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_int_hours_minutes_seconds_minusHoursPlusMinutes() {
         ZoneOffset.ofHoursMinutesSeconds(-1, 1, 0);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_int_hours_minutes_seconds_minusHoursPlusSeconds() {
         ZoneOffset.ofHoursMinutesSeconds(-1, 0, 1);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_int_hours_minutes_seconds_zeroHoursMinusMinutesPlusSeconds() {
         ZoneOffset.ofHoursMinutesSeconds(0, -1, 1);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_int_hours_minutes_seconds_zeroHoursPlusMinutesMinusSeconds() {
         ZoneOffset.ofHoursMinutesSeconds(0, 1, -1);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_int_hours_minutes_seconds_minutesTooLarge() {
         ZoneOffset.ofHoursMinutesSeconds(0, 60, 0);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_int_hours_minutes_seconds_minutesTooSmall() {
         ZoneOffset.ofHoursMinutesSeconds(0, -60, 0);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_int_hours_minutes_seconds_secondsTooLarge() {
         ZoneOffset.ofHoursMinutesSeconds(0, 0, 60);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_int_hours_minutes_seconds_secondsTooSmall() {
         ZoneOffset.ofHoursMinutesSeconds(0, 0, 60);
     }
@@ -412,12 +412,12 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
         assertEquals(ZoneOffset.ofTotalSeconds(-18 * 60 * 60), ZoneOffset.ofHours(-18));
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_ofTotalSeconds_tooLarge() {
         ZoneOffset.ofTotalSeconds(18 * 60 * 60 + 1);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_ofTotalSeconds_tooSmall() {
         ZoneOffset.ofTotalSeconds(-18 * 60 * 60 - 1);
     }
