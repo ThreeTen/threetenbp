@@ -51,7 +51,7 @@ import javax.time.zone.ZoneRulesProvider;
  * <p>
  * A {@code ZoneId} is used to identify the rules used to convert between
  * an {@link Instant} and a {@link LocalDateTime}.
- * There are two distinct types of identifier:
+ * There are two distinct types of ID:
  * <p><ul>
  * <li>Fixed offsets - a fully resolved offset from UTC/Greenwich, that uses
  *  the same offset for all local date-times
@@ -61,45 +61,48 @@ import javax.time.zone.ZoneRulesProvider;
  * Most fixed offsets are represented by {@link ZoneOffset}.
  * <p>
  * The actual rules, describing when and how the offset changes, are defined by {@link ZoneRules}.
- * This class is simply an identifier used to obtain the underlying rules.
+ * This class is simply an ID used to obtain the underlying rules.
  * This approach is taken because rules are defined by governments and change
- * frequently, whereas the identifier is stable.
+ * frequently, whereas the ID is stable.
  * <p>
  * The distinction has other effects. Serializing the {@code ZoneId} will only send
- * the identifier, whereas serializing the rules sends the entire data set.
- * Similarly, a comparison of two identifiers only examines the identifier, whereas
+ * the ID, whereas serializing the rules sends the entire data set.
+ * Similarly, a comparison of two IDs only examines the ID, whereas
  * a comparison of two rules examines the entire data set.
  * <p>
  * The code supports loading a {@code ZoneId} on a JVM which does not have available rules
- * for that identifier. This allows the date-time object, such as {@link ZonedDateTime},
+ * for that ID. This allows the date-time object, such as {@link ZonedDateTime},
  * to still be queried.
  *
- * <h4>Time-zone identifiers</h4>
- * The identifier is unique within the system.
+ * <h4>Time-zone IDs</h4>
+ * The ID is unique within the system.
  * The formats for offset and region IDs differ.
  * <p>
- * The {@code ZoneOffset} identifier is either 'Z' for an offset equal to UTC/Greenwich
- * or an amount away from UTC/Greenwich, such as '+02:00' or '-05:00'.
+ * An ID is parsed as an offset ID if it starts with 'UTC', 'GMT', '+' or '-', or
+ * is a single letter.
+ * For example, 'Z', '+02:00', '-05:00', 'UTC+05' and 'GMT-6' are all valid offset IDs.
+ * Note that some IDs, such as 'D' or '+ABC' meet the criteria, but are invalid.
  * <p>
- * In addition, identifiers starting with 'UTC' or 'GMT' are mapped to {@code ZoneOffset}.
- * These mapped identifiers will be normalized to the default used by {@code ZoneOffset}.
+ * All other IDs are considered to be region IDs.
  * <p>
- * All other identifiers are considered to be region identifiers.
+ * Region IDs are defined by configuration, which can be thought of as a {@code Map}
+ * from region ID to {@code ZoneRules}, see {@link ZoneRulesProvider}.
  * <p>
- * There are multiple groups producing the rule data sets, each of which define their own
- * time-zone regions. The default group is the IANA Time Zone Database (TZDB).
+ * Time-zones are defined by governments and change frequently. There are a number of
+ * organizations, known here as groups, that monitor time-zone changes and collate them.
+ * The default group is the IANA Time Zone Database (TZDB).
  * Other organizations include IATA (the airline industry body) and Microsoft.
- * Region identifiers defined by the TZDB group, such as 'Europe/London' or 'America/New_York',
- * take precedence over other groups.
  * <p>
- * It is recommended that the group name is included in all identifiers supplied by groups
- * other than TZDB to avoid conflicts.
- * For example, IATA airline time-zones are typically the same as the three letter airport codes
- * However, the airport of Utrecht has the code 'UTC', which is an obviously conflict.
- * The recommended format is 'group~region', thus if IATA data were defined, Utrecht
- * airport would be 'IATA~UTC'.
+ * Each group defines its own format for region ID.
+ * The TZDB group defines IDs such as 'Europe/London' or 'America/New_York'.
+ * TZDB IDs take precedence over other groups.
  * <p>
- * Region identifiers and zone rules are supplied by {@link ZoneRulesProvider}.
+ * It is strongly recommended that the group name is included in all Ids supplied by
+ * groups other than TZDB to avoid conflicts. For example, IATA airline time-zone
+ * region IDs are typically the same as the three letter airport code.
+ * However, the airport of Utrecht has the code 'UTC', which is obviously a conflict.
+ * The recommended format for region IDs from groups other than TZDB is 'group~region'.
+ * Thus if IATA data were defined, Utrecht airport would be 'IATA~UTC'.
  *
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
@@ -241,7 +244,7 @@ public abstract class ZoneId {
      * <p>
      * Many users of time-zones use short abbreviations, such as PST for
      * 'Pacific Standard Time' and PDT for 'Pacific Daylight Time'.
-     * These abbreviations are not unique, and so cannot be used as identifiers.
+     * These abbreviations are not unique, and so cannot be used as IDs.
      * This method allows a map of string to time-zone to be setup and reused
      * within an application.
      *
@@ -259,18 +262,27 @@ public abstract class ZoneId {
     }
 
     /**
-     * Obtains an instance of {@code ZoneId} from an identifier ensuring that the
-     * identifier is valid and available for use.
+     * Obtains an instance of {@code ZoneId} from an ID ensuring that the
+     * ID is valid and available for use.
      * <p>
      * This method parses the ID, applies any appropriate normalization, and validates it
      * against the known set of IDs for which rules are available.
      * <p>
-     * Four forms of identifier are recognized:
+     * An ID is parsed as though it is an offset ID if it starts with 'UTC', 'GMT', '+'
+     * or '-', or if it has less then two letters.
+     * The offset of {@link ZoneOffset#UTC zero} may be represented in multiple ways,
+     * including 'Z', 'UTC', 'GMT', 'UTC0' 'GMT0', '+00:00', '-00:00' and 'UTC+00:00'.
+     * <p>
+     * Eight forms of ID are recognized, where '{offset}' means to parse using {@link ZoneOffset#of(String)}:
      * <p><ul>
-     * <li><code>{offset}</code> - a {@link ZoneOffset} identifier, such as 'Z' or '+02:00'
-     * <li><code>UTC{offset}</code> - alternate form of a {@code ZoneOffset} identifier
-     * <li><code>GMT{offset}</code> - alternate form of a {@code ZoneOffset} identifier
-     * <li><code>{regionID}</code> - full region identifier, loaded from configuration
+     * <li><code>{offset}</code> - a {@link ZoneOffset} ID, such as 'Z' or '+02:00'
+     * <li><code>UTC</code> - alternate form of a {@code ZoneOffset} ID equal to 'Z'
+     * <li><code>UTC0</code> - alternate form of a {@code ZoneOffset} ID equal to 'Z'
+     * <li><code>UTC{offset}</code> - alternate form of a {@code ZoneOffset} ID equal to '{offset}'
+     * <li><code>GMT</code> - alternate form of a {@code ZoneOffset} ID equal to 'Z'
+     * <li><code>GMT0</code> - alternate form of a {@code ZoneOffset} ID equal to 'Z'
+     * <li><code>GMT{offset}</code> - alternate form of a {@code ZoneOffset} ID equal to '{offset}'r
+     * <li><code>{regionID}</code> - full region ID, loaded from configuration
      * </ul><p>
      * Region IDs must match the regular expression <code>[A-Za-z][A-Za-z0-9~/._+-]+</code>.
      * <p>
@@ -285,12 +297,10 @@ public abstract class ZoneId {
      */
     public static ZoneId of(String zoneId) {
         Objects.requireNonNull(zoneId, "zoneId");
-        if (zoneId.startsWith("+") || zoneId.startsWith("-")) {
+        if (zoneId.length() <= 1 || zoneId.startsWith("+") || zoneId.startsWith("-")) {
             return ZoneOffset.of(zoneId);
-        } else if (zoneId.equals("Z")) {
-            return ZoneOffset.UTC;
         } else if (zoneId.startsWith("UTC") || zoneId.startsWith("GMT")) {
-            if (zoneId.length() == 3 || zoneId.equals("GMT0")) {
+            if (zoneId.length() == 3 || (zoneId.length() == 4 && zoneId.charAt(3) == '0')) {
                 return ZoneOffset.UTC;
             }
             return ZoneOffset.of(zoneId.substring(3));
