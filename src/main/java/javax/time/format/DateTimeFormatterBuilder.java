@@ -422,8 +422,8 @@ public final class DateTimeFormatterBuilder {
      * No rounding occurs due to the maximum width - digits are simply dropped.
      * <p>
      * When parsing in strict mode, the number of parsed digits must be between
-     * the minimum and maximum width. When parsing in lenient mode, the number
-     * of parsed digits must be at least the minimum width, up to 9 digits.
+     * the minimum and maximum width. When parsing in lenient mode, the minimum
+     * width is considered to be zero and the maximum is nine.
      * <p>
      * If the value cannot be obtained then an exception will be thrown.
      * If the value is negative an exception will be thrown.
@@ -2056,23 +2056,24 @@ public final class DateTimeFormatterBuilder {
 
         @Override
         public int parse(DateTimeParseContext context, CharSequence text, int position) {
+            int effectiveMin = (context.isStrict() ? minWidth : 0);
+            int effectiveMax = (context.isStrict() ? maxWidth : 9);
             int length = text.length();
             if (position == length) {
                 // valid if whole field is optional, invalid if minimum width
-                return (minWidth > 0 ? ~position : position);
+                return (effectiveMin > 0 ? ~position : position);
             }
             if (decimalPoint) {
                 if (text.charAt(position) != context.getSymbols().getDecimalSeparator()) {
                     // valid if whole field is optional, invalid if minimum width
-                    return (minWidth > 0 ? ~position : position);
+                    return (effectiveMin > 0 ? ~position : position);
                 }
                 position++;
             }
-            int minEndPos = position + minWidth;
+            int minEndPos = position + effectiveMin;
             if (minEndPos > length) {
                 return ~position;  // need at least min width digits
             }
-            int effectiveMax = (context.isStrict() ? maxWidth : 9);
             int maxEndPos = Math.min(position + effectiveMax, length);
             int total = 0;  // can use int because we are only parsing up to 9 digits
             int pos = position;
