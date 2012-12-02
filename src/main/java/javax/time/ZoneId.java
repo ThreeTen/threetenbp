@@ -231,7 +231,8 @@ public abstract class ZoneId {
      * then the result of this method will also change.
      *
      * @return the zone ID, not null
-     * @throws DateTimeException if a zone ID cannot be created from the TimeZone object
+     * @throws DateTimeException if the converted zone ID has an invalid format
+     * @throws ZoneRulesException if the converted zone region ID cannot be found
      */
     public static ZoneId systemDefault() {
         return ZoneId.of(TimeZone.getDefault().getID(), OLD_IDS_POST_2005);
@@ -251,7 +252,8 @@ public abstract class ZoneId {
      * @param zoneId  the time-zone ID, not null
      * @param aliasMap  a map of alias zone IDs (typically abbreviations) to real zone IDs, not null
      * @return the zone ID, not null
-     * @throws DateTimeException if the zone ID is malformed or cannot be found
+     * @throws DateTimeException if the zone ID has an invalid format
+     * @throws ZoneRulesException if the zone region ID cannot be found
      */
     public static ZoneId of(String zoneId, Map<String, String> aliasMap) {
         Objects.requireNonNull(zoneId, "zoneId");
@@ -293,7 +295,8 @@ public abstract class ZoneId {
      *
      * @param zoneId  the time-zone ID, not null
      * @return the zone ID, not null
-     * @throws DateTimeException if the zone ID is malformed or cannot be found
+     * @throws DateTimeException if the zone ID has an invalid format
+     * @throws ZoneRulesException if the zone region ID cannot be found
      */
     public static ZoneId of(String zoneId) {
         Objects.requireNonNull(zoneId, "zoneId");
@@ -349,22 +352,6 @@ public abstract class ZoneId {
     public abstract String getId();
 
     //-----------------------------------------------------------------------
-    /**
-     * Checks if this time-zone is valid such that rules can be obtained for it.
-     * <p>
-     * This will return true if rules are available for this ID. If this method
-     * returns true, then {@link #getRules()} will return a valid rules instance.
-     * <p>
-     * A time-zone can be invalid if it is deserialized in a JVM which does not
-     * have the same rules available as the JVM that serialized it.
-     * {@link ZoneOffset} will always return true.
-     *
-     * @return true if this time-zone is valid and rules are available
-     */
-    public boolean isValid() {
-        return true;
-    }
-
     /**
      * Gets the time-zone rules for this ID allowing calculations to be performed.
      * <p>

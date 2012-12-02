@@ -31,65 +31,62 @@
  */
 package javax.time.zone;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.NavigableMap;
 import java.util.Objects;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.regex.Pattern;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.time.DateTimeException;
 import javax.time.ZoneId;
+import javax.time.ZonedDateTime;
 
 /**
  * Provider of time-zone rules to the system.
- * <p>
- * This class manages time-zone rules.
- * The static methods provide the public API that can be used to manage the providers.
- * The abstract methods provide the SPI that allows rules to be provided.
- * <p>
- * Rules are looked up be group, version and region. The group and region are
- * expressed in the {@link ZoneId}, whereas the version is specific to the providers.
- * <p>
- * Since time-zone rules are political, the data can change at any time.
- * The set of current rules is managed by groups which publish new versions of
- * the data set over time to handle the political changes.
- * The default 'TZDB' group uses version numbering consisting of the year followed
- * by a letter, such as '2009e' or '2012f'.
- * Versions are assumed to be sortable in lexicographical order.
- * Version IDs must match the regex {@code [A-Za-z0-9._-]+}.
- * <p>
- * Caching is the responsibility of the SPI implementation.
- * Any rules that are returned once for a given lookup must continue to be returned
- * in the future.
- * <p>
- * Many systems would like to receive new time-zone rules dynamically.
- * This must be implemented separately from this interface, typically using a listener.
- * Whenever the listener detects new rules it should call
- * {@link #registerProvider(ZoneRulesProvider)} using a standard
- * immutable provider implementation.
+  * <p>
+  * This class manages the configuration of time-zone rules.
+  * The static methods provide the public API that can be used to manage the providers.
+  * The abstract methods provide the SPI that allows rules to be provided.
+  * <p>
+  * Rules are looked up primarily by zone ID, as used by {@link ZoneId}.
+  * Only zone region IDs may be used, zone offset IDs are not used here.
+  * <p>
+  * Time-zone rules are political, thus the data can change at any time.
+  * Each provider will provide the latest rules for each zone ID, but they
+  * may also provide the history of how the rules changed.
  *
  * <h4>Implementation notes</h4>
  * This interface is a service provider that can be called by multiple threads.
  * Implementations must be immutable and thread-safe.
+ * <p>
+ * Providers must ensure that once a rule has been seen by the application, the
+ * rule must continue to be available.
+  * <p>
+  * Many systems would like to update time-zone rules dynamically without stopping the JVM.
+  * When examined in detail, this is a complex problem.
+  * Providers may choose to handle dynamic updates, however the default provider does not.
  */
 public abstract class ZoneRulesProvider {
 
     /**
-     * Group ID pattern.
+     * The set of loaded providers.
      */
-    private static final Pattern PATTERN_GROUP = Pattern.compile("[A-Za-z0-9._-]+");
+    private static final CopyOnWriteArrayList<ZoneRulesProvider> PROVIDERS = new CopyOnWriteArrayList<>();
     /**
-     * The zone rule groups.
-     * Should not be empty.
+     * The lookup from zone region ID to provider.
      */
-    private static final ConcurrentMap<String, ZoneRulesProvider> GROUPS = new ConcurrentHashMap<>(16, 0.75f, 2);
+    private static final ConcurrentMap<String, ZoneRulesProvider> ZONES = new ConcurrentHashMap<>(512, 0.75f, 2);
     static {
         ServiceLoader<ZoneRulesProvider> sl = ServiceLoader.load(ZoneRulesProvider.class, ClassLoader.getSystemClassLoader());
+        List<ZoneRulesProvider> loaded = new ArrayList<>();
         Iterator<ZoneRulesProvider> it = sl.iterator();
         while (it.hasNext()) {
             ZoneRulesProvider provider;
@@ -101,159 +98,197 @@ public abstract class ZoneRulesProvider {
                 }
                 throw ex;
             }
-            registerProvider(provider);
+            registerProvider0(provider);
         }
+        // CopyOnWriteList could be slow if lots of providers and each added individually
+        PROVIDERS.addAll(loaded);
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Gets the set of available zone IDs.
+     * <p>
+     * These zone IDs are loaded and available for use by {@code ZoneId}.
+     *
+     * @return a modifiable copy of the set of zone IDs, not null
+     */
+    public static Set<String> getAvailableZoneIds() {
+        return new HashSet<>(ZONES.keySet());
     }
 
     /**
-     * The zone rules group ID, such as 'TZDB'.
-     */
-    private final String groupId;
-
-    /**
-     * Gets the set of available zone rule groups.
+     * Gets the rules for the zone ID.
      * <p>
-     * Which groups are available is dependent on the registered providers.
+     * This returns the latest available rules for the zone ID.
      * <p>
-     * The returned groups will remain available and valid for the lifetime of the application as
-     * there is no way to deregister time-zone information. More groups may be added during
-     * the lifetime of the application, however the returned set will not be altered.
-     * <p>
-     * The set should always contain 'TZDB'.
-     * The group 'UTC' is never included as it is handled entirely within {@code ZoneId}.
+     * This method relies on time-zone data provider files that are configured.
+     * These are loaded using a {@code ServiceLoader}.
      *
-     * @return a modifiable copy of the available group IDs, not null
+     * @param zoneId  the zone region ID as used by {@code ZoneId}, not null
+     * @return the rules for the ID, not null
+     * @throws ZoneRulesException if the zone ID is unknown
      */
-    public static Set<String> getAvailableGroupIds() {
-        return new HashSet<>(GROUPS.keySet());
+    public static ZoneRules getRules(String zoneId) {
+        Objects.requireNonNull(zoneId, "zoneId");
+        return getProvider(zoneId).provideRules(zoneId);
     }
 
     /**
-     * Gets a group by ID, such as 'TZDB'.
+     * Gets the history of rules for the zone ID.
      * <p>
-     * This gets the provider of rule data for the specified group.
+     * Time-zones are defined by governments and change frequently.
+     * This method allows applications to find the history of changes to the
+     * rules for a single zone ID. The map is keyed by a string, which is the
+     * version string associated with the rules.
      * <p>
-     * This method relies on time-zone data provider files. These are often loaded as jar files.
-     * If no providers have been {@link #registerProvider(ZoneRulesProvider) registered} or no
-     * provider has been registered for the requested group then an exception is thrown.
+     * The exact meaning and format of the version is provider specific.
+     * The version must follow lexicographical order, thus the returned map will
+     * be order from the oldest known rules to the newest available rules.
+     * The default 'TZDB' group uses version numbering consisting of the year
+     * followed by a letter, such as '2009e' or '2012f'.
+     * <p>
+     * Implementations must provide a result for each valid zone ID, however
+     * they do not have to provide a history of rules.
+     * Thus the map will always contain one element, and will only contain more
+     * than one element if historical rule information is available.
      *
-     * @param groupId  the group ID, not null
-     * @return the provider for the group, not null
-     * @throws DateTimeException if there is no provider for the specified group
+     * @param zoneId  the zone region ID as used by {@code ZoneId}, not null
+     * @return a modifiable copy of the history of the rules for the ID, sorted
+     *  from oldest to newest, not null
+     * @throws ZoneRulesException if the zone ID is unknown
      */
-    public static ZoneRulesProvider getProvider(String groupId) {
-        Objects.requireNonNull(groupId, "groupId");
-        ZoneRulesProvider group = GROUPS.get(groupId);
-        if (group == null) {
-            if (GROUPS.isEmpty()) {
-                throw new DateTimeException("Unknown time-zone group '" + groupId
-                        + "', no time-zone data files registered");
+    public static NavigableMap<String, ZoneRules> getVersions(String zoneId) {
+        Objects.requireNonNull(zoneId, "zoneId");
+        return getProvider(zoneId).provideVersions(zoneId);
+    }
+
+    /**
+     * Gets the provider for the zone ID.
+     *
+     * @param zoneId  the zone region ID as used by {@code ZoneId}, not null
+     * @return the provider, not null
+     * @throws ZoneRulesException if the zone ID is unknown
+     */
+    private static ZoneRulesProvider getProvider(String zoneId) {
+        ZoneRulesProvider provider = ZONES.get(zoneId);
+        if (provider == null) {
+            if (ZONES.isEmpty()) {
+                throw new ZoneRulesException("No time-zone data files registered");
             }
-            throw new DateTimeException("Unknown time-zone group '" + groupId + '\'');
+            throw new ZoneRulesException("Unknown time-zone ID: " + zoneId);
         }
-        return group;
+        return provider;
     }
 
+    //-------------------------------------------------------------------------
     /**
      * Registers a zone rules provider.
      * <p>
      * This adds a new provider to those currently available.
-     * Each provider is specific to one group and no two provider may supply
-     * information about the same group.
+     * A provider supplies rules for one or more zone IDs.
+     * A provider cannot be registered if it supplies a zone ID that has already been
+     * registered. See the notes on time-zone IDs in {@link ZoneId}, especially
+     * the section on using the concept of a "group" to make IDs unique.
      * <p>
      * To ensure the integrity of time-zones already created, there is no way
      * to deregister providers.
      *
      * @param provider  the provider to register, not null
-     * @throws DateTimeException if the provider is already registered
+     * @throws ZoneRulesException if a region is already registered
      */
     public static void registerProvider(ZoneRulesProvider provider) {
-        ZoneRulesProvider old = GROUPS.putIfAbsent(provider.getGroupId(), provider);
-        if (old != null) {
-            throw new DateTimeException("Provider already registered for time-zone group: " + provider.getGroupId());
+        Objects.requireNonNull(provider, "provider");
+        registerProvider0(provider);
+        PROVIDERS.add(provider);
+    }
+
+    /**
+     * Registers the provider.
+     *
+     * @param provider  the provider to register, not null
+     * @throws ZoneRulesException if unable to complete the registration
+     */
+    private static void registerProvider0(ZoneRulesProvider provider) {
+        for (String zoneId : provider.provideZoneIds()) {
+            Objects.requireNonNull(zoneId, "zoneId");
+            ZoneRulesProvider old = ZONES.putIfAbsent(zoneId, provider.provideBind(zoneId));
+            if (old != null) {
+                throw new ZoneRulesException(
+                    "Unable to register zone as one already registered with that ID: " + zoneId +
+                    ", currently loading from provider: " + provider);
+            }
         }
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Refreshes the rules from the underlying data provider.
+     * <p>
+     * This method is an extension point that allows providers to refresh their
+     * rules dynamically at a time of the applications choosing.
+     * After calling this method, the offset stored in any {@link ZonedDateTime}
+     * may be invalid for the zone ID.
+     * <p>
+     * Dynamic behavior is entirely optional and most providers, including the
+     * default provider, do not support it.
+     *
+     * @return true if the rules were updated
+     * @throws ZoneRulesException if an error occurs during the refresh
+     */
+    public static boolean refresh() {
+        boolean changed = false;
+        for (ZoneRulesProvider provider : PROVIDERS) {
+            changed |= provider.provideRefresh();
+        }
+        return changed;
     }
 
     //-----------------------------------------------------------------------
     /**
      * Constructor.
-     *
-     * @param groupId  the group ID, not null
-     * @throws DateTimeException if the group ID is invalid
      */
-    protected ZoneRulesProvider(String groupId) {
-        Objects.requireNonNull(groupId, "groupId");
-        if (PATTERN_GROUP.matcher(groupId).matches() == false) {
-            throw new DateTimeException("Invalid group ID '" + groupId + "', must match regex [A-Za-z0-9._-]+");
-        }
-        this.groupId = groupId;
+    protected ZoneRulesProvider() {
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the ID of the group, such as 'TZDB'.
-     *
-     * @return the ID of the group, not null
-     */
-    public final String getGroupId() {
-        return groupId;
-    }
-
-    /**
-     * Gets the set of available regions.
+     * Gets the set of available zone IDs.
      * <p>
-     * This obtains the IDs of the available regions of rule data.
+     * This obtains the IDs that this {@code ZoneRulesProvider} provides.
      * A provider should provide data for at least one region.
      * <p>
      * The returned regions remain available and valid for the lifetime of the application.
      * A dynamic provider may increase the set of regions as more data becomes available.
-     * <p>
-     * Not all combinations of region and version will be valid.
-     * Use {@link #isValid(String, String)} to determine which combinations are valid.
      *
-     * @return a modifiable copy of the available region IDs, not null
+     * @return the unmodifiable set of region IDs being provided, not null
      */
-    public abstract Set<String> getAvailableRegionIds();
+    protected abstract Set<String> provideZoneIds();
 
     /**
-     * Gets the set of available versions.
+     * Returns a resolved provider bound to the specified zone ID.
      * <p>
-     * This obtains the IDs of the available versions of rule data.
-     * A provider should provide data for at least one version.
+     * {@code ZoneRulesProvider} has a lookup from zone ID to provider.
+     * This method is used when building that lookup, allowing providers
+     * to insert a derived provider that is precisely tuned to the zone ID.
+     * This replaces two hash map lookups by one, enhancing performance.
      * <p>
-     * The returned versions remain available and valid for the lifetime of the application.
-     * A dynamic provider may increase the set of versions as more data becomes available.
+     * This optimization is optional. Returning {@code this} is acceptable.
      * <p>
-     * Not all providers support multiple versions of the data, so this method
-     * frequently returns a set of size one representing the "default" version.
-     * The null version, representing the "latest" version, will not be included in the set.
-     * <p>
-     * The returned versions remain available and valid for the lifetime of the application.
-     * A dynamic provider may increase the set of versions as more data becomes available.
-     * <p>
-     * Not all combinations of region and version will be valid.
-     * Use {@link #isValid(String, String)} to determine which combinations are valid.
+     * This implementation creates a bound provider that caches the
+     * rules from the underlying provider. The request to version history
+     * is forward on to the underlying. This is suitable for providers that
+     * cannot change their contents during the lifetime of the JVM.
      *
-     * @return a modifiable copy of the available version IDs, natural string sort order, not null
+     * @param zoneId  the zone region ID as used by {@code ZoneId}, not null
+     * @return the resolved provider for the ID, not null
+     * @throws DateTimeException if there is no provider for the specified group
      */
-    public abstract SortedSet<String> getAvailableVersionIds();
+    protected ZoneRulesProvider provideBind(String zoneId) {
+        return new BoundProvider(this, zoneId);
+    }
 
     /**
-     * Checks if the combination of region and version is valid.
-     * <p>
-     * This checks whether rules can be obtained for the region.
-     * The version may be null to indicate the "latest" version.
-     * If this method returns true, the {@link #getRules} method should
-     * return a set of rules for the same parameters.
-     *
-     * @param regionId  the time-zone region ID, null returns false
-     * @param versionId  the time-zone version ID, null means "latest"
-     * @return true if rules can be obtained
-     */
-    public abstract boolean isValid(String regionId, String versionId);
-
-    /**
-     * Gets rules for the combination of region and version.
+     * Gets rules for the zone ID.
      * <p>
      * This loads the rules for the region and version specified.
      * The version may be null to indicate the "latest" version.
@@ -263,7 +298,32 @@ public abstract class ZoneRulesProvider {
      * @return the rules, not null
      * @throws DateTimeException if rules cannot be obtained
      */
-    public abstract ZoneRules getRules(String regionId, String versionId);
+    protected abstract ZoneRules provideRules(String regionId);
+
+    /**
+     * Gets the history of rules for the zone ID.
+     * <p>
+     * This returns a map of historical rules keyed by a version string.
+     * The exact meaning and format of the version is provider specific.
+     * The version must follow lexicographical order, thus the returned map will
+     * be order from the oldest known rules to the newest available rules.
+     * The default 'TZDB' group uses version numbering consisting of the year
+     * followed by a letter, such as '2009e' or '2012f'.
+     * <p>
+     * Implementations must provide a result for each valid zone ID, however
+     * they do not have to provide a history of rules.
+     * Thus the map will always contain one element, and will only contain more
+     * than one element if historical rule information is available.
+     * <p>
+     * The returned versions remain available and valid for the lifetime of the application.
+     * A dynamic provider may increase the set of versions as more data becomes available.
+     *
+     * @param zoneId  the zone region ID as used by {@code ZoneId}, not null
+     * @return a modifiable copy of the history of the rules for the ID, sorted
+     *  from oldest to newest, not null
+     * @throws ZoneRulesException if the zone ID is unknown
+     */
+    protected abstract NavigableMap<String, ZoneRules> provideVersions(String zoneId);
 
     /**
      * Refreshes the rules from the underlying data provider.
@@ -272,17 +332,50 @@ public abstract class ZoneRulesProvider {
      * recheck the underlying data provider to find the latest rules.
      * This could be used to load new rules without stopping the JVM.
      * Dynamic behavior is entirely optional and most providers do not support it.
+     * <p>
+     * This implementation returns false.
      *
-     * @param classLoader  the class loader to use, not null
      * @return true if the rules were updated
      * @throws DateTimeException if an error occurs during the refresh
      */
-    public abstract boolean refresh(ClassLoader classLoader);
+    protected boolean provideRefresh() {
+        return false;
+    }
 
     //-------------------------------------------------------------------------
-    @Override
-    public String toString() {
-        return groupId;
+    /**
+     * A provider bound to a single zone ID.
+     */
+    private static class BoundProvider extends ZoneRulesProvider {
+        private final ZoneRulesProvider provider;
+        private final String zoneId;
+        private final ZoneRules rules;
+
+        private BoundProvider(ZoneRulesProvider provider, String zoneId) {
+            this.provider = provider;
+            this.zoneId = zoneId;
+            this.rules = provider.provideRules(zoneId);
+        }
+
+        @Override
+        protected Set<String> provideZoneIds() {
+            return new HashSet<>(Collections.singleton(zoneId));
+        }
+
+        @Override
+        protected ZoneRules provideRules(String regionId) {
+            return rules;
+        }
+
+        @Override
+        protected NavigableMap<String, ZoneRules> provideVersions(String zoneId) {
+            return provider.provideVersions(zoneId);
+        }
+
+        @Override
+        public String toString() {
+            return zoneId;
+        }
     }
 
 }

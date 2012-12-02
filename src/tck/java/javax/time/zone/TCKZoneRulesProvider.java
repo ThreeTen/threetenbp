@@ -32,17 +32,15 @@
 package javax.time.zone;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotSame;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.NavigableMap;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.TreeMap;
 
-import javax.time.DateTimeException;
-import javax.time.DayOfWeek;
-import javax.time.Month;
 import javax.time.ZoneOffset;
 
 import org.testng.annotations.Test;
@@ -54,312 +52,112 @@ import org.testng.annotations.Test;
 public class TCKZoneRulesProvider {
 
     //-----------------------------------------------------------------------
-    // getProvider()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_getProvider() {
-        assertEquals(ZoneRulesProvider.getProvider("TZDB").getGroupId(), "TZDB");
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_getProvider_badGroup() {
-        ZoneRulesProvider.getProvider("NOTREAL");
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_getProvider_badGroupBlank() {
-        ZoneRulesProvider.getProvider("");
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_getProvider_null() {
-        ZoneRulesProvider.getProvider(null);
-    }
-
-    //-----------------------------------------------------------------------
-    // getAvailableGroupIds()
+    // getAvailableZoneIds()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_getAvailableGroupIds() {
-        Set<String> groups = ZoneRulesProvider.getAvailableGroupIds();
-        assertEquals(groups.contains("TZDB"), true);
-        groups.clear();
-        assertEquals(groups.size(), 0);
-        Set<String> groups2 = ZoneRulesProvider.getAvailableGroupIds();
-        assertEquals(groups2.contains("TZDB"), true);
+        Set<String> zoneIds = ZoneRulesProvider.getAvailableZoneIds();
+        assertEquals(zoneIds.contains("Europe/London"), true);
+        zoneIds.clear();
+        assertEquals(zoneIds.size(), 0);
+        Set<String> zoneIds2 = ZoneRulesProvider.getAvailableZoneIds();
+        assertEquals(zoneIds2.contains("Europe/London"), true);
     }
 
-// TODO
-//    //-----------------------------------------------------------------------
-//    // getParsableIDs()
-//    //-----------------------------------------------------------------------
-//    @Test(groups={"tck"})
-//    public void test_getParsableIDs() {
-//        Set<String> parsableIDs = ZoneRulesProvider.getParsableIDs();
-//        assertEquals(parsableIDs.contains("Europe/London"), true);
-//        assertEquals(parsableIDs.contains("TZDB:Europe/London"), true);
-//    }
-//
-//    @Test(expectedExceptions=UnsupportedOperationException.class, groups={"tck"})
-//    public void test_getParsableIDs_unmodifiableClear() {
-//        ZoneRulesProvider.getParsableIDs().clear();
-//    }
-//
-//    @Test(expectedExceptions=UnsupportedOperationException.class, groups={"tck"})
-//    public void test_getParsableIDs_unmodifiableRemove() {
-//        ZoneRulesProvider.getParsableIDs().remove("Europe/London");
-//    }
-//
-//    @Test(expectedExceptions=UnsupportedOperationException.class, groups={"tck"})
-//    public void test_getParsableIDs_unmodifiableAdd() {
-//        ZoneRulesProvider.getParsableIDs().add("Europe/Lon");
-//    }
+    //-----------------------------------------------------------------------
+    // getRules(String)
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_getRules_String() {
+        ZoneRules rules = ZoneRulesProvider.getRules("Europe/London");
+        assertNotNull(rules);
+        ZoneRules rules2 = ZoneRulesProvider.getRules("Europe/London");
+        assertEquals(rules2, rules);
+    }
+
+    @Test(groups={"tck"}, expectedExceptions=ZoneRulesException.class)
+    public void test_getRules_String_unknownId() {
+        ZoneRulesProvider.getRules("Europe/Lon");
+    }
+
+    @Test(groups={"tck"}, expectedExceptions=NullPointerException.class)
+    public void test_getRules_String_null() {
+        ZoneRulesProvider.getRules(null);
+    }
+
+    //-----------------------------------------------------------------------
+    // getVersions(String)
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_getVersions_String() {
+        NavigableMap<String, ZoneRules> versions = ZoneRulesProvider.getVersions("Europe/London");
+        assertTrue(versions.size() >= 1);
+        ZoneRules rules = ZoneRulesProvider.getRules("Europe/London");
+        assertEquals(versions.lastEntry().getValue(), rules);
+
+        NavigableMap<String, ZoneRules> copy = new TreeMap<>(versions);
+        versions.clear();
+        assertEquals(versions.size(), 0);
+        NavigableMap<String, ZoneRules> versions2 = ZoneRulesProvider.getVersions("Europe/London");
+        assertEquals(versions2, copy);
+    }
+
+    @Test(groups={"tck"}, expectedExceptions=ZoneRulesException.class)
+    public void test_getVersions_String_unknownId() {
+        ZoneRulesProvider.getVersions("Europe/Lon");
+    }
+
+    @Test(groups={"tck"}, expectedExceptions=NullPointerException.class)
+    public void test_getVersions_String_null() {
+        ZoneRulesProvider.getVersions(null);
+    }
+
+    //-----------------------------------------------------------------------
+    // refresh()
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_refresh() {
+        assertEquals(ZoneRulesProvider.refresh(), false);
+    }
 
     //-----------------------------------------------------------------------
     // registerProvider()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_registerProvider() {
-        Set<String> pre = ZoneRulesProvider.getAvailableGroupIds();
-        assertEquals(pre.contains("TEMPMOCK.-_"), false);
+        Set<String> pre = ZoneRulesProvider.getAvailableZoneIds();
+        assertEquals(pre.contains("FooLocation"), false);
         ZoneRulesProvider.registerProvider(new MockTempProvider());
-        assertEquals(pre.contains("TEMPMOCK.-_"), false);
-        Set<String> post = ZoneRulesProvider.getAvailableGroupIds();
-        assertEquals(post.contains("TEMPMOCK.-_"), true);
+        assertEquals(pre.contains("FooLocation"), false);
+        Set<String> post = ZoneRulesProvider.getAvailableZoneIds();
+        assertEquals(post.contains("FooLocation"), true);
 
-        assertEquals(ZoneRulesProvider.getProvider("TEMPMOCK.-_").getGroupId(), "TEMPMOCK.-_");
-        assertEquals(ZoneRulesProvider.getProvider("TEMPMOCK.-_").getRules("World%@~.-_", "1.-_").isFixedOffset(), true);
+        assertEquals(ZoneRulesProvider.getRules("FooLocation"), ZoneOffset.of("+01:45").getRules());
     }
 
     static class MockTempProvider extends ZoneRulesProvider {
-        public MockTempProvider() {
-            super("TEMPMOCK.-_");
+        final ZoneRules rules = ZoneOffset.of("+01:45").getRules();
+        @Override
+        public Set<String> provideZoneIds() {
+            return new HashSet<String>(Collections.singleton("FooLocation"));
         }
         @Override
-        public Set<String> getAvailableRegionIds() {
-            return new HashSet<String>(Arrays.asList("World%@~.-_"));
+        protected ZoneRulesProvider provideBind(String zoneId) {
+            return this;
         }
         @Override
-        public SortedSet<String> getAvailableVersionIds() {
-            return new TreeSet<String>(Arrays.asList("1.-_"));
+        protected NavigableMap<String, ZoneRules> provideVersions(String zoneId) {
+            NavigableMap<String, ZoneRules> result = new TreeMap<>();
+            result.put("BarVersion", rules);
+            return result;
         }
         @Override
-        public boolean isValid(String regionId, String versionId) {
-            return "World%@~.-_".equals(regionId) && (versionId == null || "1.-_".equals(versionId));
-        }
-        @Override
-        public ZoneRules getRules(String regionId, String versionId) {
-            if (isValid(regionId, versionId)) {
-                return ZoneOffset.of("+01:45").getRules();
+        protected ZoneRules provideRules(String zoneId) {
+            if (zoneId.equals("FooLocation")) {
+                return rules;
             }
-            throw new DateTimeException("Invalid");
+            throw new ZoneRulesException("Invalid");
         }
-        @Override
-        public boolean refresh(ClassLoader classLoader) {
-            return false;
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_registerProvider_invalidGroupId() {
-        ZoneRulesProvider.registerProvider(new MockTempProviderInvalidGroupId());
-    }
-
-    static class MockTempProviderInvalidGroupId extends ZoneRulesProvider {
-        public MockTempProviderInvalidGroupId() {
-            super("TEMPMOCK%");
-        }
-        @Override
-        public Set<String> getAvailableRegionIds() {
-            throw new UnsupportedOperationException();
-        }
-        @Override
-        public SortedSet<String> getAvailableVersionIds() {
-            throw new UnsupportedOperationException();
-        }
-        @Override
-        public boolean isValid(String regionId, String versionId) {
-            throw new UnsupportedOperationException();
-        }
-        @Override
-        public ZoneRules getRules(String regionId, String versionId) {
-            throw new UnsupportedOperationException();
-        }
-        @Override
-        public boolean refresh(ClassLoader classLoader) {
-            return false;
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    // isValidRules()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_isValidRules() {
-        ZoneRulesProvider group = ZoneRulesProvider.getProvider("TZDB");
-        assertEquals(group.isValid("Europe/London", "2008i"), true);
-        assertEquals(group.isValid("Europe/Lon", "2008i"), false);
-        assertEquals(group.isValid("Europe/London", "20"), false);
-        assertEquals(group.isValid("Europe/London", null), true);
-        assertEquals(group.isValid(null, "2008i"), false);
-    }
-
-    //-----------------------------------------------------------------------
-    // getRules()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_getRules() {
-        ZoneRulesProvider group = ZoneRulesProvider.getProvider("TZDB");
-        ZoneRules rules = group.getRules("Europe/London", "2008i");
-        assertEquals(rules.getTransitionRules().size(), 2);
-        assertEquals(rules.getTransitionRules().get(0).getDayOfWeek(), DayOfWeek.SUNDAY);
-        assertEquals(rules.getTransitionRules().get(0).getDayOfMonthIndicator(), 25);
-        assertEquals(rules.getTransitionRules().get(0).getMonth(), Month.MARCH);
-        assertEquals(rules.getTransitionRules().get(1).getDayOfWeek(), DayOfWeek.SUNDAY);
-        assertEquals(rules.getTransitionRules().get(1).getDayOfMonthIndicator(), 25);
-        assertEquals(rules.getTransitionRules().get(1).getMonth(), Month.OCTOBER);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_getRules_unknownRegion() {
-        ZoneRulesProvider group = ZoneRulesProvider.getProvider("TZDB");
-        group.getRules("Europe/Lon", "2008i");
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_getRules_unknownVersion() {
-        ZoneRulesProvider group = ZoneRulesProvider.getProvider("TZDB");
-        group.getRules("Europe/London", "20");
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_getRules_nullRegion() {
-        ZoneRulesProvider group = ZoneRulesProvider.getProvider("TZDB");
-        group.getRules(null, "2008i");
-    }
-
-    @Test(groups={"tck"})
-    public void test_getRules_nullVersionLatest() {
-        ZoneRulesProvider group = ZoneRulesProvider.getProvider("TZDB");
-        SortedSet<String> versionIds = group.getAvailableVersionIds();
-        String latest = versionIds.last();
-        assertEquals(group.getRules("Europe/London", null), group.getRules("Europe/London", latest));
-    }
-
-    //-----------------------------------------------------------------------
-    // getAvailableVersionIds()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_getAvailableVersionIds_String() {
-        ZoneRulesProvider group = ZoneRulesProvider.getProvider("TZDB");
-        SortedSet<String> versions = group.getAvailableVersionIds();
-        assertEquals(versions.contains("2008i"), true);
-    }
-
-    @Test(groups={"tck"})
-    public void test_getAvailableVersionIds_String_mock() {
-        ZoneRulesProvider group = ZoneRulesProvider.getProvider("MOCK");
-        SortedSet<String> versions = group.getAvailableVersionIds();
-        assertEquals(versions.size(), 2);
-        assertEquals(versions.contains("v1"), true);
-        assertEquals(versions.contains("v2"), true);
-    }
-
-    @Test(groups={"tck"})
-    public void test_getAvailableVersionIds_String_modifiable() {
-        ZoneRulesProvider group = ZoneRulesProvider.getProvider("MOCK");
-        SortedSet<String> versionsPre = group.getAvailableVersionIds();
-        assertEquals(versionsPre.size(), 2);
-        versionsPre.clear();
-        SortedSet<String> versionsPost = group.getAvailableVersionIds();
-        assertEquals(versionsPost.size(), 2);
-    }
-
-    //-----------------------------------------------------------------------
-    // getAvailableRegionIds()
-    //-----------------------------------------------------------------------
-    public void test_getAvailableRegionIds_String() {
-        ZoneRulesProvider group = ZoneRulesProvider.getProvider("TZDB");
-        assertEquals(group.getAvailableRegionIds().contains("Europe/London"), true);
-    }
-
-    public void test_getAvailableRegionIds_String_mock() {
-        ZoneRulesProvider group = ZoneRulesProvider.getProvider("MOCK");
-        Set<String> regions = group.getAvailableRegionIds();
-        assertEquals(regions.size(), 2);
-        assertEquals(regions.contains("RulesChange"), true);
-        assertEquals(regions.contains("NewPlace"), true);
-        regions.clear();
-        assertEquals(regions.size(), 0);
-        Set<String> regions2 = group.getAvailableRegionIds();
-        assertNotSame(regions2, regions);
-        assertEquals(regions2.size(), 2);
-        assertEquals(regions2.contains("RulesChange"), true);
-        assertEquals(regions2.contains("NewPlace"), true);
-    }
-
-    //-----------------------------------------------------------------------
-    // isValid(String,String)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_isValid_String() {
-        ZoneRulesProvider group = ZoneRulesProvider.getProvider("TZDB");
-        assertEquals(group.isValid("Europe/London", null), true);
-        assertEquals(group.isValid("Rubbish", null), false);
-    }
-
-    @Test(groups={"tck"})
-    public void test_isValid_String_mock() {
-        ZoneRulesProvider group = ZoneRulesProvider.getProvider("MOCK");
-        assertEquals(group.isValid("RulesChange", "v1"), true);
-        assertEquals(group.isValid("RulesChange", "v2"), true);
-        assertEquals(group.isValid("NewPlace", "v1"), false);
-        assertEquals(group.isValid("NewPlace", "v2"), true);
-        assertEquals(group.isValid("Rubbish", "v1"), false);
-    }
-
-    public void test_isValid_String_nullRegion() {
-        ZoneRulesProvider group = ZoneRulesProvider.getProvider("TZDB");
-        assertEquals(group.isValid(null, null), false);
-    }
-
-    //-----------------------------------------------------------------------
-    static class MockProvider extends ZoneRulesProvider {
-        public MockProvider() {
-            super("MOCK");
-        }
-        @Override
-        public Set<String> getAvailableRegionIds() {
-            return new HashSet<String>(Arrays.asList("NewPlace", "RulesChange"));
-        }
-        @Override
-        public SortedSet<String> getAvailableVersionIds() {
-            return new TreeSet<String>(Arrays.asList("v1", "v2"));
-        }
-        @Override
-        public boolean isValid(String regionId, String versionId) {
-            return ("RulesChange".equals(regionId) && ("v1".equals(versionId) || "v2".equals(versionId) || versionId == null)) ||
-                        ("NewPlace".equals(regionId) && ("v2".equals(versionId) || versionId == null));
-        }
-        @Override
-        public ZoneRules getRules(String regionId, String versionId) {
-            if (isValid(regionId, versionId)) {
-                if (regionId.equals("NewPlace")) {
-                    return ZoneOffset.of("+01:00").getRules();
-                } else {
-                    return ZoneOffset.of("+02:45").getRules();
-                }
-            }
-            throw new DateTimeException("Invalid");
-        }
-        @Override
-        public boolean refresh(ClassLoader classLoader) {
-            return false;
-        }
-    }
-    static {
-        ZoneRulesProvider.registerProvider(new MockProvider());
     }
 
 }

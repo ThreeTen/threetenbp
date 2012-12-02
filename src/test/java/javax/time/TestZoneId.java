@@ -51,6 +51,7 @@ import javax.time.calendrical.DateTimeAccessor;
 import javax.time.format.TextStyle;
 import javax.time.zone.ZoneOffsetTransition;
 import javax.time.zone.ZoneRules;
+import javax.time.zone.ZoneRulesException;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -211,10 +212,21 @@ public class TestZoneId extends AbstractTest {
     }
 
     @Test(expectedExceptions = DateTimeException.class)
-    public void test_systemDefault_unableToConvert() {
+    public void test_systemDefault_unableToConvert_badFormat() {
         TimeZone current = TimeZone.getDefault();
         try {
             TimeZone.setDefault(new SimpleTimeZone(127, "Something Weird"));
+            ZoneId.systemDefault();
+        } finally {
+            TimeZone.setDefault(current);
+        }
+    }
+
+    @Test(expectedExceptions = ZoneRulesException.class)
+    public void test_systemDefault_unableToConvert_unknownId() {
+        TimeZone current = TimeZone.getDefault();
+        try {
+            TimeZone.setDefault(new SimpleTimeZone(127, "SomethingWeird"));
             ZoneId.systemDefault();
         } finally {
             TimeZone.setDefault(current);
@@ -247,6 +259,12 @@ public class TestZoneId extends AbstractTest {
     }
 
     @Test(expectedExceptions=DateTimeException.class)
+    public void test_of_string_Map_badFormat() {
+        Map<String, String> map = new HashMap<String, String>();
+        ZoneId.of("Not kknown", map);
+    }
+
+    @Test(expectedExceptions=ZoneRulesException.class)
     public void test_of_string_Map_unknown() {
         Map<String, String> map = new HashMap<String, String>();
         ZoneId.of("Unknown", map);
@@ -401,7 +419,7 @@ public class TestZoneId extends AbstractTest {
         ZoneId.of((String) null);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions=ZoneRulesException.class)
     public void test_of_string_unknown_simple() {
         ZoneId.of("Unknown");
     }
@@ -926,17 +944,6 @@ public class TestZoneId extends AbstractTest {
         ZoneId test = ZoneId.of("+01:30");
         assertEquals(test.getId(), "+01:30");
         assertEquals(test.getRules().isFixedOffset(), true);
-    }
-
-    //-----------------------------------------------------------------------
-    // isValid()
-    //-----------------------------------------------------------------------
-    public void test_isValid() {
-        ZoneId testId = ZoneId.of("Europe/London");
-        assertEquals(testId.isValid(), true);
-
-        ZoneId testFixed = ZoneId.of("UTC+01:30");
-        assertEquals(testFixed.isValid(), true);
     }
 
     //-----------------------------------------------------------------------

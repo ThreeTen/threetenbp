@@ -51,8 +51,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import javax.time.DateTimeException;
 import javax.time.Instant;
@@ -2490,8 +2488,7 @@ public final class DateTimeFormatterBuilder {
         /**
          * The cached tree to speed up parsing.
          */
-        private static ConcurrentMap<String, Entry<Integer, SubstringTree>> preparedTree =
-                        new ConcurrentHashMap<>(16, 0.75f, 2);
+        private static volatile Entry<Integer, SubstringTree> cachedSubstringTree;
 
         /**
          * This implementation looks for the longest matching string.
@@ -2528,31 +2525,19 @@ public final class DateTimeFormatterBuilder {
                 }
             }
 
-            // parse group ID
-            Set<String> groupsIds = ZoneRulesProvider.getAvailableGroupIds();
-            String matchedGroupId = null;
-            int matchedGroupLen = 0;
-            for (String groupId : groupsIds) {
-                if ((matchedGroupId == null || groupId.length() > matchedGroupId.length()) &&
-                        context.subSequenceEquals(text, 0, groupId + ':', position, groupId.length() + 1)) {
-                    matchedGroupId = groupId;
-                    matchedGroupLen = groupId.length() + 1;
+            // prepare parse tree
+            Set<String> regionIds = ZoneRulesProvider.getAvailableZoneIds();
+            final int regionIdsSize = regionIds.size();
+            Entry<Integer, SubstringTree> cached = cachedSubstringTree;
+            if (cached == null || cached.getKey() != regionIdsSize) {
+                synchronized (this) {
+                    cached = cachedSubstringTree;
+                    if (cached == null || cached.getKey() != regionIdsSize) {
+                        cachedSubstringTree = cached = new SimpleImmutableEntry<>(regionIdsSize, prepareParser(regionIds));
+                    }
                 }
             }
-            matchedGroupId = matchedGroupId != null ? matchedGroupId : "TZDB";
-            position += matchedGroupLen;
-            ZoneRulesProvider provider = ZoneRulesProvider.getProvider(matchedGroupId);
-
-            // parse region ID
-            Entry<Integer, SubstringTree> entry = preparedTree.get(matchedGroupId);
-            Set<String> regionIds = provider.getAvailableRegionIds();
-            final int regionIdsSize = regionIds.size();
-            if (entry == null || entry.getKey() < regionIdsSize) {
-                entry = new SimpleImmutableEntry<>(regionIdsSize, prepareParser(regionIds));
-                preparedTree.putIfAbsent(matchedGroupId, entry);
-                entry = preparedTree.get(matchedGroupId);
-            }
-            SubstringTree tree = entry.getValue();
+            SubstringTree tree = cached.getValue();
 
             // parse
             String parsedZoneId = null;

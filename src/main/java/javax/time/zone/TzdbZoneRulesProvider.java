@@ -40,16 +40,14 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.NavigableMap;
 import java.util.Objects;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicReferenceArray;
-
-import javax.time.DateTimeException;
 
 /**
  * Loads time-zone rules for 'TZDB'.
@@ -60,6 +58,8 @@ import javax.time.DateTimeException;
  * This class is immutable and thread-safe.
  */
 public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
+    // TODO: can this be private/hidden in any way?
+    // service loader seems to need it to be public
 
     /**
      * All the regions that are available.
@@ -78,49 +78,53 @@ public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
     /**
      * Creates an instance.
      * Created by the {@code ServiceLoader}.
+     *
+     * @throws ZoneRulesException if unable to load
      */
     public TzdbZoneRulesProvider() {
-        super("TZDB");
-        if (refresh(ClassLoader.getSystemClassLoader()) == false) {
-            throw new DateTimeException("No time-zone rules found for 'TZDB'");
+        super();
+        if (load(ClassLoader.getSystemClassLoader()) == false) {
+            throw new ZoneRulesException("No time-zone rules found for 'TZDB'");
         }
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public Set<String> getAvailableRegionIds() {
+    protected Set<String> provideZoneIds() {
         return new HashSet<>(regionIds);
     }
 
     @Override
-    public SortedSet<String> getAvailableVersionIds() {
-        return new TreeSet<>(versions.keySet());
+    protected ZoneRules provideRules(String zoneId) {
+        Objects.requireNonNull(zoneId, "zoneId");
+        ZoneRules rules = versions.lastEntry().getValue().getRules(zoneId);
+        if (rules == null) {
+            throw new ZoneRulesException("Unknown time-zone ID: " + zoneId);
+        }
+        return rules;
     }
 
     @Override
-    public boolean isValid(String regionId, String versionId) {
-        if (versionId == null) {
-            return (regionId != null && versions.lastEntry().getValue().isValid(regionId));
+    protected NavigableMap<String, ZoneRules> provideVersions(String zoneId) {
+        TreeMap<String, ZoneRules> map = new TreeMap<>();
+        for (Version version : versions.values()) {
+            ZoneRules rules = version.getRules(zoneId);
+            if (rules != null) {
+                map.put(version.versionId, rules);
+            }
         }
-        Version version = versions.get(versionId);
-        return (regionId != null && version != null && version.isValid(regionId));
+        return map;
     }
 
-    @Override
-    public ZoneRules getRules(String regionId, String versionId) {
-        Objects.requireNonNull(regionId, "regionId");
-        if (versionId == null) {
-            return versions.lastEntry().getValue().getRules(regionId);
-        }
-        Version version = versions.get(versionId);
-        if (version == null) {
-            throw new DateTimeException("Unsupported TZDB time-zone version: " + versionId);
-        }
-        return version.getRules(regionId);
-    }
-
-    @Override
-    public boolean refresh(ClassLoader classLoader) {
+    //-------------------------------------------------------------------------
+    /**
+     * Loads the rules.
+     *
+     * @param classLoader  the class loader to use, not null
+     * @return true if updated
+     * @throws ZoneRulesException if unable to load
+     */
+    private boolean load(ClassLoader classLoader) {
         boolean updated = false;
         URL url = null;
         try {
@@ -131,14 +135,14 @@ public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
                     Iterable<Version> loadedVersions = load(url);
                     for (Version loadedVersion : loadedVersions) {
                         if (versions.putIfAbsent(loadedVersion.versionId, loadedVersion) != null) {
-                            throw new DateTimeException("Data already loaded for TZDB time-zone rules version: " + loadedVersion.versionId);
+                            throw new ZoneRulesException("Data already loaded for TZDB time-zone rules version: " + loadedVersion.versionId);
                         }
                     }
                     updated = true;
                 }
             }
         } catch (Exception ex) {
-            throw new RuntimeException("Unable to load TZDB time-zone rules: " + url, ex);
+            throw new ZoneRulesException("Unable to load TZDB time-zone rules: " + url, ex);
         }
         return updated;
     }
@@ -198,6 +202,11 @@ public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
         }
     }
 
+    @Override
+    public String toString() {
+        return "TZDB";
+    }
+
     //-----------------------------------------------------------------------
     /**
      * A version of the TZDB rules.
@@ -215,23 +224,15 @@ public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
             this.ruleIndices = ruleIndices;
         }
 
-        Version withRuleData(AtomicReferenceArray<Object> ruleData) {
-            return new Version(versionId, regionArray, ruleIndices, ruleData);
-        }
-
-        boolean isValid(String regionId) {
-            return (Arrays.binarySearch(regionArray, regionId) >= 0);
-        }
-
         ZoneRules getRules(String regionId) {
             int regionIndex = Arrays.binarySearch(regionArray, regionId);
             if (regionIndex < 0) {
-                throw new DateTimeException("Unsupported time-zone: TZDB:" + regionId + ", version: " + versionId);
+                return null;
             }
             try {
                 return createRule(ruleIndices[regionIndex]);
             } catch (Exception ex) {
-                throw new DateTimeException("Invalid binary time-zone data: TZDB:" + regionId + ", version: " + versionId, ex);
+                throw new ZoneRulesException("Invalid binary time-zone data: TZDB:" + regionId + ", version: " + versionId, ex);
             }
         }
 

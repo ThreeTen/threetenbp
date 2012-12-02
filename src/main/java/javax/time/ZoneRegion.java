@@ -40,6 +40,7 @@ import java.util.regex.Pattern;
 
 import javax.time.zone.ZoneRules;
 import javax.time.zone.ZoneRulesProvider;
+import javax.time.zone.ZoneRulesException;
 
 /**
  * A geographical region where the same time-zone rules apply.
@@ -66,17 +67,18 @@ final class ZoneRegion extends ZoneId implements Serializable {
      */
     private static final long serialVersionUID = 8386373296231747096L;
     /**
-     * The group:region ID pattern.
+     * The regex pattern for region IDs.
      */
     private static final Pattern PATTERN = Pattern.compile("[A-Za-z][A-Za-z0-9~/._+-]+");
 
     /**
-     * The time-zone ID, not null. */
+     * The time-zone ID, not null.
+     */
     private final String id;
     /**
-     * The time-zone group provider, null if zone ID is unchecked.
+     * The time-zone rules, null if zone ID was loaded leniently.
      */
-    private final transient ZoneRulesProvider provider;
+    private final transient ZoneRules rules;
 
     /**
      * Obtains an instance of {@code ZoneRegion} from an identifier without checking
@@ -92,18 +94,10 @@ final class ZoneRegion extends ZoneId implements Serializable {
      *
      * @param zoneId  the time-zone ID, not null
      * @return the zone ID, not null
-     * @throws DateTimeException if the ID is malformed
+     * @throws DateTimeException if the ID format is invalid
      */
     private static ZoneRegion ofLenient(String zoneId) {
-        checkNotZoneOffset(zoneId);
         return ofId(zoneId, false);
-    }
-
-    private static void checkNotZoneOffset(String zoneId) {
-        if (zoneId.length() < 2 || zoneId.startsWith("UTC") ||
-                zoneId.startsWith("GMT") || (PATTERN.matcher(zoneId).matches() == false)) {
-            throw new DateTimeException("Identifier is not valid for ZoneRegion");
-        }
     }
 
     /**
@@ -112,24 +106,25 @@ final class ZoneRegion extends ZoneId implements Serializable {
      * @param zoneId  the time-zone ID, not null
      * @param checkAvailable  whether to check if the zone ID is available
      * @return the zone ID, not null
-     * @throws DateTimeException if the ID is malformed
+     * @throws DateTimeException if the ID format is invalid
      * @throws DateTimeException if checking availability and the ID cannot be found
      */
     static ZoneRegion ofId(String zoneId, boolean checkAvailable) {
         Objects.requireNonNull(zoneId, "zoneId");
-        ZoneRulesProvider provider = null;
+        if (zoneId.length() < 2 || zoneId.startsWith("UTC") ||
+                zoneId.startsWith("GMT") || (PATTERN.matcher(zoneId).matches() == false)) {
+            throw new DateTimeException("ZoneId format is not a valid region format");
+        }
+        ZoneRules rules = null;
         try {
             // always attempt load for better behavior after deserialization
-            provider = ZoneRulesProvider.getProvider("TZDB");  // TODO: no support for pluggable time-zones
-            if (checkAvailable && provider.isValid(zoneId, null) == false) {
-                throw new DateTimeException("Unknown time-zone: " + zoneId);
-            }
-        } catch (DateTimeException ex) {
+            rules = ZoneRulesProvider.getRules(zoneId);
+        } catch (ZoneRulesException ex) {
             if (checkAvailable) {
                 throw ex;
             }
         }
-        return new ZoneRegion(zoneId, provider);
+        return new ZoneRegion(zoneId, rules);
     }
 
     //-------------------------------------------------------------------------
@@ -137,11 +132,11 @@ final class ZoneRegion extends ZoneId implements Serializable {
      * Constructor.
      *
      * @param id  the time-zone ID, not null
-     * @param provider  the provider, null if zone is unchecked
+     * @param rules  the rules, null for lazy lookup
      */
-    ZoneRegion(String id, ZoneRulesProvider provider) {
+    ZoneRegion(String id, ZoneRules rules) {
         this.id = id;
-        this.provider = provider;
+        this.rules = rules;
     }
 
     //-----------------------------------------------------------------------
@@ -151,19 +146,10 @@ final class ZoneRegion extends ZoneId implements Serializable {
     }
 
     @Override
-    public boolean isValid() {
-        return getProvider().isValid(id, null);
-    }
-
-    @Override
     public ZoneRules getRules() {
-        return getProvider().getRules(id, null);
-    }
-
-    private ZoneRulesProvider getProvider() {
         // additional query for group provider when null allows for possibility
         // that the provider was added after the ZoneId was created
-        return (provider != null ? provider : ZoneRulesProvider.getProvider(id));
+        return (rules != null ? rules : ZoneRulesProvider.getRules(id));
     }
 
     //-----------------------------------------------------------------------
