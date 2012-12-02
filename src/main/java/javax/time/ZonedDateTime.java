@@ -499,6 +499,16 @@ public final class ZonedDateTime
     }
 
     /**
+     * Resolves the new local date-time using the offset to identify the instant.
+     *
+     * @param newDateTime  the new local date-time, not null
+     * @return the zoned date-time, not null
+     */
+    private ZonedDateTime resolveInstant(LocalDateTime newDateTime) {
+        return ofInstant(newDateTime, offset, zone);
+    }
+
+    /**
      * Resolves the offset into this zoned date-time.
      * <p>
      * This will use the new offset to find the instant, which is then looked up
@@ -1254,9 +1264,19 @@ public final class ZonedDateTime
      * The unit is responsible for the details of the calculation, including the resolution
      * of any edge cases in the calculation.
      * <p>
-     * When converting back to {@code ZonedDateTime}, if the local date-time is in an overlap,
-     * then the offset will be retained if possible, otherwise the earlier offset will be used.
-     * If in a gap, the local date-time will be adjusted forward by the length of the gap.
+     * The calculation for date and time units differ.
+     * <p>
+     * Date units operate on the local time-line.
+     * The period is first added to the local date-time, then converted back
+     * to a zoned date-time using the zone ID.
+     * The conversion uses {@link #ofLocal(LocalDateTime, ZoneId, ZoneOffset)}
+     * with the offset before the addition.
+     * <p>
+     * Time units operate on the instant time-line.
+     * The period is first added to the local date-time, then converted back to
+     * a zoned date-time using the zone ID.
+     * The conversion uses {@link #ofInstant(LocalDateTime, ZoneOffset, ZoneId)}
+     * with the offset before the addition.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1267,7 +1287,12 @@ public final class ZonedDateTime
      */
     public ZonedDateTime plus(long amountToAdd, PeriodUnit unit) {
         if (unit instanceof ChronoUnit) {
-            return resolveLocal(dateTime.plus(amountToAdd, unit));
+            ChronoUnit u = (ChronoUnit) unit;
+            if (u.isDateUnit()) {
+                return resolveLocal(dateTime.plus(amountToAdd, unit));
+            } else {
+                return resolveInstant(dateTime.plus(amountToAdd, unit));
+            }
         }
         return unit.doPlus(this, amountToAdd);
     }
@@ -1365,17 +1390,20 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this {@code ZonedDateTime} with the specified period in hours added.
      * <p>
-     * The addition is performed on the underlying local date-time ignoring the zone ID.
-     * This may, at daylight savings cutover, result in a duration being added
-     * that is more or less than the specified number of hours.
+     * This operates on the instant time-line, such that adding one hour will
+     * always be a duration of one hour later.
+     * This may cause the local date-time to change by an amount other than one hour.
+     * Note that this is a different approach to that used by days, months and years,
+     * thus adding one day is not the same as adding 24 hours.
      * <p>
-     * For example, consider a time-zone where the spring DST cutover means that
-     * the local times 01:00 to 01:59 do not exist. Using this method, adding
-     * a period of 2 hours to 00:30 will result in 02:30, but it is important
-     * to note that the change in duration was only 1 hour.
-     * <p>
-     * If the resulting local date-time is invalid for the offset and zone ID, then
-     * it is adjusted.
+     * For example, consider a time-zone where the spring DST cutover means that the
+     * local times 01:00 to 01:59 occur twice changing from offset +02:00 to +01:00.
+     * <p><ul>
+     * <li>Adding one hour to 00:30+02:00 will result in 01:30+02:00
+     * <li>Adding one hour to 01:30+02:00 will result in 01:30+01:00
+     * <li>Adding one hour to 01:30+01:00 will result in 02:30+01:00
+     * <li>Adding three hours to 00:30+02:00 will result in 02:30+01:00
+     * </ul><p>
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1384,18 +1412,16 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public ZonedDateTime plusHours(long hours) {
-        return resolveLocal(dateTime.plusHours(hours));
+        return resolveInstant(dateTime.plusHours(hours));
     }
 
     /**
      * Returns a copy of this {@code ZonedDateTime} with the specified period in minutes added.
      * <p>
-     * The addition is performed on the underlying local date-time ignoring the zone ID.
-     * This may, at daylight savings cutover, result in a duration being added
-     * that is more or less than the specified number of minutes.
-     * <p>
-     * If the resulting local date-time is invalid for the offset and zone ID, then
-     * it is adjusted.
+     * This operates on the instant time-line, such that adding one minute will
+     * always be a duration of one minute later.
+     * This may cause the local date-time to change by an amount other than one minute.
+     * Note that this is a different approach to that used by days, months and years.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1404,18 +1430,16 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public ZonedDateTime plusMinutes(long minutes) {
-        return resolveLocal(dateTime.plusMinutes(minutes));
+        return resolveInstant(dateTime.plusMinutes(minutes));
     }
 
     /**
      * Returns a copy of this {@code ZonedDateTime} with the specified period in seconds added.
      * <p>
-     * The addition is performed on the underlying local date-time ignoring the zone ID.
-     * This may, at daylight savings cutover, result in a duration being added
-     * that is more or less than the specified number of seconds.
-     * <p>
-     * If the resulting local date-time is invalid for the offset and zone ID, then
-     * it is adjusted.
+     * This operates on the instant time-line, such that adding one second will
+     * always be a duration of one second later.
+     * This may cause the local date-time to change by an amount other than one second.
+     * Note that this is a different approach to that used by days, months and years.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1424,18 +1448,16 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public ZonedDateTime plusSeconds(long seconds) {
-        return resolveLocal(dateTime.plusSeconds(seconds));
+        return resolveInstant(dateTime.plusSeconds(seconds));
     }
 
     /**
      * Returns a copy of this {@code ZonedDateTime} with the specified period in nanoseconds added.
      * <p>
-     * The addition is performed on the underlying local date-time ignoring the zone ID.
-     * This may, at daylight savings cutover, result in a duration being added
-     * that is more or less than the specified number of nanos.
-     * <p>
-     * If the resulting local date-time is invalid for the offset and zone ID, then
-     * it is adjusted.
+     * This operates on the instant time-line, such that adding one nano will
+     * always be a duration of one nano later.
+     * This may cause the local date-time to change by an amount other than one nano.
+     * Note that this is a different approach to that used by days, months and years.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1444,7 +1466,7 @@ public final class ZonedDateTime
      * @throws DateTimeException if the result exceeds the supported date range
      */
     public ZonedDateTime plusNanos(long nanos) {
-        return resolveLocal(dateTime.plusNanos(nanos));
+        return resolveInstant(dateTime.plusNanos(nanos));
     }
 
     //-----------------------------------------------------------------------
@@ -1505,9 +1527,19 @@ public final class ZonedDateTime
      * The unit is responsible for the details of the calculation, including the resolution
      * of any edge cases in the calculation.
      * <p>
-     * When converting back to {@code ZonedDateTime}, if the local date-time is in an overlap,
-     * then the offset will be retained if possible, otherwise the earlier offset will be used.
-     * If in a gap, the local date-time will be adjusted forward by the length of the gap.
+     * The calculation for date and time units differ.
+     * <p>
+     * Date units operate on the local time-line.
+     * The period is first subtracted from the local date-time, then converted back
+     * to a zoned date-time using the zone ID.
+     * The conversion uses {@link #ofLocal(LocalDateTime, ZoneId, ZoneOffset)}
+     * with the offset before the subtraction.
+     * <p>
+     * Time units operate on the instant time-line.
+     * The period is first subtracted from the local date-time, then converted back to
+     * a zoned date-time using the zone ID.
+     * The conversion uses {@link #ofInstant(LocalDateTime, ZoneOffset, ZoneId)}
+     * with the offset before the subtraction.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1614,17 +1646,20 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this {@code ZonedDateTime} with the specified period in hours subtracted.
      * <p>
-     * The subtraction is performed on the underlying local date-time ignoring the zone ID.
-     * This may, at daylight savings cutover, result in a duration being subtracted
-     * that is more or less than the specified number of hours.
+     * This operates on the instant time-line, such that subtracting one hour will
+     * always be a duration of one hour earlier.
+     * This may cause the local date-time to change by an amount other than one hour.
+     * Note that this is a different approach to that used by days, months and years,
+     * thus subtracting one day is not the same as adding 24 hours.
      * <p>
-     * For example, consider a time-zone where the spring DST cutover means that
-     * the local times 01:00 to 01:59 do not exist. Using this method, subtracting
-     * a period of 2 hours from 02:30 will result in 00:30, but it is important
-     * to note that the change in duration was only 1 hour.
-     * <p>
-     * If the resulting local date-time is invalid for the offset and zone ID, then
-     * it is adjusted.
+     * For example, consider a time-zone where the spring DST cutover means that the
+     * local times 01:00 to 01:59 occur twice changing from offset +02:00 to +01:00.
+     * <p><ul>
+     * <li>Subtracting one hour from 02:30+01:00 will result in 01:30+02:00
+     * <li>Subtracting one hour from 01:30+01:00 will result in 01:30+02:00
+     * <li>Subtracting one hour from 01:30+02:00 will result in 00:30+01:00
+     * <li>Subtracting three hours from 02:30+01:00 will result in 00:30+02:00
+     * </ul><p>
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1639,12 +1674,10 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this {@code ZonedDateTime} with the specified period in minutes subtracted.
      * <p>
-     * The subtraction is performed on the underlying local date-time ignoring the zone ID.
-     * This may, at daylight savings cutover, result in a duration being subtracted
-     * that is more or less than the specified number of minutes.
-     * <p>
-     * If the resulting local date-time is invalid for the offset and zone ID, then
-     * it is adjusted.
+     * This operates on the instant time-line, such that subtracting one minute will
+     * always be a duration of one minute earlier.
+     * This may cause the local date-time to change by an amount other than one minute.
+     * Note that this is a different approach to that used by days, months and years.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1659,12 +1692,10 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this {@code ZonedDateTime} with the specified period in seconds subtracted.
      * <p>
-     * The subtraction is performed on the underlying local date-time ignoring the zone ID.
-     * This may, at daylight savings cutover, result in a duration being subtracted
-     * that is more or less than the specified number of seconds.
-     * <p>
-     * If the resulting local date-time is invalid for the offset and zone ID, then
-     * it is adjusted.
+     * This operates on the instant time-line, such that subtracting one second will
+     * always be a duration of one second earlier.
+     * This may cause the local date-time to change by an amount other than one second.
+     * Note that this is a different approach to that used by days, months and years.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1679,12 +1710,10 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this {@code ZonedDateTime} with the specified period in nanoseconds subtracted.
      * <p>
-     * The subtraction is performed on the underlying local date-time ignoring the zone ID.
-     * This may, at daylight savings cutover, result in a duration being subtracted
-     * that is more or less than the specified number of nanos.
-     * <p>
-     * If the resulting local date-time is invalid for the offset and zone ID, then
-     * it is adjusted.
+     * This operates on the instant time-line, such that subtracting one nano will
+     * always be a duration of one nano earlier.
+     * This may cause the local date-time to change by an amount other than one nano.
+     * Note that this is a different approach to that used by days, months and years.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
