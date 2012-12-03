@@ -41,9 +41,9 @@ import javax.time.chrono.Chrono;
  * This interface is implemented by all date-time classes.
  * It provides access to the state using the {@link #get(DateTimeField)} and
  * {@link #getLong(DateTimeField)} methods that takes a {@link DateTimeField}.
- * Access is also provided to any additional state using a simple lookup by
- * {@code Class} through {@link #extract(Class)}. This is primarily
- * intended to provide access to the time-zone, offset and calendar system.
+ * Access is also provided to any additional state using a query interface
+ * through {@link #query(Query)}.
+ * This provides access to the time-zone, precision and calendar system.
  * <p>
  * A sub-interface, {@link DateTime}, extends this definition to one that also
  * supports adjustment and manipulation on more complete date-time objects.

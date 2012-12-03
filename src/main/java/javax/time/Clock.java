@@ -101,7 +101,7 @@ public abstract class Clock {
      * This may use {@link System#currentTimeMillis()}, or a higher resolution clock if
      * one is available.
      * <p>
-     * Conversion from instant to date or time uses the {@link ZoneId#UTC UTC time-zone}.
+     * Conversion from instant to date or time uses the {@link ZoneOffset#UTC UTC time-zone}.
      * <p>
      * The returned implementation is immutable, thread-safe and {@code Serializable}.
      *

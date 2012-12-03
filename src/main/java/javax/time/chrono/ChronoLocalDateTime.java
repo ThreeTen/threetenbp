@@ -178,8 +178,8 @@ public interface ChronoLocalDateTime<C extends Chrono<C>>
     /**
      * Converts this date-time to an {@code Instant}.
      * <p>
-     * This combines this {@link #getDateTime() local date-time} and
-     * the specified offset to form an {@code Instant}.
+     * This combines this local date-time and the specified offset to form
+     * an {@code Instant}.
      *
      * @param offset  the offset to use for the conversion, not null
      * @return an {@code Instant} representing the same instant, not null
@@ -190,9 +190,8 @@ public interface ChronoLocalDateTime<C extends Chrono<C>>
      * Converts this date-time to the number of seconds from the epoch
      * of 1970-01-01T00:00:00Z.
      * <p>
-     * This uses this {@link #getDateTime() local date-time} and
-     * the specified offset to calculate the epoch-second value,
-     * which is the number of elapsed seconds from 1970-01-01T00:00:00Z.
+     * This combines this local date-time and the specified offset to calculate the
+     * epoch-second value, which is the number of elapsed seconds from 1970-01-01T00:00:00Z.
      * Instants on the time-line after the epoch are positive, earlier are negative.
      *
      * @param offset  the offset to use for the conversion, not null

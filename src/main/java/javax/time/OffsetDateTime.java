@@ -1391,14 +1391,12 @@ public final class OffsetDateTime
      * Time-zone rules, such as daylight savings, mean that not every time on the
      * local time-line exists. If the local date-time is in a gap or overlap according to
      * the rules then a resolver is used to determine the resultant local time and offset.
-     * This method uses the {@link ZoneResolvers#retainOffset() retain-offset} resolver.
-     * This selects the date-time immediately after a gap and retains the offset in
-     * overlaps where possible, selecting the earlier offset if not possible.
+     * This method uses {@link ZonedDateTime#ofLocal(LocalDateTime, ZoneId, ZoneOffset)}
+     * to retain the offset from this instance if possible.
      * <p>
      * Finer control over gaps and overlaps is available in two ways.
      * If you simply want to use the later offset at overlaps then call
      * {@link ZonedDateTime#withLaterOffsetAtOverlap()} immediately after this method.
-     * Alternately, pass a specific resolver to {@link #atZoneSimilarLocal(ZoneId, ZoneResolver)}.
      * <p>
      * To create a zoned date-time at the same instant irrespective of the local time-line,
      * use {@link #atZoneSameInstant(ZoneId)}.

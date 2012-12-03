@@ -47,13 +47,11 @@ import javax.time.ZoneOffset;
  * {@link ZoneOffsetTransitionRule} is used for future transitions that are based
  * on the result of an algorithm.
  * <p>
- * The rules are loaded via {@link ZoneId} and {@link ZoneRulesGroup} and
- * are specific to a group, region and version. The same rules may be shared
- * between multiple versions, regions or even groups.
+ * The rules are loaded via {@link ZoneRulesProvider} using a {@link ZoneId}.
+ * The same rules may be shared internally between multiple zone IDs.
  * <p>
- * Serializing an instance of {@code ZoneRules} will store the entire set
- * of rules. It does not store the group, region or version as they are not
- * part of the state of this object.
+ * Serializing an instance of {@code ZoneRules} will store the entire set of rules.
+ * It does not store the zone ID as it is not part of the state of this object.
  * <p>
  * A rule implementation may or may not store full information about historic
  * and future transitions, and the information stored is only as accurate as

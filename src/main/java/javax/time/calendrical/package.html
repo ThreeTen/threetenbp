@@ -51,15 +51,15 @@ more powerful use cases. Support is included for:
 Dates and times are expressed in terms of fields and units.
 A unit is used to measure an amount of time, such as years, days or minutes.
 All units implement {@link javax.time.calendrical.PeriodUnit}.
-The set of well known units is defined in {@link javax.time.calendrical.LocalPeriodUnit},
-for example, {@link javax.time.calendrical.LocalPeriodUnit#DAYS}.
+The set of well known units is defined in {@link javax.time.calendrical.ChronoUnit},
+for example, {@link javax.time.calendrical.ChronoUnit#DAYS}.
 The unit interface is designed to allow applications to add their own units.
 </p>
 <p>
 A field is used to express part of a larger date-time, such as year, month-of-year or second-of-minute.
 All fields implement {@link javax.time.calendrical.DateTimeField}.
-The set of well known fields are defined in {@link javax.time.calendrical.LocalDateTimeField},
-for example, {@link javax.time.calendrical.LocalDateTimeField#HOUR_OF_DAY}.
+The set of well known fields are defined in {@link javax.time.calendrical.ChronoField},
+for example, {@link javax.time.calendrical.ChronoField#HOUR_OF_DAY}.
 An additional fields are defined by {@link javax.time.calendrical.JulianDayField}.
 The field interface is designed to allow applications to add their own fields.
 </p>
@@ -75,7 +75,7 @@ and extracting another date time type, typically used to extract the offset or t
 One use of fields in application code is to retrieve fields for which there is no convenience method.
 For example, getting the day-of-month is common enough that there is a method on {@code LocalDate}
 called {@code getDayOfMonth()}. However for more unusual fields it is necessary to use the field.
-For example, {@code date.get(LocalDateField.ALIGNED_WEEK_OF_MONTH)}.
+For example, {@code date.get(ChronoField.ALIGNED_WEEK_OF_MONTH)}.
 The fields also provide access to the range of valid values.
 </p>
 

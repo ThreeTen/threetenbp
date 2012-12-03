@@ -252,7 +252,7 @@ public abstract class ZoneRulesProvider {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the set of available zone IDs.
+     * SPI method to get the available zone IDs.
      * <p>
      * This obtains the IDs that this {@code ZoneRulesProvider} provides.
      * A provider should provide data for at least one region.
@@ -265,7 +265,7 @@ public abstract class ZoneRulesProvider {
     protected abstract Set<String> provideZoneIds();
 
     /**
-     * Returns a resolved provider bound to the specified zone ID.
+     * SPI method to bind to the specified zone ID.
      * <p>
      * {@code ZoneRulesProvider} has a lookup from zone ID to provider.
      * This method is used when building that lookup, allowing providers
@@ -288,20 +288,19 @@ public abstract class ZoneRulesProvider {
     }
 
     /**
-     * Gets rules for the zone ID.
+     * SPI method to get the rules for the zone ID.
      * <p>
      * This loads the rules for the region and version specified.
      * The version may be null to indicate the "latest" version.
      *
      * @param regionId  the time-zone region ID, not null
-     * @param versionId  the time-zone version ID, null means "latest"
      * @return the rules, not null
      * @throws DateTimeException if rules cannot be obtained
      */
     protected abstract ZoneRules provideRules(String regionId);
 
     /**
-     * Gets the history of rules for the zone ID.
+     * SPI method to get the history of rules for the zone ID.
      * <p>
      * This returns a map of historical rules keyed by a version string.
      * The exact meaning and format of the version is provider specific.
@@ -326,7 +325,7 @@ public abstract class ZoneRulesProvider {
     protected abstract NavigableMap<String, ZoneRules> provideVersions(String zoneId);
 
     /**
-     * Refreshes the rules from the underlying data provider.
+     * SPI method to refresh the rules from the underlying data provider.
      * <p>
      * This method provides the opportunity for a provider to dynamically
      * recheck the underlying data provider to find the latest rules.
