@@ -1047,32 +1047,6 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code ZonedDateTime} with the date values altered.
-     * <p>
-     * This operates on the local time-line,
-     * {@link LocalDateTime#withDate(int, int, int) changing the date} of the local date-time.
-     * This is then converted back to a {@code ZonedDateTime}, using the zone ID
-     * to obtain the offset.
-     * <p>
-     * When converting back to {@code ZonedDateTime}, if the local date-time is in an overlap,
-     * then the offset will be retained if possible, otherwise the earlier offset will be used.
-     * If in a gap, the local date-time will be adjusted forward by the length of the gap.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param year  the year to set in the result, from MIN_YEAR to MAX_YEAR
-     * @param month  the month-of-year to set in the result, from 1 (January) to 12 (December)
-     * @param dayOfMonth  the day-of-month to set in the result, from 1 to 31
-     * @return a {@code ZonedDateTime} based on this date-time with the requested date, not null
-     * @throws DateTimeException if any field value is invalid
-     * @throws DateTimeException if the day-of-month is invalid for the month-year
-     */
-    public ZonedDateTime withDate(int year, int month, int dayOfMonth) {
-        return resolveLocal(dateTime.withDate(year, month, dayOfMonth));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Returns a copy of this {@code ZonedDateTime} with the hour-of-day value altered.
      * <p>
      * This operates on the local time-line,

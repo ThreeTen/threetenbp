@@ -939,7 +939,7 @@ public class TCKDateTimeFormatters {
     Iterator<Object[]> weekDate() {
         return new Iterator<Object[]>() {
             private ZonedDateTime date = ZonedDateTime.of(LocalDateTime.of(2003, 12, 29, 11, 5, 30), ZoneId.of("Europe/Paris"));
-            private ZonedDateTime endDate = date.withDate(2005, 1, 2);
+            private ZonedDateTime endDate = date.withYear(2005).withMonth(1).withDayOfMonth(2);
             private int week = 1;
             private int day = 1;
 

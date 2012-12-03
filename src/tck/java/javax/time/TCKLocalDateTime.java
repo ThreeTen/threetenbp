@@ -85,7 +85,6 @@ import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.MinusAdjuster;
 import javax.time.calendrical.DateTime.PlusAdjuster;
 import javax.time.calendrical.DateTime.WithAdjuster;
-import javax.time.calendrical.DateTimeAccessor.Query;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAccessor.Query;
 import javax.time.calendrical.DateTimeField;
@@ -1076,123 +1075,6 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withDayOfYear_invalid() {
         TEST_2007_07_15_12_30_40_987654321.withDayOfYear(366);
-    }
-
-    //-----------------------------------------------------------------------
-    // withDate(int,Month,int)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_withDate_iMi() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withDate(2008, Month.FEBRUARY, 29);
-        check(t, 2008, 2, 29, 12, 30, 40, 987654321);
-    }
-
-    @Test(groups={"tck"})
-    public void test_withDate_iMi_sameYear() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withDate(2007, Month.JUNE, 14);
-        check(t, 2007, 6, 14, 12, 30, 40, 987654321);
-    }
-
-    @Test(groups={"tck"})
-    public void test_withDate_iMi_sameMonth() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withDate(2006, Month.JULY, 14);
-        check(t, 2006, 7, 14, 12, 30, 40, 987654321);
-    }
-
-    @Test(groups={"tck"})
-    public void test_withDate_iMi_sameDay() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withDate(2006, Month.JUNE, 15);
-        check(t, 2006, 6, 15, 12, 30, 40, 987654321);
-    }
-
-    @Test(groups={"tck"})
-    public void test_withDate_iMi_dayChange() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withDate(2007, Month.JULY, 16);
-        check(t, 2007, 7, 16, 12, 30, 40, 987654321);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_withDate_iMi_yearTooLow() {
-        TEST_2007_07_15_12_30_40_987654321.withDate(Integer.MIN_VALUE, Month.FEBRUARY, 29);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_withDate_iMi_monthNull() {
-        TEST_2007_07_15_12_30_40_987654321.withDate(2008, null, 29);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_withDate_iMi_dayTooLow() {
-        TEST_2007_07_15_12_30_40_987654321.withDate(2008, 2, -1);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_withDate_iMi_dayTooHigh() {
-        TEST_2007_07_15_12_30_40_987654321.withDate(2008, 3, 32);
-    }
-
-    //-----------------------------------------------------------------------
-    // withDate()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_withDate() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withDate(2008, 2, 29);
-        check(t, 2008, 2, 29, 12, 30, 40, 987654321);
-    }
-
-    @Test(groups={"tck"})
-    public void test_withDate_noChange() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withDate(2007, 7, 15);
-        assertSame(t, TEST_2007_07_15_12_30_40_987654321);
-    }
-
-    @Test(groups={"tck"})
-    public void test_withDate_sameYear() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withDate(2007, 6, 14);
-        check(t, 2007, 6, 14, 12, 30, 40, 987654321);
-    }
-
-    @Test(groups={"tck"})
-    public void test_withDate_sameMonth() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withDate(2006, 7, 14);
-        check(t, 2006, 7, 14, 12, 30, 40, 987654321);
-    }
-
-    @Test(groups={"tck"})
-    public void test_withDate_sameDay() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withDate(2006, 6, 15);
-        check(t, 2006, 6, 15, 12, 30, 40, 987654321);
-    }
-
-    @Test(groups={"tck"})
-    public void test_withDate_dayChange() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withDate(2007, 7, 16);
-        check(t, 2007, 7, 16, 12, 30, 40, 987654321);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_withDate_yearTooLow() {
-        TEST_2007_07_15_12_30_40_987654321.withDate(Integer.MIN_VALUE, 2, 29);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_withDate_monthTooLow() {
-        TEST_2007_07_15_12_30_40_987654321.withDate(2008, 0, 29);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_withDate_monthTooHigh() {
-        TEST_2007_07_15_12_30_40_987654321.withDate(2008, 13, 29);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_withDate_dayTooLow() {
-        TEST_2007_07_15_12_30_40_987654321.withDate(2008, 2, -1);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_withDate_dayTooHigh() {
-        TEST_2007_07_15_12_30_40_987654321.withDate(2008, 3, 32);
     }
 
     //-----------------------------------------------------------------------

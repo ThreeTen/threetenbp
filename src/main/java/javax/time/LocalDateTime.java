@@ -729,57 +729,6 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code LocalDateTime} with the date values altered.
-     * <p>
-     * This method will return a new instance with the same time fields,
-     * but altered date fields.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param year  the year to set in the result, from MIN_YEAR to MAX_YEAR
-     * @param month  the month-of-year to set in the result, not null
-     * @param dayOfMonth  the day-of-month to set in the result, from 1 to 31
-     * @return a {@code LocalDateTime} based on this date-time with the requested date, not null
-     * @throws DateTimeException if any field value is invalid
-     * @throws DateTimeException if the day-of-month is invalid for the month-year
-     */
-    public LocalDateTime withDate(int year, Month month, int dayOfMonth) {
-        if (year == getYear() &&
-                month == getMonth() &&
-                dayOfMonth == getDayOfMonth()) {
-            return this;
-        }
-        LocalDate newDate = LocalDate.of(year, month, dayOfMonth);
-        return with(newDate, time);
-    }
-
-    /**
-     * Returns a copy of this {@code LocalDateTime} with the date values altered.
-     * <p>
-     * This method will return a new instance with the same time fields,
-     * but altered date fields.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param year  the year to set in the result, from MIN_YEAR to MAX_YEAR
-     * @param month  the month-of-year to set in the result, from 1 (January) to 12 (December)
-     * @param dayOfMonth  the day-of-month to set in the result, from 1 to 31
-     * @return a {@code LocalDateTime} based on this date-time with the requested date, not null
-     * @throws DateTimeException if any field value is invalid
-     * @throws DateTimeException if the day-of-month is invalid for the month-year
-     */
-    public LocalDateTime withDate(int year, int month, int dayOfMonth) {
-        if (year == getYear() &&
-                month == getMonth().getValue() &&
-                dayOfMonth == getDayOfMonth()) {
-            return this;
-        }
-        LocalDate newDate = LocalDate.of(year, month, dayOfMonth);
-        return with(newDate, time);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Returns a copy of this {@code LocalDateTime} with the hour-of-day value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.

@@ -1244,24 +1244,6 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // withDate()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_withDate() {
-        ZonedDateTime base = ZonedDateTime.of(TEST_LOCAL_2008_06_30_11_30_59_500, ZONE_0100);
-        ZonedDateTime test = base.withDate(2007, 1, 1);
-        ZonedDateTime expected = ZonedDateTime.of(TEST_LOCAL_2008_06_30_11_30_59_500.withDate(2007, 1, 1), ZONE_0100);
-        assertEquals(test, expected);
-    }
-
-    @Test(groups={"tck"})
-    public void test_withDate_noChange() {
-        ZonedDateTime base = ZonedDateTime.of(TEST_LOCAL_2008_06_30_11_30_59_500, ZONE_0100);
-        ZonedDateTime test = base.withDate(2008, 6, 30);
-        assertEquals(test, base);
-    }
-
-    //-----------------------------------------------------------------------
     // withHour()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})

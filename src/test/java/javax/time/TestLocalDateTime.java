@@ -248,12 +248,6 @@ public class TestLocalDateTime extends AbstractDateTimeTest {
     }
 
     @Test(groups={"implementation"})
-    public void test_withDate_iMi_noChange() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withDate(2007, Month.JULY, 15);
-        assertSame(t, TEST_2007_07_15_12_30_40_987654321);
-    }
-
-    @Test(groups={"implementation"})
     public void test_withHour_noChange() {
         LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withHour(12);
         assertSame(t, TEST_2007_07_15_12_30_40_987654321);
