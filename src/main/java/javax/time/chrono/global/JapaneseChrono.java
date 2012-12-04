@@ -315,10 +315,6 @@ public final class JapaneseChrono extends Chrono<JapaneseChrono> implements Seri
             case MONTH_OF_YEAR:
                 return DateTimeValueRange.of(jcal.getMinimum(Calendar.MONTH) + 1, jcal.getGreatestMinimum(Calendar.MONTH) + 1,
                                              jcal.getLeastMaximum(Calendar.MONTH) + 1, jcal.getMaximum(Calendar.MONTH) + 1);
-            case WEEK_OF_YEAR:
-                // TODO: revisit this when the week definition gets clear
-                fieldIndex = Calendar.WEEK_OF_YEAR;
-                break;
             case DAY_OF_YEAR:
                 fieldIndex = Calendar.DAY_OF_YEAR;
                 break;

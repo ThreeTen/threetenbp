@@ -41,7 +41,9 @@ import static javax.time.calendrical.ChronoField.YEAR_OF_ERA;
 import java.util.Objects;
 
 import javax.time.LocalTime;
+import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.DateTime;
+import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.Chrono;
 import javax.time.chrono.ChronoLocalDate;
@@ -72,6 +74,14 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
     @Override
     public int lengthOfYear() {
         return (isLeapYear() ? 366 : 365);
+    }
+
+    @Override
+    public boolean isSupported(DateTimeField field) {
+        if (field instanceof ChronoField) {
+            return ((ChronoField) field).isDateField();
+        }
+        return field != null && field.doIsSupported(this);
     }
 
     //-------------------------------------------------------------------------

@@ -44,8 +44,6 @@ import static javax.time.calendrical.ChronoField.EPOCH_MONTH;
 import static javax.time.calendrical.ChronoField.ERA;
 import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
 import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
-import static javax.time.calendrical.ChronoField.WEEK_OF_MONTH;
-import static javax.time.calendrical.ChronoField.WEEK_OF_YEAR;
 import static javax.time.calendrical.ChronoField.YEAR;
 import static javax.time.calendrical.ChronoField.YEAR_OF_ERA;
 import static org.testng.Assert.assertEquals;
@@ -64,8 +62,8 @@ import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.MinusAdjuster;
 import javax.time.calendrical.DateTime.PlusAdjuster;
 import javax.time.calendrical.DateTime.WithAdjuster;
-import javax.time.calendrical.DateTimeAccessor.Query;
 import javax.time.calendrical.DateTimeAccessor;
+import javax.time.calendrical.DateTimeAccessor.Query;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.JulianDayField;
 import javax.time.calendrical.MockFieldNoValue;
@@ -110,9 +108,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
             DAY_OF_YEAR,
             EPOCH_DAY,
             ALIGNED_WEEK_OF_MONTH,
-            WEEK_OF_MONTH,
             ALIGNED_WEEK_OF_YEAR,
-            WEEK_OF_YEAR,
             MONTH_OF_YEAR,
             EPOCH_MONTH,
             YEAR_OF_ERA,

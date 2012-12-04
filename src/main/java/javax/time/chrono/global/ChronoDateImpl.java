@@ -31,19 +31,14 @@
  */
 package javax.time.chrono.global;
 
-import static javax.time.calendrical.ChronoField.WEEK_OF_MONTH;
-import static javax.time.calendrical.ChronoField.WEEK_OF_YEAR;
-
 import java.io.Serializable;
 
 import javax.time.DateTimeException;
 import javax.time.LocalDate;
 import javax.time.LocalTime;
-import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
-import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.chrono.Chrono;
 import javax.time.chrono.ChronoLocalDate;
@@ -130,16 +125,6 @@ abstract class ChronoDateImpl<C extends Chrono<C>>
      * Creates an instance.
      */
     ChronoDateImpl() {
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public boolean isSupported(DateTimeField field) {
-        if (field instanceof ChronoField) {
-            return ((ChronoField) field).isDateField() &&
-                    field != WEEK_OF_MONTH && field != WEEK_OF_YEAR;
-        }
-        return field != null && field.doIsSupported(this);
     }
 
     //-----------------------------------------------------------------------

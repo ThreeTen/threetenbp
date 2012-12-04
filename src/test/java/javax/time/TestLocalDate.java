@@ -42,8 +42,6 @@ import static javax.time.calendrical.ChronoField.EPOCH_DAY;
 import static javax.time.calendrical.ChronoField.EPOCH_MONTH;
 import static javax.time.calendrical.ChronoField.ERA;
 import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
-import static javax.time.calendrical.ChronoField.WEEK_OF_MONTH;
-import static javax.time.calendrical.ChronoField.WEEK_OF_YEAR;
 import static javax.time.calendrical.ChronoField.YEAR;
 import static javax.time.calendrical.ChronoField.YEAR_OF_ERA;
 import static org.testng.Assert.assertEquals;
@@ -96,9 +94,7 @@ public class TestLocalDate extends AbstractDateTimeTest {
             DAY_OF_YEAR,
             EPOCH_DAY,
             ALIGNED_WEEK_OF_MONTH,
-            WEEK_OF_MONTH,
             ALIGNED_WEEK_OF_YEAR,
-            WEEK_OF_YEAR,
             MONTH_OF_YEAR,
             EPOCH_MONTH,
             YEAR_OF_ERA,

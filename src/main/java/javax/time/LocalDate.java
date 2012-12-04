@@ -426,14 +426,6 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean isSupported(DateTimeField field) {
-        if (field instanceof ChronoField) {
-            return ((ChronoField) field).isDateField();
-        }
-        return field != null && field.doIsSupported(this);
-    }
-
-    @Override
     public DateTimeValueRange range(DateTimeField field) {
         if (field instanceof ChronoField) {
             ChronoField f = (ChronoField) field;
@@ -442,8 +434,6 @@ public final class LocalDate
                     case DAY_OF_MONTH: return DateTimeValueRange.of(1, lengthOfMonth());
                     case DAY_OF_YEAR: return DateTimeValueRange.of(1, lengthOfYear());
                     case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1, getMonth() == Month.FEBRUARY && isLeapYear() == false ? 4 : 5);
-                    case WEEK_OF_MONTH: throw new UnsupportedOperationException("TODO");
-                    case WEEK_OF_YEAR: throw new UnsupportedOperationException("TODO");
                     case YEAR_OF_ERA:
                         return (getYear() <= 0 ? DateTimeValueRange.of(1, MAX_YEAR + 1) : DateTimeValueRange.of(1, MAX_YEAR));
                 }
@@ -485,9 +475,7 @@ public final class LocalDate
             case DAY_OF_YEAR: return getDayOfYear();
             case EPOCH_DAY: throw new DateTimeException("Field too large for an int: " + field);
             case ALIGNED_WEEK_OF_MONTH: return ((day - 1) / 7) + 1;
-            case WEEK_OF_MONTH: throw new UnsupportedOperationException("TODO");
             case ALIGNED_WEEK_OF_YEAR: return ((getDayOfYear() - 1) / 7) + 1;
-            case WEEK_OF_YEAR: throw new UnsupportedOperationException("TODO");
             case MONTH_OF_YEAR: return month;
             case EPOCH_MONTH: throw new DateTimeException("Field too large for an int: " + field);
             case YEAR_OF_ERA: return (year >= 1 ? year : 1 - year);
@@ -746,9 +734,7 @@ public final class LocalDate
                 case DAY_OF_YEAR: return withDayOfYear((int) newValue);
                 case EPOCH_DAY: return LocalDate.ofEpochDay(newValue);
                 case ALIGNED_WEEK_OF_MONTH: return plusWeeks(newValue - getLong(ALIGNED_WEEK_OF_MONTH));
-                case WEEK_OF_MONTH: throw new UnsupportedOperationException("TODO");
                 case ALIGNED_WEEK_OF_YEAR: return plusWeeks(newValue - getLong(ALIGNED_WEEK_OF_YEAR));
-                case WEEK_OF_YEAR: throw new UnsupportedOperationException("TODO");
                 case MONTH_OF_YEAR: return withMonth((int) newValue);
                 case EPOCH_MONTH: return plusMonths(newValue - getLong(EPOCH_MONTH));
                 case YEAR_OF_ERA: return withYear((int) (year >= 1 ? newValue : 1 - newValue));

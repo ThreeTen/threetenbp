@@ -324,29 +324,6 @@ public enum ChronoField implements DateTimeField {
      */
     ALIGNED_WEEK_OF_MONTH("AlignedWeekOfMonth", WEEKS, MONTHS, DateTimeValueRange.of(1, 4, 5)),
     /**
-     * The week within a month.
-     * <p>
-     * This represents concept of the count of weeks within the month where weeks
-     * start on a fixed day-of-week, such as Monday.
-     * This field is typically used with {@link #DAY_OF_WEEK}.
-     * <p>
-     * In the default ISO calendar system, the week starts on Monday and there must be at
-     * least 4 days in the first week.
-     * Week one is the week starting on a Monday where there are at least 4 days in the month.
-     * Thus, week one may start up to three days before the start of the month.
-     * If the first week starts after the start of the month then the period before is week zero.
-     * <p>
-     * For example:<br />
-     * - if the 1st day of the month is a Monday, week one starts on the 1st and there is no week zero<br />
-     * - if the 2nd day of the month is a Monday, week one starts on the 2nd and the 1st is in week zero<br />
-     * - if the 4th day of the month is a Monday, week one starts on the 4th and the 1st to 3rd is in week zero<br />
-     * - if the 5th day of the month is a Monday, week two starts on the 5th and the 1st to 4th is in week one<br />
-     * <p>
-     * Non-ISO calendar systems should implement this field in the same way, taking
-     * into account any differences in week or month length.
-     */
-    WEEK_OF_MONTH("WeekOfMonth", WEEKS, MONTHS, DateTimeValueRange.of(0, 1, 4, 5)),
-    /**
      * The aligned week within a year.
      * <p>
      * This represents concept of the count of weeks within the period of a year
@@ -362,29 +339,6 @@ public enum ChronoField implements DateTimeField {
      * field in the same way, but using the alternate week length.
      */
     ALIGNED_WEEK_OF_YEAR("AlignedWeekOfYear", WEEKS, YEARS, DateTimeValueRange.of(1, 53)),
-    /**
-     * The week within a year.
-     * <p>
-     * This represents concept of the count of weeks within the year where weeks
-     * start on a fixed day-of-week, such as Monday.
-     * This field is typically used with {@link #DAY_OF_WEEK}.
-     * <p>
-     * In the default ISO calendar system, the week starts on Monday and there must be at
-     * least 4 days in the first week.
-     * Week one is the week starting on a Monday where there are at least 4 days in the year.
-     * Thus, week one may start up to three days before the start of the year.
-     * If the first week starts after the start of the year then the period before is week zero.
-     * <p>
-     * For example:<br />
-     * - if the 1st day of the year is a Monday, week one starts on the 1st and there is no week zero<br />
-     * - if the 2nd day of the year is a Monday, week one starts on the 2nd and the 1st is in week zero<br />
-     * - if the 4th day of the year is a Monday, week one starts on the 4th and the 1st to 3rd is in week zero<br />
-     * - if the 5th day of the year is a Monday, week two starts on the 5th and the 1st to 4th is in week one<br />
-     * <p>
-     * Non-ISO calendar systems should implement this field in the same way, taking
-     * into account any differences in week or year length.
-     */
-    WEEK_OF_YEAR("WeekOfYear", WEEKS, YEARS, DateTimeValueRange.of(0, 1, 52, 53)),
     /**
      * The month-of-year, such as March.
      * <p>

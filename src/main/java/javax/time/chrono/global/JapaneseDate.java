@@ -197,9 +197,6 @@ final class JapaneseDate
                     LocalGregorianCalendar.Date jdate = toPrivateJapaneseDate(isoDate);
                     return JapaneseChrono.JCAL.getDayOfYear(jdate);
                 }
-                case WEEK_OF_YEAR:
-                    // TODO: need to resolve week of year issues with Japanese calendar.
-                    break;
             }
             // TODO: review other fields
             return isoDate.getLong(field);
