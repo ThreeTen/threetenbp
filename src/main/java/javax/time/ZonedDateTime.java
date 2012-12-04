@@ -717,7 +717,7 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the {@code LocalDateTime} part of this offset date-time.
+     * Gets the {@code LocalDateTime} part of this date-time.
      * <p>
      * This returns a {@code LocalDateTime} with the same year, month, day and time
      * as this date-time.

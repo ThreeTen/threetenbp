@@ -72,7 +72,7 @@ import javax.time.zone.ZoneRules;
  * To prevent any problems with that range being extended, yet still provide
  * validation, the range of offsets is restricted to -18:00 to 18:00 inclusive.
  * <p>
- * This class is designed for use with the ISO calendar system
+ * This class is designed for use with the ISO calendar system.
  * The fields of hours, minutes and seconds make assumptions that are valid for the
  * standard ISO definitions of those fields. This class may be used with other
  * calendar systems providing the definition of the time fields matches those
