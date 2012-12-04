@@ -31,9 +31,9 @@
  */
 package javax.time;
 
-import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
-import static javax.time.DateTimeConstants.SECONDS_PER_HOUR;
-import static javax.time.DateTimeConstants.SECONDS_PER_MINUTE;
+import static javax.time.LocalTime.SECONDS_PER_DAY;
+import static javax.time.LocalTime.SECONDS_PER_HOUR;
+import static javax.time.LocalTime.SECONDS_PER_MINUTE;
 import static javax.time.calendrical.ChronoField.INSTANT_SECONDS;
 import static javax.time.calendrical.ChronoField.MICRO_OF_SECOND;
 import static javax.time.calendrical.ChronoField.MILLI_OF_SECOND;

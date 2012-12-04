@@ -31,10 +31,10 @@
  */
 package javax.time;
 
-import static javax.time.DateTimeConstants.NANOS_PER_DAY;
-import static javax.time.DateTimeConstants.NANOS_PER_HOUR;
-import static javax.time.DateTimeConstants.NANOS_PER_MINUTE;
-import static javax.time.DateTimeConstants.NANOS_PER_SECOND;
+import static javax.time.LocalTime.NANOS_PER_DAY;
+import static javax.time.LocalTime.NANOS_PER_HOUR;
+import static javax.time.LocalTime.NANOS_PER_MINUTE;
+import static javax.time.LocalTime.NANOS_PER_SECOND;
 import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
 import static javax.time.calendrical.ChronoField.EPOCH_MONTH;
 import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;

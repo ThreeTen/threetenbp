@@ -31,18 +31,6 @@
  */
 package javax.time;
 
-import static javax.time.DateTimeConstants.HOURS_PER_DAY;
-import static javax.time.DateTimeConstants.MICROS_PER_DAY;
-import static javax.time.DateTimeConstants.MILLIS_PER_DAY;
-import static javax.time.DateTimeConstants.MINUTES_PER_DAY;
-import static javax.time.DateTimeConstants.MINUTES_PER_HOUR;
-import static javax.time.DateTimeConstants.NANOS_PER_DAY;
-import static javax.time.DateTimeConstants.NANOS_PER_HOUR;
-import static javax.time.DateTimeConstants.NANOS_PER_MINUTE;
-import static javax.time.DateTimeConstants.NANOS_PER_SECOND;
-import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
-import static javax.time.DateTimeConstants.SECONDS_PER_HOUR;
-import static javax.time.DateTimeConstants.SECONDS_PER_MINUTE;
 import static javax.time.calendrical.ChronoField.HOUR_OF_DAY;
 import static javax.time.calendrical.ChronoField.MICRO_OF_DAY;
 import static javax.time.calendrical.ChronoField.MINUTE_OF_HOUR;
@@ -119,6 +107,55 @@ public final class LocalTime
         MIN_TIME = HOURS[0];
         MAX_TIME = new LocalTime(23, 59, 59, 999_999_999);
     }
+
+    /**
+     * Hours per minute.
+     */
+    static final int HOURS_PER_DAY = 24;
+    /**
+     * Minutes per hour.
+     */
+    static final int MINUTES_PER_HOUR = 60;
+    /**
+     * Minutes per day.
+     */
+    static final int MINUTES_PER_DAY = MINUTES_PER_HOUR * HOURS_PER_DAY;
+    /**
+     * Seconds per minute.
+     */
+    static final int SECONDS_PER_MINUTE = 60;
+    /**
+     * Seconds per hour.
+     */
+    static final int SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR;
+    /**
+     * Seconds per day.
+     */
+    static final int SECONDS_PER_DAY = SECONDS_PER_HOUR * HOURS_PER_DAY;
+    /**
+     * Milliseconds per day.
+     */
+    static final long MILLIS_PER_DAY = SECONDS_PER_DAY * 1000L;
+    /**
+     * Microseconds per day.
+     */
+    static final long MICROS_PER_DAY = SECONDS_PER_DAY * 1000_000L;
+    /**
+     * Nanos per second.
+     */
+    static final long NANOS_PER_SECOND = 1000_000_000L;
+    /**
+     * Nanos per minute.
+     */
+    static final long NANOS_PER_MINUTE = NANOS_PER_SECOND * SECONDS_PER_MINUTE;
+    /**
+     * Nanos per hour.
+     */
+    static final long NANOS_PER_HOUR = NANOS_PER_MINUTE * MINUTES_PER_HOUR;
+    /**
+     * Nanos per day.
+     */
+    static final long NANOS_PER_DAY = NANOS_PER_HOUR * HOURS_PER_DAY;
 
     /**
      * Serialization version.

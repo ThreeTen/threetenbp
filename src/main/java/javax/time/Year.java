@@ -88,14 +88,15 @@ public final class Year
         extends DefaultInterfaceDateTimeAccessor
         implements DateTime, WithAdjuster, Comparable<Year>, Serializable {
 
+    // TODO: remove constants?
     /**
-     * Constant for the minimum year on the proleptic ISO calendar system, -999,999,999.
+     * The minimum supported year, -999,999,999.
      */
-    public static final int MIN_YEAR = DateTimeConstants.MIN_YEAR;
+    public static final int MIN_YEAR = LocalDate.MIN_YEAR;
     /**
-     * Constant for the maximum year on the proleptic ISO calendar system, 999,999,999.
+     * The maximum supported year, 999,999,999.
      */
-    public static final int MAX_YEAR = DateTimeConstants.MAX_YEAR;
+    public static final int MAX_YEAR = LocalDate.MAX_YEAR;
 
     /**
      * Serialization version.

@@ -31,7 +31,6 @@
  */
 package javax.time.jdk8;
 
-import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
 import static javax.time.calendrical.ChronoField.INSTANT_SECONDS;
 import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
 import static javax.time.calendrical.ChronoUnit.NANOS;
@@ -152,7 +151,7 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chrono<C>>
     @Override
     public long toEpochSecond() {
         long epochDay = getDate().toEpochDay();
-        long secs = epochDay * SECONDS_PER_DAY + getTime().toSecondOfDay();
+        long secs = epochDay * 86400 + getTime().toSecondOfDay();
         secs -= getOffset().getTotalSeconds();
         return secs;
     }

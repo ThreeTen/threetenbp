@@ -31,7 +31,7 @@
  */
 package javax.time;
 
-import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
+import static javax.time.LocalTime.SECONDS_PER_DAY;
 import static javax.time.calendrical.ChronoField.EPOCH_DAY;
 import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
 

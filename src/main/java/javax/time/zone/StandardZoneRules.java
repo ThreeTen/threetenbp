@@ -31,8 +31,6 @@
  */
 package javax.time.zone;
 
-import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
-
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -44,7 +42,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.time.DateTimeConstants;
 import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.LocalDate;
@@ -481,7 +478,7 @@ final class StandardZoneRules implements ZoneRules, Serializable {
                 }
             }
             // use first from following year
-            if (year < DateTimeConstants.MAX_YEAR) {
+            if (year < LocalDate.MAX_YEAR) {
                 transArray = findTransitionArray(year + 1);
                 return transArray[0];
             }
@@ -540,7 +537,7 @@ final class StandardZoneRules implements ZoneRules, Serializable {
     private int findYear(long epochSecond, ZoneOffset offset) {
         // inline for performance
         long localSecond = epochSecond + offset.getTotalSeconds();
-        long localEpochDay = Jdk8Methods.floorDiv(localSecond, SECONDS_PER_DAY);
+        long localEpochDay = Jdk8Methods.floorDiv(localSecond, 86400);
         return LocalDate.ofEpochDay(localEpochDay).getYear();
     }
 

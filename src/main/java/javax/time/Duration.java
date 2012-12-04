@@ -31,7 +31,7 @@
  */
 package javax.time;
 
-import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
+import static javax.time.LocalTime.SECONDS_PER_DAY;
 import static javax.time.calendrical.ChronoField.INSTANT_SECONDS;
 import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
 import static javax.time.calendrical.ChronoUnit.DAYS;

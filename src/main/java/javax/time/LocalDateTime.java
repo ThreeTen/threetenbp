@@ -31,15 +31,15 @@
  */
 package javax.time;
 
-import static javax.time.DateTimeConstants.HOURS_PER_DAY;
-import static javax.time.DateTimeConstants.MICROS_PER_DAY;
-import static javax.time.DateTimeConstants.MILLIS_PER_DAY;
-import static javax.time.DateTimeConstants.MINUTES_PER_DAY;
-import static javax.time.DateTimeConstants.NANOS_PER_DAY;
-import static javax.time.DateTimeConstants.NANOS_PER_HOUR;
-import static javax.time.DateTimeConstants.NANOS_PER_MINUTE;
-import static javax.time.DateTimeConstants.NANOS_PER_SECOND;
-import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
+import static javax.time.LocalTime.HOURS_PER_DAY;
+import static javax.time.LocalTime.MICROS_PER_DAY;
+import static javax.time.LocalTime.MILLIS_PER_DAY;
+import static javax.time.LocalTime.MINUTES_PER_DAY;
+import static javax.time.LocalTime.NANOS_PER_DAY;
+import static javax.time.LocalTime.NANOS_PER_HOUR;
+import static javax.time.LocalTime.NANOS_PER_MINUTE;
+import static javax.time.LocalTime.NANOS_PER_SECOND;
+import static javax.time.LocalTime.SECONDS_PER_DAY;
 
 import java.io.DataInput;
 import java.io.DataOutput;

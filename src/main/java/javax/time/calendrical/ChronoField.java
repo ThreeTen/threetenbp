@@ -45,9 +45,9 @@ import static javax.time.calendrical.ChronoUnit.SECONDS;
 import static javax.time.calendrical.ChronoUnit.WEEKS;
 import static javax.time.calendrical.ChronoUnit.YEARS;
 
-import javax.time.DateTimeConstants;
 import javax.time.DayOfWeek;
 import javax.time.Instant;
+import javax.time.LocalDate;
 import javax.time.ZoneOffset;
 import javax.time.chrono.ChronoLocalDate;
 
@@ -306,7 +306,7 @@ public enum ChronoField implements DateTimeField {
      * This field is strictly defined to have the same meaning in all calendar systems.
      * This is necessary to ensure interoperation between calendars.
      */
-    EPOCH_DAY("EpochDay", DAYS, FOREVER, DateTimeValueRange.of((long) (DateTimeConstants.MIN_YEAR * 365.25), (long) (DateTimeConstants.MAX_YEAR * 365.25))),
+    EPOCH_DAY("EpochDay", DAYS, FOREVER, DateTimeValueRange.of((long) (LocalDate.MIN_YEAR * 365.25), (long) (LocalDate.MAX_YEAR * 365.25))),
     /**
      * The aligned week within a month.
      * <p>
@@ -405,7 +405,7 @@ public enum ChronoField implements DateTimeField {
      * Non-ISO calendar systems should also implement this field to represent a sequential
      * count of months. It is recommended to define zero as the month of 1970-01-01 (ISO).
      */
-    EPOCH_MONTH("EpochMonth", MONTHS, FOREVER, DateTimeValueRange.of((DateTimeConstants.MIN_YEAR - 1970L) * 12, (DateTimeConstants.MAX_YEAR - 1970L) * 12L - 1L)),
+    EPOCH_MONTH("EpochMonth", MONTHS, FOREVER, DateTimeValueRange.of((LocalDate.MIN_YEAR - 1970L) * 12, (LocalDate.MAX_YEAR - 1970L) * 12L - 1L)),
     /**
      * The year within the era.
      * <p>
@@ -440,7 +440,7 @@ public enum ChronoField implements DateTimeField {
      * will typically be the same as that used by the ISO calendar system.
      * The year-of-era value should typically always be positive, however this is not required.
      */
-    YEAR_OF_ERA("YearOfEra", YEARS, FOREVER, DateTimeValueRange.of(1, DateTimeConstants.MAX_YEAR, DateTimeConstants.MAX_YEAR + 1)),
+    YEAR_OF_ERA("YearOfEra", YEARS, FOREVER, DateTimeValueRange.of(1, LocalDate.MAX_YEAR, LocalDate.MAX_YEAR + 1)),
     /**
      * The proleptic year, such as 2012.
      * <p>
@@ -464,7 +464,7 @@ public enum ChronoField implements DateTimeField {
      * defined with any appropriate value, although defining it to be the same as ISO may be
      * the best option.
      */
-    YEAR("Year", YEARS, FOREVER, DateTimeValueRange.of(DateTimeConstants.MIN_YEAR, DateTimeConstants.MAX_YEAR)),
+    YEAR("Year", YEARS, FOREVER, DateTimeValueRange.of(LocalDate.MIN_YEAR, LocalDate.MAX_YEAR)),
     /**
      * The era.
      * <p>

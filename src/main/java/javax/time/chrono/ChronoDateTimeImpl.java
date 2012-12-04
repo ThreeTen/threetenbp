@@ -31,15 +31,6 @@
  */
 package javax.time.chrono;
 
-import static javax.time.DateTimeConstants.HOURS_PER_DAY;
-import static javax.time.DateTimeConstants.MICROS_PER_DAY;
-import static javax.time.DateTimeConstants.MILLIS_PER_DAY;
-import static javax.time.DateTimeConstants.MINUTES_PER_DAY;
-import static javax.time.DateTimeConstants.NANOS_PER_DAY;
-import static javax.time.DateTimeConstants.NANOS_PER_HOUR;
-import static javax.time.DateTimeConstants.NANOS_PER_MINUTE;
-import static javax.time.DateTimeConstants.NANOS_PER_SECOND;
-import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
 import static javax.time.calendrical.ChronoField.EPOCH_DAY;
 
 import java.io.IOException;
@@ -85,6 +76,54 @@ final class ChronoDateTimeImpl<C extends Chrono<C>>
      * Serialization version.
      */
     private static final long serialVersionUID = 4556003607393004514L;
+    /**
+     * Hours per minute.
+     */
+    private static final int HOURS_PER_DAY = 24;
+    /**
+     * Minutes per hour.
+     */
+    private static final int MINUTES_PER_HOUR = 60;
+    /**
+     * Minutes per day.
+     */
+    private static final int MINUTES_PER_DAY = MINUTES_PER_HOUR * HOURS_PER_DAY;
+    /**
+     * Seconds per minute.
+     */
+    private static final int SECONDS_PER_MINUTE = 60;
+    /**
+     * Seconds per hour.
+     */
+    private static final int SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR;
+    /**
+     * Seconds per day.
+     */
+    private static final int SECONDS_PER_DAY = SECONDS_PER_HOUR * HOURS_PER_DAY;
+    /**
+     * Milliseconds per day.
+     */
+    private static final long MILLIS_PER_DAY = SECONDS_PER_DAY * 1000L;
+    /**
+     * Microseconds per day.
+     */
+    private static final long MICROS_PER_DAY = SECONDS_PER_DAY * 1000_000L;
+    /**
+     * Nanos per second.
+     */
+    private static final long NANOS_PER_SECOND = 1000_000_000L;
+    /**
+     * Nanos per minute.
+     */
+    private static final long NANOS_PER_MINUTE = NANOS_PER_SECOND * SECONDS_PER_MINUTE;
+    /**
+     * Nanos per hour.
+     */
+    private static final long NANOS_PER_HOUR = NANOS_PER_MINUTE * MINUTES_PER_HOUR;
+    /**
+     * Nanos per day.
+     */
+    private static final long NANOS_PER_DAY = NANOS_PER_HOUR * HOURS_PER_DAY;
 
     /**
      * The date part.

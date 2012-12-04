@@ -31,7 +31,7 @@
  */
 package javax.time;
 
-import static javax.time.DateTimeConstants.SECONDS_PER_DAY;
+import static javax.time.LocalTime.SECONDS_PER_DAY;
 import static javax.time.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
 import static javax.time.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
 import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_MONTH;
@@ -100,15 +100,23 @@ public final class LocalDate
         implements ChronoLocalDate<ISOChrono>, DateTime, WithAdjuster, Serializable {
 
     /**
-     * Constant for the minimum date on the proleptic ISO calendar system, -999999999-01-01.
+     * The minimum supported year for instances of {@code LocalDate}, -999,999,999.
+     */
+    public static final int MIN_YEAR = -999_999_999;
+    /**
+     * The maximum supported year for instances of {@code LocalDate}, 999,999,999.
+     */
+    public static final int MAX_YEAR = 999_999_999;
+    /**
+     * The minimum supported {@code LocalDate}, -999999999-01-01.
      * This could be used by an application as a "far past" date.
      */
-    public static final LocalDate MIN_DATE = LocalDate.of(DateTimeConstants.MIN_YEAR, 1, 1);
+    public static final LocalDate MIN_DATE = LocalDate.of(MIN_YEAR, 1, 1);
     /**
-     * Constant for the maximum date on the proleptic ISO calendar system, +999999999-12-31.
+     * The maximum supported {@code LocalDate}, +999999999-12-31.
      * This could be used by an application as a "far future" date.
      */
-    public static final LocalDate MAX_DATE = LocalDate.of(DateTimeConstants.MAX_YEAR, 12, 31);
+    public static final LocalDate MAX_DATE = LocalDate.of(MAX_YEAR, 12, 31);
 
     /**
      * Serialization version.
@@ -437,7 +445,7 @@ public final class LocalDate
                     case WEEK_OF_MONTH: throw new UnsupportedOperationException("TODO");
                     case WEEK_OF_YEAR: throw new UnsupportedOperationException("TODO");
                     case YEAR_OF_ERA:
-                        return (getYear() <= 0 ? DateTimeValueRange.of(1, DateTimeConstants.MAX_YEAR + 1) : DateTimeValueRange.of(1, DateTimeConstants.MAX_YEAR));
+                        return (getYear() <= 0 ? DateTimeValueRange.of(1, MAX_YEAR + 1) : DateTimeValueRange.of(1, MAX_YEAR));
                 }
                 return field.range();
             }
