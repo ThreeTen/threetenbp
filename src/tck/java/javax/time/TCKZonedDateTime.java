@@ -750,7 +750,7 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void factory_parse_formatter() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("y M d H m s I");
+        DateTimeFormatter f = DateTimeFormatters.pattern("u M d H m s I");
         ZonedDateTime test = ZonedDateTime.parse("2010 12 3 11 30 0 Europe/London", f);
         assertEquals(test, ZonedDateTime.of(LocalDateTime.of(2010, 12, 3, 11, 30), ZoneId.of("Europe/London")));
     }

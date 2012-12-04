@@ -358,7 +358,7 @@ public class TCKYearMonth extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void factory_parse_formatter() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("y M");
+        DateTimeFormatter f = DateTimeFormatters.pattern("u M");
         YearMonth test = YearMonth.parse("2010 12", f);
         assertEquals(test, YearMonth.of(2010, 12));
     }

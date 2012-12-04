@@ -480,7 +480,7 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void factory_parse_formatter() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("y M d H m s XXX");
+        DateTimeFormatter f = DateTimeFormatters.pattern("u M d H m s XXX");
         OffsetDateTime test = OffsetDateTime.parse("2010 12 3 11 30 0 +01:00", f);
         assertEquals(test, OffsetDateTime.of(2010, 12, 3, 11, 30, ZoneOffset.ofHours(1)));
     }

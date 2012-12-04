@@ -1438,11 +1438,11 @@ public final class LocalDateTime
      * <p>
      * The output will be one of the following ISO-8601 formats:
      * <p><ul>
-     * <li>{@code yyyy-MM-dd'T'HH:mm}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ss}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ss.SSS}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ss.SSSSSS}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS}</li>
+     * <li>{@code uuuu-MM-dd'T'HH:mm}</li>
+     * <li>{@code uuuu-MM-dd'T'HH:mm:ss}</li>
+     * <li>{@code uuuu-MM-dd'T'HH:mm:ss.SSS}</li>
+     * <li>{@code uuuu-MM-dd'T'HH:mm:ss.SSSSSS}</li>
+     * <li>{@code uuuu-MM-dd'T'HH:mm:ss.SSSSSSSSS}</li>
      * </ul><p>
      * The format used will be the shortest that outputs the full value of
      * the time where the omitted parts are implied to be zero.

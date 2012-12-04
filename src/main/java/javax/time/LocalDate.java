@@ -1420,7 +1420,7 @@ public final class LocalDate
     /**
      * Outputs this date as a {@code String}, such as {@code 2007-12-03}.
      * <p>
-     * The output will be in the ISO-8601 format {@code yyyy-MM-dd}.
+     * The output will be in the ISO-8601 format {@code uuuu-MM-dd}.
      *
      * @return a string representation of this date, not null
      */

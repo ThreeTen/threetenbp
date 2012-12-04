@@ -206,7 +206,7 @@ public final class YearMonth
      * Obtains an instance of {@code YearMonth} from a text string such as {@code 2007-12}.
      * <p>
      * The string must represent a valid year-month.
-     * The format must be {@code yyyy-MM}.
+     * The format must be {@code uuuu-MM}.
      * Years outside the range 0000 to 9999 must be prefixed by the plus or minus symbol.
      *
      * @param text  the text to parse such as "2007-12", not null
@@ -741,7 +741,7 @@ public final class YearMonth
     /**
      * Outputs this year-month as a {@code String}, such as {@code 2007-12}.
      * <p>
-     * The output will be in the format {@code yyyy-MM}:
+     * The output will be in the format {@code uuuu-MM}:
      *
      * @return a string representation of this year-month, not null
      */

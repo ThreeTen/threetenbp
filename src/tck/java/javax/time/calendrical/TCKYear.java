@@ -262,7 +262,7 @@ public class TCKYear extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void factory_parse_formatter() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("y");
+        DateTimeFormatter f = DateTimeFormatters.pattern("u");
         Year test = Year.parse("2010", f);
         assertEquals(test, Year.of(2010));
     }

@@ -57,7 +57,7 @@ import javax.time.calendrical.ISOWeeks;
  * <p>
  * This utility class provides three different ways to obtain a formatter.
  * <p><ul>
- * <li>Using pattern letters, such as {@code yyyy-MMM-dd}
+ * <li>Using pattern letters, such as {@code uuuu-MMM-dd}
  * <li>Using localized styles, such as {@code long} or {@code medium}
  * <li>Using predefined constants, such as {@code isoLocalDate()}
  * </ul><p>
@@ -79,7 +79,7 @@ public final class DateTimeFormatters {
      * Creates a formatter using the specified pattern.
      * <p>
      * This method will create a formatter based on a simple pattern of letters and symbols.
-     * For example, {@code d MMM yyyy} will format 2011-12-03 as '3 Dec 2011'.
+     * For example, {@code d MMM uuuu} will format 2011-12-03 as '3 Dec 2011'.
      * <p>
      * The returned formatter will use the default locale, but this can be changed
      * using {@link DateTimeFormatter#withLocale(Locale)}.
@@ -90,7 +90,8 @@ public final class DateTimeFormatters {
      *  Symbol  Meaning                     Presentation      Examples
      *  ------  -------                     ------------      -------
      *   G       era                         number/text       1; 01; AD; Anno Domini
-     *   y       year                        year              2004; 04
+     *   u       year (proleptic)            year              2004; 04
+     *   y       year-of-era                 year              2004; 04
      *   D       day-of-year                 number            189
      *   M       month-of-year               number/text       7; 07; Jul; July; J
      *   d       day-of-month                number            10
@@ -158,6 +159,8 @@ public final class DateTimeFormatters {
      * If the count of letters is less than four (but not two), then the sign is only output for negative
      * years as per {@link SignStyle#NORMAL}.
      * Otherwise, the sign is output if the pad width is exceeded, as per {@link SignStyle#EXCEEDS_PAD}
+     * In the ISO calendar system, the year-of-era and year-proleptic are the same for all years after 1.
+     * It is recommended to use 'u' rather than 'y' unless you are printing/parsing the era.
      * <p>
      * <b>ZoneId</b>: 'I' outputs the zone ID, such as 'Europe/Paris'.
      * <p>
@@ -211,7 +214,7 @@ public final class DateTimeFormatters {
      * Creates a formatter using the specified pattern.
      * <p>
      * This method will create a formatter based on a simple pattern of letters and symbols.
-     * For example, {@code d MMM yyyy} will format 2011-12-03 as '3 Dec 2011'.
+     * For example, {@code d MMM uuuu} will format 2011-12-03 as '3 Dec 2011'.
      * <p>
      * See {@link #pattern(String)} for details of the pattern.
      * <p>

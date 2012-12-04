@@ -1029,6 +1029,7 @@ public final class DateTimeFormatterBuilder {
 
     private void parseField(char cur, int count, DateTimeField field) {
         switch (cur) {
+            case 'u':
             case 'y':
             case 'Y':
                 if (count == 2) {
@@ -1097,9 +1098,8 @@ public final class DateTimeFormatterBuilder {
     private static final Map<Character, DateTimeField> FIELD_MAP = new HashMap<>();
     static {
         FIELD_MAP.put('G', ChronoField.ERA);                       // Java, CLDR (different to both for 1/2 chars)
-        FIELD_MAP.put('y', ChronoField.YEAR);                      // CLDR
-        // FIELD_MAP.put('y', ChronoField.YEAR_OF_ERA);            // Java, CLDR  // TODO redefine from above
-        // FIELD_MAP.put('u', ChronoField.YEAR);                   // CLDR  // TODO
+        FIELD_MAP.put('u', ChronoField.YEAR);                      // CLDR
+        FIELD_MAP.put('y', ChronoField.YEAR_OF_ERA);               // Java, CLDR
         // FIELD_MAP.put('Y', ISODateTimeField.WEEK_BASED_YEAR);          // Java7, CLDR (needs localized week number)  // TODO
         // FIELD_MAP.put('Q', QuarterYearField.QUARTER_OF_YEAR);          // CLDR (removed quarter from 310)
         // FIELD_MAP.put('q', QuarterYearField.QUARTER_OF_YEAR);          // CLDR (needs standalone data)  // TODO

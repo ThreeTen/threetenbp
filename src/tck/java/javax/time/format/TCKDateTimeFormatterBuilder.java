@@ -565,11 +565,17 @@ public class TCKDateTimeFormatterBuilder {
             {"GGGG", "Text(Era)"},
             {"GGGGG", "Text(Era,NARROW)"},
 
-            {"y", "Value(Year)"},
-            {"yy", "ReducedValue(Year,2,2000)"},
-            {"yyy", "Value(Year,3,19,NORMAL)"},
-            {"yyyy", "Value(Year,4,19,EXCEEDS_PAD)"},
-            {"yyyyy", "Value(Year,5,19,EXCEEDS_PAD)"},
+            {"u", "Value(Year)"},
+            {"uu", "ReducedValue(Year,2,2000)"},
+            {"uuu", "Value(Year,3,19,NORMAL)"},
+            {"uuuu", "Value(Year,4,19,EXCEEDS_PAD)"},
+            {"uuuuu", "Value(Year,5,19,EXCEEDS_PAD)"},
+
+            {"y", "Value(YearOfEra)"},
+            {"yy", "ReducedValue(YearOfEra,2,2000)"},
+            {"yyy", "Value(YearOfEra,3,19,NORMAL)"},
+            {"yyyy", "Value(YearOfEra,4,19,EXCEEDS_PAD)"},
+            {"yyyyy", "Value(YearOfEra,5,19,EXCEEDS_PAD)"},
 
 //            {"Y", "Value(WeekBasedYear)"},
 //            {"YY", "ReducedValue(WeekBasedYear,2,2000)"},
@@ -677,11 +683,11 @@ public class TCKDateTimeFormatterBuilder {
             {"ppH", "Pad(Value(HourOfDay),2)"},
             {"pppDD", "Pad(Value(DayOfYear,2),3)"},
 
-            {"yyyy[-MM[-dd", "Value(Year,4,19,EXCEEDS_PAD)['-'Value(MonthOfYear,2)['-'Value(DayOfMonth,2)]]"},
-            {"yyyy[-MM[-dd]]", "Value(Year,4,19,EXCEEDS_PAD)['-'Value(MonthOfYear,2)['-'Value(DayOfMonth,2)]]"},
-            {"yyyy[-MM[]-dd]", "Value(Year,4,19,EXCEEDS_PAD)['-'Value(MonthOfYear,2)'-'Value(DayOfMonth,2)]"},
+            {"uuuu[-MM[-dd", "Value(Year,4,19,EXCEEDS_PAD)['-'Value(MonthOfYear,2)['-'Value(DayOfMonth,2)]]"},
+            {"uuuu[-MM[-dd]]", "Value(Year,4,19,EXCEEDS_PAD)['-'Value(MonthOfYear,2)['-'Value(DayOfMonth,2)]]"},
+            {"uuuu[-MM[]-dd]", "Value(Year,4,19,EXCEEDS_PAD)['-'Value(MonthOfYear,2)'-'Value(DayOfMonth,2)]"},
 
-            {"yyyy-MM-dd'T'HH:mm:ss.SSS", "Value(Year,4,19,EXCEEDS_PAD)'-'Value(MonthOfYear,2)'-'Value(DayOfMonth,2)" +
+            {"uuuu-MM-dd'T'HH:mm:ss.SSS", "Value(Year,4,19,EXCEEDS_PAD)'-'Value(MonthOfYear,2)'-'Value(DayOfMonth,2)" +
                 "'T'Value(HourOfDay,2)':'Value(MinuteOfHour,2)':'Value(SecondOfMinute,2)'.'Fraction(NanoOfSecond,3,3)"},
         };
     }

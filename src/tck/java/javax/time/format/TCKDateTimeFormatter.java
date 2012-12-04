@@ -66,7 +66,7 @@ public class TCKDateTimeFormatter {
     // rewrite whole test case to use BASIC_FORMATTER or similar
 
     private static final DateTimeFormatter BASIC_FORMATTER = DateTimeFormatters.pattern("'ONE'd");
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatters.pattern("'ONE'yyyy MM dd");
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatters.pattern("'ONE'uuuu MM dd");
 
     private List<DateTimePrinterParser> printerParsers;
     private StringLiteralPrinterParser stringPP;
@@ -227,21 +227,21 @@ public class TCKDateTimeFormatter {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_parseBest_firstOption() throws Exception {
-        DateTimeFormatter test = DateTimeFormatters.pattern("yyyy-MM-dd[ZZZ]");
+        DateTimeFormatter test = DateTimeFormatters.pattern("uuuu-MM-dd[ZZZ]");
         DateTimeAccessor result = test.parseBest("2011-06-30+03:00", OffsetDate.class, LocalDate.class);
         assertEquals(result, OffsetDate.of(2011, 6, 30, ZoneOffset.ofHours(3)));
     }
 
     @Test(groups={"tck"})
     public void test_parseBest_secondOption() throws Exception {
-        DateTimeFormatter test = DateTimeFormatters.pattern("yyyy-MM-dd[ZZZ]");
+        DateTimeFormatter test = DateTimeFormatters.pattern("uuuu-MM-dd[ZZZ]");
         DateTimeAccessor result = test.parseBest("2011-06-30", OffsetDate.class, LocalDate.class);
         assertEquals(result, LocalDate.of(2011, 6, 30));
     }
 
     @Test(expectedExceptions=DateTimeParseException.class, groups={"tck"})
     public void test_parseBest_String_parseError() throws Exception {
-        DateTimeFormatter test = DateTimeFormatters.pattern("yyyy-MM-dd[ZZZ]");
+        DateTimeFormatter test = DateTimeFormatters.pattern("uuuu-MM-dd[ZZZ]");
         try {
             test.parseBest("2011-06-XX", OffsetDate.class, LocalDate.class);
         } catch (DateTimeParseException ex) {

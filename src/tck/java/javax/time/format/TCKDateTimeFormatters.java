@@ -91,7 +91,7 @@ public class TCKDateTimeFormatters {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_pattern_String() {
-        DateTimeFormatter test = DateTimeFormatters.pattern("d MMM yyyy");
+        DateTimeFormatter test = DateTimeFormatters.pattern("d MMM uuuu");
         assertEquals(test.toString(), "Value(DayOfMonth)' 'Text(MonthOfYear,SHORT)' 'Value(Year,4,19,EXCEEDS_PAD)");
         assertEquals(test.getLocale(), Locale.getDefault());
     }
@@ -111,7 +111,7 @@ public class TCKDateTimeFormatters {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_pattern_StringLocale() {
-        DateTimeFormatter test = DateTimeFormatters.pattern("d MMM yyyy", Locale.UK);
+        DateTimeFormatter test = DateTimeFormatters.pattern("d MMM uuuu", Locale.UK);
         assertEquals(test.toString(), "Value(DayOfMonth)' 'Text(MonthOfYear,SHORT)' 'Value(Year,4,19,EXCEEDS_PAD)");
         assertEquals(test.getLocale(), Locale.UK);
     }

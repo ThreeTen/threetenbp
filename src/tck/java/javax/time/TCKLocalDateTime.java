@@ -824,7 +824,7 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void factory_parse_formatter() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("y M d H m s");
+        DateTimeFormatter f = DateTimeFormatters.pattern("u M d H m s");
         LocalDateTime test = LocalDateTime.parse("2010 12 3 11 30 45", f);
         assertEquals(test, LocalDateTime.of(2010, 12, 3, 11, 30, 45));
     }
