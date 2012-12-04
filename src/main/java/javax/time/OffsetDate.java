@@ -879,6 +879,8 @@ public final class OffsetDate
     public <R> R query(Query<R> query) {
         if (query == Query.CHRONO) {
             return (R) ISOChrono.INSTANCE;
+        } else if (query == Query.OFFSET) {
+            return (R) getOffset();
         }
         return super.query(query);
     }

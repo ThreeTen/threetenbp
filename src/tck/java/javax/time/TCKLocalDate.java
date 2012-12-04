@@ -614,6 +614,11 @@ public class TCKLocalDate extends AbstractDateTimeTest {
         assertEquals(TEST_2007_07_15.query(Query.TIME_PRECISION), null);
     }
 
+    @Test(groups={"tck"})
+    public void test_query_offset() {
+        assertEquals(TEST_2007_07_15.query(Query.OFFSET), null);
+    }
+
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_query_null() {
         TEST_2007_07_15.query(null);

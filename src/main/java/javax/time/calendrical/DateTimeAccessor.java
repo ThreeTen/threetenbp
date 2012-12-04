@@ -31,8 +31,11 @@
  */
 package javax.time.calendrical;
 
+import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
+
 import javax.time.DateTimeException;
 import javax.time.ZoneId;
+import javax.time.ZoneOffset;
 import javax.time.chrono.Chrono;
 
 /**
@@ -214,6 +217,7 @@ public interface DateTimeAccessor {
          * <p>
          * If the target {@code DateTimeAccessor} has a chronology, then querying
          * it with this constant must return the chronology.
+         * Note that {@code LocalTime} returns null as it is valid for all chronologies.
          */
         Query<Chrono<?>> CHRONO = new Query<Chrono<?>>() {
             @Override
@@ -236,6 +240,23 @@ public interface DateTimeAccessor {
         Query<ChronoUnit> TIME_PRECISION = new Query<ChronoUnit>() {
             @Override
             public ChronoUnit doQuery(DateTimeAccessor dateTime) {
+                return null;
+            }
+        };
+        /**
+         * A query for the {@code ZoneOffset}.
+         * <p>
+         * This query examines the {@link ChronoField#OFFSET_SECONDS offset-seconds}
+         * field and uses it to create a {@code ZoneOffset}.
+         * Implementations of {@code DateTimeAccessor} may choose to check for this
+         * constant and return a stored offset directly.
+         */
+        Query<ZoneOffset> OFFSET = new Query<ZoneOffset>() {
+            @Override
+            public ZoneOffset doQuery(DateTimeAccessor dateTime) {
+                if (dateTime.isSupported(OFFSET_SECONDS)) {
+                    return ZoneOffset.ofTotalSeconds(dateTime.get(OFFSET_SECONDS));
+                }
                 return null;
             }
         };

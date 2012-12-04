@@ -1440,6 +1440,8 @@ public final class OffsetDateTime
             return (R) getDate().getChrono();
         } else if (query == Query.TIME_PRECISION) {
             return (R) NANOS;
+        } else if (query == Query.OFFSET) {
+            return (R) getOffset();
         }
         return super.query(query);
     }

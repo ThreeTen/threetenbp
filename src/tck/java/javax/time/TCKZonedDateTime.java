@@ -898,6 +898,11 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
         assertEquals(TEST_DATE_TIME.query(Query.TIME_PRECISION), NANOS);
     }
 
+    @Test(groups={"tck"})
+    public void test_query_offset() {
+        assertEquals(TEST_DATE_TIME.query(Query.OFFSET), OFFSET_0100);
+    }
+
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_query_null() {
         TEST_DATE_TIME.query(null);

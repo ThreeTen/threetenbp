@@ -64,6 +64,7 @@ import static javax.time.calendrical.ChronoField.WEEK_OF_MONTH;
 import static javax.time.calendrical.ChronoField.WEEK_OF_YEAR;
 import static javax.time.calendrical.ChronoField.YEAR;
 import static javax.time.calendrical.ChronoField.YEAR_OF_ERA;
+import static javax.time.calendrical.ChronoUnit.NANOS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -78,10 +79,12 @@ import javax.time.calendrical.ChronoField;
 import javax.time.calendrical.ChronoUnit;
 import javax.time.calendrical.DateTime;
 import javax.time.calendrical.DateTime.WithAdjuster;
+import javax.time.calendrical.DateTimeAccessor.Query;
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.JulianDayField;
 import javax.time.calendrical.MockFieldNoValue;
+import javax.time.chrono.ISOChrono;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
@@ -596,6 +599,26 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // query(Query)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void test_query_chrono() {
+        assertEquals(TEST_2008_6_30_11_30_59_000000500.query(Query.CHRONO), ISOChrono.INSTANCE);
+    }
+
+    @Test(groups={"tck"})
+    public void test_query_zone() {
+        assertEquals(TEST_2008_6_30_11_30_59_000000500.query(Query.ZONE_ID), null);
+    }
+
+    @Test(groups={"tck"})
+    public void test_query_timePrecision() {
+        assertEquals(TEST_2008_6_30_11_30_59_000000500.query(Query.TIME_PRECISION), NANOS);
+    }
+
+    @Test(groups={"tck"})
+    public void test_query_offset() {
+        assertEquals(TEST_2008_6_30_11_30_59_000000500.query(Query.OFFSET), OFFSET_PONE);
+    }
+
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_query_null() {
         TEST_2008_6_30_11_30_59_000000500.query(null);

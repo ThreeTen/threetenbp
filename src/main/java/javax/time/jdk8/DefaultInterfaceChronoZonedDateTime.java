@@ -128,6 +128,7 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chrono<C>>
     }
 
     //-------------------------------------------------------------------------
+    @SuppressWarnings("unchecked")
     @Override
     public <R> R query(Query<R> query) {
         if (query == Query.ZONE_ID) {
@@ -136,6 +137,8 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chrono<C>>
             return (R) getDate().getChrono();
         } else if (query == Query.TIME_PRECISION) {
             return (R) NANOS;
+        } else if (query == Query.OFFSET) {
+            return (R) getOffset();
         }
         return super.query(query);
     }

@@ -818,6 +818,8 @@ public final class OffsetTime
     public <R> R query(Query<R> query) {
         if (query == Query.TIME_PRECISION) {
             return (R) NANOS;
+        } else if (query == Query.OFFSET) {
+            return (R) getOffset();
         }
         return super.query(query);
     }
