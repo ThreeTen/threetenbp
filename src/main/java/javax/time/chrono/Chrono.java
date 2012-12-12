@@ -641,7 +641,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
             @Override
             public <R> R query(Query<R> query) {
                 if (query == Query.CHRONO) {
-                    return (R) this;
+                    return (R) Chrono.this;
                 }
                 return super.query(query);
             }
