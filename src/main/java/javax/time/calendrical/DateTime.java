@@ -80,7 +80,6 @@ import javax.time.LocalTime;
  */
 public interface DateTime extends DateTimeAccessor {
 
-    //-----------------------------------------------------------------------
     /**
      * Returns an adjusted object of the same type as this object with the adjustment made.
      * <p>
@@ -120,7 +119,7 @@ public interface DateTime extends DateTimeAccessor {
      * In cases like this, the field is responsible for resolving the result. Typically it will choose
      * the previous valid date, which would be the last valid day of February in this example.
      *
-     * <h4>Implementation notes</h4>
+     * <h5>Implementation notes</h5>
      * Implementations must check and handle any fields defined in {@link ChronoField} before
      * delegating on to the {@link DateTimeField#doWith(DateTime, long) doWith method} on the specified field.
      * If the implementing class is immutable, then this method must return an updated copy of the original.
@@ -178,7 +177,7 @@ public interface DateTime extends DateTimeAccessor {
      * then the permitted units must include the boundary unit, but no multiples of the boundary unit.
      * For example, {@code LocalTime} must accept {@code DAYS} but not {@code WEEKS} or {@code MONTHS}.
      *
-     * <h4>Implementation notes</h4>
+     * <h5>Implementation notes</h5>
      * Implementations must check and handle any fields defined in {@link ChronoField} before
      * delegating on to the {@link PeriodUnit#doPlus(DateTime, long) doPlus method} on the specified unit.
      * If the implementing class is immutable, then this method must return an updated copy of the original.
@@ -236,7 +235,7 @@ public interface DateTime extends DateTimeAccessor {
      * then the permitted units must include the boundary unit, but no multiples of the boundary unit.
      * For example, {@code LocalTime} must accept {@code DAYS} but not {@code WEEKS} or {@code MONTHS}.
      *
-     * <h4>Implementation notes</h4>
+     * <h5>Implementation notes</h5>
      * Implementations must check and handle any fields defined in {@link ChronoField} before
      * delegating on to the {@link PeriodUnit#doPlus(DateTime, long) doPlus method} on the specified unit.
      * If the implementing class is immutable, then this method must return an updated copy of the original.
@@ -305,7 +304,7 @@ public interface DateTime extends DateTimeAccessor {
          *   dateTime = dateTime.with(adjuster);
          * </pre>
          *
-         * <h4>Implementation notes</h4>
+         * <h5>Implementation notes</h5>
          * The implementation takes the input object and adjusts it according to an algorithm.
          * For example, it could be used to adjust a date to "next Wednesday".
          * <p>
@@ -352,7 +351,7 @@ public interface DateTime extends DateTimeAccessor {
          *   dateTime = dateTime.plus(adjuster);
          * </pre>
          *
-         * <h4>Implementation notes</h4>
+         * <h5>Implementation notes</h5>
          * The implementation takes the input object and adds to it.
          * For example, the implementation {@link javax.time.Duration} will add the length of the duration.
          * <p>
@@ -398,7 +397,7 @@ public interface DateTime extends DateTimeAccessor {
          *   dateTime = dateTime.minus(adjuster);
          * </pre>
          *
-         * <h4>Implementation notes</h4>
+         * <h5>Implementation notes</h5>
          * The implementation takes the input object and subtracts from it.
          * For example, the implementation {@link javax.time.Duration} will subtract the length of the duration.
          * <p>

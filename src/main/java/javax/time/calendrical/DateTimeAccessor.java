@@ -66,7 +66,7 @@ public interface DateTimeAccessor {
      * If false, then calling the {@link #range(DateTimeField) range} and {@link #get(DateTimeField) get}
      * methods will throw an exception.
      *
-     * <h4>Implementation notes</h4>
+     * <h5>Implementation notes</h5>
      * Implementations must check and handle any fields defined in {@link ChronoField} before
      * delegating on to the {@link DateTimeField#doRange(DateTimeAccessor) doRange method} on the specified field.
      *
@@ -87,7 +87,7 @@ public interface DateTimeAccessor {
      * and it is important not to read too much into them. For example, there
      * could be values within the range that are invalid for the field.
      *
-     * <h4>Implementation notes</h4>
+     * <h5>Implementation notes</h5>
      * Implementations must check and handle any fields defined in {@link ChronoField} before
      * delegating on to the {@link DateTimeField#doRange(DateTimeAccessor) doRange method} on the specified field.
      *
@@ -105,7 +105,7 @@ public interface DateTimeAccessor {
      * If the date-time cannot return the value, because the field is unsupported or for
      * some other reason, an exception will be thrown.
      *
-     * <h4>Implementation notes</h4>
+     * <h5>Implementation notes</h5>
      * Implementations must check and handle any fields defined in {@link ChronoField} before
      * delegating on to the {@link DateTimeField#doGet(DateTimeAccessor) doGet method} on the specified field.
      *
@@ -126,7 +126,7 @@ public interface DateTimeAccessor {
      * If the date-time cannot return the value, because the field is unsupported or for
      * some other reason, an exception will be thrown.
      *
-     * <h4>Implementation notes</h4>
+     * <h5>Implementation notes</h5>
      * Implementations must check and handle any fields defined in {@link ChronoField} before
      * delegating on to the {@link DateTimeField#doGet(DateTimeAccessor) doGet method} on the specified field.
      *
@@ -145,7 +145,7 @@ public interface DateTimeAccessor {
      * {@code Query.ZONE_ID}, {@code Query.CHRONO} and {@code Query.TIME_PRECISION}.
      * Other queries may be defined by applications.
      *
-     * <h4>Implementation notes</h4>
+     * <h5>Implementation notes</h5>
      * Queries are used for two purposes - general application specific logic,
      * and providing a way to query those parts of a {@code DateTimeAccessor}
      * that cannot be returned as a {@code long} using a field.
@@ -270,7 +270,7 @@ public interface DateTimeAccessor {
          *   dateTime = dateTime.query(query);
          * </pre>
          *
-         * <h4>Implementation notes</h4>
+         * <h5>Implementation notes</h5>
          * The implementation queries the input date-time object to return the result.
          * For example, an implementation might query the date and time, returning
          * the astronomical Julian day as a {@code BigDecimal}.
