@@ -39,13 +39,30 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.time.DayOfWeek;
+import javax.time.chrono.Chrono;
+import javax.time.chrono.ChronoLocalDate;
+import javax.time.jdk8.Jdk8Methods;
 
 /**
  * Expresses how a week is defined.
  * <p>
  * A standard week is seven days long, but cultures have different definitions for some
  * other aspects of a week.
- * <p><ul>
+ * <p>
+ * WeekDefinition provides three fields,
+ * {@link #dayOfWeek()}, {@link #weekOfMonth()}, and {@link #weekOfYear()}
+ * that provide access to the values from any {@link javax.time.calendrical.DateTime dateTime}.
+ * <p>
+ * The computations for day-of-week, week-of-month, and week-of-year are based
+ * on the  {@link ChronoField#YEAR proleptic-year},
+ * {@link ChronoField#MONTH_OF_YEAR month-of-year},
+ * {@link ChronoField#DAY_OF_MONTH day-of-month}, and
+ * {@link ChronoField#DAY_OF_WEEK ISO day-of-week} which are based on the
+ * {@link ChronoField#EPOCH_DAY epoch-day} and the chronology.
+ * The values may not be aligned with the {@link ChronoField#YEAR_OF_ERA year-of-Era}
+ * depending on the Chronology.
+ * <p>A week is defined by:
+ * <ul>
  * <li>The first day-of-week.
  * For example, the ISO-8601 standard considers Monday to be the first day-of-week.
  * <li>The minimal number of days in the first week.
@@ -53,7 +70,7 @@ import javax.time.DayOfWeek;
  * </ul><p>
  * Together these two values allow a year or month to be divided into weeks.
  * <p>
- * <h4>Week of month</h4>
+ * <h4>Week of Month</h4>
  * One field is used: week-of-month.
  * The calculation ensures that weeks never overlap a month boundary.
  * The month is divided into periods where each period starts on the defined first day-of-week.
@@ -73,7 +90,7 @@ import javax.time.DayOfWeek;
  *  <td>Week 2 of January 2009</td><td>Week 1 of January 2009</td></tr>
  * </table>
  * <p>
- * <h4>Week of year</h4>
+ * <h4>Week of Year</h4>
  * One field is used: week-of-year.
  * The calculation ensures that weeks never overlap a year boundary.
  * The year is divided into periods where each period starts on the defined first day-of-week.
@@ -84,7 +101,7 @@ import javax.time.DayOfWeek;
  *
  * @author Stephen Colebourne
  */
-public final class WeekDefinition implements Comparable<WeekDefinition>, Serializable {
+public final class WeekDefinition implements Serializable {
     // implementation notes
     // querying week-of-month or week-of-year should return the week value bound within the month/year
     // however, setting the week value should be lenient (use plus/minus weeks)
@@ -110,10 +127,11 @@ public final class WeekDefinition implements Comparable<WeekDefinition>, Seriali
      * Serialization version.
      */
     private static final long serialVersionUID = -1177360819670808121L;
+
     /**
      * The cache of rules by locale.
      */
-    private static final ConcurrentMap<Locale, WeekDefinition> CACHE = new ConcurrentHashMap<Locale, WeekDefinition>(4, 0.75f, 2);
+    private static final ConcurrentMap<String, WeekDefinition> CACHE = new ConcurrentHashMap<>(4, 0.75f, 2);
 
     /**
      * The first day-of-week.
@@ -125,34 +143,44 @@ public final class WeekDefinition implements Comparable<WeekDefinition>, Seriali
     private final int minimalDays;
 
     /**
+     * The DateTimeField used to access the computed DayOfWeek.
+     */
+    private final DateTimeField dayOfWeek = ComputedDayOfField.ofDayOfWeekField(this);
+
+    /**
+     * The DateTimeField used to access the computed WeekOfMonth.
+     */
+    private final DateTimeField weekOfMonth = ComputedDayOfField.ofWeekOfMonthField(this);
+
+    /**
+     * The DateTimeField used to access the computed WeekOfYear.
+     */
+    private final DateTimeField weekOfYear = ComputedDayOfField.ofWeekOfYearField(this);
+
+    /**
      * Obtains an instance of {@code WeekDefinition} appropriate for a locale.
      * <p>
      * This will look up appropriate values from the provider of localization data.
      *
      * @param locale  the locale to use, not null
-     * @return the week rules, not null
+     * @return the week-definition, not null
      */
     public static WeekDefinition of(Locale locale) {
         Objects.requireNonNull(locale, "locale");
         locale = new Locale(locale.getLanguage(), locale.getCountry());  // elminate variants
-        WeekDefinition rules = CACHE.get(locale);
-        if (rules == null) {
-            // obtain these from GregorianCalendar for now
-            GregorianCalendar gcal = new GregorianCalendar(locale);
-            int calDow = gcal.getFirstDayOfWeek();
-            DayOfWeek dow = DayOfWeek.SUNDAY.plus(calDow - 1);
-            int minDays = gcal.getMinimalDaysInFirstWeek();
-            rules = WeekDefinition.of(dow, minDays);
-            CACHE.putIfAbsent(locale, rules);
-            rules = CACHE.get(locale);
-        }
-        return rules;
+
+        // obtain these from GregorianCalendar for now
+        GregorianCalendar gcal = new GregorianCalendar(locale);
+        int calDow = gcal.getFirstDayOfWeek();
+        DayOfWeek dow = DayOfWeek.SUNDAY.plus(calDow - 1);
+        int minDays = gcal.getMinimalDaysInFirstWeek();
+        return WeekDefinition.of(dow, minDays);
     }
 
     /**
      * Obtains an instance of {@code WeekDefinition} from the first day-of-week and minimal days.
      * <p>
-     * The first day-of-week defines which day the week starts on.
+     * The first day-of-week defines the ISO {@code DayOfWeek} that is day 1 of the week.
      * The minimal number of days in the first week defines how many days must be present
      * in a month or year, starting from the first day-of-week, before the week is counted
      * as the first week. A value of 1 will count the first day of the month or year as part
@@ -161,14 +189,21 @@ public final class WeekDefinition implements Comparable<WeekDefinition>, Seriali
      *
      * @param firstDayOfWeek  the first day of the week, not null
      * @param minimalDaysInFirstWeek  the minimal number of days in the first week, from 1 to 7
-     * @return the week rules, not null
+     * @return the week-definition, not null
      * @throws IllegalArgumentException if the minimal days value is invalid
      */
     public static WeekDefinition of(DayOfWeek firstDayOfWeek, int minimalDaysInFirstWeek) {
         if (firstDayOfWeek == DayOfWeek.MONDAY && minimalDaysInFirstWeek == 4) {
             return ISO;
         }
-        return new WeekDefinition(firstDayOfWeek, minimalDaysInFirstWeek);
+        String key = firstDayOfWeek.toString() + minimalDaysInFirstWeek;
+        WeekDefinition rules = CACHE.get(key);
+        if (rules == null) {
+            rules = new WeekDefinition(firstDayOfWeek, minimalDaysInFirstWeek);
+            CACHE.putIfAbsent(key, rules);
+            rules = CACHE.get(key);
+        }
+        return rules;
     }
 
     //-----------------------------------------------------------------------
@@ -194,6 +229,7 @@ public final class WeekDefinition implements Comparable<WeekDefinition>, Seriali
      * <p>
      * The first day-of-week varies by culture.
      * For example, the US uses Sunday, while France and the ISO-8601 standard use Monday.
+     * This method returns the first day using the standard {@code DayOfWeek} enum.
      *
      * @return the first day-of-week, not null
      */
@@ -215,207 +251,68 @@ public final class WeekDefinition implements Comparable<WeekDefinition>, Seriali
         return minimalDays;
     }
 
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Creates a date at the start of the week-based-year based on these rules.
-//     * <p>
-//     * These rules define the first day-of-week and the minimal number of days
-//     * in the first week. This method uses the rules, as defined in the class
-//     * documentation, to calculate the date a given week-based-year starts.
-//     *
-//     * @param weekBasedYear  the week-based-year, based on these rules, within the valid range
-//     * @return the date that the week-based-year starts, not null
-//     */
-//    private LocalDate createWeekBasedYearDate(int weekBasedYear) {
-//        LocalDate inFirstWeek = LocalDate.of(weekBasedYear, 1, minimalDays);
-//        return inFirstWeek.with(DateTimeAdjusters.previousOrCurrent(firstDayOfWeek));
-//    }
-//
-//    /**
-//     * Creates a date from a week-based-year, week and day, all defined based
-//     * on these rules.
-//     * <p>
-//     * These rules define the first day-of-week and the minimal number of days
-//     * in the first week. This method uses the rules, as defined in the class
-//     * documentation, to calculate a date.
-//     * <p>
-//     * The week and day-of-week are interpreted leniently.
-//     * For example, a week value of -1 is two weeks before week 1, and a
-//     * day-of-week value of 10 is three days after the day-of-week with the value 7.
-//     *
-//     * @param weekBasedYear  the week-based-year, based on these rules, within the valid range
-//     * @param weekOfWeekbasedYear  the week-of-week-based-year, based on these rules, any value
-//     * @param ruleRelativeDayOfWeekValue  the day-of-week value, relative to
-//     *  the first day-of-week of these rules, any value
-//     * @return the date equivalent to the input parameters, not null
-//     */
-//    public LocalDate createWeekBasedYearDate(int weekBasedYear, int weekOfWeekbasedYear, int ruleRelativeDayOfWeekValue) {
-//        LocalDate startFirstWeek = createWeekBasedYearDate(weekBasedYear);
-//        return startFirstWeek.plusDays((weekOfWeekbasedYear - 1L) * 7L + (ruleRelativeDayOfWeekValue - 1L));
-//    }
-//
-//    /**
-//     * Creates a date from a week-based-year and week based on these rules, combined
-//     * with the standardized day-of-week.
-//     * <p>
-//     * These rules define the first day-of-week and the minimal number of days
-//     * in the first week. This method uses the rules, as defined in the class
-//     * documentation, to calculate a date.
-//     * <p>
-//     * The week is interpreted leniently.
-//     * For example, a week value of -1 is two weeks before week 1.
-//     *
-//     * @param weekBasedYear  the week-based-year, based on these rules, within the valid range
-//     * @param weekOfWeekbasedYear  the week-of-week-based-year, based on these rules, any value
-//     * @param dayOfWeek  the standardized day-of-week, not null
-//     * @return the date equivalent to the input parameters, not null
-//     */
-//    public LocalDate createWeekBasedYearDate(int weekBasedYear, int weekOfWeekbasedYear, DayOfWeek dayOfWeek) {
-//        return createWeekBasedYearDate(weekBasedYear, weekOfWeekbasedYear, convertDayOfWeek(dayOfWeek));
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Creates a date from a year-month, combined with a week-of-month and day
-//     * based on these rules.
-//     * <p>
-//     * These rules define the first day-of-week and the minimal number of days
-//     * in the first week. This method uses the rules, as defined in the class
-//     * documentation, to calculate a date.
-//     * <p>
-//     * The week-of-month and day-of-week are interpreted leniently.
-//     * For example, a week value of -1 is two weeks before week 1, and a
-//     * day-of-week value of 10 is three days after the day-of-week with the value 7.
-//     *
-//     * @param yearMonth  the year-month combination to combine with, not null
-//     * @param weekOfMonth  the week-of-month, based on these rules, any value
-//     * @param ruleRelativeDayOfWeekValue  the day-of-week value, relative to
-//     *  the first day-of-week of these rules, any value
-//     * @return the date equivalent to the input parameters, not null
-//     */
-//    public LocalDate createWeekOfMonthDate(YearMonth yearMonth, int weekOfMonth, int ruleRelativeDayOfWeekValue) {
-//        Objects.requireNonNull(yearMonth, "yearMonth");
-//        LocalDate startWeek = yearMonth.atDay(1).with(DateTimeAdjusters.nextOrCurrent(firstDayOfWeek));
-//        long weekValue = (startWeek.getDayOfMonth() > minimalDays ? 2 : 1);
-//        return startWeek.plusDays((weekOfMonth - weekValue) * 7L + (ruleRelativeDayOfWeekValue - 1L));
-//    }
-//
-//    /**
-//     * Creates a date from a year-month, combined with a week-of-month based
-//     * on these rules, and the standardized day-of-week.
-//     * <p>
-//     * These rules define the first day-of-week and the minimal number of days
-//     * in the first week. This method uses the rules, as defined in the class
-//     * documentation, to calculate a date.
-//     * <p>
-//     * The week-of-month is interpreted leniently.
-//     * For example, a week value of -1 is two weeks before week 1.
-//     *
-//     * @param yearMonth  the year-month combination to combine with, not null
-//     * @param weekOfMonth  the week-of-month, based on these rules, any value
-//     * @param dayOfWeek  the standardized day-of-week, not null
-//     * @return the date equivalent to the input parameters, not null
-//     */
-//    public LocalDate createWeekOfMonthDate(YearMonth yearMonth, int weekOfMonth, DayOfWeek dayOfWeek) {
-//        return createWeekOfMonthDate(yearMonth, weekOfMonth, convertDayOfWeek(dayOfWeek));
-//    }
-
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Converts the standardized {@code DayOfWeek} to an {@code int} value
-//     * relative to the first day-of-week.
-//     * <p>
-//     * The returned value will run from 1 to 7, with 1 being the stored first day-of-week.
-//     * For example, the first day-of-week in the US is Sunday, so passing Tuesday
-//     * to this method would return 3.
-//     *
-//     * @param dayOfWeek  the standardized day-of-week to convert, not null
-//     * @return the value for the day-of-week based on the first day-of-week, from 1 to 7
-//     */
-//    public int convertDayOfWeek(DayOfWeek dayOfWeek) {
-//        Objects.requireNotNull(firstDayOfWeek, "DayOfWeek");
-//        return dayOfWeek.plus(-firstDayOfWeek.ordinal()).getValue();
-//    }
-//
-//    /**
-//     * Converts the specified {@code int} value relative to the first
-//     * day-of-week to a standardized {@code DayOfWeek}.
-//     * <p>
-//     * The value must run from 1 to 7, with 1 being converted to the stored first
-//     * day-of-week and subsequent values being converted to subsequent days.
-//     * For example, the value 1 would be converted to Sunday for rules based on the
-//     * conventions of the US and to Monday for rules based on the conventions of France.
-//     *
-//     * @param ruleRelativeDayOfWeekValue  the day-of-week value to convert, relative to
-//     *  the first day-of-week of these rules, from 1 to 7
-//     * @return the standardized day-of-week object based on the first day-of-week, not null
-//     * @throws IllegalCalendarFieldValueException if the value is invalid
-//     */
-//    public DayOfWeek convertDayOfWeek(int ruleRelativeDayOfWeekValue) {
-//        dayOfWeek().checkValidValue(ruleRelativeDayOfWeekValue);
-//        return firstDayOfWeek.plus(ruleRelativeDayOfWeekValue - 1);
-//    }
-
     //-----------------------------------------------------------------------
     /**
-     * Gets a field that can be used to print, parse and manipulate the
-     * day-of-week value based on this week definition.
+     * Returns a DateTimeField to access the day of week,
+     * computed based on this WeekDefinition.
      * <p>
-     * See {@link #convertDayOfWeek(DayOfWeek)} for more information.
+     * The days of week are numbered from 1 to 7.
+     * Day number 1 is the {@link #getFirstDayOfWeek() first day-of-week}.
      *
      * @return the field for day-of-week using this week definition, not null
      */
     public DateTimeField dayOfWeek() {
-        throw new UnsupportedOperationException();  // TODO
+        return dayOfWeek;
     }
 
     /**
-     * Gets a field that can be used to print, parse and manipulate the
-     * week-of-month value.
+     * Returns a DateTimeField to access the week of month,
+     * computed based on this WeekDefinition.
      * <p>
-     * This field counts weeks based on the standard month.
-     * The month is divided into periods where each period starts on the defined first day-of-week.
-     * The earliest period is referred to as week 0 if it has less than the minimal number of days
-     * and week 1 if it has at least the minimal number of days.
+     * This represents concept of the count of weeks within the month where weeks
+     * start on a fixed day-of-week, such as Monday.
+     * This field is typically used with {@link WeekDefinition#dayOfWeek()}.
      * <p>
-     * The field derives the week-of-month from the whole date.
-     * The field builds a date from year, month-of-year, week-of-month and day-of-week.
-     *
-     * @return the field for week-of-month using this week definition, not null
+     * Week one (1) is the week starting on the {@link WeekDefinition#getFirstDayOfWeek}
+     * where there are at least {@link WeekDefinition#getMinimalDaysInFirstWeek()} days in the month.
+     * Thus, week one may start up to {@code minDays} days before the start of the month.
+     * If the first week starts after the start of the month then the period before is week zero (0).
+     * <p>
+     * For example:<br />
+     * - if the 1st day of the month is a Monday, week one starts on the 1st and there is no week zero<br />
+     * - if the 2nd day of the month is a Monday, week one starts on the 2nd and the 1st is in week zero<br />
+     * - if the 4th day of the month is a Monday, week one starts on the 4th and the 1st to 3rd is in week zero<br />
+     * - if the 5th day of the month is a Monday, week two starts on the 5th and the 1st to 4th is in week one<br />
+     * <p>
+     * This field can be used with any calendar system.
      */
     public DateTimeField weekOfMonth() {
-        throw new UnsupportedOperationException();  // TODO
+        return weekOfMonth;
     }
 
     /**
-     * Gets a field that can be used to print, parse and manipulate the
-     * week-of-year value.
+     * Returns a DateTimeField to access the week of year,
+     * computed based on this WeekDefinition.
      * <p>
-     * This field counts weeks based on the standard year.
-     * The year is divided into periods where each period starts on the defined first day-of-week.
-     * The earliest period is referred to as week 0 if it has less than the minimal number of days
-     * and week 1 if it has at least the minimal number of days.
+     * This represents concept of the count of weeks within the year where weeks
+     * start on a fixed day-of-week, such as Monday.
+     * This field is typically used with {@link WeekDefinition#dayOfWeek()}.
      * <p>
-     * The field derives the week-of-year from the whole date.
-     * The field builds a date from year, week-of-year and day-of-week.
-     *
-     * @return the field for week-of-year using this week definition, not null
+     * Week one(1) is the week starting on the {@link WeekDefinition#getFirstDayOfWeek}
+     * where there are at least {@link WeekDefinition#getMinimalDaysInFirstWeek()} days in the month.
+     * Thus, week one may start up to {@code minDays} days before the start of the year.
+     * If the first week starts after the start of the year then the period before is week zero (0).
+     * <p>
+     * For example:<br />
+     * - if the 1st day of the year is a Monday, week one starts on the 1st and there is no week zero<br />
+     * - if the 2nd day of the year is a Monday, week one starts on the 2nd and the 1st is in week zero<br />
+     * - if the 4th day of the year is a Monday, week one starts on the 4th and the 1st to 3rd is in week zero<br />
+     * - if the 5th day of the year is a Monday, week two starts on the 5th and the 1st to 4th is in week one<br />
+     * <p>
+     * This field can be used with any calendar system.
      */
     public DateTimeField weekOfYear() {
-        throw new UnsupportedOperationException();  // TODO
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Compares these rules to another set of rules.
-     * <p>
-     * The comparison is based on the first day-of-week followed by the minimal days.
-     *
-     * @param other  the other rules to compare to, not null
-     * @return the comparator value, negative if less, positive if greater
-     */
-    public int compareTo(WeekDefinition other) {
-        return hashCode() - other.hashCode();
+        return weekOfYear;
     }
 
     /**
@@ -456,118 +353,238 @@ public final class WeekDefinition implements Comparable<WeekDefinition>, Seriali
      */
     @Override
     public String toString() {
-        return "WeekContext[" + firstDayOfWeek + ',' + minimalDays + ']';
+        return "WeekDefinition[" + firstDayOfWeek + ',' + minimalDays + ']';
     }
 
-////    //-----------------------------------------------------------------------
-////    /**
-////     * Merges the fields for these week rules.
-////     */
-////    void merge(CalendricalMerger merger) {
-////        DateTimeField wby = merger.getValue(weekBasedYear());
-////        DateTimeField wowby = merger.getValue(weekOfWeekBasedYear());
-////        DateTimeField dow = merger.getValue(dayOfWeek());
-////        DateTimeField sdow = merger.getValue(DAY_OF_WEEK);
-////        if (wby != null && wowby != null) {
-////            if (dow != null) {
-////                LocalDate merged = createWeekBasedYearDate(wby.getValidIntValue(), MathUtils.safeToInt(wowby.getValue()), MathUtils.safeToInt(dow.getValue()));
-////                merger.storeMerged(LocalDate.rule(), merged);
-////                merger.removeProcessed(weekBasedYear());
-////                merger.removeProcessed(weekOfWeekBasedYear());
-////                merger.removeProcessed(dayOfWeek());
-////            } else if (sdow != null && sdow.isValidValue()) {
-////                LocalDate merged = createWeekBasedYearDate(wby.getValidIntValue(), MathUtils.safeToInt(wowby.getValue()), DayOfWeek.of(sdow.getValidIntValue()));
-////                merger.storeMerged(LocalDate.rule(), merged);
-////                merger.removeProcessed(weekBasedYear());
-////                merger.removeProcessed(weekOfWeekBasedYear());
-////                merger.removeProcessed(dayOfWeek());
-////            }
-////        }
-////        // TODO: week-of-month
-////        if (dow != null && dow.isValidValue()) {
-////            merger.storeMergedField(DAY_OF_WEEK, convertDayOfWeek(dow.getValidIntValue()).getValue());
-////        }
-////    }
-//
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Rule implementation.
-//     */
-//    static final class DayOfWeekRule extends DateTimeField implements Serializable {
-//        // does not make sense to allow conversion between day-of-week based on different WeekContext
-//        // cannot provide easy conversion to DayOfWeek, as period is then non-sequential
-//        private static final long serialVersionUID = 1L;
-//        private final WeekContext weekRules;
-//
-//        DayOfWeekRule(WeekContext weekRules) {
-//            super("DayOfWeek-" + weekRules.toString(), ISOPeriodUnit.DAYS, ISOPeriodUnit.WEEKS, 1, 7, null);
-//            this.weekRules = weekRules;
-//        }
-////        @Override
-////        protected void normalize(CalendricalEngine engine) {
-////            DateTimeField rdow = engine.getField(this, false);
-////            if (rdow != null && rdow.isValidValue()) {
-////                engine.setField(weekRules.convertDayOfWeek(rdow.getValidIntValue()).toField(), true);
-////                // need to delete this rule here
-////            }
-////        }
-//        @Override
-//        protected DateTimeField deriveFrom(CalendricalEngine engine) {
-//            DateTimeField dow = engine.getFieldDerived(DAY_OF_WEEK, false);
-//            if (dow != null && dow.isValidValue()) {
-//                return field(((dow.getValue() - 1 - weekRules.getFirstDayOfWeek().ordinal() + 7) % 7) + 1);
-//            }
-//            return null;
-//        }
-//        @Override
-//        public long convertToPeriod(long value) {
-//            return DateTimes.safeDecrement(value);
-//        }
-//        @Override
-//        public long convertFromPeriod(long amount) {
-//            return DateTimes.safeIncrement(amount);
-//        }
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Rule implementation.
-//     */
-//    static final class WeekOfMonthRule extends DateTimeField implements Serializable {
-//        private static final long serialVersionUID = 1L;
-//        private final WeekContext weekRules;
-//
-//        WeekOfMonthRule(WeekContext weekRules) {
-//            super("WeekOfMonth-" + weekRules.toString(), ISOPeriodUnit.WEEKS, ISOPeriodUnit.MONTHS,
-//                    DateTimeValueRange.of(0, 1, 4, 6),
-//                    null);
-//            this.weekRules = weekRules;
-//        }
-//        @Override
-//        protected void normalize(CalendricalEngine engine) {
-//            DateTimeField epm = engine.getField(EPOCH_MONTH, false);
-//            if (epm != null) {
-//                int year = DateTimes.safeToInt(DateTimes.floorDiv(epm.getValue(), 12));
-//                int moy = DateTimes.floorMod(epm.getValue(), 12) + 1;
-//                DateTimeField wom = engine.getField(this, false);
-//                DateTimeField wrdow = engine.getField(weekRules.dayOfWeek(), false);
-//                if (wom != null && wrdow != null) {
-//                    LocalDate startWeek2 = LocalDate.of(year, moy, weekRules.getMinimalDaysInFirstWeek())
-//                        .with(DateTimeAdjusters.next(weekRules.getFirstDayOfWeek()));
-//                    LocalDate date = startWeek2.plusDays(wom.getValue() * 7L - 14 + wrdow.getValue() - 1);
-//                    engine.setDate(date, true);
-//                }
-//            }
-//        }
-//        @Override
-//        protected DateTimeField deriveFrom(CalendricalEngine engine) {
-//            LocalDate date = engine.getDate(false);
-//            if (date != null) {
-//                LocalDate startWeek2 = date.withDayOfMonth(weekRules.getMinimalDaysInFirstWeek()).with(DateTimeAdjusters.next(weekRules.getFirstDayOfWeek()));
-//                return field((date.getDayOfMonth() - startWeek2.getDayOfMonth() + 14) / 7);
-//            }
-//            return null;
-//        }
-//    }
+    //-----------------------------------------------------------------------
+    /**
+     * Field type that computes DayOfWeek, WeekOfMonth, and WeekOfYear
+     * based on a WeekDefinition.
+     * A separate Field instance is required for each different WeekDefinition;
+     * combination of start of week and minimum number of days.
+     * Constructors are provided to create fields for DayOfWeek, WeekOfMonth,
+     * and WeekOfYear.
+     */
+    static class ComputedDayOfField implements DateTimeField {
 
+        /**
+         * Returns a DateTimeField to access the day of week,
+         * computed based on a WeekDefinition.
+         * <p>
+         * The WeekDefintion of the first day of the week is used with
+         * the ISO DAY_OF_WEEK field to compute week boundaries.
+         */
+        static ComputedDayOfField ofDayOfWeekField(WeekDefinition weekDef) {
+            return new ComputedDayOfField("DayOfWeek", weekDef,
+                    ChronoUnit.DAYS, ChronoUnit.WEEKS, DAY_OF_WEEK_RANGE);
+        }
+
+        /**
+         * Returns a DateTimeField to access the week of month,
+         * computed based on a WeekDefinition.
+         * @see WeekDefinition#weekOfMonth()
+         */
+        static ComputedDayOfField ofWeekOfMonthField(WeekDefinition weekDef) {
+            return new ComputedDayOfField("WeekOfMonth", weekDef,
+                    ChronoUnit.WEEKS, ChronoUnit.MONTHS, WEEK_OF_MONTH_RANGE);
+        }
+
+        /**
+         * Returns a DateTimeField to access the week of year,
+         * computed based on a WeekDefinition.
+         * @see WeekDefinition#weekOfYear()
+         */
+        static ComputedDayOfField ofWeekOfYearField(WeekDefinition weekDef) {
+            return new ComputedDayOfField("WeekOfYear", weekDef,
+                    ChronoUnit.WEEKS, ChronoUnit.YEARS, WEEK_OF_YEAR_RANGE);
+        }
+        private final String name;
+        private final WeekDefinition weekDef;
+        private final PeriodUnit baseUnit;
+        private final PeriodUnit rangeUnit;
+        private final DateTimeValueRange range;
+
+        private ComputedDayOfField(String name, WeekDefinition weekDef, PeriodUnit baseUnit, PeriodUnit rangeUnit, DateTimeValueRange range) {
+            this.name = name;
+            this.weekDef = weekDef;
+            this.baseUnit = baseUnit;
+            this.rangeUnit = rangeUnit;
+            this.range = range;
+        }
+
+        private static final DateTimeValueRange DAY_OF_WEEK_RANGE = DateTimeValueRange.of(1, 7);
+        private static final DateTimeValueRange WEEK_OF_MONTH_RANGE = DateTimeValueRange.of(0, 1, 4, 5);
+        private static final DateTimeValueRange WEEK_OF_YEAR_RANGE = DateTimeValueRange.of(0, 1, 52, 53);
+
+        @Override
+        public long doGet(DateTimeAccessor dateTime) {
+            // Offset the ISO DOW by the start of this week
+            int sow = weekDef.getFirstDayOfWeek().getValue();
+            int isoDow = dateTime.get(ChronoField.DAY_OF_WEEK);
+            int dow = Jdk8Methods.floorMod(isoDow - sow, 7) + 1;
+
+            if (rangeUnit == ChronoUnit.WEEKS) {
+                return dow;
+            } else if (rangeUnit == ChronoUnit.MONTHS) {
+                int dom = dateTime.get(ChronoField.DAY_OF_MONTH);
+                int offset = startOfWeekOffset(dom, dow);
+                int week = (offset + (dom - 1)) / 7;
+                return week;
+            } else if (rangeUnit == ChronoUnit.YEARS) {
+                int doy = dateTime.get(ChronoField.DAY_OF_YEAR);
+                int offset = startOfWeekOffset(doy, dow);
+                int week = (offset + (doy - 1)) / 7;
+                return week;
+            } else {
+                throw new IllegalStateException("unreachable");
+            }
+        }
+
+        /**
+         * Returns an offset to align week start with a day of month or day of year.
+         *
+         * @param day the day; 1 through infinity
+         * @param dow the day of the week of that day; 1 through 7
+         * @param minDays the minimum number of days required the first week
+         * @return an offset in days to align a day with the start of a the first 'full' week
+         */
+        private int startOfWeekOffset(int day, int dow) {
+            // offset of first day corresponding to the day of week in first 7 days (zero origin)
+            int weekStart = Jdk8Methods.floorMod(day - dow, 7);
+            int offset = -weekStart;
+            if (weekStart + 1 > weekDef.getMinimalDaysInFirstWeek()) {
+                // The previous week has the minimum days in the current month to be a 'week'
+                offset = 7 - weekStart;
+            }
+            offset += 7;
+            return offset;
+        }
+
+        @Override
+        public <R extends DateTime> R doWith(R dateTime, long newValue) {
+            // Check the new value and get the old value of the field
+            int newVal = range.checkValidIntValue(newValue, this);
+            int currentVal = dateTime.get(this);
+            if (newVal == currentVal) {
+                return dateTime;
+            }
+            // Compute the difference and add that using the base using of the field
+            int delta = newVal - currentVal;
+            return (R)dateTime.plus(delta, baseUnit);
+        }
+
+        @Override
+        public boolean resolve(DateTimeBuilder builder, long value) {
+            int newValue = range.checkValidIntValue(value, this);
+            // DOW and YEAR are necessary for all fields; Chrono defaults to ISO if not present
+            int sow = weekDef.getFirstDayOfWeek().getValue();
+            int isoDow = builder.get(ChronoField.DAY_OF_WEEK);
+            int dow = Jdk8Methods.floorMod(isoDow - sow, 7) + 1;
+            int year = builder.get(ChronoField.YEAR);
+            Chrono chrono = Chrono.from(builder);
+
+            // The WOM and WOY fields are the critical values
+            if (rangeUnit == ChronoUnit.MONTHS) {
+                // Process WOM value by combining with DOW and MONTH, YEAR
+                int month = builder.get(ChronoField.MONTH_OF_YEAR);
+                ChronoLocalDate cd = chrono.date(year, month, 1);
+                int offset = startOfWeekOffset(1, dow);
+                offset += sow - dow;    // offset to desired day of week
+                offset += 7 * newValue;    // offset by week number
+                ChronoLocalDate result = cd.plus(offset, ChronoUnit.DAYS);
+                builder.addFieldValue(ChronoField.DAY_OF_MONTH, result.get(ChronoField.DAY_OF_MONTH));
+                return true;
+            } else if (rangeUnit == ChronoUnit.YEARS) {
+                // Process WOY
+                ChronoLocalDate cd = chrono.date(year, 1, 1);
+                int offset = startOfWeekOffset(1, dow);
+                offset += sow - dow;    // offset to desired day of week
+                offset += 7 * newValue;    // offset by week number
+                ChronoLocalDate result = cd.plus(offset, ChronoUnit.DAYS);
+                builder.addFieldValue(ChronoField.DAY_OF_MONTH, result.get(ChronoField.DAY_OF_MONTH));
+                builder.addFieldValue(ChronoField.MONTH_OF_YEAR, result.get(ChronoField.MONTH_OF_YEAR));
+                return true;
+            } else {
+                // ignore DOW of WEEK field; the value will be processed by WOM or WOY
+                return false;
+            }
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public PeriodUnit getBaseUnit() {
+            return baseUnit;
+        }
+
+        @Override
+        public PeriodUnit getRangeUnit() {
+            return rangeUnit;
+        }
+
+        @Override
+        public DateTimeValueRange range() {
+            return range;
+        }
+
+        //-------------------------------------------------------------------------
+        @Override
+        public int compare(DateTimeAccessor dateTime1, DateTimeAccessor dateTime2) {
+            return Long.compare(dateTime1.getLong(this), dateTime2.getLong(this));
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        public boolean doIsSupported(DateTimeAccessor dateTime) {
+            if (dateTime.isSupported(ChronoField.DAY_OF_WEEK)) {
+                if (rangeUnit == ChronoUnit.WEEKS) {
+                    return true;
+                } else if (rangeUnit == ChronoUnit.MONTHS) {
+                    return dateTime.isSupported(ChronoField.DAY_OF_MONTH);
+                } else if (rangeUnit == ChronoUnit.YEARS) {
+                    return dateTime.isSupported(ChronoField.DAY_OF_YEAR);
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public DateTimeValueRange doRange(DateTimeAccessor dateTime) {
+            if (rangeUnit == ChronoUnit.WEEKS) {
+                return range;
+            }
+            // Offset the ISO DOW by the start of this week
+            int sow = weekDef.getFirstDayOfWeek().getValue();
+            int isoDow = dateTime.get(ChronoField.DAY_OF_WEEK);
+            int dow = Jdk8Methods.floorMod(isoDow - sow, 7) + 1;
+
+            if (rangeUnit == ChronoUnit.MONTHS) {
+                DateTimeValueRange fieldRange = dateTime.range(ChronoField.DAY_OF_MONTH);
+                int dom = dateTime.get(ChronoField.DAY_OF_MONTH);
+                int offset = startOfWeekOffset(dom, dow);
+                int lastDay = (int)fieldRange.getMaximum();
+                int week = (offset + (lastDay - 1)) / 7;
+                return DateTimeValueRange.of(offset / 7, week);
+            } else if (rangeUnit == ChronoUnit.YEARS) {
+                DateTimeValueRange fieldRange = dateTime.range(ChronoField.DAY_OF_YEAR);
+                int doy = dateTime.get(ChronoField.DAY_OF_YEAR);
+                int offset = startOfWeekOffset(doy, dow);
+                int lastDay = (int)fieldRange.getMaximum();
+                int week = (offset + (lastDay - 1)) / 7;
+                return DateTimeValueRange.of(offset / 7, week);
+            } else {
+                throw new IllegalStateException("unreachable");
+            }
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        public String toString() {
+            return String.format("%s[%s]", getName(), weekDef);
+        }
+    }
 }
