@@ -91,9 +91,9 @@ public final class LocalTime
      */
     public static final LocalTime MIDNIGHT;
     /**
-     * Constant for the local time of midday, 12:00.
+     * Constant for the local time of noon, 12:00.
      */
-    public static final LocalTime MIDDAY;
+    public static final LocalTime NOON;
     /**
      * Constants for the local time of each hour.
      */
@@ -103,7 +103,7 @@ public final class LocalTime
             HOURS[i] = new LocalTime(i, 0, 0, 0);
         }
         MIDNIGHT = HOURS[0];
-        MIDDAY = HOURS[12];
+        NOON = HOURS[12];
         MIN_TIME = HOURS[0];
         MAX_TIME = new LocalTime(23, 59, 59, 999_999_999);
     }

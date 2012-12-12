@@ -82,10 +82,10 @@ public class TestChronoLocalDateTime {
     @Test(groups={"tck"}, dataProvider="calendars")
     public void test_badWithAdjusterChrono(Chrono chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
-        ChronoLocalDateTime cdt = chrono.date(refDate).atTime(LocalTime.MIDDAY);
+        ChronoLocalDateTime cdt = chrono.date(refDate).atTime(LocalTime.NOON);
         for (Chrono[] clist : data_of_calendars()) {
             Chrono chrono2 = clist[0];
-            ChronoLocalDateTime<?> cdt2 = chrono2.date(refDate).atTime(LocalTime.MIDDAY);
+            ChronoLocalDateTime<?> cdt2 = chrono2.date(refDate).atTime(LocalTime.NOON);
             DateTime.WithAdjuster adjuster = new FixedAdjuster(cdt2);
             if (chrono != chrono2) {
                 try {
@@ -106,10 +106,10 @@ public class TestChronoLocalDateTime {
     @Test(groups={"tck"}, dataProvider="calendars")
     public void test_badPlusAdjusterChrono(Chrono chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
-        ChronoLocalDateTime cdt = chrono.date(refDate).atTime(LocalTime.MIDDAY);
+        ChronoLocalDateTime cdt = chrono.date(refDate).atTime(LocalTime.NOON);
         for (Chrono[] clist : data_of_calendars()) {
             Chrono chrono2 = clist[0];
-            ChronoLocalDateTime<?> cdt2 = chrono2.date(refDate).atTime(LocalTime.MIDDAY);
+            ChronoLocalDateTime<?> cdt2 = chrono2.date(refDate).atTime(LocalTime.NOON);
             DateTime.PlusAdjuster adjuster = new FixedAdjuster(cdt2);
             if (chrono != chrono2) {
                 try {
@@ -130,10 +130,10 @@ public class TestChronoLocalDateTime {
     @Test(groups={"tck"}, dataProvider="calendars")
     public void test_badMinusAdjusterChrono(Chrono chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
-        ChronoLocalDateTime cdt = chrono.date(refDate).atTime(LocalTime.MIDDAY);
+        ChronoLocalDateTime cdt = chrono.date(refDate).atTime(LocalTime.NOON);
         for (Chrono[] clist : data_of_calendars()) {
             Chrono chrono2 = clist[0];
-            ChronoLocalDateTime<?> cdt2 = chrono2.date(refDate).atTime(LocalTime.MIDDAY);
+            ChronoLocalDateTime<?> cdt2 = chrono2.date(refDate).atTime(LocalTime.NOON);
             DateTime.MinusAdjuster adjuster = new FixedAdjuster(cdt2);
             if (chrono != chrono2) {
                 try {
@@ -154,10 +154,10 @@ public class TestChronoLocalDateTime {
     @Test(groups={"tck"}, dataProvider="calendars")
     public void test_badPlusPeriodUnitChrono(Chrono chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
-        ChronoLocalDateTime cdt = chrono.date(refDate).atTime(LocalTime.MIDDAY);
+        ChronoLocalDateTime cdt = chrono.date(refDate).atTime(LocalTime.NOON);
         for (Chrono[] clist : data_of_calendars()) {
             Chrono chrono2 = clist[0];
-            ChronoLocalDateTime<?> cdt2 = chrono2.date(refDate).atTime(LocalTime.MIDDAY);
+            ChronoLocalDateTime<?> cdt2 = chrono2.date(refDate).atTime(LocalTime.NOON);
             PeriodUnit adjuster = new FixedPeriodUnit(cdt2);
             if (chrono != chrono2) {
                 try {
@@ -178,10 +178,10 @@ public class TestChronoLocalDateTime {
     @Test(groups={"tck"}, dataProvider="calendars")
     public void test_badMinusPeriodUnitChrono(Chrono chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
-        ChronoLocalDateTime cdt = chrono.date(refDate).atTime(LocalTime.MIDDAY);
+        ChronoLocalDateTime cdt = chrono.date(refDate).atTime(LocalTime.NOON);
         for (Chrono[] clist : data_of_calendars()) {
             Chrono chrono2 = clist[0];
-            ChronoLocalDateTime<?> cdt2 = chrono2.date(refDate).atTime(LocalTime.MIDDAY);
+            ChronoLocalDateTime<?> cdt2 = chrono2.date(refDate).atTime(LocalTime.NOON);
             PeriodUnit adjuster = new FixedPeriodUnit(cdt2);
             if (chrono != chrono2) {
                 try {
@@ -202,10 +202,10 @@ public class TestChronoLocalDateTime {
     @Test(groups={"tck"}, dataProvider="calendars")
     public void test_badDateTimeFieldChrono(Chrono chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
-        ChronoLocalDateTime cdt = chrono.date(refDate).atTime(LocalTime.MIDDAY);
+        ChronoLocalDateTime cdt = chrono.date(refDate).atTime(LocalTime.NOON);
         for (Chrono[] clist : data_of_calendars()) {
             Chrono chrono2 = clist[0];
-            ChronoLocalDateTime<?> cdt2 = chrono2.date(refDate).atTime(LocalTime.MIDDAY);
+            ChronoLocalDateTime<?> cdt2 = chrono2.date(refDate).atTime(LocalTime.NOON);
             DateTimeField adjuster = new FixedDateTimeField(cdt2);
             if (chrono != chrono2) {
                 try {

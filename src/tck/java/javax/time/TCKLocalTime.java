@@ -104,7 +104,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Override
     protected List<DateTimeAccessor> samples() {
-        DateTimeAccessor[] array = {TEST_12_30_40_987654321, LocalTime.MIN_TIME, LocalTime.MAX_TIME, LocalTime.MIDNIGHT, LocalTime.MIDDAY};
+        DateTimeAccessor[] array = {TEST_12_30_40_987654321, LocalTime.MIN_TIME, LocalTime.MAX_TIME, LocalTime.MIDNIGHT, LocalTime.NOON};
         return Arrays.asList(array);
     }
 
@@ -173,13 +173,13 @@ public class TCKLocalTime extends AbstractDateTimeTest {
 
     @Test(groups={"tck","implementation"})
     public void constant_MIDDAY() {
-        check(LocalTime.MIDDAY, 12, 0, 0, 0);
+        check(LocalTime.NOON, 12, 0, 0, 0);
     }
 
     @Test(groups={"tck"})
     public void constant_MIDDAY_equal() {
-        assertEquals(LocalTime.MIDDAY, LocalTime.MIDDAY);
-        assertEquals(LocalTime.MIDDAY, LocalTime.of(12, 0));
+        assertEquals(LocalTime.NOON, LocalTime.NOON);
+        assertEquals(LocalTime.NOON, LocalTime.of(12, 0));
     }
 
     //-----------------------------------------------------------------------
@@ -200,8 +200,8 @@ public class TCKLocalTime extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void constant_MAX_TIME_equal() {
-        assertEquals(LocalTime.MIDDAY, LocalTime.MIDDAY);
-        assertEquals(LocalTime.MIDDAY, LocalTime.of(12, 0));
+        assertEquals(LocalTime.NOON, LocalTime.NOON);
+        assertEquals(LocalTime.NOON, LocalTime.of(12, 0));
     }
 
     //-----------------------------------------------------------------------
@@ -724,7 +724,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_withHour_toMidday_equal() {
         LocalTime t = LocalTime.of(1, 0).withHour(12);
-        assertEquals(t, LocalTime.MIDDAY);
+        assertEquals(t, LocalTime.NOON);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
@@ -764,7 +764,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_withMinute_toMidday_equals() {
         LocalTime t = LocalTime.of(12, 1).withMinute(0);
-        assertEquals(t, LocalTime.MIDDAY);
+        assertEquals(t, LocalTime.NOON);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
@@ -804,7 +804,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_withSecond_toMidday_equal() {
         LocalTime t = LocalTime.of(12, 0, 1).withSecond(0);
-        assertEquals(t, LocalTime.MIDDAY);
+        assertEquals(t, LocalTime.NOON);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
@@ -848,7 +848,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_withNanoOfSecond_toMidday_equal() {
         LocalTime t = LocalTime.of(12, 0, 0, 1).withNano(0);
-        assertEquals(t, LocalTime.MIDDAY);
+        assertEquals(t, LocalTime.NOON);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
@@ -1029,7 +1029,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_plusHours_toMidday_equal() {
         LocalTime t = LocalTime.of(11, 0).plusHours(1);
-        assertEquals(t, LocalTime.MIDDAY);
+        assertEquals(t, LocalTime.NOON);
     }
 
     @Test(groups={"tck"})
@@ -1105,7 +1105,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_plusMinutes_toMidday_equal() {
         LocalTime t = LocalTime.of(11, 59).plusMinutes(1);
-        assertEquals(t, LocalTime.MIDDAY);
+        assertEquals(t, LocalTime.NOON);
     }
 
     @Test(groups={"tck"})
@@ -1213,7 +1213,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_plusSeconds_toMidday_equal() {
         LocalTime t = LocalTime.of(11, 59, 59).plusSeconds(1);
-        assertEquals(t, LocalTime.MIDDAY);
+        assertEquals(t, LocalTime.NOON);
     }
 
     //-----------------------------------------------------------------------
@@ -1327,7 +1327,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_plusNanos_toMidday_equal() {
         LocalTime t = LocalTime.of(11, 59, 59, 999999999).plusNanos(1);
-        assertEquals(t, LocalTime.MIDDAY);
+        assertEquals(t, LocalTime.NOON);
     }
 
     //-----------------------------------------------------------------------
@@ -1477,7 +1477,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_minusHours_toMidday_equal() {
         LocalTime t = LocalTime.of(13, 0).minusHours(1);
-        assertEquals(t, LocalTime.MIDDAY);
+        assertEquals(t, LocalTime.NOON);
     }
 
     @Test(groups={"tck"})
@@ -1555,7 +1555,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_minusMinutes_toMidday_equals() {
         LocalTime t = LocalTime.of(12, 1).minusMinutes(1);
-        assertEquals(t, LocalTime.MIDDAY);
+        assertEquals(t, LocalTime.NOON);
     }
 
     @Test(groups={"tck"})
@@ -1668,7 +1668,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_minusSeconds_toMidday_equal() {
         LocalTime t = LocalTime.of(12, 0, 1).minusSeconds(1);
-        assertEquals(t, LocalTime.MIDDAY);
+        assertEquals(t, LocalTime.NOON);
     }
 
     @Test(groups={"tck"})
@@ -1797,7 +1797,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_minusNanos_toMidday_equal() {
         LocalTime t = LocalTime.of(12, 0, 0, 1).minusNanos(1);
-        assertEquals(t, LocalTime.MIDDAY);
+        assertEquals(t, LocalTime.NOON);
     }
 
     //-----------------------------------------------------------------------
@@ -1880,7 +1880,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
             LocalTime.of(0, 59, 0, 999999999),
             LocalTime.of(0, 59, 59, 0),
             LocalTime.of(0, 59, 59, 999999999),
-            LocalTime.MIDDAY,
+            LocalTime.NOON,
             LocalTime.of(12, 0, 0, 999999999),
             LocalTime.of(12, 0, 59, 0),
             LocalTime.of(12, 0, 59, 999999999),

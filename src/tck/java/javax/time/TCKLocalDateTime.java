@@ -2846,7 +2846,7 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
             LocalTime.of(0, 0, 59, 999999999),
             LocalTime.of(0, 59, 0, 0),
             LocalTime.of(0, 59, 59, 999999999),
-            LocalTime.MIDDAY,
+            LocalTime.NOON,
             LocalTime.of(12, 0, 0, 999999999),
             LocalTime.of(12, 0, 59, 0),
             LocalTime.of(12, 0, 59, 999999999),

@@ -109,7 +109,7 @@ public class TestMinguoChrono {
     @Test(dataProvider="samples", groups={"implementation"})
     public void test_MinguoDate(ChronoLocalDate<MinguoChrono> minguoDate, LocalDate iso) {
         ChronoLocalDate<MinguoChrono> hd = minguoDate;
-        ChronoLocalDateTime<MinguoChrono> hdt = hd.atTime(LocalTime.MIDDAY);
+        ChronoLocalDateTime<MinguoChrono> hdt = hd.atTime(LocalTime.NOON);
         ZoneOffset zo = ZoneOffset.ofHours(1);
         ChronoZonedDateTime<MinguoChrono> hzdt = hdt.atZone(zo);
         hdt = hdt.plus(1, ChronoUnit.YEARS);
@@ -129,7 +129,7 @@ public class TestMinguoChrono {
     public void test_MinguoChrono() {
         ChronoLocalDate<MinguoChrono> h1 = MinguoChrono.ERA_ROC.date(1, 2, 3);
         ChronoLocalDate<MinguoChrono> h2 = h1;
-        ChronoLocalDateTime<MinguoChrono> h3 = h2.atTime(LocalTime.MIDDAY);
+        ChronoLocalDateTime<MinguoChrono> h3 = h2.atTime(LocalTime.NOON);
         @SuppressWarnings("unused")
         ChronoZonedDateTime<MinguoChrono> h4 = h3.atZone(ZoneOffset.UTC);
     }

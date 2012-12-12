@@ -64,13 +64,13 @@ public class TestLocalTime {
 
     @Test(groups={"tck","implementation"})
     public void constant_MIDDAY() {
-        check(LocalTime.MIDDAY, 12, 0, 0, 0);
+        check(LocalTime.NOON, 12, 0, 0, 0);
     }
 
     @Test(groups={"implementation"})
     public void constant_MIDDAY_same() {
-        assertSame(LocalTime.MIDDAY, LocalTime.MIDDAY);
-        assertSame(LocalTime.MIDDAY, LocalTime.of(12, 0));
+        assertSame(LocalTime.NOON, LocalTime.NOON);
+        assertSame(LocalTime.NOON, LocalTime.of(12, 0));
     }
 
     //-----------------------------------------------------------------------
@@ -91,8 +91,8 @@ public class TestLocalTime {
 
     @Test(groups={"implementation"})
     public void constant_MAX_TIME_same() {
-        assertSame(LocalTime.MIDDAY, LocalTime.MIDDAY);
-        assertSame(LocalTime.MIDDAY, LocalTime.of(12, 0));
+        assertSame(LocalTime.NOON, LocalTime.NOON);
+        assertSame(LocalTime.NOON, LocalTime.of(12, 0));
     }
 
     @Test(groups={"implementation"})
