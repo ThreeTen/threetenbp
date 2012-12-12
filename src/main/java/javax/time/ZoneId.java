@@ -42,8 +42,12 @@ import java.util.TimeZone;
 
 import javax.time.calendrical.DateTimeAccessor;
 import javax.time.calendrical.DateTimeAccessor.Query;
+import javax.time.calendrical.DateTimeField;
+import javax.time.format.DateTimeFormatterBuilder;
 import javax.time.format.TextStyle;
+import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
 import javax.time.zone.ZoneRules;
+import javax.time.zone.ZoneRulesException;
 import javax.time.zone.ZoneRulesProvider;
 
 /**
@@ -383,11 +387,29 @@ public abstract class ZoneId {
      * <p>
      * If no textual mapping is found then the {@link #getId() full ID} is returned.
      *
+     * @param style  the length of the text required, not null
      * @param locale  the locale to use, not null
-     * @return the short text value of the day-of-week, not null
+     * @return the text value of the zone, not null
      */
     public String getText(TextStyle style, Locale locale) {
-        return getId();  // TODO: implement properly
+    	return new DateTimeFormatterBuilder().appendZoneText(style).toFormatter(locale).print(new DefaultInterfaceDateTimeAccessor() {
+            @Override
+            public boolean isSupported(DateTimeField field) {
+                return false;
+            }
+            @Override
+            public long getLong(DateTimeField field) {
+                throw new DateTimeException("Unsupported field: " + field);
+            }
+            @SuppressWarnings("unchecked")
+            @Override
+            public <R> R query(Query<R> query) {
+                if (query == Query.ZONE_ID) {
+                    return (R) ZoneId.this;
+                }
+                return super.query(query);
+            }
+    	});
     }
 
     //-----------------------------------------------------------------------
