@@ -786,69 +786,6 @@ public final class LocalDateTime
         return with(date, newTime);
     }
 
-    /**
-     * Returns a copy of this {@code LocalDateTime} with the time values altered.
-     * <p>
-     * This method will return a new instance with the same date fields,
-     * but altered time fields.
-     * This is a shorthand for {@link #withTime(int,int,int,int)} and sets
-     * the second and nanosecond fields to zero.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hour  the hour-of-day to set in the result, from 0 to 23
-     * @param minute  the minute-of-hour to set in the result, from 0 to 59
-     * @return a {@code LocalDateTime} based on this date-time with the requested time, not null
-     * @throws DateTimeException if any field value is invalid
-     */
-    public LocalDateTime withTime(int hour, int minute) {
-        return withTime(hour, minute, 0, 0);
-    }
-
-    /**
-     * Returns a copy of this {@code LocalDateTime} with the time values altered.
-     * <p>
-     * This method will return a new instance with the same date fields,
-     * but altered time fields.
-     * This is a shorthand for {@link #withTime(int,int,int,int)} and sets
-     * the nanosecond fields to zero.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hour  the hour-of-day to set in the result, from 0 to 23
-     * @param minute  the minute-of-hour to set in the result, from 0 to 59
-     * @param second  the second-of-minute to set in the result, from 0 to 59
-     * @return a {@code LocalDateTime} based on this date-time with the requested time, not null
-     * @throws DateTimeException if any field value is invalid
-     */
-    public LocalDateTime withTime(int hour, int minute, int second) {
-        return withTime(hour, minute, second, 0);
-    }
-
-    /**
-     * Returns a copy of this {@code LocalDateTime} with the time values altered.
-     * <p>
-     * This method will return a new instance with the same date fields,
-     * but altered time fields.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hour  the hour-of-day to set in the result, from 0 to 23
-     * @param minute  the minute-of-hour to set in the result, from 0 to 59
-     * @param second  the second-of-minute to set in the result, from 0 to 59
-     * @param nanoOfSecond  the nano-of-second to set in the result, from 0 to 999,999,999
-     * @return a {@code LocalDateTime} based on this date-time with the requested time, not null
-     * @throws DateTimeException if any field value is invalid
-     */
-    public LocalDateTime withTime(int hour, int minute, int second, int nanoOfSecond) {
-        if (hour == getHour() && minute == getMinute() &&
-                second == getSecond() && nanoOfSecond == getNano()) {
-            return this;
-        }
-        LocalTime newTime = LocalTime.of(hour, minute, second, nanoOfSecond);
-        return with(date, newTime);
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this date-time with the specified period added.

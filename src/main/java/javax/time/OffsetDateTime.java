@@ -938,64 +938,6 @@ public final class OffsetDateTime
         return with(dateTime.withNano(nanoOfSecond), offset);
     }
 
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the time values altered.
-     * <p>
-     * This method will return a new instance with the same date fields,
-     * but altered time fields.
-     * This is a shorthand for {@link #withTime(int,int,int,int)} and sets
-     * the second and nanosecond fields to zero.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hour  the hour-of-day to set in the result, from 0 to 23
-     * @param minute  the minute-of-hour to set in the result, from 0 to 59
-     * @return an {@code OffsetDateTime} based on this date-time with the requested time, not null
-     * @throws DateTimeException if any field value is invalid
-     */
-    public OffsetDateTime withTime(int hour, int minute) {
-        LocalDateTime newDT = dateTime.withTime(hour, minute);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
-    }
-
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the time values altered.
-     * <p>
-     * This method will return a new instance with the same date fields,
-     * but altered time fields.
-     * This is a shorthand for {@link #withTime(int,int,int,int)} and sets
-     * the nanosecond fields to zero.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hour  the hour-of-day to set in the result, from 0 to 23
-     * @param minute  the minute-of-hour to set in the result, from 0 to 59
-     * @param second  the second-of-minute to set in the result, from 0 to 59
-     * @return an {@code OffsetDateTime} based on this date-time with the requested time, not null
-     * @throws DateTimeException if any field value is invalid
-     */
-    public OffsetDateTime withTime(int hour, int minute, int second) {
-        LocalDateTime newDT = dateTime.withTime(hour, minute, second);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
-    }
-
-    /**
-     * Returns a copy of this OffsetDateTime with the time values altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hour  the hour-of-day to set in the result, from 0 to 23
-     * @param minute  the minute-of-hour to set in the result, from 0 to 59
-     * @param second  the second-of-minute to set in the result, from 0 to 59
-     * @param nanoOfSecond  the nano-of-second to set in the result, from 0 to 999,999,999
-     * @return an {@code OffsetDateTime} based on this date-time with the requested time, not null
-     * @throws DateTimeException if any field value is invalid
-     */
-    public OffsetDateTime withTime(int hour, int minute, int second, int nanoOfSecond) {
-        LocalDateTime newDT = dateTime.withTime(hour, minute, second, nanoOfSecond);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this date-time with the specified period added.

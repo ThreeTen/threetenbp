@@ -455,7 +455,7 @@ public class TestStandardZoneRules {
 
         // Jan 1st of year between transitions and rules
         ZonedDateTime odt = ZonedDateTime.ofInstant(last.getInstant(), last.getOffsetAfter());
-        odt = odt.withDayOfYear(1).plusYears(1).withTime(0, 0);
+        odt = odt.withDayOfYear(1).plusYears(1).with(LocalTime.MIDNIGHT);
         assertEquals(test.previousTransition(odt.toInstant()), last);
 
         // later years

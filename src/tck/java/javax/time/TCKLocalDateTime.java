@@ -1171,182 +1171,6 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // withTime()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_withTime_2ints() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withTime(13, 40);
-        check(t, 2007, 7, 15, 13, 40, 0, 0);
-    }
-
-    @Test(groups={"tck"})
-    public void test_withTime_2ints_sameHour() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(12, 30));
-        t = TEST_2007_07_15_12_30_40_987654321.withTime(12, 20);
-        check(t, 2007, 7, 15, 12, 20, 0, 0);
-    }
-
-    @Test(groups={"tck"})
-    public void test_withTime_2ints_sameMinute() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(12, 30));
-        t = TEST_2007_07_15_12_30_40_987654321.withTime(11, 30);
-        check(t, 2007, 7, 15, 11, 30, 0, 0);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_withTime_2ints_hourTooLow() {
-        TEST_2007_07_15_12_30_40_987654321.withTime(-1, 30);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_withTime_2ints_hourTooHigh() {
-        TEST_2007_07_15_12_30_40_987654321.withTime(24, 30);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_withTime_2ints_minuteTooLow() {
-        TEST_2007_07_15_12_30_40_987654321.withTime(12, -1);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_withTime_2ints_minuteTooHigh() {
-        TEST_2007_07_15_12_30_40_987654321.withTime(12, 60);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_withTime_3ints() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withTime(13, 40, 50);
-        check(t, 2007, 7, 15, 13, 40, 50, 0);
-    }
-
-    @Test(groups={"tck"})
-    public void test_withTime_3ints_sameHour() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(12, 30, 40));
-        t = TEST_2007_07_15_12_30_40_987654321.withTime(12, 20, 30);
-        check(t, 2007, 7, 15, 12, 20, 30, 0);
-    }
-
-    @Test(groups={"tck"})
-    public void test_withTime_3ints_sameMinute() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(12, 30, 40));
-        t = TEST_2007_07_15_12_30_40_987654321.withTime(11, 30, 30);
-        check(t, 2007, 7, 15, 11, 30, 30, 0);
-    }
-
-    @Test(groups={"tck"})
-    public void test_withTime_3ints_sameSecond() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(12, 30, 40));
-        t = TEST_2007_07_15_12_30_40_987654321.withTime(11, 20, 40);
-        check(t, 2007, 7, 15, 11, 20, 40, 0);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_withTime_3ints_hourTooLow() {
-        TEST_2007_07_15_12_30_40_987654321.withTime(-1, 30, 40);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_withTime_3ints_hourTooHigh() {
-        TEST_2007_07_15_12_30_40_987654321.withTime(24, 30, 40);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_withTime_3ints_minuteTooLow() {
-        TEST_2007_07_15_12_30_40_987654321.withTime(12, -1, 40);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_withTime_3ints_minuteTooHigh() {
-        TEST_2007_07_15_12_30_40_987654321.withTime(12, 60, 40);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_withTime_3ints_secondTooLow() {
-        TEST_2007_07_15_12_30_40_987654321.withTime(12, 30, -1);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_withTime_3ints_secondTooHigh() {
-        TEST_2007_07_15_12_30_40_987654321.withTime(12, 30, 60);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_withTime_4ints() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withTime(13, 40, 50, 987654322);
-        check(t, 2007, 7, 15, 13, 40, 50, 987654322);
-    }
-
-    @Test(groups={"tck"})
-    public void test_withTime_4ints_sameHour() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(12, 30, 40, 987654321));
-        t = TEST_2007_07_15_12_30_40_987654321.withTime(12, 20, 30, 987654320);
-        check(t, 2007, 7, 15, 12, 20, 30, 987654320);
-    }
-
-    @Test(groups={"tck"})
-    public void test_withTime_4ints_sameMinute() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(12, 30, 40, 987654321));
-        t = TEST_2007_07_15_12_30_40_987654321.withTime(11, 30, 30, 987654320);
-        check(t, 2007, 7, 15, 11, 30, 30, 987654320);
-    }
-
-    @Test(groups={"tck"})
-    public void test_withTime_4ints_sameSecond() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(12, 30, 40, 987654321));
-        t = TEST_2007_07_15_12_30_40_987654321.withTime(11, 20, 40, 987654320);
-        check(t, 2007, 7, 15, 11, 20, 40, 987654320);
-    }
-
-    @Test(groups={"tck"})
-    public void test_withTime_4ints_sameNano() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(12, 30, 40, 987654321));
-        t = TEST_2007_07_15_12_30_40_987654321.withTime(11, 20, 30, 987654321);
-        check(t, 2007, 7, 15, 11, 20, 30, 987654321);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_withTime_4ints_hourTooLow() {
-        TEST_2007_07_15_12_30_40_987654321.withTime(-1, 30, 40, 987654321);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_withTime_4ints_hourTooHigh() {
-        TEST_2007_07_15_12_30_40_987654321.withTime(24, 30, 40, 987654321);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_withTime_4ints_minuteTooLow() {
-        TEST_2007_07_15_12_30_40_987654321.withTime(12, -1, 40, 987654321);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_withTime_4ints_minuteTooHigh() {
-        TEST_2007_07_15_12_30_40_987654321.withTime(12, 60, 40, 987654321);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_withTime_4ints_secondTooLow() {
-        TEST_2007_07_15_12_30_40_987654321.withTime(12, 30, -1, 987654321);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_withTime_4ints_secondTooHigh() {
-        TEST_2007_07_15_12_30_40_987654321.withTime(12, 30, 60, 987654321);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_withTime_4ints_nanoTooLow() {
-        TEST_2007_07_15_12_30_40_987654321.withTime(12, 30, 40, -1);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void test_withTime_4ints_nanoTooHigh() {
-        TEST_2007_07_15_12_30_40_987654321.withTime(12, 30, 40, 1000000000);
-    }
-
-    //-----------------------------------------------------------------------
     // plus(adjuster)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
@@ -1782,7 +1606,7 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void test_plusHours_fromOne() {
-        LocalDateTime base = TEST_2007_07_15_12_30_40_987654321.withTime(1, 0);
+        LocalDateTime base = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(1, 0));
         LocalDate d = base.getDate().minusDays(3);
         LocalTime t = LocalTime.of(22, 0);
 
@@ -2486,7 +2310,7 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void test_minusHours_fromOne() {
-        LocalDateTime base = TEST_2007_07_15_12_30_40_987654321.withTime(1, 0);
+        LocalDateTime base = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(1, 0));
         LocalDate d = base.getDate().plusDays(2);
         LocalTime t = LocalTime.of(4, 0);
 

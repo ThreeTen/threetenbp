@@ -1313,62 +1313,6 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // withTime()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_withTime_HM() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 0, 0);
-        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        ZonedDateTime test = base.withTime(12, 10);
-        ZonedDateTime expected = ZonedDateTime.of(ldt.withTime(12, 10), ZONE_0100);
-        assertEquals(test, expected);
-    }
-
-    @Test(groups={"tck"})
-    public void test_withTime_HM_noChange() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 0, 0);
-        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        ZonedDateTime test = base.withTime(23, 30);
-        assertEquals(test, base);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_withTime_HMS() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        ZonedDateTime test = base.withTime(12, 10, 9);
-        ZonedDateTime expected = ZonedDateTime.of(ldt.withTime(12, 10, 9), ZONE_0100);
-        assertEquals(test, expected);
-    }
-
-    @Test(groups={"tck"})
-    public void test_withTime_HMS_noChange() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        ZonedDateTime test = base.withTime(23, 30, 59);
-        assertEquals(test, base);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_withTime_HMSN() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        ZonedDateTime test = base.withTime(12, 10, 9, 8);
-        ZonedDateTime expected = ZonedDateTime.of(ldt.withTime(12, 10, 9, 8), ZONE_0100);
-        assertEquals(test, expected);
-    }
-
-    @Test(groups={"tck"})
-    public void test_withTime_HMSN_noChange() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 50);
-        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        ZonedDateTime test = base.withTime(23, 30, 59, 50);
-        assertEquals(test, base);
-    }
-
-    //-----------------------------------------------------------------------
     // plus/minus
     //-----------------------------------------------------------------------
     @DataProvider(name="plusDays")
