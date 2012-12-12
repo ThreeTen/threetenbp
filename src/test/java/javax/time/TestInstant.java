@@ -98,7 +98,7 @@ public class TestInstant extends AbstractTest {
     public void now_Clock_allSecsInDay_utc() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant expected = Instant.ofEpochSecond(i).plusNanos(123456789L);
-            Clock clock = Clock.fixedUTC(expected);
+            Clock clock = Clock.fixed(expected, ZoneOffset.UTC);
             Instant test = Instant.now(clock);
             assertEquals(test, expected);
         }
@@ -108,7 +108,7 @@ public class TestInstant extends AbstractTest {
     public void now_Clock_allSecsInDay_beforeEpoch() {
         for (int i =-1; i >= -(24 * 60 * 60); i--) {
             Instant expected = Instant.ofEpochSecond(i).plusNanos(123456789L);
-            Clock clock = Clock.fixedUTC(expected);
+            Clock clock = Clock.fixed(expected, ZoneOffset.UTC);
             Instant test = Instant.now(clock);
             assertEquals(test, expected);
         }

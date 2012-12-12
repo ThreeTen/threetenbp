@@ -68,17 +68,6 @@ public class TestClock_Fixed {
     }
 
     //-------------------------------------------------------------------------
-    public void test_fixedUTC() {
-        Clock fixed = Clock.fixedUTC(INSTANT);
-        assertEquals(fixed.instant(), INSTANT);
-        assertEquals(fixed.getZone(), ZoneOffset.UTC);
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_fixedUTC_nullInstant() {
-        Clock.fixedUTC(null);
-    }
-
     public void test_fixed_zoneId() {
         Clock fixed = Clock.fixed(INSTANT, PARIS);
         assertEquals(fixed.instant(), INSTANT);

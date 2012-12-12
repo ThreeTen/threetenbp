@@ -145,7 +145,7 @@ public class TCKClock_System {
 
         assertEquals(a.equals(null), false);
         assertEquals(a.equals("other type"), false);
-        assertEquals(a.equals(Clock.fixedUTC(Instant.now())), false);
+        assertEquals(a.equals(Clock.fixed(Instant.now(), ZoneOffset.UTC)), false);
     }
 
     public void test_system_hashCode() {

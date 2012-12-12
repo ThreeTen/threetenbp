@@ -220,24 +220,6 @@ public abstract class Clock {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets a clock that always returns the same instant in the UTC time-zone.
-     * <p>
-     * This clock simply returns the specified instant.
-     * As such, it is not a clock in the conventional sense.
-     * The main use case for this is in testing, where the fixed clock ensures tests
-     * are not dependent on the current clock.
-     * <p>
-     * The returned implementation is immutable, thread-safe and {@code Serializable}.
-     *
-     * @param fixedInstant  the instant to use as the clock, not null
-     * @return a clock that always returns the same instant, not null
-     */
-    public static Clock fixedUTC(Instant fixedInstant) {
-        Objects.requireNonNull(fixedInstant, "fixedInstant");
-        return new FixedClock(fixedInstant, ZoneOffset.UTC);
-    }
-
-    /**
      * Gets a clock that always returns the same instant.
      * <p>
      * This clock simply returns the specified instant.
