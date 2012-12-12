@@ -301,29 +301,6 @@ public final class ZonedDateTime
         return create(localDateTime.toEpochSecond(offset), localDateTime.getNano(), zone);
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of {@code ZonedDateTime} using seconds from the
-     * epoch of 1970-01-01T00:00:00Z.
-     * <p>
-     * This allows the {@link ChronoField#INSTANT_SECONDS epoch-second} field
-     * to be converted to a zoned date-time. This is primarily intended for
-     * low-level conversions rather than general application usage.
-     * <p>
-     * The epoch-second is equivalent to an instant and there is only one valid
-     * offset for each instant.
-     *
-     * @param epochSecond  the number of seconds from the epoch of 1970-01-01T00:00:00Z
-     * @param nanoOfSecond  the nanosecond within the second, from 0 to 999,999,999
-     * @param zone  the time-zone, not null
-     * @return the zoned date-time, not null
-     * @throws DateTimeException if the result exceeds the supported range
-     */
-    public static ZonedDateTime ofEpochSecond(long epochSecond, int nanoOfSecond, ZoneId zone) {
-        Objects.requireNonNull(zone, "zone");
-        return create(epochSecond, nanoOfSecond, zone);
-    }
-
     /**
      * Obtains an instance of {@code ZonedDateTime} using seconds from the
      * epoch of 1970-01-01T00:00:00Z.

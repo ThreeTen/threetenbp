@@ -377,52 +377,6 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // ofEpochSecond()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_ofEpochSecond_longOffset_afterEpoch() {
-        OffsetDateTime base = OffsetDateTime.of(1970, 1, 1, 2, 0, 0, 500, OFFSET_PTWO);
-        for (int i = 0; i < 100000; i++) {
-            OffsetDateTime test = OffsetDateTime.ofEpochSecond(i, 500, OFFSET_PTWO);
-            assertEquals(test, base.plusSeconds(i));
-        }
-    }
-
-    @Test(groups={"tck"})
-    public void factory_ofEpochSecond_longOffset_beforeEpoch() {
-        OffsetDateTime base = OffsetDateTime.of(1970, 1, 1, 2, 0, 0, 500, OFFSET_PTWO);
-        for (int i = 0; i < 100000; i++) {
-            OffsetDateTime test = OffsetDateTime.ofEpochSecond(-i, 500, OFFSET_PTWO);
-            assertEquals(test, base.minusSeconds(i));
-        }
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void factory_ofEpochSecond_longOffset_tooBig() {
-        OffsetDateTime.ofEpochSecond(Long.MAX_VALUE, 500, OFFSET_PONE);  // TODO: better test
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void factory_ofEpochSecond_longOffset_tooSmall() {
-        OffsetDateTime.ofEpochSecond(Long.MIN_VALUE, 500, OFFSET_PONE);  // TODO: better test
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void factory_ofEpochSecond_badNanos_tooBig() {
-        OffsetDateTime.ofEpochSecond(0, 1_000_000_000, OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void factory_ofEpochSecond_badNanos_tooSmall() {
-        OffsetDateTime.ofEpochSecond(0, -1, OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_ofEpochSecond_longOffset_nullOffset() {
-        OffsetDateTime.ofEpochSecond(0L, 500, null);
-    }
-
-    //-----------------------------------------------------------------------
     // from()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})

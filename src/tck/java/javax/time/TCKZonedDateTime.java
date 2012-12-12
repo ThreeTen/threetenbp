@@ -538,62 +538,6 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // ofEpochSecond()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_ofEpochSecond_Instant_ZR() {
-        LocalDateTime base = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
-        long epSec = base.toEpochSecond(OFFSET_0200);
-        ZonedDateTime test = ZonedDateTime.ofEpochSecond(epSec, 35, ZONE_PARIS);
-        check(test, 2008, 6, 30, 11, 30, 10, 35, OFFSET_0200, ZONE_PARIS);
-    }
-
-    @Test(groups={"tck"})
-    public void factory_ofEpochSecond_Instant_ZO() {
-        LocalDateTime base = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
-        long epSec = base.toEpochSecond(OFFSET_0200);
-        ZonedDateTime test = ZonedDateTime.ofEpochSecond(epSec, 45, OFFSET_0200);
-        check(test, 2008, 6, 30, 11, 30, 10, 45, OFFSET_0200, OFFSET_0200);
-    }
-
-    @Test(groups={"tck"})
-    public void factory_ofEpochSecond_longOffset_afterEpoch() {
-        for (int i = 0; i < 100000; i++) {
-            ZonedDateTime test = ZonedDateTime.ofEpochSecond(i, 0, ZONE_0200);
-            LocalDateTime ldt = LocalDateTime.of(1970, 1, 1, 0, 0).plusSeconds(OFFSET_0200.getTotalSeconds()).plusSeconds(i);
-            assertEquals(test.getDateTime(), ldt);
-            assertEquals(test.getOffset(), ZONE_0200);
-            assertEquals(test.getZone(), ZONE_0200);
-        }
-    }
-
-    @Test(groups={"tck"})
-    public void factory_ofEpochSecond_longOffset_beforeEpoch() {
-        for (int i = 0; i < 100000; i++) {
-            ZonedDateTime test = ZonedDateTime.ofEpochSecond(-i, 0, ZONE_0200);
-            LocalDateTime ldt = LocalDateTime.of(1970, 1, 1, 0, 0).plusSeconds(OFFSET_0200.getTotalSeconds()).minusSeconds(i);
-            assertEquals(test.getDateTime(), ldt);
-            assertEquals(test.getOffset(), ZONE_0200);
-            assertEquals(test.getZone(), ZONE_0200);
-        }
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void factory_ofEpochSecond_longOffset_tooBig() {
-        ZonedDateTime.ofEpochSecond(Long.MAX_VALUE, 0, ZONE_PARIS);  // TODO: better test
-    }
-
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void factory_ofEpochSecond_longOffset_tooSmall() {
-        ZonedDateTime.ofEpochSecond(Long.MIN_VALUE, 0, ZONE_PARIS);  // TODO: better test
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_ofEpochSecond_longOffset_nullOffset() {
-        ZonedDateTime.ofEpochSecond(0L, 0, null);
-    }
-
-    //-----------------------------------------------------------------------
     // ofStrict(LocalDateTime, ZoneId, ZoneOffset)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
