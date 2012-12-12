@@ -95,10 +95,6 @@ public final class ZoneOffset
     private static final ConcurrentMap<String, ZoneOffset> ID_CACHE = new ConcurrentHashMap<String, ZoneOffset>(16, 0.75f, 4);
 
     /**
-     * The time-zone offset for UTC, with an ID of 'Z'.
-     */
-    public static final ZoneOffset UTC = ofHoursMinutesSeconds(0, 0, 0);
-    /**
      * The number of seconds per hour.
      */
     private static final int SECONDS_PER_HOUR = 60 * 60;
@@ -118,6 +114,19 @@ public final class ZoneOffset
      * Serialization version.
      */
     private static final long serialVersionUID = 2357656521762053153L;
+
+    /**
+     * The time-zone offset for UTC, with an ID of 'Z'.
+     */
+    public static final ZoneOffset UTC = ofTotalSeconds(0);
+    /**
+     * Constant for the maximum supported offset.
+     */
+    public static final ZoneOffset MIN_OFFSET = ZoneOffset.ofTotalSeconds(-MAX_SECONDS);
+    /**
+     * Constant for the maximum supported offset.
+     */
+    public static final ZoneOffset MAX_OFFSET = ZoneOffset.ofTotalSeconds(MAX_SECONDS);
 
     /**
      * The total offset in seconds.

@@ -156,6 +156,17 @@ public final class Instant
      */
     public static final Instant EPOCH = new Instant(0, 0);
     /**
+     * Constant for the maximum supported instant.
+     * This could be used by an application as a "far past" instant.
+     */
+    public static final Instant MIN_INSTANT = Instant.ofEpochSecond(Long.MIN_VALUE, 0);
+    /**
+     * Constant for the maximum supported instant.
+     * This could be used by an application as a "far future" instant.
+     */
+    public static final Instant MAX_INSTANT = Instant.ofEpochSecond(Long.MAX_VALUE, 999_999_999);
+
+    /**
      * Serialization version.
      */
     private static final long serialVersionUID = -665713676816604388L;
