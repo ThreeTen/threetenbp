@@ -341,6 +341,8 @@ public final class LocalDateTime
      * <p>
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code LocalDateTime}.
+     * <p>
+     * The conversion extracts and combines the {@code LocalDate} and {@code LocalTime}.
      *
      * @param dateTime  the date-time object to convert, not null
      * @return the local date-time, not null

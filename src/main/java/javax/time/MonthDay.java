@@ -207,6 +207,10 @@ public final class MonthDay
      * <p>
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code MonthDay}.
+     * <p>
+     * The conversion extracts the {@link ChronoField#MONTH_OF_YEAR month-of-year} and
+     * {@link ChronoField#DAY_OF_MONTH day-of-month} fields.
+     * The extraction is only permitted if the date-time has an ISO chronology.
      *
      * @param dateTime  the date-time object to convert, not null
      * @return the month-day, not null

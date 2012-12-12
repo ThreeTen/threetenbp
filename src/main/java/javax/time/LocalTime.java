@@ -55,6 +55,8 @@ import javax.time.calendrical.DateTimeBuilder;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeValueRange;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.chrono.ChronoLocalDateTime;
+import javax.time.chrono.ChronoZonedDateTime;
 import javax.time.format.DateTimeFormatter;
 import javax.time.format.DateTimeFormatters;
 import javax.time.format.DateTimeParseException;
@@ -364,6 +366,8 @@ public final class LocalTime
      * <p>
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code LocalTime}.
+     * <p>
+     * The conversion extracts the {@link ChronoField#NANO_OF_DAY nano-of-day} field.
      *
      * @param dateTime  the date-time object to convert, not null
      * @return the local time, not null
@@ -372,10 +376,10 @@ public final class LocalTime
     public static LocalTime from(DateTimeAccessor dateTime) {
         if (dateTime instanceof LocalTime) {
             return (LocalTime) dateTime;
-        } else if (dateTime instanceof LocalDateTime) {
-            return ((LocalDateTime) dateTime).getTime();
+        } else if (dateTime instanceof ChronoLocalDateTime) {
+            return ((ChronoLocalDateTime<?>) dateTime).getTime();
         } else if (dateTime instanceof ZonedDateTime) {
-            return ((ZonedDateTime) dateTime).getTime();
+            return ((ChronoZonedDateTime<?>) dateTime).getTime();
         }
         // handle builder as a special case
         if (dateTime instanceof DateTimeBuilder) {

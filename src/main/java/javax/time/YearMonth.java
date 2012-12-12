@@ -186,6 +186,10 @@ public final class YearMonth
      * <p>
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code YearMonth}.
+     * <p>
+     * The conversion extracts the {@link ChronoField#YEAR year} and
+     * {@link ChronoField#MONTH_OF_YEAR month-of-year} fields.
+     * The extraction is only permitted if the date-time has an ISO chronology.
      *
      * @param dateTime  the date-time object to convert, not null
      * @return the year-month, not null

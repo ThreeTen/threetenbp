@@ -313,6 +313,8 @@ public final class LocalDate
      * <p>
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code LocalDate}.
+     * <p>
+     * The conversion extracts the {@link ChronoField#EPOCH_DAY epoch-day} field.
      *
      * @param dateTime  the date-time object to convert, not null
      * @return the local date, not null

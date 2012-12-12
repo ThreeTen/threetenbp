@@ -285,6 +285,8 @@ public final class ZoneOffset
      * <p>
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code ZoneOffset}.
+     * <p>
+     * The conversion extracts the {@link ChronoField#OFFSET_SECONDS offset-seconds} field.
      *
      * @param dateTime  the date-time object to convert, not null
      * @return the zone-offset, not null
