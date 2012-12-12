@@ -106,6 +106,7 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
 
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
+    private static final ZoneOffset OFFSET_MTWO = ZoneOffset.ofHours(-2);
     private static final ZoneId ZONE_PARIS = ZoneId.of("Europe/Paris");
     private static final ZoneId ZONE_GAZA = ZoneId.of("Asia/Gaza");
 
@@ -717,6 +718,47 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_of_LocalDate_LocalTime_nullLocalTime() {
         LocalDateTime.of(LocalDate.of(2007, 7, 15), null);
+    }
+
+    //-----------------------------------------------------------------------
+    // ofInstant()
+    //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
+    public void factory_ofInstant_zone() {
+        LocalDateTime test = LocalDateTime.ofInstant(Instant.ofEpochSecond(86400 + 3600 + 120 + 4, 500), ZONE_PARIS);
+        assertEquals(test, LocalDateTime.of(1970, 1, 2, 2, 2, 4, 500));  // offset +01:00
+    }
+
+    @Test(groups={"tck"})
+    public void factory_ofInstant_offset() {
+        LocalDateTime test = LocalDateTime.ofInstant(Instant.ofEpochSecond(86400 + 3600 + 120 + 4, 500), OFFSET_MTWO);
+        assertEquals(test, LocalDateTime.of(1970, 1, 1, 23, 2, 4, 500));
+    }
+
+    @Test(groups={"tck"})
+    public void factory_ofInstant_offsetBeforeEpoch() {
+        LocalDateTime test = LocalDateTime.ofInstant(Instant.ofEpochSecond(-86400 + 4, 500), OFFSET_PTWO);
+        assertEquals(test, LocalDateTime.of(1969, 12, 31, 2, 0, 4, 500));
+    }
+
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    public void factory_ofInstant_instantTooBig() {
+        LocalDateTime.ofInstant(Instant.ofEpochSecond(Long.MAX_VALUE), OFFSET_PONE) ;
+    }
+
+    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    public void factory_ofInstant_instantTooSmall() {
+        LocalDateTime.ofInstant(Instant.ofEpochSecond(Long.MIN_VALUE), OFFSET_PONE) ;
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void factory_ofInstant_nullInstant() {
+        LocalDateTime.ofInstant((Instant) null, ZONE_GAZA);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void factory_ofInstant_nullZone() {
+        LocalDateTime.ofInstant(Instant.EPOCH, (ZoneId) null);
     }
 
     //-----------------------------------------------------------------------

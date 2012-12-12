@@ -312,6 +312,27 @@ public final class LocalDateTime
 
     //-------------------------------------------------------------------------
     /**
+     * Obtains an instance of {@code LocalDateTime} from an {@code Instant} and zone ID.
+     * <p>
+     * This creates a local date-time based on the specified instant.
+     * First, the offset from UTC/Greenwich is obtained using the zone ID and instant,
+     * which is simple as there is only one valid offset for each instant.
+     * Then, the instant and offset are used to calculate the local date-time.
+     *
+     * @param instant  the instant to create the date-time from, not null
+     * @param zone  the time-zone, which may be an offset, not null
+     * @return the local date-time, not null
+     * @throws DateTimeException if the result exceeds the supported range
+     */
+    public static LocalDateTime ofInstant(Instant instant, ZoneId zone) {
+        Objects.requireNonNull(instant, "instant");
+        Objects.requireNonNull(zone, "zone");
+        ZoneRules rules = zone.getRules();
+        ZoneOffset offset = rules.getOffset(instant);
+        return ofEpochSecond(instant.getEpochSecond(), instant.getNano(), offset);
+    }
+
+    /**
      * Obtains an instance of {@code LocalDateTime} using seconds from the
      * epoch of 1970-01-01T00:00:00Z.
      * <p>
