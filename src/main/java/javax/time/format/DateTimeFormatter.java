@@ -369,13 +369,12 @@ public final class DateTimeFormatter {
     /**
      * Returns this formatter as a {@code java.text.Format} instance.
      * <p>
-     * The {@link Format} instance will print any {@link DateTimeAccessor}
-     * and parses to a merged {@link DateTimeBuilder}.
+     * The returned {@link Format} instance will print any {@link DateTimeAccessor}
+     * and parses to a resolved {@link DateTimeBuilder}.
      * <p>
-     * The format will throw {@code IndexOutOfBoundsException} in line with those
-     * thrown by the {@link #printTo(DateTimeAccessor, Appendable) print} and
-     * {@link #parseToBuilder(CharSequence) parse} methods.
-     * <p>
+     * Exceptions will follow the definitions of {@code Format}, see those methods
+     * for details about {@code IllegalArgumentException} during formatting and
+     * {@code ParseException} or null during parsing.
      * The format does not support attributing of the returned format string.
      *
      * @return this formatter as a classic format instance, not null
@@ -388,13 +387,13 @@ public final class DateTimeFormatter {
      * Returns this formatter as a {@code java.text.Format} instance that will
      * parse to the specified type.
      * <p>
-     * The {@link Format} instance will print any {@link DateTimeAccessor}
-     * and parses to a the type specified.
+     * The returned {@link Format} instance will print any {@link DateTimeAccessor}
+     * and parses to the type specified.
+     * The type must be one that is supported by {@link #parse(CharSequence, Class)}.
      * <p>
-     * The format will throw {@code IndexOutOfBoundsException} in line with those
-     * thrown by the {@link #printTo(DateTimeAccessor, Appendable) print} and
-     * {@link #parse(CharSequence, Class) parse} methods.
-     * <p>
+     * Exceptions will follow the definitions of {@code Format}, see those methods
+     * for details about {@code IllegalArgumentException} during formatting and
+     * {@code ParseException} or null during parsing.
      * The format does not support attributing of the returned format string.
      *
      * @return this formatter as a classic format instance, not null
@@ -441,23 +440,54 @@ public final class DateTimeFormatter {
             }
             pos.setBeginIndex(0);
             pos.setEndIndex(0);
-            formatter.printTo((DateTimeAccessor) obj, toAppendTo);
+            try {
+                formatter.printTo((DateTimeAccessor) obj, toAppendTo);
+            } catch (RuntimeException ex) {
+                throw new IllegalArgumentException(ex.getMessage(), ex);
+            }
             return toAppendTo;
         }
         @Override
-        public Object parseObject(String source) throws ParseException {
+        public Object parseObject(String text) throws ParseException {
+            Objects.requireNonNull(text, "text");
             try {
                 if (parseType != null) {
-                    return formatter.parse(source, parseType);
+                    return formatter.parse(text, parseType);
                 }
-                return formatter.parseToBuilder(source);
+                return formatter.parseToBuilder(text);
             } catch (DateTimeParseException ex) {
                 throw new ParseException(ex.getMessage(), ex.getErrorIndex());
+            } catch (RuntimeException ex) {
+                throw (ParseException) new ParseException(ex.getMessage(), 0).initCause(ex);
             }
         }
         @Override
-        public Object parseObject(String source, ParsePosition pos) {
-            return formatter.parseToBuilder(source, pos);
+        public Object parseObject(String text, ParsePosition pos) {
+            Objects.requireNonNull(text, "text");
+            DateTimeBuilder builder;
+            try {
+                builder = formatter.parseToBuilder(text, pos);
+            } catch (IndexOutOfBoundsException ex) {
+                if (pos.getErrorIndex() < 0) {
+                    pos.setErrorIndex(0);
+                }
+                return null;
+            }
+            if (builder == null) {
+                if (pos.getErrorIndex() < 0) {
+                    pos.setErrorIndex(0);
+                }
+                return null;
+            }
+            if (parseType == null) {
+                return builder;
+            }
+            try {
+                return builder.resolve().build(parseType);
+            } catch (RuntimeException ex) {
+                pos.setErrorIndex(0);
+                return null;
+            }
         }
     }
 
