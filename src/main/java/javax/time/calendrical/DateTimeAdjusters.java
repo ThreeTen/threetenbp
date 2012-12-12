@@ -298,68 +298,68 @@ public final class DateTimeAdjusters {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the next day-of-week adjuster, which adjusts the date to be
-     * the next of the specified day-of-week after the specified date.
+     * Returns the next day-of-week adjuster, which adjusts the date to the
+     * first occurrence of the specified day-of-week after the date being adjusted.
      * <p>
      * The ISO calendar system behaves as follows:<br />
      * The input 2011-01-15 (a Saturday) for parameter (MONDAY) will return 2011-01-17 (two days later).<br />
-     * The input 2011-01-15 (a Saturday) for parameter (SATURDAY) will return 2011-01-22 (one week later).
+     * The input 2011-01-15 (a Saturday) for parameter (WEDNESDAY) will return 2011-01-19 (four days later).<br />
+     * The input 2011-01-15 (a Saturday) for parameter (SATURDAY) will return 2011-01-22 (seven days later).
      *
      * @param dayOfWeek  the day-of-week to move the date to, not null
      * @return the next day-of-week adjuster, not null
      */
     public static WithAdjuster next(DayOfWeek dayOfWeek) {
-        Objects.requireNonNull(dayOfWeek, "dayOfWeek");
         return new RelativeDayOfWeek(2, dayOfWeek);
     }
 
     /**
-     * Returns the next or current day-of-week adjuster, which adjusts the
-     * date to be be the next of the specified day-of-week, returning the
-     * input date if the day-of-week matched.
+     * Returns the next-or-same day-of-week adjuster, which adjusts the date to the
+     * first occurrence of the specified day-of-week after the date being adjusted
+     * unless it is already on that day in which case the same object is returned.
      * <p>
      * The ISO calendar system behaves as follows:<br />
      * The input 2011-01-15 (a Saturday) for parameter (MONDAY) will return 2011-01-17 (two days later).<br />
+     * The input 2011-01-15 (a Saturday) for parameter (WEDNESDAY) will return 2011-01-19 (four days later).<br />
      * The input 2011-01-15 (a Saturday) for parameter (SATURDAY) will return 2011-01-15 (same as input).
      *
-     * @param dayOfWeek  the day-of-week to move the date to, not null
-     * @return the next day-of-week adjuster, not null
+     * @param dayOfWeek  the day-of-week to check for or move the date to, not null
+     * @return the next-or-same day-of-week adjuster, not null
      */
-    public static WithAdjuster nextOrCurrent(DayOfWeek dayOfWeek) {
-        Objects.requireNonNull(dayOfWeek, "dayOfWeek");
+    public static WithAdjuster nextOrSame(DayOfWeek dayOfWeek) {
         return new RelativeDayOfWeek(0, dayOfWeek);
     }
 
     /**
-     * Returns the previous day-of-week adjuster, which adjusts the date to be
-     * the previous of the specified day-of-week after the specified date.
+     * Returns the previous day-of-week adjuster, which adjusts the date to the
+     * first occurrence of the specified day-of-week before the date being adjusted.
      * <p>
      * The ISO calendar system behaves as follows:<br />
      * The input 2011-01-15 (a Saturday) for parameter (MONDAY) will return 2011-01-10 (five days earlier).<br />
-     * The input 2011-01-15 (a Saturday) for parameter (SATURDAY) will return 2011-01-08 (one week earlier).
+     * The input 2011-01-15 (a Saturday) for parameter (WEDNESDAY) will return 2011-01-12 (three days earlier).<br />
+     * The input 2011-01-15 (a Saturday) for parameter (SATURDAY) will return 2011-01-08 (seven days earlier).
      *
      * @param dayOfWeek  the day-of-week to move the date to, not null
-     * @return the next day-of-week adjuster, not null
+     * @return the previous day-of-week adjuster, not null
      */
     public static WithAdjuster previous(DayOfWeek dayOfWeek) {
-        Objects.requireNonNull(dayOfWeek, "dayOfWeek");
         return new RelativeDayOfWeek(3, dayOfWeek);
     }
 
     /**
-     * Returns the previous or current day-of-week adjuster, which adjusts the
-     * date to be be the previous of the specified day-of-week, returning the
-     * input date if the day-of-week matched.
+     * Returns the previous-or-same day-of-week adjuster, which adjusts the date to the
+     * first occurrence of the specified day-of-week before the date being adjusted
+     * unless it is already on that day in which case the same object is returned.
      * <p>
      * The ISO calendar system behaves as follows:<br />
      * The input 2011-01-15 (a Saturday) for parameter (MONDAY) will return 2011-01-10 (five days earlier).<br />
+     * The input 2011-01-15 (a Saturday) for parameter (WEDNESDAY) will return 2011-01-12 (three days earlier).<br />
      * The input 2011-01-15 (a Saturday) for parameter (SATURDAY) will return 2011-01-15 (same as input).
      *
-     * @param dayOfWeek  the day-of-week to move the date to, not null
-     * @return the next day-of-week adjuster, not null
+     * @param dayOfWeek  the day-of-week to check for or move the date to, not null
+     * @return the previous-or-same day-of-week adjuster, not null
      */
-    public static WithAdjuster previousOrCurrent(DayOfWeek dayOfWeek) {
-        Objects.requireNonNull(dayOfWeek, "dayOfWeek");
+    public static WithAdjuster previousOrSame(DayOfWeek dayOfWeek) {
         return new RelativeDayOfWeek(1, dayOfWeek);
     }
 
@@ -372,9 +372,10 @@ public final class DateTimeAdjusters {
         /** The day-of-week value, from 1 to 7. */
         private final int dowValue;
 
-        private RelativeDayOfWeek(int relative, DayOfWeek dow) {
+        private RelativeDayOfWeek(int relative, DayOfWeek dayOfWeek) {
+            Objects.requireNonNull(dayOfWeek, "dayOfWeek");
             this.relative = relative;
-            this.dowValue = dow.getValue();
+            this.dowValue = dayOfWeek.getValue();
         }
 
         @Override

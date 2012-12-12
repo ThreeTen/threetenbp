@@ -31,8 +31,8 @@
  */
 package javax.time.zone;
 
-import static javax.time.calendrical.DateTimeAdjusters.nextOrCurrent;
-import static javax.time.calendrical.DateTimeAdjusters.previousOrCurrent;
+import static javax.time.calendrical.DateTimeAdjusters.nextOrSame;
+import static javax.time.calendrical.DateTimeAdjusters.previousOrSame;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -400,12 +400,12 @@ public final class ZoneOffsetTransitionRule implements Serializable {
         if (dom < 0) {
             date = LocalDate.of(year, month, month.length(ISOChrono.INSTANCE.isLeapYear(year)) + 1 + dom);
             if (dow != null) {
-                date = date.with(previousOrCurrent(dow));
+                date = date.with(previousOrSame(dow));
             }
         } else {
             date = LocalDate.of(year, month, dom);
             if (dow != null) {
-                date = date.with(nextOrCurrent(dow));
+                date = date.with(nextOrSame(dow));
             }
         }
         if (timeEndOfDay) {

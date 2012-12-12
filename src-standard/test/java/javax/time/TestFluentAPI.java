@@ -44,7 +44,7 @@ import static javax.time.calendrical.DateTimeAdjusters.dayOfWeekInMonth;
 import static javax.time.calendrical.DateTimeAdjusters.firstInMonth;
 import static javax.time.calendrical.DateTimeAdjusters.lastDayOfMonth;
 import static javax.time.calendrical.DateTimeAdjusters.next;
-import static javax.time.calendrical.DateTimeAdjusters.nextOrCurrent;
+import static javax.time.calendrical.DateTimeAdjusters.nextOrSame;
 
 import javax.time.zone.ZoneOffsetTransition;
 
@@ -73,7 +73,7 @@ public class TestFluentAPI {
 
         date = date.with(lastDayOfMonth());
         date = date.with(next(MONDAY));
-        date = date.with(nextOrCurrent(MONDAY));
+        date = date.with(nextOrSame(MONDAY));
         date = date.with(dayOfWeekInMonth(2, TUESDAY));
         date = date.with(firstInMonth(MONDAY));
         date = date.with(Year.of(2009));

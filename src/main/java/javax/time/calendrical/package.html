@@ -86,9 +86,10 @@ such as the "last day of the month", or "next Wednesday".
 These are modeled as functions that adjust a base date-time.
 The functions implement {@link javax.time.calendrical.DateTime.WithAdjuster} and operate
 on {@link javax.time.calendrical.DateTime}.
-A set of common functions are provided in {@link javax.time.calendrical.DateTimeAdjusters},
-for example, to find the next date time having a requested
-{@link javax.time.calendrical.DateTimeAdjusters#nextOrCurrent(DayOfWeek)}.
+A set of common functions are provided in {@link javax.time.calendrical.DateTimeAdjusters}.
+For example, to find the first occurrence of a day-of-week after a given date, use
+{@link javax.time.calendrical.DateTimeAdjusters#next(DayOfWeek)}, such as
+{@code date.with(next(MONDAY))}.
 </p>
 
 <h4>Weeks</h4>
@@ -96,5 +97,10 @@ for example, to find the next date time having a requested
 Different locales have different definitions of the week.
 For example, in Europe the week typically starts on a Monday, while in the US it starts on a Sunday.
 The {@link javax.time.calendrical.WeekDefinition} class models this distinction.
+</p>
+<p>
+The ISO calendar system defines an additional week-based division of years.
+This defines a year based on whole Monday to Monday weeks.
+This is modeled in {@link javax.time.calendrical.ISOWeeks}.
 </p>
 </body>

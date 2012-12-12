@@ -59,7 +59,7 @@ import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
 import static javax.time.calendrical.ChronoField.SECOND_OF_DAY;
 import static javax.time.calendrical.ChronoField.SECOND_OF_MINUTE;
 import static javax.time.calendrical.ChronoField.YEAR;
-import static javax.time.calendrical.DateTimeAdjusters.nextOrCurrent;
+import static javax.time.calendrical.DateTimeAdjusters.nextOrSame;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -438,7 +438,7 @@ public final class DateTimeBuilder
                         int moy = Jdk8Methods.safeToInt(standardFields.remove(MONTH_OF_YEAR));
                         int aw = Jdk8Methods.safeToInt(standardFields.remove(ALIGNED_WEEK_OF_MONTH));
                         int dow = Jdk8Methods.safeToInt(standardFields.remove(DAY_OF_WEEK));
-                        checkDate(LocalDate.of(y, moy, 1).plusDays((aw - 1) * 7).with(nextOrCurrent(DayOfWeek.of(dow))));
+                        checkDate(LocalDate.of(y, moy, 1).plusDays((aw - 1) * 7).with(nextOrSame(DayOfWeek.of(dow))));
                         return;
                     }
                 }
@@ -461,7 +461,7 @@ public final class DateTimeBuilder
                     int y = Jdk8Methods.safeToInt(standardFields.remove(YEAR));
                     int aw = Jdk8Methods.safeToInt(standardFields.remove(ALIGNED_WEEK_OF_YEAR));
                     int dow = Jdk8Methods.safeToInt(standardFields.remove(DAY_OF_WEEK));
-                    checkDate(LocalDate.of(y, 1, 1).plusDays((aw - 1) * 7).with(nextOrCurrent(DayOfWeek.of(dow))));
+                    checkDate(LocalDate.of(y, 1, 1).plusDays((aw - 1) * 7).with(nextOrSame(DayOfWeek.of(dow))));
                     return;
                 }
             }

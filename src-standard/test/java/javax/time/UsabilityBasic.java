@@ -32,7 +32,7 @@
 package javax.time;
 
 import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
-import static javax.time.calendrical.DateTimeAdjusters.previousOrCurrent;
+import static javax.time.calendrical.DateTimeAdjusters.previousOrSame;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -84,7 +84,7 @@ public final class UsabilityBasic {
         System.out.println(date);
 
         int month = date.getMonth().getValue();
-        date = date.with(previousOrCurrent(DayOfWeek.MONDAY));
+        date = date.with(previousOrSame(DayOfWeek.MONDAY));
         System.out.println(date);
 
         while (date.getMonth().getValue() <= month) {

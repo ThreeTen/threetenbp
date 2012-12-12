@@ -440,26 +440,26 @@ public class TCKDateTimeAdjusters {
     }
 
     //-----------------------------------------------------------------------
-    // nextOrCurrent()
+    // nextOrSame()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void factory_nextOrCurrent() {
-        assertNotNull(DateTimeAdjusters.nextOrCurrent(MONDAY));
+    public void factory_nextOrSame() {
+        assertNotNull(DateTimeAdjusters.nextOrSame(MONDAY));
     }
 
     @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
-    public void factory_nextOrCurrent_nullDayOfWeek() {
-        DateTimeAdjusters.nextOrCurrent(null);
+    public void factory_nextOrSame_nullDayOfWeek() {
+        DateTimeAdjusters.nextOrSame(null);
     }
 
     @Test(groups={"tck"})
-    public void test_nextOrCurrent() {
+    public void test_nextOrSame() {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(false); i++) {
                 LocalDate date = date(2007, month, i);
 
                 for (DayOfWeek dow : DayOfWeek.values()) {
-                    LocalDate test = (LocalDate) DateTimeAdjusters.nextOrCurrent(dow).doWithAdjustment(date);
+                    LocalDate test = (LocalDate) DateTimeAdjusters.nextOrSame(dow).doWithAdjustment(date);
 
                     assertSame(test.getDayOfWeek(), dow);
 
@@ -520,26 +520,26 @@ public class TCKDateTimeAdjusters {
     }
 
     //-----------------------------------------------------------------------
-    // previousOrCurrent()
+    // previousOrSame()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void factory_previousOrCurrent() {
-        assertNotNull(DateTimeAdjusters.previousOrCurrent(MONDAY));
+    public void factory_previousOrSame() {
+        assertNotNull(DateTimeAdjusters.previousOrSame(MONDAY));
     }
 
     @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
-    public void factory_previousOrCurrent_nullDayOfWeek() {
-        DateTimeAdjusters.previousOrCurrent(null);
+    public void factory_previousOrSame_nullDayOfWeek() {
+        DateTimeAdjusters.previousOrSame(null);
     }
 
     @Test(groups={"tck"})
-    public void test_previousOrCurrent() {
+    public void test_previousOrSame() {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(false); i++) {
                 LocalDate date = date(2007, month, i);
 
                 for (DayOfWeek dow : DayOfWeek.values()) {
-                    LocalDate test = (LocalDate) DateTimeAdjusters.previousOrCurrent(dow).doWithAdjustment(date);
+                    LocalDate test = (LocalDate) DateTimeAdjusters.previousOrSame(dow).doWithAdjustment(date);
 
                     assertSame(test.getDayOfWeek(), dow);
 

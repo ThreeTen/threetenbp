@@ -1049,12 +1049,12 @@ final class TzdbZoneRulesCompiler {
                 dayOfMonth = month.length(Year.isLeap(year));
                 date = LocalDate.of(year, month, dayOfMonth);
                 if (dayOfWeek != null) {
-                    date = date.with(DateTimeAdjusters.previousOrCurrent(dayOfWeek));
+                    date = date.with(DateTimeAdjusters.previousOrSame(dayOfWeek));
                 }
             } else {
                 date = LocalDate.of(year, month, dayOfMonth);
                 if (dayOfWeek != null) {
-                    date = date.with(DateTimeAdjusters.nextOrCurrent(dayOfWeek));
+                    date = date.with(DateTimeAdjusters.nextOrSame(dayOfWeek));
                 }
             }
             date = deduplicate(date);

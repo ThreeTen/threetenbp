@@ -32,8 +32,8 @@
 package javax.time.zone;
 
 import static javax.time.calendrical.ChronoField.YEAR;
-import static javax.time.calendrical.DateTimeAdjusters.nextOrCurrent;
-import static javax.time.calendrical.DateTimeAdjusters.previousOrCurrent;
+import static javax.time.calendrical.DateTimeAdjusters.nextOrSame;
+import static javax.time.calendrical.DateTimeAdjusters.previousOrSame;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -729,12 +729,12 @@ class ZoneRulesBuilder {
                 int monthLen = month.length(ISOChrono.INSTANCE.isLeapYear(year));
                 date = LocalDate.of(year, month, monthLen + 1 + dayOfMonthIndicator);
                 if (dayOfWeek != null) {
-                    date = date.with(previousOrCurrent(dayOfWeek));
+                    date = date.with(previousOrSame(dayOfWeek));
                 }
             } else {
                 date = LocalDate.of(year, month, dayOfMonthIndicator);
                 if (dayOfWeek != null) {
-                    date = date.with(nextOrCurrent(dayOfWeek));
+                    date = date.with(nextOrSame(dayOfWeek));
                 }
             }
             if (timeEndOfDay) {
