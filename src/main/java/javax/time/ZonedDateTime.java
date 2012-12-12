@@ -696,9 +696,8 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this date-time with the zone ID set to the offset.
      * <p>
-     * This returns a zoned date-time where the zone ID is the same as the current
-     * result of {@link #getOffset()}. The local date-time, offset and
-     * instant of the result will be the same as in this date-time.
+     * This returns a zone date-time where the zone ID is the same as {@link #getOffset()}.
+     * The local date-time, offset and instant of the result will be the same as in this date-time.
      * <p>
      * Setting the date-time to a fixed single offset means that any future
      * calculations, such as addition or subtraction, have no complex edge cases

@@ -2099,7 +2099,7 @@ public final class DateTimeFormatterBuilder {
          * Converts a value for this field to a fraction between 0 and 1.
          * <p>
          * The fractional value is between 0 (inclusive) and 1 (exclusive).
-         * It can only be returned if the {@link #range() value range} is fixed.
+         * It can only be returned if the {@link DateTimeField#range() value range} is fixed.
          * The fraction is obtained by calculation from the field range using 9 decimal
          * places and a rounding mode of {@link RoundingMode#FLOOR FLOOR}.
          * The calculation is inaccurate if the values do not run continuously from smallest to largest.
@@ -2129,7 +2129,7 @@ public final class DateTimeFormatterBuilder {
          * Converts a fraction from 0 to 1 for this field to a value.
          * <p>
          * The fractional value must be between 0 (inclusive) and 1 (exclusive).
-         * It can only be returned if the {@link #range() value range} is fixed.
+         * It can only be returned if the {@link DateTimeField#range() value range} is fixed.
          * The value is obtained by calculation from the field range and a rounding
          * mode of {@link RoundingMode#FLOOR FLOOR}.
          * The calculation is inaccurate if the values do not run continuously from smallest to largest.

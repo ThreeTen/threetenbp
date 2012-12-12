@@ -77,9 +77,14 @@
     <p>
         The {@link javax.time.chrono} package contains the calendar neutral API.
         This is intended for use by applications that need to use localized calendars.
-        Support is provided for the Hijrah, Japanese, Minguo, and Buddhist Calendars.
+        Ensure that you read the class documentation of {@link javax.time.chrono.ChronoLocalDate}
+        before using non-ISO calendar systems.
     </p>
-
+    <p>
+        The {@link javax.time.chrono.global} package contains alternate calendar systems.
+        This is intended for use by applications that need to use localized calendars.
+        Support is provided for the Hijrah, Japanese, Minguo, and Thai Buddhist Calendars.
+    </p>
     <h4>Design notes</h4>
     <p>
         Where possible, the API avoids the use of null.
@@ -122,12 +127,21 @@
     </p>
     <p>
         Multiple calendar systems is an awkward addition to the design challenges.
-        The approach taken is to keep calendar systems out of the main classes to limit complexity.
-        This is based on the principal that most users want the standard ISO calendar system.
-        In addition, those wanting a historically accurate Gregorian-Julian calendar system need to think
-        carefully about the cutover date between the two systems, which varied by location.
-        It was also noted that applications that require general interoperation between multiple calendar systems
-        typically need to be written in a very different way to those only using the ISO calendar.
+        The first principal is that most users want the standard ISO calendar system.
+        As such, the main classes are ISO-only. The second principal is that most of those that want a
+        non-ISO calendar system want it for user interaction, thus it is a UI localization issue.
+        As such, date and time objects should be held as ISO objects in the data model and persistent
+        storage, only being converted to and from a local calendar for display.
+        The calendar system would be stored separately in the user preferences.
+    </p>
+    <p>
+        There are, however, some limited use cases where users believe they need to store and use
+        dates in arbitrary calendar systems throughout the application.
+        This is supported by {@link javax.time.chrono.ChronoLocalDate}, however it is vital to read
+        all the associated warnings in the Javadoc of that interface before using it.
+        In summary, applications that require general interoperation between multiple calendar systems
+        typically need to be written in a very different way to those only using the ISO calendar,
+        thus most applications should just use ISO and avoid {@code ChronoLocalDate}.
     </p>
     <p>
         Throughout all of this, a key goal was to allow date-time fields and units to be defined by applications.

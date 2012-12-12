@@ -326,6 +326,7 @@ public final class MonthDay
     /**
      * Returns a copy of this {@code MonthDay} with the month-of-year altered.
      * <p>
+     * This returns a month-day with the specified month.
      * If the day-of-month is invalid for the specified month, the day will
      * be adjusted to the last valid day-of-month.
      * <p>
@@ -342,6 +343,7 @@ public final class MonthDay
     /**
     * Returns a copy of this {@code MonthDay} with the month-of-year altered.
     * <p>
+    * This returns a month-day with the specified month.
     * If the day-of-month is invalid for the specified month, the day will
     * be adjusted to the last valid day-of-month.
     * <p>
@@ -362,8 +364,8 @@ public final class MonthDay
     /**
      * Returns a copy of this {@code MonthDay} with the day-of-month altered.
      * <p>
-     * If the day-of-month is invalid for the current month, an exception
-     * will be thrown.
+     * This returns a month-day with the specified day-of-month.
+     * If the day-of-month is invalid for the month, an exception is thrown
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
