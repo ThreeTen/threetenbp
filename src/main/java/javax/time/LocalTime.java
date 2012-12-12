@@ -692,6 +692,41 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
+     * Returns a copy of this {@code LocalTime} with the time truncated.
+     * <p>
+     * Truncating the time returns a copy of the original time with fields
+     * smaller than the specified unit set to zero.
+     * For example, truncating with the {@link ChronoUnit#MINUTES minutes} unit
+     * will set the second-of-minute and nano-of-second field to zero.
+     * <p>
+     * Not all units are accepted. The {@link ChronoUnit#DAYS days} unit and time
+     * units with an exact duration can be used, other units throw an exception.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param unit  the unit to truncate to, not null
+     * @return a {@code LocalTime} based on this time with the time truncated, not null
+     * @throws DateTimeException if unable to truncate
+     */
+    public LocalTime truncatedTo(PeriodUnit unit) {
+        if (unit == ChronoUnit.NANOS) {
+            return this;
+        } else if (unit == ChronoUnit.DAYS) {
+            return MIDNIGHT;
+        } else if (unit.isDurationEstimated()) {
+            throw new DateTimeException("Unit must not have an estimated duration");
+        }
+        long nod = toNanoOfDay();
+        long dur = unit.getDuration().toNanos();
+        if (dur >= NANOS_PER_DAY) {
+            throw new DateTimeException("Unit must not be a date unit");
+        }
+        nod = (nod / dur) * dur;
+        return ofNanoOfDay(nod);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Returns a copy of this date with the specified period added.
      * <p>
      * This method returns a new time based on this time with the specified period added.

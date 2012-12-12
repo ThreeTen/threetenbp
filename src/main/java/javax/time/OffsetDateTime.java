@@ -889,6 +889,8 @@ public final class OffsetDateTime
     /**
      * Returns a copy of this {@code OffsetDateTime} with the hour-of-day value altered.
      * <p>
+     * The offset does not affect the calculation and will be the same in the result.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param hour  the hour-of-day to set in the result, from 0 to 23
@@ -901,6 +903,8 @@ public final class OffsetDateTime
 
     /**
      * Returns a copy of this {@code OffsetDateTime} with the minute-of-hour value altered.
+     * <p>
+     * The offset does not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -915,6 +919,8 @@ public final class OffsetDateTime
     /**
      * Returns a copy of this {@code OffsetDateTime} with the second-of-minute value altered.
      * <p>
+     * The offset does not affect the calculation and will be the same in the result.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param second  the second-of-minute to set in the result, from 0 to 59
@@ -928,6 +934,8 @@ public final class OffsetDateTime
     /**
      * Returns a copy of this {@code OffsetDateTime} with the nano-of-second value altered.
      * <p>
+     * The offset does not affect the calculation and will be the same in the result.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanoOfSecond  the nano-of-second to set in the result, from 0 to 999,999,999
@@ -936,6 +944,30 @@ public final class OffsetDateTime
      */
     public OffsetDateTime withNano(int nanoOfSecond) {
         return with(dateTime.withNano(nanoOfSecond), offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this {@code OffsetDateTime} with the time truncated.
+     * <p>
+     * Truncation returns a copy of the original date-time with fields
+     * smaller than the specified unit set to zero.
+     * For example, truncating with the {@link ChronoUnit#MINUTES minutes} unit
+     * will set the second-of-minute and nano-of-second field to zero.
+     * <p>
+     * Not all units are accepted. The {@link ChronoUnit#DAYS days} unit and time
+     * units with an exact duration can be used, other units throw an exception.
+     * <p>
+     * The offset does not affect the calculation and will be the same in the result.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param unit  the unit to truncate to, not null
+     * @return an {@code OffsetDateTime} based on this date-time with the time truncated, not null
+     * @throws DateTimeException if unable to truncate
+     */
+    public OffsetDateTime truncatedTo(PeriodUnit unit) {
+        return with(dateTime.truncatedTo(unit), offset);
     }
 
     //-----------------------------------------------------------------------

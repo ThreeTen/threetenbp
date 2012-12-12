@@ -788,6 +788,28 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
+     * Returns a copy of this {@code LocalDateTime} with the time truncated.
+     * <p>
+     * Truncation returns a copy of the original date-time with fields
+     * smaller than the specified unit set to zero.
+     * For example, truncating with the {@link ChronoUnit#MINUTES minutes} unit
+     * will set the second-of-minute and nano-of-second field to zero.
+     * <p>
+     * Not all units are accepted. The {@link ChronoUnit#DAYS days} unit and time
+     * units with an exact duration can be used, other units throw an exception.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param unit  the unit to truncate to, not null
+     * @return a {@code LocalDateTime} based on this date-time with the time truncated, not null
+     * @throws DateTimeException if unable to truncate
+     */
+    public LocalDateTime truncatedTo(PeriodUnit unit) {
+        return with(date, time.truncatedTo(unit));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Returns a copy of this date-time with the specified period added.
      * <p>
      * This method returns a new date-time based on this time with the specified period added.
