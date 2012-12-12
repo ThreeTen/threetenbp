@@ -1476,6 +1476,13 @@ public class TestPeriod {
             {Period.of(1, HOURS), "PT1H"},
             {Period.of(1, MINUTES), "PT1M"},
             {Period.of(1, SECONDS), "PT1S"},
+            {Period.of(12, SECONDS), "PT12S"},
+            {Period.of(123, SECONDS), "PT2M3S"},
+            {Period.of(1234, SECONDS), "PT20M34S"},
+            {Period.of(-1, SECONDS), "PT-1S"},
+            {Period.of(-12, SECONDS), "PT-12S"},
+            {Period.of(-123, SECONDS), "PT-2M-3S"},
+            {Period.of(-1234, SECONDS), "PT-20M-34S"},
             {Period.of(1, 2, 3, 4, 5, 6), "P1Y2M3DT4H5M6S"},
             {Period.of(1, 2, 3, 4, 5, 6, 700000000), "P1Y2M3DT4H5M6.7S"},
             {Period.of(0, 0, 0, 0, 0, 0, 100000000), "PT0.1S"},
@@ -1495,6 +1502,11 @@ public class TestPeriod {
             {Period.of(0, 0, 0, 0, 0, 0, 1), "PT0.000000001S"},
             {Period.of(0, 0, 0, 0, 0, 0, -1), "PT-0.000000001S"},
         };
+    }
+
+    @Test(groups="tck", dataProvider="toStringAndParse")
+    public void test_toString(Period input, String expected) {
+        assertEquals(input.toString(), expected);
     }
 
     //-----------------------------------------------------------------------

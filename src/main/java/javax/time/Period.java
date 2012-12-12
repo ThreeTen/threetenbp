@@ -1112,19 +1112,21 @@ public final class Period
                 int nanoPart = getNanos();
                 int secsNanosOr = secondPart | nanoPart;
                 if (secsNanosOr != 0) {  // if either non-zero
-                    if ((secsNanosOr | Integer.MIN_VALUE) != 0) {  // if either less than zero
+                    if ((secsNanosOr & Integer.MIN_VALUE) != 0) {  // if either less than zero
                         buf.append('-');
                         secondPart = Math.abs(secondPart);
                         nanoPart = Math.abs(nanoPart);
                     }
                     buf.append(secondPart);
-                    int dotPos = buf.length();
-                    nanoPart += 1000_000_000;
-                    while (nanoPart % 10 == 0) {
-                        nanoPart /= 10;
+                    if (nanoPart != 0) {
+                        int dotPos = buf.length();
+                        nanoPart += 1000_000_000;
+                        while (nanoPart % 10 == 0) {
+                            nanoPart /= 10;
+                        }
+                        buf.append(nanoPart);
+                        buf.setCharAt(dotPos, '.');
                     }
-                    buf.append(nanoPart);
-                    buf.setCharAt(dotPos, '.');
                     buf.append('S');
                 }
             }
