@@ -64,7 +64,7 @@ import org.threeten.bp.zone.ZoneOffsetTransition;
 /**
  * Test the fluency of the whole API.
  */
-public class TestFluentAPI {
+public class FluentAPIChecker {
 
     @SuppressWarnings("unused")
     public static void main(String[] args) {

@@ -55,7 +55,7 @@ import org.threeten.bp.calendrical.DateTimeAccessor;
  * Test Class loading.
  * Use "-verbose:class".
  */
-public class ClassLoaderTest {
+public class ClassLoaderChecker {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static void main(String[] args) {
