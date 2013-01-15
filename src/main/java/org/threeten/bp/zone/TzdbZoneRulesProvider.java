@@ -128,7 +128,7 @@ public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
         boolean updated = false;
         URL url = null;
         try {
-            Enumeration<URL> en = classLoader.getResources("javax/time/zone/TZDB.dat");
+            Enumeration<URL> en = classLoader.getResources("org/threeten/bp/TZDB.dat");
             while (en.hasMoreElements()) {
                 url = en.nextElement();
                 if (loadedUrls.add(url.toExternalForm())) {

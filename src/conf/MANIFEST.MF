@@ -1,0 +1,22 @@
+Package: org.threeten.bp
+Extension-Name: org.threeten.bp
+Specification-Title: ThreeTen backport
+Specification-Vendor: ThreeTen.org
+Specification-Version: 0.7
+Implementation-Vendor: Joda.org
+Implementation-Title: org.threeten.bp
+Implementation-Version: 0.7
+Implementation-Vendor-Id: org.threeten
+Bundle-ManifestVersion: 2
+Bundle-Vendor: ThreeTen.org
+Bundle-Name: ThreeTen-backport
+Bundle-SymbolicName: org.threeten.bp
+Bundle-Version: 0.7
+Export-Package: org.threeten.bp,
+ org.threeten.bp.calendrical,
+ org.threeten.bp.chrono,
+ org.threeten.bp.chrono.global,
+ org.threeten.bp.format,
+ org.threeten.bp.zone
+Bundle-License: BSD 3-clause
+Bundle-DocURL: https://github.com/ThreeTen/threetenbp

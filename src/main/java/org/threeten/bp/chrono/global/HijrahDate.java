@@ -88,7 +88,7 @@ import org.threeten.bp.jdk8.Jdk8Methods;
  *     1429/11-9999/11:1</pre>
  * The default location of the configuration file is:
  * <pre>
- *   $CLASSPATH/javax/time/i18n</pre>
+ *   $CLASSPATH/org/threeten/bp/chrono</pre>
  * And the default file name is:
  * <pre>
  *   hijrah_deviation.cfg</pre>
@@ -259,7 +259,7 @@ final class HijrahDate
     /**
      * Default path to the config file.
      */
-    private static final String DEFAULT_CONFIG_PATH = "javax" + FILE_SEP + "time" + FILE_SEP + "chrono";
+    private static final String DEFAULT_CONFIG_PATH = "org" + FILE_SEP + "threeten" + FILE_SEP + "bp" + FILE_SEP + "chrono";
     /**
      * Holding the adjusted month days in year. The key is a year (Integer) and
      * the value is the all the month days in year (Integer[]).
@@ -1535,7 +1535,7 @@ final class HijrahDate
      * Return InputStream for deviation configuration file.
      * The default location of the deviation file is:
      * <pre>
-     *   $CLASSPATH/javax/time/i18n
+     *   $CLASSPATH/org/threeten/bp/chrono
      * </pre>
      * And the default file name is:
      * <pre>

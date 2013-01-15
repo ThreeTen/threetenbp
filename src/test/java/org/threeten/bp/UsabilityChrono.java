@@ -124,7 +124,7 @@ public final class UsabilityChrono {
 
 
     /**
-     * Example code used in the ChronoDate and package.html of javax.microedition.chrono.
+     * Example code.
      */
     static void example1() {
         System.out.printf("Available Calendars%n");

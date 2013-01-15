@@ -328,7 +328,7 @@ final class TzdbZoneRulesCompiler {
             Set<String> allRegionIds, Set<ZoneRules> allRules) {
         // this format is not publicly specified
         try {
-            jos.putNextEntry(new ZipEntry("javax/time/zone/TZDB.dat"));
+            jos.putNextEntry(new ZipEntry("org/threeten/bp/TZDB.dat"));
             DataOutputStream out = new DataOutputStream(jos);
 
             // file version
@@ -387,7 +387,7 @@ final class TzdbZoneRulesCompiler {
             JarOutputStream jos, SortedMap<LocalDate, Byte> leapSeconds) {
         // this format is not publicly specified
         try {
-            jos.putNextEntry(new ZipEntry("javax/time/LeapSecondRules.dat"));
+            jos.putNextEntry(new ZipEntry("org/threeten/bp/LeapSecondRules.dat"));
             DataOutputStream out = new DataOutputStream(jos);
 
             // file version
