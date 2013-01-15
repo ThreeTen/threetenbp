@@ -31,13 +31,13 @@
  */
 package org.threeten.bp;
 
-import static javax.time.LocalTime.NANOS_PER_HOUR;
-import static javax.time.LocalTime.NANOS_PER_MINUTE;
-import static javax.time.LocalTime.NANOS_PER_SECOND;
-import static javax.time.LocalTime.SECONDS_PER_DAY;
-import static javax.time.calendrical.ChronoField.NANO_OF_DAY;
-import static javax.time.calendrical.ChronoField.OFFSET_SECONDS;
-import static javax.time.calendrical.ChronoUnit.NANOS;
+import static org.threeten.bp.LocalTime.NANOS_PER_HOUR;
+import static org.threeten.bp.LocalTime.NANOS_PER_MINUTE;
+import static org.threeten.bp.LocalTime.NANOS_PER_SECOND;
+import static org.threeten.bp.LocalTime.SECONDS_PER_DAY;
+import static org.threeten.bp.calendrical.ChronoField.NANO_OF_DAY;
+import static org.threeten.bp.calendrical.ChronoField.OFFSET_SECONDS;
+import static org.threeten.bp.calendrical.ChronoUnit.NANOS;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -45,19 +45,19 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
 
-import javax.time.calendrical.ChronoField;
-import javax.time.calendrical.ChronoUnit;
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTime.WithAdjuster;
-import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.PeriodUnit;
-import javax.time.format.DateTimeFormatter;
-import javax.time.format.DateTimeFormatters;
-import javax.time.format.DateTimeParseException;
-import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
-import javax.time.zone.ZoneRules;
+import org.threeten.bp.calendrical.ChronoField;
+import org.threeten.bp.calendrical.ChronoUnit;
+import org.threeten.bp.calendrical.DateTime;
+import org.threeten.bp.calendrical.DateTime.WithAdjuster;
+import org.threeten.bp.calendrical.DateTimeAccessor;
+import org.threeten.bp.calendrical.DateTimeField;
+import org.threeten.bp.calendrical.DateTimeValueRange;
+import org.threeten.bp.calendrical.PeriodUnit;
+import org.threeten.bp.format.DateTimeFormatter;
+import org.threeten.bp.format.DateTimeFormatters;
+import org.threeten.bp.format.DateTimeParseException;
+import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
+import org.threeten.bp.zone.ZoneRules;
 
 /**
  * A time with an offset from UTC/Greenwich in the ISO-8601 calendar system,

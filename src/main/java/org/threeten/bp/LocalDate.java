@@ -31,18 +31,18 @@
  */
 package org.threeten.bp;
 
-import static javax.time.LocalTime.SECONDS_PER_DAY;
-import static javax.time.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
-import static javax.time.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
-import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_MONTH;
-import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_YEAR;
-import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
-import static javax.time.calendrical.ChronoField.DAY_OF_YEAR;
-import static javax.time.calendrical.ChronoField.EPOCH_DAY;
-import static javax.time.calendrical.ChronoField.EPOCH_MONTH;
-import static javax.time.calendrical.ChronoField.ERA;
-import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
-import static javax.time.calendrical.ChronoField.YEAR;
+import static org.threeten.bp.LocalTime.SECONDS_PER_DAY;
+import static org.threeten.bp.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
+import static org.threeten.bp.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
+import static org.threeten.bp.calendrical.ChronoField.ALIGNED_WEEK_OF_MONTH;
+import static org.threeten.bp.calendrical.ChronoField.ALIGNED_WEEK_OF_YEAR;
+import static org.threeten.bp.calendrical.ChronoField.DAY_OF_MONTH;
+import static org.threeten.bp.calendrical.ChronoField.DAY_OF_YEAR;
+import static org.threeten.bp.calendrical.ChronoField.EPOCH_DAY;
+import static org.threeten.bp.calendrical.ChronoField.EPOCH_MONTH;
+import static org.threeten.bp.calendrical.ChronoField.ERA;
+import static org.threeten.bp.calendrical.ChronoField.MONTH_OF_YEAR;
+import static org.threeten.bp.calendrical.ChronoField.YEAR;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -50,26 +50,26 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
 
-import javax.time.calendrical.ChronoField;
-import javax.time.calendrical.ChronoUnit;
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTime.WithAdjuster;
-import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeAdjusters;
-import javax.time.calendrical.DateTimeBuilder;
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.PeriodUnit;
-import javax.time.chrono.ChronoLocalDate;
-import javax.time.chrono.Era;
-import javax.time.chrono.ISOChrono;
-import javax.time.format.DateTimeFormatter;
-import javax.time.format.DateTimeFormatters;
-import javax.time.format.DateTimeParseException;
-import javax.time.jdk8.DefaultInterfaceChronoLocalDate;
-import javax.time.jdk8.Jdk8Methods;
-import javax.time.zone.ZoneOffsetTransition;
-import javax.time.zone.ZoneRules;
+import org.threeten.bp.calendrical.ChronoField;
+import org.threeten.bp.calendrical.ChronoUnit;
+import org.threeten.bp.calendrical.DateTime;
+import org.threeten.bp.calendrical.DateTime.WithAdjuster;
+import org.threeten.bp.calendrical.DateTimeAccessor;
+import org.threeten.bp.calendrical.DateTimeAdjusters;
+import org.threeten.bp.calendrical.DateTimeBuilder;
+import org.threeten.bp.calendrical.DateTimeField;
+import org.threeten.bp.calendrical.DateTimeValueRange;
+import org.threeten.bp.calendrical.PeriodUnit;
+import org.threeten.bp.chrono.ChronoLocalDate;
+import org.threeten.bp.chrono.Era;
+import org.threeten.bp.chrono.ISOChrono;
+import org.threeten.bp.format.DateTimeFormatter;
+import org.threeten.bp.format.DateTimeFormatters;
+import org.threeten.bp.format.DateTimeParseException;
+import org.threeten.bp.jdk8.DefaultInterfaceChronoLocalDate;
+import org.threeten.bp.jdk8.Jdk8Methods;
+import org.threeten.bp.zone.ZoneOffsetTransition;
+import org.threeten.bp.zone.ZoneRules;
 
 /**
  * A date without a time-zone in the ISO-8601 calendar system,
@@ -344,7 +344,7 @@ public final class LocalDate
      * Obtains an instance of {@code LocalDate} from a text string such as {@code 2007-12-03}.
      * <p>
      * The string must represent a valid date and is parsed using
-     * {@link javax.time.format.DateTimeFormatters#isoLocalDate()}.
+     * {@link org.threeten.bp.format.DateTimeFormatters#isoLocalDate()}.
      *
      * @param text  the text to parse such as "2007-12-03", not null
      * @return the parsed local date, not null
@@ -827,7 +827,7 @@ public final class LocalDate
      * <p>
      * This method returns a new date based on this date with the specified period added.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link javax.time.calendrical.DateTime.PlusAdjuster} interface.
+     * the {@link org.threeten.bp.calendrical.DateTime.PlusAdjuster} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #plus(long, PeriodUnit)}.
      * <p>
@@ -987,7 +987,7 @@ public final class LocalDate
      * <p>
      * This method returns a new date based on this date with the specified period subtracted.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link javax.time.calendrical.DateTime.MinusAdjuster} interface.
+     * the {@link org.threeten.bp.calendrical.DateTime.MinusAdjuster} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #minus(long, PeriodUnit)}.
      * <p>
@@ -1441,7 +1441,7 @@ public final class LocalDate
     //-----------------------------------------------------------------------
     /**
      * Writes the object using a
-     * <a href="../../serialized-form.html#javax.time.Ser">dedicated serialized form</a>.
+     * <a href="../../serialized-form.html#org.threeten.bp.Ser">dedicated serialized form</a>.
      * <pre>
      *  out.writeByte(3);  // identifies this as a LocalDate
      *  out.writeInt(year);

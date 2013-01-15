@@ -31,34 +31,34 @@
  */
 package org.threeten.bp;
 
-import static javax.time.LocalTime.NANOS_PER_DAY;
-import static javax.time.LocalTime.NANOS_PER_HOUR;
-import static javax.time.LocalTime.NANOS_PER_MINUTE;
-import static javax.time.LocalTime.NANOS_PER_SECOND;
-import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
-import static javax.time.calendrical.ChronoField.EPOCH_MONTH;
-import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
-import static javax.time.calendrical.ChronoField.NANO_OF_DAY;
-import static javax.time.calendrical.ChronoField.YEAR;
-import static javax.time.calendrical.ChronoUnit.DAYS;
-import static javax.time.calendrical.ChronoUnit.MONTHS;
-import static javax.time.calendrical.ChronoUnit.NANOS;
-import static javax.time.calendrical.ChronoUnit.YEARS;
+import static org.threeten.bp.LocalTime.NANOS_PER_DAY;
+import static org.threeten.bp.LocalTime.NANOS_PER_HOUR;
+import static org.threeten.bp.LocalTime.NANOS_PER_MINUTE;
+import static org.threeten.bp.LocalTime.NANOS_PER_SECOND;
+import static org.threeten.bp.calendrical.ChronoField.DAY_OF_MONTH;
+import static org.threeten.bp.calendrical.ChronoField.EPOCH_MONTH;
+import static org.threeten.bp.calendrical.ChronoField.MONTH_OF_YEAR;
+import static org.threeten.bp.calendrical.ChronoField.NANO_OF_DAY;
+import static org.threeten.bp.calendrical.ChronoField.YEAR;
+import static org.threeten.bp.calendrical.ChronoUnit.DAYS;
+import static org.threeten.bp.calendrical.ChronoUnit.MONTHS;
+import static org.threeten.bp.calendrical.ChronoUnit.NANOS;
+import static org.threeten.bp.calendrical.ChronoUnit.YEARS;
 
 import java.io.Serializable;
 import java.util.Objects;
 
-import javax.time.calendrical.ChronoField;
-import javax.time.calendrical.ChronoUnit;
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTime.MinusAdjuster;
-import javax.time.calendrical.DateTime.PlusAdjuster;
-import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.PeriodUnit;
-import javax.time.chrono.Chrono;
-import javax.time.format.DateTimeParseException;
-import javax.time.jdk8.Jdk8Methods;
+import org.threeten.bp.calendrical.ChronoField;
+import org.threeten.bp.calendrical.ChronoUnit;
+import org.threeten.bp.calendrical.DateTime;
+import org.threeten.bp.calendrical.DateTime.MinusAdjuster;
+import org.threeten.bp.calendrical.DateTime.PlusAdjuster;
+import org.threeten.bp.calendrical.DateTimeAccessor;
+import org.threeten.bp.calendrical.DateTimeValueRange;
+import org.threeten.bp.calendrical.PeriodUnit;
+import org.threeten.bp.chrono.Chrono;
+import org.threeten.bp.format.DateTimeParseException;
+import org.threeten.bp.jdk8.Jdk8Methods;
 
 /**
  * An immutable period consisting of the most common units, such as '3 Months, 4 Days and 7 Hours'.

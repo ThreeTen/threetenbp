@@ -31,25 +31,25 @@
  */
 package org.threeten.bp.calendrical;
 
-import static javax.time.calendrical.ChronoUnit.DAYS;
-import static javax.time.calendrical.ChronoUnit.ERAS;
-import static javax.time.calendrical.ChronoUnit.FOREVER;
-import static javax.time.calendrical.ChronoUnit.HALF_DAYS;
-import static javax.time.calendrical.ChronoUnit.HOURS;
-import static javax.time.calendrical.ChronoUnit.MICROS;
-import static javax.time.calendrical.ChronoUnit.MILLIS;
-import static javax.time.calendrical.ChronoUnit.MINUTES;
-import static javax.time.calendrical.ChronoUnit.MONTHS;
-import static javax.time.calendrical.ChronoUnit.NANOS;
-import static javax.time.calendrical.ChronoUnit.SECONDS;
-import static javax.time.calendrical.ChronoUnit.WEEKS;
-import static javax.time.calendrical.ChronoUnit.YEARS;
+import static org.threeten.bp.calendrical.ChronoUnit.DAYS;
+import static org.threeten.bp.calendrical.ChronoUnit.ERAS;
+import static org.threeten.bp.calendrical.ChronoUnit.FOREVER;
+import static org.threeten.bp.calendrical.ChronoUnit.HALF_DAYS;
+import static org.threeten.bp.calendrical.ChronoUnit.HOURS;
+import static org.threeten.bp.calendrical.ChronoUnit.MICROS;
+import static org.threeten.bp.calendrical.ChronoUnit.MILLIS;
+import static org.threeten.bp.calendrical.ChronoUnit.MINUTES;
+import static org.threeten.bp.calendrical.ChronoUnit.MONTHS;
+import static org.threeten.bp.calendrical.ChronoUnit.NANOS;
+import static org.threeten.bp.calendrical.ChronoUnit.SECONDS;
+import static org.threeten.bp.calendrical.ChronoUnit.WEEKS;
+import static org.threeten.bp.calendrical.ChronoUnit.YEARS;
 
-import javax.time.DayOfWeek;
-import javax.time.Instant;
-import javax.time.LocalDate;
-import javax.time.ZoneOffset;
-import javax.time.chrono.ChronoLocalDate;
+import org.threeten.bp.DayOfWeek;
+import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.ZoneOffset;
+import org.threeten.bp.chrono.ChronoLocalDate;
 
 /**
  * A standard set of fields.

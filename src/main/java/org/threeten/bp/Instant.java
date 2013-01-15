@@ -31,14 +31,14 @@
  */
 package org.threeten.bp;
 
-import static javax.time.LocalTime.SECONDS_PER_DAY;
-import static javax.time.LocalTime.SECONDS_PER_HOUR;
-import static javax.time.LocalTime.SECONDS_PER_MINUTE;
-import static javax.time.calendrical.ChronoField.INSTANT_SECONDS;
-import static javax.time.calendrical.ChronoField.MICRO_OF_SECOND;
-import static javax.time.calendrical.ChronoField.MILLI_OF_SECOND;
-import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
-import static javax.time.calendrical.ChronoUnit.NANOS;
+import static org.threeten.bp.LocalTime.SECONDS_PER_DAY;
+import static org.threeten.bp.LocalTime.SECONDS_PER_HOUR;
+import static org.threeten.bp.LocalTime.SECONDS_PER_MINUTE;
+import static org.threeten.bp.calendrical.ChronoField.INSTANT_SECONDS;
+import static org.threeten.bp.calendrical.ChronoField.MICRO_OF_SECOND;
+import static org.threeten.bp.calendrical.ChronoField.MILLI_OF_SECOND;
+import static org.threeten.bp.calendrical.ChronoField.NANO_OF_SECOND;
+import static org.threeten.bp.calendrical.ChronoUnit.NANOS;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -46,17 +46,17 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
 
-import javax.time.calendrical.ChronoField;
-import javax.time.calendrical.ChronoUnit;
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTime.WithAdjuster;
-import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.PeriodUnit;
-import javax.time.format.DateTimeFormatters;
-import javax.time.format.DateTimeParseException;
-import javax.time.jdk8.DefaultInterfaceDateTimeAccessor;
-import javax.time.jdk8.Jdk8Methods;
+import org.threeten.bp.calendrical.ChronoField;
+import org.threeten.bp.calendrical.ChronoUnit;
+import org.threeten.bp.calendrical.DateTime;
+import org.threeten.bp.calendrical.DateTime.WithAdjuster;
+import org.threeten.bp.calendrical.DateTimeAccessor;
+import org.threeten.bp.calendrical.DateTimeField;
+import org.threeten.bp.calendrical.PeriodUnit;
+import org.threeten.bp.format.DateTimeFormatters;
+import org.threeten.bp.format.DateTimeParseException;
+import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
+import org.threeten.bp.jdk8.Jdk8Methods;
 
 /**
  * An instantaneous point on the time-line.
@@ -715,7 +715,7 @@ public final class Instant
     // -----------------------------------------------------------------------
     /**
      * Writes the object using a
-     * <a href="../../serialized-form.html#javax.time.Ser">dedicated serialized form</a>.
+     * <a href="../../serialized-form.html#org.threeten.bp.Ser">dedicated serialized form</a>.
      * <pre>
      *  out.writeByte(2);  // identifies this as an Instant
      *  out.writeLong(seconds);

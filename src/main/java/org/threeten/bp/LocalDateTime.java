@@ -31,15 +31,15 @@
  */
 package org.threeten.bp;
 
-import static javax.time.LocalTime.HOURS_PER_DAY;
-import static javax.time.LocalTime.MICROS_PER_DAY;
-import static javax.time.LocalTime.MILLIS_PER_DAY;
-import static javax.time.LocalTime.MINUTES_PER_DAY;
-import static javax.time.LocalTime.NANOS_PER_DAY;
-import static javax.time.LocalTime.NANOS_PER_HOUR;
-import static javax.time.LocalTime.NANOS_PER_MINUTE;
-import static javax.time.LocalTime.NANOS_PER_SECOND;
-import static javax.time.LocalTime.SECONDS_PER_DAY;
+import static org.threeten.bp.LocalTime.HOURS_PER_DAY;
+import static org.threeten.bp.LocalTime.MICROS_PER_DAY;
+import static org.threeten.bp.LocalTime.MILLIS_PER_DAY;
+import static org.threeten.bp.LocalTime.MINUTES_PER_DAY;
+import static org.threeten.bp.LocalTime.NANOS_PER_DAY;
+import static org.threeten.bp.LocalTime.NANOS_PER_HOUR;
+import static org.threeten.bp.LocalTime.NANOS_PER_MINUTE;
+import static org.threeten.bp.LocalTime.NANOS_PER_SECOND;
+import static org.threeten.bp.LocalTime.SECONDS_PER_DAY;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -47,23 +47,23 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
 
-import javax.time.calendrical.ChronoField;
-import javax.time.calendrical.ChronoUnit;
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTime.WithAdjuster;
-import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.DateTimeAdjusters;
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.PeriodUnit;
-import javax.time.chrono.ChronoLocalDateTime;
-import javax.time.chrono.ISOChrono;
-import javax.time.format.DateTimeFormatter;
-import javax.time.format.DateTimeFormatters;
-import javax.time.format.DateTimeParseException;
-import javax.time.jdk8.DefaultInterfaceChronoLocalDateTime;
-import javax.time.jdk8.Jdk8Methods;
-import javax.time.zone.ZoneRules;
+import org.threeten.bp.calendrical.ChronoField;
+import org.threeten.bp.calendrical.ChronoUnit;
+import org.threeten.bp.calendrical.DateTime;
+import org.threeten.bp.calendrical.DateTime.WithAdjuster;
+import org.threeten.bp.calendrical.DateTimeAccessor;
+import org.threeten.bp.calendrical.DateTimeAdjusters;
+import org.threeten.bp.calendrical.DateTimeField;
+import org.threeten.bp.calendrical.DateTimeValueRange;
+import org.threeten.bp.calendrical.PeriodUnit;
+import org.threeten.bp.chrono.ChronoLocalDateTime;
+import org.threeten.bp.chrono.ISOChrono;
+import org.threeten.bp.format.DateTimeFormatter;
+import org.threeten.bp.format.DateTimeFormatters;
+import org.threeten.bp.format.DateTimeParseException;
+import org.threeten.bp.jdk8.DefaultInterfaceChronoLocalDateTime;
+import org.threeten.bp.jdk8.Jdk8Methods;
+import org.threeten.bp.zone.ZoneRules;
 
 /**
  * A date-time without a time-zone in the ISO-8601 calendar system,
@@ -1034,7 +1034,7 @@ public final class LocalDateTime
      * <p>
      * This method returns a new date-time based on this time with the specified period subtracted.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link javax.time.calendrical.DateTime.MinusAdjuster} interface.
+     * the {@link org.threeten.bp.calendrical.DateTime.MinusAdjuster} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #minus(long, PeriodUnit)}.
      * <p>
@@ -1439,7 +1439,7 @@ public final class LocalDateTime
     //-----------------------------------------------------------------------
     /**
      * Writes the object using a
-     * <a href="../../serialized-form.html#javax.time.Ser">dedicated serialized form</a>.
+     * <a href="../../serialized-form.html#org.threeten.bp.Ser">dedicated serialized form</a>.
      * <pre>
      *  out.writeByte(4);  // identifies this as a LocalDateTime
      *  out.writeInt(year);

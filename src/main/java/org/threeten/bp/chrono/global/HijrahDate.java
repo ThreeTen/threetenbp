@@ -31,13 +31,13 @@
  */
 package org.threeten.bp.chrono.global;
 
-import static javax.time.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
-import static javax.time.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
-import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_MONTH;
-import static javax.time.calendrical.ChronoField.ALIGNED_WEEK_OF_YEAR;
-import static javax.time.calendrical.ChronoField.DAY_OF_MONTH;
-import static javax.time.calendrical.ChronoField.MONTH_OF_YEAR;
-import static javax.time.calendrical.ChronoField.YEAR;
+import static org.threeten.bp.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
+import static org.threeten.bp.calendrical.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
+import static org.threeten.bp.calendrical.ChronoField.ALIGNED_WEEK_OF_MONTH;
+import static org.threeten.bp.calendrical.ChronoField.ALIGNED_WEEK_OF_YEAR;
+import static org.threeten.bp.calendrical.ChronoField.DAY_OF_MONTH;
+import static org.threeten.bp.calendrical.ChronoField.MONTH_OF_YEAR;
+import static org.threeten.bp.calendrical.ChronoField.YEAR;
 
 import java.io.BufferedReader;
 import java.io.DataInput;
@@ -55,14 +55,14 @@ import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import javax.time.DateTimeException;
-import javax.time.DayOfWeek;
-import javax.time.LocalDate;
-import javax.time.calendrical.ChronoField;
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeValueRange;
-import javax.time.chrono.ChronoLocalDate;
-import javax.time.jdk8.Jdk8Methods;
+import org.threeten.bp.DateTimeException;
+import org.threeten.bp.DayOfWeek;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.calendrical.ChronoField;
+import org.threeten.bp.calendrical.DateTimeField;
+import org.threeten.bp.calendrical.DateTimeValueRange;
+import org.threeten.bp.chrono.ChronoLocalDate;
+import org.threeten.bp.jdk8.Jdk8Methods;
 
 /**
  * A date in the Hijrah calendar system.

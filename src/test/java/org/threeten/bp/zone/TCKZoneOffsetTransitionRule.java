@@ -35,7 +35,7 @@ import static org.testng.Assert.assertEquals;
 
 import java.io.IOException;
 
-import javax.time.AbstractTCKTest;
+import org.threeten.bp.AbstractTCKTest;
 
 import org.testng.annotations.Test;
 import org.threeten.bp.DayOfWeek;

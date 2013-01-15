@@ -31,9 +31,9 @@
  */
 package org.threeten.bp.zone;
 
-import static javax.time.calendrical.ChronoField.HOUR_OF_DAY;
-import static javax.time.calendrical.ChronoField.MINUTE_OF_HOUR;
-import static javax.time.calendrical.ChronoField.SECOND_OF_MINUTE;
+import static org.threeten.bp.calendrical.ChronoField.HOUR_OF_DAY;
+import static org.threeten.bp.calendrical.ChronoField.MINUTE_OF_HOUR;
+import static org.threeten.bp.calendrical.ChronoField.SECOND_OF_MINUTE;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -56,20 +56,20 @@ import java.util.TreeSet;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
-import javax.time.DayOfWeek;
-import javax.time.LocalDate;
-import javax.time.LocalDateTime;
-import javax.time.LocalTime;
-import javax.time.Month;
-import javax.time.Year;
-import javax.time.ZoneOffset;
-import javax.time.calendrical.DateTimeAdjusters;
-import javax.time.calendrical.DateTimeBuilder;
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.JulianDayField;
-import javax.time.format.DateTimeFormatter;
-import javax.time.format.DateTimeFormatterBuilder;
-import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
+import org.threeten.bp.DayOfWeek;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.LocalTime;
+import org.threeten.bp.Month;
+import org.threeten.bp.Year;
+import org.threeten.bp.ZoneOffset;
+import org.threeten.bp.calendrical.DateTimeAdjusters;
+import org.threeten.bp.calendrical.DateTimeBuilder;
+import org.threeten.bp.calendrical.DateTimeField;
+import org.threeten.bp.calendrical.JulianDayField;
+import org.threeten.bp.format.DateTimeFormatter;
+import org.threeten.bp.format.DateTimeFormatterBuilder;
+import org.threeten.bp.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 /**
  * A builder that can read the TZDB time-zone files and build {@code ZoneRules} instances.

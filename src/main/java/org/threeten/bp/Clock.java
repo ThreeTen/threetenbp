@@ -31,14 +31,14 @@
  */
 package org.threeten.bp;
 
-import static javax.time.LocalTime.NANOS_PER_MINUTE;
-import static javax.time.LocalTime.NANOS_PER_SECOND;
+import static org.threeten.bp.LocalTime.NANOS_PER_MINUTE;
+import static org.threeten.bp.LocalTime.NANOS_PER_SECOND;
 
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.TimeZone;
 
-import javax.time.jdk8.Jdk8Methods;
+import org.threeten.bp.jdk8.Jdk8Methods;
 
 /**
  * A clock providing access to the current instant, date and time using a time-zone.

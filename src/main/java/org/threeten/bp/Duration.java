@@ -31,10 +31,10 @@
  */
 package org.threeten.bp;
 
-import static javax.time.LocalTime.SECONDS_PER_DAY;
-import static javax.time.calendrical.ChronoField.INSTANT_SECONDS;
-import static javax.time.calendrical.ChronoField.NANO_OF_SECOND;
-import static javax.time.calendrical.ChronoUnit.DAYS;
+import static org.threeten.bp.LocalTime.SECONDS_PER_DAY;
+import static org.threeten.bp.calendrical.ChronoField.INSTANT_SECONDS;
+import static org.threeten.bp.calendrical.ChronoField.NANO_OF_SECOND;
+import static org.threeten.bp.calendrical.ChronoUnit.DAYS;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -45,15 +45,15 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Objects;
 
-import javax.time.calendrical.ChronoField;
-import javax.time.calendrical.ChronoUnit;
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTime.MinusAdjuster;
-import javax.time.calendrical.DateTime.PlusAdjuster;
-import javax.time.calendrical.DateTimeAccessor;
-import javax.time.calendrical.PeriodUnit;
-import javax.time.format.DateTimeParseException;
-import javax.time.jdk8.Jdk8Methods;
+import org.threeten.bp.calendrical.ChronoField;
+import org.threeten.bp.calendrical.ChronoUnit;
+import org.threeten.bp.calendrical.DateTime;
+import org.threeten.bp.calendrical.DateTime.MinusAdjuster;
+import org.threeten.bp.calendrical.DateTime.PlusAdjuster;
+import org.threeten.bp.calendrical.DateTimeAccessor;
+import org.threeten.bp.calendrical.PeriodUnit;
+import org.threeten.bp.format.DateTimeParseException;
+import org.threeten.bp.jdk8.Jdk8Methods;
 
 /**
  * A duration between two instants on the time-line.
@@ -958,7 +958,7 @@ public final class Duration
     //-----------------------------------------------------------------------
     /**
      * Writes the object using a
-     * <a href="../../serialized-form.html#javax.time.Ser">dedicated serialized form</a>.
+     * <a href="../../serialized-form.html#org.threeten.bp.Ser">dedicated serialized form</a>.
      * <pre>
      *  out.writeByte(1);  // identifies this as a Duration
      *  out.writeLong(seconds);

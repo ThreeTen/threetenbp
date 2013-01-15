@@ -31,16 +31,16 @@
  */
 package org.threeten.bp;
 
-import static javax.time.calendrical.ChronoUnit.DAYS;
-import static javax.time.calendrical.ChronoUnit.HALF_DAYS;
-import static javax.time.calendrical.ChronoUnit.HOURS;
-import static javax.time.calendrical.ChronoUnit.MICROS;
-import static javax.time.calendrical.ChronoUnit.MILLIS;
-import static javax.time.calendrical.ChronoUnit.MINUTES;
-import static javax.time.calendrical.ChronoUnit.MONTHS;
-import static javax.time.calendrical.ChronoUnit.NANOS;
-import static javax.time.calendrical.ChronoUnit.SECONDS;
-import static javax.time.calendrical.ChronoUnit.YEARS;
+import static org.threeten.bp.calendrical.ChronoUnit.DAYS;
+import static org.threeten.bp.calendrical.ChronoUnit.HALF_DAYS;
+import static org.threeten.bp.calendrical.ChronoUnit.HOURS;
+import static org.threeten.bp.calendrical.ChronoUnit.MICROS;
+import static org.threeten.bp.calendrical.ChronoUnit.MILLIS;
+import static org.threeten.bp.calendrical.ChronoUnit.MINUTES;
+import static org.threeten.bp.calendrical.ChronoUnit.MONTHS;
+import static org.threeten.bp.calendrical.ChronoUnit.NANOS;
+import static org.threeten.bp.calendrical.ChronoUnit.SECONDS;
+import static org.threeten.bp.calendrical.ChronoUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;

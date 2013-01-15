@@ -31,7 +31,7 @@
  */
 package org.threeten.bp.chrono;
 
-import static javax.time.calendrical.ChronoField.EPOCH_DAY;
+import static org.threeten.bp.calendrical.ChronoField.EPOCH_DAY;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -39,18 +39,18 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Objects;
 
-import javax.time.DateTimeException;
-import javax.time.LocalTime;
-import javax.time.ZoneId;
-import javax.time.calendrical.ChronoField;
-import javax.time.calendrical.ChronoUnit;
-import javax.time.calendrical.DateTime;
-import javax.time.calendrical.DateTime.WithAdjuster;
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeValueRange;
-import javax.time.calendrical.PeriodUnit;
-import javax.time.jdk8.DefaultInterfaceChronoLocalDateTime;
-import javax.time.jdk8.Jdk8Methods;
+import org.threeten.bp.DateTimeException;
+import org.threeten.bp.LocalTime;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.calendrical.ChronoField;
+import org.threeten.bp.calendrical.ChronoUnit;
+import org.threeten.bp.calendrical.DateTime;
+import org.threeten.bp.calendrical.DateTime.WithAdjuster;
+import org.threeten.bp.calendrical.DateTimeField;
+import org.threeten.bp.calendrical.DateTimeValueRange;
+import org.threeten.bp.calendrical.PeriodUnit;
+import org.threeten.bp.jdk8.DefaultInterfaceChronoLocalDateTime;
+import org.threeten.bp.jdk8.Jdk8Methods;
 
 /**
  * A date-time without a time-zone for the calendar neutral API.

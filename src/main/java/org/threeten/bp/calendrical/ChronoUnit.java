@@ -31,9 +31,9 @@
  */
 package org.threeten.bp.calendrical;
 
-import javax.time.Duration;
-import javax.time.chrono.ChronoLocalDateTime;
-import javax.time.chrono.ChronoZonedDateTime;
+import org.threeten.bp.Duration;
+import org.threeten.bp.chrono.ChronoLocalDateTime;
+import org.threeten.bp.chrono.ChronoZonedDateTime;
 
 /**
  * A standard set of date periods units.

@@ -36,7 +36,7 @@ import static org.threeten.bp.calendrical.ChronoUnit.HOURS;
 
 import java.io.IOException;
 
-import javax.time.AbstractTCKTest;
+import org.threeten.bp.AbstractTCKTest;
 
 import org.testng.annotations.Test;
 import org.threeten.bp.Duration;
