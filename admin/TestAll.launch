@@ -9,12 +9,12 @@
 <stringAttribute key="org.testng.eclipse.LOG_LEVEL" value="2"/>
 <listAttribute key="org.testng.eclipse.METHOD_TEST_LIST"/>
 <listAttribute key="org.testng.eclipse.PACKAGE_TEST_LIST">
-<listEntry value="javax.time"/>
-<listEntry value="javax.time.calendrical"/>
-<listEntry value="javax.time.chrono"/>
-<listEntry value="javax.time.chrono.global"/>
-<listEntry value="javax.time.format"/>
-<listEntry value="javax.time.zone"/>
+<listEntry value="org.threeten.bp"/>
+<listEntry value="org.threeten.bp.calendrical"/>
+<listEntry value="org.threeten.bp.chrono"/>
+<listEntry value="org.threeten.bp.chrono.global"/>
+<listEntry value="org.threeten.bp.format"/>
+<listEntry value="org.threeten.bp.zone"/>
 </listAttribute>
 <mapAttribute key="org.testng.eclipse.PARAMETERS"/>
 <stringAttribute key="org.testng.eclipse.PREDEFINED_LISTENERS" value=""/>

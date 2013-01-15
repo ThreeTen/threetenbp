@@ -147,7 +147,7 @@
         <subant genericantfile="build.xml" target="tzdb-unpack">
             <dirset dir="${tzdata.main.workarea}" includes="*" />
         </subant>
-        <java classpathref="main.path" classname="javax.time.zone.TzdbZoneRulesCompiler" fork="true" failonerror="true">
+        <java classpathref="main.path" classname="org.threeten.bp.zone.TzdbZoneRulesCompiler" fork="true" failonerror="true">
             <arg line="-srcdir ${tzdata.main.workarea}" />
             <arg line="-dstdir ${lib.optional}" />
             <arg line="${tzdb.files}" />
@@ -170,20 +170,20 @@
     <target name="javadoc" depends="init" description="generates javadoc for the api">
       <mkdir dir="${build.javadoc}"/>
       <javadoc sourcepath="${core.main}" destdir="${build.javadoc}"
-               group="Core javax.time:javax.time.calendrical:javax.time.builder:javax.time.format:javax.time.zone:javax.time.chrono:javax.time.chrono.global"
+               group="Core org.threeten.bp:org.threeten.bp.calendrical:org.threeten.bp.builder:org.threeten.bp.format:org.threeten.bp.zone:org.threeten.bp.chrono:org.threeten.bp.chrono.global"
                classpathref="main.path"
                link="http://docs.oracle.com/javase/7/docs/api/"
                stylesheetfile="${basedir}/stylesheet.css"
                windowtitle="ThreeTen date and time API"
                failonerror="true"
                use="true"
-               packagenames="javax.time**/*,java.util**/*"
+               packagenames="org.threeten.bp**/*,java.util**/*"
                overview="${core.main}/javax/time/overview.html" />
     </target>
 
     <!-- ==================================================================== -->
     <target name="run" description="Run the Usability program" depends="compile-core-tests,compile-standard-tests">
-        <java classname="javax.time.UsabilityChrono"
+        <java classname="org.threeten.bp.UsabilityChrono"
             classpathref="test.path"/>
     </target>
 
@@ -255,7 +255,7 @@
     <target name="setup-sigtest"
             description="generates the signatures file from the reference implementation"
             depends="tdtck">
-        <setup-sigtest-task package="javax.time" failonerror="true" apiVersion="openapi-v2"
+        <setup-sigtest-task package="org.threeten.bp" failonerror="true" apiVersion="openapi-v2"
                             filename="${tck-signatures}">
             <classpath>
                 <pathelement location="${tck-rt-jar}"/>
@@ -270,7 +270,7 @@
             depends="tdtck">
         <test-sigtest-task failonerror="true" apiVersion="openapi-v2"
                            filename="${tck-signatures}" backward="true" output="st_report.txt">
-            <package name="javax.time" />
+            <package name="org.threeten.bp" />
             <!--<exclude class="com.acme.openapi.NotTested"/>-->
             <classpath>
                 <pathelement location="${tck-rt-jar}"/>
@@ -306,7 +306,7 @@
                       classpathref="coverage.path">
                    <jvmarg value="-Xmx512M" />
                    <jvmarg value="-XX:-UseSplitVerifier" />
-                   <filter includes="javax.time.*" excludes="*Test*, *Mock*, *Performance*, *Examples*, *AllTCK*, *Usability*" />
+                   <filter includes="org.threeten.bp.*" excludes="*Test*, *Mock*, *Performance*, *Examples*, *AllTCK*, *Usability*" />
                 <txt outfile="${build.coverage}/@{txtout}" />
                 <html outfile="${build.coverage}/@{htmlout}" metrics="method:90,block:90,line:90,class:95" />
             </emmajava>
@@ -314,11 +314,11 @@
     </macrodef>
 
     <target name="tck-coverage" depends="compile-core-tests,compile-standard-tests" description="tck coverage">
-        <do-coverage runclass="javax.time.AllTCK" htmlout="tck.html" txtout="tck.txt" />
+        <do-coverage runclass="org.threeten.bp.AllTCK" htmlout="tck.html" txtout="tck.txt" />
     </target>
 
     <target name="coverage" depends="compile-core-tests,compile-standard-tests" description="test coverage">
-        <do-coverage runclass="javax.time.AllTest" htmlout="coverage.html" txtout="coverage.txt" />
+        <do-coverage runclass="org.threeten.bp.AllTest" htmlout="coverage.html" txtout="coverage.txt" />
     </target>
 
     <!-- ==================================================================== -->
@@ -418,6 +418,6 @@
 
     <!-- ==================================================================== -->
     <target name="examples" depends="compile-core-tests,compile-standard-tests" description="outputs some examples to system out">
-        <java classname="javax.time.Examples" classpathref="test.path" fork="true"/>
+        <java classname="org.threeten.bp.Examples" classpathref="test.path" fork="true"/>
     </target>
 </project>

@@ -7,7 +7,7 @@
     <!-- It is not intended to permit ThreeTen to be publicly available via maven -->
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>javax.time</groupId>
+    <groupId>org.threeten.bp</groupId>
     <artifactId>jsr-310-TZDB-all</artifactId>
     <packaging>jar</packaging>
 
