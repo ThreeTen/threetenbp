@@ -32,6 +32,7 @@
 package org.threeten.bp;
 
 import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
+import static org.threeten.bp.temporal.ChronoUnit.MONTHS;
 
 import java.util.Locale;
 
@@ -65,9 +66,9 @@ import org.threeten.bp.temporal.ValueRange;
  * <p>
  * This enum represents a common concept that is found in many calendar systems.
  * As such, this enum may be used by any calendar system that has the month-of-year
- * concept defined exactly equivalent to the ISO calendar system.
+ * concept defined exactly equivalent to the ISO-8601 calendar system.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This is an immutable and thread-safe enum.
  */
 public enum Month implements TemporalAccessor, TemporalAdjuster {
@@ -158,12 +159,19 @@ public enum Month implements TemporalAccessor, TemporalAdjuster {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Month} from a date-time object.
+     * Obtains an instance of {@code Month} from a temporal object.
      * <p>
-     * A {@code DateTimeAccessor} represents some form of date and time information.
-     * This factory converts the arbitrary date-time object to an instance of {@code Month}.
+     * A {@code TemporalAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary temporal object to an instance of {@code Month}.
+     * <p>
+     * The conversion extracts the {@link ChronoField#MONTH_OF_YEAR MONTH_OF_YEAR} field.
+     * The extraction is only permitted if the temporal object has an ISO
+     * chronology, or can be converted to a {@code LocalDate}.
+     * <p>
+     * This method matches the signature of the functional interface {@link TemporalQuery}
+     * allowing it to be used in queries via method reference, {@code Month::from}.
      *
-     * @param temporal  the date-time object to convert, not null
+     * @param temporal  the temporal object to convert, not null
      * @return the month-of-year, not null
      * @throws DateTimeException if unable to convert to a {@code Month}
      */
@@ -171,7 +179,14 @@ public enum Month implements TemporalAccessor, TemporalAdjuster {
         if (temporal instanceof Month) {
             return (Month) temporal;
         }
-        return of(temporal.get(MONTH_OF_YEAR));
+        try {
+            if (ISOChrono.INSTANCE.equals(Chrono.from(temporal)) == false) {
+                temporal = LocalDate.from(temporal);
+            }
+            return of(temporal.get(MONTH_OF_YEAR));
+        } catch (DateTimeException ex) {
+            throw new DateTimeException("Unable to obtain Month from TemporalAccessor: " + temporal.getClass(), ex);
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -205,6 +220,25 @@ public enum Month implements TemporalAccessor, TemporalAdjuster {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Checks if the specified field is supported.
+     * <p>
+     * This checks if this month-of-year can be queried for the specified field.
+     * If false, then calling the {@link #range(TemporalField) range} and
+     * {@link #get(TemporalField) get} methods will throw an exception.
+     * <p>
+     * If the field is {@link ChronoField#MONTH_OF_YEAR MONTH_OF_YEAR} then
+     * this method returns true.
+     * All other {@code ChronoField} instances will return false.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.doIsSupported(TemporalAccessor)}
+     * passing {@code this} as the argument.
+     * Whether the field is supported is determined by the field.
+     *
+     * @param field  the field to check, null returns false
+     * @return true if the field is supported on this month-of-year, false if not
+     */
     @Override
     public boolean isSupported(TemporalField field) {
         if (field instanceof ChronoField) {
@@ -213,6 +247,27 @@ public enum Month implements TemporalAccessor, TemporalAdjuster {
         return field != null && field.doIsSupported(this);
     }
 
+    /**
+     * Gets the range of valid values for the specified field.
+     * <p>
+     * The range object expresses the minimum and maximum valid values for a field.
+     * This month is used to enhance the accuracy of the returned range.
+     * If it is not possible to return the range, because the field is not supported
+     * or for some other reason, an exception is thrown.
+     * <p>
+     * If the field is {@link ChronoField#MONTH_OF_YEAR MONTH_OF_YEAR} then the
+     * range of the month-of-year, from 1 to 12, will be returned.
+     * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.doRange(TemporalAccessor)}
+     * passing {@code this} as the argument.
+     * Whether the range can be obtained is determined by the field.
+     *
+     * @param field  the field to query the range for, not null
+     * @return the range of valid values for the field, not null
+     * @throws DateTimeException if the range for the field cannot be obtained
+     */
     @Override
     public ValueRange range(TemporalField field) {
         if (field == MONTH_OF_YEAR) {
@@ -223,6 +278,30 @@ public enum Month implements TemporalAccessor, TemporalAdjuster {
         return field.doRange(this);
     }
 
+    /**
+     * Gets the value of the specified field from this month-of-year as an {@code int}.
+     * <p>
+     * This queries this month for the value for the specified field.
+     * The returned value will always be within the valid range of values for the field.
+     * If it is not possible to return the value, because the field is not supported
+     * or for some other reason, an exception is thrown.
+     * <p>
+     * If the field is {@link ChronoField#MONTH_OF_YEAR MONTH_OF_YEAR} then the
+     * value of the month-of-year, from 1 to 12, will be returned.
+     * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * passing {@code this} as the argument. Whether the value can be obtained,
+     * and what the value represents, is determined by the field.
+     *
+     * @param field  the field to get, not null
+     * @return the value for the field, within the valid range of values
+     * @throws DateTimeException if a value for the field cannot be obtained
+     * @throws DateTimeException if the range of valid values for the field exceeds an {@code int}
+     * @throws DateTimeException if the value is outside the range of valid values for the field
+     * @throws ArithmeticException if numeric overflow occurs
+     */
     @Override
     public int get(TemporalField field) {
         if (field == MONTH_OF_YEAR) {
@@ -231,6 +310,27 @@ public enum Month implements TemporalAccessor, TemporalAdjuster {
         return range(field).checkValidIntValue(getLong(field), field);
     }
 
+    /**
+     * Gets the value of the specified field from this month-of-year as a {@code long}.
+     * <p>
+     * This queries this month for the value for the specified field.
+     * If it is not possible to return the value, because the field is not supported
+     * or for some other reason, an exception is thrown.
+     * <p>
+     * If the field is {@link ChronoField#MONTH_OF_YEAR MONTH_OF_YEAR} then the
+     * value of the month-of-year, from 1 to 12, will be returned.
+     * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * passing {@code this} as the argument. Whether the value can be obtained,
+     * and what the value represents, is determined by the field.
+     *
+     * @param field  the field to get, not null
+     * @return the value for the field
+     * @throws DateTimeException if a value for the field cannot be obtained
+     * @throws ArithmeticException if numeric overflow occurs
+     */
     @Override
     public long getLong(TemporalField field) {
         if (field == MONTH_OF_YEAR) {
@@ -243,7 +343,7 @@ public enum Month implements TemporalAccessor, TemporalAdjuster {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the month that is the specified number of quarters after this one.
+     * Returns the month-of-year that is the specified number of quarters after this one.
      * <p>
      * The calculation rolls around the end of the year from December to January.
      * The specified period may be negative.
@@ -255,11 +355,11 @@ public enum Month implements TemporalAccessor, TemporalAdjuster {
      */
     public Month plus(long months) {
         int amount = (int) (months % 12);
-        return values()[(ordinal() + (amount + 12)) % 12];
+        return ENUMS[(ordinal() + (amount + 12)) % 12];
     }
 
     /**
-     * Returns the month that is the specified number of months before this one.
+     * Returns the month-of-year that is the specified number of months before this one.
      * <p>
      * The calculation rolls around the start of the year from January to December.
      * The specified period may be negative.
@@ -348,13 +448,13 @@ public enum Month implements TemporalAccessor, TemporalAdjuster {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the day-of-year for the first day of this month.
+     * Gets the day-of-year corresponding to the first day of this month.
      * <p>
      * This returns the day-of-year that this month begins on, using the leap
      * year flag to determine the length of February.
      *
      * @param leapYear  true if the length is required for a leap year
-     * @return the last day of this month, from 1 to 335
+     * @return the day of year corresponding to the first day of this month, from 1 to 336
      */
     public int firstDayOfYear(boolean leapYear) {
         int leap = leapYear ? 1 : 0;
@@ -387,35 +487,88 @@ public enum Month implements TemporalAccessor, TemporalAdjuster {
         }
     }
 
+    /**
+     * Gets the month corresponding to the first month of this quarter.
+     * <p>
+     * The year can be divided into four quarters.
+     * This method returns the first month of the quarter for the base month.
+     * January, February and March return January.
+     * April, May and June return April.
+     * July, August and September return July.
+     * October, November and December return October.
+     *
+     * @return the first month of the quarter corresponding to this month, not null
+     */
+    public Month firstMonthOfQuarter() {
+        return ENUMS[(ordinal() / 3) * 3];
+    }
+
     //-----------------------------------------------------------------------
+    /**
+     * Queries this month-of-year using the specified query.
+     * <p>
+     * This queries this month-of-year using the specified query strategy object.
+     * The {@code TemporalQuery} object defines the logic to be used to
+     * obtain the result. Read the documentation of the query to understand
+     * what the result of this method will be.
+     * <p>
+     * The result of this method is obtained by invoking the
+     * {@link TemporalQuery#queryFrom(TemporalAccessor)} method on the
+     * specified query passing {@code this} as the argument.
+     *
+     * @param <R> the type of the result
+     * @param query  the query to invoke, not null
+     * @return the query result, null may be returned (defined by the query)
+     * @throws DateTimeException if unable to query (defined by the query)
+     * @throws ArithmeticException if numeric overflow occurs (defined by the query)
+     */
     @SuppressWarnings("unchecked")
     @Override
     public <R> R query(TemporalQuery<R> query) {
         if (query == TemporalQueries.chrono()) {
             return (R) ISOChrono.INSTANCE;
-        } else if (query == TemporalQueries.zoneId() || query == TemporalQueries.precision()) {
+        } else if (query == TemporalQueries.precision()) {
+            return (R) MONTHS;
+        } else if (query == TemporalQueries.zoneId()) {
             return null;
         }
         return query.queryFrom(this);
     }
 
     /**
-     * Implementation of the strategy to make an adjustment to the specified date-time object.
+     * Adjusts the specified temporal object to have this month-of-year.
      * <p>
-     * This method is not intended to be called by application code directly.
-     * Applications should use the {@code with(TemporalAdjuster)} method on the
-     * date-time object to make the adjustment passing this as the argument.
+     * This returns a temporal object of the same observable type as the input
+     * with the month-of-year changed to be the same as this.
+     * <p>
+     * The adjustment is equivalent to using {@link Temporal#with(TemporalField, long)}
+     * passing {@link ChronoField#MONTH_OF_YEAR} as the field.
+     * If the specified temporal object does not use the ISO calendar system then
+     * a {@code DateTimeException} is thrown.
+     * <p>
+     * In most cases, it is clearer to reverse the calling pattern by using
+     * {@link Temporal#with(TemporalAdjuster)}:
+     * <pre>
+     *   // these two lines are equivalent, but the second approach is recommended
+     *   temporal = thisMonth.adjustInto(temporal);
+     *   temporal = temporal.with(thisMonth);
+     * </pre>
+     * <p>
+     * For example, given a date in May, the following are output:
+     * <pre>
+     *   dateInMay.with(JANUARY);    // four months earlier
+     *   dateInMay.with(APRIL);      // one months earlier
+     *   dateInMay.with(MAY);        // same date
+     *   dateInMay.with(JUNE);       // one month later
+     *   dateInMay.with(DECEMBER);   // seven months later
+     * </pre>
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * <h4>Implementation notes</h4>
-     * Adjusts the specified date-time to have the value of this month.
-     * The date-time object must use the ISO calendar system.
-     * The adjustment is equivalent to using {@link Temporal#with(TemporalField, long)}
-     * passing {@code MONTH_OF_YEAR} as the field.
-     *
      * @param temporal  the target object to be adjusted, not null
      * @return the adjusted object, not null
+     * @throws DateTimeException if unable to make the adjustment
+     * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
     public Temporal adjustInto(Temporal temporal) {

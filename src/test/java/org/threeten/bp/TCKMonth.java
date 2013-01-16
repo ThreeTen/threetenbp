@@ -36,6 +36,7 @@ import static org.threeten.bp.Month.DECEMBER;
 import static org.threeten.bp.Month.JANUARY;
 import static org.threeten.bp.Month.JUNE;
 import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
+import static org.threeten.bp.temporal.ChronoUnit.MONTHS;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -135,7 +136,7 @@ public class TCKMonth extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void test_query_timePrecision() {
-        assertEquals(Month.JUNE.query(TemporalQueries.precision()), null);
+        assertEquals(Month.JUNE.query(TemporalQueries.precision()), MONTHS);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})

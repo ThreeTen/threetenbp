@@ -37,6 +37,7 @@ import static org.threeten.bp.DayOfWeek.MONDAY;
 import static org.threeten.bp.DayOfWeek.SUNDAY;
 import static org.threeten.bp.DayOfWeek.WEDNESDAY;
 import static org.threeten.bp.temporal.ChronoField.DAY_OF_WEEK;
+import static org.threeten.bp.temporal.ChronoUnit.DAYS;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -140,7 +141,7 @@ public class TCKDayOfWeek extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void test_query_timePrecision() {
-        assertEquals(DayOfWeek.FRIDAY.query(TemporalQueries.precision()), null);
+        assertEquals(DayOfWeek.FRIDAY.query(TemporalQueries.precision()), DAYS);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
