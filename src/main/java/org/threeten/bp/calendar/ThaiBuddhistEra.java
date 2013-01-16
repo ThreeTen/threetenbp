@@ -46,6 +46,7 @@ import org.threeten.bp.temporal.ChronoLocalDate;
 import org.threeten.bp.temporal.Era;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.ValueRange;
 
@@ -171,7 +172,7 @@ enum ThaiBuddhistEra implements Era<ThaiBuddhistChrono> {
     @SuppressWarnings("unchecked")
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQuery.CHRONO) {
+        if (query == TemporalQueries.CHRONO) {
             return (R) getChrono();
         }
         return query.queryFrom(this);

@@ -45,6 +45,7 @@ import org.threeten.bp.temporal.ChronoLocalDateTime;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAdder;
 import org.threeten.bp.temporal.TemporalAdjuster;
+import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
@@ -90,9 +91,9 @@ public abstract class DefaultInterfaceChronoLocalDateTime<C extends Chrono<C>>
     @SuppressWarnings("unchecked")
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQuery.CHRONO) {
+        if (query == TemporalQueries.CHRONO) {
             return (R) getDate().getChrono();
-        } else if (query == TemporalQuery.TIME_PRECISION) {
+        } else if (query == TemporalQueries.TIME_PRECISION) {
             return (R) NANOS;
         }
         return super.query(query);

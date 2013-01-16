@@ -81,7 +81,7 @@ import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalAdder;
 import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalField;
-import org.threeten.bp.temporal.TemporalQuery;
+import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalSubtractor;
 
 /**
@@ -539,22 +539,22 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_query_chrono() {
-        assertEquals(TEST_11_30_59_500_PONE.query(TemporalQuery.CHRONO), null);
+        assertEquals(TEST_11_30_59_500_PONE.query(TemporalQueries.CHRONO), null);
     }
 
     @Test(groups={"tck"})
     public void test_query_zone() {
-        assertEquals(TEST_11_30_59_500_PONE.query(TemporalQuery.ZONE_ID), null);
+        assertEquals(TEST_11_30_59_500_PONE.query(TemporalQueries.ZONE_ID), null);
     }
 
     @Test(groups={"tck"})
     public void test_query_timePrecision() {
-        assertEquals(TEST_11_30_59_500_PONE.query(TemporalQuery.TIME_PRECISION), NANOS);
+        assertEquals(TEST_11_30_59_500_PONE.query(TemporalQueries.TIME_PRECISION), NANOS);
     }
 
     @Test(groups={"tck"})
     public void test_query_offset() {
-        assertEquals(TEST_11_30_59_500_PONE.query(TemporalQuery.OFFSET), OFFSET_PONE);
+        assertEquals(TEST_11_30_59_500_PONE.query(TemporalQueries.OFFSET), OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})

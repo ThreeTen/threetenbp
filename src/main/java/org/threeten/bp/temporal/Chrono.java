@@ -165,7 +165,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      */
     public static Chrono<?> from(TemporalAccessor temporal) {
         Objects.requireNonNull(temporal, "temporal");
-        Chrono<?> obj = temporal.query(TemporalQuery.CHRONO);
+        Chrono<?> obj = temporal.query(TemporalQueries.CHRONO);
         return (obj != null ? obj : ISOChrono.INSTANCE);
     }
 
@@ -634,7 +634,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
             @SuppressWarnings("unchecked")
             @Override
             public <R> R query(TemporalQuery<R> query) {
-                if (query == TemporalQuery.CHRONO) {
+                if (query == TemporalQueries.CHRONO) {
                     return (R) Chrono.this;
                 }
                 return super.query(query);

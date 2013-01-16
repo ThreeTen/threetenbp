@@ -31,11 +31,7 @@
  */
 package org.threeten.bp.temporal;
 
-import static org.threeten.bp.temporal.ChronoField.OFFSET_SECONDS;
-
 import org.threeten.bp.DateTimeException;
-import org.threeten.bp.ZoneId;
-import org.threeten.bp.ZoneOffset;
 
 /**
  * Strategy for querying a date-time object.
@@ -58,68 +54,6 @@ import org.threeten.bp.ZoneOffset;
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  */
 public interface TemporalQuery<R> {
-    // special constants should be used to extract information from a DateTimeAccessor
-    // that cannot be derived in other ways
-    /**
-     * The special constant for the query for {@code ZoneId}.
-     * <p>
-     * If the target {@code DateTimeAccessor} has a zone ID, then querying
-     * it with this constant must return the chronology.
-     */
-    TemporalQuery<ZoneId> ZONE_ID = new TemporalQuery<ZoneId>() {
-        @Override
-        public ZoneId queryFrom(TemporalAccessor temporal) {
-            return null;
-        }
-    };
-    /**
-     * The special constant for the query for {@code Chrono}.
-     * <p>
-     * If the target {@code DateTimeAccessor} has a chronology, then querying
-     * it with this constant must return the chronology.
-     * Note that {@code LocalTime} returns null as it is valid for all chronologies.
-     */
-    TemporalQuery<Chrono<?>> CHRONO = new TemporalQuery<Chrono<?>>() {
-        @Override
-        public Chrono<?> queryFrom(TemporalAccessor temporal) {
-            return null;
-        }
-    };
-    /**
-     * The special constant for the query for the minimum supported time unit.
-     * <p>
-     * If the target {@code DateTimeAccessor} represents a consistent or complete
-     * date-time, date or time then this must return the smallest precision actually
-     * supported. Note that fields such as {@code NANO_OF_DAY} and {@code NANO_OF_SECOND}
-     * are defined to always return ignoring the precision, thus this is the only
-     * way to find the accurate minimum supported unit.
-     * <p>
-     * For example, {@code GregorianCalendar} has a precision of {@code MILLIS}, whereas
-     * {@code LocalDate} and {@code ZoneOffset} have no time precision and thus returns null.
-     */
-    TemporalQuery<ChronoUnit> TIME_PRECISION = new TemporalQuery<ChronoUnit>() {
-        @Override
-        public ChronoUnit queryFrom(TemporalAccessor temporal) {
-            return null;
-        }
-    };
-    /**
-     * A query for the {@code ZoneOffset}.
-     * <p>
-     * This query examines the {@link ChronoField#OFFSET_SECONDS offset-seconds}
-     * field and uses it to create a {@code ZoneOffset}.
-     * Implementations of {@code DateTimeAccessor} may choose to check for this
-     * constant and return a stored offset directly.
-     */
-    TemporalQuery<ZoneOffset> OFFSET = new TemporalQuery<ZoneOffset>() {
-        @Override
-        public ZoneOffset queryFrom(TemporalAccessor temporal) {
-            if (temporal.isSupported(OFFSET_SECONDS)) {
-                return ZoneOffset.ofTotalSeconds(temporal.get(OFFSET_SECONDS));
-            }
-            return null;
-        }
-    };
 
     /**
      * Implementation of the strategy to query the specified date-time object.

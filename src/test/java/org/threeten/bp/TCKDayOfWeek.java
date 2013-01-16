@@ -52,7 +52,7 @@ import org.threeten.bp.temporal.JulianFields;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalField;
-import org.threeten.bp.temporal.TemporalQuery;
+import org.threeten.bp.temporal.TemporalQueries;
 
 /**
  * Test DayOfWeek.
@@ -130,17 +130,17 @@ public class TCKDayOfWeek extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_query_chrono() {
-        assertEquals(DayOfWeek.FRIDAY.query(TemporalQuery.CHRONO), null);
+        assertEquals(DayOfWeek.FRIDAY.query(TemporalQueries.CHRONO), null);
     }
 
     @Test(groups={"tck"})
     public void test_query_zone() {
-        assertEquals(DayOfWeek.FRIDAY.query(TemporalQuery.ZONE_ID), null);
+        assertEquals(DayOfWeek.FRIDAY.query(TemporalQueries.ZONE_ID), null);
     }
 
     @Test(groups={"tck"})
     public void test_query_timePrecision() {
-        assertEquals(DayOfWeek.FRIDAY.query(TemporalQuery.TIME_PRECISION), null);
+        assertEquals(DayOfWeek.FRIDAY.query(TemporalQueries.TIME_PRECISION), null);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})

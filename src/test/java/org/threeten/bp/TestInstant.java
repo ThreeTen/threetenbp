@@ -47,7 +47,7 @@ import java.util.Locale;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.format.DateTimeParseException;
-import org.threeten.bp.temporal.TemporalQuery;
+import org.threeten.bp.temporal.TemporalQueries;
 
 /**
  * Test Instant.
@@ -296,17 +296,17 @@ public class TestInstant extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_query_chrono() {
-        assertEquals(Instant.EPOCH.query(TemporalQuery.CHRONO), null);
+        assertEquals(Instant.EPOCH.query(TemporalQueries.CHRONO), null);
     }
 
     @Test(groups={"tck"})
     public void test_query_zone() {
-        assertEquals(Instant.EPOCH.query(TemporalQuery.ZONE_ID), null);
+        assertEquals(Instant.EPOCH.query(TemporalQueries.ZONE_ID), null);
     }
 
     @Test(groups={"tck"})
     public void test_query_timePrecision() {
-        assertEquals(Instant.EPOCH.query(TemporalQuery.TIME_PRECISION), NANOS);
+        assertEquals(Instant.EPOCH.query(TemporalQueries.TIME_PRECISION), NANOS);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})

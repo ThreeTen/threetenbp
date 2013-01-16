@@ -93,6 +93,7 @@ import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalAdder;
 import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.TemporalSubtractor;
 
@@ -613,7 +614,7 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
             @SuppressWarnings("unchecked")
             @Override
             public <R> R query(TemporalQuery<R> query) {
-                if (query == TemporalQuery.ZONE_ID) {
+                if (query == TemporalQueries.ZONE_ID) {
                     return (R) TEST_DATE_TIME_PARIS.getZone();
                 }
                 return super.query(query);
@@ -635,7 +636,7 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
             @SuppressWarnings("unchecked")
             @Override
             public <R> R query(TemporalQuery<R> query) {
-                if (query == TemporalQuery.ZONE_ID) {
+                if (query == TemporalQueries.ZONE_ID) {
                     return (R) TEST_DATE_TIME_PARIS.getZone();
                 }
                 return super.query(query);
@@ -824,22 +825,22 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_query_chrono() {
-        assertEquals(TEST_DATE_TIME.query(TemporalQuery.CHRONO), ISOChrono.INSTANCE);
+        assertEquals(TEST_DATE_TIME.query(TemporalQueries.CHRONO), ISOChrono.INSTANCE);
     }
 
     @Test(groups={"tck"})
     public void test_query_zone() {
-        assertEquals(TEST_DATE_TIME.query(TemporalQuery.ZONE_ID), TEST_DATE_TIME.getZone());
+        assertEquals(TEST_DATE_TIME.query(TemporalQueries.ZONE_ID), TEST_DATE_TIME.getZone());
     }
 
     @Test(groups={"tck"})
     public void test_query_timePrecision() {
-        assertEquals(TEST_DATE_TIME.query(TemporalQuery.TIME_PRECISION), NANOS);
+        assertEquals(TEST_DATE_TIME.query(TemporalQueries.TIME_PRECISION), NANOS);
     }
 
     @Test(groups={"tck"})
     public void test_query_offset() {
-        assertEquals(TEST_DATE_TIME.query(TemporalQuery.OFFSET), OFFSET_0100);
+        assertEquals(TEST_DATE_TIME.query(TemporalQueries.OFFSET), OFFSET_0100);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})

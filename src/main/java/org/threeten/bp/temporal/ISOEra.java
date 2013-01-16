@@ -167,7 +167,7 @@ enum ISOEra implements Era<ISOChrono> {
     @SuppressWarnings("unchecked")
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQuery.CHRONO) {
+        if (query == TemporalQueries.CHRONO) {
             return (R) getChrono();
         }
         return query.queryFrom(this);

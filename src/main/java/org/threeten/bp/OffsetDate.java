@@ -55,6 +55,7 @@ import org.threeten.bp.temporal.TemporalAdder;
 import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalAdjusters;
 import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
@@ -880,9 +881,9 @@ public final class OffsetDate
     @SuppressWarnings("unchecked")
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQuery.CHRONO) {
+        if (query == TemporalQueries.CHRONO) {
             return (R) ISOChrono.INSTANCE;
-        } else if (query == TemporalQuery.OFFSET) {
+        } else if (query == TemporalQueries.OFFSET) {
             return (R) getOffset();
         }
         return super.query(query);

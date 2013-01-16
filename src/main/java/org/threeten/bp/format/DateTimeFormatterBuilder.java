@@ -63,7 +63,7 @@ import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ISOChrono;
 import org.threeten.bp.temporal.TemporalField;
-import org.threeten.bp.temporal.TemporalQuery;
+import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.ValueRange;
 import org.threeten.bp.zone.ZoneRulesProvider;
 
@@ -2442,7 +2442,7 @@ public final class DateTimeFormatterBuilder {
         //-----------------------------------------------------------------------
         @Override
         public boolean print(DateTimePrintContext context, StringBuilder buf) {
-            ZoneId zone = context.getValue(TemporalQuery.ZONE_ID);
+            ZoneId zone = context.getValue(TemporalQueries.ZONE_ID);
             if (zone == null) {
                 return false;
             }
@@ -2476,7 +2476,7 @@ public final class DateTimeFormatterBuilder {
         //-----------------------------------------------------------------------
         @Override
         public boolean print(DateTimePrintContext context, StringBuilder buf) {
-            ZoneId zone = context.getValue(TemporalQuery.ZONE_ID);
+            ZoneId zone = context.getValue(TemporalQueries.ZONE_ID);
             if (zone == null || (regionOnly && zone instanceof ZoneOffset)) {
                 return false;
             }
@@ -2670,7 +2670,7 @@ public final class DateTimeFormatterBuilder {
 
         @Override
         public boolean print(DateTimePrintContext context, StringBuilder buf) {
-            Chrono<?> chrono = context.getValue(TemporalQuery.CHRONO);
+            Chrono<?> chrono = context.getValue(TemporalQueries.CHRONO);
             if (chrono == null) {
                 return false;
             }
