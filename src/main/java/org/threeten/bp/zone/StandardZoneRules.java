@@ -478,7 +478,7 @@ final class StandardZoneRules implements ZoneRules, Serializable {
                 }
             }
             // use first from following year
-            if (year < LocalDate.MAX_YEAR) {
+            if (year < LocalDate.MAX_VALUE) {
                 transArray = findTransitionArray(year + 1);
                 return transArray[0];
             }

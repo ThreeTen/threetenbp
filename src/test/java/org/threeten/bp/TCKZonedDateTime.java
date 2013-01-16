@@ -431,11 +431,11 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void factory_ofInstant_minWithMinOffset() {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
-        int year = Year.MIN_YEAR;
+        int year = Year.MIN_VALUE;
         long days = (year * 365L + (year / 4 - year / 100 + year / 400)) - days_0000_to_1970;
         Instant instant = Instant.ofEpochSecond(days * 24L * 60L * 60L - OFFSET_MIN.getTotalSeconds());
         ZonedDateTime test = ZonedDateTime.ofInstant(instant, OFFSET_MIN);
-        assertEquals(test.getYear(), Year.MIN_YEAR);
+        assertEquals(test.getYear(), Year.MIN_VALUE);
         assertEquals(test.getMonth().getValue(), 1);
         assertEquals(test.getDayOfMonth(), 1);
         assertEquals(test.getOffset(), OFFSET_MIN);
@@ -448,11 +448,11 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void factory_ofInstant_minWithMaxOffset() {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
-        int year = Year.MIN_YEAR;
+        int year = Year.MIN_VALUE;
         long days = (year * 365L + (year / 4 - year / 100 + year / 400)) - days_0000_to_1970;
         Instant instant = Instant.ofEpochSecond(days * 24L * 60L * 60L - OFFSET_MAX.getTotalSeconds());
         ZonedDateTime test = ZonedDateTime.ofInstant(instant, OFFSET_MAX);
-        assertEquals(test.getYear(), Year.MIN_YEAR);
+        assertEquals(test.getYear(), Year.MIN_VALUE);
         assertEquals(test.getMonth().getValue(), 1);
         assertEquals(test.getDayOfMonth(), 1);
         assertEquals(test.getOffset(), OFFSET_MAX);
@@ -465,11 +465,11 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void factory_ofInstant_maxWithMinOffset() {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
-        int year = Year.MAX_YEAR;
+        int year = Year.MAX_VALUE;
         long days = (year * 365L + (year / 4 - year / 100 + year / 400)) + 365 - days_0000_to_1970;
         Instant instant = Instant.ofEpochSecond((days + 1) * 24L * 60L * 60L - 1 - OFFSET_MIN.getTotalSeconds());
         ZonedDateTime test = ZonedDateTime.ofInstant(instant, OFFSET_MIN);
-        assertEquals(test.getYear(), Year.MAX_YEAR);
+        assertEquals(test.getYear(), Year.MAX_VALUE);
         assertEquals(test.getMonth().getValue(), 12);
         assertEquals(test.getDayOfMonth(), 31);
         assertEquals(test.getOffset(), OFFSET_MIN);
@@ -482,11 +482,11 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void factory_ofInstant_maxWithMaxOffset() {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
-        int year = Year.MAX_YEAR;
+        int year = Year.MAX_VALUE;
         long days = (year * 365L + (year / 4 - year / 100 + year / 400)) + 365 - days_0000_to_1970;
         Instant instant = Instant.ofEpochSecond((days + 1) * 24L * 60L * 60L - 1 - OFFSET_MAX.getTotalSeconds());
         ZonedDateTime test = ZonedDateTime.ofInstant(instant, OFFSET_MAX);
-        assertEquals(test.getYear(), Year.MAX_YEAR);
+        assertEquals(test.getYear(), Year.MAX_VALUE);
         assertEquals(test.getMonth().getValue(), 12);
         assertEquals(test.getDayOfMonth(), 31);
         assertEquals(test.getOffset(), OFFSET_MAX);
@@ -512,7 +512,7 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_ofInstant_tooBig() {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
-        long year = Year.MAX_YEAR + 1L;
+        long year = Year.MAX_VALUE + 1L;
         long days = (year * 365L + (year / 4 - year / 100 + year / 400)) - days_0000_to_1970;
         Instant instant = Instant.ofEpochSecond(days * 24L * 60L * 60L);
         ZonedDateTime.ofInstant(instant, ZoneOffset.UTC);
@@ -521,7 +521,7 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void factory_ofInstant_tooLow() {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
-        int year = Year.MIN_YEAR - 1;
+        int year = Year.MIN_VALUE - 1;
         long days = (year * 365L + (year / 4 - year / 100 + year / 400)) - days_0000_to_1970;
         Instant instant = Instant.ofEpochSecond(days * 24L * 60L * 60L);
         ZonedDateTime.ofInstant(instant, ZoneOffset.UTC);

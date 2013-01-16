@@ -306,7 +306,7 @@ public enum ChronoField implements TemporalField {
      * This field is strictly defined to have the same meaning in all calendar systems.
      * This is necessary to ensure interoperation between calendars.
      */
-    EPOCH_DAY("EpochDay", DAYS, FOREVER, ValueRange.of((long) (Year.MIN_YEAR * 365.25), (long) (Year.MAX_YEAR * 365.25))),
+    EPOCH_DAY("EpochDay", DAYS, FOREVER, ValueRange.of((long) (Year.MIN_VALUE * 365.25), (long) (Year.MAX_VALUE * 365.25))),
     /**
      * The aligned week within a month.
      * <p>
@@ -359,7 +359,7 @@ public enum ChronoField implements TemporalField {
      * Non-ISO calendar systems should also implement this field to represent a sequential
      * count of months. It is recommended to define zero as the month of 1970-01-01 (ISO).
      */
-    EPOCH_MONTH("EpochMonth", MONTHS, FOREVER, ValueRange.of((Year.MIN_YEAR - 1970L) * 12, (Year.MAX_YEAR - 1970L) * 12L - 1L)),
+    EPOCH_MONTH("EpochMonth", MONTHS, FOREVER, ValueRange.of((Year.MIN_VALUE - 1970L) * 12, (Year.MAX_VALUE - 1970L) * 12L - 1L)),
     /**
      * The year within the era.
      * <p>
@@ -394,7 +394,7 @@ public enum ChronoField implements TemporalField {
      * will typically be the same as that used by the ISO calendar system.
      * The year-of-era value should typically always be positive, however this is not required.
      */
-    YEAR_OF_ERA("YearOfEra", YEARS, FOREVER, ValueRange.of(1, Year.MAX_YEAR, Year.MAX_YEAR + 1)),
+    YEAR_OF_ERA("YearOfEra", YEARS, FOREVER, ValueRange.of(1, Year.MAX_VALUE, Year.MAX_VALUE + 1)),
     /**
      * The proleptic year, such as 2012.
      * <p>
@@ -418,7 +418,7 @@ public enum ChronoField implements TemporalField {
      * defined with any appropriate value, although defining it to be the same as ISO may be
      * the best option.
      */
-    YEAR("Year", YEARS, FOREVER, ValueRange.of(Year.MIN_YEAR, Year.MAX_YEAR)),
+    YEAR("Year", YEARS, FOREVER, ValueRange.of(Year.MIN_VALUE, Year.MAX_VALUE)),
     /**
      * The era.
      * <p>

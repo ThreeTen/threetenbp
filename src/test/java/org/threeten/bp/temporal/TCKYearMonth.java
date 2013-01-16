@@ -212,12 +212,12 @@ public class TCKYearMonth extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_intsMonth_yearTooLow() {
-        YearMonth.of(Year.MIN_YEAR - 1, Month.JANUARY);
+        YearMonth.of(Year.MIN_VALUE - 1, Month.JANUARY);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_intsMonth_dayTooHigh() {
-        YearMonth.of(Year.MAX_YEAR + 1, Month.JANUARY);
+        YearMonth.of(Year.MAX_VALUE + 1, Month.JANUARY);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
@@ -234,12 +234,12 @@ public class TCKYearMonth extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_ints_yearTooLow() {
-        YearMonth.of(Year.MIN_YEAR - 1, 2);
+        YearMonth.of(Year.MIN_VALUE - 1, 2);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_ints_dayTooHigh() {
-        YearMonth.of(Year.MAX_YEAR + 1, 2);
+        YearMonth.of(Year.MAX_VALUE + 1, 2);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
@@ -296,8 +296,8 @@ public class TCKYearMonth extends AbstractDateTimeTest {
                 {"-1234-03", YearMonth.of(-1234, 3)},
                 {"-12345678-03", YearMonth.of(-12345678, 3)},
 
-                {"+" + Year.MAX_YEAR + "-03", YearMonth.of(Year.MAX_YEAR, 3)},
-                {Year.MIN_YEAR + "-03", YearMonth.of(Year.MIN_YEAR, 3)},
+                {"+" + Year.MAX_VALUE + "-03", YearMonth.of(Year.MAX_VALUE, 3)},
+                {Year.MIN_VALUE + "-03", YearMonth.of(Year.MIN_VALUE, 3)},
         };
     }
 
@@ -473,13 +473,13 @@ public class TCKYearMonth extends AbstractDateTimeTest {
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withYear_tooLow() {
         YearMonth test = YearMonth.of(2008, 6);
-        test.withYear(Year.MIN_YEAR - 1);
+        test.withYear(Year.MIN_VALUE - 1);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withYear_tooHigh() {
         YearMonth test = YearMonth.of(2008, 6);
-        test.withYear(Year.MAX_YEAR + 1);
+        test.withYear(Year.MAX_VALUE + 1);
     }
 
     //-----------------------------------------------------------------------
@@ -533,30 +533,30 @@ public class TCKYearMonth extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_plusYears_long_big() {
         YearMonth test = YearMonth.of(-40, 6);
-        assertEquals(test.plusYears(20L + Year.MAX_YEAR), YearMonth.of((int) (-40L + 20L + Year.MAX_YEAR), 6));
+        assertEquals(test.plusYears(20L + Year.MAX_VALUE), YearMonth.of((int) (-40L + 20L + Year.MAX_VALUE), 6));
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusYears_long_invalidTooLarge() {
-        YearMonth test = YearMonth.of(Year.MAX_YEAR, 6);
+        YearMonth test = YearMonth.of(Year.MAX_VALUE, 6);
         test.plusYears(1);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusYears_long_invalidTooLargeMaxAddMax() {
-        YearMonth test = YearMonth.of(Year.MAX_YEAR, 12);
+        YearMonth test = YearMonth.of(Year.MAX_VALUE, 12);
         test.plusYears(Long.MAX_VALUE);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusYears_long_invalidTooLargeMaxAddMin() {
-        YearMonth test = YearMonth.of(Year.MAX_YEAR, 12);
+        YearMonth test = YearMonth.of(Year.MAX_VALUE, 12);
         test.plusYears(Long.MIN_VALUE);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusYears_long_invalidTooSmall() {
-        YearMonth test = YearMonth.of(Year.MIN_YEAR, 6);
+        YearMonth test = YearMonth.of(Year.MIN_VALUE, 6);
         test.plusYears(-1);
     }
 
@@ -602,25 +602,25 @@ public class TCKYearMonth extends AbstractDateTimeTest {
 
     @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_plusMonths_long_invalidTooLarge() {
-        YearMonth test = YearMonth.of(Year.MAX_YEAR, 12);
+        YearMonth test = YearMonth.of(Year.MAX_VALUE, 12);
         test.plusMonths(1);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusMonths_long_invalidTooLargeMaxAddMax() {
-        YearMonth test = YearMonth.of(Year.MAX_YEAR, 12);
+        YearMonth test = YearMonth.of(Year.MAX_VALUE, 12);
         test.plusMonths(Long.MAX_VALUE);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusMonths_long_invalidTooLargeMaxAddMin() {
-        YearMonth test = YearMonth.of(Year.MAX_YEAR, 12);
+        YearMonth test = YearMonth.of(Year.MAX_VALUE, 12);
         test.plusMonths(Long.MIN_VALUE);
     }
 
     @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_plusMonths_long_invalidTooSmall() {
-        YearMonth test = YearMonth.of(Year.MIN_YEAR, 1);
+        YearMonth test = YearMonth.of(Year.MIN_VALUE, 1);
         test.plusMonths(-1);
     }
 
@@ -648,30 +648,30 @@ public class TCKYearMonth extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_minusYears_long_big() {
         YearMonth test = YearMonth.of(40, 6);
-        assertEquals(test.minusYears(20L + Year.MAX_YEAR), YearMonth.of((int) (40L - 20L - Year.MAX_YEAR), 6));
+        assertEquals(test.minusYears(20L + Year.MAX_VALUE), YearMonth.of((int) (40L - 20L - Year.MAX_VALUE), 6));
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusYears_long_invalidTooLarge() {
-        YearMonth test = YearMonth.of(Year.MAX_YEAR, 6);
+        YearMonth test = YearMonth.of(Year.MAX_VALUE, 6);
         test.minusYears(-1);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusYears_long_invalidTooLargeMaxSubtractMax() {
-        YearMonth test = YearMonth.of(Year.MIN_YEAR, 12);
+        YearMonth test = YearMonth.of(Year.MIN_VALUE, 12);
         test.minusYears(Long.MAX_VALUE);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusYears_long_invalidTooLargeMaxSubtractMin() {
-        YearMonth test = YearMonth.of(Year.MIN_YEAR, 12);
+        YearMonth test = YearMonth.of(Year.MIN_VALUE, 12);
         test.minusYears(Long.MIN_VALUE);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusYears_long_invalidTooSmall() {
-        YearMonth test = YearMonth.of(Year.MIN_YEAR, 6);
+        YearMonth test = YearMonth.of(Year.MIN_VALUE, 6);
         test.minusYears(1);
     }
 
@@ -717,25 +717,25 @@ public class TCKYearMonth extends AbstractDateTimeTest {
 
     @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_minusMonths_long_invalidTooLarge() {
-        YearMonth test = YearMonth.of(Year.MAX_YEAR, 12);
+        YearMonth test = YearMonth.of(Year.MAX_VALUE, 12);
         test.minusMonths(-1);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusMonths_long_invalidTooLargeMaxSubtractMax() {
-        YearMonth test = YearMonth.of(Year.MAX_YEAR, 12);
+        YearMonth test = YearMonth.of(Year.MAX_VALUE, 12);
         test.minusMonths(Long.MAX_VALUE);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusMonths_long_invalidTooLargeMaxSubtractMin() {
-        YearMonth test = YearMonth.of(Year.MAX_YEAR, 12);
+        YearMonth test = YearMonth.of(Year.MAX_VALUE, 12);
         test.minusMonths(Long.MIN_VALUE);
     }
 
     @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_minusMonths_long_invalidTooSmall() {
-        YearMonth test = YearMonth.of(Year.MIN_YEAR, 1);
+        YearMonth test = YearMonth.of(Year.MIN_VALUE, 1);
         test.minusMonths(1);
     }
 

@@ -730,7 +730,7 @@ public final class ZonedDateTime
      * The year returned by this method is proleptic as per {@code get(YEAR)}.
      * To obtain the year-of-era, use {@code get(YEAR_OF_ERA}.
      *
-     * @return the year, from MIN_YEAR to MAX_YEAR
+     * @return the year, from MIN_VALUE to MAX_VALUE
      */
     public int getYear() {
         return dateTime.getYear();
@@ -948,7 +948,7 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param year  the year to set in the result, from MIN_YEAR to MAX_YEAR
+     * @param year  the year to set in the result, from MIN_VALUE to MAX_VALUE
      * @return a {@code ZonedDateTime} based on this date-time with the requested year, not null
      * @throws DateTimeException if the year value is invalid
      */

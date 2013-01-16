@@ -168,12 +168,12 @@ public class TCKYear extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_int_tooLow() {
-        Year.of(Year.MIN_YEAR - 1);
+        Year.of(Year.MIN_VALUE - 1);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_factory_int_tooHigh() {
-        Year.of(Year.MAX_YEAR + 1);
+        Year.of(Year.MAX_VALUE + 1);
     }
 
     //-----------------------------------------------------------------------
@@ -207,8 +207,8 @@ public class TCKYear extends AbstractDateTimeTest {
                 {"-1234", Year.of(-1234)},
                 {"-12345678", Year.of(-12345678)},
 
-                {"+" + Year.MAX_YEAR, Year.of(Year.MAX_YEAR)},
-                {"" + Year.MIN_YEAR, Year.of(Year.MIN_YEAR)},
+                {"+" + Year.MAX_VALUE, Year.of(Year.MAX_VALUE)},
+                {"" + Year.MIN_VALUE, Year.of(Year.MIN_VALUE)},
         };
     }
 
@@ -353,11 +353,11 @@ public class TCKYear extends AbstractDateTimeTest {
         assertEquals(Year.of(2007).plusYears(1), Year.of(2008));
         assertEquals(Year.of(2007).plusYears(2), Year.of(2009));
 
-        assertEquals(Year.of(Year.MAX_YEAR - 1).plusYears(1), Year.of(Year.MAX_YEAR));
-        assertEquals(Year.of(Year.MAX_YEAR).plusYears(0), Year.of(Year.MAX_YEAR));
+        assertEquals(Year.of(Year.MAX_VALUE - 1).plusYears(1), Year.of(Year.MAX_VALUE));
+        assertEquals(Year.of(Year.MAX_VALUE).plusYears(0), Year.of(Year.MAX_VALUE));
 
-        assertEquals(Year.of(Year.MIN_YEAR + 1).plusYears(-1), Year.of(Year.MIN_YEAR));
-        assertEquals(Year.of(Year.MIN_YEAR).plusYears(0), Year.of(Year.MIN_YEAR));
+        assertEquals(Year.of(Year.MIN_VALUE + 1).plusYears(-1), Year.of(Year.MIN_VALUE));
+        assertEquals(Year.of(Year.MIN_VALUE).plusYears(0), Year.of(Year.MIN_VALUE));
     }
 
     @Test(groups={"tck"})
@@ -368,28 +368,28 @@ public class TCKYear extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void test_plusYears_big() {
-        long years = 20L + Year.MAX_YEAR;
+        long years = 20L + Year.MAX_VALUE;
         assertEquals(Year.of(-40).plusYears(years), Year.of((int) (-40L + years)));
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusYears_max() {
-        Year.of(Year.MAX_YEAR).plusYears(1);
+        Year.of(Year.MAX_VALUE).plusYears(1);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusYears_maxLots() {
-        Year.of(Year.MAX_YEAR).plusYears(1000);
+        Year.of(Year.MAX_VALUE).plusYears(1000);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusYears_min() {
-        Year.of(Year.MIN_YEAR).plusYears(-1);
+        Year.of(Year.MIN_VALUE).plusYears(-1);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusYears_minLots() {
-        Year.of(Year.MIN_YEAR).plusYears(-1000);
+        Year.of(Year.MIN_VALUE).plusYears(-1000);
     }
 
     //-----------------------------------------------------------------------
@@ -402,11 +402,11 @@ public class TCKYear extends AbstractDateTimeTest {
         assertEquals(Year.of(2007).minusYears(1), Year.of(2006));
         assertEquals(Year.of(2007).minusYears(2), Year.of(2005));
 
-        assertEquals(Year.of(Year.MAX_YEAR - 1).minusYears(-1), Year.of(Year.MAX_YEAR));
-        assertEquals(Year.of(Year.MAX_YEAR).minusYears(0), Year.of(Year.MAX_YEAR));
+        assertEquals(Year.of(Year.MAX_VALUE - 1).minusYears(-1), Year.of(Year.MAX_VALUE));
+        assertEquals(Year.of(Year.MAX_VALUE).minusYears(0), Year.of(Year.MAX_VALUE));
 
-        assertEquals(Year.of(Year.MIN_YEAR + 1).minusYears(1), Year.of(Year.MIN_YEAR));
-        assertEquals(Year.of(Year.MIN_YEAR).minusYears(0), Year.of(Year.MIN_YEAR));
+        assertEquals(Year.of(Year.MIN_VALUE + 1).minusYears(1), Year.of(Year.MIN_VALUE));
+        assertEquals(Year.of(Year.MIN_VALUE).minusYears(0), Year.of(Year.MIN_VALUE));
     }
 
     @Test(groups={"tck"})
@@ -417,28 +417,28 @@ public class TCKYear extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void test_minusYears_big() {
-        long years = 20L + Year.MAX_YEAR;
+        long years = 20L + Year.MAX_VALUE;
         assertEquals(Year.of(40).minusYears(years), Year.of((int) (40L - years)));
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusYears_max() {
-        Year.of(Year.MAX_YEAR).minusYears(-1);
+        Year.of(Year.MAX_VALUE).minusYears(-1);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusYears_maxLots() {
-        Year.of(Year.MAX_YEAR).minusYears(-1000);
+        Year.of(Year.MAX_VALUE).minusYears(-1000);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusYears_min() {
-        Year.of(Year.MIN_YEAR).minusYears(1);
+        Year.of(Year.MIN_VALUE).minusYears(1);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusYears_minLots() {
-        Year.of(Year.MIN_YEAR).minusYears(1000);
+        Year.of(Year.MIN_VALUE).minusYears(1000);
     }
 
     //-----------------------------------------------------------------------

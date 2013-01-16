@@ -115,13 +115,13 @@ final class HijrahDate
     /**
      * The minimum valid year-of-era.
      */
-    public static final int MIN_YEAR_OF_ERA = 1;
+    public static final int MIN_VALUE_OF_ERA = 1;
     /**
      * The maximum valid year-of-era.
      * This is currently set to 9999 but may be changed to increase the valid range
      * in a future version of the specification.
      */
-    public static final int MAX_YEAR_OF_ERA = 9999;
+    public static final int MAX_VALUE_OF_ERA = 9999;
     /**
      * 0-based, for number of day-of-year in the beginning of month in normal
      * year.
@@ -161,7 +161,7 @@ final class HijrahDate
     private static final int MIN_VALUES[] =
         {
         0,
-        MIN_YEAR_OF_ERA,
+        MIN_VALUE_OF_ERA,
         0,
         1,
         0,
@@ -175,7 +175,7 @@ final class HijrahDate
     private static final int LEAST_MAX_VALUES[] =
         {
         1,
-        MAX_YEAR_OF_ERA,
+        MAX_VALUE_OF_ERA,
         11,
         51,
         5,
@@ -189,7 +189,7 @@ final class HijrahDate
     private static final int MAX_VALUES[] =
         {
         1,
-        MAX_YEAR_OF_ERA,
+        MAX_VALUE_OF_ERA,
         11,
         52,
         6,
@@ -455,8 +455,8 @@ final class HijrahDate
      * @param yearOfEra the year to check
      */
     private static void checkValidYearOfEra(int yearOfEra) {
-         if (yearOfEra < MIN_YEAR_OF_ERA  ||
-                 yearOfEra > MAX_YEAR_OF_ERA) {
+         if (yearOfEra < MIN_VALUE_OF_ERA  ||
+                 yearOfEra > MAX_VALUE_OF_ERA) {
              throw new DateTimeException("Invalid year of Hijrah Era");
          }
     }

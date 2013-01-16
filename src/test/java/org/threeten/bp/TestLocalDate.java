@@ -143,12 +143,12 @@ public class TestLocalDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"implementation"})
     public void constant_MIN_DATE_TIME() {
-        check(LocalDate.MIN_DATE, Year.MIN_YEAR, 1, 1);
+        check(LocalDate.MIN_DATE, Year.MIN_VALUE, 1, 1);
     }
 
     @Test(groups={"implementation"})
     public void constant_MAX_DATE_TIME() {
-        check(LocalDate.MAX_DATE, Year.MAX_YEAR, 12, 31);
+        check(LocalDate.MAX_DATE, Year.MAX_VALUE, 12, 31);
     }
 
     //-----------------------------------------------------------------------

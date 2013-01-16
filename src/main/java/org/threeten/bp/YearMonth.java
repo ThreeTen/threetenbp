@@ -36,10 +36,13 @@ import static org.threeten.bp.temporal.ChronoField.ERA;
 import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.YEAR;
 import static org.threeten.bp.temporal.ChronoField.YEAR_OF_ERA;
+import static org.threeten.bp.temporal.ChronoUnit.MONTHS;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.InvalidObjectException;
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -80,7 +83,7 @@ import org.threeten.bp.temporal.ValueRange;
  * For most applications written today, the ISO-8601 rules are entirely suitable.
  * Any application that uses historical dates should consider using {@code HistoricDate}.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
 public final class YearMonth
@@ -135,6 +138,7 @@ public final class YearMonth
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      *
+     * @param zone  the zone ID to use, not null
      * @return the current year-month using the system clock, not null
      */
     public static YearMonth now(ZoneId zone) {
@@ -186,16 +190,20 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code YearMonth} from a date-time object.
+     * Obtains an instance of {@code YearMonth} from a temporal object.
      * <p>
-     * A {@code DateTimeAccessor} represents some form of date and time information.
-     * This factory converts the arbitrary date-time object to an instance of {@code YearMonth}.
+     * A {@code TemporalAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary temporal object to an instance of {@code YearMonth}.
      * <p>
-     * The conversion extracts the {@link ChronoField#YEAR year} and
-     * {@link ChronoField#MONTH_OF_YEAR month-of-year} fields.
-     * The extraction is only permitted if the date-time has an ISO chronology.
+     * The conversion extracts the {@link ChronoField#YEAR YEAR} and
+     * {@link ChronoField#MONTH_OF_YEAR MONTH_OF_YEAR} fields.
+     * The extraction is only permitted if the temporal object has an ISO
+     * chronology, or can be converted to a {@code LocalDate}.
+     * <p>
+     * This method matches the signature of the functional interface {@link TemporalQuery}
+     * allowing it to be used in queries via method reference, {@code YearMonth::from}.
      *
-     * @param temporal  the date-time object to convert, not null
+     * @param temporal  the temporal object to convert, not null
      * @return the year-month, not null
      * @throws DateTimeException if unable to convert to a {@code YearMonth}
      */
@@ -203,10 +211,14 @@ public final class YearMonth
         if (temporal instanceof YearMonth) {
             return (YearMonth) temporal;
         }
-        if (ISOChrono.INSTANCE.equals(Chrono.from(temporal)) == false) {
-            temporal = LocalDate.from(temporal);
+        try {
+            if (ISOChrono.INSTANCE.equals(Chrono.from(temporal)) == false) {
+                temporal = LocalDate.from(temporal);
+            }
+            return of(temporal.get(YEAR), temporal.get(MONTH_OF_YEAR));
+        } catch (DateTimeException ex) {
+            throw new DateTimeException("Unable to obtain YearMonth from TemporalAccessor: " + temporal.getClass(), ex);
         }
-        return of(temporal.get(YEAR), temporal.get(MONTH_OF_YEAR));
     }
 
     //-----------------------------------------------------------------------
@@ -268,6 +280,34 @@ public final class YearMonth
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Checks if the specified field is supported.
+     * <p>
+     * This checks if this year-month can be queried for the specified field.
+     * If false, then calling the {@link #range(TemporalField) range} and
+     * {@link #get(TemporalField) get} methods will throw an exception.
+     * <p>
+     * If the field is a {@link ChronoField} then the query is implemented here.
+     * The {@link #isSupported(TemporalField) supported fields} will return valid
+     * values based on this date-time.
+     * The supported fields are:
+     * <ul>
+     * <li>{@code MONTH_OF_YEAR}
+     * <li>{@code EPOCH_MONTH}
+     * <li>{@code YEAR_OF_ERA}
+     * <li>{@code YEAR}
+     * <li>{@code ERA}
+     * </ul>
+     * All other {@code ChronoField} instances will return false.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.doIsSupported(TemporalAccessor)}
+     * passing {@code this} as the argument.
+     * Whether the field is supported is determined by the field.
+     *
+     * @param field  the field to check, null returns false
+     * @return true if the field is supported on this year-month, false if not
+     */
     @Override
     public boolean isSupported(TemporalField field) {
         if (field instanceof ChronoField) {
@@ -277,14 +317,87 @@ public final class YearMonth
         return field != null && field.doIsSupported(this);
     }
 
+    /**
+     * Gets the range of valid values for the specified field.
+     * <p>
+     * The range object expresses the minimum and maximum valid values for a field.
+     * This year-month is used to enhance the accuracy of the returned range.
+     * If it is not possible to return the range, because the field is not supported
+     * or for some other reason, an exception is thrown.
+     * <p>
+     * If the field is a {@link ChronoField} then the query is implemented here.
+     * The {@link #isSupported(TemporalField) supported fields} will return
+     * appropriate range instances.
+     * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.doRange(TemporalAccessor)}
+     * passing {@code this} as the argument.
+     * Whether the range can be obtained is determined by the field.
+     *
+     * @param field  the field to query the range for, not null
+     * @return the range of valid values for the field, not null
+     * @throws DateTimeException if the range for the field cannot be obtained
+     */
     @Override
     public ValueRange range(TemporalField field) {
         if (field == YEAR_OF_ERA) {
-            return (getYear() <= 0 ? ValueRange.of(1, LocalDate.MAX_YEAR + 1) : ValueRange.of(1, LocalDate.MAX_YEAR));
+            return (getYear() <= 0 ? ValueRange.of(1, Year.MAX_VALUE + 1) : ValueRange.of(1, Year.MAX_VALUE));
         }
         return super.range(field);
     }
 
+    /**
+     * Gets the value of the specified field from this year-month as an {@code int}.
+     * <p>
+     * This queries this year-month for the value for the specified field.
+     * The returned value will always be within the valid range of values for the field.
+     * If it is not possible to return the value, because the field is not supported
+     * or for some other reason, an exception is thrown.
+     * <p>
+     * If the field is a {@link ChronoField} then the query is implemented here.
+     * The {@link #isSupported(TemporalField) supported fields} will return valid
+     * values based on this year-month, except {@code EPOCH_MONTH} which is too
+     * large to fit in an {@code int} and throw a {@code DateTimeException}.
+     * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * passing {@code this} as the argument. Whether the value can be obtained,
+     * and what the value represents, is determined by the field.
+     *
+     * @param field  the field to get, not null
+     * @return the value for the field
+     * @throws DateTimeException if a value for the field cannot be obtained
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    @Override  // override for Javadoc
+    public int get(TemporalField field) {
+        return range(field).checkValidIntValue(getLong(field), field);
+    }
+
+    /**
+     * Gets the value of the specified field from this year-month as a {@code long}.
+     * <p>
+     * This queries this year-month for the value for the specified field.
+     * If it is not possible to return the value, because the field is not supported
+     * or for some other reason, an exception is thrown.
+     * <p>
+     * If the field is a {@link ChronoField} then the query is implemented here.
+     * The {@link #isSupported(TemporalField) supported fields} will return valid
+     * values based on this year-month.
+     * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * passing {@code this} as the argument. Whether the value can be obtained,
+     * and what the value represents, is determined by the field.
+     *
+     * @param field  the field to get, not null
+     * @return the value for the field
+     * @throws DateTimeException if a value for the field cannot be obtained
+     * @throws ArithmeticException if numeric overflow occurs
+     */
     @Override
     public long getLong(TemporalField field) {
         if (field instanceof ChronoField) {
@@ -356,6 +469,19 @@ public final class YearMonth
     }
 
     /**
+     * Checks if the day-of-month is valid for this year-month.
+     * <p>
+     * This method checks whether this year and month and the input day form
+     * a valid date.
+     *
+     * @param dayOfMonth  the day-of-month to validate, from 1 to 31, invalid value returns false
+     * @return true if the day is valid for this year-month
+     */
+    public boolean isValidDay(int dayOfMonth) {
+        return dayOfMonth >= 1 && dayOfMonth <= lengthOfMonth();
+    }
+
+    /**
      * Returns the length of the month, taking account of the year.
      * <p>
      * This returns the length of the month in days.
@@ -380,33 +506,79 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Returns an adjusted year-month based on this year-month.
+     * Returns an adjusted copy of this year-month.
      * <p>
-     * This adjusts the year-month according to the rules of the specified adjuster.
+     * This returns a new {@code YearMonth}, based on this one, with the year-month adjusted.
+     * The adjustment takes place using the specified adjuster strategy object.
+     * Read the documentation of the adjuster to understand what adjustment will be made.
+     * <p>
      * A simple adjuster might simply set the one of the fields, such as the year field.
      * A more complex adjuster might set the year-month to the next month that
      * Halley's comet will pass the Earth.
      * <p>
-     * In addition, all principal classes implement the {@link TemporalAdjuster} interface,
-     * including this one. For example, {@link Month} implements the adjuster interface.
-     * As such, this code will compile and run:
-     * <pre>
-     *  yearMonth.with(month);
-     * </pre>
+     * The result of this method is obtained by invoking the
+     * {@link TemporalAdjuster#adjustInto(Temporal)} method on the
+     * specified adjuster passing {@code this} as the argument.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster the adjuster to use, not null
-     * @return a {@code YearMonth} based on this year-month with the adjustment made, not null
+     * @return a {@code YearMonth} based on {@code this} with the adjustment made, not null
      * @throws DateTimeException if the adjustment cannot be made
+     * @throws ArithmeticException if numeric overflow occurs
      */
+    @Override
     public YearMonth with(TemporalAdjuster adjuster) {
-        if (adjuster instanceof YearMonth) {
-            return (YearMonth) adjuster;
-        }
         return (YearMonth) adjuster.adjustInto(this);
     }
 
+    /**
+     * Returns a copy of this year-month with the specified field set to a new value.
+     * <p>
+     * This returns a new {@code YearMonth}, based on this one, with the value
+     * for the specified field changed.
+     * This can be used to change any supported field, such as the year or month.
+     * If it is not possible to set the value, because the field is not supported or for
+     * some other reason, an exception is thrown.
+     * <p>
+     * If the field is a {@link ChronoField} then the adjustment is implemented here.
+     * The supported fields behave as follows:
+     * <ul>
+     * <li>{@code MONTH_OF_YEAR} -
+     *  Returns a {@code YearMonth} with the specified month-of-year.
+     *  The year will be unchanged.
+     * <li>{@code EPOCH_MONTH} -
+     *  Returns a {@code YearMonth} with the specified epoch-month.
+     *  This completely replaces the year and month of this object.
+     * <li>{@code YEAR_OF_ERA} -
+     *  Returns a {@code YearMonth} with the specified year-of-era
+     *  The month and era will be unchanged.
+     * <li>{@code YEAR} -
+     *  Returns a {@code YearMonth} with the specified year.
+     *  The month will be unchanged.
+     * <li>{@code ERA} -
+     *  Returns a {@code YearMonth} with the specified era.
+     *  The month and year-of-era will be unchanged.
+     * </ul>
+     * <p>
+     * In all cases, if the new value is outside the valid range of values for the field
+     * then a {@code DateTimeException} will be thrown.
+     * <p>
+     * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.doWith(Temporal, long)}
+     * passing {@code this} as the argument. In this case, the field determines
+     * whether and how to adjust the instant.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param field  the field to set in the result, not null
+     * @param newValue  the new value of the field in the result
+     * @return a {@code YearMonth} based on {@code this} with the specified field set, not null
+     * @throws DateTimeException if the field cannot be set
+     * @throws ArithmeticException if numeric overflow occurs
+     */
     @Override
     public YearMonth with(TemporalField field, long newValue) {
         if (field instanceof ChronoField) {
@@ -458,22 +630,28 @@ public final class YearMonth
      * Returns a copy of this year-month with the specified period added.
      * <p>
      * This method returns a new year-month based on this year-month with the specified period added.
-     * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link org.threeten.bp.temporal.TemporalAdder} interface.
+     * The adder is typically {@link Period} but may be any other type implementing
+     * the {@link TemporalAdder} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #plus(long, TemporalUnit)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param adjuster  the adjuster to use, not null
+     * @param adder  the adder to use, not null
      * @return a {@code YearMonth} based on this year-month with the addition made, not null
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public YearMonth plus(TemporalAdder adjuster) {
-        return (YearMonth) adjuster.addTo(this);
+    @Override
+    public YearMonth plus(TemporalAdder adder) {
+        return (YearMonth) adder.addTo(this);
     }
 
+    /**
+     * {@inheritDoc}
+     * @throws DateTimeException {@inheritDoc}
+     * @throws ArithmeticException {@inheritDoc}
+     */
     @Override
     public YearMonth plus(long amountToAdd, TemporalUnit unit) {
         if (unit instanceof ChronoUnit) {
@@ -532,22 +710,28 @@ public final class YearMonth
      * Returns a copy of this year-month with the specified period subtracted.
      * <p>
      * This method returns a new year-month based on this year-month with the specified period subtracted.
-     * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link org.threeten.bp.temporal.TemporalSubtractor} interface.
+     * The subtractor is typically {@link java.time.Period} but may be any other type implementing
+     * the {@link TemporalSubtractor} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #minus(long, TemporalUnit)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param adjuster  the adjuster to use, not null
+     * @param subtractor  the subtractor to use, not null
      * @return a {@code YearMonth} based on this year-month with the subtraction made, not null
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public YearMonth minus(TemporalSubtractor adjuster) {
-        return (YearMonth) adjuster.subtractFrom(this);
+    @Override
+    public YearMonth minus(TemporalSubtractor subtractor) {
+        return (YearMonth) subtractor.subtractFrom(this);
     }
 
+    /**
+     * {@inheritDoc}
+     * @throws DateTimeException {@inheritDoc}
+     * @throws ArithmeticException {@inheritDoc}
+     */
     @Override
     public YearMonth minus(long amountToSubtract, TemporalUnit unit) {
         return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
@@ -581,27 +765,143 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the day-of-month is valid for this year-month.
+     * Queries this year-month using the specified query.
      * <p>
-     * This method checks whether this year and month and the input day form
-     * a valid date.
+     * This queries this year-month using the specified query strategy object.
+     * The {@code TemporalQuery} object defines the logic to be used to
+     * obtain the result. Read the documentation of the query to understand
+     * what the result of this method will be.
+     * <p>
+     * The result of this method is obtained by invoking the
+     * {@link TemporalQuery#queryFrom(TemporalAccessor)} method on the
+     * specified query passing {@code this} as the argument.
      *
-     * @param dayOfMonth  the day-of-month to validate, from 1 to 31, invalid value returns false
-     * @return true if the day is valid for this year-month
+     * @param <R> the type of the result
+     * @param query  the query to invoke, not null
+     * @return the query result, null may be returned (defined by the query)
+     * @throws DateTimeException if unable to query (defined by the query)
+     * @throws ArithmeticException if numeric overflow occurs (defined by the query)
      */
-    public boolean isValidDay(int dayOfMonth) {
-        return dayOfMonth >= 1 && dayOfMonth <= lengthOfMonth();
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R query(TemporalQuery<R> query) {
+        if (query == TemporalQueries.chrono()) {
+            return (R) ISOChrono.INSTANCE;
+        } else if (query == TemporalQueries.precision()) {
+            return (R) MONTHS;
+        }
+        return super.query(query);
+    }
+
+    /**
+     * Adjusts the specified temporal object to have this year-month.
+     * <p>
+     * This returns a temporal object of the same observable type as the input
+     * with the year and month changed to be the same as this.
+     * <p>
+     * The adjustment is equivalent to using {@link Temporal#with(TemporalField, long)}
+     * passing {@link ChronoField#EPOCH_MONTH} as the field.
+     * If the specified temporal object does not use the ISO calendar system then
+     * a {@code DateTimeException} is thrown.
+     * <p>
+     * In most cases, it is clearer to reverse the calling pattern by using
+     * {@link Temporal#with(TemporalAdjuster)}:
+     * <pre>
+     *   // these two lines are equivalent, but the second approach is recommended
+     *   temporal = thisYearMonth.adjustInto(temporal);
+     *   temporal = temporal.with(thisYearMonth);
+     * </pre>
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param temporal  the target object to be adjusted, not null
+     * @return the adjusted object, not null
+     * @throws DateTimeException if unable to make the adjustment
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    @Override
+    public Temporal adjustInto(Temporal temporal) {
+        if (Chrono.from(temporal).equals(ISOChrono.INSTANCE) == false) {
+            throw new DateTimeException("Adjustment only supported on ISO date-time");
+        }
+        return temporal.with(EPOCH_MONTH, getEpochMonth());
+    }
+
+    /**
+     * Calculates the period between this year-month and another year-month in
+     * terms of the specified unit.
+     * <p>
+     * This calculates the period between two year-months in terms of a single unit.
+     * The start and end points are {@code this} and the specified year-month.
+     * The result will be negative if the end is before the start.
+     * The {@code Temporal} passed to this method must be a {@code YearMonth}.
+     * For example, the period in years between two year-months can be calculated
+     * using {@code startYearMonth.periodUntil(endYearMonth, YEARS)}.
+     * <p>
+     * The calculation returns a whole number, representing the number of
+     * complete units between the two year-months.
+     * For example, the period in decades between 2012-06 and 2032-05
+     * will only be one decade as it is one month short of two decades.
+     * <p>
+     * This method operates in association with {@link TemporalUnit#between}.
+     * The result of this method is a {@code long} representing the amount of
+     * the specified unit. By contrast, the result of {@code between} is an
+     * object that can be used directly in addition/subtraction:
+     * <pre>
+     *   long period = start.periodUntil(end, YEARS);   // this method
+     *   dateTime.plus(YEARS.between(start, end));      // use in plus/minus
+     * </pre>
+     * <p>
+     * The calculation is implemented in this method for {@link ChronoUnit}.
+     * The units {@code MONTHS}, {@code YEARS}, {@code DECADES},
+     * {@code CENTURIES}, {@code MILLENNIA} and {@code ERAS} are supported.
+     * Other {@code ChronoUnit} values will throw an exception.
+     * <p>
+     * If the unit is not a {@code ChronoUnit}, then the result of this method
+     * is obtained by invoking {@code TemporalUnit.between(Temporal, Temporal)}
+     * passing {@code this} as the first argument and the input temporal as
+     * the second argument.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param endYearMonth  the end year-month, which must be a {@code YearMonth}, not null
+     * @param unit  the unit to measure the period in, not null
+     * @return the amount of the period between this year-month and the end year-month
+     * @throws DateTimeException if the period cannot be calculated
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    @Override
+    public long periodUntil(Temporal endYearMonth, TemporalUnit unit) {
+        if (endYearMonth instanceof YearMonth == false) {
+            Objects.requireNonNull(endYearMonth, "endYearMonth");
+            throw new DateTimeException("Unable to calculate period between objects of two different types");
+        }
+        YearMonth end = (YearMonth) endYearMonth;
+        if (unit instanceof ChronoUnit) {
+            long monthsUntil = end.getEpochMonth() - getEpochMonth();  // no overflow
+            switch ((ChronoUnit) unit) {
+                case MONTHS: return monthsUntil;
+                case YEARS: return monthsUntil / 12;
+                case DECADES: return monthsUntil / 120;
+                case CENTURIES: return monthsUntil / 1200;
+                case MILLENNIA: return monthsUntil / 12000;
+                case ERAS: return end.getLong(ERA) - getLong(ERA);
+            }
+            throw new DateTimeException("Unsupported unit: " + unit.getName());
+        }
+        return unit.between(this, endYearMonth).getAmount();
     }
 
     //-----------------------------------------------------------------------
     /**
      * Returns a date formed from this year-month at the specified day-of-month.
      * <p>
-     * This method merges {@code this} and the specified day to form an
-     * instance of {@code LocalDate}.
+     * This combines this year-month and the specified day-of-month to form a {@code LocalDate}.
+     * The day-of-month value must be valid for the year-month.
+     * <p>
      * This method can be used as part of a chain to produce a date:
      * <pre>
-     * LocalDate date = year.atMonth(month).atDay(day);
+     *  LocalDate date = year.atMonth(month).atDay(day);
      * </pre>
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -616,63 +916,6 @@ public final class YearMonth
     }
 
     //-----------------------------------------------------------------------
-    @SuppressWarnings("unchecked")
-    @Override
-    public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.CHRONO) {
-            return (R) ISOChrono.INSTANCE;
-        }
-        return super.query(query);
-    }
-
-    /**
-     * Implementation of the strategy to make an adjustment to the specified date-time object.
-     * <p>
-     * This method is not intended to be called by application code directly.
-     * Applications should use the {@code with(TemporalAdjuster)} method on the
-     * date-time object to make the adjustment passing this as the argument.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * <h4>Implementation notes</h4>
-     * Adjusts the specified date-time to have the value of this year-month.
-     * The date-time object must use the ISO calendar system.
-     * The adjustment is equivalent to using {@link Temporal#with(TemporalField, long)}
-     * passing {@code EPOCH_MONTH} as the field.
-     *
-     * @param temporal  the target object to be adjusted, not null
-     * @return the adjusted object, not null
-     */
-    @Override
-    public Temporal adjustInto(Temporal temporal) {
-        if (Chrono.from(temporal).equals(ISOChrono.INSTANCE) == false) {
-            throw new DateTimeException("Adjustment only supported on ISO date-time");
-        }
-        return temporal.with(EPOCH_MONTH, getEpochMonth());
-    }
-
-    @Override
-    public long periodUntil(Temporal endDateTime, TemporalUnit unit) {
-        if (endDateTime instanceof YearMonth == false) {
-            throw new DateTimeException("Unable to calculate period between objects of two different types");
-        }
-        YearMonth end = (YearMonth) endDateTime;
-        if (unit instanceof ChronoUnit) {
-            long monthsUntil = end.getEpochMonth() - getEpochMonth();  // no overflow
-            switch ((ChronoUnit) unit) {
-                case MONTHS: return monthsUntil;
-                case YEARS: return monthsUntil / 12;
-                case DECADES: return monthsUntil / 120;
-                case CENTURIES: return monthsUntil / 1200;
-                case MILLENNIA: return monthsUntil / 12000;
-                case ERAS: return end.getLong(ERA) - getLong(ERA);
-            }
-            throw new DateTimeException("Unsupported unit: " + unit.getName());
-        }
-        return unit.between(this, endDateTime).getAmount();
-    }
-
-    //-----------------------------------------------------------------------
     /**
      * Compares this year-month to another year-month.
      * <p>
@@ -682,6 +925,7 @@ public final class YearMonth
      * @param other  the other year-month to compare to, not null
      * @return the comparator value, negative if less, positive if greater
      */
+    @Override
     public int compareTo(YearMonth other) {
         int cmp = (year - other.year);
         if (cmp == 0) {
@@ -769,6 +1013,9 @@ public final class YearMonth
 
     /**
      * Outputs this year-month as a {@code String} using the formatter.
+     * <p>
+     * This year-month will be passed to the formatter
+     * {@link DateTimeFormatter#print(TemporalAccessor) print method}.
      *
      * @param formatter  the formatter to use, not null
      * @return the formatted year-month string, not null
@@ -779,9 +1026,18 @@ public final class YearMonth
         return formatter.print(this);
     }
 
-    // -----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     private Object writeReplace() {
         return new Ser(Ser.YEAR_MONTH_TYPE, this);
+    }
+
+    /**
+     * Defend against malicious streams.
+     * @return never
+     * @throws InvalidObjectException always
+     */
+    private Object readResolve() throws ObjectStreamException {
+        throw new InvalidObjectException("Deserialization via serialization delegate");
     }
 
     void writeExternal(DataOutput out) throws IOException {

@@ -139,4 +139,16 @@ public final class TemporalQueries {
         }
     };
 
+    public static TemporalQuery<Chrono<?>> chrono() {
+        return CHRONO;
+    }
+
+    public static TemporalQuery<ZoneId> zoneId() {
+        return ZONE_ID;
+    }
+
+    public static TemporalQuery<ChronoUnit> precision() {
+        return TIME_PRECISION;
+    }
+
 }

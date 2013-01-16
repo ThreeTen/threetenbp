@@ -652,7 +652,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withYear_int_invalid() {
-        TEST_2007_07_15_PONE.withYear(Year.MIN_YEAR - 1);
+        TEST_2007_07_15_PONE.withYear(Year.MIN_VALUE - 1);
     }
 
     @Test(groups={"tck"})
@@ -797,31 +797,31 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void test_plusYears_long_big() {
-        long years = 20L + Year.MAX_YEAR;
+        long years = 20L + Year.MAX_VALUE;
         OffsetDate test = OffsetDate.of(-40, 6, 1, OFFSET_PONE).plusYears(years);
         assertEquals(test, OffsetDate.of((int) (-40L + years), 6, 1, OFFSET_PONE));
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusYears_long_invalidTooLarge() {
-        OffsetDate.of(Year.MAX_YEAR, 1, 1, OFFSET_PONE).plusYears(1);
+        OffsetDate.of(Year.MAX_VALUE, 1, 1, OFFSET_PONE).plusYears(1);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusYears_long_invalidTooLargeMaxAddMax() {
-        OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
+        OffsetDate test = OffsetDate.of(Year.MAX_VALUE, 12, 1, OFFSET_PONE);
         test.plusYears(Long.MAX_VALUE);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusYears_long_invalidTooLargeMaxAddMin() {
-        OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
+        OffsetDate test = OffsetDate.of(Year.MAX_VALUE, 12, 1, OFFSET_PONE);
         test.plusYears(Long.MIN_VALUE);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusYears_long_invalidTooSmall() {
-        OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).plusYears(-1);
+        OffsetDate.of(Year.MIN_VALUE, 1, 1, OFFSET_PONE).plusYears(-1);
     }
 
     //-----------------------------------------------------------------------
@@ -886,24 +886,24 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
 
     @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_plusMonths_long_invalidTooLarge() {
-        OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE).plusMonths(1);
+        OffsetDate.of(Year.MAX_VALUE, 12, 1, OFFSET_PONE).plusMonths(1);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusMonths_long_invalidTooLargeMaxAddMax() {
-        OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
+        OffsetDate test = OffsetDate.of(Year.MAX_VALUE, 12, 1, OFFSET_PONE);
         test.plusMonths(Long.MAX_VALUE);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusMonths_long_invalidTooLargeMaxAddMin() {
-        OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
+        OffsetDate test = OffsetDate.of(Year.MAX_VALUE, 12, 1, OFFSET_PONE);
         test.plusMonths(Long.MIN_VALUE);
     }
 
     @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_plusMonths_long_invalidTooSmall() {
-        OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).plusMonths(-1);
+        OffsetDate.of(Year.MIN_VALUE, 1, 1, OFFSET_PONE).plusMonths(-1);
     }
 
     //-----------------------------------------------------------------------
@@ -1002,36 +1002,36 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void test_plusWeeks_maximum() {
-        OffsetDate t = OffsetDate.of(Year.MAX_YEAR, 12, 24, OFFSET_PONE).plusWeeks(1);
-        OffsetDate expected = OffsetDate.of(Year.MAX_YEAR, 12, 31, OFFSET_PONE);
+        OffsetDate t = OffsetDate.of(Year.MAX_VALUE, 12, 24, OFFSET_PONE).plusWeeks(1);
+        OffsetDate expected = OffsetDate.of(Year.MAX_VALUE, 12, 31, OFFSET_PONE);
         assertEquals(t, expected);
     }
 
     @Test(groups={"tck"})
     public void test_plusWeeks_minimum() {
-        OffsetDate t = OffsetDate.of(Year.MIN_YEAR, 1, 8, OFFSET_PONE).plusWeeks(-1);
-        OffsetDate expected = OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE);
+        OffsetDate t = OffsetDate.of(Year.MIN_VALUE, 1, 8, OFFSET_PONE).plusWeeks(-1);
+        OffsetDate expected = OffsetDate.of(Year.MIN_VALUE, 1, 1, OFFSET_PONE);
         assertEquals(t, expected);
     }
 
     @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_plusWeeks_invalidTooLarge() {
-        OffsetDate.of(Year.MAX_YEAR, 12, 25, OFFSET_PONE).plusWeeks(1);
+        OffsetDate.of(Year.MAX_VALUE, 12, 25, OFFSET_PONE).plusWeeks(1);
     }
 
     @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_plusWeeks_invalidTooSmall() {
-        OffsetDate.of(Year.MIN_YEAR, 1, 7, OFFSET_PONE).plusWeeks(-1);
+        OffsetDate.of(Year.MIN_VALUE, 1, 7, OFFSET_PONE).plusWeeks(-1);
     }
 
     @Test(expectedExceptions={ArithmeticException.class}, groups={"tck"})
     public void test_plusWeeks_invalidMaxMinusMax() {
-        OffsetDate.of(Year.MAX_YEAR, 12, 25, OFFSET_PONE).plusWeeks(Long.MAX_VALUE);
+        OffsetDate.of(Year.MAX_VALUE, 12, 25, OFFSET_PONE).plusWeeks(Long.MAX_VALUE);
     }
 
     @Test(expectedExceptions={ArithmeticException.class}, groups={"tck"})
     public void test_plusWeeks_invalidMaxMinusMin() {
-        OffsetDate.of(Year.MAX_YEAR, 12, 25, OFFSET_PONE).plusWeeks(Long.MIN_VALUE);
+        OffsetDate.of(Year.MAX_VALUE, 12, 25, OFFSET_PONE).plusWeeks(Long.MIN_VALUE);
     }
 
     //-----------------------------------------------------------------------
@@ -1130,36 +1130,36 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void test_plusDays_maximum() {
-        OffsetDate t = OffsetDate.of(Year.MAX_YEAR, 12, 30, OFFSET_PONE).plusDays(1);
-        OffsetDate expected = OffsetDate.of(Year.MAX_YEAR, 12, 31, OFFSET_PONE);
+        OffsetDate t = OffsetDate.of(Year.MAX_VALUE, 12, 30, OFFSET_PONE).plusDays(1);
+        OffsetDate expected = OffsetDate.of(Year.MAX_VALUE, 12, 31, OFFSET_PONE);
         assertEquals(t, expected);
     }
 
     @Test(groups={"tck"})
     public void test_plusDays_minimum() {
-        OffsetDate t = OffsetDate.of(Year.MIN_YEAR, 1, 2, OFFSET_PONE).plusDays(-1);
-        OffsetDate expected = OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE);
+        OffsetDate t = OffsetDate.of(Year.MIN_VALUE, 1, 2, OFFSET_PONE).plusDays(-1);
+        OffsetDate expected = OffsetDate.of(Year.MIN_VALUE, 1, 1, OFFSET_PONE);
         assertEquals(t, expected);
     }
 
     @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_plusDays_invalidTooLarge() {
-        OffsetDate.of(Year.MAX_YEAR, 12, 31, OFFSET_PONE).plusDays(1);
+        OffsetDate.of(Year.MAX_VALUE, 12, 31, OFFSET_PONE).plusDays(1);
     }
 
     @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_plusDays_invalidTooSmall() {
-        OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).plusDays(-1);
+        OffsetDate.of(Year.MIN_VALUE, 1, 1, OFFSET_PONE).plusDays(-1);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_plusDays_overflowTooLarge() {
-        OffsetDate.of(Year.MAX_YEAR, 12, 31, OFFSET_PONE).plusDays(Long.MAX_VALUE);
+        OffsetDate.of(Year.MAX_VALUE, 12, 31, OFFSET_PONE).plusDays(Long.MAX_VALUE);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_plusDays_overflowTooSmall() {
-        OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).plusDays(Long.MIN_VALUE);
+        OffsetDate.of(Year.MIN_VALUE, 1, 1, OFFSET_PONE).plusDays(Long.MIN_VALUE);
     }
 
     //-----------------------------------------------------------------------
@@ -1220,31 +1220,31 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void test_minusYears_long_big() {
-        long years = 20L + Year.MAX_YEAR;
+        long years = 20L + Year.MAX_VALUE;
         OffsetDate test = OffsetDate.of(40, 6, 1, OFFSET_PONE).minusYears(years);
         assertEquals(test, OffsetDate.of((int) (40L - years), 6, 1, OFFSET_PONE));
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusYears_long_invalidTooLarge() {
-        OffsetDate.of(Year.MAX_YEAR, 1, 1, OFFSET_PONE).minusYears(-1);
+        OffsetDate.of(Year.MAX_VALUE, 1, 1, OFFSET_PONE).minusYears(-1);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusYears_long_invalidTooLargeMaxAddMax() {
-        OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
+        OffsetDate test = OffsetDate.of(Year.MAX_VALUE, 12, 1, OFFSET_PONE);
         test.minusYears(Long.MAX_VALUE);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusYears_long_invalidTooLargeMaxAddMin() {
-        OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
+        OffsetDate test = OffsetDate.of(Year.MAX_VALUE, 12, 1, OFFSET_PONE);
         test.minusYears(Long.MIN_VALUE);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusYears_long_invalidTooSmall() {
-        OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).minusYears(1);
+        OffsetDate.of(Year.MIN_VALUE, 1, 1, OFFSET_PONE).minusYears(1);
     }
 
     //-----------------------------------------------------------------------
@@ -1309,24 +1309,24 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
 
     @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_minusMonths_long_invalidTooLarge() {
-        OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE).minusMonths(-1);
+        OffsetDate.of(Year.MAX_VALUE, 12, 1, OFFSET_PONE).minusMonths(-1);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusMonths_long_invalidTooLargeMaxAddMax() {
-        OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
+        OffsetDate test = OffsetDate.of(Year.MAX_VALUE, 12, 1, OFFSET_PONE);
         test.minusMonths(Long.MAX_VALUE);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusMonths_long_invalidTooLargeMaxAddMin() {
-        OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
+        OffsetDate test = OffsetDate.of(Year.MAX_VALUE, 12, 1, OFFSET_PONE);
         test.minusMonths(Long.MIN_VALUE);
     }
 
     @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_minusMonths_long_invalidTooSmall() {
-        OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).minusMonths(1);
+        OffsetDate.of(Year.MIN_VALUE, 1, 1, OFFSET_PONE).minusMonths(1);
     }
 
     //-----------------------------------------------------------------------
@@ -1425,36 +1425,36 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void test_minusWeeks_maximum() {
-        OffsetDate t = OffsetDate.of(Year.MAX_YEAR, 12, 24, OFFSET_PONE).minusWeeks(-1);
-        OffsetDate expected = OffsetDate.of(Year.MAX_YEAR, 12, 31, OFFSET_PONE);
+        OffsetDate t = OffsetDate.of(Year.MAX_VALUE, 12, 24, OFFSET_PONE).minusWeeks(-1);
+        OffsetDate expected = OffsetDate.of(Year.MAX_VALUE, 12, 31, OFFSET_PONE);
         assertEquals(t, expected);
     }
 
     @Test(groups={"tck"})
     public void test_minusWeeks_minimum() {
-        OffsetDate t = OffsetDate.of(Year.MIN_YEAR, 1, 8, OFFSET_PONE).minusWeeks(1);
-        OffsetDate expected = OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE);
+        OffsetDate t = OffsetDate.of(Year.MIN_VALUE, 1, 8, OFFSET_PONE).minusWeeks(1);
+        OffsetDate expected = OffsetDate.of(Year.MIN_VALUE, 1, 1, OFFSET_PONE);
         assertEquals(t, expected);
     }
 
     @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_minusWeeks_invalidTooLarge() {
-        OffsetDate.of(Year.MAX_YEAR, 12, 25, OFFSET_PONE).minusWeeks(-1);
+        OffsetDate.of(Year.MAX_VALUE, 12, 25, OFFSET_PONE).minusWeeks(-1);
     }
 
     @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_minusWeeks_invalidTooSmall() {
-        OffsetDate.of(Year.MIN_YEAR, 1, 7, OFFSET_PONE).minusWeeks(1);
+        OffsetDate.of(Year.MIN_VALUE, 1, 7, OFFSET_PONE).minusWeeks(1);
     }
 
     @Test(expectedExceptions={ArithmeticException.class}, groups={"tck"})
     public void test_minusWeeks_invalidMaxMinusMax() {
-        OffsetDate.of(Year.MAX_YEAR, 12, 25, OFFSET_PONE).minusWeeks(Long.MAX_VALUE);
+        OffsetDate.of(Year.MAX_VALUE, 12, 25, OFFSET_PONE).minusWeeks(Long.MAX_VALUE);
     }
 
     @Test(expectedExceptions={ArithmeticException.class}, groups={"tck"})
     public void test_minusWeeks_invalidMaxMinusMin() {
-        OffsetDate.of(Year.MAX_YEAR, 12, 25, OFFSET_PONE).minusWeeks(Long.MIN_VALUE);
+        OffsetDate.of(Year.MAX_VALUE, 12, 25, OFFSET_PONE).minusWeeks(Long.MIN_VALUE);
     }
 
     //-----------------------------------------------------------------------
@@ -1553,36 +1553,36 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void test_minusDays_maximum() {
-        OffsetDate t = OffsetDate.of(Year.MAX_YEAR, 12, 30, OFFSET_PONE).minusDays(-1);
-        OffsetDate expected = OffsetDate.of(Year.MAX_YEAR, 12, 31, OFFSET_PONE);
+        OffsetDate t = OffsetDate.of(Year.MAX_VALUE, 12, 30, OFFSET_PONE).minusDays(-1);
+        OffsetDate expected = OffsetDate.of(Year.MAX_VALUE, 12, 31, OFFSET_PONE);
         assertEquals(t, expected);
     }
 
     @Test(groups={"tck"})
     public void test_minusDays_minimum() {
-        OffsetDate t = OffsetDate.of(Year.MIN_YEAR, 1, 2, OFFSET_PONE).minusDays(1);
-        OffsetDate expected = OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE);
+        OffsetDate t = OffsetDate.of(Year.MIN_VALUE, 1, 2, OFFSET_PONE).minusDays(1);
+        OffsetDate expected = OffsetDate.of(Year.MIN_VALUE, 1, 1, OFFSET_PONE);
         assertEquals(t, expected);
     }
 
     @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_minusDays_invalidTooLarge() {
-        OffsetDate.of(Year.MAX_YEAR, 12, 31, OFFSET_PONE).minusDays(-1);
+        OffsetDate.of(Year.MAX_VALUE, 12, 31, OFFSET_PONE).minusDays(-1);
     }
 
     @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_minusDays_invalidTooSmall() {
-        OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).minusDays(1);
+        OffsetDate.of(Year.MIN_VALUE, 1, 1, OFFSET_PONE).minusDays(1);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_minusDays_overflowTooLarge() {
-        OffsetDate.of(Year.MAX_YEAR, 12, 31, OFFSET_PONE).minusDays(Long.MIN_VALUE);
+        OffsetDate.of(Year.MAX_VALUE, 12, 31, OFFSET_PONE).minusDays(Long.MIN_VALUE);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_minusDays_overflowTooSmall() {
-        OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).minusDays(Long.MAX_VALUE);
+        OffsetDate.of(Year.MIN_VALUE, 1, 1, OFFSET_PONE).minusDays(Long.MAX_VALUE);
     }
 
     //-----------------------------------------------------------------------

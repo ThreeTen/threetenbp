@@ -310,8 +310,8 @@ public final class JapaneseChrono extends Chrono<JapaneseChrono> implements Seri
                                              jcal.getMaximum(Calendar.ERA) - JapaneseEra.ERA_OFFSET);
             case YEAR:
             case YEAR_OF_ERA:
-                return ValueRange.of(LocalDate.MIN_YEAR, jcal.getGreatestMinimum(Calendar.YEAR),
-                                             jcal.getLeastMaximum(Calendar.YEAR), LocalDate.MAX_YEAR);
+                return ValueRange.of(LocalDate.MIN_VALUE, jcal.getGreatestMinimum(Calendar.YEAR),
+                                             jcal.getLeastMaximum(Calendar.YEAR), LocalDate.MAX_VALUE);
             case MONTH_OF_YEAR:
                 return ValueRange.of(jcal.getMinimum(Calendar.MONTH) + 1, jcal.getGreatestMinimum(Calendar.MONTH) + 1,
                                              jcal.getLeastMaximum(Calendar.MONTH) + 1, jcal.getMaximum(Calendar.MONTH) + 1);

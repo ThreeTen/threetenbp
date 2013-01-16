@@ -73,8 +73,8 @@ public class TCKZoneRulesBuilder {
     private static final int PERIOD_0 = 0;
     private static final int PERIOD_1HOUR = 60 * 60;
     private static final int PERIOD_1HOUR30MIN = ((1 * 60) + 30) * 60;
-    private static final LocalDateTime DATE_TIME_FIRST = dateTime(Year.MIN_YEAR, 1, 1, 0, 0);
-    private static final LocalDateTime DATE_TIME_LAST = dateTime(Year.MAX_YEAR, 12, 31, 23, 59);
+    private static final LocalDateTime DATE_TIME_FIRST = dateTime(Year.MIN_VALUE, 1, 1, 0, 0);
+    private static final LocalDateTime DATE_TIME_LAST = dateTime(Year.MAX_VALUE, 12, 31, 23, 59);
     private static final LocalDateTime DATE_TIME_2008_01_01 = dateTime(2008, 1, 1, 0, 0);
     private static final LocalDateTime DATE_TIME_2008_07_01 = dateTime(2008, 7, 1, 0, 0);
 
@@ -114,8 +114,8 @@ public class TCKZoneRulesBuilder {
         b.addWindow(OFFSET_1_15, dateTime(1920, 1, 1, 1, 0), WALL);
         b.addWindow(OFFSET_1, dateTime(1950, 1, 1, 1, 0), WALL);
         b.addWindowForever(OFFSET_1);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_0);
+        b.addRuleToWindow(2000, Year.MAX_VALUE, MARCH, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
+        b.addRuleToWindow(2000, Year.MAX_VALUE, OCTOBER, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_0);
         ZoneRules test = b.toRules("Europe/London");
         assertOffsetInfo(test, DATE_TIME_FIRST, OFFSET_1_15);
         assertOverlap(test, 1920, 1, 1, 0, 55, OFFSET_1_15, OFFSET_1);
@@ -135,8 +135,8 @@ public class TCKZoneRulesBuilder {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(OFFSET_1, dateTime(2000, 7, 1, 1, 0), WALL);
         b.addWindowForever(OFFSET_1);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(2, 0), false, WALL, PERIOD_0);
+        b.addRuleToWindow(2000, Year.MAX_VALUE, MARCH, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR);
+        b.addRuleToWindow(2000, Year.MAX_VALUE, OCTOBER, -1, SUNDAY, time(2, 0), false, WALL, PERIOD_0);
         ZoneRules test = b.toRules("Europe/Dublin");
         assertOffsetInfo(test, DATE_TIME_FIRST, OFFSET_1);
         assertOffsetInfo(test, DATE_TIME_LAST, OFFSET_1);
@@ -154,8 +154,8 @@ public class TCKZoneRulesBuilder {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(OFFSET_1, dateTime(2000, 7, 1, 1, 0), WALL);
         b.addWindow(OFFSET_1, dateTime(2000, 8, 1, 2, 0), WALL);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(2, 0), false, WALL, PERIOD_0);
+        b.addRuleToWindow(2000, Year.MAX_VALUE, MARCH, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR);
+        b.addRuleToWindow(2000, Year.MAX_VALUE, OCTOBER, -1, SUNDAY, time(2, 0), false, WALL, PERIOD_0);
         b.addWindowForever(OFFSET_1);
         ZoneRules test = b.toRules("Europe/Dublin");
         assertOffsetInfo(test, DATE_TIME_FIRST, OFFSET_1);
@@ -174,8 +174,8 @@ public class TCKZoneRulesBuilder {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(OFFSET_1_15, dateTime(1920, 1, 1, 1, 0), WALL);
         b.addWindowForever(OFFSET_1);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_0);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR);
+        b.addRuleToWindow(2000, Year.MAX_VALUE, MARCH, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_0);
+        b.addRuleToWindow(2000, Year.MAX_VALUE, OCTOBER, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR);
         ZoneRules test = b.toRules("Pacific/Auckland");
         assertOffsetInfo(test, DATE_TIME_FIRST, OFFSET_1_15);
         assertOffsetInfo(test, DATE_TIME_LAST, OFFSET_2);
@@ -250,8 +250,8 @@ public class TCKZoneRulesBuilder {
         b.addWindow(OFFSET_1, dateTime(1920, 1, 1, 1, 0), WALL);
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(1998, MARCH, 20, time(2, 0), false, WALL, PERIOD_1HOUR30MIN);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, 20, null, time(2, 0), false, WALL, PERIOD_1HOUR);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, OCTOBER, 20, null, time(2, 0), false, WALL, PERIOD_0);
+        b.addRuleToWindow(2000, Year.MAX_VALUE, MARCH, 20, null, time(2, 0), false, WALL, PERIOD_1HOUR);
+        b.addRuleToWindow(2000, Year.MAX_VALUE, OCTOBER, 20, null, time(2, 0), false, WALL, PERIOD_0);
         ZoneRules test = b.toRules("Europe/London");
 
         assertOffsetInfo(test, DATE_TIME_FIRST, OFFSET_1);
@@ -270,11 +270,11 @@ public class TCKZoneRulesBuilder {
         b.addWindow(OFFSET_1, dateTime(1920, 1, 1, 1, 0), WALL);
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(1998, MARCH, 20, time(2, 0), false, WALL, PERIOD_1HOUR);
-        b.addRuleToWindow(1998, Year.MAX_YEAR, OCTOBER, 30, null, time(2, 0), false, WALL, PERIOD_0);
+        b.addRuleToWindow(1998, Year.MAX_VALUE, OCTOBER, 30, null, time(2, 0), false, WALL, PERIOD_0);
         b.addRuleToWindow(1999, MARCH, 21, time(2, 0), false, WALL, PERIOD_1HOUR);
         b.addRuleToWindow(2000, MARCH, 22, time(2, 0), false, WALL, PERIOD_1HOUR);
         b.addRuleToWindow(2001, MARCH, 23, time(2, 0), false, WALL, PERIOD_1HOUR);
-        b.addRuleToWindow(2002, Year.MAX_YEAR, MARCH, 24, null, time(2, 0), false, WALL, PERIOD_1HOUR);
+        b.addRuleToWindow(2002, Year.MAX_VALUE, MARCH, 24, null, time(2, 0), false, WALL, PERIOD_1HOUR);
         ZoneRules test = b.toRules("Europe/London");
 
         assertOffsetInfo(test, DATE_TIME_FIRST, OFFSET_1);
@@ -303,12 +303,12 @@ public class TCKZoneRulesBuilder {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(OFFSET_1, dateTime(1920, 1, 1, 1, 0), WALL);
         b.addWindowForever(OFFSET_1);
-        b.addRuleToWindow(1998, Year.MAX_YEAR, MARCH, 30, null, time(2, 0), false, WALL, PERIOD_1HOUR);
+        b.addRuleToWindow(1998, Year.MAX_VALUE, MARCH, 30, null, time(2, 0), false, WALL, PERIOD_1HOUR);
         b.addRuleToWindow(1998, OCTOBER, 20, time(2, 0), false, WALL, PERIOD_0);
         b.addRuleToWindow(1999, OCTOBER, 21, time(2, 0), false, WALL, PERIOD_0);
         b.addRuleToWindow(2000, OCTOBER, 22, time(2, 0), false, WALL, PERIOD_0);
         b.addRuleToWindow(2001, OCTOBER, 23, time(2, 0), false, WALL, PERIOD_0);
-        b.addRuleToWindow(2002, Year.MAX_YEAR, OCTOBER, 24, null, time(2, 0), false, WALL, PERIOD_0);
+        b.addRuleToWindow(2002, Year.MAX_VALUE, OCTOBER, 24, null, time(2, 0), false, WALL, PERIOD_0);
         ZoneRules test = b.toRules("Europe/London");
 
         assertOffsetInfo(test, DATE_TIME_FIRST, OFFSET_1);
@@ -421,8 +421,8 @@ public class TCKZoneRulesBuilder {
         ZoneOffset plus3 = ZoneOffset.ofHours(3);
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(plus2);
-        b.addRuleToWindow(2008, Year.MAX_YEAR, APRIL, -1, FRIDAY, time(0, 0), false, STANDARD, PERIOD_1HOUR);
-        b.addRuleToWindow(2008, Year.MAX_YEAR, AUGUST, -1, THURSDAY, time(23, 0), false, STANDARD, PERIOD_0);
+        b.addRuleToWindow(2008, Year.MAX_VALUE, APRIL, -1, FRIDAY, time(0, 0), false, STANDARD, PERIOD_1HOUR);
+        b.addRuleToWindow(2008, Year.MAX_VALUE, AUGUST, -1, THURSDAY, time(23, 0), false, STANDARD, PERIOD_0);
         ZoneRules test = b.toRules("Africa/Cairo");
 
         assertOffsetInfo(test, DATE_TIME_FIRST, plus2);
@@ -471,11 +471,11 @@ public class TCKZoneRulesBuilder {
           ZoneOffset plus3 = ZoneOffset.ofHours(3);
           ZoneRulesBuilder b = new ZoneRulesBuilder();
           b.addWindow(plus2, dateTime(1997, 1, 1, 0, 0), WALL);
-          b.addRuleToWindow(1996, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR);
-          b.addRuleToWindow(1996, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_0);
+          b.addRuleToWindow(1996, Year.MAX_VALUE, MARCH, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR);
+          b.addRuleToWindow(1996, Year.MAX_VALUE, OCTOBER, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_0);
           b.addWindowForever(plus2);
-          b.addRuleToWindow(1996, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), false, UTC, PERIOD_1HOUR);
-          b.addRuleToWindow(1996, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(1, 0), false, UTC, PERIOD_0);
+          b.addRuleToWindow(1996, Year.MAX_VALUE, MARCH, -1, SUNDAY, time(1, 0), false, UTC, PERIOD_1HOUR);
+          b.addRuleToWindow(1996, Year.MAX_VALUE, OCTOBER, -1, SUNDAY, time(1, 0), false, UTC, PERIOD_0);
           ZoneRules test = b.toRules("Europe/Sofia");
 
           assertOffsetInfo(test, DATE_TIME_FIRST, plus2);
@@ -546,13 +546,13 @@ public class TCKZoneRulesBuilder {
         ZoneOffset plus5 = ZoneOffset.ofHours(5);
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(plus4, dateTime(1996, 10, 27, 0, 0), WALL);
-        b.addRuleToWindow(1996, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(0, 0), false, WALL, PERIOD_1HOUR);
-        b.addRuleToWindow(1996, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(0, 0), false, WALL, PERIOD_0);
+        b.addRuleToWindow(1996, Year.MAX_VALUE, MARCH, -1, SUNDAY, time(0, 0), false, WALL, PERIOD_1HOUR);
+        b.addRuleToWindow(1996, Year.MAX_VALUE, OCTOBER, -1, SUNDAY, time(0, 0), false, WALL, PERIOD_0);
         b.addWindow(plus4, dateTime(1997, 3, 30, 0, 0), WALL);
         b.setFixedSavingsToWindow(PERIOD_1HOUR);
         b.addWindowForever(plus4);
-        b.addRuleToWindow(1996, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(0, 0), false, WALL, PERIOD_1HOUR);
-        b.addRuleToWindow(1996, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(0, 0), false, WALL, PERIOD_0);
+        b.addRuleToWindow(1996, Year.MAX_VALUE, MARCH, -1, SUNDAY, time(0, 0), false, WALL, PERIOD_1HOUR);
+        b.addRuleToWindow(1996, Year.MAX_VALUE, OCTOBER, -1, SUNDAY, time(0, 0), false, WALL, PERIOD_0);
         ZoneRules test = b.toRules("Europe/Sofia");
 
         assertOffsetInfo(test, DATE_TIME_FIRST, plus4);
@@ -584,11 +584,11 @@ public class TCKZoneRulesBuilder {
         ZoneOffset minus6 = ZoneOffset.ofHours(-6);
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(minus6, dateTime(2007, 11, 4, 2, 0), WALL);
-        b.addRuleToWindow(2007, Year.MAX_YEAR, MARCH, 8, SUNDAY, time(2, 0), false, WALL, PERIOD_1HOUR);
-        b.addRuleToWindow(2007, Year.MAX_YEAR, NOVEMBER, 1, SUNDAY, time(2, 0), false, WALL, PERIOD_0);
+        b.addRuleToWindow(2007, Year.MAX_VALUE, MARCH, 8, SUNDAY, time(2, 0), false, WALL, PERIOD_1HOUR);
+        b.addRuleToWindow(2007, Year.MAX_VALUE, NOVEMBER, 1, SUNDAY, time(2, 0), false, WALL, PERIOD_0);
         b.addWindowForever(minus5);
-        b.addRuleToWindow(2007, Year.MAX_YEAR, MARCH, 8, SUNDAY, time(2, 0), false, WALL, PERIOD_1HOUR);
-        b.addRuleToWindow(2007, Year.MAX_YEAR, NOVEMBER, 1, SUNDAY, time(2, 0), false, WALL, PERIOD_0);
+        b.addRuleToWindow(2007, Year.MAX_VALUE, MARCH, 8, SUNDAY, time(2, 0), false, WALL, PERIOD_1HOUR);
+        b.addRuleToWindow(2007, Year.MAX_VALUE, NOVEMBER, 1, SUNDAY, time(2, 0), false, WALL, PERIOD_0);
         ZoneRules test = b.toRules("America/Indiana/Vincennes");
 
         assertOffsetInfo(test, DATE_TIME_FIRST, minus6);
@@ -616,11 +616,11 @@ public class TCKZoneRulesBuilder {
         ZoneOffset minus6 = ZoneOffset.ofHours(-6);
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(minus5, dateTime(1999, 10, 31, 2, 0), WALL);
-        b.addRuleToWindow(1987, Year.MAX_YEAR, APRIL, 1, SUNDAY, time(2, 0), false, WALL, PERIOD_1HOUR);
-        b.addRuleToWindow(1987, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(2, 0), false, WALL, PERIOD_0);
+        b.addRuleToWindow(1987, Year.MAX_VALUE, APRIL, 1, SUNDAY, time(2, 0), false, WALL, PERIOD_1HOUR);
+        b.addRuleToWindow(1987, Year.MAX_VALUE, OCTOBER, -1, SUNDAY, time(2, 0), false, WALL, PERIOD_0);
         b.addWindowForever(minus6);
-        b.addRuleToWindow(1987, Year.MAX_YEAR, APRIL, 1, SUNDAY, time(2, 0), false, WALL, PERIOD_1HOUR);
-        b.addRuleToWindow(1987, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(2, 0), false, WALL, PERIOD_0);
+        b.addRuleToWindow(1987, Year.MAX_VALUE, APRIL, 1, SUNDAY, time(2, 0), false, WALL, PERIOD_1HOUR);
+        b.addRuleToWindow(1987, Year.MAX_VALUE, OCTOBER, -1, SUNDAY, time(2, 0), false, WALL, PERIOD_0);
         ZoneRules test = b.toRules("America/Iqaluit");
 
         assertOffsetInfo(test, DATE_TIME_FIRST, minus5);
@@ -645,8 +645,8 @@ public class TCKZoneRulesBuilder {
         ZoneOffset plus3 = ZoneOffset.ofHours(3);
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(plus2);
-        b.addRuleToWindow(2002, Year.MAX_YEAR, MARCH, -1, THURSDAY, time(0, 0), true, WALL, PERIOD_1HOUR);
-        b.addRuleToWindow(2002, Year.MAX_YEAR, SEPTEMBER, -1, FRIDAY, time(0, 0), false, STANDARD, PERIOD_0);
+        b.addRuleToWindow(2002, Year.MAX_VALUE, MARCH, -1, THURSDAY, time(0, 0), true, WALL, PERIOD_1HOUR);
+        b.addRuleToWindow(2002, Year.MAX_VALUE, SEPTEMBER, -1, FRIDAY, time(0, 0), false, STANDARD, PERIOD_0);
         ZoneRules test = b.toRules("Asia/Amman");
 
         assertOffsetInfo(test, DATE_TIME_FIRST, plus2);
@@ -669,8 +669,8 @@ public class TCKZoneRulesBuilder {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(OFFSET_1, dateTime(1800, 7, 1, 0, 0), WALL);
         b.addWindow(OFFSET_1, dateTime(2008, 6, 30, 0, 0), STANDARD);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_0);
+        b.addRuleToWindow(2000, Year.MAX_VALUE, MARCH, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
+        b.addRuleToWindow(2000, Year.MAX_VALUE, OCTOBER, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_0);
         ZoneRules test = b.toRules("Europe/London");
         assertOffsetInfo(test, DATE_TIME_FIRST, OFFSET_1);
         assertOffsetInfo(test, DATE_TIME_LAST, OFFSET_2_30);
@@ -730,8 +730,8 @@ public class TCKZoneRulesBuilder {
     public void test_addWindowForever_rules() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_0);
+        b.addRuleToWindow(2000, Year.MAX_VALUE, MARCH, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
+        b.addRuleToWindow(2000, Year.MAX_VALUE, OCTOBER, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_0);
         ZoneRules test = b.toRules("Europe/London");
         assertOffsetInfo(test, DATE_TIME_FIRST, OFFSET_1);
         assertOffsetInfo(test, DATE_TIME_LAST, OFFSET_1);
@@ -792,7 +792,7 @@ public class TCKZoneRulesBuilder {
     public void test_setFixedSavingsToWindow_cannotMixSavingsWithLastRule() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
+        b.addRuleToWindow(2000, Year.MAX_VALUE, MARCH, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
         b.setFixedSavingsToWindow(PERIOD_1HOUR30MIN);
     }
 
@@ -868,7 +868,7 @@ public class TCKZoneRulesBuilder {
     @Test(expectedExceptions=IllegalStateException.class, groups={"tck"})
     public void test_addRuleToWindow_noWindow() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
-        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
+        b.addRuleToWindow(2000, Year.MAX_VALUE, MARCH, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
     }
 
     @Test(expectedExceptions=IllegalStateException.class, groups={"tck"})
@@ -876,21 +876,21 @@ public class TCKZoneRulesBuilder {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
         b.setFixedSavingsToWindow(PERIOD_1HOUR30MIN);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
+        b.addRuleToWindow(2000, Year.MAX_VALUE, MARCH, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_addRuleToWindow_illegalYear1() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
-        b.addRuleToWindow(Year.MIN_YEAR - 1, 2008, MARCH, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
+        b.addRuleToWindow(Year.MIN_VALUE - 1, 2008, MARCH, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_addRuleToWindow_illegalYear2() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
-        b.addRuleToWindow(2000, Year.MIN_YEAR - 1, MARCH, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
+        b.addRuleToWindow(2000, Year.MIN_VALUE - 1, MARCH, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
@@ -918,14 +918,14 @@ public class TCKZoneRulesBuilder {
     public void test_addRuleToWindow_nullMonth() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, (Month) null, 31, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
+        b.addRuleToWindow(2000, Year.MAX_VALUE, (Month) null, 31, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_addRuleToWindow_nullTime() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, (LocalTime) null, false, WALL, PERIOD_1HOUR30MIN);
+        b.addRuleToWindow(2000, Year.MAX_VALUE, MARCH, -1, SUNDAY, (LocalTime) null, false, WALL, PERIOD_1HOUR30MIN);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
@@ -939,7 +939,7 @@ public class TCKZoneRulesBuilder {
     public void test_addRuleToWindow_nullTimeDefinition() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), false, (TimeDefinition) null, PERIOD_1HOUR30MIN);
+        b.addRuleToWindow(2000, Year.MAX_VALUE, MARCH, -1, SUNDAY, time(1, 0), false, (TimeDefinition) null, PERIOD_1HOUR30MIN);
     }
 
     //-----------------------------------------------------------------------
@@ -1014,7 +1014,7 @@ public class TCKZoneRulesBuilder {
     public void test_addRuleToWindow_singleYear_illegalYear() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
-        b.addRuleToWindow(Year.MIN_YEAR - 1, MARCH, 31, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
+        b.addRuleToWindow(Year.MIN_VALUE - 1, MARCH, 31, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})

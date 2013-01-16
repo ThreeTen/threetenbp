@@ -420,7 +420,7 @@ public class TestStandardZoneRules {
     public void test_London_nextTransition_lastYear() {
         ZoneRules test = europeLondon();
         List<ZoneOffsetTransitionRule> rules = test.getTransitionRules();
-        ZoneOffsetTransition zot = rules.get(1).createTransition(Year.MAX_YEAR);
+        ZoneOffsetTransition zot = rules.get(1).createTransition(Year.MAX_VALUE);
         assertEquals(test.nextTransition(zot.getInstant()), null);
     }
 

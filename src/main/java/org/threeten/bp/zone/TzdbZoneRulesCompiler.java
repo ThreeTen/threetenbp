@@ -789,9 +789,9 @@ final class TzdbZoneRulesCompiler {
     private int parseYear(String str, int defaultYear) {
         str = str.toLowerCase();
         if (matches(str, "minimum")) {
-            return Year.MIN_YEAR;
+            return Year.MIN_VALUE;
         } else if (matches(str, "maximum")) {
-            return Year.MAX_YEAR;
+            return Year.MAX_VALUE;
         } else if (str.equals("only")) {
             return defaultYear;
         }

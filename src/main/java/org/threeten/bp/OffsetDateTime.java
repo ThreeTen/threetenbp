@@ -183,7 +183,7 @@ public final class OffsetDateTime
      * The day must be valid for the year and month, otherwise an exception will be thrown.
      * The second and nanosecond fields will be set to zero.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param year  the year to represent, from MIN_VALUE to MAX_VALUE
      * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param hour  the hour-of-day to represent, from 0 to 23
@@ -207,7 +207,7 @@ public final class OffsetDateTime
      * The day must be valid for the year and month, otherwise an exception will be thrown.
      * The nanosecond field will be set to zero.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param year  the year to represent, from MIN_VALUE to MAX_VALUE
      * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param hour  the hour-of-day to represent, from 0 to 23
@@ -231,7 +231,7 @@ public final class OffsetDateTime
      * <p>
      * The day must be valid for the year and month, otherwise an exception will be thrown.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param year  the year to represent, from MIN_VALUE to MAX_VALUE
      * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param hour  the hour-of-day to represent, from 0 to 23
@@ -258,7 +258,7 @@ public final class OffsetDateTime
      * The day must be valid for the year and month, otherwise an exception will be thrown.
      * The second and nanosecond fields will be set to zero.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param year  the year to represent, from MIN_VALUE to MAX_VALUE
      * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param hour  the hour-of-day to represent, from 0 to 23
@@ -282,7 +282,7 @@ public final class OffsetDateTime
      * The day must be valid for the year and month, otherwise an exception will be thrown.
      * The nanosecond field will be set to zero.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param year  the year to represent, from MIN_VALUE to MAX_VALUE
      * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param hour  the hour-of-day to represent, from 0 to 23
@@ -306,7 +306,7 @@ public final class OffsetDateTime
      * <p>
      * The day must be valid for the year and month, otherwise an exception will be thrown.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param year  the year to represent, from MIN_VALUE to MAX_VALUE
      * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param hour  the hour-of-day to represent, from 0 to 23
@@ -609,7 +609,7 @@ public final class OffsetDateTime
      * The year returned by this method is proleptic as per {@code get(YEAR)}.
      * To obtain the year-of-era, use {@code get(YEAR_OF_ERA}.
      *
-     * @return the year, from MIN_YEAR to MAX_YEAR
+     * @return the year, from MIN_VALUE to MAX_VALUE
      */
     public int getYear() {
         return dateTime.getYear();
@@ -811,7 +811,7 @@ public final class OffsetDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param year  the year to set in the result, from MIN_YEAR to MAX_YEAR
+     * @param year  the year to set in the result, from MIN_VALUE to MAX_VALUE
      * @return an {@code OffsetDateTime} based on this date-time with the requested year, not null
      * @throws DateTimeException if the year value is invalid
      */

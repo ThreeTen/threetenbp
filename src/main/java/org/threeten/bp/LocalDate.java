@@ -104,21 +104,21 @@ public final class LocalDate
     /**
      * The minimum supported year for instances of {@code LocalDate}, -999,999,999.
      */
-    public static final int MIN_YEAR = -999_999_999;
+    public static final int MIN_VALUE = -999_999_999;
     /**
      * The maximum supported year for instances of {@code LocalDate}, 999,999,999.
      */
-    public static final int MAX_YEAR = 999_999_999;
+    public static final int MAX_VALUE = 999_999_999;
     /**
      * The minimum supported {@code LocalDate}, -999999999-01-01.
      * This could be used by an application as a "far past" date.
      */
-    public static final LocalDate MIN_DATE = LocalDate.of(MIN_YEAR, 1, 1);
+    public static final LocalDate MIN_DATE = LocalDate.of(MIN_VALUE, 1, 1);
     /**
      * The maximum supported {@code LocalDate}, +999999999-12-31.
      * This could be used by an application as a "far future" date.
      */
-    public static final LocalDate MAX_DATE = LocalDate.of(MAX_YEAR, 12, 31);
+    public static final LocalDate MAX_DATE = LocalDate.of(MAX_VALUE, 12, 31);
 
     /**
      * Serialization version.
@@ -205,7 +205,7 @@ public final class LocalDate
      * <p>
      * The day must be valid for the year and month, otherwise an exception will be thrown.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param year  the year to represent, from MIN_VALUE to MAX_VALUE
      * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return the local date, not null
@@ -224,7 +224,7 @@ public final class LocalDate
      * <p>
      * The day must be valid for the year and month, otherwise an exception will be thrown.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param year  the year to represent, from MIN_VALUE to MAX_VALUE
      * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return the local date, not null
@@ -244,7 +244,7 @@ public final class LocalDate
      * <p>
      * The day-of-year must be valid for the year, otherwise an exception will be thrown.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param year  the year to represent, from MIN_VALUE to MAX_VALUE
      * @param dayOfYear  the day-of-year to represent, from 1 to 366
      * @return the local date, not null
      * @throws DateTimeException if the value of any field is out of range
@@ -375,7 +375,7 @@ public final class LocalDate
     /**
      * Creates a local date from the year, month and day fields.
      *
-     * @param year  the year to represent, validated from MIN_YEAR to MAX_YEAR
+     * @param year  the year to represent, validated from MIN_VALUE to MAX_VALUE
      * @param month  the month-of-year to represent, validated not null
      * @param dayOfMonth  the day-of-month to represent, validated from 1 to 31
      * @return the local date, not null
@@ -395,7 +395,7 @@ public final class LocalDate
     /**
      * Resolves the date, resolving days past the end of month.
      *
-     * @param year  the year to represent, validated from MIN_YEAR to MAX_YEAR
+     * @param year  the year to represent, validated from MIN_VALUE to MAX_VALUE
      * @param month  the month-of-year to represent, validated from 1 to 12
      * @param dayOfMonth  the day-of-month to represent, validated from 1 to 31
      * @return the resolved date, not null
@@ -418,7 +418,7 @@ public final class LocalDate
     /**
      * Constructor, previously validated.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param year  the year to represent, from MIN_VALUE to MAX_VALUE
      * @param month  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, valid for year-month, from 1 to 31
      */
@@ -439,7 +439,7 @@ public final class LocalDate
                     case DAY_OF_YEAR: return ValueRange.of(1, lengthOfYear());
                     case ALIGNED_WEEK_OF_MONTH: return ValueRange.of(1, getMonth() == Month.FEBRUARY && isLeapYear() == false ? 4 : 5);
                     case YEAR_OF_ERA:
-                        return (getYear() <= 0 ? ValueRange.of(1, MAX_YEAR + 1) : ValueRange.of(1, MAX_YEAR));
+                        return (getYear() <= 0 ? ValueRange.of(1, MAX_VALUE + 1) : ValueRange.of(1, MAX_VALUE));
                 }
                 return field.range();
             }
@@ -540,7 +540,7 @@ public final class LocalDate
      * The year returned by this method is proleptic as per {@code get(YEAR)}.
      * To obtain the year-of-era, use {@code get(YEAR_OF_ERA}.
      *
-     * @return the year, from MIN_YEAR to MAX_YEAR
+     * @return the year, from MIN_VALUE to MAX_VALUE
      */
     public int getYear() {
         return year;
@@ -757,7 +757,7 @@ public final class LocalDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param year  the year to set in the result, from MIN_YEAR to MAX_YEAR
+     * @param year  the year to set in the result, from MIN_VALUE to MAX_VALUE
      * @return a {@code LocalDate} based on this date with the requested year, not null
      * @throws DateTimeException if the year value is invalid
      */

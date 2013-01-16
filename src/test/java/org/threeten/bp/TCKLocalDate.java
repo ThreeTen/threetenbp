@@ -449,8 +449,8 @@ public class TCKLocalDate extends AbstractDateTimeTest {
         assertEquals(LocalDate.ofEpochDay(0), LocalDate.of(1970, 1, 1));
         assertEquals(LocalDate.ofEpochDay(date_0000_01_01), LocalDate.of(0, 1, 1));
         assertEquals(LocalDate.ofEpochDay(date_0000_01_01 - 1), LocalDate.of(-1, 12, 31));
-        assertEquals(LocalDate.ofEpochDay(MAX_VALID_EPOCHDAYS), LocalDate.of(Year.MAX_YEAR, 12, 31));
-        assertEquals(LocalDate.ofEpochDay(MIN_VALID_EPOCHDAYS), LocalDate.of(Year.MIN_YEAR, 1, 1));
+        assertEquals(LocalDate.ofEpochDay(MAX_VALID_EPOCHDAYS), LocalDate.of(Year.MAX_VALUE, 12, 31));
+        assertEquals(LocalDate.ofEpochDay(MIN_VALID_EPOCHDAYS), LocalDate.of(Year.MIN_VALUE, 1, 1));
 
         LocalDate test = LocalDate.of(0, 1, 1);
         for (long i = date_0000_01_01; i < 700000; i++) {
@@ -791,7 +791,7 @@ public class TCKLocalDate extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_withYear_int_invalid() {
-        TEST_2007_07_15.withYear(Year.MIN_YEAR - 1);
+        TEST_2007_07_15.withYear(Year.MIN_VALUE - 1);
     }
 
     @Test(groups={"tck"})
@@ -891,13 +891,13 @@ public class TCKLocalDate extends AbstractDateTimeTest {
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plus_Period_invalidTooLarge() {
         MockSimplePeriod period = MockSimplePeriod.of(1, ChronoUnit.YEARS);
-        LocalDate.of(Year.MAX_YEAR, 1, 1).plus(period);
+        LocalDate.of(Year.MAX_VALUE, 1, 1).plus(period);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plus_Period_invalidTooSmall() {
         MockSimplePeriod period = MockSimplePeriod.of(-1, ChronoUnit.YEARS);
-        LocalDate.of(Year.MIN_YEAR, 1, 1).plus(period);
+        LocalDate.of(Year.MIN_VALUE, 1, 1).plus(period);
     }
 
     //-----------------------------------------------------------------------
@@ -927,12 +927,12 @@ public class TCKLocalDate extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plus_longPeriodUnit_invalidTooLarge() {
-        LocalDate.of(Year.MAX_YEAR, 1, 1).plus(1, ChronoUnit.YEARS);
+        LocalDate.of(Year.MAX_VALUE, 1, 1).plus(1, ChronoUnit.YEARS);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plus_longPeriodUnit_invalidTooSmall() {
-        LocalDate.of(Year.MIN_YEAR, 1, 1).plus(-1, ChronoUnit.YEARS);
+        LocalDate.of(Year.MIN_VALUE, 1, 1).plus(-1, ChronoUnit.YEARS);
     }
 
     //-----------------------------------------------------------------------
@@ -959,37 +959,37 @@ public class TCKLocalDate extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void test_plusYears_long_big() {
-        long years = 20L + Year.MAX_YEAR;
+        long years = 20L + Year.MAX_VALUE;
         LocalDate test = LocalDate.of(-40, 6, 1).plusYears(years);
         assertEquals(test, LocalDate.of((int) (-40L + years), 6, 1));
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusYears_long_invalidTooLarge() {
-        LocalDate test = LocalDate.of(Year.MAX_YEAR, 6, 1);
+        LocalDate test = LocalDate.of(Year.MAX_VALUE, 6, 1);
         test.plusYears(1);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusYears_long_invalidTooLargeMaxAddMax() {
-        LocalDate test = LocalDate.of(Year.MAX_YEAR, 12, 1);
+        LocalDate test = LocalDate.of(Year.MAX_VALUE, 12, 1);
         test.plusYears(Long.MAX_VALUE);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusYears_long_invalidTooLargeMaxAddMin() {
-        LocalDate test = LocalDate.of(Year.MAX_YEAR, 12, 1);
+        LocalDate test = LocalDate.of(Year.MAX_VALUE, 12, 1);
         test.plusYears(Long.MIN_VALUE);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusYears_long_invalidTooSmall_validInt() {
-        LocalDate.of(Year.MIN_YEAR, 1, 1).plusYears(-1);
+        LocalDate.of(Year.MIN_VALUE, 1, 1).plusYears(-1);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusYears_long_invalidTooSmall_invalidInt() {
-        LocalDate.of(Year.MIN_YEAR, 1, 1).plusYears(-10);
+        LocalDate.of(Year.MIN_VALUE, 1, 1).plusYears(-10);
     }
 
     //-----------------------------------------------------------------------
@@ -1048,24 +1048,24 @@ public class TCKLocalDate extends AbstractDateTimeTest {
 
     @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_plusMonths_long_invalidTooLarge() {
-        LocalDate.of(Year.MAX_YEAR, 12, 1).plusMonths(1);
+        LocalDate.of(Year.MAX_VALUE, 12, 1).plusMonths(1);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusMonths_long_invalidTooLargeMaxAddMax() {
-        LocalDate test = LocalDate.of(Year.MAX_YEAR, 12, 1);
+        LocalDate test = LocalDate.of(Year.MAX_VALUE, 12, 1);
         test.plusMonths(Long.MAX_VALUE);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_plusMonths_long_invalidTooLargeMaxAddMin() {
-        LocalDate test = LocalDate.of(Year.MAX_YEAR, 12, 1);
+        LocalDate test = LocalDate.of(Year.MAX_VALUE, 12, 1);
         test.plusMonths(Long.MIN_VALUE);
     }
 
     @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_plusMonths_long_invalidTooSmall() {
-        LocalDate.of(Year.MIN_YEAR, 1, 1).plusMonths(-1);
+        LocalDate.of(Year.MIN_VALUE, 1, 1).plusMonths(-1);
     }
 
     @Test(groups={"tck"})
@@ -1112,36 +1112,36 @@ public class TCKLocalDate extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void test_plusWeeks_maximum() {
-        LocalDate t = LocalDate.of(Year.MAX_YEAR, 12, 24).plusWeeks(1);
-        LocalDate expected = LocalDate.of(Year.MAX_YEAR, 12, 31);
+        LocalDate t = LocalDate.of(Year.MAX_VALUE, 12, 24).plusWeeks(1);
+        LocalDate expected = LocalDate.of(Year.MAX_VALUE, 12, 31);
         assertEquals(t, expected);
     }
 
     @Test(groups={"tck"})
     public void test_plusWeeks_minimum() {
-        LocalDate t = LocalDate.of(Year.MIN_YEAR, 1, 8).plusWeeks(-1);
-        LocalDate expected = LocalDate.of(Year.MIN_YEAR, 1, 1);
+        LocalDate t = LocalDate.of(Year.MIN_VALUE, 1, 8).plusWeeks(-1);
+        LocalDate expected = LocalDate.of(Year.MIN_VALUE, 1, 1);
         assertEquals(t, expected);
     }
 
     @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_plusWeeks_invalidTooLarge() {
-        LocalDate.of(Year.MAX_YEAR, 12, 25).plusWeeks(1);
+        LocalDate.of(Year.MAX_VALUE, 12, 25).plusWeeks(1);
     }
 
     @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_plusWeeks_invalidTooSmall() {
-        LocalDate.of(Year.MIN_YEAR, 1, 7).plusWeeks(-1);
+        LocalDate.of(Year.MIN_VALUE, 1, 7).plusWeeks(-1);
     }
 
     @Test(expectedExceptions={ArithmeticException.class}, groups={"tck"})
     public void test_plusWeeks_invalidMaxMinusMax() {
-        LocalDate.of(Year.MAX_YEAR, 12, 25).plusWeeks(Long.MAX_VALUE);
+        LocalDate.of(Year.MAX_VALUE, 12, 25).plusWeeks(Long.MAX_VALUE);
     }
 
     @Test(expectedExceptions={ArithmeticException.class}, groups={"tck"})
     public void test_plusWeeks_invalidMaxMinusMin() {
-        LocalDate.of(Year.MAX_YEAR, 12, 25).plusWeeks(Long.MIN_VALUE);
+        LocalDate.of(Year.MAX_VALUE, 12, 25).plusWeeks(Long.MIN_VALUE);
     }
 
     @Test(groups={"tck"})
@@ -1188,36 +1188,36 @@ public class TCKLocalDate extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void test_plusDays_maximum() {
-        LocalDate t = LocalDate.of(Year.MAX_YEAR, 12, 30).plusDays(1);
-        LocalDate expected = LocalDate.of(Year.MAX_YEAR, 12, 31);
+        LocalDate t = LocalDate.of(Year.MAX_VALUE, 12, 30).plusDays(1);
+        LocalDate expected = LocalDate.of(Year.MAX_VALUE, 12, 31);
         assertEquals(t, expected);
     }
 
     @Test(groups={"tck"})
     public void test_plusDays_minimum() {
-        LocalDate t = LocalDate.of(Year.MIN_YEAR, 1, 2).plusDays(-1);
-        LocalDate expected = LocalDate.of(Year.MIN_YEAR, 1, 1);
+        LocalDate t = LocalDate.of(Year.MIN_VALUE, 1, 2).plusDays(-1);
+        LocalDate expected = LocalDate.of(Year.MIN_VALUE, 1, 1);
         assertEquals(t, expected);
     }
 
     @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_plusDays_invalidTooLarge() {
-        LocalDate.of(Year.MAX_YEAR, 12, 31).plusDays(1);
+        LocalDate.of(Year.MAX_VALUE, 12, 31).plusDays(1);
     }
 
     @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_plusDays_invalidTooSmall() {
-        LocalDate.of(Year.MIN_YEAR, 1, 1).plusDays(-1);
+        LocalDate.of(Year.MIN_VALUE, 1, 1).plusDays(-1);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_plusDays_overflowTooLarge() {
-        LocalDate.of(Year.MAX_YEAR, 12, 31).plusDays(Long.MAX_VALUE);
+        LocalDate.of(Year.MAX_VALUE, 12, 31).plusDays(Long.MAX_VALUE);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_plusDays_overflowTooSmall() {
-        LocalDate.of(Year.MIN_YEAR, 1, 1).plusDays(Long.MIN_VALUE);
+        LocalDate.of(Year.MIN_VALUE, 1, 1).plusDays(Long.MIN_VALUE);
     }
 
     //-----------------------------------------------------------------------
@@ -1251,13 +1251,13 @@ public class TCKLocalDate extends AbstractDateTimeTest {
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minus_Period_invalidTooLarge() {
         MockSimplePeriod period = MockSimplePeriod.of(-1, ChronoUnit.YEARS);
-        LocalDate.of(Year.MAX_YEAR, 1, 1).minus(period);
+        LocalDate.of(Year.MAX_VALUE, 1, 1).minus(period);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minus_Period_invalidTooSmall() {
         MockSimplePeriod period = MockSimplePeriod.of(1, ChronoUnit.YEARS);
-        LocalDate.of(Year.MIN_YEAR, 1, 1).minus(period);
+        LocalDate.of(Year.MIN_VALUE, 1, 1).minus(period);
     }
 
     //-----------------------------------------------------------------------
@@ -1287,12 +1287,12 @@ public class TCKLocalDate extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minus_longPeriodUnit_invalidTooLarge() {
-        LocalDate.of(Year.MAX_YEAR, 1, 1).minus(-1, ChronoUnit.YEARS);
+        LocalDate.of(Year.MAX_VALUE, 1, 1).minus(-1, ChronoUnit.YEARS);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minus_longPeriodUnit_invalidTooSmall() {
-        LocalDate.of(Year.MIN_YEAR, 1, 1).minus(1, ChronoUnit.YEARS);
+        LocalDate.of(Year.MIN_VALUE, 1, 1).minus(1, ChronoUnit.YEARS);
     }
 
     //-----------------------------------------------------------------------
@@ -1319,32 +1319,32 @@ public class TCKLocalDate extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void test_minusYears_long_big() {
-        long years = 20L + Year.MAX_YEAR;
+        long years = 20L + Year.MAX_VALUE;
         LocalDate test = LocalDate.of(40, 6, 1).minusYears(years);
         assertEquals(test, LocalDate.of((int) (40L - years), 6, 1));
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusYears_long_invalidTooLarge() {
-        LocalDate test = LocalDate.of(Year.MAX_YEAR, 6, 1);
+        LocalDate test = LocalDate.of(Year.MAX_VALUE, 6, 1);
         test.minusYears(-1);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusYears_long_invalidTooLargeMaxAddMax() {
-        LocalDate test = LocalDate.of(Year.MAX_YEAR, 12, 1);
+        LocalDate test = LocalDate.of(Year.MAX_VALUE, 12, 1);
         test.minusYears(Long.MAX_VALUE);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusYears_long_invalidTooLargeMaxAddMin() {
-        LocalDate test = LocalDate.of(Year.MAX_YEAR, 12, 1);
+        LocalDate test = LocalDate.of(Year.MAX_VALUE, 12, 1);
         test.minusYears(Long.MIN_VALUE);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusYears_long_invalidTooSmall() {
-        LocalDate.of(Year.MIN_YEAR, 1, 1).minusYears(1);
+        LocalDate.of(Year.MIN_VALUE, 1, 1).minusYears(1);
     }
 
     //-----------------------------------------------------------------------
@@ -1403,24 +1403,24 @@ public class TCKLocalDate extends AbstractDateTimeTest {
 
     @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_minusMonths_long_invalidTooLarge() {
-        LocalDate.of(Year.MAX_YEAR, 12, 1).minusMonths(-1);
+        LocalDate.of(Year.MAX_VALUE, 12, 1).minusMonths(-1);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusMonths_long_invalidTooLargeMaxAddMax() {
-        LocalDate test = LocalDate.of(Year.MAX_YEAR, 12, 1);
+        LocalDate test = LocalDate.of(Year.MAX_VALUE, 12, 1);
         test.minusMonths(Long.MAX_VALUE);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_minusMonths_long_invalidTooLargeMaxAddMin() {
-        LocalDate test = LocalDate.of(Year.MAX_YEAR, 12, 1);
+        LocalDate test = LocalDate.of(Year.MAX_VALUE, 12, 1);
         test.minusMonths(Long.MIN_VALUE);
     }
 
     @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_minusMonths_long_invalidTooSmall() {
-        LocalDate.of(Year.MIN_YEAR, 1, 1).minusMonths(1);
+        LocalDate.of(Year.MIN_VALUE, 1, 1).minusMonths(1);
     }
 
     @Test(groups={"tck"})
@@ -1467,36 +1467,36 @@ public class TCKLocalDate extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void test_minusWeeks_maximum() {
-        LocalDate t = LocalDate.of(Year.MAX_YEAR, 12, 24).minusWeeks(-1);
-        LocalDate expected = LocalDate.of(Year.MAX_YEAR, 12, 31);
+        LocalDate t = LocalDate.of(Year.MAX_VALUE, 12, 24).minusWeeks(-1);
+        LocalDate expected = LocalDate.of(Year.MAX_VALUE, 12, 31);
         assertEquals(t, expected);
     }
 
     @Test(groups={"tck"})
     public void test_minusWeeks_minimum() {
-        LocalDate t = LocalDate.of(Year.MIN_YEAR, 1, 8).minusWeeks(1);
-        LocalDate expected = LocalDate.of(Year.MIN_YEAR, 1, 1);
+        LocalDate t = LocalDate.of(Year.MIN_VALUE, 1, 8).minusWeeks(1);
+        LocalDate expected = LocalDate.of(Year.MIN_VALUE, 1, 1);
         assertEquals(t, expected);
     }
 
     @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_minusWeeks_invalidTooLarge() {
-        LocalDate.of(Year.MAX_YEAR, 12, 25).minusWeeks(-1);
+        LocalDate.of(Year.MAX_VALUE, 12, 25).minusWeeks(-1);
     }
 
     @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_minusWeeks_invalidTooSmall() {
-        LocalDate.of(Year.MIN_YEAR, 1, 7).minusWeeks(1);
+        LocalDate.of(Year.MIN_VALUE, 1, 7).minusWeeks(1);
     }
 
     @Test(expectedExceptions={ArithmeticException.class}, groups={"tck"})
     public void test_minusWeeks_invalidMaxMinusMax() {
-        LocalDate.of(Year.MAX_YEAR, 12, 25).minusWeeks(Long.MAX_VALUE);
+        LocalDate.of(Year.MAX_VALUE, 12, 25).minusWeeks(Long.MAX_VALUE);
     }
 
     @Test(expectedExceptions={ArithmeticException.class}, groups={"tck"})
     public void test_minusWeeks_invalidMaxMinusMin() {
-        LocalDate.of(Year.MAX_YEAR, 12, 25).minusWeeks(Long.MIN_VALUE);
+        LocalDate.of(Year.MAX_VALUE, 12, 25).minusWeeks(Long.MIN_VALUE);
     }
 
     @Test(groups={"tck"})
@@ -1543,36 +1543,36 @@ public class TCKLocalDate extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void test_minusDays_maximum() {
-        LocalDate t = LocalDate.of(Year.MAX_YEAR, 12, 30).minusDays(-1);
-        LocalDate expected = LocalDate.of(Year.MAX_YEAR, 12, 31);
+        LocalDate t = LocalDate.of(Year.MAX_VALUE, 12, 30).minusDays(-1);
+        LocalDate expected = LocalDate.of(Year.MAX_VALUE, 12, 31);
         assertEquals(t, expected);
     }
 
     @Test(groups={"tck"})
     public void test_minusDays_minimum() {
-        LocalDate t = LocalDate.of(Year.MIN_YEAR, 1, 2).minusDays(1);
-        LocalDate expected = LocalDate.of(Year.MIN_YEAR, 1, 1);
+        LocalDate t = LocalDate.of(Year.MIN_VALUE, 1, 2).minusDays(1);
+        LocalDate expected = LocalDate.of(Year.MIN_VALUE, 1, 1);
         assertEquals(t, expected);
     }
 
     @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_minusDays_invalidTooLarge() {
-        LocalDate.of(Year.MAX_YEAR, 12, 31).minusDays(-1);
+        LocalDate.of(Year.MAX_VALUE, 12, 31).minusDays(-1);
     }
 
     @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
     public void test_minusDays_invalidTooSmall() {
-        LocalDate.of(Year.MIN_YEAR, 1, 1).minusDays(1);
+        LocalDate.of(Year.MIN_VALUE, 1, 1).minusDays(1);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_minusDays_overflowTooLarge() {
-        LocalDate.of(Year.MAX_YEAR, 12, 31).minusDays(Long.MIN_VALUE);
+        LocalDate.of(Year.MAX_VALUE, 12, 31).minusDays(Long.MIN_VALUE);
     }
 
     @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_minusDays_overflowTooSmall() {
-        LocalDate.of(Year.MIN_YEAR, 1, 1).minusDays(Long.MAX_VALUE);
+        LocalDate.of(Year.MIN_VALUE, 1, 1).minusDays(Long.MAX_VALUE);
     }
 
     //-----------------------------------------------------------------------
@@ -1771,8 +1771,8 @@ public class TCKLocalDate extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_comparisons() {
         doTest_comparisons_LocalDate(
-            LocalDate.of(Year.MIN_YEAR, 1, 1),
-            LocalDate.of(Year.MIN_YEAR, 12, 31),
+            LocalDate.of(Year.MIN_VALUE, 1, 1),
+            LocalDate.of(Year.MIN_VALUE, 12, 31),
             LocalDate.of(-1, 1, 1),
             LocalDate.of(-1, 12, 31),
             LocalDate.of(0, 1, 1),
@@ -1786,8 +1786,8 @@ public class TCKLocalDate extends AbstractDateTimeTest {
             LocalDate.of(2008, 1, 1),
             LocalDate.of(2008, 2, 29),
             LocalDate.of(2008, 12, 31),
-            LocalDate.of(Year.MAX_YEAR, 1, 1),
-            LocalDate.of(Year.MAX_YEAR, 12, 31)
+            LocalDate.of(Year.MAX_VALUE, 1, 1),
+            LocalDate.of(Year.MAX_VALUE, 12, 31)
         );
     }
 

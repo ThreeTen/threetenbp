@@ -121,21 +121,21 @@ public class TCKZoneOffsetTransition extends AbstractTCKTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_serialization_unusual1() throws Exception {
-        LocalDateTime ldt = LocalDateTime.of(Year.MAX_YEAR, 12, 31, 1, 31, 53);
+        LocalDateTime ldt = LocalDateTime.of(Year.MAX_VALUE, 12, 31, 1, 31, 53);
         ZoneOffsetTransition test = ZoneOffsetTransition.of(ldt, ZoneOffset.of("+02:04:56"), ZoneOffset.of("-10:02:34"));
         assertSerializable(test);
     }
 
     @Test(groups={"tck"})
     public void test_serialization_unusual2() throws Exception {
-        LocalDateTime ldt = LocalDateTime.of(Year.MIN_YEAR, 1, 1, 12, 1, 3);
+        LocalDateTime ldt = LocalDateTime.of(Year.MIN_VALUE, 1, 1, 12, 1, 3);
         ZoneOffsetTransition test = ZoneOffsetTransition.of(ldt, ZoneOffset.of("+02:04:56"), ZoneOffset.of("+10:02:34"));
         assertSerializable(test);
     }
 
     @Test(groups={"tck"})
     public void test_serialization_format() throws ClassNotFoundException, IOException {
-        LocalDateTime ldt = LocalDateTime.of(Year.MIN_YEAR, 1, 1, 12, 1, 3);
+        LocalDateTime ldt = LocalDateTime.of(Year.MIN_VALUE, 1, 1, 12, 1, 3);
         ZoneOffsetTransition test = ZoneOffsetTransition.of(ldt, ZoneOffset.of("+02:04:56"), ZoneOffset.of("+10:02:34"));
         assertEqualsSerialisedForm(test);
     }

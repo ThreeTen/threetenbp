@@ -68,31 +68,31 @@ public class TestTzdbZoneRulesCompiler {
     @Test(groups={"tck"})
     public void test_parseYear_min() throws Exception {
         TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
-        assertEquals(parseYear(test, "min", 2000), Year.MIN_YEAR);
+        assertEquals(parseYear(test, "min", 2000), Year.MIN_VALUE);
     }
 
     @Test(groups={"tck"})
     public void test_parseYear_mini() throws Exception {
         TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
-        assertEquals(parseYear(test, "mini", 2000), Year.MIN_YEAR);
+        assertEquals(parseYear(test, "mini", 2000), Year.MIN_VALUE);
     }
 
     @Test(groups={"tck"})
     public void test_parseYear_minim() throws Exception {
         TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
-        assertEquals(parseYear(test, "minim", 2000), Year.MIN_YEAR);
+        assertEquals(parseYear(test, "minim", 2000), Year.MIN_VALUE);
     }
 
     @Test(groups={"tck"})
     public void test_parseYear_minimu() throws Exception {
         TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
-        assertEquals(parseYear(test, "minimu", 2000), Year.MIN_YEAR);
+        assertEquals(parseYear(test, "minimu", 2000), Year.MIN_VALUE);
     }
 
     @Test(groups={"tck"})
     public void test_parseYear_minimum() throws Exception {
         TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
-        assertEquals(parseYear(test, "minimum", 2000), Year.MIN_YEAR);
+        assertEquals(parseYear(test, "minimum", 2000), Year.MIN_VALUE);
     }
 
 
@@ -111,31 +111,31 @@ public class TestTzdbZoneRulesCompiler {
     @Test(groups={"tck"})
     public void test_parseYear_max() throws Exception {
         TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
-        assertEquals(parseYear(test, "max", 2000), Year.MAX_YEAR);
+        assertEquals(parseYear(test, "max", 2000), Year.MAX_VALUE);
     }
 
     @Test(groups={"tck"})
     public void test_parseYear_maxi() throws Exception {
         TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
-        assertEquals(parseYear(test, "maxi", 2000), Year.MAX_YEAR);
+        assertEquals(parseYear(test, "maxi", 2000), Year.MAX_VALUE);
     }
 
     @Test(groups={"tck"})
     public void test_parseYear_maxim() throws Exception {
         TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
-        assertEquals(parseYear(test, "maxim", 2000), Year.MAX_YEAR);
+        assertEquals(parseYear(test, "maxim", 2000), Year.MAX_VALUE);
     }
 
     @Test(groups={"tck"})
     public void test_parseYear_maximu() throws Exception {
         TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
-        assertEquals(parseYear(test, "maximu", 2000), Year.MAX_YEAR);
+        assertEquals(parseYear(test, "maximu", 2000), Year.MAX_VALUE);
     }
 
     @Test(groups={"tck"})
     public void test_parseYear_maximum() throws Exception {
         TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
-        assertEquals(parseYear(test, "maximum", 2000), Year.MAX_YEAR);
+        assertEquals(parseYear(test, "maximum", 2000), Year.MAX_VALUE);
     }
 
     @Test(expectedExceptions=NumberFormatException.class, groups={"tck"})

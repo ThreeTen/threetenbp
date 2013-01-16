@@ -1142,8 +1142,8 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void test_compareTo_max() {
-        OffsetDateTime a = OffsetDateTime.of(Year.MAX_YEAR, 12, 31, 23, 59, OFFSET_MONE);
-        OffsetDateTime b = OffsetDateTime.of(Year.MAX_YEAR, 12, 31, 23, 59, OFFSET_MTWO);  // a is before b due to offset
+        OffsetDateTime a = OffsetDateTime.of(Year.MAX_VALUE, 12, 31, 23, 59, OFFSET_MONE);
+        OffsetDateTime b = OffsetDateTime.of(Year.MAX_VALUE, 12, 31, 23, 59, OFFSET_MTWO);  // a is before b due to offset
         assertEquals(a.compareTo(b) < 0, true);
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
@@ -1152,8 +1152,8 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void test_compareTo_min() {
-        OffsetDateTime a = OffsetDateTime.of(Year.MIN_YEAR, 1, 1, 0, 0, OFFSET_PTWO);
-        OffsetDateTime b = OffsetDateTime.of(Year.MIN_YEAR, 1, 1, 0, 0, OFFSET_PONE);  // a is before b due to offset
+        OffsetDateTime a = OffsetDateTime.of(Year.MIN_VALUE, 1, 1, 0, 0, OFFSET_PTWO);
+        OffsetDateTime b = OffsetDateTime.of(Year.MIN_VALUE, 1, 1, 0, 0, OFFSET_PONE);  // a is before b due to offset
         assertEquals(a.compareTo(b) < 0, true);
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
