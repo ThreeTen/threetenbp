@@ -34,6 +34,8 @@ package org.threeten.bp;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.InvalidObjectException;
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -57,7 +59,7 @@ import org.threeten.bp.zone.ZoneRulesProvider;
  * By contrast, the region identifier is well-defined and long-lived.
  * This separation also allows rules to be shared between regions if appropriate.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
 final class ZoneRegion extends ZoneId implements Serializable {
@@ -155,6 +157,15 @@ final class ZoneRegion extends ZoneId implements Serializable {
     //-----------------------------------------------------------------------
     private Object writeReplace() {
         return new Ser(Ser.ZONE_REGION_TYPE, this);
+    }
+
+    /**
+     * Defend against malicious streams.
+     * @return never
+     * @throws InvalidObjectException always
+     */
+    private Object readResolve() throws ObjectStreamException {
+        throw new InvalidObjectException("Deserialization via serialization delegate");
     }
 
     @Override

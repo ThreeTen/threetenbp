@@ -33,6 +33,7 @@ package org.threeten.bp;
 
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
@@ -79,7 +80,7 @@ import org.threeten.bp.zone.ZoneRulesProvider;
  * for that ID. This allows the date-time object, such as {@link ZonedDateTime},
  * to still be queried.
  *
- * <h4>Time-zone IDs</h4>
+ * <h3>Time-zone IDs</h3>
  * The ID is unique within the system.
  * The formats for offset and region IDs differ.
  * <p>
@@ -109,10 +110,12 @@ import org.threeten.bp.zone.ZoneRulesProvider;
  * The recommended format for region IDs from groups other than TZDB is 'group~region'.
  * Thus if IATA data were defined, Utrecht airport would be 'IATA~UTC'.
  *
- * <h4>Implementation notes</h4>
- * This class is immutable and thread-safe.
+ * <h3>Specification for implementors</h3>
+ * This abstract class has two implementations, both of which are immutable and thread-safe.
+ * One implementation models region-based IDs, the other is {@code ZoneOffset} modelling
+ * offset-based IDs.
  */
-public abstract class ZoneId {
+public abstract class ZoneId implements Serializable {
 
     /**
      * A map of zone overrides to enable the older US time-zone names to be used.
@@ -226,6 +229,10 @@ public abstract class ZoneId {
         post.put("HST", "-10:00");
         OLD_IDS_POST_2005 = Collections.unmodifiableMap(post);
     }
+    /**
+     * Serialization version.
+     */
+    private static final long serialVersionUID = 8352817235686L;
 
     //-----------------------------------------------------------------------
     /**
@@ -318,19 +325,25 @@ public abstract class ZoneId {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code ZoneId} from a date-time object.
+     * Obtains an instance of {@code ZoneId} from a temporal object.
      * <p>
-     * A {@code DateTimeAccessor} represents some form of date and time information.
-     * This factory converts the arbitrary date-time object to an instance of {@code ZoneId}.
+     * A {@code TemporalAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary temporal object to an instance of {@code ZoneId}.
+     * <p>
+     * The conversion will try to obtain the zone in a way that favours region-based
+     * zones over offset-based zones using {@link Queries#zone()}.
+     * <p>
+     * This method matches the signature of the functional interface {@link TemporalQuery}
+     * allowing it to be used in queries via method reference, {@code ZoneId::from}.
      *
-     * @param temporal  the date-time object to convert, not null
+     * @param temporal  the temporal object to convert, not null
      * @return the zone ID, not null
      * @throws DateTimeException if unable to convert to a {@code ZoneId}
      */
     public static ZoneId from(TemporalAccessor temporal) {
-        ZoneId obj = temporal.query(TemporalQueries.zoneId());
+        ZoneId obj = temporal.query(TemporalQueries.zone());
         if (obj == null) {
-            throw new DateTimeException("Unable to convert DateTimeAccessor to ZoneId: " + temporal.getClass());
+            throw new DateTimeException("Unable to obtain ZoneId from TemporalAccessor: " + temporal.getClass());
         }
         return obj;
     }

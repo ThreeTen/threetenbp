@@ -36,6 +36,8 @@ import static org.threeten.bp.temporal.ChronoField.OFFSET_SECONDS;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.InvalidObjectException;
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
@@ -84,7 +86,7 @@ import org.threeten.bp.zone.ZoneRules;
  * Implementations may choose to cache certain common offsets, however
  * applications must not rely on such caching.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
 public final class ZoneOffset
@@ -92,9 +94,9 @@ public final class ZoneOffset
         implements TemporalAccessor, TemporalAdjuster, Comparable<ZoneOffset>, Serializable {
 
     /** Cache of time-zone offset by offset in seconds. */
-    private static final ConcurrentMap<Integer, ZoneOffset> SECONDS_CACHE = new ConcurrentHashMap<Integer, ZoneOffset>(16, 0.75f, 4);
+    private static final ConcurrentMap<Integer, ZoneOffset> SECONDS_CACHE = new ConcurrentHashMap<>(16, 0.75f, 4);
     /** Cache of time-zone offset by ID. */
-    private static final ConcurrentMap<String, ZoneOffset> ID_CACHE = new ConcurrentHashMap<String, ZoneOffset>(16, 0.75f, 4);
+    private static final ConcurrentMap<String, ZoneOffset> ID_CACHE = new ConcurrentHashMap<>(16, 0.75f, 4);
 
     /**
      * The number of seconds per hour.
@@ -120,15 +122,15 @@ public final class ZoneOffset
     /**
      * The time-zone offset for UTC, with an ID of 'Z'.
      */
-    public static final ZoneOffset UTC = ofTotalSeconds(0);
+    public static final ZoneOffset UTC = ZoneOffset.ofTotalSeconds(0);
     /**
      * Constant for the maximum supported offset.
      */
-    public static final ZoneOffset MIN_OFFSET = ZoneOffset.ofTotalSeconds(-MAX_SECONDS);
+    public static final ZoneOffset MIN = ZoneOffset.ofTotalSeconds(-MAX_SECONDS);
     /**
      * Constant for the maximum supported offset.
      */
-    public static final ZoneOffset MAX_OFFSET = ZoneOffset.ofTotalSeconds(MAX_SECONDS);
+    public static final ZoneOffset MAX = ZoneOffset.ofTotalSeconds(MAX_SECONDS);
 
     /**
      * The total offset in seconds.
@@ -292,14 +294,17 @@ public final class ZoneOffset
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code ZoneOffset} from a date-time object.
+     * Obtains an instance of {@code ZoneOffset} from a temporal object.
      * <p>
-     * A {@code DateTimeAccessor} represents some form of date and time information.
-     * This factory converts the arbitrary date-time object to an instance of {@code ZoneOffset}.
+     * A {@code TemporalAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary temporal object to an instance of {@code ZoneOffset}.
      * <p>
      * The conversion extracts the {@link ChronoField#OFFSET_SECONDS offset-seconds} field.
+     * <p>
+     * This method matches the signature of the functional interface {@link TemporalQuery}
+     * allowing it to be used in queries via method reference, {@code ZoneOffset::from}.
      *
-     * @param temporal  the date-time object to convert, not null
+     * @param temporal  the temporal object to convert, not null
      * @return the zone-offset, not null
      * @throws DateTimeException if unable to convert to an {@code ZoneOffset}
      */
@@ -307,7 +312,11 @@ public final class ZoneOffset
         if (temporal instanceof ZoneOffset) {
             return (ZoneOffset) temporal;
         }
-        return ofTotalSeconds(temporal.get(OFFSET_SECONDS));
+        try {
+            return ofTotalSeconds(temporal.get(OFFSET_SECONDS));
+        } catch (DateTimeException ex) {
+            throw new DateTimeException("Unable to obtain ZoneOffset from TemporalAccessor: " + temporal.getClass(), ex);
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -420,15 +429,6 @@ public final class ZoneOffset
         }
     }
 
-    /**
-     * Resolves singletons.
-     *
-     * @return the singleton instance
-     */
-    private Object readResolve() {
-        return ZoneOffset.ofTotalSeconds(totalSeconds);
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Gets the total zone offset in seconds.
@@ -475,6 +475,25 @@ public final class ZoneOffset
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Checks if the specified field is supported.
+     * <p>
+     * This checks if this offset can be queried for the specified field.
+     * If false, then calling the {@link #range(TemporalField) range} and
+     * {@link #get(TemporalField) get} methods will throw an exception.
+     * <p>
+     * If the field is a {@link ChronoField} then the query is implemented here.
+     * The {@code OFFSET_SECONDS} field returns true.
+     * All other {@code ChronoField} instances will return false.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.doIsSupported(TemporalAccessor)}
+     * passing {@code this} as the argument.
+     * Whether the field is supported is determined by the field.
+     *
+     * @param field  the field to check, null returns false
+     * @return true if the field is supported on this offset, false if not
+     */
     @Override
     public boolean isSupported(TemporalField field) {
         if (field instanceof ChronoField) {
@@ -483,7 +502,29 @@ public final class ZoneOffset
         return field != null && field.doIsSupported(this);
     }
 
-    @Override
+    /**
+     * Gets the range of valid values for the specified field.
+     * <p>
+     * The range object expresses the minimum and maximum valid values for a field.
+     * This offset is used to enhance the accuracy of the returned range.
+     * If it is not possible to return the range, because the field is not supported
+     * or for some other reason, an exception is thrown.
+     * <p>
+     * If the field is a {@link ChronoField} then the query is implemented here.
+     * The {@link #isSupported(TemporalField) supported fields} will return
+     * appropriate range instances.
+     * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.doRange(TemporalAccessor)}
+     * passing {@code this} as the argument.
+     * Whether the range can be obtained is determined by the field.
+     *
+     * @param field  the field to query the range for, not null
+     * @return the range of valid values for the field, not null
+     * @throws DateTimeException if the range for the field cannot be obtained
+     */
+    @Override  // override for Javadoc
     public ValueRange range(TemporalField field) {
         if (field == OFFSET_SECONDS) {
             return field.range();
@@ -493,7 +534,29 @@ public final class ZoneOffset
         return field.doRange(this);
     }
 
-    @Override
+    /**
+     * Gets the value of the specified field from this offset as an {@code int}.
+     * <p>
+     * This queries this offset for the value for the specified field.
+     * The returned value will always be within the valid range of values for the field.
+     * If it is not possible to return the value, because the field is not supported
+     * or for some other reason, an exception is thrown.
+     * <p>
+     * If the field is a {@link ChronoField} then the query is implemented here.
+     * The {@code OFFSET_SECONDS} field returns the value of the offset.
+     * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * passing {@code this} as the argument. Whether the value can be obtained,
+     * and what the value represents, is determined by the field.
+     *
+     * @param field  the field to get, not null
+     * @return the value for the field
+     * @throws DateTimeException if a value for the field cannot be obtained
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    @Override  // override for Javadoc and performance
     public int get(TemporalField field) {
         if (field == OFFSET_SECONDS) {
             return totalSeconds;
@@ -503,6 +566,27 @@ public final class ZoneOffset
         return range(field).checkValidIntValue(getLong(field), field);
     }
 
+    /**
+     * Gets the value of the specified field from this offset as a {@code long}.
+     * <p>
+     * This queries this offset for the value for the specified field.
+     * If it is not possible to return the value, because the field is not supported
+     * or for some other reason, an exception is thrown.
+     * <p>
+     * If the field is a {@link ChronoField} then the query is implemented here.
+     * The {@code OFFSET_SECONDS} field returns the value of the offset.
+     * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * passing {@code this} as the argument. Whether the value can be obtained,
+     * and what the value represents, is determined by the field.
+     *
+     * @param field  the field to get, not null
+     * @return the value for the field
+     * @throws DateTimeException if a value for the field cannot be obtained
+     * @throws ArithmeticException if numeric overflow occurs
+     */
     @Override
     public long getLong(TemporalField field) {
         if (field == OFFSET_SECONDS) {
@@ -513,17 +597,63 @@ public final class ZoneOffset
         return field.doGet(this);
     }
 
-    @Override
-    public Temporal adjustInto(Temporal temporal) {
-        return temporal.with(OFFSET_SECONDS, totalSeconds);
-    }
-
+    //-----------------------------------------------------------------------
+    /**
+     * Queries this offset using the specified query.
+     * <p>
+     * This queries this offset using the specified query strategy object.
+     * The {@code TemporalQuery} object defines the logic to be used to
+     * obtain the result. Read the documentation of the query to understand
+     * what the result of this method will be.
+     * <p>
+     * The result of this method is obtained by invoking the
+     * {@link TemporalQuery#queryFrom(TemporalAccessor)} method on the
+     * specified query passing {@code this} as the argument.
+     *
+     * @param <R> the type of the result
+     * @param query  the query to invoke, not null
+     * @return the query result, null may be returned (defined by the query)
+     * @throws DateTimeException if unable to query (defined by the query)
+     * @throws ArithmeticException if numeric overflow occurs (defined by the query)
+     */
+    @SuppressWarnings("unchecked")
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.zoneId() || query == TemporalQueries.chrono()) {
+        if (query == TemporalQueries.offset() || query == TemporalQueries.zone()) {
+            return (R) this;
+        } else if (query == TemporalQueries.precision()) {
             return null;
         }
         return query.queryFrom(this);
+    }
+
+    /**
+     * Adjusts the specified temporal object to have the same offset as this object.
+     * <p>
+     * This returns a temporal object of the same observable type as the input
+     * with the offset changed to be the same as this.
+     * <p>
+     * The adjustment is equivalent to using {@link Temporal#with(TemporalField, long)}
+     * passing {@link ChronoField#OFFSET_SECONDS} as the field.
+     * <p>
+     * In most cases, it is clearer to reverse the calling pattern by using
+     * {@link Temporal#with(TemporalAdjuster)}:
+     * <pre>
+     *   // these two lines are equivalent, but the second approach is recommended
+     *   temporal = thisOffset.adjustInto(temporal);
+     *   temporal = temporal.with(thisOffset);
+     * </pre>
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param temporal  the target object to be adjusted, not null
+     * @return the adjusted object, not null
+     * @throws DateTimeException if unable to make the adjustment
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    @Override
+    public Temporal adjustInto(Temporal temporal) {
+        return temporal.with(OFFSET_SECONDS, totalSeconds);
     }
 
     //-----------------------------------------------------------------------
@@ -540,6 +670,7 @@ public final class ZoneOffset
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if {@code other} is null
      */
+    @Override
     public int compareTo(ZoneOffset other) {
         return other.totalSeconds - totalSeconds;
     }
@@ -589,6 +720,15 @@ public final class ZoneOffset
     // -----------------------------------------------------------------------
     private Object writeReplace() {
         return new Ser(Ser.ZONE_OFFSET_TYPE, this);
+    }
+
+    /**
+     * Defend against malicious streams.
+     * @return never
+     * @throws InvalidObjectException always
+     */
+    private Object readResolve() throws ObjectStreamException {
+        throw new InvalidObjectException("Deserialization via serialization delegate");
     }
 
     @Override
