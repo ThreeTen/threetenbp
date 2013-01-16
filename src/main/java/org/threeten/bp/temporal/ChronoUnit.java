@@ -44,7 +44,7 @@ import org.threeten.bp.Duration;
  * just with slightly different rules.
  * The documentation of each unit explains how it operates.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This is a final, immutable and thread-safe enum.
  */
 public enum ChronoUnit implements TemporalUnit {
@@ -112,24 +112,6 @@ public enum ChronoUnit implements TemporalUnit {
      */
     MONTHS("Months", Duration.ofSeconds(31556952L / 12)),
     /**
-     * Unit that represents the concept of a quarter-year.
-     * For the ISO calendar system, it is equal to 3 months.
-     * The estimated duration of a quarter-year is one quarter of {@code 365.2425 Days}.
-     * <p>
-     * When used with other calendar systems it must correspond to an integral number of days
-     * or months roughly equal to one quarter the length of a year.
-     */
-    QUARTER_YEARS("QuarterYears", Duration.ofSeconds(31556952L / 4)),
-    /**
-     * Unit that represents the concept of a half-year.
-     * For the ISO calendar system, it is equal to 6 months.
-     * The estimated duration of a half-year is half of {@code 365.2425 Days}.
-     * <p>
-     * When used with other calendar systems it must correspond to an integral number of days
-     * or months roughly equal to half the length of a year.
-     */
-    HALF_YEARS("HalfYears", Duration.ofSeconds(31556952L / 2)),
-    /**
      * Unit that represents the concept of a year.
      * For the ISO calendar system, it is equal to 12 months.
      * The estimated duration of a year is {@code 365.2425 Days}.
@@ -173,7 +155,7 @@ public enum ChronoUnit implements TemporalUnit {
     ERAS("Eras", Duration.ofSeconds(31556952L * 1000_000_000L)),
     /**
      * Artificial unit that represents the concept of forever.
-     * This is primarily used with {@link DateTimeField} to represent unbounded fields
+     * This is primarily used with {@link TemporalField} to represent unbounded fields
      * such as the year or era.
      * The estimated duration of the era is artificially defined as the largest duration
      * supported by {@code Duration}.
@@ -249,6 +231,9 @@ public enum ChronoUnit implements TemporalUnit {
         if (this == FOREVER) {
             return false;
         }
+        if (temporal instanceof ChronoLocalDate) {
+            return isDateUnit();
+        }
         if (temporal instanceof ChronoLocalDateTime || temporal instanceof ChronoZonedDateTime) {
             return true;
         }
@@ -273,7 +258,7 @@ public enum ChronoUnit implements TemporalUnit {
     //-----------------------------------------------------------------------
     @Override
     public <R extends Temporal> SimplePeriod between(R dateTime1, R dateTime2) {
-        return SimplePeriod.of(dateTime1.periodUntil(dateTime2, this), this);
+        return new SimplePeriod(dateTime1.periodUntil(dateTime2, this), this);
     }
 
     //-----------------------------------------------------------------------

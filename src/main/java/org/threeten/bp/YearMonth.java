@@ -479,8 +479,6 @@ public final class YearMonth
         if (unit instanceof ChronoUnit) {
             switch ((ChronoUnit) unit) {
                 case MONTHS: return plusMonths(amountToAdd);
-                case QUARTER_YEARS: return plusYears(amountToAdd / 256).plusMonths((amountToAdd % 256) * 3);  // no overflow (256 is multiple of 4)
-                case HALF_YEARS: return plusYears(amountToAdd / 256).plusMonths((amountToAdd % 256) * 6);  // no overflow (256 is multiple of 2)
                 case YEARS: return plusYears(amountToAdd);
                 case DECADES: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 10));
                 case CENTURIES: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 100));
@@ -663,8 +661,6 @@ public final class YearMonth
             long monthsUntil = end.getEpochMonth() - getEpochMonth();  // no overflow
             switch ((ChronoUnit) unit) {
                 case MONTHS: return monthsUntil;
-                case QUARTER_YEARS: return monthsUntil / 3;
-                case HALF_YEARS: return monthsUntil / 6;
                 case YEARS: return monthsUntil / 12;
                 case DECADES: return monthsUntil / 120;
                 case CENTURIES: return monthsUntil / 1200;

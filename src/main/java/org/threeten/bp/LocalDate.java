@@ -868,8 +868,6 @@ public final class LocalDate
                 case DAYS: return plusDays(amountToAdd);
                 case WEEKS: return plusWeeks(amountToAdd);
                 case MONTHS: return plusMonths(amountToAdd);
-                case QUARTER_YEARS: return plusYears(amountToAdd / 256).plusMonths((amountToAdd % 256) * 3);  // no overflow (256 is multiple of 4)
-                case HALF_YEARS: return plusYears(amountToAdd / 256).plusMonths((amountToAdd % 256) * 6);  // no overflow (256 is multiple of 2)
                 case YEARS: return plusYears(amountToAdd);
                 case DECADES: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 10));
                 case CENTURIES: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 100));
@@ -1232,8 +1230,6 @@ public final class LocalDate
                 case DAYS: return daysUntil(end);
                 case WEEKS: return daysUntil(end) / 7;
                 case MONTHS: return monthsUntil(end);
-                case QUARTER_YEARS: return monthsUntil(end) / 3;
-                case HALF_YEARS: return monthsUntil(end) / 6;
                 case YEARS: return monthsUntil(end) / 12;
                 case DECADES: return monthsUntil(end) / 120;
                 case CENTURIES: return monthsUntil(end) / 1200;
