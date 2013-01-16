@@ -32,6 +32,7 @@
 package org.threeten.bp;
 
 import static org.threeten.bp.temporal.ChronoField.EPOCH_DAY;
+import static org.threeten.bp.temporal.ChronoField.INSTANT_SECONDS;
 import static org.threeten.bp.temporal.ChronoField.NANO_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.OFFSET_SECONDS;
 import static org.threeten.bp.temporal.ChronoUnit.NANOS;
@@ -39,6 +40,8 @@ import static org.threeten.bp.temporal.ChronoUnit.NANOS;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.InvalidObjectException;
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
@@ -82,12 +85,29 @@ import org.threeten.bp.zone.ZoneRules;
  * in simpler applications. This class may be used when modeling date-time concepts in
  * more detail, or when communicating to a database or in a network protocol.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
 public final class OffsetDateTime
         extends DefaultInterfaceDateTime
         implements Temporal, TemporalAdjuster, Comparable<OffsetDateTime>, Serializable {
+
+    /**
+     * The minimum supported {@code OffsetDateTime}, '-999999999-01-01T00:00:00+18:00'.
+     * This is the local date-time of midnight at the start of the minimum date
+     * in the maximum offset (larger offsets are earlier on the time-line).
+     * This combines {@link LocalDateTime#MIN} and {@link ZoneOffset#MAX}.
+     * This could be used by an application as a "far past" date-time.
+     */
+    public static final OffsetDateTime MIN = LocalDateTime.MIN.atOffset(ZoneOffset.MAX);
+    /**
+     * The maximum supported {@code OffsetDateTime}, '+999999999-12-31T23:59:59.999999999-18:00'.
+     * This is the local date-time just before midnight at the end of the maximum date
+     * in the minimum offset (larger negative offsets are later on the time-line).
+     * This combines {@link LocalDateTime#MAX} and {@link ZoneOffset#MIN}.
+     * This could be used by an application as a "far future" date-time.
+     */
+    public static final OffsetDateTime MAX = LocalDateTime.MAX.atOffset(ZoneOffset.MIN);
 
     /**
      * Comparator for two {@code OffsetDateTime} instances based solely on the instant.
@@ -151,6 +171,7 @@ public final class OffsetDateTime
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      *
+     * @param zone  the zone ID to use, not null
      * @return the current date-time using the system clock, not null
      */
     public static OffsetDateTime now(ZoneId zone) {
@@ -173,156 +194,6 @@ public final class OffsetDateTime
         Objects.requireNonNull(clock, "clock");
         final Instant now = clock.instant();  // called once
         return ofInstant(now, clock.getZone().getRules().getOffset(now));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of {@code OffsetDateTime} from year, month,
-     * day, hour and minute, setting the second and nanosecond to zero.
-     * <p>
-     * The day must be valid for the year and month, otherwise an exception will be thrown.
-     * The second and nanosecond fields will be set to zero.
-     *
-     * @param year  the year to represent, from MIN_VALUE to MAX_VALUE
-     * @param month  the month-of-year to represent, not null
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param hour  the hour-of-day to represent, from 0 to 23
-     * @param minute  the minute-of-hour to represent, from 0 to 59
-     * @param offset  the zone offset, not null
-     * @return the offset date-time, not null
-     * @throws DateTimeException if the value of any field is out of range
-     * @throws DateTimeException if the day-of-month is invalid for the month-year
-     */
-    public static OffsetDateTime of(
-            int year, Month month, int dayOfMonth,
-            int hour, int minute, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute);
-        return new OffsetDateTime(dt, offset);
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetDateTime} from year, month,
-     * day, hour, minute and second, setting the nanosecond to zero.
-     * <p>
-     * The day must be valid for the year and month, otherwise an exception will be thrown.
-     * The nanosecond field will be set to zero.
-     *
-     * @param year  the year to represent, from MIN_VALUE to MAX_VALUE
-     * @param month  the month-of-year to represent, not null
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param hour  the hour-of-day to represent, from 0 to 23
-     * @param minute  the minute-of-hour to represent, from 0 to 59
-     * @param second  the second-of-minute to represent, from 0 to 59
-     * @param offset  the zone offset, not null
-     * @return the offset date-time, not null
-     * @throws DateTimeException if the value of any field is out of range
-     * @throws DateTimeException if the day-of-month is invalid for the month-year
-     */
-    public static OffsetDateTime of(
-            int year, Month month, int dayOfMonth,
-            int hour, int minute, int second, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute, second);
-        return new OffsetDateTime(dt, offset);
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetDateTime} from year, month,
-     * day, hour, minute, second and nanosecond.
-     * <p>
-     * The day must be valid for the year and month, otherwise an exception will be thrown.
-     *
-     * @param year  the year to represent, from MIN_VALUE to MAX_VALUE
-     * @param month  the month-of-year to represent, not null
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param hour  the hour-of-day to represent, from 0 to 23
-     * @param minute  the minute-of-hour to represent, from 0 to 59
-     * @param second  the second-of-minute to represent, from 0 to 59
-     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
-     * @param offset  the zone offset, not null
-     * @return the offset date-time, not null
-     * @throws DateTimeException if the value of any field is out of range
-     * @throws DateTimeException if the day-of-month is invalid for the month-year
-     */
-    public static OffsetDateTime of(
-            int year, Month month, int dayOfMonth,
-            int hour, int minute, int second, int nanoOfSecond, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute, second, nanoOfSecond);
-        return new OffsetDateTime(dt, offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of {@code OffsetDateTime} from year, month,
-     * day, hour and minute, setting the second and nanosecond to zero.
-     * <p>
-     * The day must be valid for the year and month, otherwise an exception will be thrown.
-     * The second and nanosecond fields will be set to zero.
-     *
-     * @param year  the year to represent, from MIN_VALUE to MAX_VALUE
-     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param hour  the hour-of-day to represent, from 0 to 23
-     * @param minute  the minute-of-hour to represent, from 0 to 59
-     * @param offset  the zone offset, not null
-     * @return the offset date-time, not null
-     * @throws DateTimeException if the value of any field is out of range
-     * @throws DateTimeException if the day-of-month is invalid for the month-year
-     */
-    public static OffsetDateTime of(
-            int year, int month, int dayOfMonth,
-            int hour, int minute, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute);
-        return new OffsetDateTime(dt, offset);
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetDateTime} from year, month,
-     * day, hour, minute and second, setting the nanosecond to zero.
-     * <p>
-     * The day must be valid for the year and month, otherwise an exception will be thrown.
-     * The nanosecond field will be set to zero.
-     *
-     * @param year  the year to represent, from MIN_VALUE to MAX_VALUE
-     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param hour  the hour-of-day to represent, from 0 to 23
-     * @param minute  the minute-of-hour to represent, from 0 to 59
-     * @param second  the second-of-minute to represent, from 0 to 59
-     * @param offset  the zone offset, not null
-     * @return the offset date-time, not null
-     * @throws DateTimeException if the value of any field is out of range
-     * @throws DateTimeException if the day-of-month is invalid for the month-year
-     */
-    public static OffsetDateTime of(
-            int year, int month, int dayOfMonth,
-            int hour, int minute, int second, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute, second);
-        return new OffsetDateTime(dt, offset);
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetDateTime} from year, month,
-     * day, hour, minute, second and nanosecond.
-     * <p>
-     * The day must be valid for the year and month, otherwise an exception will be thrown.
-     *
-     * @param year  the year to represent, from MIN_VALUE to MAX_VALUE
-     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param hour  the hour-of-day to represent, from 0 to 23
-     * @param minute  the minute-of-hour to represent, from 0 to 59
-     * @param second  the second-of-minute to represent, from 0 to 59
-     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
-     * @param offset  the zone offset, not null
-     * @return the offset date-time, not null
-     * @throws DateTimeException if the value of any field is out of range
-     * @throws DateTimeException if the day-of-month is invalid for the month-year
-     */
-    public static OffsetDateTime of(
-            int year, int month, int dayOfMonth,
-            int hour, int minute, int second, int nanoOfSecond, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute, second, nanoOfSecond);
-        return new OffsetDateTime(dt, offset);
     }
 
     //-----------------------------------------------------------------------
@@ -393,12 +264,18 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code OffsetDateTime} from a date-time object.
+     * Obtains an instance of {@code OffsetDateTime} from a temporal object.
      * <p>
-     * A {@code DateTimeAccessor} represents some form of date and time information.
-     * This factory converts the arbitrary date-time object to an instance of {@code OffsetDateTime}.
+     * A {@code TemporalAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary temporal object to an instance of {@code OffsetDateTime}.
+     * <p>
+     * The conversion extracts and combines {@code LocalDateTime} and {@code ZoneOffset}.
+     * If that fails it will try to extract and combine {@code Instant} and {@code ZoneOffset}.
+     * <p>
+     * This method matches the signature of the functional interface {@link TemporalQuery}
+     * allowing it to be used in queries via method reference, {@code OffsetDateTime::from}.
      *
-     * @param temporal  the date-time object to convert, not null
+     * @param temporal  the temporal object to convert, not null
      * @return the offset date-time, not null
      * @throws DateTimeException if unable to convert to an {@code OffsetDateTime}
      */
@@ -416,7 +293,7 @@ public final class OffsetDateTime
                 return OffsetDateTime.ofInstant(instant, offset);
             }
         } catch (DateTimeException ex) {
-            throw new DateTimeException("Unable to convert DateTimeAccessor to OffsetDateTime: " + temporal.getClass(), ex);
+            throw new DateTimeException("Unable to obtain OffsetDateTime from TemporalAccessor: " + temporal.getClass(), ex);
         }
     }
 
@@ -455,7 +332,7 @@ public final class OffsetDateTime
     /**
      * Constructor.
      *
-     * @param time  the local date-time, not null
+     * @param dateTime  the local date-time, not null
      * @param offset  the zone offset, not null
      */
     private OffsetDateTime(LocalDateTime dateTime, ZoneOffset offset) {
@@ -477,19 +354,120 @@ public final class OffsetDateTime
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Checks if the specified field is supported.
+     * <p>
+     * This checks if this date-time can be queried for the specified field.
+     * If false, then calling the {@link #range(TemporalField) range} and
+     * {@link #get(TemporalField) get} methods will throw an exception.
+     * <p>
+     * If the field is a {@link ChronoField} then the query is implemented here.
+     * The supported fields are:
+     * <ul>
+     * <li>{@code NANO_OF_SECOND}
+     * <li>{@code NANO_OF_DAY}
+     * <li>{@code MICRO_OF_SECOND}
+     * <li>{@code MICRO_OF_DAY}
+     * <li>{@code MILLI_OF_SECOND}
+     * <li>{@code MILLI_OF_DAY}
+     * <li>{@code SECOND_OF_MINUTE}
+     * <li>{@code SECOND_OF_DAY}
+     * <li>{@code MINUTE_OF_HOUR}
+     * <li>{@code MINUTE_OF_DAY}
+     * <li>{@code HOUR_OF_AMPM}
+     * <li>{@code CLOCK_HOUR_OF_AMPM}
+     * <li>{@code HOUR_OF_DAY}
+     * <li>{@code CLOCK_HOUR_OF_DAY}
+     * <li>{@code AMPM_OF_DAY}
+     * <li>{@code DAY_OF_WEEK}
+     * <li>{@code ALIGNED_DAY_OF_WEEK_IN_MONTH}
+     * <li>{@code ALIGNED_DAY_OF_WEEK_IN_YEAR}
+     * <li>{@code DAY_OF_MONTH}
+     * <li>{@code DAY_OF_YEAR}
+     * <li>{@code EPOCH_DAY}
+     * <li>{@code ALIGNED_WEEK_OF_MONTH}
+     * <li>{@code ALIGNED_WEEK_OF_YEAR}
+     * <li>{@code MONTH_OF_YEAR}
+     * <li>{@code EPOCH_MONTH}
+     * <li>{@code YEAR_OF_ERA}
+     * <li>{@code YEAR}
+     * <li>{@code ERA}
+     * <li>{@code INSTANT_SECONDS}
+     * <li>{@code OFFSET_SECONDS}
+     * </ul>
+     * All other {@code ChronoField} instances will return false.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.doIsSupported(TemporalAccessor)}
+     * passing {@code this} as the argument.
+     * Whether the field is supported is determined by the field.
+     *
+     * @param field  the field to check, null returns false
+     * @return true if the field is supported on this date-time, false if not
+     */
     @Override
     public boolean isSupported(TemporalField field) {
         return field instanceof ChronoField || (field != null && field.doIsSupported(this));
     }
 
+    /**
+     * Gets the range of valid values for the specified field.
+     * <p>
+     * The range object expresses the minimum and maximum valid values for a field.
+     * This date-time is used to enhance the accuracy of the returned range.
+     * If it is not possible to return the range, because the field is not supported
+     * or for some other reason, an exception is thrown.
+     * <p>
+     * If the field is a {@link ChronoField} then the query is implemented here.
+     * The {@link #isSupported(TemporalField) supported fields} will return
+     * appropriate range instances.
+     * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.doRange(TemporalAccessor)}
+     * passing {@code this} as the argument.
+     * Whether the range can be obtained is determined by the field.
+     *
+     * @param field  the field to query the range for, not null
+     * @return the range of valid values for the field, not null
+     * @throws DateTimeException if the range for the field cannot be obtained
+     */
     @Override
     public ValueRange range(TemporalField field) {
         if (field instanceof ChronoField) {
+            if (field == INSTANT_SECONDS || field == OFFSET_SECONDS) {
+                return field.range();
+            }
             return dateTime.range(field);
         }
         return field.doRange(this);
     }
 
+    /**
+     * Gets the value of the specified field from this date-time as an {@code int}.
+     * <p>
+     * This queries this date-time for the value for the specified field.
+     * The returned value will always be within the valid range of values for the field.
+     * If it is not possible to return the value, because the field is not supported
+     * or for some other reason, an exception is thrown.
+     * <p>
+     * If the field is a {@link ChronoField} then the query is implemented here.
+     * The {@link #isSupported(TemporalField) supported fields} will return valid
+     * values based on this date-time, except {@code NANO_OF_DAY}, {@code MICRO_OF_DAY},
+     * {@code EPOCH_DAY}, {@code EPOCH_MONTH} and {@code INSTANT_SECONDS} which are too
+     * large to fit in an {@code int} and throw a {@code DateTimeException}.
+     * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * passing {@code this} as the argument. Whether the value can be obtained,
+     * and what the value represents, is determined by the field.
+     *
+     * @param field  the field to get, not null
+     * @return the value for the field
+     * @throws DateTimeException if a value for the field cannot be obtained
+     * @throws ArithmeticException if numeric overflow occurs
+     */
     @Override
     public int get(TemporalField field) {
         if (field instanceof ChronoField) {
@@ -502,6 +480,28 @@ public final class OffsetDateTime
         return super.get(field);
     }
 
+    /**
+     * Gets the value of the specified field from this date-time as a {@code long}.
+     * <p>
+     * This queries this date-time for the value for the specified field.
+     * If it is not possible to return the value, because the field is not supported
+     * or for some other reason, an exception is thrown.
+     * <p>
+     * If the field is a {@link ChronoField} then the query is implemented here.
+     * The {@link #isSupported(TemporalField) supported fields} will return valid
+     * values based on this date-time.
+     * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * passing {@code this} as the argument. Whether the value can be obtained,
+     * and what the value represents, is determined by the field.
+     *
+     * @param field  the field to get, not null
+     * @return the value for the field
+     * @throws DateTimeException if a value for the field cannot be obtained
+     * @throws ArithmeticException if numeric overflow occurs
+     */
     @Override
     public long getLong(TemporalField field) {
         if (field instanceof ChronoField) {
@@ -609,7 +609,7 @@ public final class OffsetDateTime
      * The year returned by this method is proleptic as per {@code get(YEAR)}.
      * To obtain the year-of-era, use {@code get(YEAR_OF_ERA}.
      *
-     * @return the year, from MIN_VALUE to MAX_VALUE
+     * @return the year, from MIN_YEAR to MAX_YEAR
      */
     public int getYear() {
         return dateTime.getYear();
@@ -734,33 +734,55 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns an adjusted date-time based on this date-time.
+     * Returns an adjusted copy of this date-time.
      * <p>
-     * This adjusts the date-time according to the rules of the specified adjuster.
+     * This returns a new {@code OffsetDateTime}, based on this one, with the date-time adjusted.
+     * The adjustment takes place using the specified adjuster strategy object.
+     * Read the documentation of the adjuster to understand what adjustment will be made.
+     * <p>
      * A simple adjuster might simply set the one of the fields, such as the year field.
-     * A more complex adjuster might set the date-time to the last day of the month.
+     * A more complex adjuster might set the date to the last day of the month.
      * A selection of common adjustments is provided in {@link TemporalAdjusters}.
      * These include finding the "last day of the month" and "next Wednesday".
+     * Key date-time classes also implement the {@code TemporalAdjuster} interface,
+     * such as {@link Month} and {@link java.time.temporal.MonthDay MonthDay}.
      * The adjuster is responsible for handling special cases, such as the varying
      * lengths of month and leap years.
      * <p>
-     * In addition, all principal classes implement the {@link TemporalAdjuster} interface,
-     * including this one. For example, {@link LocalDate} implements the adjuster interface.
-     * As such, this code will compile and run:
+     * For example this code returns a date on the last day of July:
      * <pre>
-     *  dateTime.with(date);
+     *  import static java.time.Month.*;
+     *  import static java.time.temporal.Adjusters.*;
+     *
+     *  result = offsetDateTime.with(JULY).with(lastDayOfMonth());
      * </pre>
+     * <p>
+     * The classes {@link LocalDate}, {@link LocalTime} and {@link ZoneOffset} implement
+     * {@code TemporalAdjuster}, thus this method can be used to change the date, time or offset:
+     * <pre>
+     *  result = offsetDateTime.with(date);
+     *  result = offsetDateTime.with(time);
+     *  result = offsetDateTime.with(offset);
+     * </pre>
+     * <p>
+     * The result of this method is obtained by invoking the
+     * {@link TemporalAdjuster#adjustInto(Temporal)} method on the
+     * specified adjuster passing {@code this} as the argument.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster the adjuster to use, not null
-     * @return an {@code OffsetDateTime} based on this date-time with the adjustment made, not null
+     * @return an {@code OffsetDateTime} based on {@code this} with the adjustment made, not null
      * @throws DateTimeException if the adjustment cannot be made
+     * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
     public OffsetDateTime with(TemporalAdjuster adjuster) {
+        // optimizations
         if (adjuster instanceof LocalDate || adjuster instanceof LocalTime || adjuster instanceof LocalDateTime) {
             return with(dateTime.with(adjuster), offset);
+        } else if (adjuster instanceof Instant) {
+            return ofInstant((Instant) adjuster, offset);
         } else if (adjuster instanceof ZoneOffset) {
             return with(dateTime, (ZoneOffset) adjuster);
         } else if (adjuster instanceof OffsetDateTime) {
@@ -770,23 +792,47 @@ public final class OffsetDateTime
     }
 
     /**
-     * Returns a copy of this date-time with the specified field altered.
+     * Returns a copy of this date-time with the specified field set to a new value.
      * <p>
-     * This method returns a new date-time based on this date-time with a new value for the specified field.
-     * This can be used to change any field, for example to set the year, month of day-of-month.
-     * The offset is not part of the calculation and will be unchanged in the result.
+     * This returns a new {@code OffsetDateTime}, based on this one, with the value
+     * for the specified field changed.
+     * This can be used to change any supported field, such as the year, month or day-of-month.
+     * If it is not possible to set the value, because the field is not supported or for
+     * some other reason, an exception is thrown.
      * <p>
      * In some cases, changing the specified field can cause the resulting date-time to become invalid,
-     * such as changing the month from January to February would make the day-of-month 31 invalid.
+     * such as changing the month from 31st January to February would make the day-of-month invalid.
      * In cases like this, the field is responsible for resolving the date. Typically it will choose
      * the previous valid date, which would be the last valid day of February in this example.
+     * <p>
+     * If the field is a {@link ChronoField} then the adjustment is implemented here.
+     * <p>
+     * The {@code INSTANT_SECONDS} field will return a date-time with the specified instant.
+     * The offset and nano-of-second are unchanged.
+     * If the new instant value is outside the valid range then a {@code DateTimeException} will be thrown.
+     * <p>
+     * The {@code OFFSET_SECONDS} field will return a date-time with the specified offset.
+     * The local date-time is unaltered. If the new offset value is outside the valid range
+     * then a {@code DateTimeException} will be thrown.
+     * <p>
+     * The other {@link #isSupported(TemporalField) supported fields} will behave as per
+     * the matching method on {@link LocalDateTime#with(TemporalField, long) LocalDateTime}.
+     * In this case, the offset is not part of the calculation and will be unchanged.
+     * <p>
+     * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.doWith(Temporal, long)}
+     * passing {@code this} as the argument. In this case, the field determines
+     * whether and how to adjust the instant.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param field  the field to set in the result, not null
      * @param newValue  the new value of the field in the result
-     * @return an {@code OffsetDateTime} based on this date-time with the specified field set, not null
-     * @throws DateTimeException if the value is invalid
+     * @return an {@code OffsetDateTime} based on {@code this} with the specified field set, not null
+     * @throws DateTimeException if the field cannot be set
+     * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
     public OffsetDateTime with(TemporalField field, long newValue) {
@@ -811,7 +857,7 @@ public final class OffsetDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param year  the year to set in the result, from MIN_VALUE to MAX_VALUE
+     * @param year  the year to set in the result, from MIN_YEAR to MAX_YEAR
      * @return an {@code OffsetDateTime} based on this date-time with the requested year, not null
      * @throws DateTimeException if the year value is invalid
      */
@@ -955,22 +1001,22 @@ public final class OffsetDateTime
      * Returns a copy of this date-time with the specified period added.
      * <p>
      * This method returns a new date-time based on this time with the specified period added.
-     * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link org.threeten.bp.temporal.TemporalAdder} interface.
+     * The adder is typically {@link Period} but may be any other type implementing
+     * the {@link TemporalAdder} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #plus(long, TemporalUnit)}.
      * The offset is not part of the calculation and will be unchanged in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param adjuster  the adjuster to use, not null
+     * @param adder  the adder to use, not null
      * @return an {@code OffsetDateTime} based on this date-time with the addition made, not null
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public OffsetDateTime plus(TemporalAdder adjuster) {
-        return (OffsetDateTime) adjuster.addTo(this);
+    public OffsetDateTime plus(TemporalAdder adder) {
+        return (OffsetDateTime) adder.addTo(this);
     }
 
     /**
@@ -1141,22 +1187,22 @@ public final class OffsetDateTime
      * Returns a copy of this date-time with the specified period subtracted.
      * <p>
      * This method returns a new date-time based on this time with the specified period subtracted.
-     * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link org.threeten.bp.temporal.TemporalSubtractor} interface.
+     * The subtractor is typically {@link Period} but may be any other type implementing
+     * the {@link TemporalSubtractor} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #minus(long, TemporalUnit)}.
      * The offset is not part of the calculation and will be unchanged in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param adjuster  the adjuster to use, not null
+     * @param subtractor  the subtractor to use, not null
      * @return an {@code OffsetDateTime} based on this date-time with the subtraction made, not null
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public OffsetDateTime minus(TemporalSubtractor adjuster) {
-        return (OffsetDateTime) adjuster.subtractFrom(this);
+    public OffsetDateTime minus(TemporalSubtractor subtractor) {
+        return (OffsetDateTime) subtractor.subtractFrom(this);
     }
 
     /**
@@ -1320,6 +1366,134 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
+     * Queries this date-time using the specified query.
+     * <p>
+     * This queries this date-time using the specified query strategy object.
+     * The {@code TemporalQuery} object defines the logic to be used to
+     * obtain the result. Read the documentation of the query to understand
+     * what the result of this method will be.
+     * <p>
+     * The result of this method is obtained by invoking the
+     * {@link TemporalQuery#queryFrom(TemporalAccessor)} method on the
+     * specified query passing {@code this} as the argument.
+     *
+     * @param <R> the type of the result
+     * @param query  the query to invoke, not null
+     * @return the query result, null may be returned (defined by the query)
+     * @throws DateTimeException if unable to query (defined by the query)
+     * @throws ArithmeticException if numeric overflow occurs (defined by the query)
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R query(TemporalQuery<R> query) {
+        if (query == TemporalQueries.chrono()) {
+            return (R) getDate().getChrono();
+        } else if (query == TemporalQueries.precision()) {
+            return (R) NANOS;
+        } else if (query == TemporalQueries.offset() || query == TemporalQueries.zone()) {
+            return (R) getOffset();
+        }
+        return super.query(query);
+    }
+
+    /**
+     * Adjusts the specified temporal object to have the same offset, date
+     * and time as this object.
+     * <p>
+     * This returns a temporal object of the same observable type as the input
+     * with the offset, date and time changed to be the same as this.
+     * <p>
+     * The adjustment is equivalent to using {@link Temporal#with(TemporalField, long)}
+     * three times, passing {@link ChronoField#OFFSET_SECONDS},
+     * {@link ChronoField#EPOCH_DAY} and {@link ChronoField#NANO_OF_DAY} as the fields.
+     * <p>
+     * In most cases, it is clearer to reverse the calling pattern by using
+     * {@link Temporal#with(TemporalAdjuster)}:
+     * <pre>
+     *   // these two lines are equivalent, but the second approach is recommended
+     *   temporal = thisOffsetDateTime.adjustInto(temporal);
+     *   temporal = temporal.with(thisOffsetDateTime);
+     * </pre>
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param temporal  the target object to be adjusted, not null
+     * @return the adjusted object, not null
+     * @throws DateTimeException if unable to make the adjustment
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    @Override
+    public Temporal adjustInto(Temporal temporal) {
+        return temporal
+                .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
+                .with(EPOCH_DAY, getDate().toEpochDay())
+                .with(NANO_OF_DAY, getTime().toNanoOfDay());
+    }
+
+    /**
+     * Calculates the period between this date-time and another date-time in
+     * terms of the specified unit.
+     * <p>
+     * This calculates the period between two date-times in terms of a single unit.
+     * The start and end points are {@code this} and the specified date-time.
+     * The result will be negative if the end is before the start.
+     * For example, the period in days between two date-times can be calculated
+     * using {@code startDateTime.periodUntil(endDateTime, DAYS)}.
+     * <p>
+     * The {@code Temporal} passed to this method must be an {@code OffsetDateTime}.
+     * If the offset differs between the two date-times, the specified
+     * end date-time is normalized to have the same offset as this date-time.
+     * <p>
+     * The calculation returns a whole number, representing the number of
+     * complete units between the two date-times.
+     * For example, the period in months between 2012-06-15T00:00Z and 2012-08-14T23:59Z
+     * will only be one month as it is one minute short of two months.
+     * <p>
+     * This method operates in association with {@link TemporalUnit#between}.
+     * The result of this method is a {@code long} representing the amount of
+     * the specified unit. By contrast, the result of {@code between} is an
+     * object that can be used directly in addition/subtraction:
+     * <pre>
+     *   long period = start.periodUntil(end, MONTHS);   // this method
+     *   dateTime.plus(MONTHS.between(start, end));      // use in plus/minus
+     * </pre>
+     * <p>
+     * The calculation is implemented in this method for {@link ChronoUnit}.
+     * The units {@code NANOS}, {@code MICROS}, {@code MILLIS}, {@code SECONDS},
+     * {@code MINUTES}, {@code HOURS} and {@code HALF_DAYS}, {@code DAYS},
+     * {@code WEEKS}, {@code MONTHS}, {@code YEARS}, {@code DECADES},
+     * {@code CENTURIES}, {@code MILLENNIA} and {@code ERAS} are supported.
+     * Other {@code ChronoUnit} values will throw an exception.
+     * <p>
+     * If the unit is not a {@code ChronoUnit}, then the result of this method
+     * is obtained by invoking {@code TemporalUnit.between(Temporal, Temporal)}
+     * passing {@code this} as the first argument and the input temporal as
+     * the second argument.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param endDateTime  the end date-time, which must be an {@code OffsetDateTime}, not null
+     * @param unit  the unit to measure the period in, not null
+     * @return the amount of the period between this date-time and the end date-time
+     * @throws DateTimeException if the period cannot be calculated
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    @Override
+    public long periodUntil(Temporal endDateTime, TemporalUnit unit) {
+        if (endDateTime instanceof OffsetDateTime == false) {
+            Objects.requireNonNull(endDateTime, "endDateTime");
+            throw new DateTimeException("Unable to calculate period between objects of two different types");
+        }
+        if (unit instanceof ChronoUnit) {
+            OffsetDateTime end = (OffsetDateTime) endDateTime;
+            end = end.withOffsetSameInstant(offset);
+            return dateTime.periodUntil(end.dateTime, unit);
+        }
+        return unit.between(this, endDateTime).getAmount();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Returns a zoned date-time formed from the instant represented by this
      * date-time and the specified zone ID.
      * <p>
@@ -1366,41 +1540,6 @@ public final class OffsetDateTime
     }
 
     //-----------------------------------------------------------------------
-    @Override
-    public long periodUntil(Temporal endDateTime, TemporalUnit unit) {
-        if (endDateTime instanceof OffsetDateTime == false) {
-            throw new DateTimeException("Unable to calculate period between objects of two different types");
-        }
-        if (unit instanceof ChronoUnit) {
-            OffsetDateTime end = (OffsetDateTime) endDateTime;
-            end = end.withOffsetSameInstant(offset);
-            return dateTime.periodUntil(end.dateTime, unit);
-        }
-        return unit.between(this, endDateTime).getAmount();
-    }
-
-    @Override
-    public Temporal adjustInto(Temporal temporal) {
-        return temporal
-                .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
-                .with(EPOCH_DAY, getDate().toEpochDay())
-                .with(NANO_OF_DAY, getTime().toNanoOfDay());
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.chrono()) {
-            return (R) getDate().getChrono();
-        } else if (query == TemporalQueries.precision()) {
-            return (R) NANOS;
-        } else if (query == TemporalQueries.offset()) {
-            return (R) getOffset();
-        }
-        return super.query(query);
-    }
-
-    //-----------------------------------------------------------------------
     /**
      * Converts this date-time to an {@code OffsetDate}.
      * <p>
@@ -1424,7 +1563,7 @@ public final class OffsetDateTime
     }
 
     /**
-     * Converts this date-time to a {@code ZonedTime} using the offset as the zone ID.
+     * Converts this date-time to a {@code ZonedDateTime} using the offset as the zone ID.
      * <p>
      * This creates the simplest possible {@code ZonedDateTime} using the offset
      * as the zone ID.
@@ -1606,6 +1745,9 @@ public final class OffsetDateTime
 
     /**
      * Outputs this date-time as a {@code String} using the formatter.
+     * <p>
+     * This date-time will be passed to the formatter
+     * {@link DateTimeFormatter#print(TemporalAccessor) print method}.
      *
      * @param formatter  the formatter to use, not null
      * @return the formatted date-time string, not null
@@ -1619,6 +1761,15 @@ public final class OffsetDateTime
     //-----------------------------------------------------------------------
     private Object writeReplace() {
         return new Ser(Ser.OFFSET_DATE_TIME_TYPE, this);
+    }
+
+    /**
+     * Defend against malicious streams.
+     * @return never
+     * @throws InvalidObjectException always
+     */
+    private Object readResolve() throws ObjectStreamException {
+        throw new InvalidObjectException("Deserialization via serialization delegate");
     }
 
     void writeExternal(DataOutput out) throws IOException {

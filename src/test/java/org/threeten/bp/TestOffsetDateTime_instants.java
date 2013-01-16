@@ -72,7 +72,7 @@ public class TestOffsetDateTime_instants {
 
     public void factory_ofInstant_allDaysInCycle() {
         // sanity check using different algorithm
-        OffsetDateTime expected = OffsetDateTime.of(1970, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+        OffsetDateTime expected = OffsetDateTime.of(LocalDate.of(1970, 1, 1), LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC);
         for (long i = 0; i < 146097; i++) {
             Instant instant = Instant.ofEpochSecond(i * 24L * 60L * 60L);
             OffsetDateTime test = OffsetDateTime.ofInstant(instant, ZoneOffset.UTC);
@@ -199,7 +199,7 @@ public class TestOffsetDateTime_instants {
         long maxDays = (maxYear * 365L + ((maxYear + maxOffset) / 4L - (maxYear + maxOffset) / 100L + (maxYear + maxOffset) / 400L)) + 365L - days_0000_to_1970;
 
         final LocalDate maxDate = LocalDate.of(Year.MAX_VALUE, 12, 31);
-        OffsetDateTime expected = OffsetDateTime.of((int) minYear, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+        OffsetDateTime expected = OffsetDateTime.of(LocalDate.of((int) minYear, 1, 1), LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC);
         for (long i = minDays; i < maxDays; i++) {
             Instant instant = Instant.ofEpochSecond(i * 24L * 60L * 60L);
             try {
@@ -246,35 +246,35 @@ public class TestOffsetDateTime_instants {
 
     //-----------------------------------------------------------------------
     public void test_toInstant_19700101() {
-        OffsetDateTime dt = OffsetDateTime.of(1970, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+        OffsetDateTime dt = OffsetDateTime.of(LocalDate.of(1970, 1, 1), LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC);
         Instant test = dt.toInstant();
         assertEquals(test.getEpochSecond(), 0);
         assertEquals(test.getNano(), 0);
     }
 
     public void test_toInstant_19700101_oneNano() {
-        OffsetDateTime dt = OffsetDateTime.of(1970, 1, 1, 0, 0, 0, 1, ZoneOffset.UTC);
+        OffsetDateTime dt = OffsetDateTime.of(LocalDate.of(1970, 1, 1), LocalTime.of(0, 0, 0, 1), ZoneOffset.UTC);
         Instant test = dt.toInstant();
         assertEquals(test.getEpochSecond(), 0);
         assertEquals(test.getNano(), 1);
     }
 
     public void test_toInstant_19700101_minusOneNano() {
-        OffsetDateTime dt = OffsetDateTime.of(1969, 12, 31, 23, 59, 59, 999999999, ZoneOffset.UTC);
+        OffsetDateTime dt = OffsetDateTime.of(LocalDate.of(1969, 12, 31), LocalTime.of(23, 59, 59, 999999999), ZoneOffset.UTC);
         Instant test = dt.toInstant();
         assertEquals(test.getEpochSecond(), -1);
         assertEquals(test.getNano(), 999999999);
     }
 
     public void test_toInstant_19700102() {
-        OffsetDateTime dt = OffsetDateTime.of(1970, 1, 2, 0, 0, 0, 0, ZoneOffset.UTC);
+        OffsetDateTime dt = OffsetDateTime.of(LocalDate.of(1970, 1, 2), LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC);
         Instant test = dt.toInstant();
         assertEquals(test.getEpochSecond(), 24L * 60L * 60L);
         assertEquals(test.getNano(), 0);
     }
 
     public void test_toInstant_19691231() {
-        OffsetDateTime dt = OffsetDateTime.of(1969, 12, 31, 0, 0, 0, 0, ZoneOffset.UTC);
+        OffsetDateTime dt = OffsetDateTime.of(LocalDate.of(1969, 12, 31), LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC);
         Instant test = dt.toInstant();
         assertEquals(test.getEpochSecond(), -24L * 60L * 60L);
         assertEquals(test.getNano(), 0);
@@ -282,27 +282,27 @@ public class TestOffsetDateTime_instants {
 
     //-----------------------------------------------------------------------
     public void test_toEpochSecond_19700101() {
-        OffsetDateTime dt = OffsetDateTime.of(1970, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+        OffsetDateTime dt = OffsetDateTime.of(LocalDate.of(1970, 1, 1), LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC);
         assertEquals(dt.toEpochSecond(), 0);
     }
 
     public void test_toEpochSecond_19700101_oneNano() {
-        OffsetDateTime dt = OffsetDateTime.of(1970, 1, 1, 0, 0, 0, 1, ZoneOffset.UTC);
+        OffsetDateTime dt = OffsetDateTime.of(LocalDate.of(1970, 1, 1), LocalTime.of( 0, 0, 0, 1), ZoneOffset.UTC);
         assertEquals(dt.toEpochSecond(), 0);
     }
 
     public void test_toEpochSecond_19700101_minusOneNano() {
-        OffsetDateTime dt = OffsetDateTime.of(1969, 12, 31, 23, 59, 59, 999999999, ZoneOffset.UTC);
+        OffsetDateTime dt = OffsetDateTime.of(LocalDate.of(1969, 12, 31), LocalTime.of(23, 59, 59, 999999999), ZoneOffset.UTC);
         assertEquals(dt.toEpochSecond(), -1);
     }
 
     public void test_toEpochSecond_19700102() {
-        OffsetDateTime dt = OffsetDateTime.of(1970, 1, 2, 0, 0, 0, 0, ZoneOffset.UTC);
+        OffsetDateTime dt = OffsetDateTime.of(LocalDate.of(1970, 1, 2), LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC);
         assertEquals(dt.toEpochSecond(), 24L * 60L * 60L);
     }
 
     public void test_toEpochSecond_19691231() {
-        OffsetDateTime dt = OffsetDateTime.of(1969, 12, 31, 0, 0, 0, 0, ZoneOffset.UTC);
+        OffsetDateTime dt = OffsetDateTime.of(LocalDate.of(1969, 12, 31), LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC);
         assertEquals(dt.toEpochSecond(), -24L * 60L * 60L);
     }
 

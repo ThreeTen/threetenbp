@@ -32,57 +32,16 @@
 package org.threeten.bp;
 
 import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
-import static org.threeten.bp.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
-import static org.threeten.bp.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
-import static org.threeten.bp.temporal.ChronoField.ALIGNED_WEEK_OF_MONTH;
-import static org.threeten.bp.temporal.ChronoField.ALIGNED_WEEK_OF_YEAR;
-import static org.threeten.bp.temporal.ChronoField.AMPM_OF_DAY;
-import static org.threeten.bp.temporal.ChronoField.CLOCK_HOUR_OF_AMPM;
-import static org.threeten.bp.temporal.ChronoField.CLOCK_HOUR_OF_DAY;
-import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
-import static org.threeten.bp.temporal.ChronoField.DAY_OF_WEEK;
-import static org.threeten.bp.temporal.ChronoField.DAY_OF_YEAR;
-import static org.threeten.bp.temporal.ChronoField.EPOCH_DAY;
-import static org.threeten.bp.temporal.ChronoField.EPOCH_MONTH;
-import static org.threeten.bp.temporal.ChronoField.ERA;
-import static org.threeten.bp.temporal.ChronoField.HOUR_OF_AMPM;
-import static org.threeten.bp.temporal.ChronoField.HOUR_OF_DAY;
-import static org.threeten.bp.temporal.ChronoField.INSTANT_SECONDS;
-import static org.threeten.bp.temporal.ChronoField.MICRO_OF_DAY;
-import static org.threeten.bp.temporal.ChronoField.MICRO_OF_SECOND;
-import static org.threeten.bp.temporal.ChronoField.MILLI_OF_DAY;
-import static org.threeten.bp.temporal.ChronoField.MILLI_OF_SECOND;
-import static org.threeten.bp.temporal.ChronoField.MINUTE_OF_DAY;
-import static org.threeten.bp.temporal.ChronoField.MINUTE_OF_HOUR;
-import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
-import static org.threeten.bp.temporal.ChronoField.NANO_OF_DAY;
-import static org.threeten.bp.temporal.ChronoField.NANO_OF_SECOND;
-import static org.threeten.bp.temporal.ChronoField.OFFSET_SECONDS;
-import static org.threeten.bp.temporal.ChronoField.SECOND_OF_DAY;
-import static org.threeten.bp.temporal.ChronoField.SECOND_OF_MINUTE;
-import static org.threeten.bp.temporal.ChronoField.YEAR;
-import static org.threeten.bp.temporal.ChronoField.YEAR_OF_ERA;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.threeten.bp.temporal.ChronoField;
-import org.threeten.bp.temporal.JulianFields;
-import org.threeten.bp.temporal.TemporalAccessor;
-import org.threeten.bp.temporal.TemporalField;
 
 /**
  * Test OffsetDateTime.
  */
 @Test
-public class TestOffsetDateTime extends AbstractDateTimeTest {
+public class TestOffsetDateTime extends AbstractTest {
 
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
@@ -90,84 +49,12 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
 
     @BeforeMethod(groups={"tck","implementation"})
     public void setUp() {
-        TEST_2008_6_30_11_30_59_000000500 = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 500, OFFSET_PONE);
+        TEST_2008_6_30_11_30_59_000000500 = OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59, 500), OFFSET_PONE);
     }
 
-    //-----------------------------------------------------------------------
-    @Override
-    protected List<TemporalAccessor> samples() {
-        TemporalAccessor[] array = {TEST_2008_6_30_11_30_59_000000500, };
-        return Arrays.asList(array);
-    }
-
-    @Override
-    protected List<TemporalField> validFields() {
-        TemporalField[] array = {
-            NANO_OF_SECOND,
-            NANO_OF_DAY,
-            MICRO_OF_SECOND,
-            MICRO_OF_DAY,
-            MILLI_OF_SECOND,
-            MILLI_OF_DAY,
-            SECOND_OF_MINUTE,
-            SECOND_OF_DAY,
-            MINUTE_OF_HOUR,
-            MINUTE_OF_DAY,
-            CLOCK_HOUR_OF_AMPM,
-            HOUR_OF_AMPM,
-            CLOCK_HOUR_OF_DAY,
-            HOUR_OF_DAY,
-            AMPM_OF_DAY,
-            DAY_OF_WEEK,
-            ALIGNED_DAY_OF_WEEK_IN_MONTH,
-            ALIGNED_DAY_OF_WEEK_IN_YEAR,
-            DAY_OF_MONTH,
-            DAY_OF_YEAR,
-            EPOCH_DAY,
-            ALIGNED_WEEK_OF_MONTH,
-            ALIGNED_WEEK_OF_YEAR,
-            MONTH_OF_YEAR,
-            EPOCH_MONTH,
-            YEAR_OF_ERA,
-            YEAR,
-            ERA,
-            OFFSET_SECONDS,
-            INSTANT_SECONDS,
-            JulianFields.JULIAN_DAY,
-            JulianFields.MODIFIED_JULIAN_DAY,
-            JulianFields.RATA_DIE,
-        };
-        return Arrays.asList(array);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_serialization() throws IOException, ClassNotFoundException {
-        assertSerializable(TEST_2008_6_30_11_30_59_000000500);
-    }
-
-    @Test(groups={"tck"})
-    public void test_serialization_format() throws ClassNotFoundException, IOException {
-        LocalDate date = LocalDate.of(2012, 9, 16);
-        LocalTime time = LocalTime.of(22, 17, 59, 464 * 1000000);
-        ZoneOffset offset = ZoneOffset.of("+01:00");
-        assertEqualsSerialisedForm(OffsetDateTime.of(date, time, offset));
-    }
-
-    @Override
-    protected List<TemporalField> invalidFields() {
-        List<TemporalField> list = new ArrayList<>(Arrays.<TemporalField>asList(ChronoField.values()));
-        list.removeAll(validFields());
-        return list;
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"implementation"})
-    public void test_interfaces() {
-        Object obj = TEST_2008_6_30_11_30_59_000000500;
-        assertTrue(obj instanceof TemporalAccessor);
-        assertTrue(obj instanceof Serializable);
-        assertTrue(obj instanceof Comparable<?>);
+    @Test
+    public void test_immutable() {
+        assertImmutable(OffsetDateTime.class);
     }
 
     //-----------------------------------------------------------------------
@@ -201,7 +88,7 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"implementation"})
     public void test_withOffsetSameLocal() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetDateTime test = base.withOffsetSameLocal(OFFSET_PTWO);
         assertSame(test.getDateTime(), base.getDateTime());
         assertSame(test.getOffset(), OFFSET_PTWO);
@@ -209,35 +96,35 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
 
     @Test(groups={"implementation"})
     public void test_withOffsetSameLocal_noChange() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetDateTime test = base.withOffsetSameLocal(OFFSET_PONE);
         assertSame(test, base);
     }
 
     @Test(groups={"implementation"})
     public void test_withOffsetSameInstant_noChange() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetDateTime test = base.withOffsetSameInstant(OFFSET_PONE);
         assertSame(test, base);
     }
 
     @Test(groups={"implementation"})
     public void test_withYear_noChange() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetDateTime test = base.withYear(2008);
         assertSame(test, base);
     }
 
     @Test(groups={"implementation"})
     public void test_withMonth_noChange() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetDateTime test = base.withMonth(6);
         assertSame(test, base);
     }
 
     @Test(groups={"implementation"})
     public void test_withDayOfMonth_noChange() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetDateTime test = base.withDayOfMonth(30);
         assertSame(test, base);
     }
@@ -250,28 +137,28 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
 
     @Test(groups={"implementation"})
     public void test_withHour_noChange() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetDateTime test = base.withHour(11);
         assertSame(test, base);
     }
 
     @Test(groups={"implementation"})
     public void test_withMinute_noChange() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetDateTime test = base.withMinute(30);
         assertSame(test, base);
     }
 
     @Test(groups={"implementation"})
     public void test_withSecond_noChange() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetDateTime test = base.withSecond(59);
         assertSame(test, base);
     }
 
     @Test(groups={"implementation"})
     public void test_withNanoOfSecond_noChange() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 1, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59, 1), OFFSET_PONE);
         OffsetDateTime test = base.withNano(1);
         assertSame(test, base);
     }
@@ -284,58 +171,57 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
 
     @Test(groups={"implementation"})
     public void test_plusYears_zero() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetDateTime test = base.plusYears(0);
         assertSame(test, base);
     }
 
     @Test(groups={"implementation"})
     public void test_plusMonths_zero() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetDateTime test = base.plusMonths(0);
         assertSame(test, base);
     }
 
     @Test(groups={"implementation"})
     public void test_plusWeeks_zero() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetDateTime test = base.plusWeeks(0);
         assertSame(test, base);
     }
 
     @Test(groups={"implementation"})
     public void test_plusDays_zero() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetDateTime test = base.plusDays(0);
         assertSame(test, base);
     }
 
     @Test(groups={"implementation"})
     public void test_plusHours_zero() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetDateTime test = base.plusHours(0);
         assertSame(test, base);
     }
 
     @Test(groups={"implementation"})
     public void test_plusMinutes_zero() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetDateTime test = base.plusMinutes(0);
         assertSame(test, base);
     }
 
     @Test(groups={"implementation"})
     public void test_plusSeconds_zero() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetDateTime test = base.plusSeconds(0);
         assertSame(test, base);
     }
 
     @Test(groups={"implementation"})
     public void test_plusNanos_zero() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetDateTime test = base.plusNanos(0);
-        assertSame(test, base);
     }
 
     @Test(groups={"implementation"})
@@ -346,56 +232,56 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
 
     @Test(groups={"implementation"})
     public void test_minusYears_zero() {
-        OffsetDateTime base = OffsetDateTime.of(2007, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(LocalDate.of(2007, 6, 30), LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetDateTime test = base.minusYears(0);
         assertSame(test, base);
     }
 
     @Test(groups={"implementation"})
     public void test_minusMonths_zero() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetDateTime test = base.minusMonths(0);
         assertSame(test, base);
     }
 
     @Test(groups={"implementation"})
     public void test_minusWeeks_zero() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetDateTime test = base.minusWeeks(0);
         assertSame(test, base);
     }
 
     @Test(groups={"implementation"})
     public void test_minusDays_zero() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetDateTime test = base.minusDays(0);
         assertSame(test, base);
     }
 
     @Test(groups={"implementation"})
     public void test_minusHours_zero() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetDateTime test = base.minusHours(0);
         assertSame(test, base);
     }
 
     @Test(groups={"implementation"})
     public void test_minusMinutes_zero() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetDateTime test = base.minusMinutes(0);
         assertSame(test, base);
     }
 
     @Test(groups={"implementation"})
     public void test_minusSeconds_zero() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetDateTime test = base.minusSeconds(0);
         assertSame(test, base);
     }
 
     @Test(groups={"implementation"})
     public void test_minusNanos_zero() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetDateTime test = base.minusNanos(0);
         assertSame(test, base);
     }

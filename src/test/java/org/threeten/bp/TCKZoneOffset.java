@@ -37,23 +37,16 @@ import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 import static org.threeten.bp.temporal.ChronoField.OFFSET_SECONDS;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.JulianFields;
-import org.threeten.bp.temporal.MockFieldNoValue;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalQueries;
 
 /**
  * Test ZoneOffset.
@@ -87,47 +80,41 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // Basics
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_immutable() {
-        Class<ZoneOffset> cls = ZoneOffset.class;
-        assertTrue(Modifier.isPublic(cls.getModifiers()));
-        assertTrue(Modifier.isFinal(cls.getModifiers()));
-        Field[] fields = cls.getDeclaredFields();
-        for (Field field : fields) {
-            if (Modifier.isStatic(field.getModifiers()) == false) {
-                assertTrue(Modifier.isPrivate(field.getModifiers()));
-                assertTrue(Modifier.isFinal(field.getModifiers()));
-            }
-        }
-    }
-
-    @Test(groups={"tck"})
+    @Test
     public void test_serialization() throws Exception {
-        ZoneOffset test = ZoneOffset.of("+01:30");
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(baos);
-        out.writeObject(test);
-        baos.close();
-        byte[] bytes = baos.toByteArray();
+        assertSerializable(ZoneOffset.of("+01:30"));
+        assertSerializable(ZoneOffset.of("-02:30"));
+        assertSerializable(ZoneOffset.ofTotalSeconds(53265));
+    }
 
-        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-        ObjectInputStream in = new ObjectInputStream(bais);
-        ZoneOffset result = (ZoneOffset) in.readObject();
-
-        doTestOffset(result, 1, 30, 0);
+    @Test
+    public void test_serialization_format() throws Exception {
+        assertEqualsSerialisedForm(ZoneOffset.ofHoursMinutes(1, 30));
     }
 
     //-----------------------------------------------------------------------
-    // Creation
+    // constants
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_constant_UTC() {
         ZoneOffset test = ZoneOffset.UTC;
         doTestOffset(test, 0, 0, 0);
     }
 
+    @Test
+    public void test_constant_MIN() {
+        ZoneOffset test = ZoneOffset.MIN;
+        doTestOffset(test, -18, 0, 0);
+    }
+
+    @Test
+    public void test_constant_MAX() {
+        ZoneOffset test = ZoneOffset.MAX;
+        doTestOffset(test, 18, 0, 0);
+    }
+
+    //-----------------------------------------------------------------------
+    // of(String)
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_factory_string_UTC() {
@@ -426,8 +413,9 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_factory_CalendricalObject() {
-        assertEquals(ZoneOffset.from(OffsetDate.of(2012, 5, 2, ZoneOffset.ofHours(6))), ZoneOffset.ofHours(6));
-        assertEquals(ZoneOffset.from(ZonedDateTime.of(LocalDateTime.of(2007, 7, 15, 17, 30), ZoneOffset.ofHours(2))), ZoneOffset.ofHours(2));
+        assertEquals(ZoneOffset.from(OffsetDate.of(LocalDate.of(2012, 5, 2), ZoneOffset.ofHours(6))), ZoneOffset.ofHours(6));
+        assertEquals(ZoneOffset.from(ZonedDateTime.of(LocalDateTime.of(LocalDate.of(2007, 7, 15),
+                LocalTime.of(17, 30)), ZoneOffset.ofHours(2))), ZoneOffset.ofHours(2));
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
@@ -486,33 +474,63 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // get(DateTimeField)
+    // get(TemporalField)
     //-----------------------------------------------------------------------
-    @DataProvider(name="invalidFields")
-    Object[][] data_invalidFields() {
-        return new Object[][] {
-            {ChronoField.NANO_OF_DAY},
-            {ChronoField.HOUR_OF_DAY},
-            {ChronoField.INSTANT_SECONDS},
-            {MockFieldNoValue.INSTANCE},
-        };
+    @Test
+    public void test_get_TemporalField() {
+        assertEquals(ZoneOffset.UTC.get(OFFSET_SECONDS), 0);
+        assertEquals(ZoneOffset.ofHours(-2).get(OFFSET_SECONDS), -7200);
+        assertEquals(ZoneOffset.ofHoursMinutesSeconds(0, 1, 5).get(OFFSET_SECONDS), 65);
     }
 
-    @Test(groups={"tck"})
-    public void test_get_DateTimeField() {
+    @Test
+    public void test_getLong_TemporalField() {
         assertEquals(ZoneOffset.UTC.getLong(OFFSET_SECONDS), 0);
         assertEquals(ZoneOffset.ofHours(-2).getLong(OFFSET_SECONDS), -7200);
         assertEquals(ZoneOffset.ofHoursMinutesSeconds(0, 1, 5).getLong(OFFSET_SECONDS), 65);
     }
 
-    @Test(dataProvider="invalidFields", expectedExceptions=DateTimeException.class, groups={"tck"} )
-    public void test_get_DateTimeField_invalidField(TemporalField field) {
-        ZoneOffset.UTC.getLong(field);
+    //-----------------------------------------------------------------------
+    // query(TemporalQuery)
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_query_chrono() {
+        ZoneOffset test = ZoneOffset.ofHoursMinutes(1, 30);
+        assertEquals(test.query(TemporalQueries.chrono()), null);
+        assertEquals(TemporalQueries.chrono().queryFrom(test), null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
-    public void test_get_DateTimeField_null() {
-        ZoneOffset.UTC.getLong((TemporalField) null);
+    @Test
+    public void test_query_zoneId() {
+        ZoneOffset test = ZoneOffset.ofHoursMinutes(1, 30);
+        assertEquals(test.query(TemporalQueries.zoneId()), null);
+        assertEquals(TemporalQueries.zoneId().queryFrom(test), null);
+    }
+
+    @Test
+    public void test_query_precision() {
+        ZoneOffset test = ZoneOffset.ofHoursMinutes(1, 30);
+        assertEquals(test.query(TemporalQueries.precision()), null);
+        assertEquals(TemporalQueries.precision().queryFrom(test), null);
+    }
+
+    @Test
+    public void test_query_offset() {
+        ZoneOffset test = ZoneOffset.ofHoursMinutes(1, 30);
+        assertEquals(test.query(TemporalQueries.offset()), test);
+        assertEquals(TemporalQueries.offset().queryFrom(test), test);
+    }
+
+    @Test
+    public void test_query_zone() {
+        ZoneOffset test = ZoneOffset.ofHoursMinutes(1, 30);
+        assertEquals(test.query(TemporalQueries.zone()), test);
+        assertEquals(TemporalQueries.zone().queryFrom(test), test);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_query_null() {
+        ZoneOffset.ofHoursMinutes(1, 30).query(null);
     }
 
     //-----------------------------------------------------------------------
