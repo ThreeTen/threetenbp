@@ -51,7 +51,7 @@ import org.threeten.bp.format.TextStyle;
  * <p>
  * Instances of {@code Era} may be compared using the {@code ==} operator.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations must be singletons - final, immutable and thread-safe.
  * It is recommended to use an enum whenever possible.
@@ -123,11 +123,11 @@ public interface Era<C extends Chrono<C>> extends TemporalAccessor, TemporalAdju
      * Gets the textual representation of this era.
      * <p>
      * This returns the textual name used to identify the era.
-     * The parameters control the length of the returned text and the locale.
+     * The parameters control the style of the returned text and the locale.
      * <p>
      * If no textual mapping is found then the {@link #getValue() numeric value} is returned.
      *
-     * @param style  the length of the text required, not null
+     * @param style  the style of the text required, not null
      * @param locale  the locale to use, not null
      * @return the text value of the era, not null
      */

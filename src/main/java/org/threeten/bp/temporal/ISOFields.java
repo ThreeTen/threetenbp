@@ -34,20 +34,45 @@ package org.threeten.bp.temporal;
 import static org.threeten.bp.DayOfWeek.THURSDAY;
 import static org.threeten.bp.DayOfWeek.WEDNESDAY;
 import static org.threeten.bp.temporal.ChronoField.DAY_OF_WEEK;
+import static org.threeten.bp.temporal.ChronoField.DAY_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.EPOCH_DAY;
+import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.YEAR;
+import static org.threeten.bp.temporal.ChronoUnit.DAYS;
 import static org.threeten.bp.temporal.ChronoUnit.FOREVER;
+import static org.threeten.bp.temporal.ChronoUnit.MONTHS;
 import static org.threeten.bp.temporal.ChronoUnit.WEEKS;
 import static org.threeten.bp.temporal.ChronoUnit.YEARS;
 
+import org.threeten.bp.DateTimeException;
 import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.format.DateTimeBuilder;
 import org.threeten.bp.jdk8.Jdk8Methods;
 
 /**
- * Fields and units supporting the week-based-year defined by ISO-8601.
+ * Fields and units specific to the ISO-8601 calendar system,
+ * including quarter-of-year and week-based-year.
  * <p>
+ * This class defines fields and units that are specific to the ISO calendar system.
+ *
+ * <h3>Quarter of year</h3>
+ * The ISO-8601 standard is based on the standard civic 12 month year.
+ * This is commonly divided into four quarters, often abbreviated as Q1, Q2, Q3 and Q4.
+ * <p>
+ * January, February and March are in Q1.
+ * April, May and June are in Q2.
+ * July, August and September are in Q3.
+ * October, November and December are in Q4.
+ * <p>
+ * The complete date is expressed using three fields:
+ * <p><ul>
+ * <li>{@link #DAY_OF_QUARTER DAY_OF_QUARTER} - the day within the quarter, from 1 to 90, 91 or 92
+ * <li>{@link #QUARTER_OF_YEAR QUARTER_OF_YEAR} - the week within the week-based-year
+ * <li>{@link ChronoField#YEAR YEAR} - the standard ISO year
+ * </ul><p>
+ *
+ * <h3>Week based years</h3>
  * The ISO-8601 standard was originally intended as a data interchange format,
  * defining a string format for dates and times. However, it also defines an
  * alternate way of expressing the date, based on the concept of week-based-year.
@@ -78,6 +103,7 @@ import org.threeten.bp.jdk8.Jdk8Methods;
  * For example:
  * <p>
  * <table cellpadding="0" cellspacing="3" border="0" style="text-align: left; width: 50%;">
+ * <caption>Examples of Week based Years</caption>
  * <tr><th>Date</th><th>Day-of-week</th><th>Field values</th></tr>
  * <tr><th>2008-12-28</th><td>Sunday</td><td>Week 52 of week-based-year 2008</td></tr>
  * <tr><th>2008-12-29</th><td>Monday</td><td>Week 1 of week-based-year 2009</td></tr>
@@ -86,17 +112,47 @@ import org.threeten.bp.jdk8.Jdk8Methods;
  * <tr><th>2009-01-04</th><td>Sunday</td><td>Week 1 of week-based-year 2009</td></tr>
  * <tr><th>2009-01-05</th><td>Monday</td><td>Week 2 of week-based-year 2009</td></tr>
  * </table>
+ *
+ * <h3>Specification for implementors</h3>
  * <p>
  * This class is immutable and thread-safe.
  */
 public final class ISOFields {
 
     /**
+     * The field that represents the day-of-quarter.
+     * <p>
+     * This field allows the day-of-quarter value to be queried and set.
+     * The day-of-quarter has values from 1 to 90 in Q1 of a standard year, from 1 to 91
+     * in Q1 of a leap year, from 1 to 91 in Q2 and from 1 to 92 in Q3 and Q4.
+     * <p>
+     * The day-of-quarter can only be calculated if the day-of-year, month-of-year and year
+     * are available.
+     * <p>
+     * When setting this field, the value is allowed to be partially lenient, taking any
+     * value from 1 to 92. If the quarter has less than 92 days, then day 92, and
+     * potentially day 91, is in the following quarter.
+     * <p>
+     * This unit is an immutable and thread-safe singleton.
+     */
+    public static final TemporalField DAY_OF_QUARTER = Field.DAY_OF_QUARTER;
+    /**
+     * The field that represents the quarter-of-year.
+     * <p>
+     * This field allows the quarter-of-year value to be queried and set.
+     * The quarter-of-year has values from 1 to 4.
+     * <p>
+     * The day-of-quarter can only be calculated if the month-of-year is available.
+     * <p>
+     * This unit is an immutable and thread-safe singleton.
+     */
+    public static final TemporalField QUARTER_OF_YEAR = Field.QUARTER_OF_YEAR;
+    /**
      * The field that represents the week-of-week-based-year.
      * <p>
      * This field allows the week of the week-based-year value to be queried and set.
      * <p>
-     * This unit is an immutable and thread-safe enum.
+     * This unit is an immutable and thread-safe singleton.
      */
     public static final TemporalField WEEK_OF_WEEK_BASED_YEAR = Field.WEEK_OF_WEEK_BASED_YEAR;
     /**
@@ -104,7 +160,7 @@ public final class ISOFields {
      * <p>
      * This field allows the week-based-year value to be queried and set.
      * <p>
-     * This unit is an immutable and thread-safe enum.
+     * This unit is an immutable and thread-safe singleton.
      */
     public static final TemporalField WEEK_BASED_YEAR = Field.WEEK_BASED_YEAR;
     /**
@@ -119,9 +175,17 @@ public final class ISOFields {
      * for the week-based-year field. If the resulting week-based-year only has 52 weeks,
      * then the date will be in week 1 of the following week-based-year.
      * <p>
-     * This unit is an immutable and thread-safe enum.
+     * This unit is an immutable and thread-safe singleton.
      */
     public static final TemporalUnit WEEK_BASED_YEARS = Unit.WEEK_BASED_YEARS;
+    /**
+     * Unit that represents the concept of a quarter-year.
+     * For the ISO calendar system, it is equal to 3 months.
+     * The estimated duration of a quarter-year is one quarter of {@code 365.2425 Days}.
+     * <p>
+     * This unit is an immutable and thread-safe singleton.
+     */
+    public static final TemporalUnit QUARTER_YEARS = Unit.QUARTER_YEARS;
 
     /**
      * Restricted constructor.
@@ -135,6 +199,114 @@ public final class ISOFields {
      * Implementation of the field.
      */
     private static enum Field implements TemporalField {
+        DAY_OF_QUARTER {
+            @Override
+            public String getName() {
+                return "DayOfQuarter";
+            }
+            @Override
+            public TemporalUnit getBaseUnit() {
+                return DAYS;
+            }
+            @Override
+            public TemporalUnit getRangeUnit() {
+                return QUARTER_YEARS;
+            }
+            @Override
+            public ValueRange range() {
+                return ValueRange.of(1, 90, 92);
+            }
+            @Override
+            public boolean doIsSupported(TemporalAccessor temporal) {
+                return temporal.isSupported(DAY_OF_YEAR) && temporal.isSupported(MONTH_OF_YEAR) &&
+                        temporal.isSupported(YEAR) && Chrono.from(temporal).equals(ISOChrono.INSTANCE);
+            }
+            @Override
+            public ValueRange doRange(TemporalAccessor temporal) {
+                if (doIsSupported(temporal) == false) {
+                    throw new DateTimeException("Unsupported field: DayOfQuarter");
+                }
+                long qoy = temporal.getLong(QUARTER_OF_YEAR);
+                if (qoy == 1) {
+                    long year = temporal.getLong(YEAR);
+                    return (ISOChrono.INSTANCE.isLeapYear(year) ? ValueRange.of(1, 91) : ValueRange.of(1, 90));
+                } else if (qoy == 2) {
+                    return ValueRange.of(1, 91);
+                } else if (qoy == 3 || qoy == 4) {
+                    return ValueRange.of(1, 92);
+                } // else value not from 1 to 4, so drop through
+                return range();
+            }
+            @Override
+            public long doGet(TemporalAccessor temporal) {
+                if (doIsSupported(temporal) == false) {
+                    throw new DateTimeException("Unsupported field: DayOfQuarter");
+                }
+                int doy = temporal.get(DAY_OF_YEAR);
+                int moy = temporal.get(MONTH_OF_YEAR);
+                long year = temporal.getLong(YEAR);
+                return doy - QUARTER_DAYS[((moy - 1) / 3) + (ISOChrono.INSTANCE.isLeapYear(year) ? 4 : 0)];
+            }
+            @Override
+            public <R extends Temporal> R doWith(R temporal, long newValue) {
+                long curValue = doGet(temporal);
+                range().checkValidValue(newValue, this);
+                return (R) temporal.with(DAY_OF_YEAR, temporal.getLong(DAY_OF_YEAR) + (newValue - curValue));
+            }
+        },
+        QUARTER_OF_YEAR {
+            @Override
+            public String getName() {
+                return "QuarterOfYear";
+            }
+            @Override
+            public TemporalUnit getBaseUnit() {
+                return QUARTER_YEARS;
+            }
+            @Override
+            public TemporalUnit getRangeUnit() {
+                return YEARS;
+            }
+            @Override
+            public ValueRange range() {
+                return ValueRange.of(1, 4);
+            }
+            @Override
+            public boolean doIsSupported(TemporalAccessor temporal) {
+                return temporal.isSupported(MONTH_OF_YEAR) && Chrono.from(temporal).equals(ISOChrono.INSTANCE);
+            }
+            @Override
+            public ValueRange doRange(TemporalAccessor temporal) {
+            	return range();
+            }
+            @Override
+            public long doGet(TemporalAccessor temporal) {
+                if (doIsSupported(temporal) == false) {
+                    throw new DateTimeException("Unsupported field: DayOfQuarter");
+                }
+                long moy = temporal.getLong(MONTH_OF_YEAR);
+                return ((moy + 2) / 3);
+            }
+            @Override
+            public <R extends Temporal> R doWith(R temporal, long newValue) {
+                long curValue = doGet(temporal);
+                range().checkValidValue(newValue, this);
+                return (R) temporal.with(MONTH_OF_YEAR, temporal.getLong(MONTH_OF_YEAR) + (newValue - curValue) * 3);
+            }
+            @Override
+            public boolean resolve(DateTimeBuilder builder, long value) {
+                Long[] values = builder.queryFieldValues(YEAR, QUARTER_OF_YEAR, DAY_OF_QUARTER);
+                if (values[0] != null && values[1] != null && values[2] != null) {
+                    int y = YEAR.range().checkValidIntValue(values[0], YEAR);
+                    int qoy = QUARTER_OF_YEAR.range().checkValidIntValue(values[1], QUARTER_OF_YEAR);
+                    int doq = DAY_OF_QUARTER.range().checkValidIntValue(values[2], DAY_OF_QUARTER);
+                    LocalDate date = LocalDate.of(y, ((qoy - 1) * 3) + 1, 1).plusDays(doq - 1);
+                    builder.addFieldValue(EPOCH_DAY, date.toEpochDay());
+                    builder.removeFieldValues(QUARTER_OF_YEAR, DAY_OF_QUARTER);
+                }
+                return false;
+            }
+        },
         WEEK_OF_WEEK_BASED_YEAR {
             @Override
             public String getName() {
@@ -165,9 +337,9 @@ public final class ISOFields {
                 return getWeek(LocalDate.from(temporal));
             }
             @Override
-            public <R extends Temporal> R doWith(R dateTime, long newValue) {
+            public <R extends Temporal> R doWith(R temporal, long newValue) {
                 ValueRange.of(1, 53).checkValidValue(newValue, this);
-                return (R) dateTime.plus(Jdk8Methods.safeSubtract(newValue, doGet(dateTime)), WEEKS);
+                return (R) temporal.plus(Jdk8Methods.safeSubtract(newValue, doGet(temporal)), WEEKS);
             }
         },
         WEEK_BASED_YEAR {
@@ -200,35 +372,45 @@ public final class ISOFields {
                 return getWeekBasedYear(LocalDate.from(temporal));
             }
             @Override
-            public <R extends Temporal> R doWith(R dateTime, long newValue) {
+            public <R extends Temporal> R doWith(R temporal, long newValue) {
                 int newVal = range().checkValidIntValue(newValue, WEEK_BASED_YEAR);
-                LocalDate date = LocalDate.from(dateTime);
+                LocalDate date = LocalDate.from(temporal);
                 int week = getWeek(date);
                 date = date.withDayOfYear(180).withYear(newVal).with(WEEK_OF_WEEK_BASED_YEAR, week);
                 return (R) date.with(date);
             }
+            @Override
+            public boolean resolve(DateTimeBuilder builder, long value) {
+                Long[] values = builder.queryFieldValues(WEEK_BASED_YEAR, WEEK_OF_WEEK_BASED_YEAR, DAY_OF_WEEK);
+                if (values[0] != null && values[1] != null && values[2] != null) {
+                    int wby = WEEK_BASED_YEAR.range().checkValidIntValue(values[0], WEEK_BASED_YEAR);
+                    int week = WEEK_OF_WEEK_BASED_YEAR.range().checkValidIntValue(values[1], WEEK_OF_WEEK_BASED_YEAR);
+                    int dow = DAY_OF_WEEK.range().checkValidIntValue(values[2], DAY_OF_WEEK);
+                    LocalDate date = LocalDate.of(wby, 2, 1).with(WEEK_OF_WEEK_BASED_YEAR, week).with(DAY_OF_WEEK, dow);
+                    builder.addFieldValue(EPOCH_DAY, date.toEpochDay());
+                    builder.removeFieldValues(WEEK_BASED_YEAR, WEEK_OF_WEEK_BASED_YEAR, DAY_OF_WEEK);
+                }
+                return false;
+            }
         };
 
-        @Override
-        public boolean resolve(DateTimeBuilder builder, long value) {
-            Long[] values = builder.queryFieldValues(WEEK_BASED_YEAR, WEEK_OF_WEEK_BASED_YEAR, DAY_OF_WEEK);
-            if (values[0] != null && values[1] != null && values[2] != null) {
-                int wby = WEEK_BASED_YEAR.range().checkValidIntValue(values[0], WEEK_BASED_YEAR);
-                int week = WEEK_OF_WEEK_BASED_YEAR.range().checkValidIntValue(values[1], WEEK_OF_WEEK_BASED_YEAR);
-                int dow = DAY_OF_WEEK.range().checkValidIntValue(values[2], DAY_OF_WEEK);
-                LocalDate date = LocalDate.of(wby, 2, 1).with(WEEK_OF_WEEK_BASED_YEAR, week).with(DAY_OF_WEEK, dow);
-                builder.addFieldValue(EPOCH_DAY, date.toEpochDay());
-                builder.removeFieldValues(WEEK_BASED_YEAR, WEEK_OF_WEEK_BASED_YEAR, DAY_OF_WEEK);
-            }
-            return false;
-        }
-
-        // JDK8 default interface
-        //-------------------------------------------------------------------------
         @Override
         public int compare(TemporalAccessor temporal1, TemporalAccessor temporal2) {
             return Long.compare(temporal1.getLong(this), temporal2.getLong(this));
         }
+
+        @Override
+        public boolean resolve(DateTimeBuilder builder, long value) {
+            return false;
+        }
+
+        @Override
+        public String toString() {
+            return getName();
+        }
+
+        //-------------------------------------------------------------------------
+        private static final int[] QUARTER_DAYS = {0, 90, 181, 273, 0, 91, 182, 274};
 
         private static ValueRange getWeekRange(LocalDate date) {
             int wby = getWeekBasedYear(date);
@@ -286,16 +468,25 @@ public final class ISOFields {
      * Implementation of the period unit.
      */
     private static enum Unit implements TemporalUnit {
-        WEEK_BASED_YEARS;
+        WEEK_BASED_YEARS("WeekBasedYears", Duration.ofSeconds(31556952L)),
+        QUARTER_YEARS("QuarterYears", Duration.ofSeconds(31556952L / 4));
+
+        private final String name;
+        private final Duration duration;
+
+        private Unit(String name, Duration estimatedDuration) {
+            this.name = name;
+            this.duration = estimatedDuration;
+        }
 
         @Override
         public String getName() {
-            return "WeekBasedYears";
+            return name;
         }
 
         @Override
         public Duration getDuration() {
-            return YEARS.getDuration();
+            return duration;
         }
 
         @Override
@@ -309,15 +500,37 @@ public final class ISOFields {
         }
 
         @Override
-        public <R extends Temporal> R doPlus(R dateTime, long periodToAdd) {
-            return (R) dateTime.with(WEEK_BASED_YEAR, Jdk8Methods.safeAdd(dateTime.get(WEEK_BASED_YEAR), periodToAdd));
+        public <R extends Temporal> R doPlus(R temporal, long periodToAdd) {
+            switch(this) {
+                case WEEK_BASED_YEARS:
+                    long added = Jdk8Methods.safeAdd(temporal.get(WEEK_BASED_YEAR), periodToAdd);
+					return (R) temporal.with(WEEK_BASED_YEAR, added);
+                case QUARTER_YEARS:
+                    // no overflow (256 is multiple of 4)
+                    return (R) temporal.plus(periodToAdd / 256, YEARS).plus((periodToAdd % 256) * 3, MONTHS);
+                default:
+                    throw new IllegalStateException("Unreachable");
+            }
         }
 
         @Override
-        public <R extends Temporal> SimplePeriod between(R dateTime1, R dateTime2) {
-            long period = Jdk8Methods.safeSubtract(dateTime2.getLong(WEEK_BASED_YEAR), dateTime1.getLong(WEEK_BASED_YEAR));
-            return SimplePeriod.of(period, WEEK_BASED_YEARS);
+        public <R extends Temporal> SimplePeriod between(R temporal1, R temporal2) {
+            switch(this) {
+                case WEEK_BASED_YEARS:
+                    long period = Jdk8Methods.safeSubtract(temporal2.getLong(WEEK_BASED_YEAR), temporal1.getLong(WEEK_BASED_YEAR));
+                    return new SimplePeriod(period, WEEK_BASED_YEARS);
+                case QUARTER_YEARS:
+                    long period2 = Jdk8Methods.safeSubtract(temporal2.getLong(QUARTER_OF_YEAR), temporal1.getLong(QUARTER_OF_YEAR));
+                    return new SimplePeriod(period2, QUARTER_YEARS);
+                default:
+                    throw new IllegalStateException("Unreachable");
+            }
+        }
+
+        @Override
+        public String toString() {
+            return getName();
+
         }
     }
-
 }

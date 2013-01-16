@@ -93,13 +93,6 @@ public class TCKJulianFields {
         assertEquals(field.doWith(NOV12_1945, value), date);
     }
 
-    @Test(dataProvider="samples", groups={"tck"})
-    public void test_samples_date(TemporalField field, LocalDate date, long value) {
-        if (field instanceof JulianFields) {
-            assertEquals(((JulianFields) field).createDate(value), date);
-        }
-    }
-
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
@@ -108,15 +101,6 @@ public class TCKJulianFields {
         assertEquals(JulianFields.JULIAN_DAY.toString(), "JulianDay");
         assertEquals(JulianFields.MODIFIED_JULIAN_DAY.toString(), "ModifiedJulianDay");
         assertEquals(JulianFields.RATA_DIE.toString(), "RataDie");
-    }
-
-    //-----------------------------------------------------------------------
-    // generated methods
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_enum() {
-        assertEquals(JulianFields.valueOf("JULIAN_DAY"), JulianFields.JULIAN_DAY);
-        assertEquals(JulianFields.values()[0], JulianFields.JULIAN_DAY);
     }
 
 }

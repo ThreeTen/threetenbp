@@ -31,6 +31,7 @@
  */
 package org.threeten.bp.temporal;
 
+import java.io.InvalidObjectException;
 import java.io.Serializable;
 import java.util.GregorianCalendar;
 import java.util.Locale;
@@ -43,14 +44,15 @@ import org.threeten.bp.format.DateTimeBuilder;
 import org.threeten.bp.jdk8.Jdk8Methods;
 
 /**
- * Expresses how a week is defined.
+ * Localized definitions of the day-of-week, week-of-month and week-of-year fields.
  * <p>
  * A standard week is seven days long, but cultures have different definitions for some
- * other aspects of a week.
+ * other aspects of a week. This class represents the definition of the week, for the
+ * purpose of providing {@link TemporalField} instances.
  * <p>
- * WeekDefinition provides three fields,
+ * WeekFields provides three fields,
  * {@link #dayOfWeek()}, {@link #weekOfMonth()}, and {@link #weekOfYear()}
- * that provide access to the values from any {@linkplain org.threeten.bp.temporal.Temporal temporal}.
+ * that provide access to the values from any {@link Temporal temporal object}.
  * <p>
  * The computations for day-of-week, week-of-month, and week-of-year are based
  * on the  {@link ChronoField#YEAR proleptic-year},
@@ -69,7 +71,7 @@ import org.threeten.bp.jdk8.Jdk8Methods;
  * </ul><p>
  * Together these two values allow a year or month to be divided into weeks.
  * <p>
- * <h4>Week of Month</h4>
+ * <h3>Week of Month</h3>
  * One field is used: week-of-month.
  * The calculation ensures that weeks never overlap a month boundary.
  * The month is divided into periods where each period starts on the defined first day-of-week.
@@ -77,8 +79,9 @@ import org.threeten.bp.jdk8.Jdk8Methods;
  * and week 1 if it has at least the minimal number of days.
  * <p>
  * <table cellpadding="0" cellspacing="3" border="0" style="text-align: left; width: 50%;">
+ * <caption>Examples of WeekFields</caption>
  * <tr><th>Date</th><td>Day-of-week</td>
- *  <td>First day: Monday<br />Minimal days: 4</td><td>First day: Monday<br />Minimal days: 5</td></tr>
+ *  <td>First day: Monday<br>Minimal days: 4</td><td>First day: Monday<br>Minimal days: 5</td></tr>
  * <tr><th>2008-12-31</th><td>Wednesday</td>
  *  <td>Week 5 of December 2008</td><td>Week 5 of December 2008</td></tr>
  * <tr><th>2009-01-01</th><td>Thursday</td>
@@ -89,7 +92,7 @@ import org.threeten.bp.jdk8.Jdk8Methods;
  *  <td>Week 2 of January 2009</td><td>Week 1 of January 2009</td></tr>
  * </table>
  * <p>
- * <h4>Week of Year</h4>
+ * <h3>Week of Year</h3>
  * One field is used: week-of-year.
  * The calculation ensures that weeks never overlap a year boundary.
  * The year is divided into periods where each period starts on the defined first day-of-week.
@@ -97,8 +100,6 @@ import org.threeten.bp.jdk8.Jdk8Methods;
  * and week 1 if it has at least the minimal number of days.
  * <p>
  * This class is immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
 public final class WeekFields implements Serializable {
     // implementation notes
@@ -107,6 +108,12 @@ public final class WeekFields implements Serializable {
     // allow week-of-month outer range [0 to 5]
     // allow week-of-year outer range [0 to 53]
     // this is because callers shouldn't be expected to know the details of validity
+
+    /**
+     * The cache of rules by firstDayOfWeek plus minimalDays.
+     * Initialized first to be available for definition of ISO, etc.
+     */
+    private static final ConcurrentMap<String, WeekFields> CACHE = new ConcurrentHashMap<>(4, 0.75f, 2);
 
     /**
      * The ISO-8601 definition, where a week starts on Monday and the first week
@@ -123,14 +130,18 @@ public final class WeekFields implements Serializable {
     public static final WeekFields ISO = new WeekFields(DayOfWeek.MONDAY, 4);
 
     /**
+     * The common definition of a week that starts on Sunday.
+     * <p>
+     * Defined as starting on Sunday and with a minimum of 1 day in the month.
+     * This week definition is in use in the US and other European countries.
+     *
+     */
+    public static final WeekFields SUNDAY_START = WeekFields.of(DayOfWeek.SUNDAY, 1);
+
+    /**
      * Serialization version.
      */
     private static final long serialVersionUID = -1177360819670808121L;
-
-    /**
-     * The cache of rules by locale.
-     */
-    private static final ConcurrentMap<String, WeekFields> CACHE = new ConcurrentHashMap<>(4, 0.75f, 2);
 
     /**
      * The first day-of-week.
@@ -142,22 +153,22 @@ public final class WeekFields implements Serializable {
     private final int minimalDays;
 
     /**
-     * The DateTimeField used to access the computed DayOfWeek.
+     * The field used to access the computed DayOfWeek.
      */
-    private final TemporalField dayOfWeek = ComputedDayOfField.ofDayOfWeekField(this);
+    private transient final TemporalField dayOfWeek = ComputedDayOfField.ofDayOfWeekField(this);
 
     /**
-     * The DateTimeField used to access the computed WeekOfMonth.
+     * The field used to access the computed WeekOfMonth.
      */
-    private final TemporalField weekOfMonth = ComputedDayOfField.ofWeekOfMonthField(this);
+    private transient final TemporalField weekOfMonth = ComputedDayOfField.ofWeekOfMonthField(this);
 
     /**
-     * The DateTimeField used to access the computed WeekOfYear.
+     * The field used to access the computed WeekOfYear.
      */
-    private final TemporalField weekOfYear = ComputedDayOfField.ofWeekOfYearField(this);
+    private transient final TemporalField weekOfYear = ComputedDayOfField.ofWeekOfYearField(this);
 
     /**
-     * Obtains an instance of {@code WeekDefinition} appropriate for a locale.
+     * Obtains an instance of {@code WeekFields} appropriate for a locale.
      * <p>
      * This will look up appropriate values from the provider of localization data.
      *
@@ -177,7 +188,7 @@ public final class WeekFields implements Serializable {
     }
 
     /**
-     * Obtains an instance of {@code WeekDefinition} from the first day-of-week and minimal days.
+     * Obtains an instance of {@code WeekFields} from the first day-of-week and minimal days.
      * <p>
      * The first day-of-week defines the ISO {@code DayOfWeek} that is day 1 of the week.
      * The minimal number of days in the first week defines how many days must be present
@@ -185,16 +196,18 @@ public final class WeekFields implements Serializable {
      * as the first week. A value of 1 will count the first day of the month or year as part
      * of the first week, whereas a value of 7 will require the whole seven days to be in
      * the new month or year.
+     * <p>
+     * WeekFields instances are singletons; for each unique combination
+     * of {@code firstDayOfWeek} and {@code minimalDaysInFirstWeek} the
+     * the same instance will be returned.
      *
      * @param firstDayOfWeek  the first day of the week, not null
      * @param minimalDaysInFirstWeek  the minimal number of days in the first week, from 1 to 7
      * @return the week-definition, not null
-     * @throws IllegalArgumentException if the minimal days value is invalid
+     * @throws IllegalArgumentException if the minimal days value is less than one
+     *      or greater than 7
      */
     public static WeekFields of(DayOfWeek firstDayOfWeek, int minimalDaysInFirstWeek) {
-        if (firstDayOfWeek == DayOfWeek.MONDAY && minimalDaysInFirstWeek == 4) {
-            return ISO;
-        }
         String key = firstDayOfWeek.toString() + minimalDaysInFirstWeek;
         WeekFields rules = CACHE.get(key);
         if (rules == null) {
@@ -220,6 +233,20 @@ public final class WeekFields implements Serializable {
         }
         this.firstDayOfWeek = firstDayOfWeek;
         this.minimalDays = minimalDaysInFirstWeek;
+    }
+
+    /**
+     * Ensure valid singleton.
+     * 
+     * @return the valid week fields instance, not null
+     * @throws InvalidObjectException if invalid
+     */
+    private Object readResolve() throws InvalidObjectException {
+    	try {
+    		return WeekFields.of(firstDayOfWeek, minimalDays);
+    	} catch (IllegalArgumentException ex) {
+    		throw new InvalidObjectException("Invalid WeekFields" + ex.getMessage());
+    	}
     }
 
     //-----------------------------------------------------------------------
@@ -252,8 +279,8 @@ public final class WeekFields implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a DateTimeField to access the day of week,
-     * computed based on this WeekDefinition.
+     * Returns a field to access the day of week,
+     * computed based on this WeekFields.
      * <p>
      * The days of week are numbered from 1 to 7.
      * Day number 1 is the {@link #getFirstDayOfWeek() first day-of-week}.
@@ -265,8 +292,8 @@ public final class WeekFields implements Serializable {
     }
 
     /**
-     * Returns a DateTimeField to access the week of month,
-     * computed based on this WeekDefinition.
+     * Returns a field to access the week of month,
+     * computed based on this WeekFields.
      * <p>
      * This represents concept of the count of weeks within the month where weeks
      * start on a fixed day-of-week, such as Monday.
@@ -277,21 +304,22 @@ public final class WeekFields implements Serializable {
      * Thus, week one may start up to {@code minDays} days before the start of the month.
      * If the first week starts after the start of the month then the period before is week zero (0).
      * <p>
-     * For example:<br />
-     * - if the 1st day of the month is a Monday, week one starts on the 1st and there is no week zero<br />
-     * - if the 2nd day of the month is a Monday, week one starts on the 2nd and the 1st is in week zero<br />
-     * - if the 4th day of the month is a Monday, week one starts on the 4th and the 1st to 3rd is in week zero<br />
-     * - if the 5th day of the month is a Monday, week two starts on the 5th and the 1st to 4th is in week one<br />
+     * For example:<br>
+     * - if the 1st day of the month is a Monday, week one starts on the 1st and there is no week zero<br>
+     * - if the 2nd day of the month is a Monday, week one starts on the 2nd and the 1st is in week zero<br>
+     * - if the 4th day of the month is a Monday, week one starts on the 4th and the 1st to 3rd is in week zero<br>
+     * - if the 5th day of the month is a Monday, week two starts on the 5th and the 1st to 4th is in week one<br>
      * <p>
      * This field can be used with any calendar system.
+     * @return a TemporalField to access the WeekOfMonth, not null
      */
     public TemporalField weekOfMonth() {
         return weekOfMonth;
     }
 
     /**
-     * Returns a DateTimeField to access the week of year,
-     * computed based on this WeekDefinition.
+     * Returns a field to access the week of year,
+     * computed based on this WeekFields.
      * <p>
      * This represents concept of the count of weeks within the year where weeks
      * start on a fixed day-of-week, such as Monday.
@@ -302,13 +330,14 @@ public final class WeekFields implements Serializable {
      * Thus, week one may start up to {@code minDays} days before the start of the year.
      * If the first week starts after the start of the year then the period before is week zero (0).
      * <p>
-     * For example:<br />
-     * - if the 1st day of the year is a Monday, week one starts on the 1st and there is no week zero<br />
-     * - if the 2nd day of the year is a Monday, week one starts on the 2nd and the 1st is in week zero<br />
-     * - if the 4th day of the year is a Monday, week one starts on the 4th and the 1st to 3rd is in week zero<br />
-     * - if the 5th day of the year is a Monday, week two starts on the 5th and the 1st to 4th is in week one<br />
+     * For example:<br>
+     * - if the 1st day of the year is a Monday, week one starts on the 1st and there is no week zero<br>
+     * - if the 2nd day of the year is a Monday, week one starts on the 2nd and the 1st is in week zero<br>
+     * - if the 4th day of the year is a Monday, week one starts on the 4th and the 1st to 3rd is in week zero<br>
+     * - if the 5th day of the year is a Monday, week two starts on the 5th and the 1st to 4th is in week one<br>
      * <p>
      * This field can be used with any calendar system.
+     * @return a TemporalField to access the WeekOfYear, not null
      */
     public TemporalField weekOfYear() {
         return weekOfYear;
@@ -352,14 +381,14 @@ public final class WeekFields implements Serializable {
      */
     @Override
     public String toString() {
-        return "WeekDefinition[" + firstDayOfWeek + ',' + minimalDays + ']';
+        return "WeekFields[" + firstDayOfWeek + ',' + minimalDays + ']';
     }
 
     //-----------------------------------------------------------------------
     /**
      * Field type that computes DayOfWeek, WeekOfMonth, and WeekOfYear
-     * based on a WeekDefinition.
-     * A separate Field instance is required for each different WeekDefinition;
+     * based on a WeekFields.
+     * A separate Field instance is required for each different WeekFields;
      * combination of start of week and minimum number of days.
      * Constructors are provided to create fields for DayOfWeek, WeekOfMonth,
      * and WeekOfYear.
@@ -367,8 +396,8 @@ public final class WeekFields implements Serializable {
     static class ComputedDayOfField implements TemporalField {
 
         /**
-         * Returns a DateTimeField to access the day of week,
-         * computed based on a WeekDefinition.
+         * Returns a field to access the day of week,
+         * computed based on a WeekFields.
          * <p>
          * The WeekDefintion of the first day of the week is used with
          * the ISO DAY_OF_WEEK field to compute week boundaries.
@@ -379,8 +408,8 @@ public final class WeekFields implements Serializable {
         }
 
         /**
-         * Returns a DateTimeField to access the week of month,
-         * computed based on a WeekDefinition.
+         * Returns a field to access the week of month,
+         * computed based on a WeekFields.
          * @see WeekFields#weekOfMonth()
          */
         static ComputedDayOfField ofWeekOfMonthField(WeekFields weekDef) {
@@ -389,8 +418,8 @@ public final class WeekFields implements Serializable {
         }
 
         /**
-         * Returns a DateTimeField to access the week of year,
-         * computed based on a WeekDefinition.
+         * Returns a field to access the week of year,
+         * computed based on a WeekFields.
          * @see WeekFields#weekOfYear()
          */
         static ComputedDayOfField ofWeekOfYearField(WeekFields weekDef) {
@@ -427,13 +456,11 @@ public final class WeekFields implements Serializable {
             } else if (rangeUnit == ChronoUnit.MONTHS) {
                 int dom = temporal.get(ChronoField.DAY_OF_MONTH);
                 int offset = startOfWeekOffset(dom, dow);
-                int week = (offset + (dom - 1)) / 7;
-                return week;
+                return computeWeek(offset, dom);
             } else if (rangeUnit == ChronoUnit.YEARS) {
                 int doy = temporal.get(ChronoField.DAY_OF_YEAR);
                 int offset = startOfWeekOffset(doy, dow);
-                int week = (offset + (doy - 1)) / 7;
-                return week;
+                return computeWeek(offset, doy);
             } else {
                 throw new IllegalStateException("unreachable");
             }
@@ -444,8 +471,7 @@ public final class WeekFields implements Serializable {
          *
          * @param day the day; 1 through infinity
          * @param dow the day of the week of that day; 1 through 7
-         * @param minDays the minimum number of days required the first week
-         * @return an offset in days to align a day with the start of a the first 'full' week
+         * @return an offset in days to align a day with the start of the first 'full' week
          */
         private int startOfWeekOffset(int day, int dow) {
             // offset of first day corresponding to the day of week in first 7 days (zero origin)
@@ -455,30 +481,41 @@ public final class WeekFields implements Serializable {
                 // The previous week has the minimum days in the current month to be a 'week'
                 offset = 7 - weekStart;
             }
-            offset += 7;
             return offset;
         }
 
+        /**
+         * Returns the week number computed from the reference day and reference dayOfWeek.
+         *
+         * @param offset the offset to align a date with the start of week
+         *     from {@link #startOfWeekOffset}.
+         * @param day  the day for which to compute the week number
+         * @return the week number where zero is used for a partial week and 1 for the first full week
+         */
+        private int computeWeek(int offset, int day) {
+            return ((7 + offset + (day - 1)) / 7);
+        }
+
         @Override
-        public <R extends Temporal> R doWith(R dateTime, long newValue) {
+        public <R extends Temporal> R doWith(R temporal, long newValue) {
             // Check the new value and get the old value of the field
             int newVal = range.checkValidIntValue(newValue, this);
-            int currentVal = dateTime.get(this);
+            int currentVal = temporal.get(this);
             if (newVal == currentVal) {
-                return dateTime;
+                return temporal;
             }
             // Compute the difference and add that using the base using of the field
             int delta = newVal - currentVal;
-            return (R)dateTime.plus(delta, baseUnit);
+            return (R) temporal.plus(delta, baseUnit);
         }
 
+        @SuppressWarnings("rawtypes")
         @Override
         public boolean resolve(DateTimeBuilder builder, long value) {
             int newValue = range.checkValidIntValue(value, this);
             // DOW and YEAR are necessary for all fields; Chrono defaults to ISO if not present
             int sow = weekDef.getFirstDayOfWeek().getValue();
-            int isoDow = builder.get(ChronoField.DAY_OF_WEEK);
-            int dow = Jdk8Methods.floorMod(isoDow - sow, 7) + 1;
+            int dow = builder.get(weekDef.dayOfWeek());
             int year = builder.get(ChronoField.YEAR);
             Chrono chrono = Chrono.from(builder);
 
@@ -487,25 +524,32 @@ public final class WeekFields implements Serializable {
                 // Process WOM value by combining with DOW and MONTH, YEAR
                 int month = builder.get(ChronoField.MONTH_OF_YEAR);
                 ChronoLocalDate cd = chrono.date(year, month, 1);
-                int offset = startOfWeekOffset(1, dow);
-                offset += sow - dow;    // offset to desired day of week
-                offset += 7 * newValue;    // offset by week number
+                int offset = startOfWeekOffset(1, cd.get(weekDef.dayOfWeek()));
+                offset += dow - 1;    // offset to desired day of week
+                offset += 7 * (newValue - 1);    // offset by week number
                 ChronoLocalDate result = cd.plus(offset, ChronoUnit.DAYS);
                 builder.addFieldValue(ChronoField.DAY_OF_MONTH, result.get(ChronoField.DAY_OF_MONTH));
+                builder.removeFieldValue(this);
+                builder.removeFieldValue(weekDef.dayOfWeek());
                 return true;
             } else if (rangeUnit == ChronoUnit.YEARS) {
                 // Process WOY
                 ChronoLocalDate cd = chrono.date(year, 1, 1);
-                int offset = startOfWeekOffset(1, dow);
-                offset += sow - dow;    // offset to desired day of week
-                offset += 7 * newValue;    // offset by week number
+                int offset = startOfWeekOffset(1, cd.get(weekDef.dayOfWeek()));
+                offset += dow - 1;    // offset to desired day of week
+                offset += 7 * (newValue - 1);    // offset by week number
                 ChronoLocalDate result = cd.plus(offset, ChronoUnit.DAYS);
                 builder.addFieldValue(ChronoField.DAY_OF_MONTH, result.get(ChronoField.DAY_OF_MONTH));
                 builder.addFieldValue(ChronoField.MONTH_OF_YEAR, result.get(ChronoField.MONTH_OF_YEAR));
+                builder.removeFieldValue(this);
+                builder.removeFieldValue(weekDef.dayOfWeek());
                 return true;
             } else {
                 // ignore DOW of WEEK field; the value will be processed by WOM or WOY
-                return false;
+                int isoDow = Jdk8Methods.floorMod((sow - 1) + (dow - 1), 7) + 1;
+                builder.addFieldValue(ChronoField.DAY_OF_WEEK, isoDow);
+                // Not removed, the week-of-xxx fields need this value
+                return true;
             }
         }
 
@@ -556,34 +600,31 @@ public final class WeekFields implements Serializable {
             if (rangeUnit == ChronoUnit.WEEKS) {
                 return range;
             }
+
+            TemporalField field = null;
+            if (rangeUnit == ChronoUnit.MONTHS) {
+                field = ChronoField.DAY_OF_MONTH;
+            } else if (rangeUnit == ChronoUnit.YEARS) {
+                field = ChronoField.DAY_OF_YEAR;
+            } else {
+                throw new IllegalStateException("unreachable");
+            }
+
             // Offset the ISO DOW by the start of this week
             int sow = weekDef.getFirstDayOfWeek().getValue();
             int isoDow = temporal.get(ChronoField.DAY_OF_WEEK);
             int dow = Jdk8Methods.floorMod(isoDow - sow, 7) + 1;
 
-            if (rangeUnit == ChronoUnit.MONTHS) {
-                ValueRange fieldRange = temporal.range(ChronoField.DAY_OF_MONTH);
-                int dom = temporal.get(ChronoField.DAY_OF_MONTH);
-                int offset = startOfWeekOffset(dom, dow);
-                int lastDay = (int)fieldRange.getMaximum();
-                int week = (offset + (lastDay - 1)) / 7;
-                return ValueRange.of(offset / 7, week);
-            } else if (rangeUnit == ChronoUnit.YEARS) {
-                ValueRange fieldRange = temporal.range(ChronoField.DAY_OF_YEAR);
-                int doy = temporal.get(ChronoField.DAY_OF_YEAR);
-                int offset = startOfWeekOffset(doy, dow);
-                int lastDay = (int)fieldRange.getMaximum();
-                int week = (offset + (lastDay - 1)) / 7;
-                return ValueRange.of(offset / 7, week);
-            } else {
-                throw new IllegalStateException("unreachable");
-            }
+            int offset = startOfWeekOffset(temporal.get(field), dow);
+            ValueRange fieldRange = temporal.range(field);
+            return ValueRange.of(computeWeek(offset, (int) fieldRange.getMinimum()),
+                    computeWeek(offset, (int) fieldRange.getMaximum()));
         }
 
         //-----------------------------------------------------------------------
         @Override
         public String toString() {
-            return String.format("%s[%s]", getName(), weekDef);
+            return getName() + "[" + weekDef.toString() + "]";
         }
     }
 }

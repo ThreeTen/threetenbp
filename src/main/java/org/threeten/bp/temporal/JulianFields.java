@@ -47,10 +47,10 @@ import org.threeten.bp.jdk8.Jdk8Methods;
  * It is expressed as a decimal number of whole days where days start at midday.
  * This class represents variations on Julian Days that count whole days from midnight.
  *
- * <h4>Implementation notes</h4>
- * This is an immutable and thread-safe enum.
+ * <h3>Specification for implementors</h3>
+ * This is an immutable and thread-safe class.
  */
-public enum JulianFields implements TemporalField {
+public final class JulianFields {
 
     /**
      * Julian Day field.
@@ -64,11 +64,11 @@ public enum JulianFields implements TemporalField {
      * For date-times, 'JULIAN_DAY.doGet()' assumes the same value from
      * midnight until just before the next midnight.
      * When 'JULIAN_DAY.doWith()' is applied to a date-time, the time of day portion remains unaltered.
-     * 'JULIAN_DAY.doWith()' and 'JULIAN_DAY.doGet()' only apply to {@code DateTime} objects that
+     * 'JULIAN_DAY.doWith()' and 'JULIAN_DAY.doGet()' only apply to {@code Temporal} objects that
      * can be converted into {@link ChronoField#EPOCH_DAY}.
      * A {@link DateTimeException} is thrown for any other type of object.
      * <p>
-     * <h4>Astronomical and Scientific Notes</h4>
+     * <h3>Astronomical and Scientific Notes</h3>
      * The standard astronomical definition uses a fraction to indicate the time-of-day,
      * thus 3.25 would represent the time 18:00, since days start at midday.
      * This implementation uses an integer and days starting at midnight.
@@ -91,8 +91,7 @@ public enum JulianFields implements TemporalField {
      * implementation always uses the Julian Day number for the local date,
      * regardless of the offset or time-zone.
      */
-    // 719163L + 1721425L = 2440588L
-    JULIAN_DAY("JulianDay", DAYS, FOREVER, 2440588L),
+    public static final TemporalField JULIAN_DAY = Field.JULIAN_DAY;
     /**
      * Modified Julian Day field.
      * <p>
@@ -105,13 +104,13 @@ public enum JulianFields implements TemporalField {
      * For date-times, 'MODIFIED_JULIAN_DAY.doGet()' assumes the same value from
      * midnight until just before the next midnight.
      * When 'MODIFIED_JULIAN_DAY.doWith()' is applied to a date-time, the time of day portion remains unaltered.
-     * 'MODIFIED_JULIAN_DAY.doWith()' and 'MODIFIED_JULIAN_DAY.doGet()' only apply to {@code DateTime} objects
+     * 'MODIFIED_JULIAN_DAY.doWith()' and 'MODIFIED_JULIAN_DAY.doGet()' only apply to {@code Temporal} objects
      * that can be converted into {@link ChronoField#EPOCH_DAY}.
      * A {@link DateTimeException} is thrown for any other type of object.
      * <p>
      * This implementation is an integer version of MJD with the decimal part rounded to floor.
      * <p>
-     * <h4>Astronomical and Scientific Notes</h4>
+     * <h3>Astronomical and Scientific Notes</h3>
      * <pre>
      *  | ISO date          | Modified Julian Day |      Decimal MJD |
      *  | 1970-01-01T00:00  |             40,587  |       40,587.0   |
@@ -127,8 +126,7 @@ public enum JulianFields implements TemporalField {
      * implementation always uses the Modified Julian Day for the local date,
      * regardless of the offset or time-zone.
      */
-    // 719163L - 678576L = 40587L
-    MODIFIED_JULIAN_DAY("ModifiedJulianDay", DAYS, FOREVER, 40587L),
+    public static final TemporalField MODIFIED_JULIAN_DAY = Field.MODIFIED_JULIAN_DAY;
     /**
      * Rata Die field.
      * <p>
@@ -138,118 +136,124 @@ public enum JulianFields implements TemporalField {
      * For date-times, 'RATA_DIE.doGet()' assumes the same value from
      * midnight until just before the next midnight.
      * When 'RATA_DIE.doWith()' is applied to a date-time, the time of day portion remains unaltered.
-     * 'MODIFIED_JULIAN_DAY.doWith()' and 'RATA_DIE.doGet()' only apply to {@code DateTime} objects
+     * 'MODIFIED_JULIAN_DAY.doWith()' and 'RATA_DIE.doGet()' only apply to {@code Temporal} objects
      * that can be converted into {@link ChronoField#EPOCH_DAY}.
      * A {@link DateTimeException} is thrown for any other type of object.
      */
-    RATA_DIE("RataDie", DAYS, FOREVER, 719163L),
-    // lots of others Truncated,Lilian, ANSI COBOL (also dotnet related), Excel?
-    ;
+    public static final TemporalField RATA_DIE = Field.RATA_DIE;
 
-    private final String name;
-    private final TemporalUnit baseUnit;
-    private final TemporalUnit rangeUnit;
-    private final ValueRange range;
-    private final long offset;
-
-    private JulianFields(String name, TemporalUnit baseUnit, TemporalUnit rangeUnit, long offset) {
-        this.name = name;
-        this.baseUnit = baseUnit;
-        this.rangeUnit = rangeUnit;
-        this.range = ValueRange.of(-365243219162L + offset, 365241780471L + offset);
-        this.offset = offset;
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public TemporalUnit getBaseUnit() {
-        return baseUnit;
-    }
-
-    @Override
-    public TemporalUnit getRangeUnit() {
-        return rangeUnit;
-    }
-
-    @Override
-    public ValueRange range() {
-        return range;
-    }
-
-    @Override
-    public int compare(TemporalAccessor temporal1, TemporalAccessor temporal2) {
-        return Long.compare(temporal1.getLong(this), temporal2.getLong(this));
-    }
-
-    //-----------------------------------------------------------------------
     /**
-     * Creates a date from a value of this field.
-     * <p>
-     * This allows a date to be created from a value representing the amount in terms of this field.
-     *
-     * @param value  the value
-     * @return the date, not null
-     * @throws DateTimeException if the value exceeds the supported date range
+     * Hidden implementation.
      */
-    public LocalDate createDate(long value) {
-        return doWith(LocalDate.MIN_DATE, value);
-    }
+	private static enum Field implements TemporalField {
+        /**
+         * Julian Day field.
+         */
+        // 719163L + 1721425L = 2440588L
+        JULIAN_DAY("JulianDay", DAYS, FOREVER, 2440588L),
+        /**
+         * Modified Julian Day field.
+         */
+        // 719163L - 678576L = 40587L
+        MODIFIED_JULIAN_DAY("ModifiedJulianDay", DAYS, FOREVER, 40587L),
+        /**
+         * Rata Die field.
+         */
+        RATA_DIE("RataDie", DAYS, FOREVER, 719163L),
+        // lots of others Truncated,Lilian, ANSI COBOL (also dotnet related), Excel?
+        ;
 
-    //-----------------------------------------------------------------------
-    @Override
-    public boolean doIsSupported(TemporalAccessor temporal) {
-        return temporal.isSupported(EPOCH_DAY);
-    }
+        private final String name;
+        private final TemporalUnit baseUnit;
+        private final TemporalUnit rangeUnit;
+        private final ValueRange range;
+        private final long offset;
 
-    @Override
-    public ValueRange doRange(TemporalAccessor temporal) {
-        if (doIsSupported(temporal) == false) {
-            throw new DateTimeException("Unsupported field: " + this);
+        private Field(String name, TemporalUnit baseUnit, TemporalUnit rangeUnit, long offset) {
+            this.name = name;
+            this.baseUnit = baseUnit;
+            this.rangeUnit = rangeUnit;
+            this.range = ValueRange.of(-365243219162L + offset, 365241780471L + offset);
+            this.offset = offset;
         }
-        return range();
-    }
 
-    @Override
-    public long doGet(TemporalAccessor temporal) {
-        return temporal.getLong(EPOCH_DAY) + offset;
-    }
-
-    @Override
-    public <R extends Temporal> R doWith(R dateTime, long newValue) {
-        if (range().isValidValue(newValue) == false) {
-            throw new DateTimeException("Invalid value: " + name + " " + newValue);
+        //-----------------------------------------------------------------------
+        @Override
+        public String getName() {
+            return name;
         }
-        return (R) dateTime.with(EPOCH_DAY, Jdk8Methods.safeSubtract(newValue, offset));
-    }
 
-    //-----------------------------------------------------------------------
-    @Override
-    public boolean resolve(DateTimeBuilder builder, long value) {
-        boolean changed = false;
-        changed = resolve0(JULIAN_DAY, builder, changed);
-        changed = resolve0(MODIFIED_JULIAN_DAY, builder, changed);
-        changed = resolve0(RATA_DIE, builder, changed);
-        return changed;
-    }
-
-    private boolean resolve0(JulianFields field, DateTimeBuilder builder, boolean changed) {
-        if (builder.containsFieldValue(field)) {
-            builder.addCalendrical(LocalDate.ofEpochDay(Jdk8Methods.safeSubtract(builder.getFieldValue(JULIAN_DAY), JULIAN_DAY.offset)));
-            builder.removeFieldValue(JULIAN_DAY);
-            changed = true;
+        @Override
+        public TemporalUnit getBaseUnit() {
+            return baseUnit;
         }
-        return changed;
-    }
 
-    //-----------------------------------------------------------------------
-    @Override
-    public String toString() {
-        return getName();
-    }
+        @Override
+        public TemporalUnit getRangeUnit() {
+            return rangeUnit;
+        }
 
+        @Override
+        public ValueRange range() {
+            return range;
+        }
+
+        @Override
+        public int compare(TemporalAccessor temporal1, TemporalAccessor temporal2) {
+            return Long.compare(temporal1.getLong(this), temporal2.getLong(this));
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        public boolean doIsSupported(TemporalAccessor temporal) {
+            return temporal.isSupported(EPOCH_DAY);
+        }
+
+        @Override
+        public ValueRange doRange(TemporalAccessor temporal) {
+            if (doIsSupported(temporal) == false) {
+                throw new DateTimeException("Unsupported field: " + this);
+            }
+            return range();
+        }
+
+        @Override
+        public long doGet(TemporalAccessor temporal) {
+            return temporal.getLong(EPOCH_DAY) + offset;
+        }
+
+        @Override
+        public <R extends Temporal> R doWith(R dateTime, long newValue) {
+            if (range().isValidValue(newValue) == false) {
+                throw new DateTimeException("Invalid value: " + name + " " + newValue);
+            }
+            return (R) dateTime.with(EPOCH_DAY, Jdk8Methods.safeSubtract(newValue, offset));
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        public boolean resolve(DateTimeBuilder builder, long value) {
+            boolean changed = false;
+            changed = resolve0(JULIAN_DAY, builder, changed);
+            changed = resolve0(MODIFIED_JULIAN_DAY, builder, changed);
+            changed = resolve0(RATA_DIE, builder, changed);
+            return changed;
+        }
+
+        private boolean resolve0(Field field, DateTimeBuilder builder, boolean changed) {
+            if (builder.containsFieldValue(field)) {
+                builder.addCalendrical(LocalDate.ofEpochDay(Jdk8Methods.safeSubtract(builder.getFieldValue(JULIAN_DAY), JULIAN_DAY.offset)));
+                builder.removeFieldValue(JULIAN_DAY);
+                changed = true;
+            }
+            return changed;
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        public String toString() {
+            return getName();
+        }
+
+    }
 }
