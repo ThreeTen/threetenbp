@@ -43,14 +43,15 @@ import org.threeten.bp.format.DateTimeBuilder;
  * meaningful for humans. Implementations of this interface represent those fields.
  * <p>
  * The most commonly used units are defined in {@link ChronoField}.
- * Additional fields can be written by application code by implementing this interface.
+ * Further fields are supplied in {@link ISOFields}, {@link WeekFields} and {@link JulianFields}.
+ * Fields can also be written by application code by implementing this interface.
  * <p>
  * The field works using double dispatch. Client code calls methods on a date-time like
  * {@code LocalDateTime} which check if the field is a {@code ChronoField}.
  * If it is, then the date-time must handle it.
  * Otherwise, the method call is re-dispatched to the matching method in this interface.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * It is recommended to use an enum where possible.
@@ -61,8 +62,8 @@ public interface TemporalField extends Comparator<TemporalAccessor> {
      * Gets a descriptive name for the field.
      * <p>
      * The should be of the format 'BaseOfRange', such as 'MonthOfYear',
-     * unless the field is unbounded, such as 'Year' or 'Era', when only
-     * the base unit is mentioned.
+     * unless the field has a range of {@code FOREVER}, when only
+     * the base unit is mentioned, such as 'Year' or 'Era'.
      *
      * @return the name, not null
      */
@@ -93,21 +94,21 @@ public interface TemporalField extends Comparator<TemporalAccessor> {
      */
     TemporalUnit getRangeUnit();
 
+    //-----------------------------------------------------------------------
     /**
-     * Compares the value of this field in two date-time objects.
+     * Compares the value of this field in two temporal objects.
      * <p>
      * All fields implement {@link Comparator} on {@link TemporalAccessor}.
      * This allows a list of date-times to be compared using the value of a field.
-     * For example, you could sort a list of arbitrary date-time objects by the value of
+     * For example, you could sort a list of arbitrary temporal objects by the value of
      * the month-of-year field - {@code Collections.sort(list, MONTH_OF_YEAR)}
      *
-     * @param temporal1  the first date-time object to compare, not null
-     * @param temporal2  the second date-time object to compare, not null
+     * @param temporal1  the first temporal object to compare, not null
+     * @param temporal2  the second temporal object to compare, not null
      * @throws DateTimeException if unable to obtain the value for this field
      */
-    int compare(TemporalAccessor temporal1, TemporalAccessor temporal2);  // JAVA8 default method
+    int compare(TemporalAccessor temporal1, TemporalAccessor temporal2);
 
-    //-----------------------------------------------------------------------
     /**
      * Gets the range of valid values for the field.
      * <p>
@@ -123,90 +124,131 @@ public interface TemporalField extends Comparator<TemporalAccessor> {
      */
     ValueRange range();
 
+    //-----------------------------------------------------------------------
     /**
-     * Implementation of the logic to check if this field is supported by the accessor.
+     * Checks if this field is supported by the temporal object.
      * <p>
-     * This method is not intended to be called by application code directly.
-     * Applications should use {@link TemporalAccessor#isSupported(DateTimeField)} on the date-time
-     * object passing this as the argument.
+     * This determines whether the temporal accessor supports this field.
+     * If this returns false, the the temporal cannot be queried for this field.
+     * <p>
+     * There are two equivalent ways of using this method.
+     * The first is to invoke this method directly.
+     * The second is to use {@link TemporalAccessor#isSupported(TemporalField)}:
      * <pre>
-     *   boolean supported = date.isSupported(field);
+     *   // these two lines are equivalent, but the second approach is recommended
+     *   temporal = thisField.doIsSupported(temporal);
+     *   temporal = temporal.isSupported(thisField);
      * </pre>
+     * It is recommended to use the second approach, {@code isSupported(TemporalField)},
+     * as it is a lot clearer to read in code.
      * <p>
-     * Implementations should be written using the fields available in {@link ChronoField}.
+     * Implementations should determine whether they are supported using the fields
+     * available in {@link ChronoField}.
      *
-     * @param temporal  the date-time object to query, not null
+     * @param temporal  the temporal object to query, not null
      * @return true if the date-time can be queried for this field, false if not
      */
     boolean doIsSupported(TemporalAccessor temporal);
 
     /**
-     * Implementation of the logic to get the range of valid values for this field.
+     * Get the range of valid values for this field using the temporal object to
+     * refine the result.
      * <p>
-     * All fields can be expressed as a {@code long} integer.
-     * This method returns an object that describes the valid range for that value.
+     * This uses the temporal object to find the range of valid values for the field.
+     * This is similar to {@link #range()}, however this method refines the result
+     * using the temporal. For example, if the field is {@code DAY_OF_MONTH} the
+     * {@code range} method is not accurate as there are four possible month lengths,
+     * 28, 29, 30 and 31 days. Using this method with a date allows the range to be
+     * accurate, returning just one of those four options.
      * <p>
-     * Note that the result only describes the minimum and maximum valid values
-     * and it is important not to read too much into them. For example, there
-     * could be values within the range that are invalid for the field.
-     * <p>
-     * This method is not intended to be called by application code directly.
-     * Applications should use {@link TemporalAccessor#range(DateTimeField)} on the date-time
-     * object passing this as the argument.
+     * There are two equivalent ways of using this method.
+     * The first is to invoke this method directly.
+     * The second is to use {@link TemporalAccessor#range(TemporalField)}:
      * <pre>
-     *   DateTimeValueRange range = date.range(field);
+     *   // these two lines are equivalent, but the second approach is recommended
+     *   temporal = thisField.doRange(temporal);
+     *   temporal = temporal.range(thisField);
      * </pre>
+     * It is recommended to use the second approach, {@code range(TemporalField)},
+     * as it is a lot clearer to read in code.
      * <p>
-     * Implementations should be written using the fields available in {@link ChronoField}.
+     * Implementations should perform any queries or calculations using the fields
+     * available in {@link ChronoField}.
+     * If the field is not supported a {@code DateTimeException} must be thrown.
      *
-     * @param temporal  the date-time object used to refine the result, not null
+     * @param temporal  the temporal object used to refine the result, not null
      * @return the range of valid values for this field, not null
+     * @throws DateTimeException if the range for the field cannot be obtained
      */
     ValueRange doRange(TemporalAccessor temporal);
 
     /**
-     * Implementation of the logic to get the value of this field.
+     * Gets the value of this field from the specified temporal object.
      * <p>
-     * This method is not intended to be called by application code directly.
-     * Applications should use {@link TemporalAccessor#get(DateTimeField)} or
-     * {@link TemporalAccessor#getLong(DateTimeField)} on the date-time
-     * object passing this as the argument.
+     * This queries the temporal object for the value of this field.
+     * <p>
+     * There are two equivalent ways of using this method.
+     * The first is to invoke this method directly.
+     * The second is to use {@link TemporalAccessor#getLong(TemporalField)}
+     * (or {@link TemporalAccessor#get(TemporalField)}):
      * <pre>
-     *   long value = date.get(field);
+     *   // these two lines are equivalent, but the second approach is recommended
+     *   temporal = thisField.doGet(temporal);
+     *   temporal = temporal.getLong(thisField);
      * </pre>
+     * It is recommended to use the second approach, {@code getLong(TemporalField)},
+     * as it is a lot clearer to read in code.
      * <p>
-     * The value of the associated field is expressed as a {@code long} integer
-     * and is extracted from the specified date-time object.
-     * <p>
-     * Implementations should be written using the fields available in {@link ChronoField}.
+     * Implementations should perform any queries or calculations using the fields
+     * available in {@link ChronoField}.
+     * If the field is not supported a {@code DateTimeException} must be thrown.
      *
-     * @param temporal  the date-time object to query, not null
+     * @param temporal  the temporal object to query, not null
      * @return the value of this field, not null
-     * @throws DateTimeException if unable to get the field
+     * @throws DateTimeException if a value for the field cannot be obtained
      */
     long doGet(TemporalAccessor temporal);
 
     /**
-     * Implementation of the logic to set the value of this field.
+     * Returns a copy of the specified temporal object with the value of this field set.
      * <p>
-     * This method is not intended to be called by application code directly.
-     * Applications should use {@link Temporal#with(DateTimeField, long)} on the date-time
-     * object passing this as the argument.
+     * This returns a new temporal object based on the specified one with the value for
+     * this field changed. For example, on a {@code LocalDate}, this could be used to
+     * set the year, month or day-of-month.
+     * The returned object has the same observable type as the specified object.
+     * <p>
+     * In some cases, changing a field is not fully defined. For example, if the target object is
+     * a date representing the 31st January, then changing the month to February would be unclear.
+     * In cases like this, the implementation is responsible for resolving the result.
+     * Typically it will choose the previous valid date, which would be the last valid
+     * day of February in this example.
+     * <p>
+     * There are two equivalent ways of using this method.
+     * The first is to invoke this method directly.
+     * The second is to use {@link Temporal#with(TemporalField, long)}:
      * <pre>
-     *   updated = date.with(field, newValue);
+     *   // these two lines are equivalent, but the second approach is recommended
+     *   temporal = thisField.doWith(temporal);
+     *   temporal = temporal.with(thisField);
      * </pre>
+     * It is recommended to use the second approach, {@code with(TemporalField)},
+     * as it is a lot clearer to read in code.
      * <p>
-     * The new value of the field is expressed as a {@code long} integer.
-     * The result will be adjusted to set the value of the field.
+     * Implementations should perform any queries or calculations using the fields
+     * available in {@link ChronoField}.
+     * If the field is not supported a {@code DateTimeException} must be thrown.
      * <p>
-     * Implementations should be written using the fields available in {@link ChronoField}.
+     * Implementations must not alter the specified temporal object.
+     * Instead, an adjusted copy of the original must be returned.
+     * This provides equivalent, safe behavior for immutable and mutable implementations.
      *
-     * @param dateTime the date-time object to adjust, not null
+     * @param <R>  the type of the Temporal object
+     * @param temporal the temporal object to adjust, not null
      * @param newValue the new value of the field
-     * @return the adjusted date-time object, not null
-     * @throws DateTimeException if the value is invalid
+     * @return the adjusted temporal object, not null
+     * @throws DateTimeException if the field cannot be set
      */
-    <R extends Temporal> R doWith(R dateTime, long newValue);
+    <R extends Temporal> R doWith(R temporal, long newValue);
 
     /**
      * Resolves the date/time information in the builder

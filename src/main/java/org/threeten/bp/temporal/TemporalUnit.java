@@ -45,14 +45,15 @@ import org.threeten.bp.Period;
  * See {@link Period} for a class that represents an amount in terms of the common units.
  * <p>
  * The most commonly used units are defined in {@link ChronoUnit}.
- * Additional units can be written by application code by implementing this interface.
+ * Further units are supplied in {@link ISOFields}.
+ * Units can also be written by application code by implementing this interface.
  * <p>
  * The unit works using double dispatch. Client code calls methods on a date-time like
  * {@code LocalDateTime} which check if the unit is a {@code ChronoUnit}.
  * If it is, then the date-time must handle it.
  * Otherwise, the method call is re-dispatched to the matching method in this interface.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * It is recommended to use an enum where possible.
@@ -98,65 +99,69 @@ public interface TemporalUnit {
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this unit is supported by the specified date-time object.
+     * Checks if this unit is supported by the specified temporal object.
      * <p>
      * This checks that the implementing date-time can add/subtract this unit.
      * This can be used to avoid throwing an exception.
      *
-     * @param temporal  the date-time object to check, not null
+     * @param temporal  the temporal object to check, not null
      * @return true if the unit is supported
      */
     boolean isSupported(Temporal temporal);
-    // JAVA 8
-    // default {
-    //     try {
-    //         dateTime.plus(0, this);
-    //         return true;
-    //     } catch (RuntimeException ex) {
-    //         return false;
-    //     }
-    // }
 
     /**
-     * Implementation of the logic to add a period to the specified date-time.
-     * <p>
-     * This method is not intended to be called by application code directly.
-     * Applications should use {@link Temporal#plus(long, TemporalUnit)} or the
-     * equivalent {@code minus} method on the date-time object passing this as the argument.
-     * <pre>
-     *   updated = date.plus(amount, unit);
-     * </pre>
+     * Returns a copy of the specified temporal object with the specified period added.
      * <p>
      * The period added is a multiple of this unit. For example, this method
      * could be used to add "3 days" to a date by calling this method on the
      * instance representing "days", passing the date and the period "3".
      * The period to be added may be negative, which is equivalent to subtraction.
-     * Implementations must be written using the units available in {@link ChronoUnit}
-     * or the fields available in {@link ChronoField}.
+     * <p>
+     * There are two equivalent ways of using this method.
+     * The first is to invoke this method directly.
+     * The second is to use {@link Temporal#plus(long, TemporalUnit)}:
+     * <pre>
+     *   // these two lines are equivalent, but the second approach is recommended
+     *   temporal = thisUnit.doPlus(temporal);
+     *   temporal = temporal.plus(thisUnit);
+     * </pre>
+     * It is recommended to use the second approach, {@code plus(TemporalUnit)},
+     * as it is a lot clearer to read in code.
+     * <p>
+     * Implementations should perform any queries or calculations using the units
+     * available in {@link ChronoUnit} or the fields available in {@link ChronoField}.
+     * If the field is not supported a {@code DateTimeException} must be thrown.
+     * <p>
+     * Implementations must not alter the specified temporal object.
+     * Instead, an adjusted copy of the original must be returned.
+     * This provides equivalent, safe behavior for immutable and mutable implementations.
      *
-     * @param dateTime  the date-time object to adjust, not null
+     * @param <R>  the type of the Temporal object
+     * @param dateTime  the temporal object to adjust, not null
      * @param periodToAdd  the period of this unit to add, positive or negative
-     * @return the adjusted date-time object, not null
+     * @return the adjusted temporal object, not null
      * @throws DateTimeException if the period cannot be added
      */
     <R extends Temporal> R doPlus(R dateTime, long periodToAdd);
 
     //-----------------------------------------------------------------------
     /**
-     * Calculates the period in terms of this unit between two date-time objects of the same type.
+     * Calculates the period in terms of this unit between two temporal objects of the same type.
      * <p>
      * The period will be positive if the second date-time is after the first, and
      * negative if the second date-time is before the first.
+     * Call {@link SimplePeriod#abs() abs()} on the result to ensure that the result
+     * is always positive.
      * <p>
-     * The result can be queried for the {@link PeriodBetween#getAmount() amount}, the
-     * {@link PeriodBetween#getUnit() unit} and used directly in addition/subtraction:
+     * The result can be queried for the {@link SimplePeriod#getAmount() amount}, the
+     * {@link SimplePeriod#getUnit() unit} and used directly in addition/subtraction:
      * <pre>
      *  date = date.minus(MONTHS.between(start, end));
      * </pre>
      *
-     * @param <R>  the type of the date-time; the two date-times must be of the same type
-     * @param dateTime1  the base date-time object, not null
-     * @param dateTime2  the other date-time object, not null
+     * @param <R>  the type of the Temporal object; the two date-times must be of the same type
+     * @param dateTime1  the base temporal object, not null
+     * @param dateTime2  the other temporal object, not null
      * @return the period between datetime1 and datetime2 in terms of this unit;
      *      positive if datetime2 is later than datetime1, not null
      */
@@ -169,7 +174,7 @@ public interface TemporalUnit {
      * @return the name of this unit, not null
      */
     @Override
-    String toString();  // JAVA8 default interface method
+    String toString();
 
     //-----------------------------------------------------------------------
     /**

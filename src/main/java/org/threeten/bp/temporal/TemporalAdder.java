@@ -32,48 +32,73 @@
 package org.threeten.bp.temporal;
 
 import org.threeten.bp.DateTimeException;
+import org.threeten.bp.Duration;
+import org.threeten.bp.Period;
 
 /**
- * Strategy for adjusting a date-time object by addition.
+ * Strategy for adding to a temporal object.
  * <p>
- * This interface allows different types of addition to be modeled.
- * Implementations of this interface are used to add to a date-time.
+ * Adders are a key tool for modifying temporal objects.
+ * They exist to externalize the process of addition, permitting different
+ * approaches, as per the strategy design pattern.
  * <p>
- * Implementations should not normally be used directly.
- * Instead, the {@link Temporal#plus(PlusAdjuster)} method should be used:
+ * There are two equivalent ways of using a {@code TemporalAdder}.
+ * The first is to invoke the method on this interface directly.
+ * The second is to use {@link Temporal#plus(TemporalAdder)}:
  * <pre>
- *   dateTime = dateTime.plus(adjuster);
+ *   // these two lines are equivalent, but the second approach is recommended
+ *   dateTime = adder.addTo(dateTime);
+ *   dateTime = dateTime.plus(adder);
  * </pre>
+ * It is recommended to use the second approach, {@code plus(TemporalAdder)},
+ * as it is a lot clearer to read in code.
+ * <p>
+ * The {@link Period} and {@link Duration} classes implement this interface.
+ * Adders may also be defined by applications.
  *
- * <h4>Implementation notes</h4>
- * This interface must be implemented with care to ensure other classes operate correctly.
- * All implementations that can be instantiated must be final, immutable and thread-safe.
+ * <h3>Specification for implementors</h3>
+ * This interface places no restrictions on the mutability of implementations,
+ * however immutability is strongly recommended.
  */
 public interface TemporalAdder {
 
-	/**
-     * Implementation of the strategy to add to the specified date-time object.
+    /**
+     * Adds to the specified temporal object.
      * <p>
-     * This method is not intended to be called by application code directly.
-     * Instead, the {@link org.threeten.bp.temporal.Temporal#plus(PlusAdjuster)} method should be used:
+     * This adds to the specified temporal object using the logic
+     * encapsulated in the implementing class.
+     * <p>
+     * There are two equivalent ways of using this method.
+     * The first is to invoke this method directly.
+     * The second is to use {@link Temporal#plus(TemporalAdder)}:
      * <pre>
-     *   dateTime = dateTime.plus(adjuster);
+     *   // these two lines are equivalent, but the second approach is recommended
+     *   dateTime = adder.addTo(dateTime);
+     *   dateTime = dateTime.plus(adder);
      * </pre>
+     * It is recommended to use the second approach, {@code plus(TemporalAdder)},
+     * as it is a lot clearer to read in code.
      *
-     * <h5>Implementation notes</h5>
-     * The implementation takes the input object and adds to it.
-     * For example, the implementation {@link org.threeten.bp.Duration} will add the length of the duration.
+     * <h3>Specification for implementors</h3>
+     * The implementation must take the input object and add to it.
+     * The implementation defines the logic of the addition and is responsible for
+     * documenting that logic. It may use any method on {@code Temporal} to
+     * query the temporal object and perform the addition.
+     * The returned object must have the same observable type as the input object
      * <p>
-     * Implementations must use the methods on {@code DateTime} to make the adjustment.
-     * The returned object must have the same observable type as this object.
-     * The input object will be mutated if it is mutable, or a new object returned if immutable.
+     * The input object must not be altered.
+     * Instead, an adjusted copy of the original must be returned.
+     * This provides equivalent, safe behavior for immutable and mutable temporal objects.
      * <p>
-     * This interface can be used by calendar systems other than ISO.
-     * Typically this requires no extra work, because the algorithm for adding/subtraing in
-     * the calendar system is part of the {@code DateTime} implementation.
+     * The input temporal object may be in a calendar system other than ISO.
+     * Implementations may choose to document compatibility with other calendar systems,
+     * or reject non-ISO temporal objects by {@link Queries#chrono() querying the chronology}.
+     * <p>
+     * This method may be called from multiple threads in parallel.
+     * It must be thread-safe when invoked.
      *
-     * @param temporal  the date-time object to adjust, not null
-     * @return an object of the same type with the adjustment made, not null
+     * @param temporal  the temporal object to adjust, not null
+     * @return an object of the same observable type with the addition made, not null
      * @throws DateTimeException if unable to add
      * @throws ArithmeticException if numeric overflow occurs
      */

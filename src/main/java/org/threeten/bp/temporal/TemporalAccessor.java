@@ -32,38 +32,59 @@
 package org.threeten.bp.temporal;
 
 import org.threeten.bp.DateTimeException;
+import org.threeten.bp.ZoneId;
 
 /**
- * General low-level access to a date and/or time object.
+ * Framework-level interface defining read-only access to a temporal object,
+ * such as a date, time, offset or some combination of these.
  * <p>
- * This interface is implemented by all date-time classes.
- * It provides access to the state using the {@link #get(TemporalField)} and
- * {@link #getLong(TemporalField)} methods that takes a {@link TemporalField}.
- * Access is also provided to any additional state using a query interface
- * through {@link #query(TemporalQuery)}.
- * This provides access to the time-zone, precision and calendar system.
+ * This is the base interface type for date, time and offset objects.
+ * It is implemented by those classes that can provide information
+ * as {@link TemporalField fields} or {@link TemporalQuery queries}.
+ * <p>
+ * Most date and time information can be represented as a number.
+ * These are modeled using {@code TemporalField} with the number held using
+ * a {@code long} to handle large values. Year, month and day-of-month are
+ * simple examples of fields, but they also include instant and offsets.
+ * See {@link ChronoField} for the standard set of fields.
+ * <p>
+ * Two pieces of date/time information cannot be represented by numbers,
+ * the {@link Chrono chronology} and the {@link ZoneId time-zone}.
+ * These can be accessed via {@link #query(TemporalQuery) queries} using
+ * the static methods defined on {@link Queries}.
  * <p>
  * A sub-interface, {@link Temporal}, extends this definition to one that also
- * supports adjustment and manipulation on more complete date-time objects.
+ * supports adjustment and manipulation on more complete temporal objects.
+ * <p>
+ * This interface is a framework-level interface that should not be widely
+ * used in application code. Instead, applications should create and pass
+ * around instances of concrete types, such as {@code LocalDate}.
+ * There are many reasons for this, part of which is that implementations
+ * of this interface may be in calendar systems other than ISO.
+ * See {@link ChronoLocalDate} for a fuller discussion of the issues.
  *
- * <h4>Implementation notes</h4>
- * This interface places no restrictions on implementations and makes no guarantees
- * about their thread-safety.
- * See {@code DateTime} for a full description of whether to implement this
- * interface.
+ * <h3>Specification for implementors</h3>
+ * This interface places no restrictions on the mutability of implementations,
+ * however immutability is strongly recommended.
  */
 public interface TemporalAccessor {
 
     /**
-     * Checks if the specified date-time field is supported.
+     * Checks if the specified field is supported.
      * <p>
      * This checks if the date-time can be queried for the specified field.
      * If false, then calling the {@link #range(TemporalField) range} and {@link #get(TemporalField) get}
      * methods will throw an exception.
      *
-     * <h5>Implementation notes</h5>
-     * Implementations must check and handle any fields defined in {@link ChronoField} before
-     * delegating on to the {@link TemporalField#doRange(TemporalAccessor) doRange method} on the specified field.
+     * <h3>Specification for implementors</h3>
+     * Implementations must check and handle all fields defined in {@link ChronoField}.
+     * If the field is supported, then true is returned, otherwise false
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.doIsSupported(TemporalAccessor)}
+     * passing {@code this} as the argument.
+     * <p>
+     * Implementations must not alter either this object.
      *
      * @param field  the field to check, null returns false
      * @return true if this date-time can be queried for the field, false if not
@@ -71,10 +92,11 @@ public interface TemporalAccessor {
     boolean isSupported(TemporalField field);
 
     /**
-     * Gets the range of valid values for the specified date-time field.
+     * Gets the range of valid values for the specified field.
      * <p>
      * All fields can be expressed as a {@code long} integer.
      * This method returns an object that describes the valid range for that value.
+     * The value of this temporal object is used to enhance the accuracy of the returned range.
      * If the date-time cannot return the range, because the field is unsupported or for
      * some other reason, an exception will be thrown.
      * <p>
@@ -82,30 +104,45 @@ public interface TemporalAccessor {
      * and it is important not to read too much into them. For example, there
      * could be values within the range that are invalid for the field.
      *
-     * <h5>Implementation notes</h5>
-     * Implementations must check and handle any fields defined in {@link ChronoField} before
-     * delegating on to the {@link TemporalField#doRange(TemporalAccessor) doRange method} on the specified field.
+     * <h3>Specification for implementors</h3>
+     * Implementations must check and handle all fields defined in {@link ChronoField}.
+     * If the field is supported, then the range of the field must be returned.
+     * If unsupported, then a {@code DateTimeException} must be thrown.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.doRange(TemporalAccessorl)}
+     * passing {@code this} as the argument.
+     * <p>
+     * Implementations must not alter either this object.
      *
-     * @param field  the field to get, not null
+     * @param field  the field to query the range for, not null
      * @return the range of valid values for the field, not null
      * @throws DateTimeException if the range for the field cannot be obtained
      */
     ValueRange range(TemporalField field);
 
     /**
-     * Gets the value of the specified date-time field as an {@code int}.
+     * Gets the value of the specified field as an {@code int}.
      * <p>
      * This queries the date-time for the value for the specified field.
      * The returned value will always be within the valid range of values for the field.
      * If the date-time cannot return the value, because the field is unsupported or for
      * some other reason, an exception will be thrown.
      *
-     * <h5>Implementation notes</h5>
-     * Implementations must check and handle any fields defined in {@link ChronoField} before
-     * delegating on to the {@link TemporalField#doGet(TemporalAccessor) doGet method} on the specified field.
+     * <h3>Specification for implementors</h3>
+     * Implementations must check and handle all fields defined in {@link ChronoField}.
+     * If the field is supported and has an {@code int} range, then the value of
+     * the field must be returned.
+     * If unsupported, then a {@code DateTimeException} must be thrown.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * passing {@code this} as the argument.
+     * <p>
+     * Implementations must not alter either this object.
      *
      * @param field  the field to get, not null
-     * @return the value for the field
+     * @return the value for the field, within the valid range of values
      * @throws DateTimeException if a value for the field cannot be obtained
      * @throws DateTimeException if the range of valid values for the field exceeds an {@code int}
      * @throws DateTimeException if the value is outside the range of valid values for the field
@@ -114,16 +151,23 @@ public interface TemporalAccessor {
     int get(TemporalField field);
 
     /**
-     * Gets the value of the specified date-time field as a {@code Long}.
+     * Gets the value of the specified field as a {@code long}.
      * <p>
      * This queries the date-time for the value for the specified field.
      * The returned value may be outside the valid range of values for the field.
      * If the date-time cannot return the value, because the field is unsupported or for
      * some other reason, an exception will be thrown.
      *
-     * <h5>Implementation notes</h5>
-     * Implementations must check and handle any fields defined in {@link ChronoField} before
-     * delegating on to the {@link TemporalField#doGet(TemporalAccessor) doGet method} on the specified field.
+     * <h3>Specification for implementors</h3>
+     * Implementations must check and handle all fields defined in {@link ChronoField}.
+     * If the field is supported, then the value of the field must be returned.
+     * If unsupported, then a {@code DateTimeException} must be thrown.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * passing {@code this} as the argument.
+     * <p>
+     * Implementations must not alter either this object.
      *
      * @param field  the field to get, not null
      * @return the value for the field
@@ -136,38 +180,36 @@ public interface TemporalAccessor {
      * Queries this date-time.
      * <p>
      * This queries this date-time using the specified query strategy object.
-     * The Query interface has three special predefined constants -
-     * {@code Query.ZONE_ID}, {@code Query.CHRONO} and {@code Query.TIME_PRECISION}.
-     * Other queries may be defined by applications.
+     * <p>
+     * Queries are a key tool for extracting information from date-times.
+     * They exists to externalize the process of querying, permitting different
+     * approaches, as per the strategy design pattern.
+     * Examples might be a query that checks if the date is the day before February 29th
+     * in a leap year, or calculates the number of days to your next birthday.
+     * <p>
+     * The most common query implementations are method references, such as
+     * {@code LocalDate::from} and {@code ZoneId::from}.
+     * Further implementations are on {@link Queries}.
+     * Queries may also be defined by applications.
      *
-     * <h5>Implementation notes</h5>
-     * Queries are used for two purposes - general application specific logic,
-     * and providing a way to query those parts of a {@code DateTimeAccessor}
-     * that cannot be returned as a {@code long} using a field.
-     * <p>
-     * In use, there is no difference between the two purposes.
-     * However, there is a difference in implementation.
-     * It is the responsibility of implementations of this method to return a
-     * value for the three special constants if applicable.
-     * Future JDKs are permitted to add further special constants.
-     * <p>
-     * The standard implementation of this method will be similar to the following:
+     * <h3>Specification for implementors</h3>
+     * Implementations of this method must behave as follows:
      * <pre>
      *   public &lt;R&gt; R query(TemporalQuery&lt;R&gt; type) {
      *     // only include an if statement if the implementation can return it
-     *     if (query == TemporalQuery.ZONE_ID)  return // the ZoneId
-     *     if (query == TemporalQuery.CHRONO)  return // the Chrono
-     *     if (query == TemporalQuery.PRECISION)  return // the precision
+     *     if (query == TemporalQueries.zoneId())  return // the ZoneId
+     *     if (query == TemporalQueries.chrono())  return // the Chrono
+     *     if (query == TemporalQueries.precision())  return // the precision
      *     // call default method
      *     return super.query(query);
      *   }
      * </pre>
-     * If the implementation class has no zone, chronology or precision, then
-     * the class can rely totally on the default implementation.
      *
      * @param <R> the type of the result
      * @param query  the query to invoke, not null
      * @return the query result, null may be returned (defined by the query)
+     * @throws DateTimeException if unable to query
+     * @throws ArithmeticException if numeric overflow occurs
      */
     <R> R query(TemporalQuery<R> query);
 

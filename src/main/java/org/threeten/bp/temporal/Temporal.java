@@ -32,25 +32,43 @@
 package org.threeten.bp.temporal;
 
 import org.threeten.bp.DateTimeException;
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.LocalTime;
+import org.threeten.bp.Duration;
+import org.threeten.bp.Period;
+import org.threeten.bp.ZoneId;
 
 /**
- * General access to a date and/or time object that is complete enough to be manipulated.
+ * Framework-level interface defining read-write access to a temporal object,
+ * such as a date, time, offset or some combination of these.
  * <p>
- * There are two types of date-time class modeled in the API.
- * The first, {@link TemporalAccessor}, expresses the date-time only as a map of field to value.
- * The second, this interface, extends that to also support addition and subtraction.
+ * This is the base interface type for date, time and offset objects that
+ * are complete enough to be manipulated using plus and minus.
+ * It is implemented by those classes that can provide and manipulate information
+ * as {@link TemporalField fields} or {@link TemporalQuery queries}.
+ * See {@link TemporalAccessor} for the read-only version of this interface.
  * <p>
- * For example, a class representing the combination of day-of-week and day-of-month,
- * suitable for storing "Friday the 13th", would implement only the former.
- * By contrast, a {@link LocalDate} or {@link LocalTime} implements this interface.
+ * Most date and time information can be represented as a number.
+ * These are modeled using {@code TemporalField} with the number held using
+ * a {@code long} to handle large values. Year, month and day-of-month are
+ * simple examples of fields, but they also include instant and offsets.
+ * See {@link ChronoField} for the standard set of fields.
+ * <p>
+ * Two pieces of date/time information cannot be represented by numbers,
+ * the {@link Chrono chronology} and the {@link ZoneId time-zone}.
+ * These can be accessed via {@link #query(TemporalQuery) queries} using
+ * the static methods defined on {@link Queries}.
+ * <p>
+ * This interface is a framework-level interface that should not be widely
+ * used in application code. Instead, applications should create and pass
+ * around instances of concrete types, such as {@code LocalDate}.
+ * There are many reasons for this, part of which is that implementations
+ * of this interface may be in calendar systems other than ISO.
+ * See {@link ChronoLocalDate} for a fuller discussion of the issues.
  *
- * <h4>Formal definition</h4>
+ * <h3>When to implement</h3>
  * <p>
- * Formally, a class should implement this interface if it meets three criteria:
+ * A class should implement this interface if it meets three criteria:
  * <p><ul>
- * <li>it represents a map of date-time fields to values (as per {@code DateTimeAccessor})
+ * <li>it provides access to date/time/offset information, as per {@code TemporalAccessor}
  * <li>the set of fields are contiguous from the largest to the smallest
  * <li>the set of fields are complete, such that no other field is needed to define the
  *  valid range of values for the fields that are represented
@@ -58,24 +76,24 @@ import org.threeten.bp.LocalTime;
  * <p>
  * Four examples make this clear:
  * <p><ul>
- * <li>{@code LocalDate} should implement this interface as it represents a set of fields
+ * <li>{@code LocalDate} implements this interface as it represents a set of fields
  *  that are contiguous from days to forever and require no external information to determine
  *  the validity of each date. It is therefore able to implement plus/minus correctly.
- * <li>{@code LocalTime} should implement this interface as it represents a set of fields
+ * <li>{@code LocalTime} implements this interface as it represents a set of fields
  *  that are contiguous from nanos to within days and require no external information to determine
  *  validity. It is able to implement plus/minus correctly, by wrapping around the day.
- * <li>The combination of month-of-year and day-of-month should not implement this interface.
- *  While the combination is contiguous, from days to months within years, the combination does
- *  not have sufficient information to define the valid range of values for day-of-month.
- *  As such, it is unable to implement plus/minus correctly.
+ * <li>{@code MonthDay}, the combination of month-of-year and day-of-month, does not implement
+ *  this interface.  While the combination is contiguous, from days to months within years,
+ *  the combination does not have sufficient information to define the valid range of values
+ *  for day-of-month.  As such, it is unable to implement plus/minus correctly.
  * <li>The combination day-of-week and day-of-month ("Friday the 13th") should not implement
  *  this interface. It does not represent a contiguous set of fields, as days to weeks overlaps
  *  days to months.
  * </ul><p>
  *
- * <h4>Implementation notes</h4>
- * This interface places no restrictions on implementations and makes no guarantees
- * about their thread-safety.
+ * <h3>Specification for implementors</h3>
+ * This interface places no restrictions on the mutability of implementations,
+ * however immutability is strongly recommended.
  * All implementations must be {@link Comparable}.
  */
 public interface Temporal extends TemporalAccessor {
@@ -86,7 +104,7 @@ public interface Temporal extends TemporalAccessor {
      * This adjusts this date-time according to the rules of the specified adjuster.
      * A simple adjuster might simply set the one of the fields, such as the year field.
      * A more complex adjuster might set the date to the last day of the month.
-     * A selection of common adjustments is provided in {@link TemporalAdjusters}.
+     * A selection of common adjustments is provided in {@link Adjusters}.
      * These include finding the "last day of the month" and "next Wednesday".
      * The adjuster is responsible for handling special cases, such as the varying
      * lengths of month and leap years.
@@ -94,15 +112,18 @@ public interface Temporal extends TemporalAccessor {
      * Some example code indicating how and why this method is used:
      * <pre>
      *  date = date.with(Month.JULY);        // most key classes implement TemporalAdjuster
-     *  date = date.with(lastDayOfMonth());  // static import from DateTimeAdjusters
-     *  date = date.with(next(WEDNESDAY));   // static import from DateTimeAdjusters and DayOfWeek
+     *  date = date.with(lastDayOfMonth());  // static import from Adjusters
+     *  date = date.with(next(WEDNESDAY));   // static import from Adjusters and DayOfWeek
      * </pre>
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
-     * @param adjuster the adjuster to use, not null
+     * <h3>Specification for implementors</h3>
+     * Implementations must not alter either this object.
+     * Instead, an adjusted copy of the original must be returned.
+     * This provides equivalent, safe behavior for immutable and mutable implementations.
+     *
+     * @param adjuster  the adjuster to use, not null
      * @return an object of the same type with the specified adjustment made, not null
-     * @throws DateTimeException if the adjustment cannot be made
+     * @throws DateTimeException if unable to make the adjustment
      * @throws ArithmeticException if numeric overflow occurs
      */
     Temporal with(TemporalAdjuster adjuster);
@@ -119,11 +140,18 @@ public interface Temporal extends TemporalAccessor {
      * In cases like this, the field is responsible for resolving the result. Typically it will choose
      * the previous valid date, which would be the last valid day of February in this example.
      *
-     * <h5>Implementation notes</h5>
-     * Implementations must check and handle any fields defined in {@link ChronoField} before
-     * delegating on to the {@link TemporalField#doWith(Temporal, long) doWith method} on the specified field.
-     * If the implementing class is immutable, then this method must return an updated copy of the original.
-     * If the class is mutable, then this method must update the original and return it.
+     * <h3>Specification for implementors</h3>
+     * Implementations must check and handle all fields defined in {@link ChronoField}.
+     * If the field is supported, then the adjustment must be performed.
+     * If unsupported, then a {@code DateTimeException} must be thrown.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.doWith(Temporal, long)}
+     * passing {@code this} as the first argument.
+     * <p>
+     * Implementations must not alter either this object or the specified temporal object.
+     * Instead, an adjusted copy of the original must be returned.
+     * This provides equivalent, safe behavior for immutable and mutable implementations.
      *
      * @param field  the field to set in the result, not null
      * @param newValue  the new value of the field in the result
@@ -135,11 +163,11 @@ public interface Temporal extends TemporalAccessor {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns an adjusted object of the same type as this object with the adjustment added.
+     * Returns an object of the same type as this object with an amount added.
      * <p>
-     * This adjusts this date-time, adding according to the rules of the specified adjuster.
-     * The adjuster is typically a {@link org.threeten.bp.Period} but may be any other type implementing
-     * the {@link TemporalAdder} interface, such as {@link org.threeten.bp.Duration}.
+     * This adjusts this temporal, adding according to the rules of the specified adder.
+     * The adder is typically a {@link Period} but may be any other type implementing
+     * the {@link TemporalAdder} interface, such as {@link Duration}.
      * <p>
      * Some example code indicating how and why this method is used:
      * <pre>
@@ -151,15 +179,18 @@ public interface Temporal extends TemporalAccessor {
      * <p>
      * Note that calling {@code plus} followed by {@code minus} is not guaranteed to
      * return the same date-time.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
-     * @param adjuster  the adjuster to use, not null
+     * <h3>Specification for implementors</h3>
+     * Implementations must not alter either this object.
+     * Instead, an adjusted copy of the original must be returned.
+     * This provides equivalent, safe behavior for immutable and mutable implementations.
+     *
+     * @param adder  the adder to use, not null
      * @return an object of the same type with the specified adjustment made, not null
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    Temporal plus(TemporalAdder adjuster);
+    Temporal plus(TemporalAdder adder);
 
     /**
      * Returns an object of the same type as this object with the specified period added.
@@ -177,11 +208,18 @@ public interface Temporal extends TemporalAccessor {
      * then the permitted units must include the boundary unit, but no multiples of the boundary unit.
      * For example, {@code LocalTime} must accept {@code DAYS} but not {@code WEEKS} or {@code MONTHS}.
      *
-     * <h5>Implementation notes</h5>
-     * Implementations must check and handle any fields defined in {@link ChronoField} before
-     * delegating on to the {@link TemporalUnit#doPlus(Temporal, long) doPlus method} on the specified unit.
-     * If the implementing class is immutable, then this method must return an updated copy of the original.
-     * If the class is mutable, then this method must update the original and return it.
+     * <h3>Specification for implementors</h3>
+     * Implementations must check and handle all units defined in {@link ChronoUnit}.
+     * If the unit is supported, then the addition must be performed.
+     * If unsupported, then a {@code DateTimeException} must be thrown.
+     * <p>
+     * If the unit is not a {@code ChronoUnit}, then the result of this method
+     * is obtained by invoking {@code TemporalUnit.doPlus(Temporal, long)}
+     * passing {@code this} as the first argument.
+     * <p>
+     * Implementations must not alter either this object or the specified temporal object.
+     * Instead, an adjusted copy of the original must be returned.
+     * This provides equivalent, safe behavior for immutable and mutable implementations.
      *
      * @param amountToAdd  the amount of the specified unit to add, may be negative
      * @param unit  the unit of the period to add, not null
@@ -193,11 +231,11 @@ public interface Temporal extends TemporalAccessor {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns an adjusted object of the same type as this object with the adjustment subtracted.
+     * Returns an object of the same type as this object with an amount subtracted.
      * <p>
-     * This adjusts this date-time, subtracting according to the rules of the specified adjuster.
-     * The adjuster is typically a {@link org.threeten.bp.Period} but may be any other type implementing
-     * the {@link TemporalSubtractor} interface, such as {@link org.threeten.bp.Duration}.
+     * This adjusts this temporal, subtracting according to the rules of the specified subtractor.
+     * The subtractor is typically a {@link Period} but may be any other type implementing
+     * the {@link TemporalSubtractor} interface, such as {@link Duration}.
      * <p>
      * Some example code indicating how and why this method is used:
      * <pre>
@@ -209,15 +247,18 @@ public interface Temporal extends TemporalAccessor {
      * <p>
      * Note that calling {@code plus} followed by {@code minus} is not guaranteed to
      * return the same date-time.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
-     * @param adjuster  the adjuster to use, not null
+     * <h3>Specification for implementors</h3>
+     * Implementations must not alter either this object.
+     * Instead, an adjusted copy of the original must be returned.
+     * This provides equivalent, safe behavior for immutable and mutable implementations.
+     *
+     * @param subtractor  the subtractor to use, not null
      * @return an object of the same type with the specified adjustment made, not null
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    Temporal minus(TemporalSubtractor adjuster);
+    Temporal minus(TemporalSubtractor subtractor);
 
     /**
      * Returns an object of the same type as this object with the specified period subtracted.
@@ -235,13 +276,12 @@ public interface Temporal extends TemporalAccessor {
      * then the permitted units must include the boundary unit, but no multiples of the boundary unit.
      * For example, {@code LocalTime} must accept {@code DAYS} but not {@code WEEKS} or {@code MONTHS}.
      *
-     * <h5>Implementation notes</h5>
-     * Implementations must check and handle any fields defined in {@link ChronoField} before
-     * delegating on to the {@link TemporalUnit#doPlus(Temporal, long) doPlus method} on the specified unit.
-     * If the implementing class is immutable, then this method must return an updated copy of the original.
-     * If the class is mutable, then this method must update the original and return it.
-     * This method is normally implemented by delegating to {@link #plus(long, TemporalUnit)} with
-     * the amount negated.
+     * <h3>Specification for implementors</h3>
+     * Implementations must behave in a manor equivalent to the default method behavior.
+     * <p>
+     * Implementations must not alter either this object or the specified temporal object.
+     * Instead, an adjusted copy of the original must be returned.
+     * This provides equivalent, safe behavior for immutable and mutable implementations.
      *
      * @param amountToSubtract  the amount of the specified unit to subtract, may be negative
      * @param unit  the unit of the period to subtract, not null
@@ -253,24 +293,59 @@ public interface Temporal extends TemporalAccessor {
 
     //-----------------------------------------------------------------------
     /**
-     * Calculates the period from this date-time until the given date-time in the specified unit.
+     * Calculates the period between this temporal and another temporal in
+     * terms of the specified unit.
      * <p>
-     * This is used to calculate the period between two date-times.
+     * This calculates the period between two temporals in terms of a single unit.
+     * The start and end points are {@code this} and the specified temporal.
+     * The result will be negative if the end is before the start.
+     * For example, the period in hours between two temporal objects can be
+     * calculated using {@code startTime.periodUntil(endTime, HOURS)}.
+     * <p>
+     * The calculation returns a whole number, representing the number of
+     * complete units between the two temporals.
+     * For example, the period in hours between the times 11:30 and 13:29
+     * will only be one hour as it is one minute short of two hours.
+     * <p>
      * This method operates in association with {@link TemporalUnit#between}.
-     * That method returns an object which can be used directly in addition/subtraction
-     * whereas this method returns the amount directly:
+     * The result of this method is a {@code long} representing the amount of
+     * the specified unit. By contrast, the result of {@code between} is an
+     * object that can be used directly in addition/subtraction:
      * <pre>
-     *   long period = start.periodUntil(end, MONTHS);          // this method
-     *   long period = MONTHS.between(start, end).getAmount();  // same as above
-     *   dateTime.plus(MONTHS.between(start, end));             // directly add
+     *   long period = start.periodUntil(end, HOURS);   // this method
+     *   dateTime.plus(HOURS.between(start, end));      // use in plus/minus
      * </pre>
      *
-     * @param endDateTime  the end date-time, of the same type as this object, not null
+     * <h3>Specification for implementors</h3>
+     * Implementations must begin by checking to ensure that the input temporal
+     * object is of the same observable type as the implementation.
+     * They must then perform the calculation for all instances of {@link ChronoUnit}.
+     * A {@code DateTimeException} must be thrown for {@code ChronoUnit}
+     * instances that are unsupported.
+     * <p>
+     * If the unit is not a {@code ChronoUnit}, then the result of this method
+     * is obtained by invoking {@code TemporalUnit.between(Temporal, Temporal)}
+     * passing {@code this} as the first argument and the input temporal as
+     * the second argument.
+     * <p>
+     * In summary, implementations must behave in a manner equivalent to this code:
+     * <pre>
+     *  // check input temporal is the same type as this class
+     *  if (unit instanceof ChronoUnit) {
+     *    // if unit is supported, then calculate and return result
+     *    // else throw DateTimeException for unsupported units
+     *  }
+     *  return unit.between(this, endTime).getAmount();
+     * </pre>
+     * <p>
+     * The target object must not be altered by this method.
+     *
+     * @param endTemporal  the end temporal, of the same type as this object, not null
      * @param unit  the unit to measure the period in, not null
      * @return the amount of the period between this and the end
      * @throws DateTimeException if the period cannot be calculated
      * @throws ArithmeticException if numeric overflow occurs
      */
-    long periodUntil(Temporal endDateTime, TemporalUnit unit);
+    long periodUntil(Temporal endTemporal, TemporalUnit unit);
 
 }
