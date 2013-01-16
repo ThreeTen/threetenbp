@@ -31,11 +31,7 @@
  */
 package org.threeten.bp.temporal;
 
-import static org.threeten.bp.temporal.ChronoField.OFFSET_SECONDS;
-
 import org.threeten.bp.DateTimeException;
-import org.threeten.bp.ZoneId;
-import org.threeten.bp.ZoneOffset;
 
 /**
  * General low-level access to a date and/or time object.
@@ -44,7 +40,7 @@ import org.threeten.bp.ZoneOffset;
  * It provides access to the state using the {@link #get(TemporalField)} and
  * {@link #getLong(TemporalField)} methods that takes a {@link TemporalField}.
  * Access is also provided to any additional state using a query interface
- * through {@link #query(Query)}.
+ * through {@link #query(TemporalQuery)}.
  * This provides access to the time-zone, precision and calendar system.
  * <p>
  * A sub-interface, {@link Temporal}, extends this definition to one that also
@@ -157,11 +153,11 @@ public interface TemporalAccessor {
      * <p>
      * The standard implementation of this method will be similar to the following:
      * <pre>
-     *   public &lt;R&gt; R query(Query&lt;R&gt; type) {
+     *   public &lt;R&gt; R query(TemporalQuery&lt;R&gt; type) {
      *     // only include an if statement if the implementation can return it
-     *     if (query == Query.ZONE_ID)  return // the ZoneId
-     *     if (query == Query.CHRONO)  return // the Chrono
-     *     if (query == Query.PRECISION)  return // the precision
+     *     if (query == TemporalQuery.ZONE_ID)  return // the ZoneId
+     *     if (query == TemporalQuery.CHRONO)  return // the Chrono
+     *     if (query == TemporalQuery.PRECISION)  return // the precision
      *     // call default method
      *     return super.query(query);
      *   }
@@ -173,117 +169,6 @@ public interface TemporalAccessor {
      * @param query  the query to invoke, not null
      * @return the query result, null may be returned (defined by the query)
      */
-    <R> R query(Query<R> query);
-
-    //-----------------------------------------------------------------------
-    /**
-     * Strategy for querying a date-time object.
-     * <p>
-     * This interface allows different kinds of query to be modeled.
-     * Examples might be a query that checks if the date is the day before February 29th
-     * in a leap year, or calculates the number of days to your next birthday.
-     * <p>
-     * Implementations should not normally be used directly.
-     * Instead, the {@link TemporalAccessor#query(Query)} method must be used:
-     * <pre>
-     *   dateTime = dateTime.query(query);
-     * </pre>
-     * <p>
-     * See {@link TemporalAdjusters} for a standard set of adjusters, including finding the
-     * last day of the month.
-     *
-     * <h4>Implementation notes</h4>
-     * This interface must be implemented with care to ensure other classes operate correctly.
-     * All implementations that can be instantiated must be final, immutable and thread-safe.
-     */
-    public interface Query<R> {
-        // special constants should be used to extract information from a DateTimeAccessor
-        // that cannot be derived in other ways
-        /**
-         * The special constant for the query for {@code ZoneId}.
-         * <p>
-         * If the target {@code DateTimeAccessor} has a zone ID, then querying
-         * it with this constant must return the chronology.
-         */
-        Query<ZoneId> ZONE_ID = new Query<ZoneId>() {
-            @Override
-            public ZoneId doQuery(TemporalAccessor temporal) {
-                return null;
-            }
-        };
-        /**
-         * The special constant for the query for {@code Chrono}.
-         * <p>
-         * If the target {@code DateTimeAccessor} has a chronology, then querying
-         * it with this constant must return the chronology.
-         * Note that {@code LocalTime} returns null as it is valid for all chronologies.
-         */
-        Query<Chrono<?>> CHRONO = new Query<Chrono<?>>() {
-            @Override
-            public Chrono<?> doQuery(TemporalAccessor temporal) {
-                return null;
-            }
-        };
-        /**
-         * The special constant for the query for the minimum supported time unit.
-         * <p>
-         * If the target {@code DateTimeAccessor} represents a consistent or complete
-         * date-time, date or time then this must return the smallest precision actually
-         * supported. Note that fields such as {@code NANO_OF_DAY} and {@code NANO_OF_SECOND}
-         * are defined to always return ignoring the precision, thus this is the only
-         * way to find the accurate minimum supported unit.
-         * <p>
-         * For example, {@code GregorianCalendar} has a precision of {@code MILLIS}, whereas
-         * {@code LocalDate} and {@code ZoneOffset} have no time precision and thus returns null.
-         */
-        Query<ChronoUnit> TIME_PRECISION = new Query<ChronoUnit>() {
-            @Override
-            public ChronoUnit doQuery(TemporalAccessor temporal) {
-                return null;
-            }
-        };
-        /**
-         * A query for the {@code ZoneOffset}.
-         * <p>
-         * This query examines the {@link ChronoField#OFFSET_SECONDS offset-seconds}
-         * field and uses it to create a {@code ZoneOffset}.
-         * Implementations of {@code DateTimeAccessor} may choose to check for this
-         * constant and return a stored offset directly.
-         */
-        Query<ZoneOffset> OFFSET = new Query<ZoneOffset>() {
-            @Override
-            public ZoneOffset doQuery(TemporalAccessor temporal) {
-                if (temporal.isSupported(OFFSET_SECONDS)) {
-                    return ZoneOffset.ofTotalSeconds(temporal.get(OFFSET_SECONDS));
-                }
-                return null;
-            }
-        };
-
-        /**
-         * Implementation of the strategy to query the specified date-time object.
-         * <p>
-         * This method is not intended to be called by application code directly.
-         * Instead, the {@link TemporalAccessor#query(Query)} method must be used:
-         * <pre>
-         *   dateTime = dateTime.query(query);
-         * </pre>
-         *
-         * <h5>Implementation notes</h5>
-         * The implementation queries the input date-time object to return the result.
-         * For example, an implementation might query the date and time, returning
-         * the astronomical Julian day as a {@code BigDecimal}.
-         * <p>
-         * This interface can be used by calendar systems other than ISO.
-         * Implementations may choose to document compatibility with other calendar systems, or
-         * validate for it by querying the chronology from the input object.
-         *
-         * @param temporal  the date-time object to query, not null
-         * @return the queried value, avoid returning null
-         * @throws DateTimeException if unable to query
-         * @throws ArithmeticException if numeric overflow occurs
-         */
-        R doQuery(TemporalAccessor temporal);
-    }
+    <R> R query(TemporalQuery<R> query);
 
 }

@@ -38,8 +38,8 @@ import java.util.List;
 
 import org.testng.annotations.Test;
 import org.threeten.bp.temporal.TemporalAccessor;
-import org.threeten.bp.temporal.TemporalAccessor.Query;
 import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalQuery;
 
 /**
  * Base test class for {@code DateTime}.
@@ -222,7 +222,7 @@ public abstract class AbstractDateTimeTest extends AbstractTest {
     @Test(groups={"tck"})
     public void basicTest_query() {
         for (TemporalAccessor sample : samples()) {
-            assertEquals(sample.query(new Query<String>() {
+            assertEquals(sample.query(new TemporalQuery<String>() {
                 @Override
                 public String doQuery(TemporalAccessor dateTime) {
                     return "foo";

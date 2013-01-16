@@ -42,6 +42,7 @@ import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.Temporal.WithAdjuster;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.ValueRange;
 
 /**
@@ -251,7 +252,7 @@ public enum DayOfWeek implements TemporalAccessor, WithAdjuster {
 
     //-----------------------------------------------------------------------
     @Override
-    public <R> R query(Query<R> query) {
+    public <R> R query(TemporalQuery<R> query) {
         return query.doQuery(this);
     }
 

@@ -75,8 +75,8 @@ import org.threeten.bp.temporal.MockFieldNoValue;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.Temporal.WithAdjuster;
 import org.threeten.bp.temporal.TemporalAccessor;
-import org.threeten.bp.temporal.TemporalAccessor.Query;
 import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.TemporalUnit;
 
 /**
@@ -596,22 +596,22 @@ public class TCKLocalDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_query_chrono() {
-        assertEquals(TEST_2007_07_15.query(Query.CHRONO), ISOChrono.INSTANCE);
+        assertEquals(TEST_2007_07_15.query(TemporalQuery.CHRONO), ISOChrono.INSTANCE);
     }
 
     @Test(groups={"tck"})
     public void test_query_zone() {
-        assertEquals(TEST_2007_07_15.query(Query.ZONE_ID), null);
+        assertEquals(TEST_2007_07_15.query(TemporalQuery.ZONE_ID), null);
     }
 
     @Test(groups={"tck"})
     public void test_query_timePrecision() {
-        assertEquals(TEST_2007_07_15.query(Query.TIME_PRECISION), null);
+        assertEquals(TEST_2007_07_15.query(TemporalQuery.TIME_PRECISION), null);
     }
 
     @Test(groups={"tck"})
     public void test_query_offset() {
-        assertEquals(TEST_2007_07_15.query(Query.OFFSET), null);
+        assertEquals(TEST_2007_07_15.query(TemporalQuery.OFFSET), null);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})

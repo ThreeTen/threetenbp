@@ -48,6 +48,7 @@ import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.Temporal.WithAdjuster;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.ValueRange;
 import org.threeten.bp.zone.ZoneOffsetTransition;
 import org.threeten.bp.zone.ZoneOffsetTransitionRule;
@@ -517,8 +518,8 @@ public final class ZoneOffset
     }
 
     @Override
-    public <R> R query(Query<R> query) {
-        if (query == Query.ZONE_ID || query == Query.CHRONO) {
+    public <R> R query(TemporalQuery<R> query) {
+        if (query == TemporalQuery.ZONE_ID || query == TemporalQuery.CHRONO) {
             return null;
         }
         return query.doQuery(this);

@@ -44,6 +44,7 @@ import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.Temporal.WithAdjuster;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.ValueRange;
 
 /**
@@ -388,8 +389,8 @@ public enum Month implements TemporalAccessor, WithAdjuster {
     //-----------------------------------------------------------------------
     @SuppressWarnings("unchecked")
     @Override
-    public <R> R query(Query<R> query) {
-        if (query == Query.CHRONO) {
+    public <R> R query(TemporalQuery<R> query) {
+        if (query == TemporalQuery.CHRONO) {
             return (R) ISOChrono.INSTANCE;
         }
         return query.doQuery(this);

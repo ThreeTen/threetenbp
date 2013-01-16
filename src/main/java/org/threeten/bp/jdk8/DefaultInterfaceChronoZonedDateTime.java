@@ -46,6 +46,7 @@ import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoLocalDate;
 import org.threeten.bp.temporal.ChronoZonedDateTime;
 import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.temporal.ValueRange;
 
@@ -129,14 +130,14 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chrono<C>>
     //-------------------------------------------------------------------------
     @SuppressWarnings("unchecked")
     @Override
-    public <R> R query(Query<R> query) {
-        if (query == Query.ZONE_ID) {
+    public <R> R query(TemporalQuery<R> query) {
+        if (query == TemporalQuery.ZONE_ID) {
             return (R) getZone();
-        } else if (query == Query.CHRONO) {
+        } else if (query == TemporalQuery.CHRONO) {
             return (R) getDate().getChrono();
-        } else if (query == Query.TIME_PRECISION) {
+        } else if (query == TemporalQuery.TIME_PRECISION) {
             return (R) NANOS;
-        } else if (query == Query.OFFSET) {
+        } else if (query == TemporalQuery.OFFSET) {
             return (R) getOffset();
         }
         return super.query(query);

@@ -36,8 +36,8 @@ import java.util.Objects;
 
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.temporal.TemporalAccessor;
-import org.threeten.bp.temporal.TemporalAccessor.Query;
 import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalQuery;
 
 /**
  * Context object used during date and time printing.
@@ -176,7 +176,7 @@ final class DateTimePrintContext {
      * @return the result, null if not found and optional is true
      * @throws DateTimeException if the type is not available and the section is not optional
      */
-    <R> R getValue(Query<R> query) {
+    <R> R getValue(TemporalQuery<R> query) {
         R result = temporal.query(query);
         if (result == null && optional == 0) {
             throw new DateTimeException("Unable to extract value: " + temporal.getClass());

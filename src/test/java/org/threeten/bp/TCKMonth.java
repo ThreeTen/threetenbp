@@ -49,8 +49,8 @@ import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ISOChrono;
 import org.threeten.bp.temporal.JulianFields;
 import org.threeten.bp.temporal.TemporalAccessor;
-import org.threeten.bp.temporal.TemporalAccessor.Query;
 import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalQuery;
 
 /**
  * Test Month.
@@ -125,17 +125,17 @@ public class TCKMonth extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_query_chrono() {
-        assertEquals(Month.JUNE.query(Query.CHRONO), ISOChrono.INSTANCE);
+        assertEquals(Month.JUNE.query(TemporalQuery.CHRONO), ISOChrono.INSTANCE);
     }
 
     @Test(groups={"tck"})
     public void test_query_zone() {
-        assertEquals(Month.JUNE.query(Query.ZONE_ID), null);
+        assertEquals(Month.JUNE.query(TemporalQuery.ZONE_ID), null);
     }
 
     @Test(groups={"tck"})
     public void test_query_timePrecision() {
-        assertEquals(Month.JUNE.query(Query.TIME_PRECISION), null);
+        assertEquals(Month.JUNE.query(TemporalQuery.TIME_PRECISION), null);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})

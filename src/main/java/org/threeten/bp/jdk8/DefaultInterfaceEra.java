@@ -44,6 +44,7 @@ import org.threeten.bp.temporal.ChronoLocalDate;
 import org.threeten.bp.temporal.Era;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalQuery;
 
 /**
  * A temporary class providing implementations that will become default interface
@@ -99,8 +100,8 @@ public abstract class DefaultInterfaceEra<C extends Chrono<C>>
     }
 
     @Override
-    public <R> R query(Query<R> query) {
-        if (query == Query.CHRONO) {
+    public <R> R query(TemporalQuery<R> query) {
+        if (query == TemporalQuery.CHRONO) {
             return (R) getChrono();
         }
         return super.query(query);

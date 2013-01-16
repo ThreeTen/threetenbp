@@ -35,6 +35,7 @@ import org.threeten.bp.DateTimeException;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.ValueRange;
 
 /**
@@ -60,7 +61,7 @@ public abstract class DefaultInterfaceDateTimeAccessor implements TemporalAccess
     }
 
     @Override
-    public <R> R query(Query<R> query) {
+    public <R> R query(TemporalQuery<R> query) {
         return query.doQuery(this);
     }
 

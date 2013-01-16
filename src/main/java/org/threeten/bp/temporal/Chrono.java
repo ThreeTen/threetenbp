@@ -53,7 +53,6 @@ import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.TextStyle;
 import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
-import org.threeten.bp.temporal.TemporalAccessor.Query;
 import org.threeten.bp.zone.ZoneRules;
 
 /**
@@ -166,7 +165,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      */
     public static Chrono<?> from(TemporalAccessor temporal) {
         Objects.requireNonNull(temporal, "temporal");
-        Chrono<?> obj = temporal.query(Query.CHRONO);
+        Chrono<?> obj = temporal.query(TemporalQuery.CHRONO);
         return (obj != null ? obj : ISOChrono.INSTANCE);
     }
 
@@ -634,8 +633,8 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
             }
             @SuppressWarnings("unchecked")
             @Override
-            public <R> R query(Query<R> query) {
-                if (query == Query.CHRONO) {
+            public <R> R query(TemporalQuery<R> query) {
+                if (query == TemporalQuery.CHRONO) {
                     return (R) Chrono.this;
                 }
                 return super.query(query);

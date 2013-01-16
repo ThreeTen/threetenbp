@@ -44,8 +44,8 @@ import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.TextStyle;
 import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
 import org.threeten.bp.temporal.TemporalAccessor;
-import org.threeten.bp.temporal.TemporalAccessor.Query;
 import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.zone.ZoneRules;
 import org.threeten.bp.zone.ZoneRulesException;
 import org.threeten.bp.zone.ZoneRulesProvider;
@@ -327,7 +327,7 @@ public abstract class ZoneId {
      * @throws DateTimeException if unable to convert to a {@code ZoneId}
      */
     public static ZoneId from(TemporalAccessor temporal) {
-        ZoneId obj = temporal.query(Query.ZONE_ID);
+        ZoneId obj = temporal.query(TemporalQuery.ZONE_ID);
         if (obj == null) {
             throw new DateTimeException("Unable to convert DateTimeAccessor to ZoneId: " + temporal.getClass());
         }
@@ -403,8 +403,8 @@ public abstract class ZoneId {
             }
             @SuppressWarnings("unchecked")
             @Override
-            public <R> R query(Query<R> query) {
-                if (query == Query.ZONE_ID) {
+            public <R> R query(TemporalQuery<R> query) {
+                if (query == TemporalQuery.ZONE_ID) {
                     return (R) ZoneId.this;
                 }
                 return super.query(query);

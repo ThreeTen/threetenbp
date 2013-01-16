@@ -59,6 +59,7 @@ import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.Temporal.WithAdjuster;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.temporal.ValueRange;
 
@@ -1025,8 +1026,8 @@ public final class LocalTime
 
     @SuppressWarnings("unchecked")
     @Override
-    public <R> R query(Query<R> query) {
-        if (query == Query.TIME_PRECISION) {
+    public <R> R query(TemporalQuery<R> query) {
+        if (query == TemporalQuery.TIME_PRECISION) {
             return (R) NANOS;
         }
         return super.query(query);

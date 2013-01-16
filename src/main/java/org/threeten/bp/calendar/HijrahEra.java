@@ -46,6 +46,7 @@ import org.threeten.bp.temporal.ChronoLocalDate;
 import org.threeten.bp.temporal.Era;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.ValueRange;
 
 /**
@@ -170,8 +171,8 @@ enum HijrahEra implements Era<HijrahChrono> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <R> R query(Query<R> query) {
-        if (query == Query.CHRONO) {
+    public <R> R query(TemporalQuery<R> query) {
+        if (query == TemporalQuery.CHRONO) {
             return (R) getChrono();
         }
         return query.doQuery(this);

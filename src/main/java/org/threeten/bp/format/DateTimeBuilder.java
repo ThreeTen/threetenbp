@@ -86,6 +86,7 @@ import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalQuery;
 
 /**
  * Builder that can holds date and time fields and related date and time objects.
@@ -604,8 +605,8 @@ public final class DateTimeBuilder
 
     //-----------------------------------------------------------------------
     @Override
-    public <R> R query(Query<R> query) {
-        if (query == Query.ZONE_ID) {
+    public <R> R query(TemporalQuery<R> query) {
+        if (query == TemporalQuery.ZONE_ID) {
             R zone = extract(ZoneId.class);
             if (zone == null) {
                 zone = extract(ZoneOffset.class);
@@ -615,7 +616,7 @@ public final class DateTimeBuilder
             }
             return zone;
         }
-        if (query == Query.CHRONO) {
+        if (query == TemporalQuery.CHRONO) {
             return extract(Chrono.class);
         }
         // incomplete, so no need to handle TIME_PRECISION

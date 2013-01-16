@@ -67,6 +67,7 @@ import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
 import org.threeten.bp.temporal.ISOFields;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalQuery;
 
 /**
  * Test DateTimeFormatters.
@@ -1223,8 +1224,8 @@ public class TCKDateTimeFormatters {
 
         @SuppressWarnings("unchecked")
         @Override
-        public <R> R query(Query<R> query) {
-            if (query == Query.ZONE_ID) {
+        public <R> R query(TemporalQuery<R> query) {
+            if (query == TemporalQuery.ZONE_ID) {
                 return (R) zoneId;
             }
             return super.query(query);
