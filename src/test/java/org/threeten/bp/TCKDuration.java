@@ -57,8 +57,24 @@ import org.threeten.bp.temporal.TemporalUnit;
  * Test Duration.
  */
 @Test
-public class TCKDuration {
+public class TCKDuration extends AbstractTCKTest {
 
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_serialization() throws Exception {
+        assertSerializable(Duration.ofHours(5));
+        assertSerializable(Duration.ofHours(0));
+        assertSerializable(Duration.ofHours(-5));
+    }
+
+    @Test
+    public void test_serialization_format() throws Exception {
+        assertEqualsSerialisedForm(Duration.ofSeconds(654321, 123456789));
+    }
+
+    //-----------------------------------------------------------------------
+    // constants
+    //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_zero() {
         assertEquals(Duration.ZERO.getSeconds(), 0L);
@@ -281,10 +297,10 @@ public class TCKDuration {
     }
 
     //-----------------------------------------------------------------------
-    // of(long,PeriodUnit)
+    // of(long,TemporalUnit)
     //-----------------------------------------------------------------------
-    @DataProvider(name="OfPeriodUnit")
-    Object[][] provider_factory_of_long_PeriodUnit() {
+    @DataProvider(name="OfTemporalUnit")
+    Object[][] provider_factory_of_longTemporalUnit() {
         return new Object[][] {
             {0, NANOS, 0, 0},
             {0, MICROS, 0, 0},
@@ -343,15 +359,15 @@ public class TCKDuration {
         };
     }
 
-    @Test(dataProvider="OfPeriodUnit", groups={"tck"})
-    public void factory_of_long_PeriodUnit(long amount, TemporalUnit unit, long expectedSeconds, int expectedNanoOfSecond) {
+    @Test(dataProvider="OfTemporalUnit", groups={"tck"})
+    public void factory_of_longTemporalUnit(long amount, TemporalUnit unit, long expectedSeconds, int expectedNanoOfSecond) {
         Duration t = Duration.of(amount, unit);
         assertEquals(t.getSeconds(), expectedSeconds);
         assertEquals(t.getNano(), expectedNanoOfSecond);
     }
 
-    @DataProvider(name="OfPeriodUnitOutOfRange")
-    Object[][] provider_factory_of_long_PeriodUnit_outOfRange() {
+    @DataProvider(name="OfTemporalUnitOutOfRange")
+    Object[][] provider_factory_of_longTemporalUnit_outOfRange() {
         return new Object[][] {
             {Long.MAX_VALUE / 60 + 1, MINUTES},
             {Long.MIN_VALUE / 60 - 1, MINUTES},
@@ -362,18 +378,18 @@ public class TCKDuration {
         };
     }
 
-    @Test(dataProvider="OfPeriodUnitOutOfRange", expectedExceptions=ArithmeticException.class, groups={"tck"})
-    public void factory_of_long_PeriodUnit_outOfRange(long amount, TemporalUnit unit) {
+    @Test(dataProvider="OfTemporalUnitOutOfRange", expectedExceptions=ArithmeticException.class, groups={"tck"})
+    public void factory_of_longTemporalUnit_outOfRange(long amount, TemporalUnit unit) {
         Duration.of(amount, unit);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
-    public void factory_of_long_PeriodUnit_estimatedUnit() {
+    public void factory_of_longTemporalUnit_estimatedUnit() {
         Duration.of(2, WEEKS);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_of_long_PeriodUnit_null() {
+    public void factory_of_longTemporalUnit_null() {
         Duration.of(1, (TemporalUnit) null);
     }
 
@@ -398,13 +414,6 @@ public class TCKDuration {
         Duration t = Duration.between(start, end);
         assertEquals(t.getSeconds(), expectedSeconds);
         assertEquals(t.getNano(), expectedNanoOfSecond);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
-    public void factory_between_Instant_Instant_tooBig() {
-        Instant start = Instant.ofEpochSecond(-1);
-        Instant end = Instant.ofEpochSecond(Long.MAX_VALUE);
-        Duration.between(start, end);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
@@ -816,7 +825,7 @@ public class TCKDuration {
 
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void plus_long_PeriodUnit_seconds() {
+    public void plus_longTemporalUnit_seconds() {
         Duration t = Duration.ofSeconds(1);
         t = t.plus(1, SECONDS);
         assertEquals(2, t.getSeconds());
@@ -824,7 +833,7 @@ public class TCKDuration {
      }
 
     @Test(groups={"tck"})
-    public void plus_long_PeriodUnit_millis() {
+    public void plus_longTemporalUnit_millis() {
         Duration t = Duration.ofSeconds(1);
         t = t.plus(1, MILLIS);
         assertEquals(1, t.getSeconds());
@@ -832,7 +841,7 @@ public class TCKDuration {
      }
 
     @Test(groups={"tck"})
-    public void plus_long_PeriodUnit_micros() {
+    public void plus_longTemporalUnit_micros() {
         Duration t = Duration.ofSeconds(1);
         t = t.plus(1, MICROS);
         assertEquals(1, t.getSeconds());
@@ -840,7 +849,7 @@ public class TCKDuration {
      }
 
     @Test(groups={"tck"})
-    public void plus_long_PeriodUnit_nanos() {
+    public void plus_longTemporalUnit_nanos() {
         Duration t = Duration.ofSeconds(1);
         t = t.plus(1, NANOS);
         assertEquals(1, t.getSeconds());
@@ -848,7 +857,7 @@ public class TCKDuration {
      }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void plus_long_PeriodUnit_null() {
+    public void plus_longTemporalUnit_null() {
        Duration t = Duration.ofSeconds(1);
        t.plus(1, (TemporalUnit) null);
     }
@@ -1309,7 +1318,7 @@ public class TCKDuration {
 
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void minus_long_PeriodUnit_seconds() {
+    public void minus_longTemporalUnit_seconds() {
         Duration t = Duration.ofSeconds(1);
         t = t.minus(1, SECONDS);
         assertEquals(0, t.getSeconds());
@@ -1317,7 +1326,7 @@ public class TCKDuration {
      }
 
     @Test(groups={"tck"})
-    public void minus_long_PeriodUnit_millis() {
+    public void minus_longTemporalUnit_millis() {
         Duration t = Duration.ofSeconds(1);
         t = t.minus(1, MILLIS);
         assertEquals(0, t.getSeconds());
@@ -1325,7 +1334,7 @@ public class TCKDuration {
      }
 
     @Test(groups={"tck"})
-    public void minus_long_PeriodUnit_micros() {
+    public void minus_longTemporalUnit_micros() {
         Duration t = Duration.ofSeconds(1);
         t = t.minus(1, MICROS);
         assertEquals(0, t.getSeconds());
@@ -1333,7 +1342,7 @@ public class TCKDuration {
      }
 
     @Test(groups={"tck"})
-    public void minus_long_PeriodUnit_nanos() {
+    public void minus_longTemporalUnit_nanos() {
         Duration t = Duration.ofSeconds(1);
         t = t.minus(1, NANOS);
         assertEquals(0, t.getSeconds());
@@ -1341,7 +1350,7 @@ public class TCKDuration {
      }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void minus_long_PeriodUnit_null() {
+    public void minus_longTemporalUnit_null() {
        Duration t = Duration.ofSeconds(1);
        t.minus(1, (TemporalUnit) null);
     }

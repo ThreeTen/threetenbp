@@ -43,6 +43,8 @@ import static org.threeten.bp.temporal.ChronoUnit.NANOS;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.InvalidObjectException;
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -61,6 +63,7 @@ import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
+import org.threeten.bp.temporal.ValueRange;
 
 /**
  * An instantaneous point on the time-line.
@@ -81,7 +84,7 @@ import org.threeten.bp.temporal.TemporalUnit;
  * For both the epoch-second and nanosecond parts, a larger value is always later on the time-line
  * than a smaller value.
  *
- * <h4>Time-scale</h4>
+ * <h3>Time-scale</h3>
  * <p>
  * The length of the solar day is the standard way that humans measure time.
  * This has traditionally been subdivided into 24 hours of 60 minutes of 60 seconds,
@@ -148,7 +151,7 @@ import org.threeten.bp.temporal.TemporalUnit;
  * This includes {@code Instant}, {@code LocalDate}, {@code LocalTime}, {@code OffsetDateTime},
  * {@code ZonedDateTime} and {@code Duration}.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
 public final class Instant
@@ -160,15 +163,35 @@ public final class Instant
      */
     public static final Instant EPOCH = new Instant(0, 0);
     /**
-     * Constant for the maximum supported instant.
-     * This could be used by an application as a "far past" instant.
+     * The minimum supported epoch second.
      */
-    public static final Instant MIN_INSTANT = Instant.ofEpochSecond(Long.MIN_VALUE, 0);
+    private static final long MIN_SECOND = -31557014167219200L;
     /**
-     * Constant for the maximum supported instant.
-     * This could be used by an application as a "far future" instant.
+     * The maximum supported epoch second.
      */
-    public static final Instant MAX_INSTANT = Instant.ofEpochSecond(Long.MAX_VALUE, 999_999_999);
+    private static final long MAX_SECOND = 31556889864403199L;
+    /**
+     * The minimum supported {@code Instant}, '-1000000000-01-01T00:00Z'.
+     * This could be used by an application as a "far past" instant.
+     * <p>
+     * This is one year earlier than the minimum {@code LocalDateTime}.
+     * This provides sufficient values to handle the range of {@code ZoneOffset}
+     * which affect the instant in addition to the local date-time.
+     * The value is also chosen such that the value of the year fits in
+     * an {@code int}.
+     */
+    public static final Instant MIN = Instant.ofEpochSecond(MIN_SECOND, 0);
+    /**
+     * The minimum supported {@code Instant}, '-1000000000-01-01T00:00Z'.
+     * This could be used by an application as a "far future" instant.
+     * <p>
+     * This is one year later than the maximum {@code LocalDateTime}.
+     * This provides sufficient values to handle the range of {@code ZoneOffset}
+     * which affect the instant in addition to the local date-time.
+     * The value is also chosen such that the value of the year fits in
+     * an {@code int}.
+     */
+    public static final Instant MAX = Instant.ofEpochSecond(MAX_SECOND, 999_999_999);
 
     /**
      * Serialization version.
@@ -230,6 +253,7 @@ public final class Instant
      *
      * @param epochSecond  the number of seconds from 1970-01-01T00:00:00Z
      * @return an instant, not null
+     * @throws DateTimeException if the instant exceeds the maximum or minimum instant
      */
     public static Instant ofEpochSecond(long epochSecond) {
         return create(epochSecond, 0);
@@ -252,7 +276,8 @@ public final class Instant
      * @param epochSecond  the number of seconds from 1970-01-01T00:00:00Z
      * @param nanoAdjustment  the nanosecond adjustment to the number of seconds, positive or negative
      * @return an instant, not null
-     * @throws ArithmeticException if the calculation exceeds the supported range
+     * @throws DateTimeException if the instant exceeds the maximum or minimum instant
+     * @throws ArithmeticException if numeric overflow occurs
      */
     public static Instant ofEpochSecond(long epochSecond, long nanoAdjustment) {
         long secs = Jdk8Methods.safeAdd(epochSecond, Jdk8Methods.floorDiv(nanoAdjustment, NANOS_PER_SECOND));
@@ -268,6 +293,7 @@ public final class Instant
      *
      * @param epochMilli  the number of milliseconds from 1970-01-01T00:00:00Z
      * @return an instant, not null
+     * @throws DateTimeException if the instant exceeds the maximum or minimum instant
      */
     public static Instant ofEpochMilli(long epochMilli) {
         long secs = Jdk8Methods.floorDiv(epochMilli, 1000);
@@ -277,12 +303,18 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Instant} from a date-time object.
+     * Obtains an instance of {@code Instant} from a temporal object.
      * <p>
-     * A {@code DateTimeAccessor} represents some form of date and time information.
-     * This factory converts the arbitrary date-time object to an instance of {@code Instant}.
+     * A {@code TemporalAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary temporal object to an instance of {@code Instant}.
+     * <p>
+     * The conversion extracts the {@link ChronoField#INSTANT_SECONDS INSTANT_SECONDS}
+     * and {@link ChronoField#NANO_OF_SECOND NANO_OF_SECOND} fields.
+     * <p>
+     * This method matches the signature of the functional interface {@link TemporalQuery}
+     * allowing it to be used as a query via method reference, {@code Instant::from}.
      *
-     * @param temporal  the date-time object to convert, not null
+     * @param temporal  the temporal object to convert, not null
      * @return the instant, not null
      * @throws DateTimeException if unable to convert to an {@code Instant}
      */
@@ -314,10 +346,14 @@ public final class Instant
      *
      * @param seconds  the length of the duration in seconds
      * @param nanoOfSecond  the nano-of-second, from 0 to 999,999,999
+     * @throws DateTimeException if the instant exceeds the maximum or minimum instant
      */
     private static Instant create(long seconds, int nanoOfSecond) {
         if ((seconds | nanoOfSecond) == 0) {
             return EPOCH;
+        }
+        if (seconds < MIN_SECOND || seconds > MAX_SECOND) {
+            throw new DateTimeException("Instant exceeds minimum or maximum instant");
         }
         return new Instant(seconds, nanoOfSecond);
     }
@@ -336,6 +372,31 @@ public final class Instant
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Checks if the specified field is supported.
+     * <p>
+     * This checks if this instant can be queried for the specified field.
+     * If false, then calling the {@link #range(TemporalField) range} and
+     * {@link #get(TemporalField) get} methods will throw an exception.
+     * <p>
+     * If the field is a {@link ChronoField} then the query is implemented here.
+     * The supported fields are:
+     * <ul>
+     * <li>{@code NANO_OF_SECOND}
+     * <li>{@code MICRO_OF_SECOND}
+     * <li>{@code MILLI_OF_SECOND}
+     * <li>{@code INSTANT_SECONDS}
+     * </ul>
+     * All other {@code ChronoField} instances will return false.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.doIsSupported(TemporalAccessor)}
+     * passing {@code this} as the argument.
+     * Whether the field is supported is determined by the field.
+     *
+     * @param field  the field to check, null returns false
+     * @return true if the field is supported on this instant, false if not
+     */
     @Override
     public boolean isSupported(TemporalField field) {
         if (field instanceof ChronoField) {
@@ -344,6 +405,93 @@ public final class Instant
         return field != null && field.doIsSupported(this);
     }
 
+    /**
+     * Gets the range of valid values for the specified field.
+     * <p>
+     * The range object expresses the minimum and maximum valid values for a field.
+     * This instant is used to enhance the accuracy of the returned range.
+     * If it is not possible to return the range, because the field is not supported
+     * or for some other reason, an exception is thrown.
+     * <p>
+     * If the field is a {@link ChronoField} then the query is implemented here.
+     * The {@link #isSupported(TemporalField) supported fields} will return
+     * appropriate range instances.
+     * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.doRange(TemporalAccessor)}
+     * passing {@code this} as the argument.
+     * Whether the range can be obtained is determined by the field.
+     *
+     * @param field  the field to query the range for, not null
+     * @return the range of valid values for the field, not null
+     * @throws DateTimeException if the range for the field cannot be obtained
+     */
+    @Override  // override for Javadoc
+    public ValueRange range(TemporalField field) {
+        return super.range(field);
+    }
+
+    /**
+     * Gets the value of the specified field from this instant as an {@code int}.
+     * <p>
+     * This queries this instant for the value for the specified field.
+     * The returned value will always be within the valid range of values for the field.
+     * If it is not possible to return the value, because the field is not supported
+     * or for some other reason, an exception is thrown.
+     * <p>
+     * If the field is a {@link ChronoField} then the query is implemented here.
+     * The {@link #isSupported(TemporalField) supported fields} will return valid
+     * values based on this date-time, except {@code INSTANT_SECONDS} which is too
+     * large to fit in an {@code int} and throws a {@code DateTimeException}.
+     * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * passing {@code this} as the argument. Whether the value can be obtained,
+     * and what the value represents, is determined by the field.
+     *
+     * @param field  the field to get, not null
+     * @return the value for the field
+     * @throws DateTimeException if a value for the field cannot be obtained
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    @Override  // override for Javadoc and performance
+    public int get(TemporalField field) {
+        if (field instanceof ChronoField) {
+            switch ((ChronoField) field) {
+                case NANO_OF_SECOND: return nanos;
+                case MICRO_OF_SECOND: return nanos / 1000;
+                case MILLI_OF_SECOND: return nanos / 1000_000;
+                case INSTANT_SECONDS: INSTANT_SECONDS.checkValidIntValue(seconds);
+            }
+            throw new DateTimeException("Unsupported field: " + field.getName());
+        }
+        return range(field).checkValidIntValue(field.doGet(this), field);
+    }
+
+    /**
+     * Gets the value of the specified field from this instant as a {@code long}.
+     * <p>
+     * This queries this instant for the value for the specified field.
+     * If it is not possible to return the value, because the field is not supported
+     * or for some other reason, an exception is thrown.
+     * <p>
+     * If the field is a {@link ChronoField} then the query is implemented here.
+     * The {@link #isSupported(TemporalField) supported fields} will return valid
+     * values based on this date-time.
+     * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * passing {@code this} as the argument. Whether the value can be obtained,
+     * and what the value represents, is determined by the field.
+     *
+     * @param field  the field to get, not null
+     * @return the value for the field
+     * @throws DateTimeException if a value for the field cannot be obtained
+     * @throws ArithmeticException if numeric overflow occurs
+     */
     @Override
     public long getLong(TemporalField field) {
         if (field instanceof ChronoField) {
@@ -386,11 +534,72 @@ public final class Instant
     }
 
     //-------------------------------------------------------------------------
+    /**
+     * Returns an adjusted copy of this instant.
+     * <p>
+     * This returns a new {@code Instant}, based on this one, with the date adjusted.
+     * The adjustment takes place using the specified adjuster strategy object.
+     * Read the documentation of the adjuster to understand what adjustment will be made.
+     * <p>
+     * The result of this method is obtained by invoking the
+     * {@link TemporalAdjuster#adjustInto(Temporal)} method on the
+     * specified adjuster passing {@code this} as the argument.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param adjuster the adjuster to use, not null
+     * @return an {@code Instant} based on {@code this} with the adjustment made, not null
+     * @throws DateTimeException if the adjustment cannot be made
+     * @throws ArithmeticException if numeric overflow occurs
+     */
     @Override
     public Instant with(TemporalAdjuster adjuster) {
         return (Instant) adjuster.adjustInto(this);
     }
 
+    /**
+     * Returns a copy of this instant with the specified field set to a new value.
+     * <p>
+     * This returns a new {@code Instant}, based on this one, with the value
+     * for the specified field changed.
+     * If it is not possible to set the value, because the field is not supported or for
+     * some other reason, an exception is thrown.
+     * <p>
+     * If the field is a {@link ChronoField} then the adjustment is implemented here.
+     * The supported fields behave as follows:
+     * <ul>
+     * <li>{@code NANO_OF_SECOND} -
+     *  Returns an {@code Instant} with the specified nano-of-second.
+     *  The epoch-second will be unchanged.
+     * <li>{@code MICRO_OF_SECOND} -
+     *  Returns an {@code Instant} with the nano-of-second replaced by the specified
+     *  micro-of-second multiplied by 1,000. The epoch-second will be unchanged.
+     * <li>{@code MILLI_OF_SECOND} -
+     *  Returns an {@code Instant} with the nano-of-second replaced by the specified
+     *  milli-of-second multiplied by 1,000,000. The epoch-second will be unchanged.
+     * <li>{@code INSTANT_SECONDS} -
+     *  Returns an {@code Instant} with the specified epoch-second.
+     *  The nano-of-second will be unchanged.
+     * </ul>
+     * <p>
+     * In all cases, if the new value is outside the valid range of values for the field
+     * then a {@code DateTimeException} will be thrown.
+     * <p>
+     * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
+     * <p>
+     * If the field is not a {@code ChronoField}, then the result of this method
+     * is obtained by invoking {@code TemporalField.doWith(Temporal, long)}
+     * passing {@code this} as the argument. In this case, the field determines
+     * whether and how to adjust the instant.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param field  the field to set in the result, not null
+     * @param newValue  the new value of the field in the result
+     * @return an {@code Instant} based on {@code this} with the specified field set, not null
+     * @throws DateTimeException if the field cannot be set
+     * @throws ArithmeticException if numeric overflow occurs
+     */
     @Override
     public Instant with(TemporalField field, long newValue) {
         if (field instanceof ChronoField) {
@@ -414,11 +623,21 @@ public final class Instant
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     * @throws DateTimeException {@inheritDoc}
+     * @throws ArithmeticException {@inheritDoc}
+     */
     @Override
-    public Instant plus(TemporalAdder adjuster) {
-        return (Instant) adjuster.addTo(this);
+    public Instant plus(TemporalAdder adder) {
+        return (Instant) adder.addTo(this);
     }
 
+    /**
+     * {@inheritDoc}
+     * @throws DateTimeException {@inheritDoc}
+     * @throws ArithmeticException {@inheritDoc}
+     */
     @Override
     public Instant plus(long amountToAdd, TemporalUnit unit) {
         if (unit instanceof ChronoUnit) {
@@ -445,7 +664,8 @@ public final class Instant
      *
      * @param secondsToAdd  the seconds to add, positive or negative
      * @return an {@code Instant} based on this instant with the specified seconds added, not null
-     * @throws ArithmeticException if the calculation exceeds the supported range
+     * @throws DateTimeException if the result exceeds the maximum or minimum instant
+     * @throws ArithmeticException if numeric overflow occurs
      */
     public Instant plusSeconds(long secondsToAdd) {
         return plus(secondsToAdd, 0);
@@ -458,7 +678,8 @@ public final class Instant
      *
      * @param millisToAdd  the milliseconds to add, positive or negative
      * @return an {@code Instant} based on this instant with the specified milliseconds added, not null
-     * @throws ArithmeticException if the calculation exceeds the supported range
+     * @throws DateTimeException if the result exceeds the maximum or minimum instant
+     * @throws ArithmeticException if numeric overflow occurs
      */
     public Instant plusMillis(long millisToAdd) {
         return plus(millisToAdd / 1000, (millisToAdd % 1000) * 1000_000);
@@ -471,7 +692,8 @@ public final class Instant
      *
      * @param nanosToAdd  the nanoseconds to add, positive or negative
      * @return an {@code Instant} based on this instant with the specified nanoseconds added, not null
-     * @throws ArithmeticException if the calculation exceeds the supported range
+     * @throws DateTimeException if the result exceeds the maximum or minimum instant
+     * @throws ArithmeticException if numeric overflow occurs
      */
     public Instant plusNanos(long nanosToAdd) {
         return plus(0, nanosToAdd);
@@ -485,7 +707,8 @@ public final class Instant
      * @param secondsToAdd  the seconds to add, positive or negative
      * @param nanosToAdd  the nanos to add, positive or negative
      * @return an {@code Instant} based on this instant with the specified seconds added, not null
-     * @throws ArithmeticException if the calculation exceeds the supported range
+     * @throws DateTimeException if the result exceeds the maximum or minimum instant
+     * @throws ArithmeticException if numeric overflow occurs
      */
     private Instant plus(long secondsToAdd, long nanosToAdd) {
         if ((secondsToAdd | nanosToAdd) == 0) {
@@ -499,11 +722,21 @@ public final class Instant
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     * @throws DateTimeException {@inheritDoc}
+     * @throws ArithmeticException {@inheritDoc}
+     */
     @Override
-    public Instant minus(TemporalSubtractor adjuster) {
-        return (Instant) adjuster.subtractFrom(this);
+    public Instant minus(TemporalSubtractor subtractor) {
+        return (Instant) subtractor.subtractFrom(this);
     }
 
+    /**
+     * {@inheritDoc}
+     * @throws DateTimeException {@inheritDoc}
+     * @throws ArithmeticException {@inheritDoc}
+     */
     @Override
     public Instant minus(long amountToSubtract, TemporalUnit unit) {
         return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
@@ -517,7 +750,8 @@ public final class Instant
      *
      * @param secondsToSubtract  the seconds to subtract, positive or negative
      * @return an {@code Instant} based on this instant with the specified seconds subtracted, not null
-     * @throws ArithmeticException if the calculation exceeds the supported range
+     * @throws DateTimeException if the result exceeds the maximum or minimum instant
+     * @throws ArithmeticException if numeric overflow occurs
      */
     public Instant minusSeconds(long secondsToSubtract) {
         if (secondsToSubtract == Long.MIN_VALUE) {
@@ -533,7 +767,8 @@ public final class Instant
      *
      * @param millisToSubtract  the milliseconds to subtract, positive or negative
      * @return an {@code Instant} based on this instant with the specified milliseconds subtracted, not null
-     * @throws ArithmeticException if the calculation exceeds the supported range
+     * @throws DateTimeException if the result exceeds the maximum or minimum instant
+     * @throws ArithmeticException if numeric overflow occurs
      */
     public Instant minusMillis(long millisToSubtract) {
         if (millisToSubtract == Long.MIN_VALUE) {
@@ -549,7 +784,8 @@ public final class Instant
      *
      * @param nanosToSubtract  the nanoseconds to subtract, positive or negative
      * @return an {@code Instant} based on this instant with the specified nanoseconds subtracted, not null
-     * @throws ArithmeticException if the calculation exceeds the supported range
+     * @throws DateTimeException if the result exceeds the maximum or minimum instant
+     * @throws ArithmeticException if numeric overflow occurs
      */
     public Instant minusNanos(long nanosToSubtract) {
         if (nanosToSubtract == Long.MIN_VALUE) {
@@ -559,17 +795,115 @@ public final class Instant
     }
 
     //-------------------------------------------------------------------------
+    /**
+     * Queries this instant using the specified query.
+     * <p>
+     * This queries this instant using the specified query strategy object.
+     * The {@code TemporalQuery} object defines the logic to be used to
+     * obtain the result. Read the documentation of the query to understand
+     * what the result of this method will be.
+     * <p>
+     * The result of this method is obtained by invoking the
+     * {@link TemporalQuery#queryFrom(TemporalAccessor)} method on the
+     * specified query passing {@code this} as the argument.
+     *
+     * @param <R> the type of the result
+     * @param query  the query to invoke, not null
+     * @return the query result, null may be returned (defined by the query)
+     * @throws DateTimeException if unable to query (defined by the query)
+     * @throws ArithmeticException if numeric overflow occurs (defined by the query)
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R query(TemporalQuery<R> query) {
+        if (query == TemporalQueries.precision()) {
+            return (R) NANOS;
+        }
+        // inline TemporalAccessor.super.query(query) as an optimization
+        if (query == TemporalQueries.chrono() || query == TemporalQueries.zoneId() ||
+                query == TemporalQueries.zone() || query == TemporalQueries.offset()) {
+            return null;
+        }
+        return query.queryFrom(this);
+    }
+
+    /**
+     * Adjusts the specified temporal object to have this instant.
+     * <p>
+     * This returns a temporal object of the same observable type as the input
+     * with the instant changed to be the same as this.
+     * <p>
+     * The adjustment is equivalent to using {@link Temporal#with(TemporalField, long)}
+     * twice, passing {@link ChronoField#INSTANT_SECONDS} and
+     * {@link ChronoField#NANO_OF_SECOND} as the fields.
+     * <p>
+     * In most cases, it is clearer to reverse the calling pattern by using
+     * {@link Temporal#with(TemporalAdjuster)}:
+     * <pre>
+     *   // these two lines are equivalent, but the second approach is recommended
+     *   temporal = thisInstant.adjustInto(temporal);
+     *   temporal = temporal.with(thisInstant);
+     * </pre>
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param temporal  the target object to be adjusted, not null
+     * @return the adjusted object, not null
+     * @throws DateTimeException if unable to make the adjustment
+     * @throws ArithmeticException if numeric overflow occurs
+     */
     @Override
     public Temporal adjustInto(Temporal temporal) {
         return temporal.with(INSTANT_SECONDS, seconds).with(NANO_OF_SECOND, nanos);
     }
 
+    /**
+     * Calculates the period between this instant and another instant in
+     * terms of the specified unit.
+     * <p>
+     * This calculates the period between two instants in terms of a single unit.
+     * The start and end points are {@code this} and the specified instant.
+     * The result will be negative if the end is before the start.
+     * The calculation returns a whole number, representing the number of
+     * complete units between the two instants.
+     * The {@code Temporal} passed to this method must be an {@code Instant}.
+     * For example, the period in days between two dates can be calculated
+     * using {@code startInstant.periodUntil(endInstant, SECONDS)}.
+     * <p>
+     * This method operates in association with {@link TemporalUnit#between}.
+     * The result of this method is a {@code long} representing the amount of
+     * the specified unit. By contrast, the result of {@code between} is an
+     * object that can be used directly in addition/subtraction:
+     * <pre>
+     *   long period = start.periodUntil(end, SECONDS);   // this method
+     *   dateTime.plus(SECONDS.between(start, end));      // use in plus/minus
+     * </pre>
+     * <p>
+     * The calculation is implemented in this method for {@link ChronoUnit}.
+     * The units {@code NANOS}, {@code MICROS}, {@code MILLIS}, {@code SECONDS},
+     * {@code MINUTES}, {@code HOURS}, {@code HALF_DAYS} and {@code DAYS}
+     * are supported. Other {@code ChronoUnit} values will throw an exception.
+     * <p>
+     * If the unit is not a {@code ChronoUnit}, then the result of this method
+     * is obtained by invoking {@code TemporalUnit.between(Temporal, Temporal)}
+     * passing {@code this} as the first argument and the input temporal as
+     * the second argument.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param endInstant  the end date, which must be a {@code LocalDate}, not null
+     * @param unit  the unit to measure the period in, not null
+     * @return the amount of the period between this date and the end date
+     * @throws DateTimeException if the period cannot be calculated
+     * @throws ArithmeticException if numeric overflow occurs
+     */
     @Override
-    public long periodUntil(Temporal endDateTime, TemporalUnit unit) {
-        if (endDateTime instanceof Instant == false) {
+    public long periodUntil(Temporal endInstant, TemporalUnit unit) {
+        if (endInstant instanceof Instant == false) {
+            Objects.requireNonNull(endInstant, "endInstant");
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
-        Instant end = (Instant) endDateTime;
+        Instant end = (Instant) endInstant;
         if (unit instanceof ChronoUnit) {
             ChronoUnit f = (ChronoUnit) unit;
             switch (f) {
@@ -584,7 +918,7 @@ public final class Instant
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
-        return unit.between(this, endDateTime).getAmount();
+        return unit.between(this, endInstant).getAmount();
     }
 
     private long nanosUntil(Instant end) {
@@ -594,15 +928,6 @@ public final class Instant
 
     private long secondsUntil(Instant end) {
         return Jdk8Methods.safeSubtract(end.seconds, seconds);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.precision()) {
-            return (R) NANOS;
-        }
-        return super.query(query);
     }
 
     //-----------------------------------------------------------------------
@@ -618,7 +943,7 @@ public final class Instant
      * was subject to integer division by one million.
      *
      * @return the number of milliseconds since the epoch of 1970-01-01T00:00:00Z
-     * @throws ArithmeticException if the calculation exceeds the supported range
+     * @throws ArithmeticException if numeric overflow occurs
      */
     public long toEpochMilli() {
         long millis = Jdk8Methods.safeMultiply(seconds, 1000);
@@ -716,20 +1041,18 @@ public final class Instant
         return DateTimeFormatters.isoInstant().print(this);
     }
 
-    // -----------------------------------------------------------------------
-    /**
-     * Writes the object using a
-     * <a href="../../serialized-form.html#org.threeten.bp.Ser">dedicated serialized form</a>.
-     * <pre>
-     *  out.writeByte(2);  // identifies this as an Instant
-     *  out.writeLong(seconds);
-     *  out.writeInt(nanos);
-     * </pre>
-     *
-     * @return the instance of {@code Ser}, not null
-     */
+    //-----------------------------------------------------------------------
     private Object writeReplace() {
         return new Ser(Ser.INSTANT_TYPE, this);
+    }
+
+    /**
+     * Defend against malicious streams.
+     * @return never
+     * @throws InvalidObjectException always
+     */
+    private Object readResolve() throws ObjectStreamException {
+        throw new InvalidObjectException("Deserialization via serialization delegate");
     }
 
     void writeExternal(DataOutput out) throws IOException {

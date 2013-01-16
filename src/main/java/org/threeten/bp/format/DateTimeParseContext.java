@@ -91,6 +91,13 @@ final class DateTimeParseContext {
         parsed.add(new Parsed());
     }
 
+    /**
+     * Creates a copy of this context.
+     */
+    DateTimeParseContext copy() {
+        return new DateTimeParseContext(locale, symbols);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the locale.

@@ -31,9 +31,15 @@
  */
 package org.threeten.bp.format;
 
+import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
+import static org.threeten.bp.temporal.ChronoField.HOUR_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.INSTANT_SECONDS;
+import static org.threeten.bp.temporal.ChronoField.MINUTE_OF_HOUR;
+import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.NANO_OF_SECOND;
 import static org.threeten.bp.temporal.ChronoField.OFFSET_SECONDS;
+import static org.threeten.bp.temporal.ChronoField.SECOND_OF_MINUTE;
+import static org.threeten.bp.temporal.ChronoField.YEAR;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -53,10 +59,9 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.threeten.bp.DateTimeException;
-import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.format.SimpleDateTimeTextProvider.LocaleStore;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.Chrono;
@@ -2251,26 +2256,91 @@ public final class DateTimeFormatterBuilder {
      * Prints or parses an ISO-8601 instant.
      */
     static final class InstantPrinterParser implements DateTimePrinterParser {
+        // days in a 400 year cycle = 146097
+        // days in a 10,000 year cycle = 146097 * 25
+        // seconds per day = 86400
+        private static final long SECONDS_PER_10000_YEARS = 146097L * 25L * 86400L;
+        private static final long SECONDS_0000_TO_1970 = ((146097L * 5L) - (30L * 365L + 7L)) * 86400L;
+        private static final CompositePrinterParser PARSER = new DateTimeFormatterBuilder()
+                    .parseCaseInsensitive()
+                    .append(DateTimeFormatters.isoLocalDate()).appendLiteral('T')
+                    .append(DateTimeFormatters.isoLocalTime()).appendLiteral('Z')
+                    .toFormatter().toPrinterParser(false);
 
         InstantPrinterParser() {
         }
 
         @Override
         public boolean print(DateTimePrintContext context, StringBuilder buf) {
-            // TODO: implement this from INSTANT_SECONDS, handling big numbers
-            Instant instant = Instant.from(context.getDateTime());
-            ZonedDateTime odt = ZonedDateTime.ofInstant(instant, ZoneOffset.UTC);
-            buf.append(odt);
+            // use INSTANT_SECONDS, thus this code is not bound by Instant.MAX
+            Long inSecs = context.getValue(INSTANT_SECONDS);
+            Long inNanos = context.getValue(NANO_OF_SECOND);
+            if (inSecs == null || inNanos == null) {
+                return false;
+            }
+            long inSec = inSecs;
+            int inNano = NANO_OF_SECOND.checkValidIntValue(inNanos);
+            if (inSec >= -SECONDS_0000_TO_1970) {
+                // current era
+                long zeroSecs = inSec - SECONDS_PER_10000_YEARS + SECONDS_0000_TO_1970;
+                long hi = Jdk8Methods.floorDiv(zeroSecs, SECONDS_PER_10000_YEARS) + 1;
+                long lo = Jdk8Methods.floorMod(zeroSecs, SECONDS_PER_10000_YEARS);
+                LocalDateTime ldt = LocalDateTime.ofEpochSecond(lo - SECONDS_0000_TO_1970, inNano, ZoneOffset.UTC);
+                if (hi > 0) {
+                    buf.append('+').append(hi);
+                }
+                buf.append(ldt).append('Z');
+            } else {
+                // before current era
+                long zeroSecs = inSec + SECONDS_0000_TO_1970;
+                long hi = zeroSecs / SECONDS_PER_10000_YEARS;
+                long lo = zeroSecs % SECONDS_PER_10000_YEARS;
+                LocalDateTime ldt = LocalDateTime.ofEpochSecond(lo - SECONDS_0000_TO_1970, inNano, ZoneOffset.UTC);
+                int pos = buf.length();
+                buf.append(ldt).append('Z');
+                if (hi < 0) {
+                    if (ldt.getYear() == -10_000) {
+                        buf.replace(pos, pos + 2, Long.toString(hi - 1));
+                    } else if (lo == 0) {
+                        buf.insert(pos, hi);
+                    } else {
+                        buf.insert(pos + 1, Math.abs(hi));
+                    }
+                }
+            }
             return true;
         }
 
         @Override
         public int parse(DateTimeParseContext context, CharSequence text, int position) {
-            // TODO: implement this from INSTANT_SECONDS, handling big numbers
-            DateTimeFormatter f = DateTimeFormatters.isoOffsetDateTime();
-            ZonedDateTime odt = f.parse(text.subSequence(position, text.length()), ZonedDateTime.class);
-            context.setParsedField(INSTANT_SECONDS, odt.getLong(INSTANT_SECONDS));
-            context.setParsedField(NANO_OF_SECOND, odt.getLong(NANO_OF_SECOND));
+            // new context to avoid overwriting fields like year/month/day
+            DateTimeParseContext newContext = context.copy();
+            int pos = PARSER.parse(newContext, text, position);
+            if (pos < 0) {
+                return pos;
+            }
+            // parser restricts most fields to 2 digits, so definitely int
+            // correctly parsed nano is also guaranteed to be valid
+            long yearParsed = newContext.getParsed(YEAR);
+            int month = newContext.getParsed(MONTH_OF_YEAR).intValue();
+            int day = newContext.getParsed(DAY_OF_MONTH).intValue();
+            int hour = newContext.getParsed(HOUR_OF_DAY).intValue();
+            int min = newContext.getParsed(MINUTE_OF_HOUR).intValue();
+            Long secVal = newContext.getParsed(SECOND_OF_MINUTE);
+            Long nanoVal = newContext.getParsed(NANO_OF_SECOND);
+            int sec = (secVal != null ? secVal.intValue() : 0);
+            int nano = (nanoVal != null ? nanoVal.intValue() : 0);
+            int year = (int) yearParsed % 10_000;
+            long instantSecs;
+            try {
+                LocalDateTime ldt = LocalDateTime.of(year, month, day, hour, min, sec, 0);
+                instantSecs = ldt.toEpochSecond(ZoneOffset.UTC);
+                instantSecs += Jdk8Methods.safeMultiply(yearParsed / 10_000L, SECONDS_PER_10000_YEARS);
+            } catch (RuntimeException ex) {
+                return ~position;
+            }
+            context.setParsedField(INSTANT_SECONDS, instantSecs);
+            context.setParsedField(NANO_OF_SECOND, nano);
             return text.length();
         }
 

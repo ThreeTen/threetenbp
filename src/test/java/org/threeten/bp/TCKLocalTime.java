@@ -273,32 +273,22 @@ public class TCKLocalTime extends AbstractDateTimeTest {
 
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void now_Clock_maxYear() {
-        Clock clock = Clock.fixed(Instant.ofEpochSecond(Long.MAX_VALUE), ZoneOffset.UTC);
+    public void now_Clock_max() {
+        Clock clock = Clock.fixed(Instant.MAX, ZoneOffset.UTC);
         LocalTime test = LocalTime.now(clock);
-        int hour = (int) ((Long.MAX_VALUE / (60 * 60)) % 24);
-        int min = (int) ((Long.MAX_VALUE / 60) % 60);
-        int sec = (int) (Long.MAX_VALUE % 60);
-        assertEquals(test.getHour(), hour);
-        assertEquals(test.getMinute(), min);
-        assertEquals(test.getSecond(), sec);
-        assertEquals(test.getNano(), 0);
+        assertEquals(test.getHour(), 23);
+        assertEquals(test.getMinute(), 59);
+        assertEquals(test.getSecond(), 59);
+        assertEquals(test.getNano(), 999_999_999);
     }
 
     @Test(groups={"tck"})
-    public void now_Clock_minYear() {
-        long oneDay = 24 * 60 * 60;
-        long addition = ((Long.MAX_VALUE / oneDay) + 2) * oneDay;
-
-        Clock clock = Clock.fixed(Instant.ofEpochSecond(Long.MIN_VALUE), ZoneOffset.UTC);
+    public void now_Clock_min() {
+        Clock clock = Clock.fixed(Instant.MIN, ZoneOffset.UTC);
         LocalTime test = LocalTime.now(clock);
-        long added = Long.MIN_VALUE + addition;
-        int hour = (int) ((added / (60 * 60)) % 24);
-        int min = (int) ((added / 60) % 60);
-        int sec = (int) (added % 60);
-        assertEquals(test.getHour(), hour);
-        assertEquals(test.getMinute(), min);
-        assertEquals(test.getSecond(), sec);
+        assertEquals(test.getHour(), 0);
+        assertEquals(test.getMinute(), 0);
+        assertEquals(test.getSecond(), 0);
         assertEquals(test.getNano(), 0);
     }
 

@@ -39,6 +39,8 @@ import static org.threeten.bp.temporal.ChronoUnit.DAYS;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.InvalidObjectException;
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -76,7 +78,7 @@ import org.threeten.bp.temporal.TemporalUnit;
  * most applications.
  * See {@link Instant} for a discussion as to the meaning of the second and time-scales.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
 public final class Duration
@@ -756,16 +758,25 @@ public final class Duration
 
     //-------------------------------------------------------------------------
     /**
-     * Adds this duration to the specified date-time object.
+     * Adds this duration to the specified temporal object.
      * <p>
-     * This method is not intended to be called by application code directly.
-     * Applications should use the {@code plus(PlusAdjuster)} method
-     * on the date-time object passing this duration as the argument.
+     * This returns a temporal object of the same observable type as the input
+     * with this duration added.
      * <p>
-     * A {@code Duration} can only be added to a {@code DateTime} that
+     * In most cases, it is clearer to reverse the calling pattern by using
+     * {@link Temporal#plus(TemporalAdder)}.
+     * <pre>
+     *   // these two lines are equivalent, but the second approach is recommended
+     *   dateTime = thisDuration.addTo(dateTime);
+     *   dateTime = dateTime.plus(thisDuration);
+     * </pre>
+     * <p>
+     * A {@code Duration} can only be added to a {@code Temporal} that
      * represents an instant and can supply {@link ChronoField#INSTANT_SECONDS}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
      *
-     * @param temporal  the date-time object to adjust, not null
+     * @param temporal  the temporal object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
      * @throws DateTimeException if unable to add
      * @throws ArithmeticException if numeric overflow occurs
@@ -782,16 +793,25 @@ public final class Duration
     }
 
     /**
-     * Subtracts this duration from the specified date-time object.
+     * Subtracts this duration from the specified temporal object.
      * <p>
-     * This method is not intended to be called by application code directly.
-     * Applications should use the {@code minus(MinusAdjuster)} method
-     * on the date-time object passing this duration as the argument.
+     * This returns a temporal object of the same observable type as the input
+     * with this duration subtracted.
      * <p>
-     * A {@code Duration} can only be subtracted from a {@code DateTime} that
+     * In most cases, it is clearer to reverse the calling pattern by using
+     * {@link Temporal#minus(TemporalSubtractor)}.
+     * <pre>
+     *   // these two lines are equivalent, but the second approach is recommended
+     *   dateTime = thisDuration.subtractFrom(dateTime);
+     *   dateTime = dateTime.minus(thisDuration);
+     * </pre>
+     * <p>
+     * A {@code Duration} can only be subtracted from a {@code Temporal} that
      * represents an instant and can supply {@link ChronoField#INSTANT_SECONDS}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
      *
-     * @param temporal  the date-time object to adjust, not null
+     * @param temporal  the temporal object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
      * @throws DateTimeException if unable to subtract
      * @throws ArithmeticException if numeric overflow occurs
@@ -852,6 +872,7 @@ public final class Duration
      * @param otherDuration  the other duration to compare to, not null
      * @return the comparator value, negative if less, positive if greater
      */
+    @Override
     public int compareTo(Duration otherDuration) {
         int cmp = Long.compare(seconds, otherDuration.seconds);
         if (cmp != 0) {
@@ -956,19 +977,17 @@ public final class Duration
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Writes the object using a
-     * <a href="../../serialized-form.html#org.threeten.bp.Ser">dedicated serialized form</a>.
-     * <pre>
-     *  out.writeByte(1);  // identifies this as a Duration
-     *  out.writeLong(seconds);
-     *  out.writeInt(nanos);
-     * </pre>
-     *
-     * @return the instance of {@code Ser}, not null
-     */
     private Object writeReplace() {
         return new Ser(Ser.DURATION_TYPE, this);
+    }
+
+    /**
+     * Defend against malicious streams.
+     * @return never
+     * @throws InvalidObjectException always
+     */
+    private Object readResolve() throws ObjectStreamException {
+        throw new InvalidObjectException("Deserialization via serialization delegate");
     }
 
     void writeExternal(DataOutput out) throws IOException {

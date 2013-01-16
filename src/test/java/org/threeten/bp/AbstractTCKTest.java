@@ -31,9 +31,74 @@
  */
 package org.threeten.bp;
 
+import static org.testng.Assert.assertEquals;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamConstants;
+import java.lang.reflect.Field;
+
 /**
  * Base test class.
  */
 public abstract class AbstractTCKTest extends AbstractTest {
+
+    protected static void assertSerializedBySer(Object object, byte[] expectedBytes, byte[]... matches) throws Exception {
+        String serClass = object.getClass().getPackage().getName() + ".Ser";
+        Class<?> serCls = Class.forName(serClass);
+        Field field = serCls.getDeclaredField("serialVersionUID");
+        field.setAccessible(true);
+        long serVer = (Long) field.get(null);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos) ) {
+            oos.writeObject(object);
+        }
+        byte[] bytes = baos.toByteArray();
+        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+        try (DataInputStream dis = new DataInputStream(bais)) {
+            assertEquals(dis.readShort(), ObjectStreamConstants.STREAM_MAGIC);
+            assertEquals(dis.readShort(), ObjectStreamConstants.STREAM_VERSION);
+            assertEquals(dis.readByte(), ObjectStreamConstants.TC_OBJECT);
+            assertEquals(dis.readByte(), ObjectStreamConstants.TC_CLASSDESC);
+            assertEquals(dis.readUTF(), serClass);
+            assertEquals(dis.readLong(), serVer);
+            assertEquals(dis.readByte(), ObjectStreamConstants.SC_EXTERNALIZABLE | ObjectStreamConstants.SC_BLOCK_DATA);
+            assertEquals(dis.readShort(), 0);  // number of fields
+            assertEquals(dis.readByte(), ObjectStreamConstants.TC_ENDBLOCKDATA);  // end of classdesc
+            assertEquals(dis.readByte(), ObjectStreamConstants.TC_NULL);  // no superclasses
+            if (expectedBytes.length < 256) {
+                assertEquals(dis.readByte(), ObjectStreamConstants.TC_BLOCKDATA);
+                assertEquals(dis.readUnsignedByte(), expectedBytes.length);
+            } else {
+                assertEquals(dis.readByte(), ObjectStreamConstants.TC_BLOCKDATALONG);
+                assertEquals(dis.readInt(), expectedBytes.length);
+            }
+            byte[] input = new byte[expectedBytes.length];
+            dis.readFully(input);
+            assertEquals(input, expectedBytes);
+            if (matches.length > 0) {
+                for (byte[] match : matches) {
+                    boolean matched = false;
+                    while (matched == false) {
+                        try {
+                            dis.mark(1000);
+                            byte[] possible = new byte[match.length];
+                            dis.readFully(possible);
+                            assertEquals(possible, match);
+                            matched = true;
+                        } catch (AssertionError ex) {
+                            dis.reset();
+                            dis.readByte();  // ignore
+                        }
+                    }
+                }
+            } else {
+                assertEquals(dis.readByte(), ObjectStreamConstants.TC_ENDBLOCKDATA);  // end of blockdata
+                assertEquals(dis.read(), -1);
+            }
+        }
+    }
 
 }

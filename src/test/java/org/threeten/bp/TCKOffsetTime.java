@@ -330,29 +330,19 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void factory_ofInstant_maxYear() {
-        OffsetTime test = OffsetTime.ofInstant(Instant.ofEpochSecond(Long.MAX_VALUE), ZoneOffset.UTC);
-        int hour = (int) ((Long.MAX_VALUE / (60 * 60)) % 24);
-        int min = (int) ((Long.MAX_VALUE / 60) % 60);
-        int sec = (int) (Long.MAX_VALUE % 60);
-        assertEquals(test.getHour(), hour);
-        assertEquals(test.getMinute(), min);
-        assertEquals(test.getSecond(), sec);
-        assertEquals(test.getNano(), 0);
+        OffsetTime test = OffsetTime.ofInstant(Instant.MAX, ZoneOffset.UTC);
+        assertEquals(test.getHour(), 23);
+        assertEquals(test.getMinute(), 59);
+        assertEquals(test.getSecond(), 59);
+        assertEquals(test.getNano(), 999_999_999);
     }
 
     @Test(groups={"tck"})
     public void factory_ofInstant_minYear() {
-        long oneDay = 24 * 60 * 60;
-        long addition = ((Long.MAX_VALUE / oneDay) + 2) * oneDay;
-
-        OffsetTime test = OffsetTime.ofInstant(Instant.ofEpochSecond(Long.MIN_VALUE), ZoneOffset.UTC);
-        long added = Long.MIN_VALUE + addition;
-        int hour = (int) ((added / (60 * 60)) % 24);
-        int min = (int) ((added / 60) % 60);
-        int sec = (int) (added % 60);
-        assertEquals(test.getHour(), hour);
-        assertEquals(test.getMinute(), min);
-        assertEquals(test.getSecond(), sec);
+        OffsetTime test = OffsetTime.ofInstant(Instant.MIN, ZoneOffset.UTC);
+        assertEquals(test.getHour(), 0);
+        assertEquals(test.getMinute(), 0);
+        assertEquals(test.getSecond(), 0);
         assertEquals(test.getNano(), 0);
     }
 
