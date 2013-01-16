@@ -154,16 +154,16 @@ public final class ISOFields {
                 return ValueRange.of(1, 52, 53);
             }
             @Override
-            public boolean doIsSupported(TemporalAccessor dateTime) {
-                return dateTime.isSupported(EPOCH_DAY);
+            public boolean doIsSupported(TemporalAccessor temporal) {
+                return temporal.isSupported(EPOCH_DAY);
             }
             @Override
-            public ValueRange doRange(TemporalAccessor dateTime) {
-                return getWeekRange(LocalDate.from(dateTime));
+            public ValueRange doRange(TemporalAccessor temporal) {
+                return getWeekRange(LocalDate.from(temporal));
             }
             @Override
-            public long doGet(TemporalAccessor dateTime) {
-                return getWeek(LocalDate.from(dateTime));
+            public long doGet(TemporalAccessor temporal) {
+                return getWeek(LocalDate.from(temporal));
             }
             @Override
             public <R extends Temporal> R doWith(R dateTime, long newValue) {
@@ -189,16 +189,16 @@ public final class ISOFields {
                 return YEAR.range();
             }
             @Override
-            public boolean doIsSupported(TemporalAccessor dateTime) {
-                return dateTime.isSupported(EPOCH_DAY);
+            public boolean doIsSupported(TemporalAccessor temporal) {
+                return temporal.isSupported(EPOCH_DAY);
             }
             @Override
-            public ValueRange doRange(TemporalAccessor dateTime) {
+            public ValueRange doRange(TemporalAccessor temporal) {
                 return YEAR.range();
             }
             @Override
-            public long doGet(TemporalAccessor dateTime) {
-                return getWeekBasedYear(LocalDate.from(dateTime));
+            public long doGet(TemporalAccessor temporal) {
+                return getWeekBasedYear(LocalDate.from(temporal));
             }
             @Override
             public <R extends Temporal> R doWith(R dateTime, long newValue) {
@@ -227,8 +227,8 @@ public final class ISOFields {
         // JDK8 default interface
         //-------------------------------------------------------------------------
         @Override
-        public int compare(TemporalAccessor dateTime1, TemporalAccessor dateTime2) {
-            return Long.compare(dateTime1.getLong(this), dateTime2.getLong(this));
+        public int compare(TemporalAccessor temporal1, TemporalAccessor temporal2) {
+            return Long.compare(temporal1.getLong(this), temporal2.getLong(this));
         }
 
         private static ValueRange getWeekRange(LocalDate date) {
@@ -305,8 +305,8 @@ public final class ISOFields {
         }
 
         @Override
-        public boolean isSupported(Temporal dateTime) {
-            return dateTime.isSupported(EPOCH_DAY);
+        public boolean isSupported(Temporal temporal) {
+            return temporal.isSupported(EPOCH_DAY);
         }
 
         @Override
@@ -345,13 +345,13 @@ public final class ISOFields {
         }
 
         @Override
-        public Temporal doPlusAdjustment(Temporal dateTime) {
-            return dateTime.plus(amount, unit);
+        public Temporal doPlusAdjustment(Temporal temporal) {
+            return temporal.plus(amount, unit);
         }
 
         @Override
-        public Temporal doMinusAdjustment(Temporal dateTime) {
-            return dateTime.minus(amount, unit);
+        public Temporal doMinusAdjustment(Temporal temporal) {
+            return temporal.minus(amount, unit);
         }
 
         @Override

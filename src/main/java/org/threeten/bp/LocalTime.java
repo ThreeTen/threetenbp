@@ -369,27 +369,27 @@ public final class LocalTime
      * <p>
      * The conversion extracts the {@link ChronoField#NANO_OF_DAY nano-of-day} field.
      *
-     * @param dateTime  the date-time object to convert, not null
+     * @param temporal  the date-time object to convert, not null
      * @return the local time, not null
      * @throws DateTimeException if unable to convert to a {@code LocalTime}
      */
-    public static LocalTime from(TemporalAccessor dateTime) {
-        if (dateTime instanceof LocalTime) {
-            return (LocalTime) dateTime;
-        } else if (dateTime instanceof ChronoLocalDateTime) {
-            return ((ChronoLocalDateTime<?>) dateTime).getTime();
-        } else if (dateTime instanceof ZonedDateTime) {
-            return ((ChronoZonedDateTime<?>) dateTime).getTime();
+    public static LocalTime from(TemporalAccessor temporal) {
+        if (temporal instanceof LocalTime) {
+            return (LocalTime) temporal;
+        } else if (temporal instanceof ChronoLocalDateTime) {
+            return ((ChronoLocalDateTime<?>) temporal).getTime();
+        } else if (temporal instanceof ZonedDateTime) {
+            return ((ChronoZonedDateTime<?>) temporal).getTime();
         }
         // handle builder as a special case
-        if (dateTime instanceof DateTimeBuilder) {
-            DateTimeBuilder builder = (DateTimeBuilder) dateTime;
+        if (temporal instanceof DateTimeBuilder) {
+            DateTimeBuilder builder = (DateTimeBuilder) temporal;
             LocalTime time = builder.extract(LocalTime.class);
             if (time != null) {
                 return time;
             }
         }
-        return ofNanoOfDay(dateTime.getLong(NANO_OF_DAY));
+        return ofNanoOfDay(temporal.getLong(NANO_OF_DAY));
     }
 
     //-----------------------------------------------------------------------
@@ -997,8 +997,8 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     @Override
-    public Temporal doWithAdjustment(Temporal dateTime) {
-        return dateTime.with(NANO_OF_DAY, toNanoOfDay());
+    public Temporal doWithAdjustment(Temporal temporal) {
+        return temporal.with(NANO_OF_DAY, toNanoOfDay());
     }
 
     @Override

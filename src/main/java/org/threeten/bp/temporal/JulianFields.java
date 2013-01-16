@@ -182,8 +182,8 @@ public enum JulianFields implements TemporalField {
     }
 
     @Override
-    public int compare(TemporalAccessor dateTime1, TemporalAccessor dateTime2) {
-        return Long.compare(dateTime1.getLong(this), dateTime2.getLong(this));
+    public int compare(TemporalAccessor temporal1, TemporalAccessor temporal2) {
+        return Long.compare(temporal1.getLong(this), temporal2.getLong(this));
     }
 
     //-----------------------------------------------------------------------
@@ -202,21 +202,21 @@ public enum JulianFields implements TemporalField {
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean doIsSupported(TemporalAccessor dateTime) {
-        return dateTime.isSupported(EPOCH_DAY);
+    public boolean doIsSupported(TemporalAccessor temporal) {
+        return temporal.isSupported(EPOCH_DAY);
     }
 
     @Override
-    public ValueRange doRange(TemporalAccessor dateTime) {
-        if (doIsSupported(dateTime) == false) {
+    public ValueRange doRange(TemporalAccessor temporal) {
+        if (doIsSupported(temporal) == false) {
             throw new DateTimeException("Unsupported field: " + this);
         }
         return range();
     }
 
     @Override
-    public long doGet(TemporalAccessor dateTime) {
-        return dateTime.getLong(EPOCH_DAY) + offset;
+    public long doGet(TemporalAccessor temporal) {
+        return temporal.getLong(EPOCH_DAY) + offset;
     }
 
     @Override

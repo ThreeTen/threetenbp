@@ -245,19 +245,19 @@ public enum ChronoUnit implements TemporalUnit {
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean isSupported(Temporal dateTime) {
+    public boolean isSupported(Temporal temporal) {
         if (this == FOREVER) {
             return false;
         }
-        if (dateTime instanceof ChronoLocalDateTime || dateTime instanceof ChronoZonedDateTime) {
+        if (temporal instanceof ChronoLocalDateTime || temporal instanceof ChronoZonedDateTime) {
             return true;
         }
         try {
-            dateTime.plus(1, this);
+            temporal.plus(1, this);
             return true;
         } catch (RuntimeException ex) {
             try {
-                dateTime.plus(-1, this);
+                temporal.plus(-1, this);
                 return true;
             } catch (RuntimeException ex2) {
                 return false;
@@ -306,13 +306,13 @@ public enum ChronoUnit implements TemporalUnit {
         }
 
         @Override
-        public Temporal doPlusAdjustment(Temporal dateTime) {
-            return dateTime.plus(amount, unit);
+        public Temporal doPlusAdjustment(Temporal temporal) {
+            return temporal.plus(amount, unit);
         }
 
         @Override
-        public Temporal doMinusAdjustment(Temporal dateTime) {
-            return dateTime.minus(amount, unit);
+        public Temporal doMinusAdjustment(Temporal temporal) {
+            return temporal.minus(amount, unit);
         }
 
         @Override

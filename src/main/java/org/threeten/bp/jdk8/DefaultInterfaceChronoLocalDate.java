@@ -107,8 +107,8 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
 
     //-------------------------------------------------------------------------
     @Override
-    public Temporal doWithAdjustment(Temporal dateTime) {
-        return dateTime.with(EPOCH_DAY, toEpochDay());
+    public Temporal doWithAdjustment(Temporal temporal) {
+        return temporal.with(EPOCH_DAY, toEpochDay());
     }
 
     @Override

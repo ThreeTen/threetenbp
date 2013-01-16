@@ -929,34 +929,34 @@ public final class Period
      * If the date-time has a calendar system with a fixed number of months in a
      * year, then the years and months will be combined before being added.
      *
-     * @param dateTime  the date-time object to adjust, not null
+     * @param temporal  the date-time object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
      * @throws DateTimeException if unable to add
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public Temporal doPlusAdjustment(Temporal dateTime) {
+    public Temporal doPlusAdjustment(Temporal temporal) {
         if ((years | months) != 0) {
-            ValueRange startRange = Chrono.from(dateTime).range(MONTH_OF_YEAR);
+            ValueRange startRange = Chrono.from(temporal).range(MONTH_OF_YEAR);
             if (startRange.isFixed() && startRange.isIntValue()) {
                 long monthCount = startRange.getMaximum() - startRange.getMinimum() + 1;
-                dateTime = dateTime.plus(years * monthCount + months, MONTHS);
+                temporal = temporal.plus(years * monthCount + months, MONTHS);
             } else {
                 if (years != 0) {
-                    dateTime = dateTime.plus(years, YEARS);
+                    temporal = temporal.plus(years, YEARS);
                 }
                 if (months != 0) {
-                    dateTime = dateTime.plus(months, MONTHS);
+                    temporal = temporal.plus(months, MONTHS);
                 }
             }
         }
         if (days != 0) {
-            dateTime = dateTime.plus(days, DAYS);
+            temporal = temporal.plus(days, DAYS);
         }
         if (nanos != 0) {
-            dateTime = dateTime.plus(nanos, NANOS);
+            temporal = temporal.plus(nanos, NANOS);
         }
-        return dateTime;
+        return temporal;
     }
 
     /**
@@ -971,34 +971,34 @@ public final class Period
      * If the date-time has a calendar system with a fixed number of months in a
      * year, then the years and months will be combined before being subtracted.
      *
-     * @param dateTime  the date-time object to adjust, not null
+     * @param temporal  the date-time object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
      * @throws DateTimeException if unable to subtract
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public Temporal doMinusAdjustment(Temporal dateTime) {
+    public Temporal doMinusAdjustment(Temporal temporal) {
         if ((years | months) != 0) {
-            ValueRange startRange = Chrono.from(dateTime).range(MONTH_OF_YEAR);
+            ValueRange startRange = Chrono.from(temporal).range(MONTH_OF_YEAR);
             if (startRange.isFixed() && startRange.isIntValue()) {
                 long monthCount = startRange.getMaximum() - startRange.getMinimum() + 1;
-                dateTime = dateTime.minus(years * monthCount + months, MONTHS);
+                temporal = temporal.minus(years * monthCount + months, MONTHS);
             } else {
                 if (years != 0) {
-                    dateTime = dateTime.minus(years, YEARS);
+                    temporal = temporal.minus(years, YEARS);
                 }
                 if (months != 0) {
-                    dateTime = dateTime.minus(months, MONTHS);
+                    temporal = temporal.minus(months, MONTHS);
                 }
             }
         }
         if (days != 0) {
-            dateTime = dateTime.minus(days, DAYS);
+            temporal = temporal.minus(days, DAYS);
         }
         if (nanos != 0) {
-            dateTime = dateTime.minus(nanos, NANOS);
+            temporal = temporal.minus(nanos, NANOS);
         }
-        return dateTime;
+        return temporal;
     }
 
     //-----------------------------------------------------------------------

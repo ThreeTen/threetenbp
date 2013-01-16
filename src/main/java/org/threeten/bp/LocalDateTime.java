@@ -365,18 +365,18 @@ public final class LocalDateTime
      * <p>
      * The conversion extracts and combines the {@code LocalDate} and {@code LocalTime}.
      *
-     * @param dateTime  the date-time object to convert, not null
+     * @param temporal  the date-time object to convert, not null
      * @return the local date-time, not null
      * @throws DateTimeException if unable to convert to a {@code LocalDateTime}
      */
-    public static LocalDateTime from(TemporalAccessor dateTime) {
-        if (dateTime instanceof LocalDateTime) {
-            return (LocalDateTime) dateTime;
-        } else if (dateTime instanceof ZonedDateTime) {
-            return ((ZonedDateTime) dateTime).getDateTime();
+    public static LocalDateTime from(TemporalAccessor temporal) {
+        if (temporal instanceof LocalDateTime) {
+            return (LocalDateTime) temporal;
+        } else if (temporal instanceof ZonedDateTime) {
+            return ((ZonedDateTime) temporal).getDateTime();
         }
-        LocalDate date = LocalDate.from(dateTime);
-        LocalTime time = LocalTime.from(dateTime);
+        LocalDate date = LocalDate.from(temporal);
+        LocalTime time = LocalTime.from(temporal);
         return new LocalDateTime(date, time);
     }
 

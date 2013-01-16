@@ -212,13 +212,13 @@ public final class ISOChrono extends Chrono<ISOChrono> implements Serializable {
      * <p>
      * This is equivalent to {@link LocalDate#from(TemporalAccessor)}.
      *
-     * @param dateTime  the date-time object to convert, not null
+     * @param temporal  the date-time object to convert, not null
      * @return the ISO local date, not null
      * @throws DateTimeException if unable to create the date
      */
     @Override  // override with covariant return type
-    public LocalDate date(TemporalAccessor dateTime) {
-        return LocalDate.from(dateTime);
+    public LocalDate date(TemporalAccessor temporal) {
+        return LocalDate.from(temporal);
     }
 
     /**
@@ -226,13 +226,13 @@ public final class ISOChrono extends Chrono<ISOChrono> implements Serializable {
      * <p>
      * This is equivalent to {@link LocalDateTime#from(TemporalAccessor)}.
      *
-     * @param dateTime  the date-time object to convert, not null
+     * @param temporal  the date-time object to convert, not null
      * @return the ISO local date-time, not null
      * @throws DateTimeException if unable to create the date-time
      */
     @Override  // override with covariant return type
-    public LocalDateTime localDateTime(TemporalAccessor dateTime) {
-        return LocalDateTime.from(dateTime);
+    public LocalDateTime localDateTime(TemporalAccessor temporal) {
+        return LocalDateTime.from(temporal);
     }
 
     /**
@@ -240,13 +240,13 @@ public final class ISOChrono extends Chrono<ISOChrono> implements Serializable {
      * <p>
      * This is equivalent to {@link ZonedDateTime#from(TemporalAccessor)}.
      *
-     * @param dateTime  the date-time object to convert, not null
+     * @param temporal  the date-time object to convert, not null
      * @return the ISO zoned date-time, not null
      * @throws DateTimeException if unable to create the date-time
      */
     @Override  // override with covariant return type
-    public ZonedDateTime zonedDateTime(TemporalAccessor dateTime) {
-        return ZonedDateTime.from(dateTime);
+    public ZonedDateTime zonedDateTime(TemporalAccessor temporal) {
+        return ZonedDateTime.from(temporal);
     }
 
     //-----------------------------------------------------------------------

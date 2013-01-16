@@ -765,20 +765,20 @@ public final class Duration
      * A {@code Duration} can only be added to a {@code DateTime} that
      * represents an instant and can supply {@link ChronoField#INSTANT_SECONDS}.
      *
-     * @param dateTime  the date-time object to adjust, not null
+     * @param temporal  the date-time object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
      * @throws DateTimeException if unable to add
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public Temporal doPlusAdjustment(Temporal dateTime) {
-        long instantSecs = dateTime.getLong(INSTANT_SECONDS);
-        long instantNanos = dateTime.getLong(NANO_OF_SECOND);
+    public Temporal doPlusAdjustment(Temporal temporal) {
+        long instantSecs = temporal.getLong(INSTANT_SECONDS);
+        long instantNanos = temporal.getLong(NANO_OF_SECOND);
         instantSecs = Jdk8Methods.safeAdd(instantSecs, seconds);
         instantNanos = Jdk8Methods.safeAdd(instantNanos, nanos);
         instantSecs = Jdk8Methods.safeAdd(instantSecs, Jdk8Methods.floorDiv(instantNanos, NANOS_PER_SECOND));
         instantNanos = Jdk8Methods.floorMod(instantNanos, NANOS_PER_SECOND);
-        return dateTime.with(INSTANT_SECONDS, instantSecs).with(NANO_OF_SECOND, instantNanos);
+        return temporal.with(INSTANT_SECONDS, instantSecs).with(NANO_OF_SECOND, instantNanos);
     }
 
     /**
@@ -791,20 +791,20 @@ public final class Duration
      * A {@code Duration} can only be subtracted from a {@code DateTime} that
      * represents an instant and can supply {@link ChronoField#INSTANT_SECONDS}.
      *
-     * @param dateTime  the date-time object to adjust, not null
+     * @param temporal  the date-time object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
      * @throws DateTimeException if unable to subtract
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public Temporal doMinusAdjustment(Temporal dateTime) {
-        long instantSecs = dateTime.getLong(INSTANT_SECONDS);
-        long instantNanos = dateTime.getLong(NANO_OF_SECOND);
+    public Temporal doMinusAdjustment(Temporal temporal) {
+        long instantSecs = temporal.getLong(INSTANT_SECONDS);
+        long instantNanos = temporal.getLong(NANO_OF_SECOND);
         instantSecs = Jdk8Methods.safeSubtract(instantSecs, seconds);
         instantNanos = Jdk8Methods.safeSubtract(instantNanos, nanos);
         instantSecs = Jdk8Methods.safeAdd(instantSecs, Jdk8Methods.floorDiv(instantNanos, NANOS_PER_SECOND));
         instantNanos = Jdk8Methods.floorMod(instantNanos, NANOS_PER_SECOND);
-        return dateTime.with(INSTANT_SECONDS, instantSecs).with(NANO_OF_SECOND, instantNanos);
+        return temporal.with(INSTANT_SECONDS, instantSecs).with(NANO_OF_SECOND, instantNanos);
     }
 
     //-----------------------------------------------------------------------

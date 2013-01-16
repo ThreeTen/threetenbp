@@ -394,25 +394,25 @@ public final class OffsetDateTime
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code OffsetDateTime}.
      *
-     * @param dateTime  the date-time object to convert, not null
+     * @param temporal  the date-time object to convert, not null
      * @return the offset date-time, not null
      * @throws DateTimeException if unable to convert to an {@code OffsetDateTime}
      */
-    public static OffsetDateTime from(TemporalAccessor dateTime) {
-        if (dateTime instanceof OffsetDateTime) {
-            return (OffsetDateTime) dateTime;
+    public static OffsetDateTime from(TemporalAccessor temporal) {
+        if (temporal instanceof OffsetDateTime) {
+            return (OffsetDateTime) temporal;
         }
-        ZoneOffset offset = ZoneOffset.from(dateTime);
+        ZoneOffset offset = ZoneOffset.from(temporal);
         try {
             try {
-                LocalDateTime ldt = LocalDateTime.from(dateTime);
+                LocalDateTime ldt = LocalDateTime.from(temporal);
                 return OffsetDateTime.of(ldt, offset);
             } catch (DateTimeException ignore) {
-                Instant instant = Instant.from(dateTime);
+                Instant instant = Instant.from(temporal);
                 return OffsetDateTime.ofInstant(instant, offset);
             }
         } catch (DateTimeException ex) {
-            throw new DateTimeException("Unable to convert DateTimeAccessor to OffsetDateTime: " + dateTime.getClass(), ex);
+            throw new DateTimeException("Unable to convert DateTimeAccessor to OffsetDateTime: " + temporal.getClass(), ex);
         }
     }
 
@@ -1376,8 +1376,8 @@ public final class OffsetDateTime
     }
 
     @Override
-    public Temporal doWithAdjustment(Temporal dateTime) {
-        return dateTime
+    public Temporal doWithAdjustment(Temporal temporal) {
+        return temporal
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
                 .with(EPOCH_DAY, getDate().toEpochDay())
                 .with(NANO_OF_DAY, getTime().toNanoOfDay());

@@ -101,11 +101,11 @@ public interface TemporalField extends Comparator<TemporalAccessor> {
      * For example, you could sort a list of arbitrary date-time objects by the value of
      * the month-of-year field - {@code Collections.sort(list, MONTH_OF_YEAR)}
      *
-     * @param dateTime1  the first date-time object to compare, not null
-     * @param dateTime2  the second date-time object to compare, not null
+     * @param temporal1  the first date-time object to compare, not null
+     * @param temporal2  the second date-time object to compare, not null
      * @throws DateTimeException if unable to obtain the value for this field
      */
-    int compare(TemporalAccessor dateTime1, TemporalAccessor dateTime2);  // JAVA8 default method
+    int compare(TemporalAccessor temporal1, TemporalAccessor temporal2);  // JAVA8 default method
 
     //-----------------------------------------------------------------------
     /**
@@ -135,10 +135,10 @@ public interface TemporalField extends Comparator<TemporalAccessor> {
      * <p>
      * Implementations should be written using the fields available in {@link ChronoField}.
      *
-     * @param dateTime  the date-time object to query, not null
+     * @param temporal  the date-time object to query, not null
      * @return true if the date-time can be queried for this field, false if not
      */
-    boolean doIsSupported(TemporalAccessor dateTime);
+    boolean doIsSupported(TemporalAccessor temporal);
 
     /**
      * Implementation of the logic to get the range of valid values for this field.
@@ -159,10 +159,10 @@ public interface TemporalField extends Comparator<TemporalAccessor> {
      * <p>
      * Implementations should be written using the fields available in {@link ChronoField}.
      *
-     * @param dateTime  the date-time object used to refine the result, not null
+     * @param temporal  the date-time object used to refine the result, not null
      * @return the range of valid values for this field, not null
      */
-    ValueRange doRange(TemporalAccessor dateTime);
+    ValueRange doRange(TemporalAccessor temporal);
 
     /**
      * Implementation of the logic to get the value of this field.
@@ -180,11 +180,11 @@ public interface TemporalField extends Comparator<TemporalAccessor> {
      * <p>
      * Implementations should be written using the fields available in {@link ChronoField}.
      *
-     * @param dateTime  the date-time object to query, not null
+     * @param temporal  the date-time object to query, not null
      * @return the value of this field, not null
      * @throws DateTimeException if unable to get the field
      */
-    long doGet(TemporalAccessor dateTime);
+    long doGet(TemporalAccessor temporal);
 
     /**
      * Implementation of the logic to set the value of this field.

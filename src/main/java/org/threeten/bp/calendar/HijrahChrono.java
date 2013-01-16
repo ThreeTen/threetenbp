@@ -255,11 +255,11 @@ public final class HijrahChrono extends Chrono<HijrahChrono> implements Serializ
     }
 
     @Override
-    public ChronoLocalDate<HijrahChrono> date(TemporalAccessor dateTime) {
-        if (dateTime instanceof HijrahDate) {
-            return (HijrahDate) dateTime;
+    public ChronoLocalDate<HijrahChrono> date(TemporalAccessor temporal) {
+        if (temporal instanceof HijrahDate) {
+            return (HijrahDate) temporal;
         }
-        return HijrahDate.ofEpochDay(dateTime.getLong(EPOCH_DAY));
+        return HijrahDate.ofEpochDay(temporal.getLong(EPOCH_DAY));
     }
 
     //-----------------------------------------------------------------------

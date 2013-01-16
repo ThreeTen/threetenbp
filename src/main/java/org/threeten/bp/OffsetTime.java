@@ -241,16 +241,16 @@ public final class OffsetTime
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code OffsetTime}.
      *
-     * @param dateTime  the date-time object to convert, not null
+     * @param temporal  the date-time object to convert, not null
      * @return the offset time, not null
      * @throws DateTimeException if unable to convert to an {@code OffsetTime}
      */
-    public static OffsetTime from(TemporalAccessor dateTime) {
-        if (dateTime instanceof OffsetTime) {
-            return (OffsetTime) dateTime;
+    public static OffsetTime from(TemporalAccessor temporal) {
+        if (temporal instanceof OffsetTime) {
+            return (OffsetTime) temporal;
         }
-        LocalTime time = LocalTime.from(dateTime);
-        ZoneOffset offset = ZoneOffset.from(dateTime);
+        LocalTime time = LocalTime.from(temporal);
+        ZoneOffset offset = ZoneOffset.from(temporal);
         return new OffsetTime(time, offset);
     }
 
@@ -817,8 +817,8 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     @Override
-    public Temporal doWithAdjustment(Temporal dateTime) {
-        return dateTime
+    public Temporal doWithAdjustment(Temporal temporal) {
+        return temporal
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
                 .with(NANO_OF_DAY, time.toNanoOfDay());
     }

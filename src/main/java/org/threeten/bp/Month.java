@@ -161,15 +161,15 @@ public enum Month implements TemporalAccessor, WithAdjuster {
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code Month}.
      *
-     * @param dateTime  the date-time object to convert, not null
+     * @param temporal  the date-time object to convert, not null
      * @return the month-of-year, not null
      * @throws DateTimeException if unable to convert to a {@code Month}
      */
-    public static Month from(TemporalAccessor dateTime) {
-        if (dateTime instanceof Month) {
-            return (Month) dateTime;
+    public static Month from(TemporalAccessor temporal) {
+        if (temporal instanceof Month) {
+            return (Month) temporal;
         }
-        return of(dateTime.get(MONTH_OF_YEAR));
+        return of(temporal.get(MONTH_OF_YEAR));
     }
 
     //-----------------------------------------------------------------------
@@ -410,15 +410,15 @@ public enum Month implements TemporalAccessor, WithAdjuster {
      * The adjustment is equivalent to using {@link Temporal#with(TemporalField, long)}
      * passing {@code MONTH_OF_YEAR} as the field.
      *
-     * @param dateTime  the target object to be adjusted, not null
+     * @param temporal  the target object to be adjusted, not null
      * @return the adjusted object, not null
      */
     @Override
-    public Temporal doWithAdjustment(Temporal dateTime) {
-        if (Chrono.from(dateTime).equals(ISOChrono.INSTANCE) == false) {
+    public Temporal doWithAdjustment(Temporal temporal) {
+        if (Chrono.from(temporal).equals(ISOChrono.INSTANCE) == false) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }
-        return dateTime.with(MONTH_OF_YEAR, getValue());
+        return temporal.with(MONTH_OF_YEAR, getValue());
     }
 
 }

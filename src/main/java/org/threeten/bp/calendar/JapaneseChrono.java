@@ -214,11 +214,11 @@ public final class JapaneseChrono extends Chrono<JapaneseChrono> implements Seri
     }
 
     @Override
-    public ChronoLocalDate<JapaneseChrono> date(TemporalAccessor dateTime) {
-        if (dateTime instanceof JapaneseDate) {
-            return (JapaneseDate) dateTime;
+    public ChronoLocalDate<JapaneseChrono> date(TemporalAccessor temporal) {
+        if (temporal instanceof JapaneseDate) {
+            return (JapaneseDate) temporal;
         }
-        return new JapaneseDate(LocalDate.from(dateTime));
+        return new JapaneseDate(LocalDate.from(temporal));
     }
 
     //-----------------------------------------------------------------------

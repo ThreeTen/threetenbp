@@ -105,10 +105,10 @@ public interface TemporalUnit {
      * This checks that the implementing date-time can add/subtract this unit.
      * This can be used to avoid throwing an exception.
      *
-     * @param dateTime  the date-time object to check, not null
+     * @param temporal  the date-time object to check, not null
      * @return true if the unit is supported
      */
-    boolean isSupported(Temporal dateTime);
+    boolean isSupported(Temporal temporal);
     // JAVA 8
     // default {
     //     try {

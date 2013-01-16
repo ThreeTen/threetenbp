@@ -147,13 +147,13 @@ public final class DateTimeFormatter {
      * <p>
      * This prints the date-time to a String using the rules of the formatter.
      *
-     * @param dateTime  the date-time object to print, not null
+     * @param temporal  the date-time object to print, not null
      * @return the printed string, not null
      * @throws DateTimeException if an error occurs during printing
      */
-    public String print(TemporalAccessor dateTime) {
+    public String print(TemporalAccessor temporal) {
         StringBuilder buf = new StringBuilder(32);
-        printTo(dateTime, buf);
+        printTo(temporal, buf);
         return buf.toString();
     }
 
@@ -171,15 +171,15 @@ public final class DateTimeFormatter {
      * See {@link DateTimePrintException#rethrowIOException()} for a means
      * to extract the {@code IOException}.
      *
-     * @param dateTime  the date-time object to print, not null
+     * @param temporal  the date-time object to print, not null
      * @param appendable  the appendable to print to, not null
      * @throws DateTimeException if an error occurs during printing
      */
-    public void printTo(TemporalAccessor dateTime, Appendable appendable) {
-        Objects.requireNonNull(dateTime, "dateTime");
+    public void printTo(TemporalAccessor temporal, Appendable appendable) {
+        Objects.requireNonNull(temporal, "temporal");
         Objects.requireNonNull(appendable, "appendable");
         try {
-            DateTimePrintContext context = new DateTimePrintContext(dateTime, locale, symbols);
+            DateTimePrintContext context = new DateTimePrintContext(temporal, locale, symbols);
             if (appendable instanceof StringBuilder) {
                 printerParser.print(context, (StringBuilder) appendable);
             } else {

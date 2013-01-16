@@ -278,13 +278,13 @@ public final class Instant
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code Instant}.
      *
-     * @param dateTime  the date-time object to convert, not null
+     * @param temporal  the date-time object to convert, not null
      * @return the instant, not null
      * @throws DateTimeException if unable to convert to an {@code Instant}
      */
-    public static Instant from(TemporalAccessor dateTime) {
-        long instantSecs = dateTime.getLong(INSTANT_SECONDS);
-        int nanoOfSecond = dateTime.get(NANO_OF_SECOND);
+    public static Instant from(TemporalAccessor temporal) {
+        long instantSecs = temporal.getLong(INSTANT_SECONDS);
+        int nanoOfSecond = temporal.get(NANO_OF_SECOND);
         return Instant.ofEpochSecond(instantSecs, nanoOfSecond);
     }
 
@@ -556,8 +556,8 @@ public final class Instant
 
     //-------------------------------------------------------------------------
     @Override
-    public Temporal doWithAdjustment(Temporal dateTime) {
-        return dateTime.with(INSTANT_SECONDS, seconds).with(NANO_OF_SECOND, nanos);
+    public Temporal doWithAdjustment(Temporal temporal) {
+        return temporal.with(INSTANT_SECONDS, seconds).with(NANO_OF_SECOND, nanos);
     }
 
     @Override

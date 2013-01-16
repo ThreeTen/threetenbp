@@ -139,15 +139,15 @@ public enum DayOfWeek implements TemporalAccessor, WithAdjuster {
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code DayOfWeek}.
      *
-     * @param dateTime  the date-time object to convert, not null
+     * @param temporal  the date-time object to convert, not null
      * @return the day-of-week, not null
      * @throws DateTimeException if unable to convert to a {@code DayOfWeek}
      */
-    public static DayOfWeek from(TemporalAccessor dateTime) {
-        if (dateTime instanceof DayOfWeek) {
-            return (DayOfWeek) dateTime;
+    public static DayOfWeek from(TemporalAccessor temporal) {
+        if (temporal instanceof DayOfWeek) {
+            return (DayOfWeek) temporal;
         }
-        return of(dateTime.get(DAY_OF_WEEK));
+        return of(temporal.get(DAY_OF_WEEK));
     }
 
     //-----------------------------------------------------------------------
@@ -270,12 +270,12 @@ public enum DayOfWeek implements TemporalAccessor, WithAdjuster {
      * The adjustment is equivalent to using {@link Temporal#with(TemporalField, long)}
      * passing {@code DAY_OF_WEEK} as the field.
      *
-     * @param dateTime  the target object to be adjusted, not null
+     * @param temporal  the target object to be adjusted, not null
      * @return the adjusted object, not null
      */
     @Override
-    public Temporal doWithAdjustment(Temporal dateTime) {
-        return dateTime.with(DAY_OF_WEEK, getValue());
+    public Temporal doWithAdjustment(Temporal temporal) {
+        return temporal.with(DAY_OF_WEEK, getValue());
     }
 
 }

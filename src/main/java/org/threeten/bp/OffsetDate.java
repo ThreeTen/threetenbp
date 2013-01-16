@@ -222,16 +222,16 @@ public final class OffsetDate
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code OffsetDate}.
      *
-     * @param dateTime  the date-time object to convert, not null
+     * @param temporal  the date-time object to convert, not null
      * @return the offset date, not null
      * @throws DateTimeException if unable to convert to an {@code OffsetDate}
      */
-    public static OffsetDate from(TemporalAccessor dateTime) {
-        if (dateTime instanceof OffsetDate) {
-            return (OffsetDate) dateTime;
+    public static OffsetDate from(TemporalAccessor temporal) {
+        if (temporal instanceof OffsetDate) {
+            return (OffsetDate) temporal;
         }
-        LocalDate date = LocalDate.from(dateTime);
-        ZoneOffset offset = ZoneOffset.from(dateTime);
+        LocalDate date = LocalDate.from(temporal);
+        ZoneOffset offset = ZoneOffset.from(temporal);
         return new OffsetDate(date, offset);
     }
 
@@ -854,8 +854,8 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     @Override
-    public Temporal doWithAdjustment(Temporal dateTime) {
-        return dateTime
+    public Temporal doWithAdjustment(Temporal temporal) {
+        return temporal
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
                 .with(EPOCH_DAY, getDate().toEpochDay());
     }

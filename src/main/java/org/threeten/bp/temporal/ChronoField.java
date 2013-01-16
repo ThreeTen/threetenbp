@@ -549,24 +549,24 @@ public enum ChronoField implements TemporalField {
 
     //-------------------------------------------------------------------------
     @Override
-    public int compare(TemporalAccessor dateTime1, TemporalAccessor dateTime2) {
-        return Long.compare(dateTime1.getLong(this), dateTime2.getLong(this));
+    public int compare(TemporalAccessor temporal1, TemporalAccessor temporal2) {
+        return Long.compare(temporal1.getLong(this), temporal2.getLong(this));
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean doIsSupported(TemporalAccessor dateTime) {
-        return dateTime.isSupported(this);
+    public boolean doIsSupported(TemporalAccessor temporal) {
+        return temporal.isSupported(this);
     }
 
     @Override
-    public ValueRange doRange(TemporalAccessor dateTime) {
-        return dateTime.range(this);
+    public ValueRange doRange(TemporalAccessor temporal) {
+        return temporal.range(this);
     }
 
     @Override
-    public long doGet(TemporalAccessor dateTime) {
-        return dateTime.getLong(this);
+    public long doGet(TemporalAccessor temporal) {
+        return temporal.getLong(this);
     }
 
     @Override

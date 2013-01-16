@@ -316,12 +316,12 @@ public interface Temporal extends TemporalAccessor {
          * Implementations may choose to document compatibility with other calendar systems, or
          * validate for it by querying the chronology from the input object.
          *
-         * @param dateTime  the date-time object to adjust, not null
+         * @param temporal  the date-time object to adjust, not null
          * @return an object of the same type with the adjustment made, not null
          * @throws DateTimeException if unable to make the adjustment
          * @throws ArithmeticException if numeric overflow occurs
          */
-        Temporal doWithAdjustment(Temporal dateTime);
+        Temporal doWithAdjustment(Temporal temporal);
     }
 
     //-----------------------------------------------------------------------
@@ -363,12 +363,12 @@ public interface Temporal extends TemporalAccessor {
          * Typically this requires no extra work, because the algorithm for adding/subtraing in
          * the calendar system is part of the {@code DateTime} implementation.
          *
-         * @param dateTime  the date-time object to adjust, not null
+         * @param temporal  the date-time object to adjust, not null
          * @return an object of the same type with the adjustment made, not null
          * @throws DateTimeException if unable to add
          * @throws ArithmeticException if numeric overflow occurs
          */
-        Temporal doPlusAdjustment(Temporal dateTime);
+        Temporal doPlusAdjustment(Temporal temporal);
     }
 
     /**
@@ -409,12 +409,12 @@ public interface Temporal extends TemporalAccessor {
          * Typically this requires no extra work, because the algorithm for subtracting in
          * the calendar system is part of the {@code DateTime} implementation.
          *
-         * @param dateTime  the date-time object to adjust, not null
+         * @param temporal  the date-time object to adjust, not null
          * @return an object of the same type with the adjustment made, not null
          * @throws DateTimeException if unable to subtract
          * @throws ArithmeticException if numeric overflow occurs
          */
-        Temporal doMinusAdjustment(Temporal dateTime);
+        Temporal doMinusAdjustment(Temporal temporal);
     }
 
 }

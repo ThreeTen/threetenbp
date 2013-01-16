@@ -316,27 +316,27 @@ public final class LocalDate
      * <p>
      * The conversion extracts the {@link ChronoField#EPOCH_DAY epoch-day} field.
      *
-     * @param dateTime  the date-time object to convert, not null
+     * @param temporal  the date-time object to convert, not null
      * @return the local date, not null
      * @throws DateTimeException if unable to convert to a {@code LocalDate}
      */
-    public static LocalDate from(TemporalAccessor dateTime) {
-        if (dateTime instanceof LocalDate) {
-            return (LocalDate) dateTime;
-        } else if (dateTime instanceof LocalDateTime) {
-            return ((LocalDateTime) dateTime).getDate();
-        } else if (dateTime instanceof ZonedDateTime) {
-            return ((ZonedDateTime) dateTime).getDate();
+    public static LocalDate from(TemporalAccessor temporal) {
+        if (temporal instanceof LocalDate) {
+            return (LocalDate) temporal;
+        } else if (temporal instanceof LocalDateTime) {
+            return ((LocalDateTime) temporal).getDate();
+        } else if (temporal instanceof ZonedDateTime) {
+            return ((ZonedDateTime) temporal).getDate();
         }
         // handle builder as a special case
-        if (dateTime instanceof DateTimeBuilder) {
-            DateTimeBuilder builder = (DateTimeBuilder) dateTime;
+        if (temporal instanceof DateTimeBuilder) {
+            DateTimeBuilder builder = (DateTimeBuilder) temporal;
             LocalDate date = builder.extract(LocalDate.class);
             if (date != null) {
                 return date;
             }
         }
-        return ofEpochDay(dateTime.getLong(EPOCH_DAY));
+        return ofEpochDay(temporal.getLong(EPOCH_DAY));
     }
 
     //-----------------------------------------------------------------------

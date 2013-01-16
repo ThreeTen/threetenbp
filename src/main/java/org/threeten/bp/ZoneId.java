@@ -322,14 +322,14 @@ public abstract class ZoneId {
      * A {@code DateTimeAccessor} represents some form of date and time information.
      * This factory converts the arbitrary date-time object to an instance of {@code ZoneId}.
      *
-     * @param dateTime  the date-time object to convert, not null
+     * @param temporal  the date-time object to convert, not null
      * @return the zone ID, not null
      * @throws DateTimeException if unable to convert to a {@code ZoneId}
      */
-    public static ZoneId from(TemporalAccessor dateTime) {
-        ZoneId obj = dateTime.query(Query.ZONE_ID);
+    public static ZoneId from(TemporalAccessor temporal) {
+        ZoneId obj = temporal.query(Query.ZONE_ID);
         if (obj == null) {
-            throw new DateTimeException("Unable to convert DateTimeAccessor to ZoneId: " + dateTime.getClass());
+            throw new DateTimeException("Unable to convert DateTimeAccessor to ZoneId: " + temporal.getClass());
         }
         return obj;
     }

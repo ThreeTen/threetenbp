@@ -50,7 +50,7 @@ import org.threeten.bp.jdk8.Jdk8Methods;
  * <p>
  * WeekDefinition provides three fields,
  * {@link #dayOfWeek()}, {@link #weekOfMonth()}, and {@link #weekOfYear()}
- * that provide access to the values from any {@link org.threeten.bp.temporal.Temporal dateTime}.
+ * that provide access to the values from any {@linkplain org.threeten.bp.temporal.Temporal temporal}.
  * <p>
  * The computations for day-of-week, week-of-month, and week-of-year are based
  * on the  {@link ChronoField#YEAR proleptic-year},
@@ -416,21 +416,21 @@ public final class WeekFields implements Serializable {
         private static final ValueRange WEEK_OF_YEAR_RANGE = ValueRange.of(0, 1, 52, 53);
 
         @Override
-        public long doGet(TemporalAccessor dateTime) {
+        public long doGet(TemporalAccessor temporal) {
             // Offset the ISO DOW by the start of this week
             int sow = weekDef.getFirstDayOfWeek().getValue();
-            int isoDow = dateTime.get(ChronoField.DAY_OF_WEEK);
+            int isoDow = temporal.get(ChronoField.DAY_OF_WEEK);
             int dow = Jdk8Methods.floorMod(isoDow - sow, 7) + 1;
 
             if (rangeUnit == ChronoUnit.WEEKS) {
                 return dow;
             } else if (rangeUnit == ChronoUnit.MONTHS) {
-                int dom = dateTime.get(ChronoField.DAY_OF_MONTH);
+                int dom = temporal.get(ChronoField.DAY_OF_MONTH);
                 int offset = startOfWeekOffset(dom, dow);
                 int week = (offset + (dom - 1)) / 7;
                 return week;
             } else if (rangeUnit == ChronoUnit.YEARS) {
-                int doy = dateTime.get(ChronoField.DAY_OF_YEAR);
+                int doy = temporal.get(ChronoField.DAY_OF_YEAR);
                 int offset = startOfWeekOffset(doy, dow);
                 int week = (offset + (doy - 1)) / 7;
                 return week;
@@ -532,45 +532,45 @@ public final class WeekFields implements Serializable {
 
         //-------------------------------------------------------------------------
         @Override
-        public int compare(TemporalAccessor dateTime1, TemporalAccessor dateTime2) {
-            return Long.compare(dateTime1.getLong(this), dateTime2.getLong(this));
+        public int compare(TemporalAccessor temporal1, TemporalAccessor temporal2) {
+            return Long.compare(temporal1.getLong(this), temporal2.getLong(this));
         }
 
         //-----------------------------------------------------------------------
         @Override
-        public boolean doIsSupported(TemporalAccessor dateTime) {
-            if (dateTime.isSupported(ChronoField.DAY_OF_WEEK)) {
+        public boolean doIsSupported(TemporalAccessor temporal) {
+            if (temporal.isSupported(ChronoField.DAY_OF_WEEK)) {
                 if (rangeUnit == ChronoUnit.WEEKS) {
                     return true;
                 } else if (rangeUnit == ChronoUnit.MONTHS) {
-                    return dateTime.isSupported(ChronoField.DAY_OF_MONTH);
+                    return temporal.isSupported(ChronoField.DAY_OF_MONTH);
                 } else if (rangeUnit == ChronoUnit.YEARS) {
-                    return dateTime.isSupported(ChronoField.DAY_OF_YEAR);
+                    return temporal.isSupported(ChronoField.DAY_OF_YEAR);
                 }
             }
             return false;
         }
 
         @Override
-        public ValueRange doRange(TemporalAccessor dateTime) {
+        public ValueRange doRange(TemporalAccessor temporal) {
             if (rangeUnit == ChronoUnit.WEEKS) {
                 return range;
             }
             // Offset the ISO DOW by the start of this week
             int sow = weekDef.getFirstDayOfWeek().getValue();
-            int isoDow = dateTime.get(ChronoField.DAY_OF_WEEK);
+            int isoDow = temporal.get(ChronoField.DAY_OF_WEEK);
             int dow = Jdk8Methods.floorMod(isoDow - sow, 7) + 1;
 
             if (rangeUnit == ChronoUnit.MONTHS) {
-                ValueRange fieldRange = dateTime.range(ChronoField.DAY_OF_MONTH);
-                int dom = dateTime.get(ChronoField.DAY_OF_MONTH);
+                ValueRange fieldRange = temporal.range(ChronoField.DAY_OF_MONTH);
+                int dom = temporal.get(ChronoField.DAY_OF_MONTH);
                 int offset = startOfWeekOffset(dom, dow);
                 int lastDay = (int)fieldRange.getMaximum();
                 int week = (offset + (lastDay - 1)) / 7;
                 return ValueRange.of(offset / 7, week);
             } else if (rangeUnit == ChronoUnit.YEARS) {
-                ValueRange fieldRange = dateTime.range(ChronoField.DAY_OF_YEAR);
-                int doy = dateTime.get(ChronoField.DAY_OF_YEAR);
+                ValueRange fieldRange = temporal.range(ChronoField.DAY_OF_YEAR);
+                int doy = temporal.get(ChronoField.DAY_OF_YEAR);
                 int offset = startOfWeekOffset(doy, dow);
                 int lastDay = (int)fieldRange.getMaximum();
                 int week = (offset + (lastDay - 1)) / 7;

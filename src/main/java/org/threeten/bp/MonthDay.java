@@ -212,18 +212,18 @@ public final class MonthDay
      * {@link ChronoField#DAY_OF_MONTH day-of-month} fields.
      * The extraction is only permitted if the date-time has an ISO chronology.
      *
-     * @param dateTime  the date-time object to convert, not null
+     * @param temporal  the date-time object to convert, not null
      * @return the month-day, not null
      * @throws DateTimeException if unable to convert to a {@code MonthDay}
      */
-    public static MonthDay from(TemporalAccessor dateTime) {
-        if (dateTime instanceof MonthDay) {
-            return (MonthDay) dateTime;
+    public static MonthDay from(TemporalAccessor temporal) {
+        if (temporal instanceof MonthDay) {
+            return (MonthDay) temporal;
         }
-        if (ISOChrono.INSTANCE.equals(Chrono.from(dateTime)) == false) {
-            dateTime = LocalDate.from(dateTime);
+        if (ISOChrono.INSTANCE.equals(Chrono.from(temporal)) == false) {
+            temporal = LocalDate.from(temporal);
         }
-        return of(dateTime.get(MONTH_OF_YEAR), dateTime.get(DAY_OF_MONTH));
+        return of(temporal.get(MONTH_OF_YEAR), temporal.get(DAY_OF_MONTH));
     }
 
     //-----------------------------------------------------------------------
@@ -447,16 +447,16 @@ public final class MonthDay
      * The adjustment is equivalent to using {@link Temporal#with(TemporalField, long)}
      * twice passing {@code MONTH_OF_YEAR} and {@code DAY_OF_MONTH} as the fields.
      *
-     * @param dateTime  the target object to be adjusted, not null
+     * @param temporal  the target object to be adjusted, not null
      * @return the adjusted object, not null
      */
     @Override
-    public Temporal doWithAdjustment(Temporal dateTime) {
-        if (Chrono.from(dateTime).equals(ISOChrono.INSTANCE) == false) {
+    public Temporal doWithAdjustment(Temporal temporal) {
+        if (Chrono.from(temporal).equals(ISOChrono.INSTANCE) == false) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }
-        dateTime = dateTime.with(MONTH_OF_YEAR, month);
-        return dateTime.with(DAY_OF_MONTH, Math.min(dateTime.range(DAY_OF_MONTH).getMaximum(), day));
+        temporal = temporal.with(MONTH_OF_YEAR, month);
+        return temporal.with(DAY_OF_MONTH, Math.min(temporal.range(DAY_OF_MONTH).getMaximum(), day));
     }
 
     //-----------------------------------------------------------------------

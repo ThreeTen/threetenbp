@@ -207,7 +207,7 @@ public interface TemporalAccessor {
          */
         Query<ZoneId> ZONE_ID = new Query<ZoneId>() {
             @Override
-            public ZoneId doQuery(TemporalAccessor dateTime) {
+            public ZoneId doQuery(TemporalAccessor temporal) {
                 return null;
             }
         };
@@ -220,7 +220,7 @@ public interface TemporalAccessor {
          */
         Query<Chrono<?>> CHRONO = new Query<Chrono<?>>() {
             @Override
-            public Chrono<?> doQuery(TemporalAccessor dateTime) {
+            public Chrono<?> doQuery(TemporalAccessor temporal) {
                 return null;
             }
         };
@@ -238,7 +238,7 @@ public interface TemporalAccessor {
          */
         Query<ChronoUnit> TIME_PRECISION = new Query<ChronoUnit>() {
             @Override
-            public ChronoUnit doQuery(TemporalAccessor dateTime) {
+            public ChronoUnit doQuery(TemporalAccessor temporal) {
                 return null;
             }
         };
@@ -252,9 +252,9 @@ public interface TemporalAccessor {
          */
         Query<ZoneOffset> OFFSET = new Query<ZoneOffset>() {
             @Override
-            public ZoneOffset doQuery(TemporalAccessor dateTime) {
-                if (dateTime.isSupported(OFFSET_SECONDS)) {
-                    return ZoneOffset.ofTotalSeconds(dateTime.get(OFFSET_SECONDS));
+            public ZoneOffset doQuery(TemporalAccessor temporal) {
+                if (temporal.isSupported(OFFSET_SECONDS)) {
+                    return ZoneOffset.ofTotalSeconds(temporal.get(OFFSET_SECONDS));
                 }
                 return null;
             }
@@ -278,12 +278,12 @@ public interface TemporalAccessor {
          * Implementations may choose to document compatibility with other calendar systems, or
          * validate for it by querying the chronology from the input object.
          *
-         * @param dateTime  the date-time object to query, not null
+         * @param temporal  the date-time object to query, not null
          * @return the queried value, avoid returning null
          * @throws DateTimeException if unable to query
          * @throws ArithmeticException if numeric overflow occurs
          */
-        R doQuery(TemporalAccessor dateTime);
+        R doQuery(TemporalAccessor temporal);
     }
 
 }

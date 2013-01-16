@@ -54,7 +54,7 @@ final class DateTimePrintContext {
     /**
      * The date-time being output.
      */
-    private TemporalAccessor dateTime;
+    private TemporalAccessor temporal;
     /**
      * The locale, not null.
      */
@@ -73,13 +73,13 @@ final class DateTimePrintContext {
      * <p>
      * This should normally only be created by the printer.
      *
-     * @param dateTime  the date-time being output, not null
+     * @param temporal  the date-time being output, not null
      * @param locale  the locale to use, not null
      * @param symbols  the symbols to use during parsing, not null
      */
-    DateTimePrintContext(TemporalAccessor dateTime, Locale locale, DateTimeFormatSymbols symbols) {
+    DateTimePrintContext(TemporalAccessor temporal, Locale locale, DateTimeFormatSymbols symbols) {
         super();
-        setDateTime(dateTime);
+        setDateTime(temporal);
         setLocale(locale);
         setSymbols(symbols);
     }
@@ -91,17 +91,17 @@ final class DateTimePrintContext {
      * @return the date-time, not null
      */
     TemporalAccessor getDateTime() {
-        return dateTime;
+        return temporal;
     }
 
     /**
      * Sets the date-time being output.
      *
-     * @param dateTime  the date-time object, not null
+     * @param temporal  the date-time object, not null
      */
-    void setDateTime(TemporalAccessor dateTime) {
-        Objects.requireNonNull(dateTime, "dateTime");
-        this.dateTime = dateTime;
+    void setDateTime(TemporalAccessor temporal) {
+        Objects.requireNonNull(temporal, "temporal");
+        this.temporal = temporal;
     }
 
     //-----------------------------------------------------------------------
@@ -177,9 +177,9 @@ final class DateTimePrintContext {
      * @throws DateTimeException if the type is not available and the section is not optional
      */
     <R> R getValue(Query<R> query) {
-        R result = dateTime.query(query);
+        R result = temporal.query(query);
         if (result == null && optional == 0) {
-            throw new DateTimeException("Unable to extract value: " + dateTime.getClass());
+            throw new DateTimeException("Unable to extract value: " + temporal.getClass());
         }
         return result;
     }
@@ -195,7 +195,7 @@ final class DateTimePrintContext {
      */
     Long getValue(TemporalField field) {
         try {
-            return dateTime.getLong(field);
+            return temporal.getLong(field);
         } catch (DateTimeException ex) {
             if (optional > 0) {
                 return null;
@@ -212,7 +212,7 @@ final class DateTimePrintContext {
      */
     @Override
     public String toString() {
-        return dateTime.toString();
+        return temporal.toString();
     }
 
 }

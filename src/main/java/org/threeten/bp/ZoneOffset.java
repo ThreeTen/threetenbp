@@ -297,15 +297,15 @@ public final class ZoneOffset
      * <p>
      * The conversion extracts the {@link ChronoField#OFFSET_SECONDS offset-seconds} field.
      *
-     * @param dateTime  the date-time object to convert, not null
+     * @param temporal  the date-time object to convert, not null
      * @return the zone-offset, not null
      * @throws DateTimeException if unable to convert to an {@code ZoneOffset}
      */
-    public static ZoneOffset from(TemporalAccessor dateTime) {
-        if (dateTime instanceof ZoneOffset) {
-            return (ZoneOffset) dateTime;
+    public static ZoneOffset from(TemporalAccessor temporal) {
+        if (temporal instanceof ZoneOffset) {
+            return (ZoneOffset) temporal;
         }
-        return ofTotalSeconds(dateTime.get(OFFSET_SECONDS));
+        return ofTotalSeconds(temporal.get(OFFSET_SECONDS));
     }
 
     //-----------------------------------------------------------------------
@@ -512,8 +512,8 @@ public final class ZoneOffset
     }
 
     @Override
-    public Temporal doWithAdjustment(Temporal dateTime) {
-        return dateTime.with(OFFSET_SECONDS, totalSeconds);
+    public Temporal doWithAdjustment(Temporal temporal) {
+        return temporal.with(OFFSET_SECONDS, totalSeconds);
     }
 
     @Override

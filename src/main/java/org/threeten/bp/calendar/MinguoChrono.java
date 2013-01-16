@@ -159,11 +159,11 @@ public final class MinguoChrono extends Chrono<MinguoChrono> implements Serializ
     }
 
     @Override
-    public ChronoLocalDate<MinguoChrono> date(TemporalAccessor dateTime) {
-        if (dateTime instanceof MinguoDate) {
-            return (MinguoDate) dateTime;
+    public ChronoLocalDate<MinguoChrono> date(TemporalAccessor temporal) {
+        if (temporal instanceof MinguoDate) {
+            return (MinguoDate) temporal;
         }
-        return new MinguoDate(LocalDate.from(dateTime));
+        return new MinguoDate(LocalDate.from(temporal));
     }
 
     //-----------------------------------------------------------------------

@@ -190,18 +190,18 @@ public final class Year
      * The conversion extracts the {@link ChronoField#YEAR year} field.
      * The extraction is only permitted if the date-time has an ISO chronology.
      *
-     * @param dateTime  the date-time object to convert, not null
+     * @param temporal  the date-time object to convert, not null
      * @return the year, not null
      * @throws DateTimeException if unable to convert to a {@code Year}
      */
-    public static Year from(TemporalAccessor dateTime) {
-        if (dateTime instanceof Year) {
-            return (Year) dateTime;
+    public static Year from(TemporalAccessor temporal) {
+        if (temporal instanceof Year) {
+            return (Year) temporal;
         }
-        if (ISOChrono.INSTANCE.equals(Chrono.from(dateTime)) == false) {
-            dateTime = LocalDate.from(dateTime);
+        if (ISOChrono.INSTANCE.equals(Chrono.from(temporal)) == false) {
+            temporal = LocalDate.from(temporal);
         }
-        return of(dateTime.get(YEAR));
+        return of(temporal.get(YEAR));
     }
 
     //-----------------------------------------------------------------------
@@ -583,15 +583,15 @@ public final class Year
      * The adjustment is equivalent to using {@link Temporal#with(TemporalField, long)}
      * passing {@code YEAR} as the field.
      *
-     * @param dateTime  the target object to be adjusted, not null
+     * @param temporal  the target object to be adjusted, not null
      * @return the adjusted object, not null
      */
     @Override
-    public Temporal doWithAdjustment(Temporal dateTime) {
-        if (Chrono.from(dateTime).equals(ISOChrono.INSTANCE) == false) {
+    public Temporal doWithAdjustment(Temporal temporal) {
+        if (Chrono.from(temporal).equals(ISOChrono.INSTANCE) == false) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }
-        return dateTime.with(YEAR, year);
+        return temporal.with(YEAR, year);
     }
 
     @Override

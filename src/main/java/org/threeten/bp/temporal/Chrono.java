@@ -160,13 +160,13 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * This factory converts the arbitrary date-time object to an instance of {@code Chrono}.
      * If the specified date-time object does not have a chronology, {@link ISOChrono} is returned.
      *
-     * @param dateTime  the date-time to convert, not null
+     * @param temporal  the date-time to convert, not null
      * @return the chronology, not null
      * @throws DateTimeException if unable to convert to an {@code Chrono}
      */
-    public static Chrono<?> from(TemporalAccessor dateTime) {
-        Objects.requireNonNull(dateTime, "dateTime");
-        Chrono<?> obj = dateTime.query(Query.CHRONO);
+    public static Chrono<?> from(TemporalAccessor temporal) {
+        Objects.requireNonNull(temporal, "temporal");
+        Chrono<?> obj = temporal.query(Query.CHRONO);
         return (obj != null ? obj : ISOChrono.INSTANCE);
     }
 
@@ -276,14 +276,14 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
     /**
      * Casts the {@code DateTime} to {@code ChronoLocalDate} with the same chronology.
      *
-     * @param dateTime  a date-time to cast, not null
+     * @param temporal  a date-time to cast, not null
      * @return the date-time checked and cast to {@code ChronoLocalDate}, not null
      * @throws ClassCastException if the date-time cannot be cast to ChronoLocalDate
      *  or the chronology is not equal this Chrono
      */
-    public /* package-scoped */ ChronoLocalDate<C> ensureChronoLocalDate(Temporal dateTime) {  // TODO: non-public
+    public /* package-scoped */ ChronoLocalDate<C> ensureChronoLocalDate(Temporal temporal) {  // TODO: non-public
         @SuppressWarnings("unchecked")
-        ChronoLocalDate<C> other = (ChronoLocalDate<C>) dateTime;
+        ChronoLocalDate<C> other = (ChronoLocalDate<C>) temporal;
         if (this.equals(other.getChrono()) == false) {
             throw new ClassCastException("Chrono mismatch, expected: " + getId() + ", actual: " + other.getChrono().getId());
         }
@@ -293,14 +293,14 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
     /**
      * Casts the {@code DateTime} to {@code ChronoLocalDateTime} with the same chronology.
      *
-     * @param dateTime   a date-time to cast, not null
+     * @param temporal   a date-time to cast, not null
      * @return the date-time checked and cast to {@code ChronoLocalDateTime}, not null
      * @throws ClassCastException if the date-time cannot be cast to ChronoDateTimeImpl
      *  or the chronology is not equal this Chrono
      */
-    public /* package-scoped */ ChronoLocalDateTimeImpl<C> ensureChronoLocalDateTime(Temporal dateTime) {  // TODO: non-public
+    public /* package-scoped */ ChronoLocalDateTimeImpl<C> ensureChronoLocalDateTime(Temporal temporal) {  // TODO: non-public
         @SuppressWarnings("unchecked")
-        ChronoLocalDateTimeImpl<C> other = (ChronoLocalDateTimeImpl<C>) dateTime;
+        ChronoLocalDateTimeImpl<C> other = (ChronoLocalDateTimeImpl<C>) temporal;
         if (this.equals(other.getDate().getChrono()) == false) {
             throw new ClassCastException("Chrono mismatch, required: " + getId()
                     + ", supplied: " + other.getDate().getChrono().getId());
@@ -311,14 +311,14 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
     /**
      * Casts the {@code DateTime} to {@code ChronoZonedDateTimeImpl} with the same chronology.
      *
-     * @param dateTime  a date-time to cast, not null
+     * @param temporal  a date-time to cast, not null
      * @return the date-time checked and cast to {@code ChronoZonedDateTimeImpl}, not null
      * @throws ClassCastException if the date-time cannot be cast to ChronoZonedDateTimeImpl
      *  or the chronology is not equal this Chrono
      */
-    public /* package-scoped */ ChronoZonedDateTimeImpl<C> ensureChronoZonedDateTime(Temporal dateTime) {  // TODO: non-public
+    public /* package-scoped */ ChronoZonedDateTimeImpl<C> ensureChronoZonedDateTime(Temporal temporal) {  // TODO: non-public
         @SuppressWarnings("unchecked")
-        ChronoZonedDateTimeImpl<C> other = (ChronoZonedDateTimeImpl<C>) dateTime;
+        ChronoZonedDateTimeImpl<C> other = (ChronoZonedDateTimeImpl<C>) temporal;
         if (this.equals(other.getDate().getChrono()) == false) {
             throw new ClassCastException("Chrono mismatch, required: " + getId()
                     + ", supplied: " + other.getDate().getChrono().getId());
@@ -413,11 +413,11 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * The standard mechanism for conversion between date types is the
      * {@link ChronoField#EPOCH_DAY local epoch-day} field.
      *
-     * @param dateTime  the date-time object to convert, not null
+     * @param temporal  the date-time object to convert, not null
      * @return the local date in this chronology, not null
      * @throws DateTimeException if unable to create the date
      */
-    public abstract ChronoLocalDate<C> date(TemporalAccessor dateTime);
+    public abstract ChronoLocalDate<C> date(TemporalAccessor temporal);
 
     //-----------------------------------------------------------------------
     /**
@@ -481,12 +481,12 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * The standard mechanism for conversion between time types is the
      * {@link ChronoField#NANO_OF_DAY nano-of-day} field.
      *
-     * @param dateTime  the date-time object to convert, not null
+     * @param temporal  the date-time object to convert, not null
      * @return the local date-time in this chronology, not null
      * @throws DateTimeException if unable to create the date-time
      */
-    public ChronoLocalDateTime<C> localDateTime(TemporalAccessor dateTime) {
-        return date(dateTime).atTime(LocalTime.from(dateTime));
+    public ChronoLocalDateTime<C> localDateTime(TemporalAccessor temporal) {
+        return date(temporal).atTime(LocalTime.from(temporal));
     }
 
     /**
@@ -512,23 +512,23 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * The date-time should be obtained by obtaining an {@code Instant}.
      * If that fails, the local date-time should be used.
      *
-     * @param dateTime  the date-time object to convert, not null
+     * @param temporal  the date-time object to convert, not null
      * @return the zoned date-time in this chronology, not null
      * @throws DateTimeException if unable to create the date-time
      */
-    public ChronoZonedDateTime<C> zonedDateTime(TemporalAccessor dateTime) {
+    public ChronoZonedDateTime<C> zonedDateTime(TemporalAccessor temporal) {
         try {
-            ZoneId zoneId = ZoneId.from(dateTime);
+            ZoneId zoneId = ZoneId.from(temporal);
             ChronoLocalDateTimeImpl<C> cldt;
             try {
-                Instant instant = Instant.from(dateTime);
+                Instant instant = Instant.from(temporal);
                 cldt = localInstant(instant, zoneId);
             } catch (DateTimeException ex1) {
-                cldt = ensureChronoLocalDateTime(localDateTime(dateTime));
+                cldt = ensureChronoLocalDateTime(localDateTime(temporal));
             }
             return ChronoZonedDateTimeImpl.ofBest(cldt, zoneId, null);
         } catch (DateTimeException ex) {
-            throw new DateTimeException("Unable to convert DateTimeAccessor to ZonedDateTime: " + dateTime.getClass(), ex);
+            throw new DateTimeException("Unable to convert TemporalAccessor to ZonedDateTime: " + temporal.getClass(), ex);
         }
     }
 

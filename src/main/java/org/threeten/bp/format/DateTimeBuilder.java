@@ -660,14 +660,14 @@ public final class DateTimeBuilder
      *
      * @param <R>  the type to return
      * @param type  the type to invoke {@code from} on, not null
-     * @param dateTime  the date-time to pass as the argument, not null
+     * @param temporal  the date-time to pass as the argument, not null
      * @return the value returned from the {@code from} method, not null
      * @throws DateTimeException if an error occurs
      */
-    private static <R> R invokeFrom(Class<R> type, TemporalAccessor dateTime) {
+    private static <R> R invokeFrom(Class<R> type, TemporalAccessor temporal) {
         try {
             Method m = type.getDeclaredMethod("from", TemporalAccessor.class);
-            return type.cast(m.invoke(null, dateTime));
+            return type.cast(m.invoke(null, temporal));
         } catch (ReflectiveOperationException ex) {
             if (ex.getCause() instanceof DateTimeException == false) {
                 throw new DateTimeException("Unable to invoke method from(DateTime)", ex);

@@ -394,27 +394,27 @@ public final class ZonedDateTime
      * The conversion will try to obtain an instant first, then try to obtain the
      * local date-time.
      *
-     * @param dateTime  the date-time object to convert, not null
+     * @param temporal  the date-time object to convert, not null
      * @return the zoned date-time, not null
      * @throws DateTimeException if unable to convert to an {@code ZonedDateTime}
      */
-    public static ZonedDateTime from(TemporalAccessor dateTime) {
-        if (dateTime instanceof ZonedDateTime) {
-            return (ZonedDateTime) dateTime;
+    public static ZonedDateTime from(TemporalAccessor temporal) {
+        if (temporal instanceof ZonedDateTime) {
+            return (ZonedDateTime) temporal;
         }
         try {
-            ZoneId zone = ZoneId.from(dateTime);
+            ZoneId zone = ZoneId.from(temporal);
             try {
-                long epochSecond = dateTime.getLong(INSTANT_SECONDS);
-                int nanoOfSecond = dateTime.get(NANO_OF_SECOND);
+                long epochSecond = temporal.getLong(INSTANT_SECONDS);
+                int nanoOfSecond = temporal.get(NANO_OF_SECOND);
                 return create(epochSecond, nanoOfSecond, zone);
 
             } catch (DateTimeException ex1) {
-                LocalDateTime ldt = LocalDateTime.from(dateTime);
+                LocalDateTime ldt = LocalDateTime.from(temporal);
                 return of(ldt, zone);
             }
         } catch (DateTimeException ex) {
-            throw new DateTimeException("Unable to convert DateTimeAccessor to ZonedDateTime: " + dateTime.getClass(), ex);
+            throw new DateTimeException("Unable to convert DateTimeAccessor to ZonedDateTime: " + temporal.getClass(), ex);
         }
     }
 

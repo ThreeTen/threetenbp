@@ -164,8 +164,8 @@ enum MinguoEra implements Era<MinguoChrono>  {
 
     //-------------------------------------------------------------------------
     @Override
-    public Temporal doWithAdjustment(Temporal dateTime) {
-        return dateTime.with(ERA, getValue());
+    public Temporal doWithAdjustment(Temporal temporal) {
+        return temporal.with(ERA, getValue());
     }
 
     @SuppressWarnings("unchecked")

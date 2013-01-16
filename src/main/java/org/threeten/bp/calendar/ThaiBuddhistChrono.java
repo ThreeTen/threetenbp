@@ -194,11 +194,11 @@ public final class ThaiBuddhistChrono extends Chrono<ThaiBuddhistChrono> impleme
     }
 
     @Override
-    public ChronoLocalDate<ThaiBuddhistChrono> date(TemporalAccessor dateTime) {
-        if (dateTime instanceof ThaiBuddhistDate) {
-            return (ThaiBuddhistDate) dateTime;
+    public ChronoLocalDate<ThaiBuddhistChrono> date(TemporalAccessor temporal) {
+        if (temporal instanceof ThaiBuddhistDate) {
+            return (ThaiBuddhistDate) temporal;
         }
-        return new ThaiBuddhistDate(LocalDate.from(dateTime));
+        return new ThaiBuddhistDate(LocalDate.from(temporal));
     }
 
     //-----------------------------------------------------------------------

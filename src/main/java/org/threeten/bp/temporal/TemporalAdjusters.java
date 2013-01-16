@@ -181,14 +181,14 @@ public final class TemporalAdjusters {
         /** First day of next month adjuster. */
         FIRST_DAY_OF_NEXT_YEAR;
         @Override
-        public Temporal doWithAdjustment(Temporal dateTime) {
+        public Temporal doWithAdjustment(Temporal temporal) {
             switch (this) {
-                case FIRST_DAY_OF_MONTH: return dateTime.with(DAY_OF_MONTH, 1);
-                case LAST_DAY_OF_MONTH: return dateTime.with(DAY_OF_MONTH, dateTime.range(DAY_OF_MONTH).getMaximum());
-                case FIRST_DAY_OF_NEXT_MONTH: return dateTime.with(DAY_OF_MONTH, 1).plus(1, MONTHS);
-                case FIRST_DAY_OF_YEAR: return dateTime.with(DAY_OF_YEAR, 1);
-                case LAST_DAY_OF_YEAR: return dateTime.with(DAY_OF_YEAR, dateTime.range(DAY_OF_YEAR).getMaximum());
-                case FIRST_DAY_OF_NEXT_YEAR: return dateTime.with(DAY_OF_YEAR, 1).plus(1, YEARS);
+                case FIRST_DAY_OF_MONTH: return temporal.with(DAY_OF_MONTH, 1);
+                case LAST_DAY_OF_MONTH: return temporal.with(DAY_OF_MONTH, temporal.range(DAY_OF_MONTH).getMaximum());
+                case FIRST_DAY_OF_NEXT_MONTH: return temporal.with(DAY_OF_MONTH, 1).plus(1, MONTHS);
+                case FIRST_DAY_OF_YEAR: return temporal.with(DAY_OF_YEAR, 1);
+                case LAST_DAY_OF_YEAR: return temporal.with(DAY_OF_YEAR, temporal.range(DAY_OF_YEAR).getMaximum());
+                case FIRST_DAY_OF_NEXT_YEAR: return temporal.with(DAY_OF_YEAR, 1).plus(1, YEARS);
             }
             throw new IllegalStateException("Unreachable");
         }
@@ -278,15 +278,15 @@ public final class TemporalAdjusters {
             this.dowValue = dow.getValue();
         }
         @Override
-        public Temporal doWithAdjustment(Temporal dateTime) {
+        public Temporal doWithAdjustment(Temporal temporal) {
             if (ordinal >= 0) {
-                Temporal temp = dateTime.with(DAY_OF_MONTH, 1);
+                Temporal temp = temporal.with(DAY_OF_MONTH, 1);
                 int curDow = temp.get(DAY_OF_WEEK);
                 int dowDiff = (dowValue - curDow + 7) % 7;
                 dowDiff += (ordinal - 1L) * 7L;  // safe from overflow
                 return temp.plus(dowDiff, DAYS);
             } else {
-                Temporal temp = dateTime.with(DAY_OF_MONTH, dateTime.range(DAY_OF_MONTH).getMaximum());
+                Temporal temp = temporal.with(DAY_OF_MONTH, temporal.range(DAY_OF_MONTH).getMaximum());
                 int curDow = temp.get(DAY_OF_WEEK);
                 int daysDiff = dowValue - curDow;
                 daysDiff = (daysDiff == 0 ? 0 : (daysDiff > 0 ? daysDiff - 7 : daysDiff));
@@ -379,17 +379,17 @@ public final class TemporalAdjusters {
         }
 
         @Override
-        public Temporal doWithAdjustment(Temporal dateTime) {
-            int calDow = dateTime.get(DAY_OF_WEEK);
+        public Temporal doWithAdjustment(Temporal temporal) {
+            int calDow = temporal.get(DAY_OF_WEEK);
             if (relative < 2 && calDow == dowValue) {
-                return dateTime;
+                return temporal;
             }
             if ((relative & 1) == 0) {
                 int daysDiff = calDow - dowValue;
-                return dateTime.plus(daysDiff >= 0 ? 7 - daysDiff : -daysDiff, DAYS);
+                return temporal.plus(daysDiff >= 0 ? 7 - daysDiff : -daysDiff, DAYS);
             } else {
                 int daysDiff = dowValue - calDow;
-                return dateTime.minus(daysDiff >= 0 ? 7 - daysDiff : -daysDiff, DAYS);
+                return temporal.minus(daysDiff >= 0 ? 7 - daysDiff : -daysDiff, DAYS);
             }
         }
     }

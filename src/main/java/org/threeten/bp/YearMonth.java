@@ -191,18 +191,18 @@ public final class YearMonth
      * {@link ChronoField#MONTH_OF_YEAR month-of-year} fields.
      * The extraction is only permitted if the date-time has an ISO chronology.
      *
-     * @param dateTime  the date-time object to convert, not null
+     * @param temporal  the date-time object to convert, not null
      * @return the year-month, not null
      * @throws DateTimeException if unable to convert to a {@code YearMonth}
      */
-    public static YearMonth from(TemporalAccessor dateTime) {
-        if (dateTime instanceof YearMonth) {
-            return (YearMonth) dateTime;
+    public static YearMonth from(TemporalAccessor temporal) {
+        if (temporal instanceof YearMonth) {
+            return (YearMonth) temporal;
         }
-        if (ISOChrono.INSTANCE.equals(Chrono.from(dateTime)) == false) {
-            dateTime = LocalDate.from(dateTime);
+        if (ISOChrono.INSTANCE.equals(Chrono.from(temporal)) == false) {
+            temporal = LocalDate.from(temporal);
         }
-        return of(dateTime.get(YEAR), dateTime.get(MONTH_OF_YEAR));
+        return of(temporal.get(YEAR), temporal.get(MONTH_OF_YEAR));
     }
 
     //-----------------------------------------------------------------------
@@ -638,15 +638,15 @@ public final class YearMonth
      * The adjustment is equivalent to using {@link Temporal#with(TemporalField, long)}
      * passing {@code EPOCH_MONTH} as the field.
      *
-     * @param dateTime  the target object to be adjusted, not null
+     * @param temporal  the target object to be adjusted, not null
      * @return the adjusted object, not null
      */
     @Override
-    public Temporal doWithAdjustment(Temporal dateTime) {
-        if (Chrono.from(dateTime).equals(ISOChrono.INSTANCE) == false) {
+    public Temporal doWithAdjustment(Temporal temporal) {
+        if (Chrono.from(temporal).equals(ISOChrono.INSTANCE) == false) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }
-        return dateTime.with(EPOCH_MONTH, getEpochMonth());
+        return temporal.with(EPOCH_MONTH, getEpochMonth());
     }
 
     @Override
