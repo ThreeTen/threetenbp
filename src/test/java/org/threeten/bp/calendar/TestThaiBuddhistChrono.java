@@ -214,7 +214,7 @@ public class TestThaiBuddhistChrono {
     @Test(groups={"tck"})
     public void test_LocalDate_adjustToBuddhistDate() {
         ChronoLocalDate<ThaiBuddhistChrono> jdate = ThaiBuddhistChrono.INSTANCE.date(2555, 10, 29);
-        LocalDate test = LocalDate.MIN_DATE.with(jdate);
+        LocalDate test = LocalDate.MIN.with(jdate);
         assertEquals(test, LocalDate.of(2012, 10, 29));
     }
 
@@ -249,8 +249,8 @@ public class TestThaiBuddhistChrono {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_Chrono_range() {
-        long minYear = LocalDate.MIN_DATE.getYear() + YDIFF;
-        long maxYear = LocalDate.MAX_DATE.getYear() + YDIFF;
+        long minYear = LocalDate.MIN.getYear() + YDIFF;
+        long maxYear = LocalDate.MAX.getYear() + YDIFF;
         assertEquals(ThaiBuddhistChrono.INSTANCE.range(YEAR), ValueRange.of(minYear, maxYear));
         assertEquals(ThaiBuddhistChrono.INSTANCE.range(YEAR_OF_ERA), ValueRange.of(1, -minYear + 1, maxYear));
 

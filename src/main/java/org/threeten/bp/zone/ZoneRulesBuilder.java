@@ -48,6 +48,7 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.Month;
+import org.threeten.bp.Year;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.temporal.ISOChrono;
 import org.threeten.bp.zone.ZoneOffsetTransitionRule.TimeDefinition;
@@ -329,7 +330,7 @@ class ZoneRulesBuilder {
             loopSavings = firstWindow.fixedSavingAmountSecs;
         }
         final ZoneOffset firstWallOffset = deduplicate(ZoneOffset.ofTotalSeconds(loopStandardOffset.getTotalSeconds() + loopSavings));
-        LocalDateTime loopWindowStart = deduplicate(LocalDateTime.of(LocalDate.MIN_VALUE, 1, 1, 0, 0));
+        LocalDateTime loopWindowStart = deduplicate(LocalDateTime.of(Year.MIN_VALUE, 1, 1, 0, 0));
         ZoneOffset loopWindowOffset = firstWallOffset;
 
         // build the windows and rules to interesting data
@@ -434,7 +435,7 @@ class ZoneRulesBuilder {
         /** The rules for the current window. */
         private List<TZRule> ruleList = new ArrayList<>();
         /** The latest year that the last year starts at. */
-        private int maxLastRuleStartYear = LocalDate.MIN_VALUE;
+        private int maxLastRuleStartYear = Year.MIN_VALUE;
         /** The last rules. */
         private List<TZRule> lastRuleList = new ArrayList<>();
 
@@ -502,7 +503,7 @@ class ZoneRulesBuilder {
                 throw new IllegalStateException("Window has reached the maximum number of allowed rules");
             }
             boolean lastRule = false;
-            if (endYear == LocalDate.MAX_VALUE) {
+            if (endYear == Year.MAX_VALUE) {
                 lastRule = true;
                 endYear = startYear;
             }
@@ -553,7 +554,7 @@ class ZoneRulesBuilder {
                         lastRule.dayOfWeek, lastRule.time, lastRule.timeEndOfDay, lastRule.timeDefinition, lastRule.savingAmountSecs);
                     lastRule.year = maxLastRuleStartYear + 1;
                 }
-                if (maxLastRuleStartYear == LocalDate.MAX_VALUE) {
+                if (maxLastRuleStartYear == Year.MAX_VALUE) {
                     lastRuleList.clear();
                 } else {
                     maxLastRuleStartYear++;
@@ -566,7 +567,7 @@ class ZoneRulesBuilder {
                         lastRule.dayOfWeek, lastRule.time, lastRule.timeEndOfDay, lastRule.timeDefinition, lastRule.savingAmountSecs);
                 }
                 lastRuleList.clear();
-                maxLastRuleStartYear = LocalDate.MAX_VALUE;
+                maxLastRuleStartYear = Year.MAX_VALUE;
             }
 
             // ensure lists are sorted

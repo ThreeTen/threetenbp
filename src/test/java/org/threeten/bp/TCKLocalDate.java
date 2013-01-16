@@ -101,8 +101,8 @@ public class TCKLocalDate extends AbstractDateTimeTest {
     public void setUp() {
         TEST_2007_07_15 = LocalDate.of(2007, 7, 15);
 
-        LocalDate max = LocalDate.MAX_DATE;
-        LocalDate min = LocalDate.MIN_DATE;
+        LocalDate max = LocalDate.MAX;
+        LocalDate min = LocalDate.MIN;
         MAX_VALID_EPOCHDAYS = max.toEpochDay();
         MIN_VALID_EPOCHDAYS = min.toEpochDay();
         MAX_DATE = max;
@@ -114,7 +114,7 @@ public class TCKLocalDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Override
     protected List<TemporalAccessor> samples() {
-        TemporalAccessor[] array = {TEST_2007_07_15, LocalDate.MAX_DATE, LocalDate.MIN_DATE, };
+        TemporalAccessor[] array = {TEST_2007_07_15, LocalDate.MAX, LocalDate.MIN, };
         return Arrays.asList(array);
     }
 

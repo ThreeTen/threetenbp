@@ -41,6 +41,7 @@ import java.util.Map;
 
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalDate;
+import org.threeten.bp.Year;
 import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoLocalDate;
@@ -310,8 +311,8 @@ public final class JapaneseChrono extends Chrono<JapaneseChrono> implements Seri
                                              jcal.getMaximum(Calendar.ERA) - JapaneseEra.ERA_OFFSET);
             case YEAR:
             case YEAR_OF_ERA:
-                return ValueRange.of(LocalDate.MIN_VALUE, jcal.getGreatestMinimum(Calendar.YEAR),
-                                             jcal.getLeastMaximum(Calendar.YEAR), LocalDate.MAX_VALUE);
+                return ValueRange.of(Year.MIN_VALUE, jcal.getGreatestMinimum(Calendar.YEAR),
+                                             jcal.getLeastMaximum(Calendar.YEAR), Year.MAX_VALUE);
             case MONTH_OF_YEAR:
                 return ValueRange.of(jcal.getMinimum(Calendar.MONTH) + 1, jcal.getGreatestMinimum(Calendar.MONTH) + 1,
                                              jcal.getLeastMaximum(Calendar.MONTH) + 1, jcal.getMaximum(Calendar.MONTH) + 1);

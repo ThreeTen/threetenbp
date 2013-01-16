@@ -73,7 +73,7 @@ final class JapaneseEra
      * The singleton instance for the before Meiji era ( - 1868-09-07)
      * which has the value -999.
      */
-    public static final JapaneseEra SEIREKI = new JapaneseEra(-999, LocalDate.MIN_DATE);
+    public static final JapaneseEra SEIREKI = new JapaneseEra(-999, LocalDate.MIN);
     /**
      * The singleton instance for the 'Meiji' era (1868-09-08 - 1912-07-29)
      * which has the value -1.

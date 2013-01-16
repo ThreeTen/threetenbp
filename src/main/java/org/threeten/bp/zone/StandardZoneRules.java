@@ -46,6 +46,7 @@ import org.threeten.bp.Duration;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.Year;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.jdk8.Jdk8Methods;
 
@@ -478,7 +479,7 @@ final class StandardZoneRules implements ZoneRules, Serializable {
                 }
             }
             // use first from following year
-            if (year < LocalDate.MAX_VALUE) {
+            if (year < Year.MAX_VALUE) {
                 transArray = findTransitionArray(year + 1);
                 return transArray[0];
             }

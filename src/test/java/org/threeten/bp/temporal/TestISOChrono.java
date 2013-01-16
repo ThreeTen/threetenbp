@@ -205,7 +205,7 @@ public class TestISOChrono {
     @Test(groups={"tck"})
     public void test_LocalDate_adjustToISODate() {
         ChronoLocalDate<ISOChrono> isoDate = ISOChrono.INSTANCE.date(1728, 10, 29);
-        LocalDate test = LocalDate.MIN_DATE.with(isoDate);
+        LocalDate test = LocalDate.MIN.with(isoDate);
         assertEquals(test, LocalDate.of(1728, 10, 29));
     }
 
