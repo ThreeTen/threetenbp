@@ -165,7 +165,7 @@ public interface TemporalUnit {
      * @return the period between datetime1 and datetime2 in terms of this unit;
      *      positive if datetime2 is later than datetime1, not null
      */
-    <R extends Temporal> PeriodBetween between(R dateTime1, R dateTime2);
+    <R extends Temporal> SimplePeriod between(R dateTime1, R dateTime2);
 
     //-----------------------------------------------------------------------
     /**
@@ -175,36 +175,5 @@ public interface TemporalUnit {
      */
     @Override
     String toString();
-
-    //-----------------------------------------------------------------------
-    /**
-     * Simple period representing the amount of time between two date-time objects.
-     * <p>
-     * This interface is the return type from {@link TemporalUnit#between}.
-     * It represents an amount of time measured in a single unit.
-     * It can be queried for the amount and unit, or added directly to another date-time:
-     * <pre>
-     *  date = date.minus(MONTHS.between(start, end));
-     * </pre>
-     *
-     * <h4>Implementation notes</h4>
-     * This interface must be implemented with care to ensure other classes operate correctly.
-     * All implementations that can be instantiated must be final, immutable and thread-safe.
-     */
-    interface PeriodBetween extends TemporalAdder, TemporalSubtractor {
-        /**
-         * Gets the amount of the period.
-         *
-         * @return the amount
-         */
-        long getAmount();
-
-        /**
-         * Gets the unit of the period.
-         *
-         * @return the unit that the amount is measured in, not null
-         */
-        TemporalUnit getUnit();
-    }
 
 }

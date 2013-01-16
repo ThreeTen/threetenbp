@@ -74,6 +74,7 @@ final class Ser implements Externalizable {
     static final byte CHRONO_TYPE = 1;
     static final byte CHRONO_LOCALDATETIME_TYPE = 2;
     static final byte CHRONO_ZONEDDATETIME_TYPE = 3;
+    static final byte SIMPLE_PERIOD_TYPE = 10;
 
     /** The type being serialized. */
     private byte type;
@@ -120,6 +121,9 @@ final class Ser implements Externalizable {
             case CHRONO_ZONEDDATETIME_TYPE:
                 ((ChronoZonedDateTimeImpl<?>) object).writeExternal(out);
                 break;
+            case SIMPLE_PERIOD_TYPE:
+                ((SimplePeriod) object).writeExternal(out);
+                break;
             default:
                 throw new InvalidClassException("Unknown serialized type");
         }
@@ -150,6 +154,7 @@ final class Ser implements Externalizable {
                 return ChronoLocalDateTimeImpl.readExternal(in);
             case CHRONO_ZONEDDATETIME_TYPE:
                 return ChronoZonedDateTimeImpl.readExternal(in);
+            case SIMPLE_PERIOD_TYPE: return SimplePeriod.readExternal(in);
             default:
                 throw new StreamCorruptedException("Unknown serialized type");
         }

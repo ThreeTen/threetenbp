@@ -44,7 +44,6 @@ import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.format.DateTimeBuilder;
 import org.threeten.bp.jdk8.Jdk8Methods;
-import org.threeten.bp.temporal.TemporalUnit.PeriodBetween;
 
 /**
  * Fields and units supporting the week-based-year defined by ISO-8601.
@@ -315,62 +314,9 @@ public final class ISOFields {
         }
 
         @Override
-        public <R extends Temporal> PeriodBetween between(R dateTime1, R dateTime2) {
+        public <R extends Temporal> SimplePeriod between(R dateTime1, R dateTime2) {
             long period = Jdk8Methods.safeSubtract(dateTime2.getLong(WEEK_BASED_YEAR), dateTime1.getLong(WEEK_BASED_YEAR));
-            return new Between(period, WEEK_BASED_YEARS);
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Implementation of {@code PeriodBetween}.
-     */
-    private static final class Between implements PeriodBetween {
-        private final long amount;
-        private final TemporalUnit unit;
-
-        Between(long amount, TemporalUnit unit) {
-            this.amount = amount;
-            this.unit = unit;
-        }
-
-        @Override
-        public long getAmount() {
-            return amount;
-        }
-
-        @Override
-        public TemporalUnit getUnit() {
-            return unit;
-        }
-
-        @Override
-        public Temporal addTo(Temporal temporal) {
-            return temporal.plus(amount, unit);
-        }
-
-        @Override
-        public Temporal subtractFrom(Temporal temporal) {
-            return temporal.minus(amount, unit);
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj instanceof Between) {
-                Between other = (Between) obj;
-                return amount == other.amount && unit.equals(other.unit);
-            }
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            return ((int) (amount ^ (amount >>> 32))) ^ unit.hashCode();
-        };
-
-        @Override
-        public String toString() {
-            return amount + " " + unit;
+            return SimplePeriod.of(period, WEEK_BASED_YEARS);
         }
     }
 

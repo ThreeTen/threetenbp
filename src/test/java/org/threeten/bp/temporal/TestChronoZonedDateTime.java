@@ -368,7 +368,7 @@ public class TestChronoZonedDateTime {
         }
 
         @Override
-        public <R extends Temporal> PeriodBetween between(R dateTime1, R dateTime2) {
+        public <R extends Temporal> SimplePeriod between(R dateTime1, R dateTime2) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
     }

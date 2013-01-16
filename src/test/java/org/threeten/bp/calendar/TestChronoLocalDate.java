@@ -51,6 +51,7 @@ import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoLocalDate;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.ISOChrono;
+import org.threeten.bp.temporal.SimplePeriod;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalAdder;
@@ -363,7 +364,7 @@ public class TestChronoLocalDate {
         }
 
         @Override
-        public <R extends Temporal> PeriodBetween between(R dateTime1, R dateTime2) {
+        public <R extends Temporal> SimplePeriod between(R dateTime1, R dateTime2) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
     }
