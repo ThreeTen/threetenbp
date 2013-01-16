@@ -102,7 +102,7 @@ public abstract class DefaultInterfaceEra<C extends Chrono<C>>
 
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.CHRONO) {
+        if (query == TemporalQueries.chrono()) {
             return (R) getChrono();
         }
         return super.query(query);

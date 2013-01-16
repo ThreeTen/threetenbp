@@ -1030,7 +1030,7 @@ public final class LocalTime
     @SuppressWarnings("unchecked")
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.TIME_PRECISION) {
+        if (query == TemporalQueries.precision()) {
             return (R) NANOS;
         }
         return super.query(query);

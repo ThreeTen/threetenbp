@@ -173,7 +173,7 @@ enum HijrahEra implements Era<HijrahChrono> {
     @SuppressWarnings("unchecked")
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.CHRONO) {
+        if (query == TemporalQueries.chrono()) {
             return (R) getChrono();
         }
         return query.queryFrom(this);

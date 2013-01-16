@@ -1226,7 +1226,7 @@ public class TCKDateTimeFormatters {
         @SuppressWarnings("unchecked")
         @Override
         public <R> R query(TemporalQuery<R> query) {
-            if (query == TemporalQueries.ZONE_ID) {
+            if (query == TemporalQueries.zoneId()) {
                 return (R) zoneId;
             }
             return super.query(query);

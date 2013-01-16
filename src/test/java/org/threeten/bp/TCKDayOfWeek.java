@@ -130,17 +130,17 @@ public class TCKDayOfWeek extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_query_chrono() {
-        assertEquals(DayOfWeek.FRIDAY.query(TemporalQueries.CHRONO), null);
+        assertEquals(DayOfWeek.FRIDAY.query(TemporalQueries.chrono()), null);
     }
 
     @Test(groups={"tck"})
     public void test_query_zone() {
-        assertEquals(DayOfWeek.FRIDAY.query(TemporalQueries.ZONE_ID), null);
+        assertEquals(DayOfWeek.FRIDAY.query(TemporalQueries.zoneId()), null);
     }
 
     @Test(groups={"tck"})
     public void test_query_timePrecision() {
-        assertEquals(DayOfWeek.FRIDAY.query(TemporalQueries.TIME_PRECISION), null);
+        assertEquals(DayOfWeek.FRIDAY.query(TemporalQueries.precision()), null);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})

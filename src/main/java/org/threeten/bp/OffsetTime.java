@@ -852,9 +852,9 @@ public final class OffsetTime
     @SuppressWarnings("unchecked")
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.TIME_PRECISION) {
+        if (query == TemporalQueries.precision()) {
             return (R) NANOS;
-        } else if (query == TemporalQueries.OFFSET) {
+        } else if (query == TemporalQueries.offset()) {
             return (R) getOffset();
         }
         return super.query(query);

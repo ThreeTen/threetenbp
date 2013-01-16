@@ -1390,11 +1390,11 @@ public final class OffsetDateTime
     @SuppressWarnings("unchecked")
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.CHRONO) {
+        if (query == TemporalQueries.chrono()) {
             return (R) getDate().getChrono();
-        } else if (query == TemporalQueries.TIME_PRECISION) {
+        } else if (query == TemporalQueries.precision()) {
             return (R) NANOS;
-        } else if (query == TemporalQueries.OFFSET) {
+        } else if (query == TemporalQueries.offset()) {
             return (R) getOffset();
         }
         return super.query(query);

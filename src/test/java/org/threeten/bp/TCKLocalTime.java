@@ -618,22 +618,22 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_query_chrono() {
-        assertEquals(TEST_12_30_40_987654321.query(TemporalQueries.CHRONO), null);
+        assertEquals(TEST_12_30_40_987654321.query(TemporalQueries.chrono()), null);
     }
 
     @Test(groups={"tck"})
     public void test_query_zone() {
-        assertEquals(TEST_12_30_40_987654321.query(TemporalQueries.ZONE_ID), null);
+        assertEquals(TEST_12_30_40_987654321.query(TemporalQueries.zoneId()), null);
     }
 
     @Test(groups={"tck"})
     public void test_query_timePrecision() {
-        assertEquals(TEST_12_30_40_987654321.query(TemporalQueries.TIME_PRECISION), NANOS);
+        assertEquals(TEST_12_30_40_987654321.query(TemporalQueries.precision()), NANOS);
     }
 
     @Test(groups={"tck"})
     public void test_query_offset() {
-        assertEquals(TEST_12_30_40_987654321.query(TemporalQueries.OFFSET), null);
+        assertEquals(TEST_12_30_40_987654321.query(TemporalQueries.offset()), null);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})

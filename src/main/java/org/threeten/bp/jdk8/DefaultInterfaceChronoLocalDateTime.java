@@ -91,9 +91,9 @@ public abstract class DefaultInterfaceChronoLocalDateTime<C extends Chrono<C>>
     @SuppressWarnings("unchecked")
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.CHRONO) {
+        if (query == TemporalQueries.chrono()) {
             return (R) getDate().getChrono();
-        } else if (query == TemporalQueries.TIME_PRECISION) {
+        } else if (query == TemporalQueries.precision()) {
             return (R) NANOS;
         }
         return super.query(query);

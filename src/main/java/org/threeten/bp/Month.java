@@ -391,8 +391,10 @@ public enum Month implements TemporalAccessor, TemporalAdjuster {
     @SuppressWarnings("unchecked")
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.CHRONO) {
+        if (query == TemporalQueries.chrono()) {
             return (R) ISOChrono.INSTANCE;
+        } else if (query == TemporalQueries.zoneId() || query == TemporalQueries.precision()) {
+            return null;
         }
         return query.queryFrom(this);
     }

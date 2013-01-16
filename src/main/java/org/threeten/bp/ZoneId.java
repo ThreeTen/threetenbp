@@ -328,7 +328,7 @@ public abstract class ZoneId {
      * @throws DateTimeException if unable to convert to a {@code ZoneId}
      */
     public static ZoneId from(TemporalAccessor temporal) {
-        ZoneId obj = temporal.query(TemporalQueries.ZONE_ID);
+        ZoneId obj = temporal.query(TemporalQueries.zoneId());
         if (obj == null) {
             throw new DateTimeException("Unable to convert DateTimeAccessor to ZoneId: " + temporal.getClass());
         }
@@ -405,7 +405,7 @@ public abstract class ZoneId {
             @SuppressWarnings("unchecked")
             @Override
             public <R> R query(TemporalQuery<R> query) {
-                if (query == TemporalQueries.ZONE_ID) {
+                if (query == TemporalQueries.zoneId()) {
                     return (R) ZoneId.this;
                 }
                 return super.query(query);

@@ -881,9 +881,9 @@ public final class OffsetDate
     @SuppressWarnings("unchecked")
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.CHRONO) {
+        if (query == TemporalQueries.chrono()) {
             return (R) ISOChrono.INSTANCE;
-        } else if (query == TemporalQueries.OFFSET) {
+        } else if (query == TemporalQueries.offset()) {
             return (R) getOffset();
         }
         return super.query(query);

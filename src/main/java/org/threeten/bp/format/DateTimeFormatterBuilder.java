@@ -2442,7 +2442,7 @@ public final class DateTimeFormatterBuilder {
         //-----------------------------------------------------------------------
         @Override
         public boolean print(DateTimePrintContext context, StringBuilder buf) {
-            ZoneId zone = context.getValue(TemporalQueries.ZONE_ID);
+            ZoneId zone = context.getValue(TemporalQueries.zoneId());
             if (zone == null) {
                 return false;
             }
@@ -2476,7 +2476,7 @@ public final class DateTimeFormatterBuilder {
         //-----------------------------------------------------------------------
         @Override
         public boolean print(DateTimePrintContext context, StringBuilder buf) {
-            ZoneId zone = context.getValue(TemporalQueries.ZONE_ID);
+            ZoneId zone = context.getValue(TemporalQueries.zoneId());
             if (zone == null || (regionOnly && zone instanceof ZoneOffset)) {
                 return false;
             }
@@ -2670,7 +2670,7 @@ public final class DateTimeFormatterBuilder {
 
         @Override
         public boolean print(DateTimePrintContext context, StringBuilder buf) {
-            Chrono<?> chrono = context.getValue(TemporalQueries.CHRONO);
+            Chrono<?> chrono = context.getValue(TemporalQueries.chrono());
             if (chrono == null) {
                 return false;
             }

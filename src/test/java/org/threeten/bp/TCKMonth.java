@@ -125,17 +125,17 @@ public class TCKMonth extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_query_chrono() {
-        assertEquals(Month.JUNE.query(TemporalQueries.CHRONO), ISOChrono.INSTANCE);
+        assertEquals(Month.JUNE.query(TemporalQueries.chrono()), ISOChrono.INSTANCE);
     }
 
     @Test(groups={"tck"})
     public void test_query_zone() {
-        assertEquals(Month.JUNE.query(TemporalQueries.ZONE_ID), null);
+        assertEquals(Month.JUNE.query(TemporalQueries.zoneId()), null);
     }
 
     @Test(groups={"tck"})
     public void test_query_timePrecision() {
-        assertEquals(Month.JUNE.query(TemporalQueries.TIME_PRECISION), null);
+        assertEquals(Month.JUNE.query(TemporalQueries.precision()), null);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})

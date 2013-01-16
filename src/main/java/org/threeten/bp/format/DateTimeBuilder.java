@@ -607,7 +607,7 @@ public final class DateTimeBuilder
     //-----------------------------------------------------------------------
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.ZONE_ID) {
+        if (query == TemporalQueries.zoneId()) {
             R zone = extract(ZoneId.class);
             if (zone == null) {
                 zone = extract(ZoneOffset.class);
@@ -617,7 +617,7 @@ public final class DateTimeBuilder
             }
             return zone;
         }
-        if (query == TemporalQueries.CHRONO) {
+        if (query == TemporalQueries.chrono()) {
             return extract(Chrono.class);
         }
         // incomplete, so no need to handle TIME_PRECISION

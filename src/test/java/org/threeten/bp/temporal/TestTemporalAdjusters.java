@@ -35,8 +35,6 @@ import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 
@@ -55,16 +53,6 @@ public class TestTemporalAdjusters {
             constructor.setAccessible(true);
             constructor.newInstance(Collections.nCopies(constructor.getParameterTypes().length, null).toArray());
         }
-    }
-
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    @Test(expectedExceptions = InvocationTargetException.class, groups={"tck"})
-    public void test_forceCoverage() throws Exception {
-        Enum en = (Enum) TemporalAdjusters.lastDayOfYear();
-        Class cls = en.getClass();
-        Method m = cls.getMethod("valueOf", String.class);
-        m.invoke(null, en.name());
-        m.invoke(null, "NOTREAL");
     }
 
     public void factory_firstDayOfMonthSame() {

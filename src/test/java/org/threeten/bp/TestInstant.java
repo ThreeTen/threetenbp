@@ -296,17 +296,17 @@ public class TestInstant extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_query_chrono() {
-        assertEquals(Instant.EPOCH.query(TemporalQueries.CHRONO), null);
+        assertEquals(Instant.EPOCH.query(TemporalQueries.chrono()), null);
     }
 
     @Test(groups={"tck"})
     public void test_query_zone() {
-        assertEquals(Instant.EPOCH.query(TemporalQueries.ZONE_ID), null);
+        assertEquals(Instant.EPOCH.query(TemporalQueries.zoneId()), null);
     }
 
     @Test(groups={"tck"})
     public void test_query_timePrecision() {
-        assertEquals(Instant.EPOCH.query(TemporalQueries.TIME_PRECISION), NANOS);
+        assertEquals(Instant.EPOCH.query(TemporalQueries.precision()), NANOS);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})

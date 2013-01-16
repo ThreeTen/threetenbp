@@ -520,7 +520,7 @@ public final class ZoneOffset
 
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.ZONE_ID || query == TemporalQueries.CHRONO) {
+        if (query == TemporalQueries.zoneId() || query == TemporalQueries.chrono()) {
             return null;
         }
         return query.queryFrom(this);

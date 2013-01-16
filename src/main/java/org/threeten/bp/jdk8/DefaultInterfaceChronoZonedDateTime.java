@@ -135,13 +135,13 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chrono<C>>
     @SuppressWarnings("unchecked")
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.ZONE_ID) {
+        if (query == TemporalQueries.zoneId()) {
             return (R) getZone();
-        } else if (query == TemporalQueries.CHRONO) {
+        } else if (query == TemporalQueries.chrono()) {
             return (R) getDate().getChrono();
-        } else if (query == TemporalQueries.TIME_PRECISION) {
+        } else if (query == TemporalQueries.precision()) {
             return (R) NANOS;
-        } else if (query == TemporalQueries.OFFSET) {
+        } else if (query == TemporalQueries.offset()) {
             return (R) getOffset();
         }
         return super.query(query);
