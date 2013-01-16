@@ -232,7 +232,7 @@ public class TestChronoLocalDateTime {
     public void test_datetime_comparisons(Chrono chrono) {
         List<ChronoLocalDateTime<?>> dates = new ArrayList<>();
 
-        ChronoLocalDateTime<?> date = chrono.date(LocalDate.of(1900, 1, 1)).atTime(LocalTime.MIN_TIME);
+        ChronoLocalDateTime<?> date = chrono.date(LocalDate.of(1900, 1, 1)).atTime(LocalTime.MIN);
 
         // Insert dates in order, no duplicates
         dates.add(date.minus(100, ChronoUnit.YEARS));

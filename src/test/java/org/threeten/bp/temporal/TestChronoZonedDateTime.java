@@ -226,7 +226,7 @@ public class TestChronoZonedDateTime {
         List<ChronoZonedDateTime<?>> dates = new ArrayList<>();
 
         ChronoZonedDateTime<?> date = chrono.date(LocalDate.of(1900, 1, 1))
-                .atTime(LocalTime.MIN_TIME)
+                .atTime(LocalTime.MIN)
                 .atZone(ZoneOffset.UTC);
 
         // Insert dates in order, no duplicates

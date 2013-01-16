@@ -76,17 +76,17 @@ public class TestLocalTime {
     //-----------------------------------------------------------------------
     @Test(groups={"tck","implementation"})
     public void constant_MIN_TIME() {
-        check(LocalTime.MIN_TIME, 0, 0, 0, 0);
+        check(LocalTime.MIN, 0, 0, 0, 0);
     }
 
     @Test(groups={"implementation"})
     public void constant_MIN_TIME_same() {
-        assertSame(LocalTime.MIN_TIME, LocalTime.of(0, 0));
+        assertSame(LocalTime.MIN, LocalTime.of(0, 0));
     }
 
     @Test(groups={"tck","implementation"})
     public void constant_MAX_TIME() {
-        check(LocalTime.MAX_TIME, 23, 59, 59, 999999999);
+        check(LocalTime.MAX, 23, 59, 59, 999999999);
     }
 
     @Test(groups={"implementation"})
