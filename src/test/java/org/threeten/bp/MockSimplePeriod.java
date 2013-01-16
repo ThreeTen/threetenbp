@@ -38,15 +38,15 @@ import static org.threeten.bp.temporal.ChronoUnit.SECONDS;
 import java.util.Objects;
 
 import org.threeten.bp.temporal.Temporal;
-import org.threeten.bp.temporal.Temporal.MinusAdjuster;
-import org.threeten.bp.temporal.Temporal.PlusAdjuster;
+import org.threeten.bp.temporal.TemporalAdder;
+import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
 
 /**
  * Mock period of time measured using a single unit, such as {@code 3 Days}.
  */
 public final class MockSimplePeriod
-        implements PlusAdjuster, MinusAdjuster, Comparable<MockSimplePeriod> {
+        implements TemporalAdder, TemporalSubtractor, Comparable<MockSimplePeriod> {
 
     /**
      * A constant for a period of zero, measured in days.

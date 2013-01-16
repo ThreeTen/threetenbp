@@ -39,8 +39,8 @@ import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.TextStyle;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.Temporal;
-import org.threeten.bp.temporal.Temporal.WithAdjuster;
 import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.ValueRange;
@@ -70,7 +70,7 @@ import org.threeten.bp.temporal.ValueRange;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum DayOfWeek implements TemporalAccessor, WithAdjuster {
+public enum DayOfWeek implements TemporalAccessor, TemporalAdjuster {
 
     /**
      * The singleton instance for the day-of-week of Monday.

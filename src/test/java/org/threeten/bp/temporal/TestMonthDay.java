@@ -49,7 +49,6 @@ import org.threeten.bp.AbstractDateTimeTest;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.Month;
 import org.threeten.bp.MonthDay;
-import org.threeten.bp.temporal.Temporal.WithAdjuster;
 
 /**
  * Test MonthDay.
@@ -108,7 +107,7 @@ public class TestMonthDay extends AbstractDateTimeTest {
         Object obj = TEST_07_15;
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
-        assertTrue(obj instanceof WithAdjuster);
+        assertTrue(obj instanceof TemporalAdjuster);
     }
 
     //-----------------------------------------------------------------------

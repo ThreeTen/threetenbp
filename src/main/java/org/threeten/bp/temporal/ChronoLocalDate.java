@@ -37,7 +37,6 @@ import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.temporal.Temporal.WithAdjuster;
 
 /**
  * A date without time-of-day or time-zone in an arbitrary chronology, intended
@@ -200,7 +199,7 @@ import org.threeten.bp.temporal.Temporal.WithAdjuster;
  * @param <C> the chronology of this date
  */
 public interface ChronoLocalDate<C extends Chrono<C>>
-        extends Temporal, WithAdjuster, Comparable<ChronoLocalDate<?>> {
+        extends Temporal, TemporalAdjuster, Comparable<ChronoLocalDate<?>> {
 
     /**
      * Comparator for two {@code ChronoLocalDate}s ignoring the chronology.
@@ -285,19 +284,19 @@ public interface ChronoLocalDate<C extends Chrono<C>>
     //-------------------------------------------------------------------------
     // override for covariant return type
     @Override
-    ChronoLocalDate<C> with(WithAdjuster adjuster);
+    ChronoLocalDate<C> with(TemporalAdjuster adjuster);
 
     @Override
     ChronoLocalDate<C> with(TemporalField field, long newValue);
 
     @Override
-    ChronoLocalDate<C> plus(PlusAdjuster adjuster);
+    ChronoLocalDate<C> plus(TemporalAdder adjuster);
 
     @Override
     ChronoLocalDate<C> plus(long amountToAdd, TemporalUnit unit);
 
     @Override
-    ChronoLocalDate<C> minus(MinusAdjuster adjuster);
+    ChronoLocalDate<C> minus(TemporalSubtractor adjuster);
 
     @Override
     ChronoLocalDate<C> minus(long amountToSubtract, TemporalUnit unit);

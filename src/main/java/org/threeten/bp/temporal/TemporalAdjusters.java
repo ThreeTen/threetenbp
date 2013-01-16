@@ -41,7 +41,6 @@ import static org.threeten.bp.temporal.ChronoUnit.YEARS;
 import java.util.Objects;
 
 import org.threeten.bp.DayOfWeek;
-import org.threeten.bp.temporal.Temporal.WithAdjuster;
 
 /**
  * Common implementations of {@code DateTime.WithAdjuster}.
@@ -87,7 +86,7 @@ public final class TemporalAdjusters {
      *
      * @return the first day-of-month adjuster, not null
      */
-    public static WithAdjuster firstDayOfMonth() {
+    public static TemporalAdjuster firstDayOfMonth() {
         return Impl.FIRST_DAY_OF_MONTH;
     }
 
@@ -103,7 +102,7 @@ public final class TemporalAdjusters {
      *
      * @return the last day-of-month adjuster, not null
      */
-    public static WithAdjuster lastDayOfMonth() {
+    public static TemporalAdjuster lastDayOfMonth() {
         return Impl.LAST_DAY_OF_MONTH;
     }
 
@@ -117,7 +116,7 @@ public final class TemporalAdjusters {
      *
      * @return the first day of next month adjuster, not null
      */
-    public static WithAdjuster firstDayOfNextMonth() {
+    public static TemporalAdjuster firstDayOfNextMonth() {
         return Impl.FIRST_DAY_OF_NEXT_MONTH;
     }
 
@@ -132,7 +131,7 @@ public final class TemporalAdjusters {
      *
      * @return the first day-of-year adjuster, not null
      */
-    public static WithAdjuster firstDayOfYear() {
+    public static TemporalAdjuster firstDayOfYear() {
         return Impl.FIRST_DAY_OF_YEAR;
     }
 
@@ -146,7 +145,7 @@ public final class TemporalAdjusters {
      *
      * @return the last day-of-year adjuster, not null
      */
-    public static WithAdjuster lastDayOfYear() {
+    public static TemporalAdjuster lastDayOfYear() {
         return Impl.LAST_DAY_OF_YEAR;
     }
 
@@ -159,7 +158,7 @@ public final class TemporalAdjusters {
      *
      * @return the first day of next month adjuster, not null
      */
-    public static WithAdjuster firstDayOfNextYear() {
+    public static TemporalAdjuster firstDayOfNextYear() {
         return Impl.FIRST_DAY_OF_NEXT_YEAR;
     }
 
@@ -167,7 +166,7 @@ public final class TemporalAdjusters {
     /**
      * Enum implementing the adjusters.
      */
-    private static enum Impl implements WithAdjuster {
+    private static enum Impl implements TemporalAdjuster {
         /** First day of month adjuster. */
         FIRST_DAY_OF_MONTH,
         /** Last day of month adjuster. */
@@ -207,7 +206,7 @@ public final class TemporalAdjusters {
      * @param dayOfWeek  the day-of-week, not null
      * @return the first in month adjuster, not null
      */
-    public static WithAdjuster firstInMonth(DayOfWeek dayOfWeek) {
+    public static TemporalAdjuster firstInMonth(DayOfWeek dayOfWeek) {
         Objects.requireNonNull(dayOfWeek, "dayOfWeek");
         return new DayOfWeekInMonth(1, dayOfWeek);
     }
@@ -224,7 +223,7 @@ public final class TemporalAdjusters {
      * @param dayOfWeek  the day-of-week, not null
      * @return the first in month adjuster, not null
      */
-    public static WithAdjuster lastInMonth(DayOfWeek dayOfWeek) {
+    public static TemporalAdjuster lastInMonth(DayOfWeek dayOfWeek) {
         Objects.requireNonNull(dayOfWeek, "dayOfWeek");
         return new DayOfWeekInMonth(-1, dayOfWeek);
     }
@@ -258,7 +257,7 @@ public final class TemporalAdjusters {
      * @return the day-of-week in month adjuster, not null
      * @throws IllegalArgumentException if the ordinal is invalid
      */
-    public static WithAdjuster dayOfWeekInMonth(int ordinal, DayOfWeek dayOfWeek) {
+    public static TemporalAdjuster dayOfWeekInMonth(int ordinal, DayOfWeek dayOfWeek) {
         Objects.requireNonNull(dayOfWeek, "dayOfWeek");
         return new DayOfWeekInMonth(ordinal, dayOfWeek);
     }
@@ -266,7 +265,7 @@ public final class TemporalAdjusters {
     /**
      * Class implementing day-of-week in month adjuster.
      */
-    private static final class DayOfWeekInMonth implements WithAdjuster {
+    private static final class DayOfWeekInMonth implements TemporalAdjuster {
         /** The ordinal. */
         private final int ordinal;
         /** The day-of-week value, from 1 to 7. */
@@ -309,7 +308,7 @@ public final class TemporalAdjusters {
      * @param dayOfWeek  the day-of-week to move the date to, not null
      * @return the next day-of-week adjuster, not null
      */
-    public static WithAdjuster next(DayOfWeek dayOfWeek) {
+    public static TemporalAdjuster next(DayOfWeek dayOfWeek) {
         return new RelativeDayOfWeek(2, dayOfWeek);
     }
 
@@ -326,7 +325,7 @@ public final class TemporalAdjusters {
      * @param dayOfWeek  the day-of-week to check for or move the date to, not null
      * @return the next-or-same day-of-week adjuster, not null
      */
-    public static WithAdjuster nextOrSame(DayOfWeek dayOfWeek) {
+    public static TemporalAdjuster nextOrSame(DayOfWeek dayOfWeek) {
         return new RelativeDayOfWeek(0, dayOfWeek);
     }
 
@@ -342,7 +341,7 @@ public final class TemporalAdjusters {
      * @param dayOfWeek  the day-of-week to move the date to, not null
      * @return the previous day-of-week adjuster, not null
      */
-    public static WithAdjuster previous(DayOfWeek dayOfWeek) {
+    public static TemporalAdjuster previous(DayOfWeek dayOfWeek) {
         return new RelativeDayOfWeek(3, dayOfWeek);
     }
 
@@ -359,14 +358,14 @@ public final class TemporalAdjusters {
      * @param dayOfWeek  the day-of-week to check for or move the date to, not null
      * @return the previous-or-same day-of-week adjuster, not null
      */
-    public static WithAdjuster previousOrSame(DayOfWeek dayOfWeek) {
+    public static TemporalAdjuster previousOrSame(DayOfWeek dayOfWeek) {
         return new RelativeDayOfWeek(1, dayOfWeek);
     }
 
     /**
      * Implementation of next, previous or current day-of-week.
      */
-    private static final class RelativeDayOfWeek implements WithAdjuster {
+    private static final class RelativeDayOfWeek implements TemporalAdjuster {
         /** Whether the current date is a valid answer. */
         private final int relative;
         /** The day-of-week value, from 1 to 7. */

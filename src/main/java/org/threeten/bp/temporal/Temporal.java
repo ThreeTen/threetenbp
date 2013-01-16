@@ -105,7 +105,7 @@ public interface Temporal extends TemporalAccessor {
      * @throws DateTimeException if the adjustment cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    Temporal with(WithAdjuster adjuster);
+    Temporal with(TemporalAdjuster adjuster);
 
     /**
      * Returns an object of the same type as this object with the specified field altered.
@@ -139,7 +139,7 @@ public interface Temporal extends TemporalAccessor {
      * <p>
      * This adjusts this date-time, adding according to the rules of the specified adjuster.
      * The adjuster is typically a {@link org.threeten.bp.Period} but may be any other type implementing
-     * the {@link PlusAdjuster} interface, such as {@link org.threeten.bp.Duration}.
+     * the {@link TemporalAdder} interface, such as {@link org.threeten.bp.Duration}.
      * <p>
      * Some example code indicating how and why this method is used:
      * <pre>
@@ -159,7 +159,7 @@ public interface Temporal extends TemporalAccessor {
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    Temporal plus(PlusAdjuster adjuster);
+    Temporal plus(TemporalAdder adjuster);
 
     /**
      * Returns an object of the same type as this object with the specified period added.
@@ -197,7 +197,7 @@ public interface Temporal extends TemporalAccessor {
      * <p>
      * This adjusts this date-time, subtracting according to the rules of the specified adjuster.
      * The adjuster is typically a {@link org.threeten.bp.Period} but may be any other type implementing
-     * the {@link MinusAdjuster} interface, such as {@link org.threeten.bp.Duration}.
+     * the {@link TemporalSubtractor} interface, such as {@link org.threeten.bp.Duration}.
      * <p>
      * Some example code indicating how and why this method is used:
      * <pre>
@@ -217,7 +217,7 @@ public interface Temporal extends TemporalAccessor {
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    Temporal minus(MinusAdjuster adjuster);
+    Temporal minus(TemporalSubtractor adjuster);
 
     /**
      * Returns an object of the same type as this object with the specified period subtracted.
@@ -272,149 +272,5 @@ public interface Temporal extends TemporalAccessor {
      * @throws ArithmeticException if numeric overflow occurs
      */
     long periodUntil(Temporal endDateTime, TemporalUnit unit);
-
-    //-----------------------------------------------------------------------
-    /**
-     * Strategy for adjusting a date-time object.
-     * <p>
-     * This interface allows different kinds of adjustment to be modeled.
-     * Examples might be an adjuster that sets the date avoiding weekends, or one that
-     * sets the date to the last day of the month.
-     * <p>
-     * Implementations should not normally be used directly.
-     * Instead, the {@link Temporal#with(WithAdjuster)} method should be used:
-     * <pre>
-     *   dateTime = dateTime.with(adjuster);
-     * </pre>
-     * <p>
-     * See {@link TemporalAdjusters} for a standard set of adjusters, including finding the
-     * last day of the month.
-     *
-     * <h4>Implementation notes</h4>
-     * This interface must be implemented with care to ensure other classes operate correctly.
-     * All implementations that can be instantiated must be final, immutable and thread-safe.
-     */
-    public interface WithAdjuster {
-        /**
-         * Implementation of the strategy to make an adjustment to the specified date-time object.
-         * <p>
-         * This method is not intended to be called by application code directly.
-         * Instead, the {@link Temporal#with(WithAdjuster)} method should be used:
-         * <pre>
-         *   dateTime = dateTime.with(adjuster);
-         * </pre>
-         *
-         * <h5>Implementation notes</h5>
-         * The implementation takes the input object and adjusts it according to an algorithm.
-         * For example, it could be used to adjust a date to "next Wednesday".
-         * <p>
-         * Implementations must use the methods on {@code DateTime} to make the adjustment.
-         * The returned object must have the same observable type as this object.
-         * The input object will be mutated if it is mutable, or a new object returned if immutable.
-         * <p>
-         * This interface can be used by calendar systems other than ISO.
-         * Implementations may choose to document compatibility with other calendar systems, or
-         * validate for it by querying the chronology from the input object.
-         *
-         * @param temporal  the date-time object to adjust, not null
-         * @return an object of the same type with the adjustment made, not null
-         * @throws DateTimeException if unable to make the adjustment
-         * @throws ArithmeticException if numeric overflow occurs
-         */
-        Temporal doWithAdjustment(Temporal temporal);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Strategy for adjusting a date-time object by addition.
-     * <p>
-     * This interface allows different types of addition to be modeled.
-     * Implementations of this interface are used to add to a date-time.
-     * <p>
-     * Implementations should not normally be used directly.
-     * Instead, the {@link Temporal#plus(PlusAdjuster)} method should be used:
-     * <pre>
-     *   dateTime = dateTime.plus(adjuster);
-     * </pre>
-     *
-     * <h4>Implementation notes</h4>
-     * This interface must be implemented with care to ensure other classes operate correctly.
-     * All implementations that can be instantiated must be final, immutable and thread-safe.
-     */
-    public interface PlusAdjuster {
-        /**
-         * Implementation of the strategy to add to the specified date-time object.
-         * <p>
-         * This method is not intended to be called by application code directly.
-         * Instead, the {@link org.threeten.bp.temporal.Temporal#plus(PlusAdjuster)} method should be used:
-         * <pre>
-         *   dateTime = dateTime.plus(adjuster);
-         * </pre>
-         *
-         * <h5>Implementation notes</h5>
-         * The implementation takes the input object and adds to it.
-         * For example, the implementation {@link org.threeten.bp.Duration} will add the length of the duration.
-         * <p>
-         * Implementations must use the methods on {@code DateTime} to make the adjustment.
-         * The returned object must have the same observable type as this object.
-         * The input object will be mutated if it is mutable, or a new object returned if immutable.
-         * <p>
-         * This interface can be used by calendar systems other than ISO.
-         * Typically this requires no extra work, because the algorithm for adding/subtraing in
-         * the calendar system is part of the {@code DateTime} implementation.
-         *
-         * @param temporal  the date-time object to adjust, not null
-         * @return an object of the same type with the adjustment made, not null
-         * @throws DateTimeException if unable to add
-         * @throws ArithmeticException if numeric overflow occurs
-         */
-        Temporal doPlusAdjustment(Temporal temporal);
-    }
-
-    /**
-     * Strategy for adjusting a date-time object by subtraction.
-     * <p>
-     * This interface allows different types of subtraction to be modeled.
-     * Implementations of this interface are used to subtract from a date-time.
-     * <p>
-     * Implementations should not normally be used directly.
-     * Instead, the {@link Temporal#minus(MinusAdjuster)} method should be used:
-     * <pre>
-     *   dateTime = dateTime.minus(adjuster);
-     * </pre>
-     *
-     * <h4>Implementation notes</h4>
-     * This interface must be implemented with care to ensure other classes operate correctly.
-     * All implementations that can be instantiated must be final, immutable and thread-safe.
-     */
-    public interface MinusAdjuster {
-        /**
-         * Implementation of the strategy to subtract from the specified date-time object.
-         * <p>
-         * This method is not intended to be called by application code directly.
-         * Instead, the {@link org.threeten.bp.temporal.Temporal#minus(MinusAdjuster)} method should be used:
-         * <pre>
-         *   dateTime = dateTime.minus(adjuster);
-         * </pre>
-         *
-         * <h5>Implementation notes</h5>
-         * The implementation takes the input object and subtracts from it.
-         * For example, the implementation {@link org.threeten.bp.Duration} will subtract the length of the duration.
-         * <p>
-         * Implementations must use the methods on {@code DateTime} to make the adjustment.
-         * The returned object must have the same observable type as this object.
-         * The input object will be mutated if it is mutable, or a new object returned if immutable.
-         * <p>
-         * This interface can be used by calendar systems other than ISO.
-         * Typically this requires no extra work, because the algorithm for subtracting in
-         * the calendar system is part of the {@code DateTime} implementation.
-         *
-         * @param temporal  the date-time object to adjust, not null
-         * @return an object of the same type with the adjustment made, not null
-         * @throws DateTimeException if unable to subtract
-         * @throws ArithmeticException if numeric overflow occurs
-         */
-        Temporal doMinusAdjustment(Temporal temporal);
-    }
 
 }

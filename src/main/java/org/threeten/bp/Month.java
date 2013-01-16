@@ -41,8 +41,8 @@ import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ISOChrono;
 import org.threeten.bp.temporal.Temporal;
-import org.threeten.bp.temporal.Temporal.WithAdjuster;
 import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.ValueRange;
@@ -69,7 +69,7 @@ import org.threeten.bp.temporal.ValueRange;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum Month implements TemporalAccessor, WithAdjuster {
+public enum Month implements TemporalAccessor, TemporalAdjuster {
 
     /**
      * The singleton instance for the month of January with 31 days.

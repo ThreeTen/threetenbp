@@ -53,7 +53,6 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.Month;
 import org.threeten.bp.Year;
 import org.threeten.bp.YearMonth;
-import org.threeten.bp.temporal.Temporal.WithAdjuster;
 
 /**
  * Test YearMonth.
@@ -114,7 +113,7 @@ public class TestYearMonth extends AbstractDateTimeTest {
         Object obj = TEST_2008_06;
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
-        assertTrue(obj instanceof WithAdjuster);
+        assertTrue(obj instanceof TemporalAdjuster);
     }
 
     //-----------------------------------------------------------------------

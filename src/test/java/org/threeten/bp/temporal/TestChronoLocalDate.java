@@ -70,7 +70,7 @@ public class TestChronoLocalDate {
         for (Chrono[] clist : data_of_calendars()) {
             Chrono chrono2 = clist[0];
             ChronoLocalDate<?> date2 = chrono2.date(refDate);
-            Temporal.WithAdjuster adjuster = new FixedAdjuster(date2);
+            TemporalAdjuster adjuster = new FixedAdjuster(date2);
             if (chrono != chrono2) {
                 try {
                     ChronoLocalDate<?> notreached = date.with(adjuster);
@@ -93,7 +93,7 @@ public class TestChronoLocalDate {
         for (Chrono[] clist : data_of_calendars()) {
             Chrono chrono2 = clist[0];
             ChronoLocalDate<?> date2 = chrono2.date(refDate);
-            Temporal.PlusAdjuster adjuster = new FixedAdjuster(date2);
+            TemporalAdder adjuster = new FixedAdjuster(date2);
             if (chrono != chrono2) {
                 try {
                     ChronoLocalDate<?> notreached = date.plus(adjuster);
@@ -116,7 +116,7 @@ public class TestChronoLocalDate {
         for (Chrono[] clist : data_of_calendars()) {
             Chrono chrono2 = clist[0];
             ChronoLocalDate<?> date2 = chrono2.date(refDate);
-            Temporal.MinusAdjuster adjuster = new FixedAdjuster(date2);
+            TemporalSubtractor adjuster = new FixedAdjuster(date2);
             if (chrono != chrono2) {
                 try {
                     ChronoLocalDate<?> notreached = date.minus(adjuster);
@@ -286,7 +286,7 @@ public class TestChronoLocalDate {
      * FixedAdjusted returns a fixed DateTime in all adjustments.
      * Construct an adjuster with the DateTime that should be returned from doWithAdjustment.
      */
-    static class FixedAdjuster implements Temporal.WithAdjuster, Temporal.PlusAdjuster, Temporal.MinusAdjuster {
+    static class FixedAdjuster implements TemporalAdjuster, TemporalAdder, TemporalSubtractor {
         private Temporal datetime;
 
         FixedAdjuster(Temporal datetime) {

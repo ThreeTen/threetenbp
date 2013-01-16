@@ -48,8 +48,11 @@ import org.threeten.bp.temporal.ChronoLocalDate;
 import org.threeten.bp.temporal.ChronoLocalDateTime;
 import org.threeten.bp.temporal.Era;
 import org.threeten.bp.temporal.Temporal;
+import org.threeten.bp.temporal.TemporalAdder;
+import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQuery;
+import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
 
 /**
@@ -87,17 +90,17 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
 
     //-------------------------------------------------------------------------
     @Override
-    public ChronoLocalDate<C> with(WithAdjuster adjuster) {
+    public ChronoLocalDate<C> with(TemporalAdjuster adjuster) {
         return getChrono().ensureChronoLocalDate(super.with(adjuster));
     }
 
     @Override
-    public ChronoLocalDate<C> plus(PlusAdjuster adjuster) {
+    public ChronoLocalDate<C> plus(TemporalAdder adjuster) {
         return getChrono().ensureChronoLocalDate(super.plus(adjuster));
     }
 
     @Override
-    public ChronoLocalDate<C> minus(MinusAdjuster adjuster) {
+    public ChronoLocalDate<C> minus(TemporalSubtractor adjuster) {
         return getChrono().ensureChronoLocalDate(super.minus(adjuster));
     }
 

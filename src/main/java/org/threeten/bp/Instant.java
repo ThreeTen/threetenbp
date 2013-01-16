@@ -53,10 +53,12 @@ import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
-import org.threeten.bp.temporal.Temporal.WithAdjuster;
 import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalAdder;
+import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQuery;
+import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
 
 /**
@@ -150,7 +152,7 @@ import org.threeten.bp.temporal.TemporalUnit;
  */
 public final class Instant
         extends DefaultInterfaceDateTimeAccessor
-        implements Temporal, WithAdjuster, Comparable<Instant>, Serializable {
+        implements Temporal, TemporalAdjuster, Comparable<Instant>, Serializable {
 
     /**
      * Constant for the 1970-01-01T00:00:00Z epoch instant.
@@ -384,7 +386,7 @@ public final class Instant
 
     //-------------------------------------------------------------------------
     @Override
-    public Instant with(WithAdjuster adjuster) {
+    public Instant with(TemporalAdjuster adjuster) {
         return (Instant) adjuster.doWithAdjustment(this);
     }
 
@@ -412,7 +414,7 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     @Override
-    public Instant plus(PlusAdjuster adjuster) {
+    public Instant plus(TemporalAdder adjuster) {
         return (Instant) adjuster.doPlusAdjustment(this);
     }
 
@@ -497,7 +499,7 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     @Override
-    public Instant minus(MinusAdjuster adjuster) {
+    public Instant minus(TemporalSubtractor adjuster) {
         return (Instant) adjuster.doMinusAdjustment(this);
     }
 

@@ -79,7 +79,7 @@ public class TestChronoLocalDateTime {
         for (Chrono[] clist : data_of_calendars()) {
             Chrono chrono2 = clist[0];
             ChronoLocalDateTime<?> cdt2 = chrono2.date(refDate).atTime(LocalTime.NOON);
-            Temporal.WithAdjuster adjuster = new FixedAdjuster(cdt2);
+            TemporalAdjuster adjuster = new FixedAdjuster(cdt2);
             if (chrono != chrono2) {
                 try {
                     ChronoLocalDateTime<?> notreached = cdt.with(adjuster);
@@ -103,7 +103,7 @@ public class TestChronoLocalDateTime {
         for (Chrono[] clist : data_of_calendars()) {
             Chrono chrono2 = clist[0];
             ChronoLocalDateTime<?> cdt2 = chrono2.date(refDate).atTime(LocalTime.NOON);
-            Temporal.PlusAdjuster adjuster = new FixedAdjuster(cdt2);
+            TemporalAdder adjuster = new FixedAdjuster(cdt2);
             if (chrono != chrono2) {
                 try {
                     ChronoLocalDateTime<?> notreached = cdt.plus(adjuster);
@@ -127,7 +127,7 @@ public class TestChronoLocalDateTime {
         for (Chrono[] clist : data_of_calendars()) {
             Chrono chrono2 = clist[0];
             ChronoLocalDateTime<?> cdt2 = chrono2.date(refDate).atTime(LocalTime.NOON);
-            Temporal.MinusAdjuster adjuster = new FixedAdjuster(cdt2);
+            TemporalSubtractor adjuster = new FixedAdjuster(cdt2);
             if (chrono != chrono2) {
                 try {
                     ChronoLocalDateTime<?> notreached = cdt.minus(adjuster);
@@ -302,7 +302,7 @@ public class TestChronoLocalDateTime {
      * FixedAdjusted returns a fixed DateTime in all adjustments.
      * Construct an adjuster with the DateTime that should be returned from doWithAdjustment.
      */
-    static class FixedAdjuster implements Temporal.WithAdjuster, Temporal.PlusAdjuster, Temporal.MinusAdjuster {
+    static class FixedAdjuster implements TemporalAdjuster, TemporalAdder, TemporalSubtractor {
         private Temporal datetime;
 
         FixedAdjuster(Temporal datetime) {

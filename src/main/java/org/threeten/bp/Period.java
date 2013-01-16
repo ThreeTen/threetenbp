@@ -54,9 +54,9 @@ import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
-import org.threeten.bp.temporal.Temporal.MinusAdjuster;
-import org.threeten.bp.temporal.Temporal.PlusAdjuster;
 import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalAdder;
+import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.temporal.ValueRange;
 
@@ -82,7 +82,7 @@ import org.threeten.bp.temporal.ValueRange;
  * a single {@code long} nanoseconds for all time units internally.
  */
 public final class Period
-        implements PlusAdjuster, MinusAdjuster, Serializable {
+        implements TemporalAdder, TemporalSubtractor, Serializable {
     // maximum hours is 2,562,047
 
     /**

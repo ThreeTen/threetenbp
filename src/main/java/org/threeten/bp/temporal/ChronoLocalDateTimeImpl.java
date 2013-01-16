@@ -44,7 +44,6 @@ import org.threeten.bp.LocalTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.jdk8.DefaultInterfaceChronoLocalDateTime;
 import org.threeten.bp.jdk8.Jdk8Methods;
-import org.threeten.bp.temporal.Temporal.WithAdjuster;
 
 /**
  * A date-time without a time-zone for the calendar neutral API.
@@ -64,7 +63,7 @@ import org.threeten.bp.temporal.Temporal.WithAdjuster;
  */
 final class ChronoLocalDateTimeImpl<C extends Chrono<C>>
         extends DefaultInterfaceChronoLocalDateTime<C>
-        implements  ChronoLocalDateTime<C>, Temporal, WithAdjuster, Serializable {
+        implements  ChronoLocalDateTime<C>, Temporal, TemporalAdjuster, Serializable {
 
     /**
      * Serialization version.
@@ -221,7 +220,7 @@ final class ChronoLocalDateTimeImpl<C extends Chrono<C>>
     //-----------------------------------------------------------------------
     @SuppressWarnings("unchecked")
     @Override
-    public ChronoLocalDateTimeImpl<C> with(WithAdjuster adjuster) {
+    public ChronoLocalDateTimeImpl<C> with(TemporalAdjuster adjuster) {
         if (adjuster instanceof ChronoLocalDate) {
             // The Chrono is checked in with(date,time)
             return with((ChronoLocalDate<C>) adjuster, time);

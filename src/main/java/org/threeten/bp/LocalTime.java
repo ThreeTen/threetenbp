@@ -56,10 +56,12 @@ import org.threeten.bp.temporal.ChronoLocalDateTime;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.ChronoZonedDateTime;
 import org.threeten.bp.temporal.Temporal;
-import org.threeten.bp.temporal.Temporal.WithAdjuster;
 import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalAdder;
+import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQuery;
+import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.temporal.ValueRange;
 
@@ -79,7 +81,7 @@ import org.threeten.bp.temporal.ValueRange;
  */
 public final class LocalTime
         extends DefaultInterfaceDateTimeAccessor
-        implements Temporal, WithAdjuster, Comparable<LocalTime>, Serializable {
+        implements Temporal, TemporalAdjuster, Comparable<LocalTime>, Serializable {
 
     /**
      * Constant for the local time of midnight, 00:00.
@@ -576,7 +578,7 @@ public final class LocalTime
      * @return a {@code LocalTime} based on this time with the adjustment made, not null
      * @throws DateTimeException if the adjustment cannot be made
      */
-    public LocalTime with(WithAdjuster adjuster) {
+    public LocalTime with(TemporalAdjuster adjuster) {
         if (adjuster instanceof LocalTime) {
             return (LocalTime) adjuster;
         }
@@ -732,7 +734,7 @@ public final class LocalTime
      * <p>
      * This method returns a new time based on this time with the specified period added.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link org.threeten.bp.temporal.Temporal.PlusAdjuster} interface.
+     * the {@link org.threeten.bp.temporal.TemporalAdder} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #plus(long, TemporalUnit)}.
      * <p>
@@ -743,7 +745,7 @@ public final class LocalTime
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public LocalTime plus(PlusAdjuster adjuster) {
+    public LocalTime plus(TemporalAdder adjuster) {
         return (LocalTime) adjuster.doPlusAdjustment(this);
     }
 
@@ -885,7 +887,7 @@ public final class LocalTime
      * <p>
      * This method returns a new time based on this time with the specified period subtracted.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link org.threeten.bp.temporal.Temporal.MinusAdjuster} interface.
+     * the {@link org.threeten.bp.temporal.TemporalSubtractor} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #minus(long, TemporalUnit)}.
      * <p>
@@ -896,7 +898,7 @@ public final class LocalTime
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public LocalTime minus(MinusAdjuster adjuster) {
+    public LocalTime minus(TemporalSubtractor adjuster) {
         return (LocalTime) adjuster.doMinusAdjustment(this);
     }
 

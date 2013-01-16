@@ -47,7 +47,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.threeten.bp.AbstractDateTimeTest;
 import org.threeten.bp.Year;
-import org.threeten.bp.temporal.Temporal.WithAdjuster;
 
 /**
  * Test Year.
@@ -93,7 +92,7 @@ public class TestYear extends AbstractDateTimeTest {
     public void test_interfaces() {
         assertTrue(Serializable.class.isAssignableFrom(Year.class));
         assertTrue(Comparable.class.isAssignableFrom(Year.class));
-        assertTrue(WithAdjuster.class.isAssignableFrom(Year.class));
+        assertTrue(TemporalAdjuster.class.isAssignableFrom(Year.class));
     }
 
     @Test(groups={"implementation"})

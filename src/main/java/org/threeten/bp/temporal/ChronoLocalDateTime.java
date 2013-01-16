@@ -40,7 +40,6 @@ import org.threeten.bp.LocalTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.temporal.Temporal.WithAdjuster;
 import org.threeten.bp.zone.ZoneRules;
 
 /**
@@ -73,7 +72,7 @@ import org.threeten.bp.zone.ZoneRules;
  * @param <C> the chronology of this date-time
  */
 public interface ChronoLocalDateTime<C extends Chrono<C>>
-        extends  Temporal, WithAdjuster, Comparable<ChronoLocalDateTime<?>> {
+        extends  Temporal, TemporalAdjuster, Comparable<ChronoLocalDateTime<?>> {
 
    /**
      * Comparator for two {@code ChronoLocalDateTime} instances ignoring the chronology.
@@ -122,19 +121,19 @@ public interface ChronoLocalDateTime<C extends Chrono<C>>
     //-------------------------------------------------------------------------
     // override for covariant return type
     @Override
-    ChronoLocalDateTime<C> with(WithAdjuster adjuster);
+    ChronoLocalDateTime<C> with(TemporalAdjuster adjuster);
 
     @Override
     ChronoLocalDateTime<C> with(TemporalField field, long newValue);
 
     @Override
-    ChronoLocalDateTime<C> plus(PlusAdjuster adjuster);
+    ChronoLocalDateTime<C> plus(TemporalAdder adjuster);
 
     @Override
     ChronoLocalDateTime<C> plus(long amountToAdd, TemporalUnit unit);
 
     @Override
-    ChronoLocalDateTime<C> minus(MinusAdjuster adjuster);
+    ChronoLocalDateTime<C> minus(TemporalSubtractor adjuster);
 
     @Override
     ChronoLocalDateTime<C> minus(long amountToSubtract, TemporalUnit unit);

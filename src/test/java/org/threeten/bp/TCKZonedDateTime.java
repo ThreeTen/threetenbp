@@ -89,12 +89,12 @@ import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.ISOChrono;
 import org.threeten.bp.temporal.JulianFields;
 import org.threeten.bp.temporal.MockFieldNoValue;
-import org.threeten.bp.temporal.Temporal.MinusAdjuster;
-import org.threeten.bp.temporal.Temporal.PlusAdjuster;
-import org.threeten.bp.temporal.Temporal.WithAdjuster;
 import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalAdder;
+import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQuery;
+import org.threeten.bp.temporal.TemporalSubtractor;
 
 /**
  * Test ZonedDateTime.
@@ -1059,7 +1059,7 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_with_WithAdjuster_null() {
         ZonedDateTime base = ZonedDateTime.of(TEST_LOCAL_2008_06_30_11_30_59_500, ZONE_0100);
-        base.with((WithAdjuster) null);
+        base.with((TemporalAdjuster) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1347,7 +1347,7 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_plus_adjuster_null() {
-        TEST_DATE_TIME.plus((PlusAdjuster) null);
+        TEST_DATE_TIME.plus((TemporalAdder) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1547,7 +1547,7 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_minus_adjuster_null() {
-        TEST_DATE_TIME.minus((MinusAdjuster) null);
+        TEST_DATE_TIME.minus((TemporalSubtractor) null);
     }
 
     //-----------------------------------------------------------------------

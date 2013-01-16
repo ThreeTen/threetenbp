@@ -82,7 +82,7 @@ public class TestChronoZonedDateTime {
         for (Chrono[] clist : data_of_calendars()) {
             Chrono chrono2 = clist[0];
             ChronoZonedDateTime<?> czdt2 = chrono2.date(refDate).atTime(LocalTime.NOON).atZone(ZoneOffset.UTC);
-            Temporal.WithAdjuster adjuster = new FixedAdjuster(czdt2);
+            TemporalAdjuster adjuster = new FixedAdjuster(czdt2);
             if (chrono != chrono2) {
                 try {
                     czdt.with(adjuster);
@@ -105,7 +105,7 @@ public class TestChronoZonedDateTime {
         for (Chrono[] clist : data_of_calendars()) {
             Chrono chrono2 = clist[0];
             ChronoZonedDateTime<?> czdt2 = chrono2.date(refDate).atTime(LocalTime.NOON).atZone(ZoneOffset.UTC);
-            Temporal.PlusAdjuster adjuster = new FixedAdjuster(czdt2);
+            TemporalAdder adjuster = new FixedAdjuster(czdt2);
             if (chrono != chrono2) {
                 try {
                     ChronoZonedDateTime<?> notreached = czdt.plus(adjuster);
@@ -129,7 +129,7 @@ public class TestChronoZonedDateTime {
         for (Chrono[] clist : data_of_calendars()) {
             Chrono chrono2 = clist[0];
             ChronoZonedDateTime<?> czdt2 = chrono2.date(refDate).atTime(LocalTime.NOON).atZone(ZoneOffset.UTC);
-            Temporal.MinusAdjuster adjuster = new FixedAdjuster(czdt2);
+            TemporalSubtractor adjuster = new FixedAdjuster(czdt2);
             if (chrono != chrono2) {
                 try {
                     ChronoZonedDateTime<?> notreached = czdt.minus(adjuster);
@@ -307,7 +307,7 @@ public class TestChronoZonedDateTime {
      * FixedAdjusted returns a fixed DateTime in all adjustments.
      * Construct an adjuster with the DateTime that should be returned from doWithAdjustment.
      */
-    static class FixedAdjuster implements Temporal.WithAdjuster, Temporal.PlusAdjuster, Temporal.MinusAdjuster {
+    static class FixedAdjuster implements TemporalAdjuster, TemporalAdder, TemporalSubtractor {
         private Temporal datetime;
 
         FixedAdjuster(Temporal datetime) {

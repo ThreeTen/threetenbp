@@ -45,8 +45,8 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.Temporal;
-import org.threeten.bp.temporal.Temporal.WithAdjuster;
 import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.ValueRange;
@@ -88,7 +88,7 @@ import org.threeten.bp.zone.ZoneRules;
  */
 public final class ZoneOffset
         extends ZoneId
-        implements TemporalAccessor, WithAdjuster, Comparable<ZoneOffset>, Serializable {
+        implements TemporalAccessor, TemporalAdjuster, Comparable<ZoneOffset>, Serializable {
 
     /** Cache of time-zone offset by offset in seconds. */
     private static final ConcurrentMap<Integer, ZoneOffset> SECONDS_CACHE = new ConcurrentHashMap<Integer, ZoneOffset>(16, 0.75f, 4);

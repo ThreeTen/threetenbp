@@ -34,7 +34,6 @@ package org.threeten.bp.temporal;
 import java.util.Locale;
 
 import org.threeten.bp.format.TextStyle;
-import org.threeten.bp.temporal.Temporal.WithAdjuster;
 
 /**
  * An era of the time-line.
@@ -59,7 +58,7 @@ import org.threeten.bp.temporal.Temporal.WithAdjuster;
  *
  * @param <C> the chronology of the era
  */
-public interface Era<C extends Chrono<C>> extends TemporalAccessor, WithAdjuster {
+public interface Era<C extends Chrono<C>> extends TemporalAccessor, TemporalAdjuster {
 
     /**
      * Gets the numeric value associated with the era as defined by the chronology.

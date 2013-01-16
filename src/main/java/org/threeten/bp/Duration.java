@@ -50,9 +50,9 @@ import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
-import org.threeten.bp.temporal.Temporal.MinusAdjuster;
-import org.threeten.bp.temporal.Temporal.PlusAdjuster;
 import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalAdder;
+import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
 
 /**
@@ -80,7 +80,7 @@ import org.threeten.bp.temporal.TemporalUnit;
  * This class is immutable and thread-safe.
  */
 public final class Duration
-        implements PlusAdjuster, MinusAdjuster, Comparable<Duration>, Serializable {
+        implements TemporalAdder, TemporalSubtractor, Comparable<Duration>, Serializable {
 
     /**
      * Constant for a duration of zero.

@@ -50,11 +50,13 @@ import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.ISOChrono;
 import org.threeten.bp.temporal.Temporal;
-import org.threeten.bp.temporal.Temporal.WithAdjuster;
 import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalAdder;
+import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalAdjusters;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQuery;
+import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.temporal.ValueRange;
 import org.threeten.bp.zone.ZoneRules;
@@ -76,7 +78,7 @@ import org.threeten.bp.zone.ZoneRules;
  */
 public final class OffsetDate
         extends DefaultInterfaceDateTimeAccessor
-        implements Temporal, WithAdjuster, Comparable<OffsetDate>, Serializable {
+        implements Temporal, TemporalAdjuster, Comparable<OffsetDate>, Serializable {
 
     /**
      * Serialization version.
@@ -460,7 +462,7 @@ public final class OffsetDate
      * The adjuster is responsible for handling special cases, such as the varying
      * lengths of month and leap years.
      * <p>
-     * In addition, all principal classes implement the {@link WithAdjuster} interface,
+     * In addition, all principal classes implement the {@link TemporalAdjuster} interface,
      * including this one. For example, {@link Month} implements the adjuster interface.
      * As such, this code will compile and run:
      * <pre>
@@ -473,7 +475,7 @@ public final class OffsetDate
      * @return an {@code OffsetDate} based on this date with the adjustment made, not null
      * @throws DateTimeException if the adjustment cannot be made
      */
-    public OffsetDate with(WithAdjuster adjuster) {
+    public OffsetDate with(TemporalAdjuster adjuster) {
         if (adjuster instanceof LocalDate) {
             return with((LocalDate) adjuster, offset);
         } else if (adjuster instanceof ZoneOffset) {
@@ -582,7 +584,7 @@ public final class OffsetDate
      * <p>
      * This method returns a new date based on this date with the specified period added.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link org.threeten.bp.temporal.Temporal.PlusAdjuster} interface.
+     * the {@link org.threeten.bp.temporal.TemporalAdder} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #plus(long, TemporalUnit)}.
      * The offset is not part of the calculation and will be unchanged in the result.
@@ -594,7 +596,7 @@ public final class OffsetDate
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public OffsetDate plus(PlusAdjuster adjuster) {
+    public OffsetDate plus(TemporalAdder adjuster) {
         return (OffsetDate) adjuster.doPlusAdjustment(this);
     }
 
@@ -714,7 +716,7 @@ public final class OffsetDate
      * <p>
      * This method returns a new date based on this date with the specified period subtracted.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link org.threeten.bp.temporal.Temporal.MinusAdjuster} interface.
+     * the {@link org.threeten.bp.temporal.TemporalSubtractor} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #minus(long, TemporalUnit)}.
      * The offset is not part of the calculation and will be unchanged in the result.
@@ -726,7 +728,7 @@ public final class OffsetDate
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public OffsetDate minus(MinusAdjuster adjuster) {
+    public OffsetDate minus(TemporalSubtractor adjuster) {
         return (OffsetDate) adjuster.doMinusAdjustment(this);
     }
 

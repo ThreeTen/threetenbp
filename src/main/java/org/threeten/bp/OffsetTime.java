@@ -52,10 +52,12 @@ import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
-import org.threeten.bp.temporal.Temporal.WithAdjuster;
 import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalAdder;
+import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQuery;
+import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.temporal.ValueRange;
 import org.threeten.bp.zone.ZoneRules;
@@ -76,7 +78,7 @@ import org.threeten.bp.zone.ZoneRules;
  */
 public final class OffsetTime
         extends DefaultInterfaceDateTimeAccessor
-        implements Temporal, WithAdjuster, Comparable<OffsetTime>, Serializable {
+        implements Temporal, TemporalAdjuster, Comparable<OffsetTime>, Serializable {
 
     /**
      * Serialization version.
@@ -470,7 +472,7 @@ public final class OffsetTime
      * @return an {@code OffsetTime} based on this time with the adjustment made, not null
      * @throws DateTimeException if the adjustment cannot be made
      */
-    public OffsetTime with(WithAdjuster adjuster) {
+    public OffsetTime with(TemporalAdjuster adjuster) {
         if (adjuster instanceof LocalTime) {
             return with((LocalTime) adjuster, offset);
         } else if (adjuster instanceof ZoneOffset) {
@@ -597,7 +599,7 @@ public final class OffsetTime
      * <p>
      * This method returns a new time based on this time with the specified period added.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link org.threeten.bp.temporal.Temporal.PlusAdjuster} interface.
+     * the {@link org.threeten.bp.temporal.TemporalAdder} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #plus(long, TemporalUnit)}.
      * The offset is not part of the calculation and will be unchanged in the result.
@@ -609,7 +611,7 @@ public final class OffsetTime
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public OffsetTime plus(PlusAdjuster adjuster) {
+    public OffsetTime plus(TemporalAdder adjuster) {
         return (OffsetTime) adjuster.doPlusAdjustment(this);
     }
 
@@ -703,7 +705,7 @@ public final class OffsetTime
      * <p>
      * This method returns a new time based on this time with the specified period subtracted.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link org.threeten.bp.temporal.Temporal.MinusAdjuster} interface.
+     * the {@link org.threeten.bp.temporal.TemporalSubtractor} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #minus(long, TemporalUnit)}.
      * The offset is not part of the calculation and will be unchanged in the result.
@@ -715,7 +717,7 @@ public final class OffsetTime
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public OffsetTime minus(MinusAdjuster adjuster) {
+    public OffsetTime minus(TemporalSubtractor adjuster) {
         return (OffsetTime) adjuster.doMinusAdjustment(this);
     }
 

@@ -48,8 +48,8 @@ import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ISOChrono;
 import org.threeten.bp.temporal.Temporal;
-import org.threeten.bp.temporal.Temporal.WithAdjuster;
 import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.ValueRange;
@@ -84,7 +84,7 @@ import org.threeten.bp.temporal.ValueRange;
  */
 public final class MonthDay
         extends DefaultInterfaceDateTimeAccessor
-        implements TemporalAccessor, WithAdjuster, Comparable<MonthDay>, Serializable {
+        implements TemporalAccessor, TemporalAdjuster, Comparable<MonthDay>, Serializable {
 
     /**
      * Serialization version.

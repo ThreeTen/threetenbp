@@ -45,8 +45,11 @@ import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoLocalDate;
 import org.threeten.bp.temporal.ChronoZonedDateTime;
+import org.threeten.bp.temporal.TemporalAdder;
+import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQuery;
+import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.temporal.ValueRange;
 
@@ -108,17 +111,17 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chrono<C>>
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoZonedDateTime<C> with(WithAdjuster adjuster) {
+    public ChronoZonedDateTime<C> with(TemporalAdjuster adjuster) {
         return getDate().getChrono().ensureChronoZonedDateTime(super.with(adjuster));
     }
 
     @Override
-    public ChronoZonedDateTime<C> plus(PlusAdjuster adjuster) {
+    public ChronoZonedDateTime<C> plus(TemporalAdder adjuster) {
         return getDate().getChrono().ensureChronoZonedDateTime(super.plus(adjuster));
     }
 
     @Override
-    public ChronoZonedDateTime<C> minus(MinusAdjuster adjuster) {
+    public ChronoZonedDateTime<C> minus(TemporalSubtractor adjuster) {
         return getDate().getChrono().ensureChronoZonedDateTime(super.minus(adjuster));
     }
 

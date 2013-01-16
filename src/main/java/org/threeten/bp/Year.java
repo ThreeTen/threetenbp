@@ -52,10 +52,12 @@ import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.ISOChrono;
 import org.threeten.bp.temporal.Temporal;
-import org.threeten.bp.temporal.Temporal.WithAdjuster;
 import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalAdder;
+import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQuery;
+import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.temporal.ValueRange;
 
@@ -87,7 +89,7 @@ import org.threeten.bp.temporal.ValueRange;
  */
 public final class Year
         extends DefaultInterfaceDateTimeAccessor
-        implements Temporal, WithAdjuster, Comparable<Year>, Serializable {
+        implements Temporal, TemporalAdjuster, Comparable<Year>, Serializable {
 
     // TODO: remove constants?
     /**
@@ -355,7 +357,7 @@ public final class Year
      * @return a {@code LocalDate} based on this date with the adjustment made, not null
      * @throws DateTimeException if the adjustment cannot be made
      */
-    public Year with(WithAdjuster adjuster) {
+    public Year with(TemporalAdjuster adjuster) {
         if (adjuster instanceof Year) {
             return (Year) adjuster;
         }
@@ -383,7 +385,7 @@ public final class Year
      * <p>
      * This method returns a new year based on this year with the specified period added.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link org.threeten.bp.temporal.Temporal.PlusAdjuster} interface.
+     * the {@link org.threeten.bp.temporal.TemporalAdder} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #plus(long, TemporalUnit)}.
      * <p>
@@ -394,7 +396,7 @@ public final class Year
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public Year plus(PlusAdjuster adjuster) {
+    public Year plus(TemporalAdder adjuster) {
         return (Year) adjuster.doPlusAdjustment(this);
     }
 
@@ -435,7 +437,7 @@ public final class Year
      * <p>
      * This method returns a new year based on this year with the specified period subtracted.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link org.threeten.bp.temporal.Temporal.MinusAdjuster} interface.
+     * the {@link org.threeten.bp.temporal.TemporalSubtractor} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #minus(long, TemporalUnit)}.
      * <p>
@@ -446,7 +448,7 @@ public final class Year
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public Year minus(MinusAdjuster adjuster) {
+    public Year minus(TemporalSubtractor adjuster) {
         return (Year) adjuster.doMinusAdjustment(this);
     }
 

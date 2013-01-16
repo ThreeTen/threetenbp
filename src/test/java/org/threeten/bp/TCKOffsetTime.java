@@ -77,12 +77,12 @@ import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.JulianFields;
 import org.threeten.bp.temporal.MockFieldNoValue;
 import org.threeten.bp.temporal.Temporal;
-import org.threeten.bp.temporal.Temporal.MinusAdjuster;
-import org.threeten.bp.temporal.Temporal.PlusAdjuster;
-import org.threeten.bp.temporal.Temporal.WithAdjuster;
 import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalAdder;
+import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQuery;
+import org.threeten.bp.temporal.TemporalSubtractor;
 
 /**
  * Test OffsetTime.
@@ -616,7 +616,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_with_adjustment() {
         final OffsetTime sample = OffsetTime.of(23, 5, OFFSET_PONE);
-        WithAdjuster adjuster = new WithAdjuster() {
+        TemporalAdjuster adjuster = new TemporalAdjuster() {
             @Override
             public Temporal doWithAdjustment(Temporal dateTime) {
                 return sample;
@@ -645,7 +645,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void test_with_adjustment_AmPm() {
-        OffsetTime test = TEST_11_30_59_500_PONE.with(new WithAdjuster() {
+        OffsetTime test = TEST_11_30_59_500_PONE.with(new TemporalAdjuster() {
             @Override
             public Temporal doWithAdjustment(Temporal dateTime) {
                 return dateTime.with(HOUR_OF_DAY, 23);
@@ -656,7 +656,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_with_adjustment_null() {
-        TEST_11_30_59_500_PONE.with((WithAdjuster) null);
+        TEST_11_30_59_500_PONE.with((TemporalAdjuster) null);
     }
 
     //-----------------------------------------------------------------------
@@ -777,7 +777,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_plus_PlusAdjuster_null() {
-        TEST_11_30_59_500_PONE.plus((PlusAdjuster) null);
+        TEST_11_30_59_500_PONE.plus((TemporalAdder) null);
     }
 
     //-----------------------------------------------------------------------
@@ -872,7 +872,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_minus_MinusAdjuster_null() {
-        TEST_11_30_59_500_PONE.minus((MinusAdjuster) null);
+        TEST_11_30_59_500_PONE.minus((TemporalSubtractor) null);
     }
 
     //-----------------------------------------------------------------------

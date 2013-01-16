@@ -225,19 +225,19 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
     //-------------------------------------------------------------------------
     // override for covariant return type
     @Override
-    ChronoZonedDateTime<C> with(WithAdjuster adjuster);
+    ChronoZonedDateTime<C> with(TemporalAdjuster adjuster);
 
     @Override
     ChronoZonedDateTime<C> with(TemporalField field, long newValue);
 
     @Override
-    ChronoZonedDateTime<C> plus(PlusAdjuster adjuster);
+    ChronoZonedDateTime<C> plus(TemporalAdder adjuster);
 
     @Override
     ChronoZonedDateTime<C> plus(long amountToAdd, TemporalUnit unit);
 
     @Override
-    ChronoZonedDateTime<C> minus(MinusAdjuster adjuster);
+    ChronoZonedDateTime<C> minus(TemporalSubtractor adjuster);
 
     @Override
     ChronoZonedDateTime<C> minus(long amountToSubtract, TemporalUnit unit);

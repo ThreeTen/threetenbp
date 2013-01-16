@@ -85,8 +85,8 @@ import org.threeten.bp.temporal.ISOChrono;
 import org.threeten.bp.temporal.JulianFields;
 import org.threeten.bp.temporal.MockFieldNoValue;
 import org.threeten.bp.temporal.Temporal;
-import org.threeten.bp.temporal.Temporal.WithAdjuster;
 import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQuery;
 
@@ -579,7 +579,7 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_with_adjustment() {
         final OffsetDateTime sample = OffsetDateTime.of(2012, 3, 4, 23, 5, OFFSET_PONE);
-        WithAdjuster adjuster = new WithAdjuster() {
+        TemporalAdjuster adjuster = new TemporalAdjuster() {
             @Override
             public Temporal doWithAdjustment(Temporal dateTime) {
                 return sample;
@@ -638,7 +638,7 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_with_adjustment_null() {
-        TEST_2008_6_30_11_30_59_000000500.with((WithAdjuster) null);
+        TEST_2008_6_30_11_30_59_000000500.with((TemporalAdjuster) null);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})

@@ -34,8 +34,6 @@ package org.threeten.bp.temporal;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.Duration;
 import org.threeten.bp.Period;
-import org.threeten.bp.temporal.Temporal.MinusAdjuster;
-import org.threeten.bp.temporal.Temporal.PlusAdjuster;
 
 /**
  * A unit of date-time, such as Days or Hours.
@@ -188,7 +186,7 @@ public interface TemporalUnit {
      * This interface must be implemented with care to ensure other classes operate correctly.
      * All implementations that can be instantiated must be final, immutable and thread-safe.
      */
-    interface PeriodBetween extends PlusAdjuster, MinusAdjuster {
+    interface PeriodBetween extends TemporalAdder, TemporalSubtractor {
         /**
          * Gets the amount of the period.
          *

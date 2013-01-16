@@ -68,12 +68,12 @@ import org.threeten.bp.temporal.ISOChrono;
 import org.threeten.bp.temporal.JulianFields;
 import org.threeten.bp.temporal.MockFieldNoValue;
 import org.threeten.bp.temporal.Temporal;
-import org.threeten.bp.temporal.Temporal.MinusAdjuster;
-import org.threeten.bp.temporal.Temporal.PlusAdjuster;
-import org.threeten.bp.temporal.Temporal.WithAdjuster;
 import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalAdder;
+import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQuery;
+import org.threeten.bp.temporal.TemporalSubtractor;
 
 /**
  * Test OffsetDate.
@@ -557,7 +557,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_with_adjustment() {
         final OffsetDate sample = OffsetDate.of(2012, 3, 4, OFFSET_PONE);
-        WithAdjuster adjuster = new WithAdjuster() {
+        TemporalAdjuster adjuster = new TemporalAdjuster() {
             @Override
             public Temporal doWithAdjustment(Temporal dateTime) {
                 return sample;
@@ -607,7 +607,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_with_adjustment_null() {
-        TEST_2007_07_15_PONE.with((WithAdjuster) null);
+        TEST_2007_07_15_PONE.with((TemporalAdjuster) null);
     }
 
     //-----------------------------------------------------------------------
@@ -764,7 +764,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_plus_PlusAdjuster_null() {
-        TEST_2007_07_15_PONE.plus((PlusAdjuster) null);
+        TEST_2007_07_15_PONE.plus((TemporalAdder) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1187,7 +1187,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_plus_MinusAdjuster_null() {
-        TEST_2007_07_15_PONE.minus((MinusAdjuster) null);
+        TEST_2007_07_15_PONE.minus((TemporalSubtractor) null);
     }
 
     //-----------------------------------------------------------------------

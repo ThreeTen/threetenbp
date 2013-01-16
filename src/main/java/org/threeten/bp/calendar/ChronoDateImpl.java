@@ -43,7 +43,7 @@ import org.threeten.bp.temporal.ChronoLocalDate;
 import org.threeten.bp.temporal.ChronoLocalDateTime;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
-import org.threeten.bp.temporal.Temporal.WithAdjuster;
+import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalUnit;
 
 /**
@@ -114,7 +114,7 @@ import org.threeten.bp.temporal.TemporalUnit;
  */
 abstract class ChronoDateImpl<C extends Chrono<C>>
         extends DefaultInterfaceChronoLocalDate<C>
-        implements ChronoLocalDate<C>, Temporal, WithAdjuster, Serializable {
+        implements ChronoLocalDate<C>, Temporal, TemporalAdjuster, Serializable {
 
     /**
      * Serialization version.
