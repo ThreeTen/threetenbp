@@ -37,7 +37,7 @@ import static org.threeten.bp.temporal.ChronoUnit.HOURS;
 import java.io.IOException;
 
 import org.testng.annotations.Test;
-import org.threeten.bp.AbstractTCKTest;
+import org.threeten.bp.AbstractTest;
 import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.Year;
@@ -47,7 +47,7 @@ import org.threeten.bp.ZoneOffset;
  * Test ZoneOffsetTransition.
  */
 @Test
-public class TCKZoneOffsetTransition extends AbstractTCKTest {
+public class TCKZoneOffsetTransition extends AbstractTest {
 
     private static final ZoneOffset OFFSET_0100 = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_0200 = ZoneOffset.ofHours(2);

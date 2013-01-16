@@ -57,7 +57,7 @@ import org.threeten.bp.temporal.TemporalUnit;
  * Test Duration.
  */
 @Test
-public class TCKDuration extends AbstractTCKTest {
+public class TCKDuration extends AbstractTest {
 
     //-----------------------------------------------------------------------
     @Test
