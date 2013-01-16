@@ -61,12 +61,9 @@ import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.temporal.ValueRange;
 
 /**
- * An immutable period consisting of the most common units, such as '3 Months, 4 Days and 7 Hours'.
+ * A period of time, measured using the most common units, such as '3 Months, 4 Days and 7 Hours'.
  * <p>
- * A period is a human-scale description of an amount of time.
- * The model is of a directed amount of time, meaning that the period may be negative.
- * <p>
- * This period supports the following units:
+ * A {@code Period} represents an amount of time measured in terms of the most commonly used units:
  * <p><ul>
  * <li>{@link ChronoUnit#YEARS YEARS}</li>
  * <li>{@link ChronoUnit#MONTHS MONTHS}</li>
@@ -75,8 +72,11 @@ import org.threeten.bp.temporal.ValueRange;
  * </ul><p>
  * The period may be used with any calendar system with the exception is methods with an "ISO" suffix.
  * The meaning of a "year" or a "month" is only applied when the object is added to a date.
+ * <p>
+ * The period is modeled as a directed amount of time, meaning that individual parts of the
+ * period may be negative.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  * The maximum number of hours that can be stored is about 2.5 million, limited by storing
  * a single {@code long} nanoseconds for all time units internally.
@@ -250,7 +250,7 @@ public final class Period
     //-----------------------------------------------------------------------
     /**
      * Returns a {@code Period} consisting of the number of years, months, days,
-     * hours, minutes, seconds, and nanoseconds between two {@code DateTimeAccessor} instances.
+     * hours, minutes, seconds, and nanoseconds between two {@code TemporalAccessor} instances.
      * <p>
      * The start date is included, but the end date is not. Only whole years count.
      * For example, from {@code 2010-01-15} to {@code 2011-03-18} is one year, two months and three days.
@@ -918,24 +918,34 @@ public final class Period
 
     //-------------------------------------------------------------------------
     /**
-     * Adds this period to the specified date-time object.
+     * Adds this period to the specified temporal object.
      * <p>
-     * This method is not intended to be called by application code directly.
-     * Applications should use the {@code plus(PlusAdjuster)} method
-     * on the date-time object passing this period as the argument.
+     * This returns a temporal object of the same observable type as the input
+     * with this period added.
+     * <p>
+     * In most cases, it is clearer to reverse the calling pattern by using
+     * {@link Temporal#plus(TemporalAdder)}.
+     * <pre>
+     *   // these two lines are equivalent, but the second approach is recommended
+     *   dateTime = thisPeriod.addTo(dateTime);
+     *   dateTime = dateTime.plus(thisPeriod);
+     * </pre>
      * <p>
      * The calculation will add the years, then months, then days, then nanos.
      * Only non-zero amounts will be added.
      * If the date-time has a calendar system with a fixed number of months in a
      * year, then the years and months will be combined before being added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
      *
-     * @param temporal  the date-time object to adjust, not null
+     * @param temporal  the temporal object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
      * @throws DateTimeException if unable to add
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
     public Temporal addTo(Temporal temporal) {
+        Objects.requireNonNull(temporal, "temporal");
         if ((years | months) != 0) {
             ValueRange startRange = Chrono.from(temporal).range(MONTH_OF_YEAR);
             if (startRange.isFixed() && startRange.isIntValue()) {
@@ -960,24 +970,34 @@ public final class Period
     }
 
     /**
-     * Subtracts this period from the specified date-time object.
+     * Subtracts this period from the specified temporal object.
      * <p>
-     * This method is not intended to be called by application code directly.
-     * Applications should use the {@code minus(MinusAdjuster)} method
-     * on the date-time object passing this period as the argument.
+     * This returns a temporal object of the same observable type as the input
+     * with this period subtracted.
+     * <p>
+     * In most cases, it is clearer to reverse the calling pattern by using
+     * {@link Temporal#minus(TemporalSubtractor)}.
+     * <pre>
+     *   // these two lines are equivalent, but the second approach is recommended
+     *   dateTime = thisPeriod.subtractFrom(dateTime);
+     *   dateTime = dateTime.minus(thisPeriod);
+     * </pre>
      * <p>
      * The calculation will subtract the years, then months, then days, then nanos.
      * Only non-zero amounts will be subtracted.
      * If the date-time has a calendar system with a fixed number of months in a
      * year, then the years and months will be combined before being subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
      *
-     * @param temporal  the date-time object to adjust, not null
+     * @param temporal  the temporal object to adjust, not null
      * @return an object of the same type with the adjustment made, not null
      * @throws DateTimeException if unable to subtract
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
     public Temporal subtractFrom(Temporal temporal) {
+        Objects.requireNonNull(temporal, "temporal");
         if ((years | months) != 0) {
             ValueRange startRange = Chrono.from(temporal).range(MONTH_OF_YEAR);
             if (startRange.isFixed() && startRange.isIntValue()) {

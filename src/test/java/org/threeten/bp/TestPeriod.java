@@ -50,9 +50,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -61,7 +58,7 @@ import org.testng.annotations.Test;
  * Test.
  */
 @Test
-public class TestPeriod {
+public class TestPeriod extends AbstractTest {
 
     //-----------------------------------------------------------------------
     // basics
@@ -96,21 +93,9 @@ public class TestPeriod {
         }
     }
 
+    @Test
     public void test_immutable() {
-        Class<Period> cls = Period.class;
-        assertTrue(Modifier.isPublic(cls.getModifiers()));
-        assertTrue(Modifier.isFinal(cls.getModifiers()));
-        Field[] fields = cls.getDeclaredFields();
-        for (Field field : fields) {
-            if (Modifier.isStatic(field.getModifiers()) == false && !Modifier.isTransient(field.getModifiers())) {
-                assertTrue(Modifier.isPrivate(field.getModifiers()));
-                assertTrue(Modifier.isFinal(field.getModifiers()));
-            }
-        }
-        Constructor<?>[] cons = cls.getDeclaredConstructors();
-        for (Constructor<?> con : cons) {
-            assertTrue(Modifier.isPrivate(con.getModifiers()));
-        }
+        assertImmutable(Period.class);
     }
 
     //-----------------------------------------------------------------------
@@ -1270,10 +1255,10 @@ public class TestPeriod {
     }
 
     //-----------------------------------------------------------------------
-    // doPlusAdjustment()
+    // addTo()
     //-----------------------------------------------------------------------
-    @DataProvider(name="doPlusAdjustment")
-    Object[][] data_doPlusAdjustment() {
+    @DataProvider(name="addTo")
+    Object[][] data_addTo() {
         return new Object[][] {
             {pymd(0, 0, 0),  date(2012, 6, 30), date(2012, 6, 30)},
 
@@ -1301,20 +1286,31 @@ public class TestPeriod {
         };
     }
 
-    @Test(dataProvider="doPlusAdjustment")
-    public void test_doPlusAdjustment(Period period, LocalDate baseDate, LocalDate expected) {
+    @Test(dataProvider="addTo")
+    public void test_addTo(Period period, LocalDate baseDate, LocalDate expected) {
         assertEquals(period.addTo(baseDate), expected);
     }
 
-    public void test_doPlusAdjustment_null() {
+    @Test(dataProvider="addTo")
+    public void test_addTo_usingLocalDatePlus(Period period, LocalDate baseDate, LocalDate expected) {
+        assertEquals(baseDate.plus(period), expected);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_addTo_nullZero() {
         Period.ZERO.addTo(null);
     }
 
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_addTo_nullNonZero() {
+        Period.of(2, DAYS).addTo(null);
+    }
+
     //-----------------------------------------------------------------------
-    // doMinusAdjustment()
+    // subtractFrom()
     //-----------------------------------------------------------------------
-    @DataProvider(name="doMinusAdjustment")
-    Object[][] data_doMinusAdjustment() {
+    @DataProvider(name="subtractFrom")
+    Object[][] data_subtractFrom() {
         return new Object[][] {
             {pymd(0, 0, 0),  date(2012, 6, 30), date(2012, 6, 30)},
 
@@ -1343,13 +1339,24 @@ public class TestPeriod {
         };
     }
 
-    @Test(dataProvider="doMinusAdjustment")
-    public void test_doMinusAdjustment(Period period, LocalDate baseDate, LocalDate expected) {
+    @Test(dataProvider="subtractFrom")
+    public void test_subtractFrom(Period period, LocalDate baseDate, LocalDate expected) {
         assertEquals(period.subtractFrom(baseDate), expected);
     }
 
-    public void test_doMinusAdjustment_null() {
+    @Test(dataProvider="subtractFrom")
+    public void test_subtractFrom_usingLocalDateMinus(Period period, LocalDate baseDate, LocalDate expected) {
+        assertEquals(baseDate.minus(period), expected);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_subtractFrom_nullZero() {
         Period.ZERO.subtractFrom(null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_subtractFrom_nullNonZero() {
+        Period.of(2, DAYS).subtractFrom(null);
     }
 
     //-----------------------------------------------------------------------
