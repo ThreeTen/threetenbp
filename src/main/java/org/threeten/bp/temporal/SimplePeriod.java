@@ -280,17 +280,6 @@ public final class SimplePeriod
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Writes the object using a
-     * <a href="../../../../serialized-form.html#org.threten.bp.temporal.Ser">dedicated serialized form</a>.
-     * <pre>
-     *  out.writeByte(10);  // identifies this as a SimplePeriod
-     *  out.writeLong(amount);
-     *  out.writeObject(unit);
-     * </pre>
-     *
-     * @return the instance of {@code Ser}, not null
-     */
     private Object writeReplace() {
         return new Ser(Ser.SIMPLE_PERIOD_TYPE, this);
     }
