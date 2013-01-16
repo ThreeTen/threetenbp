@@ -41,8 +41,8 @@ import org.testng.annotations.Test;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.format.DateTimeFormatterBuilder.FractionPrinterParser;
-import org.threeten.bp.temporal.DateTimeField;
 import org.threeten.bp.temporal.MockFieldValue;
+import org.threeten.bp.temporal.TemporalField;
 
 /**
  * Test FractionPrinterParser.
@@ -276,7 +276,7 @@ public class TestFractionPrinterParser extends AbstractTestPrinterParser {
         assertParsed(parseContext, SECOND_OF_MINUTE, value == 0 && minWidth == 0 ? null : (long) value);
     }
 
-    private void assertParsed(DateTimeParseContext context, DateTimeField field, Long value) {
+    private void assertParsed(DateTimeParseContext context, TemporalField field, Long value) {
         if (value == null) {
             assertEquals(context.getParsed(field), null);
         } else {

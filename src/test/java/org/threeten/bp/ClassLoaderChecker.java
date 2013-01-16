@@ -44,7 +44,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Pattern;
 import java.util.zip.ZipInputStream;
 
-import org.threeten.bp.temporal.DateTimeAccessor;
+import org.threeten.bp.temporal.TemporalAccessor;
 
 /**
  * Test Class loading.
@@ -90,7 +90,7 @@ public class ClassLoaderChecker {
         a.toString();
 
         System.out.println("************************************************************");
-        a = DateTimeAccessor.class;
+        a = TemporalAccessor.class;
 
         System.out.println("************************************************************");
         Month.of(5);

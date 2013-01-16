@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.threeten.bp.temporal;
+package org.threeten.bp.format;
 
 import static org.testng.Assert.assertEquals;
 import static org.threeten.bp.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
@@ -52,6 +52,7 @@ import org.threeten.bp.LocalTime;
 import org.threeten.bp.OffsetDate;
 import org.threeten.bp.OffsetTime;
 import org.threeten.bp.ZoneOffset;
+import org.threeten.bp.temporal.TemporalField;
 
 /**
  * Test.
@@ -72,8 +73,8 @@ public class TestDateTimeBuilderCombinations {
     }
 
     @Test(dataProvider = "combine")
-    public void test_derive(DateTimeField field1, Number value1, DateTimeField field2, Number value2,
-            DateTimeField field3, Number value3, DateTimeField field4, Number value4, Class<?> query, Object expectedVal) {
+    public void test_derive(TemporalField field1, Number value1, TemporalField field2, Number value2,
+            TemporalField field3, Number value3, TemporalField field4, Number value4, Class<?> query, Object expectedVal) {
         DateTimeBuilder builder = new DateTimeBuilder(field1, value1.longValue());
         if (field2 != null) {
             builder.addFieldValue(field2, value2.longValue());
@@ -108,8 +109,8 @@ public class TestDateTimeBuilderCombinations {
     }
 
     @Test(dataProvider = "normalized")
-    public void test_normalized(DateTimeField field1, Number value1, DateTimeField field2, Number value2,
-            DateTimeField field3, Number value3, DateTimeField query, Number expectedVal) {
+    public void test_normalized(TemporalField field1, Number value1, TemporalField field2, Number value2,
+            TemporalField field3, Number value3, TemporalField query, Number expectedVal) {
         DateTimeBuilder builder = new DateTimeBuilder(field1, value1.longValue());
         if (field2 != null) {
             builder.addFieldValue(field2, value2.longValue());

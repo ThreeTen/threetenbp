@@ -37,7 +37,7 @@ import org.threeten.bp.Duration;
  * A standard set of date periods units.
  * <p>
  * This set of units provide unit-based access to manipulate a date, time or date-time.
- * The standard set of units can be extended by implementing {@link PeriodUnit}.
+ * The standard set of units can be extended by implementing {@link TemporalUnit}.
  * <p>
  * These units are intended to be applicable in multiple calendar systems.
  * For example, most non-ISO calendar systems define units of years, months and days,
@@ -47,7 +47,7 @@ import org.threeten.bp.Duration;
  * <h4>Implementation notes</h4>
  * This is a final, immutable and thread-safe enum.
  */
-public enum ChronoUnit implements PeriodUnit {
+public enum ChronoUnit implements TemporalUnit {
 
     /**
      * Unit that represents the concept of a nanosecond, the smallest supported unit of time.
@@ -245,7 +245,7 @@ public enum ChronoUnit implements PeriodUnit {
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean isSupported(DateTime dateTime) {
+    public boolean isSupported(Temporal dateTime) {
         if (this == FOREVER) {
             return false;
         }
@@ -266,13 +266,13 @@ public enum ChronoUnit implements PeriodUnit {
     }
 
     @Override
-    public <R extends DateTime> R doPlus(R dateTime, long periodToAdd) {
+    public <R extends Temporal> R doPlus(R dateTime, long periodToAdd) {
         return (R) dateTime.plus(periodToAdd, this);
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public <R extends DateTime> PeriodBetween between(R dateTime1, R dateTime2) {
+    public <R extends Temporal> PeriodBetween between(R dateTime1, R dateTime2) {
         return new Between(dateTime1.periodUntil(dateTime2, this), this);
     }
 
@@ -288,9 +288,9 @@ public enum ChronoUnit implements PeriodUnit {
      */
     static final class Between implements PeriodBetween {
         private final long amount;
-        private final PeriodUnit unit;
+        private final TemporalUnit unit;
 
-        Between(long amount, PeriodUnit unit) {
+        Between(long amount, TemporalUnit unit) {
             this.amount = amount;
             this.unit = unit;
         }
@@ -301,17 +301,17 @@ public enum ChronoUnit implements PeriodUnit {
         }
 
         @Override
-        public PeriodUnit getUnit() {
+        public TemporalUnit getUnit() {
             return unit;
         }
 
         @Override
-        public DateTime doPlusAdjustment(DateTime dateTime) {
+        public Temporal doPlusAdjustment(Temporal dateTime) {
             return dateTime.plus(amount, unit);
         }
 
         @Override
-        public DateTime doMinusAdjustment(DateTime dateTime) {
+        public Temporal doMinusAdjustment(Temporal dateTime) {
             return dateTime.minus(amount, unit);
         }
 

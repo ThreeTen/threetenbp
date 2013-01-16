@@ -86,15 +86,15 @@ import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
-import org.threeten.bp.temporal.DateTime.MinusAdjuster;
-import org.threeten.bp.temporal.DateTime.PlusAdjuster;
-import org.threeten.bp.temporal.DateTime.WithAdjuster;
-import org.threeten.bp.temporal.DateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeAccessor.Query;
-import org.threeten.bp.temporal.DateTimeField;
 import org.threeten.bp.temporal.ISOChrono;
-import org.threeten.bp.temporal.JulianDayField;
+import org.threeten.bp.temporal.JulianFields;
 import org.threeten.bp.temporal.MockFieldNoValue;
+import org.threeten.bp.temporal.Temporal.MinusAdjuster;
+import org.threeten.bp.temporal.Temporal.PlusAdjuster;
+import org.threeten.bp.temporal.Temporal.WithAdjuster;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalAccessor.Query;
+import org.threeten.bp.temporal.TemporalField;
 
 /**
  * Test ZonedDateTime.
@@ -129,14 +129,14 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
 
     //-----------------------------------------------------------------------
     @Override
-    protected List<DateTimeAccessor> samples() {
-        DateTimeAccessor[] array = {TEST_DATE_TIME, };
+    protected List<TemporalAccessor> samples() {
+        TemporalAccessor[] array = {TEST_DATE_TIME, };
         return Arrays.asList(array);
     }
 
     @Override
-    protected List<DateTimeField> validFields() {
-        DateTimeField[] array = {
+    protected List<TemporalField> validFields() {
+        TemporalField[] array = {
             NANO_OF_SECOND,
             NANO_OF_DAY,
             MICRO_OF_SECOND,
@@ -167,16 +167,16 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
             ERA,
             OFFSET_SECONDS,
             INSTANT_SECONDS,
-            JulianDayField.JULIAN_DAY,
-            JulianDayField.MODIFIED_JULIAN_DAY,
-            JulianDayField.RATA_DIE,
+            JulianFields.JULIAN_DAY,
+            JulianFields.MODIFIED_JULIAN_DAY,
+            JulianFields.RATA_DIE,
         };
         return Arrays.asList(array);
     }
 
     @Override
-    protected List<DateTimeField> invalidFields() {
-        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(ChronoField.values()));
+    protected List<TemporalField> invalidFields() {
+        List<TemporalField> list = new ArrayList<>(Arrays.<TemporalField>asList(ChronoField.values()));
         list.removeAll(validFields());
         return list;
     }
@@ -603,11 +603,11 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     public void factory_from_DateTimeAccessor_LDT_ZoneId() {
         assertEquals(ZonedDateTime.from(new DefaultInterfaceDateTimeAccessor() {
             @Override
-            public boolean isSupported(DateTimeField field) {
+            public boolean isSupported(TemporalField field) {
                 return TEST_DATE_TIME_PARIS.getDateTime().isSupported(field);
             }
             @Override
-            public long getLong(DateTimeField field) {
+            public long getLong(TemporalField field) {
                 return TEST_DATE_TIME_PARIS.getDateTime().getLong(field);
             }
             @SuppressWarnings("unchecked")
@@ -625,11 +625,11 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
     public void factory_from_DateTimeAccessor_Instant_ZoneId() {
         assertEquals(ZonedDateTime.from(new DefaultInterfaceDateTimeAccessor() {
             @Override
-            public boolean isSupported(DateTimeField field) {
+            public boolean isSupported(TemporalField field) {
                 return field == INSTANT_SECONDS || field == NANO_OF_SECOND;
             }
             @Override
-            public long getLong(DateTimeField field) {
+            public long getLong(TemporalField field) {
                 return TEST_DATE_TIME_PARIS.toInstant().getLong(field);
             }
             @SuppressWarnings("unchecked")
@@ -650,7 +650,7 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_from_DateTimeAccessor_null() {
-        ZonedDateTime.from((DateTimeAccessor) null);
+        ZonedDateTime.from((TemporalAccessor) null);
     }
 
     //-----------------------------------------------------------------------
@@ -783,7 +783,7 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
     public void test_get_DateTimeField_null() {
-        TEST_DATE_TIME.get((DateTimeField) null);
+        TEST_DATE_TIME.get((TemporalField) null);
     }
 
     //-----------------------------------------------------------------------
@@ -816,7 +816,7 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
     public void test_getLong_DateTimeField_null() {
-        TEST_DATE_TIME.getLong((DateTimeField) null);
+        TEST_DATE_TIME.getLong((TemporalField) null);
     }
 
     //-----------------------------------------------------------------------

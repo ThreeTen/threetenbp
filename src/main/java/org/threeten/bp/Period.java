@@ -53,12 +53,12 @@ import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
-import org.threeten.bp.temporal.DateTime;
-import org.threeten.bp.temporal.DateTime.MinusAdjuster;
-import org.threeten.bp.temporal.DateTime.PlusAdjuster;
-import org.threeten.bp.temporal.DateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeValueRange;
-import org.threeten.bp.temporal.PeriodUnit;
+import org.threeten.bp.temporal.Temporal;
+import org.threeten.bp.temporal.Temporal.MinusAdjuster;
+import org.threeten.bp.temporal.Temporal.PlusAdjuster;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalUnit;
+import org.threeten.bp.temporal.ValueRange;
 
 /**
  * An immutable period consisting of the most common units, such as '3 Months, 4 Days and 7 Hours'.
@@ -71,7 +71,7 @@ import org.threeten.bp.temporal.PeriodUnit;
  * <li>{@link ChronoUnit#YEARS YEARS}</li>
  * <li>{@link ChronoUnit#MONTHS MONTHS}</li>
  * <li>{@link ChronoUnit#DAYS DAYS}</li>
- * <li>time units with an {@link PeriodUnit#isDurationEstimated() exact duration}</li>
+ * <li>time units with an {@link TemporalUnit#isDurationEstimated() exact duration}</li>
  * </ul><p>
  * The period may be used with any calendar system with the exception is methods with an "ISO" suffix.
  * The meaning of a "year" or a "month" is only applied when the object is added to a date.
@@ -212,7 +212,7 @@ public final class Period
      * </pre>
      * The specified unit must be one of the supported units from {@link ChronoUnit},
      * {@code YEARS}, {@code MONTHS} or {@code DAYS} or be a time unit with an
-     * {@link PeriodUnit#isDurationEstimated() exact duration}.
+     * {@link TemporalUnit#isDurationEstimated() exact duration}.
      * Other units throw an exception.
      *
      * @param amount  the amount of the period, measured in terms of the unit, positive or negative
@@ -221,7 +221,7 @@ public final class Period
      * @throws DateTimeException if the period unit is invalid
      * @throws ArithmeticException if a numeric overflow occurs
      */
-    public static Period of(long amount, PeriodUnit unit) {
+    public static Period of(long amount, TemporalUnit unit) {
         return ZERO.plus(amount, unit);
     }
 
@@ -272,7 +272,7 @@ public final class Period
      * @throws DateTimeException if the two date-times do have similar available fields
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public static Period between(DateTimeAccessor start, DateTimeAccessor end) {
+    public static Period between(TemporalAccessor start, TemporalAccessor end) {
         if (Chrono.from(start).equals(Chrono.from(end)) == false) {
             throw new DateTimeException("Unable to calculate period as date-times have different chronologies");
         }
@@ -287,8 +287,8 @@ public final class Period
         }
         if (start.isSupported(MONTH_OF_YEAR)) {
             months = Jdk8Methods.safeToInt(Jdk8Methods.safeSubtract(end.getLong(MONTH_OF_YEAR), start.getLong(MONTH_OF_YEAR)));
-            DateTimeValueRange startRange = Chrono.from(start).range(MONTH_OF_YEAR);
-            DateTimeValueRange endRange = Chrono.from(end).range(MONTH_OF_YEAR);
+            ValueRange startRange = Chrono.from(start).range(MONTH_OF_YEAR);
+            ValueRange endRange = Chrono.from(end).range(MONTH_OF_YEAR);
             if (startRange.isFixed() && startRange.isIntValue() && startRange.equals(endRange)) {
                 int monthCount = (int) (startRange.getMaximum() - startRange.getMinimum() + 1);
                 long totMonths = ((long) months) + years * monthCount;
@@ -647,7 +647,7 @@ public final class Period
      * <p>
      * The specified unit must be one of the supported units from {@link ChronoUnit},
      * {@code YEARS}, {@code MONTHS} or {@code DAYS} or be a time unit with an
-     * {@link PeriodUnit#isDurationEstimated() exact duration}.
+     * {@link TemporalUnit#isDurationEstimated() exact duration}.
      * Other units throw an exception.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -657,7 +657,7 @@ public final class Period
      * @return a {@code Period} based on this period with the requested amount added, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public Period plus(long amount, PeriodUnit unit) {
+    public Period plus(long amount, TemporalUnit unit) {
         Objects.requireNonNull(unit, "unit");
         if (unit instanceof ChronoUnit) {
             if (unit == YEARS || unit == MONTHS || unit == DAYS || unit.isDurationEstimated() == false) {
@@ -739,7 +739,7 @@ public final class Period
      * <p>
      * The specified unit must be one of the supported units from {@link ChronoUnit},
      * {@code YEARS}, {@code MONTHS} or {@code DAYS} or be a time unit with an
-     * {@link PeriodUnit#isDurationEstimated() exact duration}.
+     * {@link TemporalUnit#isDurationEstimated() exact duration}.
      * Other units throw an exception.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -749,7 +749,7 @@ public final class Period
      * @return a {@code Period} based on this period with the requested amount subtracted, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public Period minus(long amount, PeriodUnit unit) {
+    public Period minus(long amount, TemporalUnit unit) {
         return (amount == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amount, unit));
     }
 
@@ -935,9 +935,9 @@ public final class Period
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public DateTime doPlusAdjustment(DateTime dateTime) {
+    public Temporal doPlusAdjustment(Temporal dateTime) {
         if ((years | months) != 0) {
-            DateTimeValueRange startRange = Chrono.from(dateTime).range(MONTH_OF_YEAR);
+            ValueRange startRange = Chrono.from(dateTime).range(MONTH_OF_YEAR);
             if (startRange.isFixed() && startRange.isIntValue()) {
                 long monthCount = startRange.getMaximum() - startRange.getMinimum() + 1;
                 dateTime = dateTime.plus(years * monthCount + months, MONTHS);
@@ -977,9 +977,9 @@ public final class Period
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public DateTime doMinusAdjustment(DateTime dateTime) {
+    public Temporal doMinusAdjustment(Temporal dateTime) {
         if ((years | months) != 0) {
-            DateTimeValueRange startRange = Chrono.from(dateTime).range(MONTH_OF_YEAR);
+            ValueRange startRange = Chrono.from(dateTime).range(MONTH_OF_YEAR);
             if (startRange.isFixed() && startRange.isIntValue()) {
                 long monthCount = startRange.getMaximum() - startRange.getMinimum() + 1;
                 dateTime = dateTime.minus(years * monthCount + months, MONTHS);

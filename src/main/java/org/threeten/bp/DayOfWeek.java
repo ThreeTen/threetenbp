@@ -38,11 +38,11 @@ import java.util.Locale;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.TextStyle;
 import org.threeten.bp.temporal.ChronoField;
-import org.threeten.bp.temporal.DateTime;
-import org.threeten.bp.temporal.DateTime.WithAdjuster;
-import org.threeten.bp.temporal.DateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeField;
-import org.threeten.bp.temporal.DateTimeValueRange;
+import org.threeten.bp.temporal.Temporal;
+import org.threeten.bp.temporal.Temporal.WithAdjuster;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.ValueRange;
 
 /**
  * A day-of-week, such as 'Tuesday'.
@@ -69,7 +69,7 @@ import org.threeten.bp.temporal.DateTimeValueRange;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum DayOfWeek implements DateTimeAccessor, WithAdjuster {
+public enum DayOfWeek implements TemporalAccessor, WithAdjuster {
 
     /**
      * The singleton instance for the day-of-week of Monday.
@@ -143,7 +143,7 @@ public enum DayOfWeek implements DateTimeAccessor, WithAdjuster {
      * @return the day-of-week, not null
      * @throws DateTimeException if unable to convert to a {@code DayOfWeek}
      */
-    public static DayOfWeek from(DateTimeAccessor dateTime) {
+    public static DayOfWeek from(TemporalAccessor dateTime) {
         if (dateTime instanceof DayOfWeek) {
             return (DayOfWeek) dateTime;
         }
@@ -182,7 +182,7 @@ public enum DayOfWeek implements DateTimeAccessor, WithAdjuster {
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean isSupported(DateTimeField field) {
+    public boolean isSupported(TemporalField field) {
         if (field instanceof ChronoField) {
             return field == DAY_OF_WEEK;
         }
@@ -190,7 +190,7 @@ public enum DayOfWeek implements DateTimeAccessor, WithAdjuster {
     }
 
     @Override
-    public DateTimeValueRange range(DateTimeField field) {
+    public ValueRange range(TemporalField field) {
         if (field == DAY_OF_WEEK) {
             return field.range();
         } else if (field instanceof ChronoField) {
@@ -200,7 +200,7 @@ public enum DayOfWeek implements DateTimeAccessor, WithAdjuster {
     }
 
     @Override
-    public int get(DateTimeField field) {
+    public int get(TemporalField field) {
         if (field == DAY_OF_WEEK) {
             return getValue();
         }
@@ -208,7 +208,7 @@ public enum DayOfWeek implements DateTimeAccessor, WithAdjuster {
     }
 
     @Override
-    public long getLong(DateTimeField field) {
+    public long getLong(TemporalField field) {
         if (field == DAY_OF_WEEK) {
             return getValue();
         } else if (field instanceof ChronoField) {
@@ -267,14 +267,14 @@ public enum DayOfWeek implements DateTimeAccessor, WithAdjuster {
      * <h4>Implementation notes</h4>
      * Adjusts the specified date-time to have the value of this day-of-week.
      * Note that this adjusts forwards or backwards within a Monday to Sunday week.
-     * The adjustment is equivalent to using {@link DateTime#with(DateTimeField, long)}
+     * The adjustment is equivalent to using {@link Temporal#with(TemporalField, long)}
      * passing {@code DAY_OF_WEEK} as the field.
      *
      * @param dateTime  the target object to be adjusted, not null
      * @return the adjusted object, not null
      */
     @Override
-    public DateTime doWithAdjustment(DateTime dateTime) {
+    public Temporal doWithAdjustment(Temporal dateTime) {
         return dateTime.with(DAY_OF_WEEK, getValue());
     }
 

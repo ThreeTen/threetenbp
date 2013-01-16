@@ -210,42 +210,42 @@ public final class ISOChrono extends Chrono<ISOChrono> implements Serializable {
     /**
      * Obtains an ISO local date from another date-time object.
      * <p>
-     * This is equivalent to {@link LocalDate#from(DateTimeAccessor)}.
+     * This is equivalent to {@link LocalDate#from(TemporalAccessor)}.
      *
      * @param dateTime  the date-time object to convert, not null
      * @return the ISO local date, not null
      * @throws DateTimeException if unable to create the date
      */
     @Override  // override with covariant return type
-    public LocalDate date(DateTimeAccessor dateTime) {
+    public LocalDate date(TemporalAccessor dateTime) {
         return LocalDate.from(dateTime);
     }
 
     /**
      * Obtains an ISO local date-time from another date-time object.
      * <p>
-     * This is equivalent to {@link LocalDateTime#from(DateTimeAccessor)}.
+     * This is equivalent to {@link LocalDateTime#from(TemporalAccessor)}.
      *
      * @param dateTime  the date-time object to convert, not null
      * @return the ISO local date-time, not null
      * @throws DateTimeException if unable to create the date-time
      */
     @Override  // override with covariant return type
-    public LocalDateTime localDateTime(DateTimeAccessor dateTime) {
+    public LocalDateTime localDateTime(TemporalAccessor dateTime) {
         return LocalDateTime.from(dateTime);
     }
 
     /**
      * Obtains an ISO zoned date-time from another date-time object.
      * <p>
-     * This is equivalent to {@link ZonedDateTime#from(DateTimeAccessor)}.
+     * This is equivalent to {@link ZonedDateTime#from(TemporalAccessor)}.
      *
      * @param dateTime  the date-time object to convert, not null
      * @return the ISO zoned date-time, not null
      * @throws DateTimeException if unable to create the date-time
      */
     @Override  // override with covariant return type
-    public ZonedDateTime zonedDateTime(DateTimeAccessor dateTime) {
+    public ZonedDateTime zonedDateTime(TemporalAccessor dateTime) {
         return ZonedDateTime.from(dateTime);
     }
 
@@ -346,7 +346,7 @@ public final class ISOChrono extends Chrono<ISOChrono> implements Serializable {
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeValueRange range(ChronoField field) {
+    public ValueRange range(ChronoField field) {
         return field.range();
     }
 

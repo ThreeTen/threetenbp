@@ -50,7 +50,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.threeten.bp.temporal.DateTimeField;
+import org.threeten.bp.temporal.TemporalField;
 
 /**
  * The Service Provider Implementation to obtain date-time text for a field.
@@ -64,8 +64,8 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
      // TODO: Better implementation based on CLDR
 
     /** Cache. */
-    private static final ConcurrentMap<Entry<DateTimeField, Locale>, Object> CACHE =
-        new ConcurrentHashMap<Entry<DateTimeField, Locale>, Object>(16, 0.75f, 2);
+    private static final ConcurrentMap<Entry<TemporalField, Locale>, Object> CACHE =
+        new ConcurrentHashMap<Entry<TemporalField, Locale>, Object>(16, 0.75f, 2);
     /** Comparator. */
     private static final Comparator<Entry<String, Long>> COMPARATOR = new Comparator<Entry<String, Long>>() {
         @Override
@@ -83,7 +83,7 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
 
     //-----------------------------------------------------------------------
     @Override
-    public String getText(DateTimeField field, long value, TextStyle style, Locale locale) {
+    public String getText(TemporalField field, long value, TextStyle style, Locale locale) {
         Object store = findStore(field, locale);
         if (store instanceof LocaleStore) {
             return ((LocaleStore) store).getText(value, style);
@@ -92,7 +92,7 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
     }
 
     @Override
-    public Iterator<Entry<String, Long>> getTextIterator(DateTimeField field, TextStyle style, Locale locale) {
+    public Iterator<Entry<String, Long>> getTextIterator(TemporalField field, TextStyle style, Locale locale) {
         Object store = findStore(field, locale);
         if (store instanceof LocaleStore) {
             return ((LocaleStore) store).getTextIterator(style);
@@ -101,8 +101,8 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
     }
 
     //-----------------------------------------------------------------------
-    private Object findStore(DateTimeField field, Locale locale) {
-        Entry<DateTimeField, Locale> key = createEntry(field, locale);
+    private Object findStore(TemporalField field, Locale locale) {
+        Entry<TemporalField, Locale> key = createEntry(field, locale);
         Object store = CACHE.get(key);
         if (store == null) {
             store = createStore(field, locale);
@@ -112,7 +112,7 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
         return store;
     }
 
-    private Object createStore(DateTimeField field, Locale locale) {
+    private Object createStore(TemporalField field, Locale locale) {
         if (field == MONTH_OF_YEAR) {
             DateFormatSymbols oldSymbols = DateFormatSymbols.getInstance(locale);
             Map<TextStyle, Map<Long, String>> styleMap = new HashMap<>();

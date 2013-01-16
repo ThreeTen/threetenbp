@@ -45,9 +45,9 @@ import java.util.List;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.threeten.bp.temporal.ChronoField;
-import org.threeten.bp.temporal.DateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeField;
-import org.threeten.bp.temporal.JulianDayField;
+import org.threeten.bp.temporal.JulianFields;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalField;
 
 /**
  * Test DayOfWeek.
@@ -61,26 +61,26 @@ public class TestDayOfWeek extends AbstractDateTimeTest {
 
     //-----------------------------------------------------------------------
     @Override
-    protected List<DateTimeAccessor> samples() {
-        DateTimeAccessor[] array = {MONDAY, WEDNESDAY, SUNDAY, };
+    protected List<TemporalAccessor> samples() {
+        TemporalAccessor[] array = {MONDAY, WEDNESDAY, SUNDAY, };
         return Arrays.asList(array);
     }
 
     @Override
-    protected List<DateTimeField> validFields() {
-        DateTimeField[] array = {
+    protected List<TemporalField> validFields() {
+        TemporalField[] array = {
             DAY_OF_WEEK,
         };
         return Arrays.asList(array);
     }
 
     @Override
-    protected List<DateTimeField> invalidFields() {
-        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(ChronoField.values()));
+    protected List<TemporalField> invalidFields() {
+        List<TemporalField> list = new ArrayList<>(Arrays.<TemporalField>asList(ChronoField.values()));
         list.removeAll(validFields());
-        list.add(JulianDayField.JULIAN_DAY);
-        list.add(JulianDayField.MODIFIED_JULIAN_DAY);
-        list.add(JulianDayField.RATA_DIE);
+        list.add(JulianFields.JULIAN_DAY);
+        list.add(JulianFields.MODIFIED_JULIAN_DAY);
+        list.add(JulianFields.RATA_DIE);
         return list;
     }
 

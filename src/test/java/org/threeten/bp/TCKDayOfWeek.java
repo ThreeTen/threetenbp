@@ -48,11 +48,11 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.format.TextStyle;
 import org.threeten.bp.temporal.ChronoField;
-import org.threeten.bp.temporal.DateTime;
-import org.threeten.bp.temporal.DateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeAccessor.Query;
-import org.threeten.bp.temporal.DateTimeField;
-import org.threeten.bp.temporal.JulianDayField;
+import org.threeten.bp.temporal.JulianFields;
+import org.threeten.bp.temporal.Temporal;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalAccessor.Query;
+import org.threeten.bp.temporal.TemporalField;
 
 /**
  * Test DayOfWeek.
@@ -66,26 +66,26 @@ public class TCKDayOfWeek extends AbstractDateTimeTest {
 
     //-----------------------------------------------------------------------
     @Override
-    protected List<DateTimeAccessor> samples() {
-        DateTimeAccessor[] array = {MONDAY, WEDNESDAY, SUNDAY, };
+    protected List<TemporalAccessor> samples() {
+        TemporalAccessor[] array = {MONDAY, WEDNESDAY, SUNDAY, };
         return Arrays.asList(array);
     }
 
     @Override
-    protected List<DateTimeField> validFields() {
-        DateTimeField[] array = {
+    protected List<TemporalField> validFields() {
+        TemporalField[] array = {
             DAY_OF_WEEK,
         };
         return Arrays.asList(array);
     }
 
     @Override
-    protected List<DateTimeField> invalidFields() {
-        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(ChronoField.values()));
+    protected List<TemporalField> invalidFields() {
+        List<TemporalField> list = new ArrayList<>(Arrays.<TemporalField>asList(ChronoField.values()));
         list.removeAll(validFields());
-        list.add(JulianDayField.JULIAN_DAY);
-        list.add(JulianDayField.MODIFIED_JULIAN_DAY);
-        list.add(JulianDayField.RATA_DIE);
+        list.add(JulianFields.JULIAN_DAY);
+        list.add(JulianFields.MODIFIED_JULIAN_DAY);
+        list.add(JulianFields.RATA_DIE);
         return list;
     }
 
@@ -122,7 +122,7 @@ public class TCKDayOfWeek extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_CalendricalObject_null() {
-        DayOfWeek.from((DateTimeAccessor) null);
+        DayOfWeek.from((TemporalAccessor) null);
     }
 
     //-----------------------------------------------------------------------
@@ -258,7 +258,7 @@ public class TCKDayOfWeek extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_doAdjustment_null() {
-        DayOfWeek.MONDAY.doWithAdjustment((DateTime) null);
+        DayOfWeek.MONDAY.doWithAdjustment((Temporal) null);
     }
 
     //-----------------------------------------------------------------------

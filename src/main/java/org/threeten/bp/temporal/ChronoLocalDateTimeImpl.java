@@ -44,7 +44,7 @@ import org.threeten.bp.LocalTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.jdk8.DefaultInterfaceChronoLocalDateTime;
 import org.threeten.bp.jdk8.Jdk8Methods;
-import org.threeten.bp.temporal.DateTime.WithAdjuster;
+import org.threeten.bp.temporal.Temporal.WithAdjuster;
 
 /**
  * A date-time without a time-zone for the calendar neutral API.
@@ -62,9 +62,9 @@ import org.threeten.bp.temporal.DateTime.WithAdjuster;
  *
  * @param <C> the chronology of this date
  */
-final class ChronoDateTimeImpl<C extends Chrono<C>>
+final class ChronoLocalDateTimeImpl<C extends Chrono<C>>
         extends DefaultInterfaceChronoLocalDateTime<C>
-        implements  ChronoLocalDateTime<C>, DateTime, WithAdjuster, Serializable {
+        implements  ChronoLocalDateTime<C>, Temporal, WithAdjuster, Serializable {
 
     /**
      * Serialization version.
@@ -136,8 +136,8 @@ final class ChronoDateTimeImpl<C extends Chrono<C>>
      * @param time  the local time, not null
      * @return the local date-time, not null
      */
-    static <R extends Chrono<R>> ChronoDateTimeImpl<R> of(ChronoLocalDate<R> date, LocalTime time) {
-        return new ChronoDateTimeImpl<>(date, time);
+    static <R extends Chrono<R>> ChronoLocalDateTimeImpl<R> of(ChronoLocalDate<R> date, LocalTime time) {
+        return new ChronoLocalDateTimeImpl<>(date, time);
     }
 
     /**
@@ -146,7 +146,7 @@ final class ChronoDateTimeImpl<C extends Chrono<C>>
      * @param date  the date part of the date-time, not null
      * @param time  the time part of the date-time, not null
      */
-    private ChronoDateTimeImpl(ChronoLocalDate<C> date, LocalTime time) {
+    private ChronoLocalDateTimeImpl(ChronoLocalDate<C> date, LocalTime time) {
         Objects.requireNonNull(date, "date");
         Objects.requireNonNull(time, "time");
         this.date = date;
@@ -161,13 +161,13 @@ final class ChronoDateTimeImpl<C extends Chrono<C>>
      * @param newTime  the time of the new date-time, not null
      * @return the date-time, not null
      */
-    private ChronoDateTimeImpl<C> with(DateTime newDate, LocalTime newTime) {
+    private ChronoLocalDateTimeImpl<C> with(Temporal newDate, LocalTime newTime) {
         if (date == newDate && time == newTime) {
             return this;
         }
         // Validate that the new DateTime is a ChronoLocalDate (and not something else)
         ChronoLocalDate<C> cd = date.getChrono().ensureChronoLocalDate(newDate);
-        return new ChronoDateTimeImpl<>(cd, newTime);
+        return new ChronoLocalDateTimeImpl<>(cd, newTime);
     }
 
     //-----------------------------------------------------------------------
@@ -183,7 +183,7 @@ final class ChronoDateTimeImpl<C extends Chrono<C>>
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean isSupported(DateTimeField field) {
+    public boolean isSupported(TemporalField field) {
         if (field instanceof ChronoField) {
             ChronoField f = (ChronoField) field;
             return f.isDateField() || f.isTimeField();
@@ -192,7 +192,7 @@ final class ChronoDateTimeImpl<C extends Chrono<C>>
     }
 
     @Override
-    public DateTimeValueRange range(DateTimeField field) {
+    public ValueRange range(TemporalField field) {
         if (field instanceof ChronoField) {
             ChronoField f = (ChronoField) field;
             return (f.isTimeField() ? time.range(field) : date.range(field));
@@ -201,7 +201,7 @@ final class ChronoDateTimeImpl<C extends Chrono<C>>
     }
 
     @Override
-    public int get(DateTimeField field) {
+    public int get(TemporalField field) {
         if (field instanceof ChronoField) {
             ChronoField f = (ChronoField) field;
             return (f.isTimeField() ? time.get(field) : date.get(field));
@@ -210,7 +210,7 @@ final class ChronoDateTimeImpl<C extends Chrono<C>>
     }
 
     @Override
-    public long getLong(DateTimeField field) {
+    public long getLong(TemporalField field) {
         if (field instanceof ChronoField) {
             ChronoField f = (ChronoField) field;
             return (f.isTimeField() ? time.getLong(field) : date.getLong(field));
@@ -221,20 +221,20 @@ final class ChronoDateTimeImpl<C extends Chrono<C>>
     //-----------------------------------------------------------------------
     @SuppressWarnings("unchecked")
     @Override
-    public ChronoDateTimeImpl<C> with(WithAdjuster adjuster) {
+    public ChronoLocalDateTimeImpl<C> with(WithAdjuster adjuster) {
         if (adjuster instanceof ChronoLocalDate) {
             // The Chrono is checked in with(date,time)
             return with((ChronoLocalDate<C>) adjuster, time);
         } else if (adjuster instanceof LocalTime) {
             return with(date, (LocalTime) adjuster);
-        } else if (adjuster instanceof ChronoDateTimeImpl) {
-            return date.getChrono().ensureChronoLocalDateTime((ChronoDateTimeImpl<?>) adjuster);
+        } else if (adjuster instanceof ChronoLocalDateTimeImpl) {
+            return date.getChrono().ensureChronoLocalDateTime((ChronoLocalDateTimeImpl<?>) adjuster);
         }
-        return date.getChrono().ensureChronoLocalDateTime((ChronoDateTimeImpl<?>) adjuster.doWithAdjustment(this));
+        return date.getChrono().ensureChronoLocalDateTime((ChronoLocalDateTimeImpl<?>) adjuster.doWithAdjustment(this));
     }
 
     @Override
-    public ChronoDateTimeImpl<C> with(DateTimeField field, long newValue) {
+    public ChronoLocalDateTimeImpl<C> with(TemporalField field, long newValue) {
         if (field instanceof ChronoField) {
             ChronoField f = (ChronoField) field;
             if (f.isTimeField()) {
@@ -248,7 +248,7 @@ final class ChronoDateTimeImpl<C extends Chrono<C>>
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoDateTimeImpl<C> plus(long amountToAdd, PeriodUnit unit) {
+    public ChronoLocalDateTimeImpl<C> plus(long amountToAdd, TemporalUnit unit) {
         if (unit instanceof ChronoUnit) {
             ChronoUnit f = (ChronoUnit) unit;
             switch (f) {
@@ -265,28 +265,28 @@ final class ChronoDateTimeImpl<C extends Chrono<C>>
         return date.getChrono().ensureChronoLocalDateTime(unit.doPlus(this, amountToAdd));
     }
 
-    private ChronoDateTimeImpl<C> plusDays(long days) {
+    private ChronoLocalDateTimeImpl<C> plusDays(long days) {
         return with(date.plus(days, ChronoUnit.DAYS), time);
     }
 
-    private ChronoDateTimeImpl<C> plusHours(long hours) {
+    private ChronoLocalDateTimeImpl<C> plusHours(long hours) {
         return plusWithOverflow(date, hours, 0, 0, 0);
     }
 
-    private ChronoDateTimeImpl<C> plusMinutes(long minutes) {
+    private ChronoLocalDateTimeImpl<C> plusMinutes(long minutes) {
         return plusWithOverflow(date, 0, minutes, 0, 0);
     }
 
-    ChronoDateTimeImpl<C> plusSeconds(long seconds) {
+    ChronoLocalDateTimeImpl<C> plusSeconds(long seconds) {
         return plusWithOverflow(date, 0, 0, seconds, 0);
     }
 
-    private ChronoDateTimeImpl<C> plusNanos(long nanos) {
+    private ChronoLocalDateTimeImpl<C> plusNanos(long nanos) {
         return plusWithOverflow(date, 0, 0, 0, nanos);
     }
 
     //-----------------------------------------------------------------------
-    private ChronoDateTimeImpl<C> plusWithOverflow(ChronoLocalDate<C> newDate, long hours, long minutes, long seconds, long nanos) {
+    private ChronoLocalDateTimeImpl<C> plusWithOverflow(ChronoLocalDate<C> newDate, long hours, long minutes, long seconds, long nanos) {
         // 9223372036854775808 long, 2147483648 int
         if ((hours | minutes | seconds | nanos) == 0) {
             return with(newDate, time);
@@ -315,7 +315,7 @@ final class ChronoDateTimeImpl<C extends Chrono<C>>
 
     //-----------------------------------------------------------------------
     @Override
-    public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
+    public long periodUntil(Temporal endDateTime, TemporalUnit unit) {
         if (endDateTime instanceof ChronoLocalDateTime == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }

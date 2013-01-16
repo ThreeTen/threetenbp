@@ -63,12 +63,12 @@ import org.threeten.bp.LocalTime;
 import org.threeten.bp.Month;
 import org.threeten.bp.Year;
 import org.threeten.bp.ZoneOffset;
+import org.threeten.bp.format.DateTimeBuilder;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
-import org.threeten.bp.temporal.DateTimeAdjusters;
-import org.threeten.bp.temporal.DateTimeBuilder;
-import org.threeten.bp.temporal.DateTimeField;
-import org.threeten.bp.temporal.JulianDayField;
+import org.threeten.bp.temporal.JulianFields;
+import org.threeten.bp.temporal.TemporalAdjusters;
+import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 /**
@@ -402,7 +402,7 @@ final class TzdbZoneRulesCompiler {
 
             // now treat all the transitions
             for (Map.Entry<LocalDate, Byte> rule : leapSeconds.entrySet()) {
-                out.writeLong(JulianDayField.MODIFIED_JULIAN_DAY.doGet(rule.getKey()));
+                out.writeLong(JulianFields.MODIFIED_JULIAN_DAY.doGet(rule.getKey()));
                 offset += rule.getValue();
                 out.writeInt(offset);
             }
@@ -839,7 +839,7 @@ final class TzdbZoneRulesCompiler {
         if (bld == null || pp.getErrorIndex() >= 0) {
             throw new IllegalArgumentException(str);
         }
-        Map<DateTimeField, Long> parsed = bld.getFieldValueMap();
+        Map<TemporalField, Long> parsed = bld.getFieldValueMap();
         long hour = parsed.get(HOUR_OF_DAY);
         Long min = parsed.get(MINUTE_OF_HOUR);
         Long sec = parsed.get(SECOND_OF_MINUTE);
@@ -1049,12 +1049,12 @@ final class TzdbZoneRulesCompiler {
                 dayOfMonth = month.length(Year.isLeap(year));
                 date = LocalDate.of(year, month, dayOfMonth);
                 if (dayOfWeek != null) {
-                    date = date.with(DateTimeAdjusters.previousOrSame(dayOfWeek));
+                    date = date.with(TemporalAdjusters.previousOrSame(dayOfWeek));
                 }
             } else {
                 date = LocalDate.of(year, month, dayOfMonth);
                 if (dayOfWeek != null) {
-                    date = date.with(DateTimeAdjusters.nextOrSame(dayOfWeek));
+                    date = date.with(TemporalAdjusters.nextOrSame(dayOfWeek));
                 }
             }
             date = deduplicate(date);

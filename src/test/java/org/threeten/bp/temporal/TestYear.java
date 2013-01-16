@@ -47,7 +47,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.threeten.bp.AbstractDateTimeTest;
 import org.threeten.bp.Year;
-import org.threeten.bp.temporal.DateTime.WithAdjuster;
+import org.threeten.bp.temporal.Temporal.WithAdjuster;
 
 /**
  * Test Year.
@@ -63,14 +63,14 @@ public class TestYear extends AbstractDateTimeTest {
 
     //-----------------------------------------------------------------------
     @Override
-    protected List<DateTimeAccessor> samples() {
-        DateTimeAccessor[] array = {TEST_2008, };
+    protected List<TemporalAccessor> samples() {
+        TemporalAccessor[] array = {TEST_2008, };
         return Arrays.asList(array);
     }
 
     @Override
-    protected List<DateTimeField> validFields() {
-        DateTimeField[] array = {
+    protected List<TemporalField> validFields() {
+        TemporalField[] array = {
             YEAR_OF_ERA,
             YEAR,
             ERA,
@@ -79,12 +79,12 @@ public class TestYear extends AbstractDateTimeTest {
     }
 
     @Override
-    protected List<DateTimeField> invalidFields() {
-        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(ChronoField.values()));
+    protected List<TemporalField> invalidFields() {
+        List<TemporalField> list = new ArrayList<>(Arrays.<TemporalField>asList(ChronoField.values()));
         list.removeAll(validFields());
-        list.add(JulianDayField.JULIAN_DAY);
-        list.add(JulianDayField.MODIFIED_JULIAN_DAY);
-        list.add(JulianDayField.RATA_DIE);
+        list.add(JulianFields.JULIAN_DAY);
+        list.add(JulianFields.MODIFIED_JULIAN_DAY);
+        list.add(JulianFields.RATA_DIE);
         return list;
     }
 

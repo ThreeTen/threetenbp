@@ -46,17 +46,18 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.LocalDate;
+import org.threeten.bp.format.DateTimeBuilder;
 
 /**
  * Test.
  */
 @Test(groups={"tck"})
-public class TCKISOWeeks {
+public class TCKISOFields {
 
     public void test_enum() {
-        assertTrue(ISOWeeks.WEEK_OF_WEEK_BASED_YEAR instanceof Enum);
-        assertTrue(ISOWeeks.WEEK_BASED_YEAR instanceof Enum);
-        assertTrue(ISOWeeks.WEEK_BASED_YEARS instanceof Enum);
+        assertTrue(ISOFields.WEEK_OF_WEEK_BASED_YEAR instanceof Enum);
+        assertTrue(ISOFields.WEEK_BASED_YEAR instanceof Enum);
+        assertTrue(ISOFields.WEEK_BASED_YEARS instanceof Enum);
     }
 
     @DataProvider(name="week")
@@ -83,8 +84,8 @@ public class TCKISOWeeks {
     @Test(dataProvider="week")
     public void test_WOWBY(LocalDate date, DayOfWeek dow, int week, int wby) {
         assertEquals(date.getDayOfWeek(), dow);
-        assertEquals(ISOWeeks.WEEK_OF_WEEK_BASED_YEAR.doGet(date), week);
-        assertEquals(date.get(ISOWeeks.WEEK_OF_WEEK_BASED_YEAR), week);
+        assertEquals(ISOFields.WEEK_OF_WEEK_BASED_YEAR.doGet(date), week);
+        assertEquals(date.get(ISOFields.WEEK_OF_WEEK_BASED_YEAR), week);
     }
 
     //-----------------------------------------------------------------------
@@ -93,8 +94,8 @@ public class TCKISOWeeks {
     @Test(dataProvider="week")
     public void test_WBY(LocalDate date, DayOfWeek dow, int week, int wby) {
         assertEquals(date.getDayOfWeek(), dow);
-        assertEquals(ISOWeeks.WEEK_BASED_YEAR.doGet(date), wby);
-        assertEquals(date.get(ISOWeeks.WEEK_BASED_YEAR), wby);
+        assertEquals(ISOFields.WEEK_BASED_YEAR.doGet(date), wby);
+        assertEquals(date.get(ISOFields.WEEK_BASED_YEAR), wby);
     }
 
     //-----------------------------------------------------------------------
@@ -103,8 +104,8 @@ public class TCKISOWeeks {
     @Test(dataProvider="week")
     public void test_builder(LocalDate date, DayOfWeek dow, int week, int wby) {
         DateTimeBuilder builder = new DateTimeBuilder();
-        builder.addFieldValue(ISOWeeks.WEEK_BASED_YEAR, wby);
-        builder.addFieldValue(ISOWeeks.WEEK_OF_WEEK_BASED_YEAR, week);
+        builder.addFieldValue(ISOFields.WEEK_BASED_YEAR, wby);
+        builder.addFieldValue(ISOFields.WEEK_OF_WEEK_BASED_YEAR, week);
         builder.addFieldValue(DAY_OF_WEEK, dow.getValue());
         builder.resolve();
         assertEquals(builder.build(LocalDate.class), date);
@@ -133,11 +134,11 @@ public class TCKISOWeeks {
                     wby++;
                 }
             }
-            assertEquals(ISOWeeks.WEEK_OF_WEEK_BASED_YEAR.doRange(date), DateTimeValueRange.of(1, weekLen), "Failed on " + date + " " + date.getDayOfWeek());
-            assertEquals(ISOWeeks.WEEK_OF_WEEK_BASED_YEAR.doGet(date), week, "Failed on " + date + " " + date.getDayOfWeek());
-            assertEquals(date.get(ISOWeeks.WEEK_OF_WEEK_BASED_YEAR), week, "Failed on " + date + " " + date.getDayOfWeek());
-            assertEquals(ISOWeeks.WEEK_BASED_YEAR.doGet(date), wby, "Failed on " + date + " " + date.getDayOfWeek());
-            assertEquals(date.get(ISOWeeks.WEEK_BASED_YEAR), wby, "Failed on " + date + " " + date.getDayOfWeek());
+            assertEquals(ISOFields.WEEK_OF_WEEK_BASED_YEAR.doRange(date), ValueRange.of(1, weekLen), "Failed on " + date + " " + date.getDayOfWeek());
+            assertEquals(ISOFields.WEEK_OF_WEEK_BASED_YEAR.doGet(date), week, "Failed on " + date + " " + date.getDayOfWeek());
+            assertEquals(date.get(ISOFields.WEEK_OF_WEEK_BASED_YEAR), week, "Failed on " + date + " " + date.getDayOfWeek());
+            assertEquals(ISOFields.WEEK_BASED_YEAR.doGet(date), wby, "Failed on " + date + " " + date.getDayOfWeek());
+            assertEquals(date.get(ISOFields.WEEK_BASED_YEAR), wby, "Failed on " + date + " " + date.getDayOfWeek());
             date = date.plusDays(1);
         }
     }

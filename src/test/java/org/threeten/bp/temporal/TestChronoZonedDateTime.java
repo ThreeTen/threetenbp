@@ -54,6 +54,7 @@ import org.threeten.bp.calendar.HijrahChrono;
 import org.threeten.bp.calendar.JapaneseChrono;
 import org.threeten.bp.calendar.MinguoChrono;
 import org.threeten.bp.calendar.ThaiBuddhistChrono;
+import org.threeten.bp.format.DateTimeBuilder;
 
 /**
  * Test assertions that must be true for all built-in chronologies.
@@ -81,7 +82,7 @@ public class TestChronoZonedDateTime {
         for (Chrono[] clist : data_of_calendars()) {
             Chrono chrono2 = clist[0];
             ChronoZonedDateTime<?> czdt2 = chrono2.date(refDate).atTime(LocalTime.NOON).atZone(ZoneOffset.UTC);
-            DateTime.WithAdjuster adjuster = new FixedAdjuster(czdt2);
+            Temporal.WithAdjuster adjuster = new FixedAdjuster(czdt2);
             if (chrono != chrono2) {
                 try {
                     czdt.with(adjuster);
@@ -104,7 +105,7 @@ public class TestChronoZonedDateTime {
         for (Chrono[] clist : data_of_calendars()) {
             Chrono chrono2 = clist[0];
             ChronoZonedDateTime<?> czdt2 = chrono2.date(refDate).atTime(LocalTime.NOON).atZone(ZoneOffset.UTC);
-            DateTime.PlusAdjuster adjuster = new FixedAdjuster(czdt2);
+            Temporal.PlusAdjuster adjuster = new FixedAdjuster(czdt2);
             if (chrono != chrono2) {
                 try {
                     ChronoZonedDateTime<?> notreached = czdt.plus(adjuster);
@@ -128,7 +129,7 @@ public class TestChronoZonedDateTime {
         for (Chrono[] clist : data_of_calendars()) {
             Chrono chrono2 = clist[0];
             ChronoZonedDateTime<?> czdt2 = chrono2.date(refDate).atTime(LocalTime.NOON).atZone(ZoneOffset.UTC);
-            DateTime.MinusAdjuster adjuster = new FixedAdjuster(czdt2);
+            Temporal.MinusAdjuster adjuster = new FixedAdjuster(czdt2);
             if (chrono != chrono2) {
                 try {
                     ChronoZonedDateTime<?> notreached = czdt.minus(adjuster);
@@ -152,7 +153,7 @@ public class TestChronoZonedDateTime {
         for (Chrono[] clist : data_of_calendars()) {
             Chrono chrono2 = clist[0];
             ChronoZonedDateTime<?> czdt2 = chrono2.date(refDate).atTime(LocalTime.NOON).atZone(ZoneOffset.UTC);
-            PeriodUnit adjuster = new FixedPeriodUnit(czdt2);
+            TemporalUnit adjuster = new FixedPeriodUnit(czdt2);
             if (chrono != chrono2) {
                 try {
                     ChronoZonedDateTime<?> notreached = czdt.plus(1, adjuster);
@@ -176,7 +177,7 @@ public class TestChronoZonedDateTime {
         for (Chrono[] clist : data_of_calendars()) {
             Chrono chrono2 = clist[0];
             ChronoZonedDateTime<?> czdt2 = chrono2.date(refDate).atTime(LocalTime.NOON).atZone(ZoneOffset.UTC);
-            PeriodUnit adjuster = new FixedPeriodUnit(czdt2);
+            TemporalUnit adjuster = new FixedPeriodUnit(czdt2);
             if (chrono != chrono2) {
                 try {
                     ChronoZonedDateTime<?> notreached = czdt.minus(1, adjuster);
@@ -200,7 +201,7 @@ public class TestChronoZonedDateTime {
         for (Chrono[] clist : data_of_calendars()) {
             Chrono chrono2 = clist[0];
             ChronoZonedDateTime<?> czdt2 = chrono2.date(refDate).atTime(LocalTime.NOON).atZone(ZoneOffset.UTC);
-            DateTimeField adjuster = new FixedDateTimeField(czdt2);
+            TemporalField adjuster = new FixedDateTimeField(czdt2);
             if (chrono != chrono2) {
                 try {
                     ChronoZonedDateTime<?> notreached = czdt.with(adjuster, 1);
@@ -306,25 +307,25 @@ public class TestChronoZonedDateTime {
      * FixedAdjusted returns a fixed DateTime in all adjustments.
      * Construct an adjuster with the DateTime that should be returned from doWithAdjustment.
      */
-    static class FixedAdjuster implements DateTime.WithAdjuster, DateTime.PlusAdjuster, DateTime.MinusAdjuster {
-        private DateTime datetime;
+    static class FixedAdjuster implements Temporal.WithAdjuster, Temporal.PlusAdjuster, Temporal.MinusAdjuster {
+        private Temporal datetime;
 
-        FixedAdjuster(DateTime datetime) {
+        FixedAdjuster(Temporal datetime) {
             this.datetime = datetime;
         }
 
         @Override
-        public DateTime doWithAdjustment(DateTime ignore) {
+        public Temporal doWithAdjustment(Temporal ignore) {
             return datetime;
         }
 
         @Override
-        public DateTime doPlusAdjustment(DateTime ignore) {
+        public Temporal doPlusAdjustment(Temporal ignore) {
             return datetime;
         }
 
         @Override
-        public DateTime doMinusAdjustment(DateTime ignore) {
+        public Temporal doMinusAdjustment(Temporal ignore) {
             return datetime;
         }
 
@@ -334,10 +335,10 @@ public class TestChronoZonedDateTime {
      * FixedPeriodUnit returns a fixed DateTime in all adjustments.
      * Construct an FixedPeriodUnit with the DateTime that should be returned from doPlus.
      */
-    static class FixedPeriodUnit implements PeriodUnit {
-        private DateTime dateTime;
+    static class FixedPeriodUnit implements TemporalUnit {
+        private Temporal dateTime;
 
-        FixedPeriodUnit(DateTime dateTime) {
+        FixedPeriodUnit(Temporal dateTime) {
             this.dateTime = dateTime;
         }
 
@@ -357,17 +358,17 @@ public class TestChronoZonedDateTime {
         }
 
         @Override
-        public boolean isSupported(DateTime dateTime) {
+        public boolean isSupported(Temporal dateTime) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
         @Override
-        public <R extends DateTime> R doPlus(R dateTime, long periodToAdd) {
+        public <R extends Temporal> R doPlus(R dateTime, long periodToAdd) {
             return (R)this.dateTime;
         }
 
         @Override
-        public <R extends DateTime> PeriodBetween between(R dateTime1, R dateTime2) {
+        public <R extends Temporal> PeriodBetween between(R dateTime1, R dateTime2) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
     }
@@ -376,9 +377,9 @@ public class TestChronoZonedDateTime {
      * FixedDateTimeField returns a fixed DateTime in all adjustments.
      * Construct an FixedDateTimeField with the DateTime that should be returned from doWith.
      */
-    static class FixedDateTimeField implements DateTimeField {
-        private DateTime dateTime;
-        FixedDateTimeField(DateTime dateTime) {
+    static class FixedDateTimeField implements TemporalField {
+        private Temporal dateTime;
+        FixedDateTimeField(Temporal dateTime) {
             this.dateTime = dateTime;
         }
 
@@ -388,43 +389,43 @@ public class TestChronoZonedDateTime {
         }
 
         @Override
-        public PeriodUnit getBaseUnit() {
+        public TemporalUnit getBaseUnit() {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
         @Override
-        public PeriodUnit getRangeUnit() {
+        public TemporalUnit getRangeUnit() {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
         @Override
-        public int compare(DateTimeAccessor dateTime1, DateTimeAccessor dateTime2) {
+        public int compare(TemporalAccessor dateTime1, TemporalAccessor dateTime2) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
         @Override
-        public DateTimeValueRange range() {
+        public ValueRange range() {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
         @Override
-        public boolean doIsSupported(DateTimeAccessor dateTime) {
+        public boolean doIsSupported(TemporalAccessor dateTime) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
         @Override
-        public DateTimeValueRange doRange(DateTimeAccessor dateTime) {
+        public ValueRange doRange(TemporalAccessor dateTime) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
         @Override
-        public long doGet(DateTimeAccessor dateTime) {
+        public long doGet(TemporalAccessor dateTime) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
         @SuppressWarnings("unchecked")
         @Override
-        public <R extends DateTime> R doWith(R dateTime, long newValue) {
+        public <R extends Temporal> R doWith(R dateTime, long newValue) {
             return (R) this.dateTime;
         }
 

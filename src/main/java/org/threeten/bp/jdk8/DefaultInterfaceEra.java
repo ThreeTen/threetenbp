@@ -41,9 +41,9 @@ import org.threeten.bp.format.TextStyle;
 import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoLocalDate;
-import org.threeten.bp.temporal.DateTime;
-import org.threeten.bp.temporal.DateTimeField;
 import org.threeten.bp.temporal.Era;
+import org.threeten.bp.temporal.Temporal;
+import org.threeten.bp.temporal.TemporalField;
 
 /**
  * A temporary class providing implementations that will become default interface
@@ -67,7 +67,7 @@ public abstract class DefaultInterfaceEra<C extends Chrono<C>>
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean isSupported(DateTimeField field) {
+    public boolean isSupported(TemporalField field) {
         if (field instanceof ChronoField) {
             return field == ERA;
         }
@@ -75,7 +75,7 @@ public abstract class DefaultInterfaceEra<C extends Chrono<C>>
     }
 
     @Override
-    public int get(DateTimeField field) {
+    public int get(TemporalField field) {
         if (field == ERA) {
             return getValue();
         }
@@ -83,7 +83,7 @@ public abstract class DefaultInterfaceEra<C extends Chrono<C>>
     }
 
     @Override
-    public long getLong(DateTimeField field) {
+    public long getLong(TemporalField field) {
         if (field == ERA) {
             return getValue();
         } else if (field instanceof ChronoField) {
@@ -94,7 +94,7 @@ public abstract class DefaultInterfaceEra<C extends Chrono<C>>
 
     //-------------------------------------------------------------------------
     @Override
-    public DateTime doWithAdjustment(DateTime dateTime) {
+    public Temporal doWithAdjustment(Temporal dateTime) {
         return dateTime.with(ERA, getValue());
     }
 

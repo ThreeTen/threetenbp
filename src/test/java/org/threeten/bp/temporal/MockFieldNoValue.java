@@ -35,11 +35,12 @@ import static org.threeten.bp.temporal.ChronoUnit.MONTHS;
 import static org.threeten.bp.temporal.ChronoUnit.WEEKS;
 
 import org.threeten.bp.DateTimeException;
+import org.threeten.bp.format.DateTimeBuilder;
 
 /**
  * Mock DateTimeField that returns null.
  */
-public enum MockFieldNoValue implements DateTimeField {
+public enum MockFieldNoValue implements TemporalField {
 
     INSTANCE;
 
@@ -49,43 +50,43 @@ public enum MockFieldNoValue implements DateTimeField {
     }
 
     @Override
-    public PeriodUnit getBaseUnit() {
+    public TemporalUnit getBaseUnit() {
         return WEEKS;
     }
 
     @Override
-    public PeriodUnit getRangeUnit() {
+    public TemporalUnit getRangeUnit() {
         return MONTHS;
     }
 
     @Override
-    public DateTimeValueRange range() {
-        return DateTimeValueRange.of(1, 20);
+    public ValueRange range() {
+        return ValueRange.of(1, 20);
     }
 
     @Override
-    public int compare(DateTimeAccessor dateTime1, DateTimeAccessor dateTime2) {
+    public int compare(TemporalAccessor dateTime1, TemporalAccessor dateTime2) {
         return Long.compare(doGet(dateTime1), doGet(dateTime2));
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean doIsSupported(DateTimeAccessor dateTime) {
+    public boolean doIsSupported(TemporalAccessor dateTime) {
         return true;
     }
 
     @Override
-    public DateTimeValueRange doRange(DateTimeAccessor dateTime) {
-        return DateTimeValueRange.of(1, 20);
+    public ValueRange doRange(TemporalAccessor dateTime) {
+        return ValueRange.of(1, 20);
     }
 
     @Override
-    public long doGet(DateTimeAccessor dateTime) {
+    public long doGet(TemporalAccessor dateTime) {
         throw new DateTimeException("Mock");
     }
 
     @Override
-    public <R extends DateTime> R doWith(R dateTime, long newValue) {
+    public <R extends Temporal> R doWith(R dateTime, long newValue) {
         throw new DateTimeException("Mock");
     }
 

@@ -50,13 +50,13 @@ import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
-import org.threeten.bp.temporal.DateTime;
-import org.threeten.bp.temporal.DateTime.WithAdjuster;
-import org.threeten.bp.temporal.DateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeField;
-import org.threeten.bp.temporal.DateTimeValueRange;
 import org.threeten.bp.temporal.ISOChrono;
-import org.threeten.bp.temporal.PeriodUnit;
+import org.threeten.bp.temporal.Temporal;
+import org.threeten.bp.temporal.Temporal.WithAdjuster;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalUnit;
+import org.threeten.bp.temporal.ValueRange;
 
 /**
  * A year in the ISO-8601 calendar system, such as {@code 2007}.
@@ -86,7 +86,7 @@ import org.threeten.bp.temporal.PeriodUnit;
  */
 public final class Year
         extends DefaultInterfaceDateTimeAccessor
-        implements DateTime, WithAdjuster, Comparable<Year>, Serializable {
+        implements Temporal, WithAdjuster, Comparable<Year>, Serializable {
 
     // TODO: remove constants?
     /**
@@ -194,7 +194,7 @@ public final class Year
      * @return the year, not null
      * @throws DateTimeException if unable to convert to a {@code Year}
      */
-    public static Year from(DateTimeAccessor dateTime) {
+    public static Year from(TemporalAccessor dateTime) {
         if (dateTime instanceof Year) {
             return (Year) dateTime;
         }
@@ -282,7 +282,7 @@ public final class Year
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean isSupported(DateTimeField field) {
+    public boolean isSupported(TemporalField field) {
         if (field instanceof ChronoField) {
             return field == YEAR || field == YEAR_OF_ERA || field == ERA;
         }
@@ -290,15 +290,15 @@ public final class Year
     }
 
     @Override
-    public DateTimeValueRange range(DateTimeField field) {
+    public ValueRange range(TemporalField field) {
         if (field == YEAR_OF_ERA) {
-            return (year <= 0 ? DateTimeValueRange.of(1, MAX_YEAR + 1) : DateTimeValueRange.of(1, MAX_YEAR));
+            return (year <= 0 ? ValueRange.of(1, MAX_YEAR + 1) : ValueRange.of(1, MAX_YEAR));
         }
         return super.range(field);
     }
 
     @Override
-    public long getLong(DateTimeField field) {
+    public long getLong(TemporalField field) {
         if (field instanceof ChronoField) {
             switch ((ChronoField) field) {
                 case YEAR_OF_ERA: return (year < 1 ? 1 - year : year);
@@ -362,7 +362,7 @@ public final class Year
     }
 
     @Override
-    public Year with(DateTimeField field, long newValue) {
+    public Year with(TemporalField field, long newValue) {
         if (field instanceof ChronoField) {
             ChronoField f = (ChronoField) field;
             f.checkValidValue(newValue);
@@ -382,9 +382,9 @@ public final class Year
      * <p>
      * This method returns a new year based on this year with the specified period added.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link org.threeten.bp.temporal.DateTime.PlusAdjuster} interface.
+     * the {@link org.threeten.bp.temporal.Temporal.PlusAdjuster} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
-     * back to {@link #plus(long, PeriodUnit)}.
+     * back to {@link #plus(long, TemporalUnit)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -398,7 +398,7 @@ public final class Year
     }
 
     @Override
-    public Year plus(long amountToAdd, PeriodUnit unit) {
+    public Year plus(long amountToAdd, TemporalUnit unit) {
         if (unit instanceof ChronoUnit) {
             switch ((ChronoUnit) unit) {
                 case YEARS: return plusYears(amountToAdd);
@@ -434,9 +434,9 @@ public final class Year
      * <p>
      * This method returns a new year based on this year with the specified period subtracted.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link org.threeten.bp.temporal.DateTime.MinusAdjuster} interface.
+     * the {@link org.threeten.bp.temporal.Temporal.MinusAdjuster} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
-     * back to {@link #minus(long, PeriodUnit)}.
+     * back to {@link #minus(long, TemporalUnit)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -450,7 +450,7 @@ public final class Year
     }
 
     @Override
-    public Year minus(long amountToSubtract, PeriodUnit unit) {
+    public Year minus(long amountToSubtract, TemporalUnit unit) {
         return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
 
@@ -580,14 +580,14 @@ public final class Year
      * <h4>Implementation notes</h4>
      * Adjusts the specified date-time to have the value of this year.
      * The date-time object must use the ISO calendar system.
-     * The adjustment is equivalent to using {@link DateTime#with(DateTimeField, long)}
+     * The adjustment is equivalent to using {@link Temporal#with(TemporalField, long)}
      * passing {@code YEAR} as the field.
      *
      * @param dateTime  the target object to be adjusted, not null
      * @return the adjusted object, not null
      */
     @Override
-    public DateTime doWithAdjustment(DateTime dateTime) {
+    public Temporal doWithAdjustment(Temporal dateTime) {
         if (Chrono.from(dateTime).equals(ISOChrono.INSTANCE) == false) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }
@@ -595,7 +595,7 @@ public final class Year
     }
 
     @Override
-    public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
+    public long periodUntil(Temporal endDateTime, TemporalUnit unit) {
         if (endDateTime instanceof Year == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }

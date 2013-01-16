@@ -49,8 +49,8 @@ import java.util.Objects;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.temporal.ChronoField;
-import org.threeten.bp.temporal.DateTimeField;
-import org.threeten.bp.temporal.ISOWeeks;
+import org.threeten.bp.temporal.ISOFields;
+import org.threeten.bp.temporal.TemporalField;
 
 /**
  * Provides common implementations of {@code DateTimeFormatter}.
@@ -135,9 +135,9 @@ public final class DateTimeFormatters {
      * Exactly 5 pattern letters will use the {@link TextStyle#NARROW narrow form}.
      * <p>
      * <b>Number</b>: If the count of letters is one, then the value is printed using the minimum number
-     * of digits and without padding as per {@link DateTimeFormatterBuilder#appendValue(DateTimeField)}.
+     * of digits and without padding as per {@link DateTimeFormatterBuilder#appendValue(TemporalField)}.
      * Otherwise, the count of digits is used as the width of the output field as per
-     * {@link DateTimeFormatterBuilder#appendValue(DateTimeField, int)}.
+     * {@link DateTimeFormatterBuilder#appendValue(TemporalField, int)}.
      * <p>
      * <b>Number/Text</b>: If the count of pattern letters is 3 or greater, use the Text rules above.
      * Otherwise use the Number rules above.
@@ -717,12 +717,12 @@ public final class DateTimeFormatters {
      * the ISO-8601 extended week-based date format.
      * The format consists of:
      * <p><ul>
-     * <li>Four digits or more for the {@link ISOWeeks#WEEK_BASED_YEAR week-based-year}.
+     * <li>Four digits or more for the {@link ISOFields#WEEK_BASED_YEAR week-based-year}.
      * Years in the range 0000 to 9999 will be pre-padded by zero to ensure four digits.
      * Years outside that range will have a prefixed positive or negative symbol.
      * <li>A dash
      * <li>The letter 'W'. Parsing is case insensitive.
-     * <li>Two digits for the {@link ISOWeeks#WEEK_OF_WEEK_BASED_YEAR week-of-week-based-year}.
+     * <li>Two digits for the {@link ISOFields#WEEK_OF_WEEK_BASED_YEAR week-of-week-based-year}.
      *  This is pre-padded by zero to ensure three digits.
      * <li>A dash
      * <li>One digit for the {@link ChronoField#DAY_OF_WEEK day-of-week}.
@@ -745,9 +745,9 @@ public final class DateTimeFormatters {
     static {
         ISO_WEEK_DATE = new DateTimeFormatterBuilder()
             .parseCaseInsensitive()
-            .appendValue(ISOWeeks.WEEK_BASED_YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
+            .appendValue(ISOFields.WEEK_BASED_YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
             .appendLiteral("-W")
-            .appendValue(ISOWeeks.WEEK_OF_WEEK_BASED_YEAR, 2)
+            .appendValue(ISOFields.WEEK_OF_WEEK_BASED_YEAR, 2)
             .appendLiteral('-')
             .appendValue(DAY_OF_WEEK, 1)
             .optionalStart()

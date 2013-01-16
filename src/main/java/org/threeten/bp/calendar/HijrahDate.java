@@ -61,8 +61,8 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoLocalDate;
-import org.threeten.bp.temporal.DateTimeField;
-import org.threeten.bp.temporal.DateTimeValueRange;
+import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.ValueRange;
 
 /**
  * A date in the Hijrah calendar system.
@@ -537,15 +537,15 @@ final class HijrahDate
     }
 
     @Override
-    public DateTimeValueRange range(DateTimeField field) {
+    public ValueRange range(TemporalField field) {
         if (field instanceof ChronoField) {
             if (isSupported(field)) {
                 ChronoField f = (ChronoField) field;
                 switch (f) {
-                    case DAY_OF_MONTH: return DateTimeValueRange.of(1, lengthOfMonth());
-                    case DAY_OF_YEAR: return DateTimeValueRange.of(1, lengthOfYear());
-                    case ALIGNED_WEEK_OF_MONTH: return DateTimeValueRange.of(1, 5);  // TODO
-                    case YEAR_OF_ERA: return DateTimeValueRange.of(1, 1000);  // TODO
+                    case DAY_OF_MONTH: return ValueRange.of(1, lengthOfMonth());
+                    case DAY_OF_YEAR: return ValueRange.of(1, lengthOfYear());
+                    case ALIGNED_WEEK_OF_MONTH: return ValueRange.of(1, 5);  // TODO
+                    case YEAR_OF_ERA: return ValueRange.of(1, 1000);  // TODO
                 }
                 return getChrono().range(f);
             }
@@ -555,7 +555,7 @@ final class HijrahDate
     }
 
     @Override
-    public long getLong(DateTimeField field) {
+    public long getLong(TemporalField field) {
         if (field instanceof ChronoField) {
             switch ((ChronoField) field) {
                 case DAY_OF_WEEK: return dayOfWeek.getValue();
@@ -577,7 +577,7 @@ final class HijrahDate
     }
 
     @Override
-    public HijrahDate with(DateTimeField field, long newValue) {
+    public HijrahDate with(TemporalField field, long newValue) {
         if (field instanceof ChronoField) {
             ChronoField f = (ChronoField) field;
             f.checkValidValue(newValue);        // TODO: validate value

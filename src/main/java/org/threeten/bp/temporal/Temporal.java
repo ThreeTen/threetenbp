@@ -39,7 +39,7 @@ import org.threeten.bp.LocalTime;
  * General access to a date and/or time object that is complete enough to be manipulated.
  * <p>
  * There are two types of date-time class modeled in the API.
- * The first, {@link DateTimeAccessor}, expresses the date-time only as a map of field to value.
+ * The first, {@link TemporalAccessor}, expresses the date-time only as a map of field to value.
  * The second, this interface, extends that to also support addition and subtraction.
  * <p>
  * For example, a class representing the combination of day-of-week and day-of-month,
@@ -78,7 +78,7 @@ import org.threeten.bp.LocalTime;
  * about their thread-safety.
  * All implementations must be {@link Comparable}.
  */
-public interface DateTime extends DateTimeAccessor {
+public interface Temporal extends TemporalAccessor {
 
     /**
      * Returns an adjusted object of the same type as this object with the adjustment made.
@@ -86,7 +86,7 @@ public interface DateTime extends DateTimeAccessor {
      * This adjusts this date-time according to the rules of the specified adjuster.
      * A simple adjuster might simply set the one of the fields, such as the year field.
      * A more complex adjuster might set the date to the last day of the month.
-     * A selection of common adjustments is provided in {@link DateTimeAdjusters}.
+     * A selection of common adjustments is provided in {@link TemporalAdjusters}.
      * These include finding the "last day of the month" and "next Wednesday".
      * The adjuster is responsible for handling special cases, such as the varying
      * lengths of month and leap years.
@@ -105,7 +105,7 @@ public interface DateTime extends DateTimeAccessor {
      * @throws DateTimeException if the adjustment cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    DateTime with(WithAdjuster adjuster);
+    Temporal with(WithAdjuster adjuster);
 
     /**
      * Returns an object of the same type as this object with the specified field altered.
@@ -121,7 +121,7 @@ public interface DateTime extends DateTimeAccessor {
      *
      * <h5>Implementation notes</h5>
      * Implementations must check and handle any fields defined in {@link ChronoField} before
-     * delegating on to the {@link DateTimeField#doWith(DateTime, long) doWith method} on the specified field.
+     * delegating on to the {@link TemporalField#doWith(Temporal, long) doWith method} on the specified field.
      * If the implementing class is immutable, then this method must return an updated copy of the original.
      * If the class is mutable, then this method must update the original and return it.
      *
@@ -131,7 +131,7 @@ public interface DateTime extends DateTimeAccessor {
      * @throws DateTimeException if the field cannot be set
      * @throws ArithmeticException if numeric overflow occurs
      */
-    DateTime with(DateTimeField field, long newValue);
+    Temporal with(TemporalField field, long newValue);
 
     //-----------------------------------------------------------------------
     /**
@@ -159,7 +159,7 @@ public interface DateTime extends DateTimeAccessor {
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    DateTime plus(PlusAdjuster adjuster);
+    Temporal plus(PlusAdjuster adjuster);
 
     /**
      * Returns an object of the same type as this object with the specified period added.
@@ -179,7 +179,7 @@ public interface DateTime extends DateTimeAccessor {
      *
      * <h5>Implementation notes</h5>
      * Implementations must check and handle any fields defined in {@link ChronoField} before
-     * delegating on to the {@link PeriodUnit#doPlus(DateTime, long) doPlus method} on the specified unit.
+     * delegating on to the {@link TemporalUnit#doPlus(Temporal, long) doPlus method} on the specified unit.
      * If the implementing class is immutable, then this method must return an updated copy of the original.
      * If the class is mutable, then this method must update the original and return it.
      *
@@ -189,7 +189,7 @@ public interface DateTime extends DateTimeAccessor {
      * @throws DateTimeException if the unit cannot be added
      * @throws ArithmeticException if numeric overflow occurs
      */
-    DateTime plus(long amountToAdd, PeriodUnit unit);
+    Temporal plus(long amountToAdd, TemporalUnit unit);
 
     //-----------------------------------------------------------------------
     /**
@@ -217,7 +217,7 @@ public interface DateTime extends DateTimeAccessor {
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    DateTime minus(MinusAdjuster adjuster);
+    Temporal minus(MinusAdjuster adjuster);
 
     /**
      * Returns an object of the same type as this object with the specified period subtracted.
@@ -237,10 +237,10 @@ public interface DateTime extends DateTimeAccessor {
      *
      * <h5>Implementation notes</h5>
      * Implementations must check and handle any fields defined in {@link ChronoField} before
-     * delegating on to the {@link PeriodUnit#doPlus(DateTime, long) doPlus method} on the specified unit.
+     * delegating on to the {@link TemporalUnit#doPlus(Temporal, long) doPlus method} on the specified unit.
      * If the implementing class is immutable, then this method must return an updated copy of the original.
      * If the class is mutable, then this method must update the original and return it.
-     * This method is normally implemented by delegating to {@link #plus(long, PeriodUnit)} with
+     * This method is normally implemented by delegating to {@link #plus(long, TemporalUnit)} with
      * the amount negated.
      *
      * @param amountToSubtract  the amount of the specified unit to subtract, may be negative
@@ -249,14 +249,14 @@ public interface DateTime extends DateTimeAccessor {
      * @throws DateTimeException if the unit cannot be subtracted
      * @throws ArithmeticException if numeric overflow occurs
      */
-    DateTime minus(long amountToSubtract, PeriodUnit unit);
+    Temporal minus(long amountToSubtract, TemporalUnit unit);
 
     //-----------------------------------------------------------------------
     /**
      * Calculates the period from this date-time until the given date-time in the specified unit.
      * <p>
      * This is used to calculate the period between two date-times.
-     * This method operates in association with {@link PeriodUnit#between}.
+     * This method operates in association with {@link TemporalUnit#between}.
      * That method returns an object which can be used directly in addition/subtraction
      * whereas this method returns the amount directly:
      * <pre>
@@ -271,7 +271,7 @@ public interface DateTime extends DateTimeAccessor {
      * @throws DateTimeException if the period cannot be calculated
      * @throws ArithmeticException if numeric overflow occurs
      */
-    long periodUntil(DateTime endDateTime, PeriodUnit unit);
+    long periodUntil(Temporal endDateTime, TemporalUnit unit);
 
     //-----------------------------------------------------------------------
     /**
@@ -282,12 +282,12 @@ public interface DateTime extends DateTimeAccessor {
      * sets the date to the last day of the month.
      * <p>
      * Implementations should not normally be used directly.
-     * Instead, the {@link DateTime#with(WithAdjuster)} method should be used:
+     * Instead, the {@link Temporal#with(WithAdjuster)} method should be used:
      * <pre>
      *   dateTime = dateTime.with(adjuster);
      * </pre>
      * <p>
-     * See {@link DateTimeAdjusters} for a standard set of adjusters, including finding the
+     * See {@link TemporalAdjusters} for a standard set of adjusters, including finding the
      * last day of the month.
      *
      * <h4>Implementation notes</h4>
@@ -299,7 +299,7 @@ public interface DateTime extends DateTimeAccessor {
          * Implementation of the strategy to make an adjustment to the specified date-time object.
          * <p>
          * This method is not intended to be called by application code directly.
-         * Instead, the {@link DateTime#with(WithAdjuster)} method should be used:
+         * Instead, the {@link Temporal#with(WithAdjuster)} method should be used:
          * <pre>
          *   dateTime = dateTime.with(adjuster);
          * </pre>
@@ -321,7 +321,7 @@ public interface DateTime extends DateTimeAccessor {
          * @throws DateTimeException if unable to make the adjustment
          * @throws ArithmeticException if numeric overflow occurs
          */
-        DateTime doWithAdjustment(DateTime dateTime);
+        Temporal doWithAdjustment(Temporal dateTime);
     }
 
     //-----------------------------------------------------------------------
@@ -332,7 +332,7 @@ public interface DateTime extends DateTimeAccessor {
      * Implementations of this interface are used to add to a date-time.
      * <p>
      * Implementations should not normally be used directly.
-     * Instead, the {@link DateTime#plus(PlusAdjuster)} method should be used:
+     * Instead, the {@link Temporal#plus(PlusAdjuster)} method should be used:
      * <pre>
      *   dateTime = dateTime.plus(adjuster);
      * </pre>
@@ -346,7 +346,7 @@ public interface DateTime extends DateTimeAccessor {
          * Implementation of the strategy to add to the specified date-time object.
          * <p>
          * This method is not intended to be called by application code directly.
-         * Instead, the {@link org.threeten.bp.temporal.DateTime#plus(PlusAdjuster)} method should be used:
+         * Instead, the {@link org.threeten.bp.temporal.Temporal#plus(PlusAdjuster)} method should be used:
          * <pre>
          *   dateTime = dateTime.plus(adjuster);
          * </pre>
@@ -368,7 +368,7 @@ public interface DateTime extends DateTimeAccessor {
          * @throws DateTimeException if unable to add
          * @throws ArithmeticException if numeric overflow occurs
          */
-        DateTime doPlusAdjustment(DateTime dateTime);
+        Temporal doPlusAdjustment(Temporal dateTime);
     }
 
     /**
@@ -378,7 +378,7 @@ public interface DateTime extends DateTimeAccessor {
      * Implementations of this interface are used to subtract from a date-time.
      * <p>
      * Implementations should not normally be used directly.
-     * Instead, the {@link DateTime#minus(MinusAdjuster)} method should be used:
+     * Instead, the {@link Temporal#minus(MinusAdjuster)} method should be used:
      * <pre>
      *   dateTime = dateTime.minus(adjuster);
      * </pre>
@@ -392,7 +392,7 @@ public interface DateTime extends DateTimeAccessor {
          * Implementation of the strategy to subtract from the specified date-time object.
          * <p>
          * This method is not intended to be called by application code directly.
-         * Instead, the {@link org.threeten.bp.temporal.DateTime#minus(MinusAdjuster)} method should be used:
+         * Instead, the {@link org.threeten.bp.temporal.Temporal#minus(MinusAdjuster)} method should be used:
          * <pre>
          *   dateTime = dateTime.minus(adjuster);
          * </pre>
@@ -414,7 +414,7 @@ public interface DateTime extends DateTimeAccessor {
          * @throws DateTimeException if unable to subtract
          * @throws ArithmeticException if numeric overflow occurs
          */
-        DateTime doMinusAdjustment(DateTime dateTime);
+        Temporal doMinusAdjustment(Temporal dateTime);
     }
 
 }

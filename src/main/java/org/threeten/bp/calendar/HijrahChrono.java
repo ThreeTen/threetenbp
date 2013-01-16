@@ -44,9 +44,9 @@ import org.threeten.bp.DateTimeException;
 import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoLocalDate;
-import org.threeten.bp.temporal.DateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeValueRange;
 import org.threeten.bp.temporal.Era;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.ValueRange;
 
 /**
  * The Hijrah calendar system.
@@ -255,7 +255,7 @@ public final class HijrahChrono extends Chrono<HijrahChrono> implements Serializ
     }
 
     @Override
-    public ChronoLocalDate<HijrahChrono> date(DateTimeAccessor dateTime) {
+    public ChronoLocalDate<HijrahChrono> date(TemporalAccessor dateTime) {
         if (dateTime instanceof HijrahDate) {
             return (HijrahDate) dateTime;
         }
@@ -295,7 +295,7 @@ public final class HijrahChrono extends Chrono<HijrahChrono> implements Serializ
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeValueRange range(ChronoField field) {
+    public ValueRange range(ChronoField field) {
         return field.range();
     }
 

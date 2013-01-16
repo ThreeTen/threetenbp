@@ -49,8 +49,7 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.OffsetDate;
 import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.temporal.DateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeBuilder;
+import org.threeten.bp.temporal.TemporalAccessor;
 
 /**
  * Test DateTimeFormatter.
@@ -105,7 +104,7 @@ public class TCKDateTimeFormatter {
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_print_Calendrical_null() throws Exception {
         DateTimeFormatter test = fmt.withLocale(Locale.ENGLISH).withSymbols(DateTimeFormatSymbols.STANDARD);
-        test.print((DateTimeAccessor) null);
+        test.print((TemporalAccessor) null);
     }
 
     //-----------------------------------------------------------------------
@@ -128,7 +127,7 @@ public class TCKDateTimeFormatter {
     public void test_print_CalendricalAppendable_nullCalendrical() throws Exception {
         DateTimeFormatter test = fmt.withLocale(Locale.ENGLISH).withSymbols(DateTimeFormatSymbols.STANDARD);
         StringBuilder buf = new StringBuilder();
-        test.printTo((DateTimeAccessor) null, buf);
+        test.printTo((TemporalAccessor) null, buf);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
@@ -217,14 +216,14 @@ public class TCKDateTimeFormatter {
     @Test(groups={"tck"})
     public void test_parseBest_firstOption() throws Exception {
         DateTimeFormatter test = DateTimeFormatters.pattern("yyyy-MM-dd[ZZZ]");
-        DateTimeAccessor result = test.parseBest("2011-06-30+03:00", OffsetDate.class, LocalDate.class);
+        TemporalAccessor result = test.parseBest("2011-06-30+03:00", OffsetDate.class, LocalDate.class);
         assertEquals(result, OffsetDate.of(2011, 6, 30, ZoneOffset.ofHours(3)));
     }
 
     @Test(groups={"tck"})
     public void test_parseBest_secondOption() throws Exception {
         DateTimeFormatter test = DateTimeFormatters.pattern("yyyy-MM-dd[ZZZ]");
-        DateTimeAccessor result = test.parseBest("2011-06-30", OffsetDate.class, LocalDate.class);
+        TemporalAccessor result = test.parseBest("2011-06-30", OffsetDate.class, LocalDate.class);
         assertEquals(result, LocalDate.of(2011, 6, 30));
     }
 
@@ -486,7 +485,7 @@ public class TCKDateTimeFormatter {
         DateTimeFormatter test = fmt.withLocale(Locale.ENGLISH).withSymbols(DateTimeFormatSymbols.STANDARD);
         Format format = test.toFormat();
         ParsePosition pos = new ParsePosition(0);
-        DateTimeAccessor result = (DateTimeAccessor) format.parseObject("ONEXXX", pos);
+        TemporalAccessor result = (TemporalAccessor) format.parseObject("ONEXXX", pos);
         assertEquals(pos.getIndex(), 0);  // TODO: is this right?
         assertEquals(pos.getErrorIndex(), 3);
         assertEquals(result, null);

@@ -49,8 +49,8 @@ import org.threeten.bp.temporal.ChronoLocalDate;
 import org.threeten.bp.temporal.ChronoLocalDateTime;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.ChronoZonedDateTime;
-import org.threeten.bp.temporal.DateTimeAdjusters;
 import org.threeten.bp.temporal.ISOChrono;
+import org.threeten.bp.temporal.TemporalAdjusters;
 
 /**
  * Test.
@@ -166,14 +166,14 @@ public class TestMinguoChrono {
     @Test(groups={"tck"})
     public void test_adjust1() {
         ChronoLocalDate<MinguoChrono> base = MinguoChrono.INSTANCE.date(2012, 10, 29);
-        ChronoLocalDate<MinguoChrono> test = base.with(DateTimeAdjusters.lastDayOfMonth());
+        ChronoLocalDate<MinguoChrono> test = base.with(TemporalAdjusters.lastDayOfMonth());
         assertEquals(test, MinguoChrono.INSTANCE.date(2012, 10, 31));
     }
 
     @Test(groups={"tck"})
     public void test_adjust2() {
         ChronoLocalDate<MinguoChrono> base = MinguoChrono.INSTANCE.date(1728, 12, 2);
-        ChronoLocalDate<MinguoChrono> test = base.with(DateTimeAdjusters.lastDayOfMonth());
+        ChronoLocalDate<MinguoChrono> test = base.with(TemporalAdjusters.lastDayOfMonth());
         assertEquals(test, MinguoChrono.INSTANCE.date(1728, 12, 31));
     }
 

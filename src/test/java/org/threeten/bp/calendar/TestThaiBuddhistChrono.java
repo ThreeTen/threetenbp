@@ -50,9 +50,9 @@ import org.threeten.bp.Month;
 import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoLocalDate;
-import org.threeten.bp.temporal.DateTimeAdjusters;
-import org.threeten.bp.temporal.DateTimeValueRange;
 import org.threeten.bp.temporal.ISOChrono;
+import org.threeten.bp.temporal.TemporalAdjusters;
+import org.threeten.bp.temporal.ValueRange;
 
 /**
  * Test.
@@ -140,14 +140,14 @@ public class TestThaiBuddhistChrono {
     @Test(groups={"tck"})
     public void test_adjust1() {
         ChronoLocalDate<ThaiBuddhistChrono> base = ThaiBuddhistChrono.INSTANCE.date(1728, 10, 29);
-        ChronoLocalDate<ThaiBuddhistChrono> test = base.with(DateTimeAdjusters.lastDayOfMonth());
+        ChronoLocalDate<ThaiBuddhistChrono> test = base.with(TemporalAdjusters.lastDayOfMonth());
         assertEquals(test, ThaiBuddhistChrono.INSTANCE.date(1728, 10, 31));
     }
 
     @Test(groups={"tck"})
     public void test_adjust2() {
         ChronoLocalDate<ThaiBuddhistChrono> base = ThaiBuddhistChrono.INSTANCE.date(1728, 12, 2);
-        ChronoLocalDate<ThaiBuddhistChrono> test = base.with(DateTimeAdjusters.lastDayOfMonth());
+        ChronoLocalDate<ThaiBuddhistChrono> test = base.with(TemporalAdjusters.lastDayOfMonth());
         assertEquals(test, ThaiBuddhistChrono.INSTANCE.date(1728, 12, 31));
     }
 
@@ -251,8 +251,8 @@ public class TestThaiBuddhistChrono {
     public void test_Chrono_range() {
         long minYear = LocalDate.MIN_DATE.getYear() + YDIFF;
         long maxYear = LocalDate.MAX_DATE.getYear() + YDIFF;
-        assertEquals(ThaiBuddhistChrono.INSTANCE.range(YEAR), DateTimeValueRange.of(minYear, maxYear));
-        assertEquals(ThaiBuddhistChrono.INSTANCE.range(YEAR_OF_ERA), DateTimeValueRange.of(1, -minYear + 1, maxYear));
+        assertEquals(ThaiBuddhistChrono.INSTANCE.range(YEAR), ValueRange.of(minYear, maxYear));
+        assertEquals(ThaiBuddhistChrono.INSTANCE.range(YEAR_OF_ERA), ValueRange.of(1, -minYear + 1, maxYear));
 
         assertEquals(ThaiBuddhistChrono.INSTANCE.range(DAY_OF_MONTH), DAY_OF_MONTH.range());
         assertEquals(ThaiBuddhistChrono.INSTANCE.range(DAY_OF_YEAR), DAY_OF_YEAR.range());

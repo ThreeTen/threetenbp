@@ -32,8 +32,8 @@
 package org.threeten.bp.zone;
 
 import static org.threeten.bp.temporal.ChronoField.YEAR;
-import static org.threeten.bp.temporal.DateTimeAdjusters.nextOrSame;
-import static org.threeten.bp.temporal.DateTimeAdjusters.previousOrSame;
+import static org.threeten.bp.temporal.TemporalAdjusters.nextOrSame;
+import static org.threeten.bp.temporal.TemporalAdjusters.previousOrSame;
 
 import java.util.ArrayList;
 import java.util.Collections;

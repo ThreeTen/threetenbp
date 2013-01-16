@@ -47,8 +47,8 @@ import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoLocalDate;
-import org.threeten.bp.temporal.DateTimeField;
-import org.threeten.bp.temporal.DateTimeValueRange;
+import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.ValueRange;
 
 import sun.util.calendar.LocalGregorianCalendar;
 
@@ -160,7 +160,7 @@ final class JapaneseDate
     }
 
     @Override
-    public DateTimeValueRange range(DateTimeField field) {
+    public ValueRange range(TemporalField field) {
         if (field instanceof ChronoField) {
             if (isSupported(field)) {
                 ChronoField f = (ChronoField) field;
@@ -177,16 +177,16 @@ final class JapaneseDate
         return field.doRange(this);
     }
 
-    private DateTimeValueRange actualRange(int calendarField) {
+    private ValueRange actualRange(int calendarField) {
         Calendar jcal = Calendar.getInstance(JapaneseChrono.LOCALE);
         jcal.set(Calendar.ERA, era.getValue() + JapaneseEra.ERA_OFFSET);
         jcal.set(yearOfEra, isoDate.getMonthValue() - 1, isoDate.getDayOfMonth());
-        return DateTimeValueRange.of(jcal.getActualMinimum(calendarField),
+        return ValueRange.of(jcal.getActualMinimum(calendarField),
                                      jcal.getActualMaximum(calendarField));
     }
 
     @Override
-    public long getLong(DateTimeField field) {
+    public long getLong(TemporalField field) {
         if (field instanceof ChronoField) {
             switch ((ChronoField) field) {
                 case YEAR_OF_ERA:
@@ -224,7 +224,7 @@ final class JapaneseDate
 
     //-----------------------------------------------------------------------
     @Override
-    public JapaneseDate with(DateTimeField field, long newValue) {
+    public JapaneseDate with(TemporalField field, long newValue) {
         if (field instanceof ChronoField) {
             ChronoField f = (ChronoField) field;
             if (getLong(f) == newValue) {

@@ -50,7 +50,7 @@ import java.util.TimeZone;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.format.TextStyle;
-import org.threeten.bp.temporal.DateTimeAccessor;
+import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.zone.ZoneOffsetTransition;
 import org.threeten.bp.zone.ZoneRules;
 import org.threeten.bp.zone.ZoneRulesException;
@@ -449,7 +449,7 @@ public class TestZoneId extends AbstractTest {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_factory_CalendricalObject_null() {
-        ZoneId.from((DateTimeAccessor) null);
+        ZoneId.from((TemporalAccessor) null);
     }
 
     //-----------------------------------------------------------------------

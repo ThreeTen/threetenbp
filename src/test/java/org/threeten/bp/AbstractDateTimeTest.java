@@ -37,9 +37,9 @@ import static org.testng.Assert.fail;
 import java.util.List;
 
 import org.testng.annotations.Test;
-import org.threeten.bp.temporal.DateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeAccessor.Query;
-import org.threeten.bp.temporal.DateTimeField;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalAccessor.Query;
+import org.threeten.bp.temporal.TemporalField;
 
 /**
  * Base test class for {@code DateTime}.
@@ -50,27 +50,27 @@ public abstract class AbstractDateTimeTest extends AbstractTest {
      * Sample {@code DateTime} objects.
      * @return the objects, not null
      */
-    protected abstract List<DateTimeAccessor> samples();
+    protected abstract List<TemporalAccessor> samples();
 
     /**
      * List of valid supported fields.
      * @return the fields, not null
      */
-    protected abstract List<DateTimeField> validFields();
+    protected abstract List<TemporalField> validFields();
 
     /**
      * List of invalid unsupported fields.
      * @return the fields, not null
      */
-    protected abstract List<DateTimeField> invalidFields();
+    protected abstract List<TemporalField> invalidFields();
 
     //-----------------------------------------------------------------------
     // isSupported(DateTimeField)
     //-----------------------------------------------------------------------
     @Test(groups = "tck")
     public void basicTest_isSupported_DateTimeField_supported() {
-        for (DateTimeAccessor sample : samples()) {
-            for (DateTimeField field : validFields()) {
+        for (TemporalAccessor sample : samples()) {
+            for (TemporalField field : validFields()) {
                 assertEquals(sample.isSupported(field), true, "Failed on " + sample + " " + field);
             }
         }
@@ -78,8 +78,8 @@ public abstract class AbstractDateTimeTest extends AbstractTest {
 
     @Test(groups = "tck")
     public void basicTest_isSupported_DateTimeField_unsupported() {
-        for (DateTimeAccessor sample : samples()) {
-            for (DateTimeField field : invalidFields()) {
+        for (TemporalAccessor sample : samples()) {
+            for (TemporalField field : invalidFields()) {
                 assertEquals(sample.isSupported(field), false, "Failed on " + sample + " " + field);
             }
         }
@@ -87,7 +87,7 @@ public abstract class AbstractDateTimeTest extends AbstractTest {
 
     @Test(groups = "tck")
     public void basicTest_isSupported_DateTimeField_null() {
-        for (DateTimeAccessor sample : samples()) {
+        for (TemporalAccessor sample : samples()) {
             assertEquals(sample.isSupported(null), false, "Failed on " + sample);
         }
     }
@@ -107,8 +107,8 @@ public abstract class AbstractDateTimeTest extends AbstractTest {
 
     @Test(groups = "tck")
     public void basicTest_range_DateTimeField_unsupported() {
-        for (DateTimeAccessor sample : samples()) {
-            for (DateTimeField field : invalidFields()) {
+        for (TemporalAccessor sample : samples()) {
+            for (TemporalField field : invalidFields()) {
                 try {
                     sample.range(field);
                     fail("Failed on " + sample + " " + field);
@@ -121,7 +121,7 @@ public abstract class AbstractDateTimeTest extends AbstractTest {
 
     @Test(groups = "tck")
     public void basicTest_range_DateTimeField_null() {
-        for (DateTimeAccessor sample : samples()) {
+        for (TemporalAccessor sample : samples()) {
             try {
                 sample.range(null);
                 fail("Failed on " + sample);
@@ -155,8 +155,8 @@ public abstract class AbstractDateTimeTest extends AbstractTest {
 
     @Test(groups = "tck")
     public void basicTest_get_DateTimeField_unsupported() {
-        for (DateTimeAccessor sample : samples()) {
-            for (DateTimeField field : invalidFields()) {
+        for (TemporalAccessor sample : samples()) {
+            for (TemporalField field : invalidFields()) {
                 try {
                     sample.get(field);
                     fail("Failed on " + sample + " " + field);
@@ -169,7 +169,7 @@ public abstract class AbstractDateTimeTest extends AbstractTest {
 
     @Test(groups = "tck")
     public void basicTest_get_DateTimeField_null() {
-        for (DateTimeAccessor sample : samples()) {
+        for (TemporalAccessor sample : samples()) {
             try {
                 sample.get(null);
                 fail("Failed on " + sample);
@@ -194,8 +194,8 @@ public abstract class AbstractDateTimeTest extends AbstractTest {
 
     @Test(groups = "tck")
     public void basicTest_getLong_DateTimeField_unsupported() {
-        for (DateTimeAccessor sample : samples()) {
-            for (DateTimeField field : invalidFields()) {
+        for (TemporalAccessor sample : samples()) {
+            for (TemporalField field : invalidFields()) {
                 try {
                     sample.getLong(field);
                     fail("Failed on " + sample + " " + field);
@@ -208,7 +208,7 @@ public abstract class AbstractDateTimeTest extends AbstractTest {
 
     @Test(groups = "tck")
     public void basicTest_getLong_DateTimeField_null() {
-        for (DateTimeAccessor sample : samples()) {
+        for (TemporalAccessor sample : samples()) {
             try {
                 sample.getLong(null);
                 fail("Failed on " + sample);
@@ -221,10 +221,10 @@ public abstract class AbstractDateTimeTest extends AbstractTest {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void basicTest_query() {
-        for (DateTimeAccessor sample : samples()) {
+        for (TemporalAccessor sample : samples()) {
             assertEquals(sample.query(new Query<String>() {
                 @Override
-                public String doQuery(DateTimeAccessor dateTime) {
+                public String doQuery(TemporalAccessor dateTime) {
                     return "foo";
                 }
             }), "foo");

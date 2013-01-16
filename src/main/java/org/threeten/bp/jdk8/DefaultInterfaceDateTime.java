@@ -31,8 +31,8 @@
  */
 package org.threeten.bp.jdk8;
 
-import org.threeten.bp.temporal.DateTime;
-import org.threeten.bp.temporal.PeriodUnit;
+import org.threeten.bp.temporal.Temporal;
+import org.threeten.bp.temporal.TemporalUnit;
 
 /**
  * A temporary class providing implementations that will become default interface
@@ -40,25 +40,25 @@ import org.threeten.bp.temporal.PeriodUnit;
  */
 public abstract class DefaultInterfaceDateTime
         extends DefaultInterfaceDateTimeAccessor
-        implements DateTime {
+        implements Temporal {
 
     @Override
-    public DateTime with(WithAdjuster adjuster) {
+    public Temporal with(WithAdjuster adjuster) {
         return adjuster.doWithAdjustment(this);
     }
 
     @Override
-    public DateTime plus(PlusAdjuster adjuster) {
+    public Temporal plus(PlusAdjuster adjuster) {
         return adjuster.doPlusAdjustment(this);
     }
 
     @Override
-    public DateTime minus(MinusAdjuster adjuster) {
+    public Temporal minus(MinusAdjuster adjuster) {
         return adjuster.doMinusAdjustment(this);
     }
 
     @Override
-    public DateTime minus(long amountToSubtract, PeriodUnit unit) {
+    public Temporal minus(long amountToSubtract, TemporalUnit unit) {
         return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
 

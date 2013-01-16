@@ -44,8 +44,8 @@ import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.Month;
 import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoLocalDate;
-import org.threeten.bp.temporal.DateTimeAdjusters;
 import org.threeten.bp.temporal.ISOChrono;
+import org.threeten.bp.temporal.TemporalAdjusters;
 
 /**
  * Test.
@@ -130,14 +130,14 @@ public class TestHijrahChrono {
     @Test(groups={"tck"})
     public void test_adjust1() {
         ChronoLocalDate<?> base = HijrahChrono.INSTANCE.date(1728, 10, 28);
-        ChronoLocalDate<?> test = base.with(DateTimeAdjusters.lastDayOfMonth());
+        ChronoLocalDate<?> test = base.with(TemporalAdjusters.lastDayOfMonth());
         assertEquals(test, HijrahChrono.INSTANCE.date(1728, 10, 29));
     }
 
     @Test(groups={"tck"})
     public void test_adjust2() {
         ChronoLocalDate<?> base = HijrahChrono.INSTANCE.date(1728, 12, 2);
-        ChronoLocalDate<?> test = base.with(DateTimeAdjusters.lastDayOfMonth());
+        ChronoLocalDate<?> test = base.with(TemporalAdjusters.lastDayOfMonth());
         assertEquals(test, HijrahChrono.INSTANCE.date(1728, 12, 30));
     }
 

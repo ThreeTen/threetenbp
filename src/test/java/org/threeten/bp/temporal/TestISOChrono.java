@@ -172,14 +172,14 @@ public class TestISOChrono {
     @Test(groups={"tck"})
     public void test_adjust1() {
         ChronoLocalDate<ISOChrono> base = ISOChrono.INSTANCE.date(1728, 10, 28);
-        ChronoLocalDate<ISOChrono> test = base.with(DateTimeAdjusters.lastDayOfMonth());
+        ChronoLocalDate<ISOChrono> test = base.with(TemporalAdjusters.lastDayOfMonth());
         assertEquals(test, ISOChrono.INSTANCE.date(1728, 10, 31));
     }
 
     @Test(groups={"tck"})
     public void test_adjust2() {
         ChronoLocalDate<ISOChrono> base = ISOChrono.INSTANCE.date(1728, 12, 2);
-        ChronoLocalDate<ISOChrono> test = base.with(DateTimeAdjusters.lastDayOfMonth());
+        ChronoLocalDate<ISOChrono> test = base.with(TemporalAdjusters.lastDayOfMonth());
         assertEquals(test, ISOChrono.INSTANCE.date(1728, 12, 31));
     }
 

@@ -51,7 +51,7 @@ import java.io.ObjectOutputStream;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.format.DateTimeParseException;
-import org.threeten.bp.temporal.PeriodUnit;
+import org.threeten.bp.temporal.TemporalUnit;
 
 /**
  * Test Duration.
@@ -344,7 +344,7 @@ public class TCKDuration {
     }
 
     @Test(dataProvider="OfPeriodUnit", groups={"tck"})
-    public void factory_of_long_PeriodUnit(long amount, PeriodUnit unit, long expectedSeconds, int expectedNanoOfSecond) {
+    public void factory_of_long_PeriodUnit(long amount, TemporalUnit unit, long expectedSeconds, int expectedNanoOfSecond) {
         Duration t = Duration.of(amount, unit);
         assertEquals(t.getSeconds(), expectedSeconds);
         assertEquals(t.getNano(), expectedNanoOfSecond);
@@ -363,7 +363,7 @@ public class TCKDuration {
     }
 
     @Test(dataProvider="OfPeriodUnitOutOfRange", expectedExceptions=ArithmeticException.class, groups={"tck"})
-    public void factory_of_long_PeriodUnit_outOfRange(long amount, PeriodUnit unit) {
+    public void factory_of_long_PeriodUnit_outOfRange(long amount, TemporalUnit unit) {
         Duration.of(amount, unit);
     }
 
@@ -374,7 +374,7 @@ public class TCKDuration {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_of_long_PeriodUnit_null() {
-        Duration.of(1, (PeriodUnit) null);
+        Duration.of(1, (TemporalUnit) null);
     }
 
     //-----------------------------------------------------------------------
@@ -850,7 +850,7 @@ public class TCKDuration {
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void plus_long_PeriodUnit_null() {
        Duration t = Duration.ofSeconds(1);
-       t.plus(1, (PeriodUnit) null);
+       t.plus(1, (TemporalUnit) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1343,7 +1343,7 @@ public class TCKDuration {
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void minus_long_PeriodUnit_null() {
        Duration t = Duration.ofSeconds(1);
-       t.minus(1, (PeriodUnit) null);
+       t.minus(1, (TemporalUnit) null);
     }
 
     //-----------------------------------------------------------------------

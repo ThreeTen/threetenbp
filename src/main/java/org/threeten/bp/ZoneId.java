@@ -43,9 +43,9 @@ import java.util.TimeZone;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.TextStyle;
 import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeAccessor.Query;
-import org.threeten.bp.temporal.DateTimeField;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalAccessor.Query;
+import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.zone.ZoneRules;
 import org.threeten.bp.zone.ZoneRulesException;
 import org.threeten.bp.zone.ZoneRulesProvider;
@@ -326,7 +326,7 @@ public abstract class ZoneId {
      * @return the zone ID, not null
      * @throws DateTimeException if unable to convert to a {@code ZoneId}
      */
-    public static ZoneId from(DateTimeAccessor dateTime) {
+    public static ZoneId from(TemporalAccessor dateTime) {
         ZoneId obj = dateTime.query(Query.ZONE_ID);
         if (obj == null) {
             throw new DateTimeException("Unable to convert DateTimeAccessor to ZoneId: " + dateTime.getClass());
@@ -394,11 +394,11 @@ public abstract class ZoneId {
     public String getText(TextStyle style, Locale locale) {
     	return new DateTimeFormatterBuilder().appendZoneText(style).toFormatter(locale).print(new DefaultInterfaceDateTimeAccessor() {
             @Override
-            public boolean isSupported(DateTimeField field) {
+            public boolean isSupported(TemporalField field) {
                 return false;
             }
             @Override
-            public long getLong(DateTimeField field) {
+            public long getLong(TemporalField field) {
                 throw new DateTimeException("Unsupported field: " + field);
             }
             @SuppressWarnings("unchecked")

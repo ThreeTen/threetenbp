@@ -55,14 +55,14 @@ import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoLocalDateTime;
 import org.threeten.bp.temporal.ChronoUnit;
-import org.threeten.bp.temporal.DateTime;
-import org.threeten.bp.temporal.DateTime.WithAdjuster;
-import org.threeten.bp.temporal.DateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeAdjusters;
-import org.threeten.bp.temporal.DateTimeField;
-import org.threeten.bp.temporal.DateTimeValueRange;
 import org.threeten.bp.temporal.ISOChrono;
-import org.threeten.bp.temporal.PeriodUnit;
+import org.threeten.bp.temporal.Temporal;
+import org.threeten.bp.temporal.Temporal.WithAdjuster;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalAdjusters;
+import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalUnit;
+import org.threeten.bp.temporal.ValueRange;
 import org.threeten.bp.zone.ZoneRules;
 
 /**
@@ -82,7 +82,7 @@ import org.threeten.bp.zone.ZoneRules;
  */
 public final class LocalDateTime
         extends DefaultInterfaceChronoLocalDateTime<ISOChrono>
-        implements ChronoLocalDateTime<ISOChrono>, DateTime, WithAdjuster, Serializable {
+        implements ChronoLocalDateTime<ISOChrono>, Temporal, WithAdjuster, Serializable {
 
     /**
      * Constant for the local date-time of midnight at the start of the minimum date.
@@ -369,7 +369,7 @@ public final class LocalDateTime
      * @return the local date-time, not null
      * @throws DateTimeException if unable to convert to a {@code LocalDateTime}
      */
-    public static LocalDateTime from(DateTimeAccessor dateTime) {
+    public static LocalDateTime from(TemporalAccessor dateTime) {
         if (dateTime instanceof LocalDateTime) {
             return (LocalDateTime) dateTime;
         } else if (dateTime instanceof ZonedDateTime) {
@@ -439,7 +439,7 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean isSupported(DateTimeField field) {
+    public boolean isSupported(TemporalField field) {
         if (field instanceof ChronoField) {
             ChronoField f = (ChronoField) field;
             return f.isDateField() || f.isTimeField();
@@ -448,7 +448,7 @@ public final class LocalDateTime
     }
 
     @Override
-    public DateTimeValueRange range(DateTimeField field) {
+    public ValueRange range(TemporalField field) {
         if (field instanceof ChronoField) {
             ChronoField f = (ChronoField) field;
             return (f.isTimeField() ? time.range(field) : date.range(field));
@@ -457,7 +457,7 @@ public final class LocalDateTime
     }
 
     @Override
-    public int get(DateTimeField field) {
+    public int get(TemporalField field) {
         if (field instanceof ChronoField) {
             ChronoField f = (ChronoField) field;
             return (f.isTimeField() ? time.get(field) : date.get(field));
@@ -466,7 +466,7 @@ public final class LocalDateTime
     }
 
     @Override
-    public long getLong(DateTimeField field) {
+    public long getLong(TemporalField field) {
         if (field instanceof ChronoField) {
             ChronoField f = (ChronoField) field;
             return (f.isTimeField() ? time.getLong(field) : date.getLong(field));
@@ -627,7 +627,7 @@ public final class LocalDateTime
      * This adjusts the date-time according to the rules of the specified adjuster.
      * A simple adjuster might simply set the one of the fields, such as the year field.
      * A more complex adjuster might set the date-time to the last day of the month.
-     * A selection of common adjustments is provided in {@link DateTimeAdjusters}.
+     * A selection of common adjustments is provided in {@link TemporalAdjusters}.
      * These include finding the "last day of the month" and "next Wednesday".
      * The adjuster is responsible for handling special cases, such as the varying
      * lengths of month and leap years.
@@ -676,7 +676,7 @@ public final class LocalDateTime
      * @throws DateTimeException if the value is invalid
      */
     @Override
-    public LocalDateTime with(DateTimeField field, long newValue) {
+    public LocalDateTime with(TemporalField field, long newValue) {
         if (field instanceof ChronoField) {
             ChronoField f = (ChronoField) field;
             if (f.isTimeField()) {
@@ -825,7 +825,7 @@ public final class LocalDateTime
      * @return a {@code LocalDateTime} based on this date-time with the time truncated, not null
      * @throws DateTimeException if unable to truncate
      */
-    public LocalDateTime truncatedTo(PeriodUnit unit) {
+    public LocalDateTime truncatedTo(TemporalUnit unit) {
         return with(date, time.truncatedTo(unit));
     }
 
@@ -835,9 +835,9 @@ public final class LocalDateTime
      * <p>
      * This method returns a new date-time based on this time with the specified period added.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link org.threeten.bp.temporal.DateTime.PlusAdjuster} interface.
+     * the {@link org.threeten.bp.temporal.Temporal.PlusAdjuster} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
-     * back to {@link #plus(long, PeriodUnit)}.
+     * back to {@link #plus(long, TemporalUnit)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -867,7 +867,7 @@ public final class LocalDateTime
      * @throws DateTimeException if the unit cannot be added to this type
      */
     @Override
-    public LocalDateTime plus(long amountToAdd, PeriodUnit unit) {
+    public LocalDateTime plus(long amountToAdd, TemporalUnit unit) {
         if (unit instanceof ChronoUnit) {
             ChronoUnit f = (ChronoUnit) unit;
             switch (f) {
@@ -1034,9 +1034,9 @@ public final class LocalDateTime
      * <p>
      * This method returns a new date-time based on this time with the specified period subtracted.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link org.threeten.bp.temporal.DateTime.MinusAdjuster} interface.
+     * the {@link org.threeten.bp.temporal.Temporal.MinusAdjuster} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
-     * back to {@link #minus(long, PeriodUnit)}.
+     * back to {@link #minus(long, TemporalUnit)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1066,7 +1066,7 @@ public final class LocalDateTime
      * @throws DateTimeException if the unit cannot be added to this type
      */
     @Override
-    public LocalDateTime minus(long amountToSubtract, PeriodUnit unit) {
+    public LocalDateTime minus(long amountToSubtract, TemporalUnit unit) {
         return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
 
@@ -1284,7 +1284,7 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     @Override
-    public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
+    public long periodUntil(Temporal endDateTime, TemporalUnit unit) {
         if (endDateTime instanceof LocalDateTime == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }

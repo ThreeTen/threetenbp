@@ -52,11 +52,11 @@ import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
-import org.threeten.bp.temporal.DateTime;
-import org.threeten.bp.temporal.DateTime.WithAdjuster;
-import org.threeten.bp.temporal.DateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeField;
-import org.threeten.bp.temporal.PeriodUnit;
+import org.threeten.bp.temporal.Temporal;
+import org.threeten.bp.temporal.Temporal.WithAdjuster;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalUnit;
 
 /**
  * An instantaneous point on the time-line.
@@ -149,7 +149,7 @@ import org.threeten.bp.temporal.PeriodUnit;
  */
 public final class Instant
         extends DefaultInterfaceDateTimeAccessor
-        implements DateTime, WithAdjuster, Comparable<Instant>, Serializable {
+        implements Temporal, WithAdjuster, Comparable<Instant>, Serializable {
 
     /**
      * Constant for the 1970-01-01T00:00:00Z epoch instant.
@@ -282,7 +282,7 @@ public final class Instant
      * @return the instant, not null
      * @throws DateTimeException if unable to convert to an {@code Instant}
      */
-    public static Instant from(DateTimeAccessor dateTime) {
+    public static Instant from(TemporalAccessor dateTime) {
         long instantSecs = dateTime.getLong(INSTANT_SECONDS);
         int nanoOfSecond = dateTime.get(NANO_OF_SECOND);
         return Instant.ofEpochSecond(instantSecs, nanoOfSecond);
@@ -333,7 +333,7 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean isSupported(DateTimeField field) {
+    public boolean isSupported(TemporalField field) {
         if (field instanceof ChronoField) {
             return field == INSTANT_SECONDS || field == NANO_OF_SECOND || field == MICRO_OF_SECOND || field == MILLI_OF_SECOND;
         }
@@ -341,7 +341,7 @@ public final class Instant
     }
 
     @Override
-    public long getLong(DateTimeField field) {
+    public long getLong(TemporalField field) {
         if (field instanceof ChronoField) {
             switch ((ChronoField) field) {
                 case NANO_OF_SECOND: return nanos;
@@ -388,7 +388,7 @@ public final class Instant
     }
 
     @Override
-    public Instant with(DateTimeField field, long newValue) {
+    public Instant with(TemporalField field, long newValue) {
         if (field instanceof ChronoField) {
             ChronoField f = (ChronoField) field;
             f.checkValidValue(newValue);
@@ -416,7 +416,7 @@ public final class Instant
     }
 
     @Override
-    public Instant plus(long amountToAdd, PeriodUnit unit) {
+    public Instant plus(long amountToAdd, TemporalUnit unit) {
         if (unit instanceof ChronoUnit) {
             switch ((ChronoUnit) unit) {
                 case NANOS: return plusNanos(amountToAdd);
@@ -501,7 +501,7 @@ public final class Instant
     }
 
     @Override
-    public Instant minus(long amountToSubtract, PeriodUnit unit) {
+    public Instant minus(long amountToSubtract, TemporalUnit unit) {
         return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
 
@@ -556,12 +556,12 @@ public final class Instant
 
     //-------------------------------------------------------------------------
     @Override
-    public DateTime doWithAdjustment(DateTime dateTime) {
+    public Temporal doWithAdjustment(Temporal dateTime) {
         return dateTime.with(INSTANT_SECONDS, seconds).with(NANO_OF_SECOND, nanos);
     }
 
     @Override
-    public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
+    public long periodUntil(Temporal endDateTime, TemporalUnit unit) {
         if (endDateTime instanceof Instant == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }

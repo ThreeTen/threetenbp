@@ -123,7 +123,7 @@ enum ISOEra implements Era<ISOChrono> {
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean isSupported(DateTimeField field) {
+    public boolean isSupported(TemporalField field) {
         if (field instanceof ChronoField) {
             return field == ERA;
         }
@@ -131,7 +131,7 @@ enum ISOEra implements Era<ISOChrono> {
     }
 
     @Override
-    public DateTimeValueRange range(DateTimeField field) {
+    public ValueRange range(TemporalField field) {
         if (field == ERA) {
             return field.range();
         } else if (field instanceof ChronoField) {
@@ -141,7 +141,7 @@ enum ISOEra implements Era<ISOChrono> {
     }
 
     @Override
-    public int get(DateTimeField field) {
+    public int get(TemporalField field) {
         if (field == ERA) {
             return getValue();
         }
@@ -149,7 +149,7 @@ enum ISOEra implements Era<ISOChrono> {
     }
 
     @Override
-    public long getLong(DateTimeField field) {
+    public long getLong(TemporalField field) {
         if (field == ERA) {
             return getValue();
         } else if (field instanceof ChronoField) {
@@ -160,7 +160,7 @@ enum ISOEra implements Era<ISOChrono> {
 
     //-------------------------------------------------------------------------
     @Override
-    public DateTime doWithAdjustment(DateTime dateTime) {
+    public Temporal doWithAdjustment(Temporal dateTime) {
         return dateTime.with(ERA, getValue());
     }
 

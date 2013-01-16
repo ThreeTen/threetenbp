@@ -46,11 +46,11 @@ import org.testng.annotations.Test;
  * Test DateTimeAdjusters.
  */
 @Test(groups={"implementation"})
-public class TestDateTimeAdjusters {
+public class TestTemporalAdjusters {
 
     @SuppressWarnings("rawtypes")
     public void test_constructor() throws Exception {
-        for (Constructor constructor : DateTimeAdjusters.class.getDeclaredConstructors()) {
+        for (Constructor constructor : TemporalAdjusters.class.getDeclaredConstructors()) {
             assertTrue(Modifier.isPrivate(constructor.getModifiers()));
             constructor.setAccessible(true);
             constructor.newInstance(Collections.nCopies(constructor.getParameterTypes().length, null).toArray());
@@ -60,7 +60,7 @@ public class TestDateTimeAdjusters {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Test(expectedExceptions = InvocationTargetException.class, groups={"tck"})
     public void test_forceCoverage() throws Exception {
-        Enum en = (Enum) DateTimeAdjusters.lastDayOfYear();
+        Enum en = (Enum) TemporalAdjusters.lastDayOfYear();
         Class cls = en.getClass();
         Method m = cls.getMethod("valueOf", String.class);
         m.invoke(null, en.name());
@@ -68,27 +68,27 @@ public class TestDateTimeAdjusters {
     }
 
     public void factory_firstDayOfMonthSame() {
-        assertSame(DateTimeAdjusters.firstDayOfMonth(), DateTimeAdjusters.firstDayOfMonth());
+        assertSame(TemporalAdjusters.firstDayOfMonth(), TemporalAdjusters.firstDayOfMonth());
     }
 
     public void factory_lastDayOfMonthSame() {
-        assertSame(DateTimeAdjusters.lastDayOfMonth(), DateTimeAdjusters.lastDayOfMonth());
+        assertSame(TemporalAdjusters.lastDayOfMonth(), TemporalAdjusters.lastDayOfMonth());
     }
 
     public void factory_firstDayOfNextMonthSame() {
-        assertSame(DateTimeAdjusters.firstDayOfNextMonth(), DateTimeAdjusters.firstDayOfNextMonth());
+        assertSame(TemporalAdjusters.firstDayOfNextMonth(), TemporalAdjusters.firstDayOfNextMonth());
     }
 
     public void factory_firstDayOfYearSame() {
-        assertSame(DateTimeAdjusters.firstDayOfYear(), DateTimeAdjusters.firstDayOfYear());
+        assertSame(TemporalAdjusters.firstDayOfYear(), TemporalAdjusters.firstDayOfYear());
     }
 
     public void factory_lastDayOfYearSame() {
-        assertSame(DateTimeAdjusters.lastDayOfYear(), DateTimeAdjusters.lastDayOfYear());
+        assertSame(TemporalAdjusters.lastDayOfYear(), TemporalAdjusters.lastDayOfYear());
     }
 
     public void factory_firstDayOfNextYearSame() {
-        assertSame(DateTimeAdjusters.firstDayOfNextYear(), DateTimeAdjusters.firstDayOfNextYear());
+        assertSame(TemporalAdjusters.firstDayOfNextYear(), TemporalAdjusters.firstDayOfNextYear());
     }
 
 }

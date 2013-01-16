@@ -49,13 +49,13 @@ import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.DefaultInterfaceDateTime;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
-import org.threeten.bp.temporal.DateTime;
-import org.threeten.bp.temporal.DateTime.WithAdjuster;
-import org.threeten.bp.temporal.DateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeAdjusters;
-import org.threeten.bp.temporal.DateTimeField;
-import org.threeten.bp.temporal.DateTimeValueRange;
-import org.threeten.bp.temporal.PeriodUnit;
+import org.threeten.bp.temporal.Temporal;
+import org.threeten.bp.temporal.Temporal.WithAdjuster;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalAdjusters;
+import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalUnit;
+import org.threeten.bp.temporal.ValueRange;
 import org.threeten.bp.zone.ZoneRules;
 
 /**
@@ -83,7 +83,7 @@ import org.threeten.bp.zone.ZoneRules;
  */
 public final class OffsetDateTime
         extends DefaultInterfaceDateTime
-        implements DateTime, WithAdjuster, Comparable<OffsetDateTime>, Serializable {
+        implements Temporal, WithAdjuster, Comparable<OffsetDateTime>, Serializable {
 
     /**
      * Comparator for two {@code OffsetDateTime} instances based solely on the instant.
@@ -398,7 +398,7 @@ public final class OffsetDateTime
      * @return the offset date-time, not null
      * @throws DateTimeException if unable to convert to an {@code OffsetDateTime}
      */
-    public static OffsetDateTime from(DateTimeAccessor dateTime) {
+    public static OffsetDateTime from(TemporalAccessor dateTime) {
         if (dateTime instanceof OffsetDateTime) {
             return (OffsetDateTime) dateTime;
         }
@@ -474,12 +474,12 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean isSupported(DateTimeField field) {
+    public boolean isSupported(TemporalField field) {
         return field instanceof ChronoField || (field != null && field.doIsSupported(this));
     }
 
     @Override
-    public DateTimeValueRange range(DateTimeField field) {
+    public ValueRange range(TemporalField field) {
         if (field instanceof ChronoField) {
             return dateTime.range(field);
         }
@@ -487,7 +487,7 @@ public final class OffsetDateTime
     }
 
     @Override
-    public int get(DateTimeField field) {
+    public int get(TemporalField field) {
         if (field instanceof ChronoField) {
             switch ((ChronoField) field) {
                 case INSTANT_SECONDS: throw new DateTimeException("Field too large for an int: " + field);
@@ -499,7 +499,7 @@ public final class OffsetDateTime
     }
 
     @Override
-    public long getLong(DateTimeField field) {
+    public long getLong(TemporalField field) {
         if (field instanceof ChronoField) {
             switch ((ChronoField) field) {
                 case INSTANT_SECONDS: return toEpochSecond();
@@ -735,7 +735,7 @@ public final class OffsetDateTime
      * This adjusts the date-time according to the rules of the specified adjuster.
      * A simple adjuster might simply set the one of the fields, such as the year field.
      * A more complex adjuster might set the date-time to the last day of the month.
-     * A selection of common adjustments is provided in {@link DateTimeAdjusters}.
+     * A selection of common adjustments is provided in {@link TemporalAdjusters}.
      * These include finding the "last day of the month" and "next Wednesday".
      * The adjuster is responsible for handling special cases, such as the varying
      * lengths of month and leap years.
@@ -785,7 +785,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if the value is invalid
      */
     @Override
-    public OffsetDateTime with(DateTimeField field, long newValue) {
+    public OffsetDateTime with(TemporalField field, long newValue) {
         if (field instanceof ChronoField) {
             ChronoField f = (ChronoField) field;
             switch (f) {
@@ -942,7 +942,7 @@ public final class OffsetDateTime
      * @return an {@code OffsetDateTime} based on this date-time with the time truncated, not null
      * @throws DateTimeException if unable to truncate
      */
-    public OffsetDateTime truncatedTo(PeriodUnit unit) {
+    public OffsetDateTime truncatedTo(TemporalUnit unit) {
         return with(dateTime.truncatedTo(unit), offset);
     }
 
@@ -952,9 +952,9 @@ public final class OffsetDateTime
      * <p>
      * This method returns a new date-time based on this time with the specified period added.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link org.threeten.bp.temporal.DateTime.PlusAdjuster} interface.
+     * the {@link org.threeten.bp.temporal.Temporal.PlusAdjuster} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
-     * back to {@link #plus(long, PeriodUnit)}.
+     * back to {@link #plus(long, TemporalUnit)}.
      * The offset is not part of the calculation and will be unchanged in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -986,7 +986,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if the unit cannot be added to this type
      */
     @Override
-    public OffsetDateTime plus(long amountToAdd, PeriodUnit unit) {
+    public OffsetDateTime plus(long amountToAdd, TemporalUnit unit) {
         if (unit instanceof ChronoUnit) {
             return with(dateTime.plus(amountToAdd, unit), offset);
         }
@@ -1138,9 +1138,9 @@ public final class OffsetDateTime
      * <p>
      * This method returns a new date-time based on this time with the specified period subtracted.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link org.threeten.bp.temporal.DateTime.MinusAdjuster} interface.
+     * the {@link org.threeten.bp.temporal.Temporal.MinusAdjuster} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
-     * back to {@link #minus(long, PeriodUnit)}.
+     * back to {@link #minus(long, TemporalUnit)}.
      * The offset is not part of the calculation and will be unchanged in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -1171,7 +1171,7 @@ public final class OffsetDateTime
      * @return an {@code OffsetDateTime} based on this date-time with the specified period subtracted, not null
      */
     @Override
-    public OffsetDateTime minus(long amountToSubtract, PeriodUnit unit) {
+    public OffsetDateTime minus(long amountToSubtract, TemporalUnit unit) {
         return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
 
@@ -1363,7 +1363,7 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     @Override
-    public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
+    public long periodUntil(Temporal endDateTime, TemporalUnit unit) {
         if (endDateTime instanceof OffsetDateTime == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
@@ -1376,7 +1376,7 @@ public final class OffsetDateTime
     }
 
     @Override
-    public DateTime doWithAdjustment(DateTime dateTime) {
+    public Temporal doWithAdjustment(Temporal dateTime) {
         return dateTime
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
                 .with(EPOCH_DAY, getDate().toEpochDay())

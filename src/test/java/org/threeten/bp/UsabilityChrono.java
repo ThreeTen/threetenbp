@@ -47,7 +47,7 @@ import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoLocalDate;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.ISOChrono;
-import org.threeten.bp.temporal.JulianDayField;
+import org.threeten.bp.temporal.JulianFields;
 
 /**
  * Usability class for package.
@@ -114,9 +114,9 @@ public final class UsabilityChrono {
     protected static void output(LocalDate date) {
         System.out.println(date);
         System.out.println("EPOCH_DAY " + date.getLong(EPOCH_DAY));
-        System.out.println("JDN " + date.getLong(JulianDayField.JULIAN_DAY));
-        System.out.println("MJD " + date.getLong(JulianDayField.MODIFIED_JULIAN_DAY));
-        System.out.println("RD  " + date.getLong(JulianDayField.RATA_DIE));
+        System.out.println("JDN " + date.getLong(JulianFields.JULIAN_DAY));
+        System.out.println("MJD " + date.getLong(JulianFields.MODIFIED_JULIAN_DAY));
+        System.out.println("RD  " + date.getLong(JulianFields.RATA_DIE));
         System.out.println();
     }
 

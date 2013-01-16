@@ -44,10 +44,10 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoLocalDate;
-import org.threeten.bp.temporal.DateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeValueRange;
 import org.threeten.bp.temporal.Era;
 import org.threeten.bp.temporal.ISOChrono;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.ValueRange;
 
 /**
  * The Thai Buddhist calendar system.
@@ -194,7 +194,7 @@ public final class ThaiBuddhistChrono extends Chrono<ThaiBuddhistChrono> impleme
     }
 
     @Override
-    public ChronoLocalDate<ThaiBuddhistChrono> date(DateTimeAccessor dateTime) {
+    public ChronoLocalDate<ThaiBuddhistChrono> date(TemporalAccessor dateTime) {
         if (dateTime instanceof ThaiBuddhistDate) {
             return (ThaiBuddhistDate) dateTime;
         }
@@ -237,15 +237,15 @@ public final class ThaiBuddhistChrono extends Chrono<ThaiBuddhistChrono> impleme
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeValueRange range(ChronoField field) {
+    public ValueRange range(ChronoField field) {
         switch (field) {
             case YEAR_OF_ERA: {
-                DateTimeValueRange range = YEAR.range();
-                return DateTimeValueRange.of(1, -(range.getMinimum() + YEARS_DIFFERENCE) + 1, range.getMaximum() + YEARS_DIFFERENCE);
+                ValueRange range = YEAR.range();
+                return ValueRange.of(1, -(range.getMinimum() + YEARS_DIFFERENCE) + 1, range.getMaximum() + YEARS_DIFFERENCE);
             }
             case YEAR: {
-                DateTimeValueRange range = YEAR.range();
-                return DateTimeValueRange.of(range.getMinimum() + YEARS_DIFFERENCE, range.getMaximum() + YEARS_DIFFERENCE);
+                ValueRange range = YEAR.range();
+                return ValueRange.of(range.getMinimum() + YEARS_DIFFERENCE, range.getMaximum() + YEARS_DIFFERENCE);
             }
         }
         return field.range();

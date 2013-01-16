@@ -43,8 +43,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.temporal.DateTimeBuilder;
-import org.threeten.bp.temporal.DateTimeField;
+import org.threeten.bp.temporal.TemporalField;
 
 /**
  * Test DateTimeParseContext.
@@ -113,7 +112,7 @@ public class TCKDateTimeParseContext {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_getParsed_DateTimeRule_null() throws Exception {
-        assertEquals(context.getParsed((DateTimeField) null), null);
+        assertEquals(context.getParsed((TemporalField) null), null);
     }
 
     @Test(groups={"tck"})
@@ -180,7 +179,7 @@ public class TCKDateTimeParseContext {
         context.setParsedField(MONTH_OF_YEAR, 6);
 
         DateTimeBuilder builder = context.toBuilder();
-        Map<DateTimeField, Long> fields = builder.getFieldValueMap();
+        Map<TemporalField, Long> fields = builder.getFieldValueMap();
         assertEquals(fields.size(), 2);
         assertEquals(fields.get(YEAR), Long.valueOf(2008));
         assertEquals(fields.get(MONTH_OF_YEAR), Long.valueOf(6));

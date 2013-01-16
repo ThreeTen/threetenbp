@@ -36,8 +36,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-import org.threeten.bp.temporal.DateTimeBuilder;
-import org.threeten.bp.temporal.DateTimeField;
+import org.threeten.bp.temporal.TemporalField;
 
 /**
  * Context object used during date and time parsing.
@@ -261,7 +260,7 @@ final class DateTimeParseContext {
      * @param field  the field to query from the map, null returns null
      * @return the value mapped to the specified field, null if field was not parsed
      */
-    public Long getParsed(DateTimeField field) {
+    public Long getParsed(TemporalField field) {
         for (Object obj : currentParsed().parsed) {
             if (obj instanceof FieldValue) {
                 FieldValue fv = (FieldValue) obj;
@@ -311,7 +310,7 @@ final class DateTimeParseContext {
      * @param field  the field to set in the field-value map, not null
      * @param value  the value to set in the field-value map
      */
-    public void setParsedField(DateTimeField field, long value) {
+    public void setParsedField(TemporalField field, long value) {
         Objects.requireNonNull(field, "field");
         currentParsed().parsed.add(new FieldValue(field, value));
     }
@@ -392,9 +391,9 @@ final class DateTimeParseContext {
      * Temporary store of a field-value pair.
      */
     private static final class FieldValue {
-        final DateTimeField field;
+        final TemporalField field;
         final long value;
-        private FieldValue(DateTimeField field, long value) {
+        private FieldValue(TemporalField field, long value) {
             this.field = field;
             this.value = value;
         }

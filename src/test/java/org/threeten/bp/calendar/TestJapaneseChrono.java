@@ -47,9 +47,9 @@ import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.Month;
 import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoLocalDate;
-import org.threeten.bp.temporal.DateTimeAdjusters;
 import org.threeten.bp.temporal.Era;
 import org.threeten.bp.temporal.ISOChrono;
+import org.threeten.bp.temporal.TemporalAdjusters;
 
 /**
  * Test.
@@ -134,14 +134,14 @@ public class TestJapaneseChrono {
     @Test(groups={"tck"})
     public void test_adjust1() {
         ChronoLocalDate<JapaneseChrono> base = JapaneseChrono.INSTANCE.date(1728, 10, 29);
-        ChronoLocalDate<JapaneseChrono> test = base.with(DateTimeAdjusters.lastDayOfMonth());
+        ChronoLocalDate<JapaneseChrono> test = base.with(TemporalAdjusters.lastDayOfMonth());
         assertEquals(test, JapaneseChrono.INSTANCE.date(1728, 10, 31));
     }
 
     @Test(groups={"tck"})
     public void test_adjust2() {
         ChronoLocalDate<JapaneseChrono> base = JapaneseChrono.INSTANCE.date(1728, 12, 2);
-        ChronoLocalDate<JapaneseChrono> test = base.with(DateTimeAdjusters.lastDayOfMonth());
+        ChronoLocalDate<JapaneseChrono> test = base.with(TemporalAdjusters.lastDayOfMonth());
         assertEquals(test, JapaneseChrono.INSTANCE.date(1728, 12, 31));
     }
 

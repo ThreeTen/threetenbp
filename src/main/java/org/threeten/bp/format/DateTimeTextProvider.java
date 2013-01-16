@@ -36,7 +36,7 @@ import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.spi.LocaleServiceProvider;
 
-import org.threeten.bp.temporal.DateTimeField;
+import org.threeten.bp.temporal.TemporalField;
 
 /**
  * The Service Provider Interface (SPI) to be implemented by classes providing
@@ -63,7 +63,7 @@ public abstract class DateTimeTextProvider extends LocaleServiceProvider {
      * @param locale  the locale to get text for, not null
      * @return the text for the field value, null if no text found
      */
-    public abstract String getText(DateTimeField field, long value, TextStyle style, Locale locale);
+    public abstract String getText(TemporalField field, long value, TextStyle style, Locale locale);
 
     /**
      * Gets an iterator of text to field for the specified field, locale and style
@@ -81,6 +81,6 @@ public abstract class DateTimeTextProvider extends LocaleServiceProvider {
      * @return the iterator of text to field pairs, in order from longest text to shortest text,
      *  null if the field or style is not parsable
      */
-    public abstract Iterator<Entry<String, Long>> getTextIterator(DateTimeField field, TextStyle style, Locale locale);
+    public abstract Iterator<Entry<String, Long>> getTextIterator(TemporalField field, TextStyle style, Locale locale);
 
 }

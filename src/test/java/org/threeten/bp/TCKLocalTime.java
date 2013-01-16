@@ -70,16 +70,16 @@ import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
-import org.threeten.bp.temporal.DateTime;
-import org.threeten.bp.temporal.DateTime.MinusAdjuster;
-import org.threeten.bp.temporal.DateTime.PlusAdjuster;
-import org.threeten.bp.temporal.DateTime.WithAdjuster;
-import org.threeten.bp.temporal.DateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeAccessor.Query;
-import org.threeten.bp.temporal.DateTimeField;
-import org.threeten.bp.temporal.JulianDayField;
+import org.threeten.bp.temporal.JulianFields;
 import org.threeten.bp.temporal.MockFieldNoValue;
-import org.threeten.bp.temporal.PeriodUnit;
+import org.threeten.bp.temporal.Temporal;
+import org.threeten.bp.temporal.Temporal.MinusAdjuster;
+import org.threeten.bp.temporal.Temporal.PlusAdjuster;
+import org.threeten.bp.temporal.Temporal.WithAdjuster;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalAccessor.Query;
+import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalUnit;
 
 /**
  * Test LocalTime.
@@ -89,10 +89,10 @@ public class TCKLocalTime extends AbstractDateTimeTest {
 
     private LocalTime TEST_12_30_40_987654321;
 
-    private static final PeriodUnit[] INVALID_UNITS;
+    private static final TemporalUnit[] INVALID_UNITS;
     static {
         EnumSet<ChronoUnit> set = EnumSet.range(WEEKS, FOREVER);
-        INVALID_UNITS = (PeriodUnit[]) set.toArray(new PeriodUnit[set.size()]);
+        INVALID_UNITS = (TemporalUnit[]) set.toArray(new TemporalUnit[set.size()]);
     }
 
     @BeforeMethod(groups={"tck","implementation"})
@@ -102,14 +102,14 @@ public class TCKLocalTime extends AbstractDateTimeTest {
 
     //-----------------------------------------------------------------------
     @Override
-    protected List<DateTimeAccessor> samples() {
-        DateTimeAccessor[] array = {TEST_12_30_40_987654321, LocalTime.MIN_TIME, LocalTime.MAX_TIME, LocalTime.MIDNIGHT, LocalTime.NOON};
+    protected List<TemporalAccessor> samples() {
+        TemporalAccessor[] array = {TEST_12_30_40_987654321, LocalTime.MIN_TIME, LocalTime.MAX_TIME, LocalTime.MIDNIGHT, LocalTime.NOON};
         return Arrays.asList(array);
     }
 
     @Override
-    protected List<DateTimeField> validFields() {
-        DateTimeField[] array = {
+    protected List<TemporalField> validFields() {
+        TemporalField[] array = {
             NANO_OF_SECOND,
             NANO_OF_DAY,
             MICRO_OF_SECOND,
@@ -130,12 +130,12 @@ public class TCKLocalTime extends AbstractDateTimeTest {
     }
 
     @Override
-    protected List<DateTimeField> invalidFields() {
-        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(ChronoField.values()));
+    protected List<TemporalField> invalidFields() {
+        List<TemporalField> list = new ArrayList<>(Arrays.<TemporalField>asList(ChronoField.values()));
         list.removeAll(validFields());
-        list.add(JulianDayField.JULIAN_DAY);
-        list.add(JulianDayField.MODIFIED_JULIAN_DAY);
-        list.add(JulianDayField.RATA_DIE);
+        list.add(JulianFields.JULIAN_DAY);
+        list.add(JulianFields.MODIFIED_JULIAN_DAY);
+        list.add(JulianFields.RATA_DIE);
         return list;
     }
 
@@ -500,7 +500,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_from_DateTimeAccessor_null() {
-        LocalTime.from((DateTimeAccessor) null);
+        LocalTime.from((TemporalAccessor) null);
     }
 
     //-----------------------------------------------------------------------
@@ -600,7 +600,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
     public void test_get_DateTimeField_null() {
-        TEST_12_30_40_987654321.getLong((DateTimeField) null);
+        TEST_12_30_40_987654321.getLong((TemporalField) null);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
@@ -684,7 +684,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
         final LocalTime sample = LocalTime.of(23, 5);
         WithAdjuster adjuster = new WithAdjuster() {
             @Override
-            public DateTime doWithAdjustment(DateTime dateTime) {
+            public Temporal doWithAdjustment(Temporal dateTime) {
                 return sample;
             }
         };
@@ -925,7 +925,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void test_plus_long_unit_invalidUnit() {
-        for (PeriodUnit unit : INVALID_UNITS) {
+        for (TemporalUnit unit : INVALID_UNITS) {
             try {
                 TEST_12_30_40_987654321.plus(1, unit);
                 fail("Unit should not be allowed " + unit);
@@ -945,7 +945,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_plus_longPeriodUnit_null() {
-        TEST_12_30_40_987654321.plus(1, (PeriodUnit) null);
+        TEST_12_30_40_987654321.plus(1, (TemporalUnit) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1408,7 +1408,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void test_minus_long_unit_invalidUnit() {
-        for (PeriodUnit unit : INVALID_UNITS) {
+        for (TemporalUnit unit : INVALID_UNITS) {
             try {
                 TEST_12_30_40_987654321.minus(1, unit);
                 fail("Unit should not be allowed " + unit);
@@ -1428,7 +1428,7 @@ public class TCKLocalTime extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_minus_longPeriodUnit_null() {
-        TEST_12_30_40_987654321.minus(1, (PeriodUnit) null);
+        TEST_12_30_40_987654321.minus(1, (TemporalUnit) null);
     }
 
     //-----------------------------------------------------------------------

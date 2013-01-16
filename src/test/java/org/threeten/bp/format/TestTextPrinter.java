@@ -43,8 +43,8 @@ import org.testng.annotations.Test;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.format.DateTimeFormatterBuilder.TextPrinterParser;
-import org.threeten.bp.temporal.DateTimeField;
 import org.threeten.bp.temporal.MockFieldValue;
+import org.threeten.bp.temporal.TemporalField;
 
 /**
  * Test TextPrinterParser.
@@ -114,7 +114,7 @@ public class TestTextPrinter extends AbstractTestPrinterParser {
     }
 
     @Test(dataProvider="print")
-    public void test_print(DateTimeField field, TextStyle style, int value, String expected) throws Exception {
+    public void test_print(TemporalField field, TextStyle style, int value, String expected) throws Exception {
         printContext.setDateTime(new MockFieldValue(field, value));
         TextPrinterParser pp = new TextPrinterParser(field, style, PROVIDER);
         pp.print(printContext, buf);

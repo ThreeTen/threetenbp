@@ -50,10 +50,10 @@ import java.util.List;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.temporal.ChronoField;
-import org.threeten.bp.temporal.DateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeField;
-import org.threeten.bp.temporal.JulianDayField;
+import org.threeten.bp.temporal.JulianFields;
 import org.threeten.bp.temporal.MockFieldNoValue;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalField;
 
 /**
  * Test ZoneOffset.
@@ -63,26 +63,26 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
 
     //-----------------------------------------------------------------------
     @Override
-    protected List<DateTimeAccessor> samples() {
-        DateTimeAccessor[] array = {ZoneOffset.ofHours(1), ZoneOffset.ofHoursMinutesSeconds(-5, -6, -30) };
+    protected List<TemporalAccessor> samples() {
+        TemporalAccessor[] array = {ZoneOffset.ofHours(1), ZoneOffset.ofHoursMinutesSeconds(-5, -6, -30) };
         return Arrays.asList(array);
     }
 
     @Override
-    protected List<DateTimeField> validFields() {
-        DateTimeField[] array = {
+    protected List<TemporalField> validFields() {
+        TemporalField[] array = {
             OFFSET_SECONDS,
         };
         return Arrays.asList(array);
     }
 
     @Override
-    protected List<DateTimeField> invalidFields() {
-        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(ChronoField.values()));
+    protected List<TemporalField> invalidFields() {
+        List<TemporalField> list = new ArrayList<>(Arrays.<TemporalField>asList(ChronoField.values()));
         list.removeAll(validFields());
-        list.add(JulianDayField.JULIAN_DAY);
-        list.add(JulianDayField.MODIFIED_JULIAN_DAY);
-        list.add(JulianDayField.RATA_DIE);
+        list.add(JulianFields.JULIAN_DAY);
+        list.add(JulianFields.MODIFIED_JULIAN_DAY);
+        list.add(JulianFields.RATA_DIE);
         return list;
     }
 
@@ -437,7 +437,7 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_CalendricalObject_null() {
-        ZoneOffset.from((DateTimeAccessor) null);
+        ZoneOffset.from((TemporalAccessor) null);
     }
 
     //-----------------------------------------------------------------------
@@ -506,13 +506,13 @@ public class TCKZoneOffset extends AbstractDateTimeTest {
     }
 
     @Test(dataProvider="invalidFields", expectedExceptions=DateTimeException.class, groups={"tck"} )
-    public void test_get_DateTimeField_invalidField(DateTimeField field) {
+    public void test_get_DateTimeField_invalidField(TemporalField field) {
         ZoneOffset.UTC.getLong(field);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
     public void test_get_DateTimeField_null() {
-        ZoneOffset.UTC.getLong((DateTimeField) null);
+        ZoneOffset.UTC.getLong((TemporalField) null);
     }
 
     //-----------------------------------------------------------------------

@@ -37,6 +37,7 @@ import static org.threeten.bp.temporal.ChronoUnit.FOREVER;
 
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalDate;
+import org.threeten.bp.format.DateTimeBuilder;
 import org.threeten.bp.jdk8.Jdk8Methods;
 
 /**
@@ -49,7 +50,7 @@ import org.threeten.bp.jdk8.Jdk8Methods;
  * <h4>Implementation notes</h4>
  * This is an immutable and thread-safe enum.
  */
-public enum JulianDayField implements DateTimeField {
+public enum JulianFields implements TemporalField {
 
     /**
      * Julian Day field.
@@ -146,16 +147,16 @@ public enum JulianDayField implements DateTimeField {
     ;
 
     private final String name;
-    private final PeriodUnit baseUnit;
-    private final PeriodUnit rangeUnit;
-    private final DateTimeValueRange range;
+    private final TemporalUnit baseUnit;
+    private final TemporalUnit rangeUnit;
+    private final ValueRange range;
     private final long offset;
 
-    private JulianDayField(String name, PeriodUnit baseUnit, PeriodUnit rangeUnit, long offset) {
+    private JulianFields(String name, TemporalUnit baseUnit, TemporalUnit rangeUnit, long offset) {
         this.name = name;
         this.baseUnit = baseUnit;
         this.rangeUnit = rangeUnit;
-        this.range = DateTimeValueRange.of(-365243219162L + offset, 365241780471L + offset);
+        this.range = ValueRange.of(-365243219162L + offset, 365241780471L + offset);
         this.offset = offset;
     }
 
@@ -166,22 +167,22 @@ public enum JulianDayField implements DateTimeField {
     }
 
     @Override
-    public PeriodUnit getBaseUnit() {
+    public TemporalUnit getBaseUnit() {
         return baseUnit;
     }
 
     @Override
-    public PeriodUnit getRangeUnit() {
+    public TemporalUnit getRangeUnit() {
         return rangeUnit;
     }
 
     @Override
-    public DateTimeValueRange range() {
+    public ValueRange range() {
         return range;
     }
 
     @Override
-    public int compare(DateTimeAccessor dateTime1, DateTimeAccessor dateTime2) {
+    public int compare(TemporalAccessor dateTime1, TemporalAccessor dateTime2) {
         return Long.compare(dateTime1.getLong(this), dateTime2.getLong(this));
     }
 
@@ -201,12 +202,12 @@ public enum JulianDayField implements DateTimeField {
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean doIsSupported(DateTimeAccessor dateTime) {
+    public boolean doIsSupported(TemporalAccessor dateTime) {
         return dateTime.isSupported(EPOCH_DAY);
     }
 
     @Override
-    public DateTimeValueRange doRange(DateTimeAccessor dateTime) {
+    public ValueRange doRange(TemporalAccessor dateTime) {
         if (doIsSupported(dateTime) == false) {
             throw new DateTimeException("Unsupported field: " + this);
         }
@@ -214,12 +215,12 @@ public enum JulianDayField implements DateTimeField {
     }
 
     @Override
-    public long doGet(DateTimeAccessor dateTime) {
+    public long doGet(TemporalAccessor dateTime) {
         return dateTime.getLong(EPOCH_DAY) + offset;
     }
 
     @Override
-    public <R extends DateTime> R doWith(R dateTime, long newValue) {
+    public <R extends Temporal> R doWith(R dateTime, long newValue) {
         if (range().isValidValue(newValue) == false) {
             throw new DateTimeException("Invalid value: " + name + " " + newValue);
         }
@@ -236,7 +237,7 @@ public enum JulianDayField implements DateTimeField {
         return changed;
     }
 
-    private boolean resolve0(JulianDayField field, DateTimeBuilder builder, boolean changed) {
+    private boolean resolve0(JulianFields field, DateTimeBuilder builder, boolean changed) {
         if (builder.containsFieldValue(field)) {
             builder.addCalendrical(LocalDate.ofEpochDay(Jdk8Methods.safeSubtract(builder.getFieldValue(JULIAN_DAY), JULIAN_DAY.offset)));
             builder.removeFieldValue(JULIAN_DAY);

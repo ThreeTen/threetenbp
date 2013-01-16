@@ -69,15 +69,15 @@ import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
-import org.threeten.bp.temporal.DateTime;
-import org.threeten.bp.temporal.DateTime.WithAdjuster;
-import org.threeten.bp.temporal.DateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeAccessor.Query;
-import org.threeten.bp.temporal.DateTimeField;
 import org.threeten.bp.temporal.ISOChrono;
-import org.threeten.bp.temporal.JulianDayField;
+import org.threeten.bp.temporal.JulianFields;
 import org.threeten.bp.temporal.MockFieldNoValue;
-import org.threeten.bp.temporal.PeriodUnit;
+import org.threeten.bp.temporal.Temporal;
+import org.threeten.bp.temporal.Temporal.WithAdjuster;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalAccessor.Query;
+import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalUnit;
 
 /**
  * Test LocalDate.
@@ -113,14 +113,14 @@ public class TCKLocalDate extends AbstractDateTimeTest {
 
     //-----------------------------------------------------------------------
     @Override
-    protected List<DateTimeAccessor> samples() {
-        DateTimeAccessor[] array = {TEST_2007_07_15, LocalDate.MAX_DATE, LocalDate.MIN_DATE, };
+    protected List<TemporalAccessor> samples() {
+        TemporalAccessor[] array = {TEST_2007_07_15, LocalDate.MAX_DATE, LocalDate.MIN_DATE, };
         return Arrays.asList(array);
     }
 
     @Override
-    protected List<DateTimeField> validFields() {
-        DateTimeField[] array = {
+    protected List<TemporalField> validFields() {
+        TemporalField[] array = {
             DAY_OF_WEEK,
             ALIGNED_DAY_OF_WEEK_IN_MONTH,
             ALIGNED_DAY_OF_WEEK_IN_YEAR,
@@ -134,16 +134,16 @@ public class TCKLocalDate extends AbstractDateTimeTest {
             YEAR_OF_ERA,
             YEAR,
             ERA,
-            JulianDayField.JULIAN_DAY,
-            JulianDayField.MODIFIED_JULIAN_DAY,
-            JulianDayField.RATA_DIE,
+            JulianFields.JULIAN_DAY,
+            JulianFields.MODIFIED_JULIAN_DAY,
+            JulianFields.RATA_DIE,
         };
         return Arrays.asList(array);
     }
 
     @Override
-    protected List<DateTimeField> invalidFields() {
-        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(ChronoField.values()));
+    protected List<TemporalField> invalidFields() {
+        List<TemporalField> list = new ArrayList<>(Arrays.<TemporalField>asList(ChronoField.values()));
         list.removeAll(validFields());
         return list;
     }
@@ -490,7 +490,7 @@ public class TCKLocalDate extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_CalendricalObject_null() {
-        LocalDate.from((DateTimeAccessor) null);
+        LocalDate.from((TemporalAccessor) null);
     }
 
     //-----------------------------------------------------------------------
@@ -578,7 +578,7 @@ public class TCKLocalDate extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
     public void test_get_DateTimeField_null() {
-        TEST_2007_07_15.getLong((DateTimeField) null);
+        TEST_2007_07_15.getLong((TemporalField) null);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
@@ -739,7 +739,7 @@ public class TCKLocalDate extends AbstractDateTimeTest {
         final LocalDate sample = LocalDate.of(2012, 3, 4);
         WithAdjuster adjuster = new WithAdjuster() {
             @Override
-            public DateTime doWithAdjustment(DateTime dateTime) {
+            public Temporal doWithAdjustment(Temporal dateTime) {
                 return sample;
             }
         };
@@ -762,7 +762,7 @@ public class TCKLocalDate extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
     public void test_with_DateTimeField_long_null() {
-        TEST_2007_07_15.with((DateTimeField) null, 1);
+        TEST_2007_07_15.with((TemporalField) null, 1);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
@@ -922,7 +922,7 @@ public class TCKLocalDate extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_plus_longPeriodUnit_null() {
-        TEST_2007_07_15.plus(1, (PeriodUnit) null);
+        TEST_2007_07_15.plus(1, (TemporalUnit) null);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
@@ -1282,7 +1282,7 @@ public class TCKLocalDate extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_minus_longPeriodUnit_null() {
-        TEST_2007_07_15.minus(1, (PeriodUnit) null);
+        TEST_2007_07_15.minus(1, (TemporalUnit) null);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})

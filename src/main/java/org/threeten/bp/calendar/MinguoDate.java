@@ -46,8 +46,8 @@ import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoLocalDate;
-import org.threeten.bp.temporal.DateTimeField;
-import org.threeten.bp.temporal.DateTimeValueRange;
+import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.ValueRange;
 
 /**
  * A date in the Minguo calendar system.
@@ -95,7 +95,7 @@ final class MinguoDate
     }
 
     @Override
-    public DateTimeValueRange range(DateTimeField field) {
+    public ValueRange range(TemporalField field) {
         if (field instanceof ChronoField) {
             if (isSupported(field)) {
                 ChronoField f = (ChronoField) field;
@@ -105,9 +105,9 @@ final class MinguoDate
                     case ALIGNED_WEEK_OF_MONTH:
                         return isoDate.range(field);
                     case YEAR_OF_ERA: {
-                        DateTimeValueRange range = YEAR.range();
+                        ValueRange range = YEAR.range();
                         long max = (getProlepticYear() <= 0 ? -range.getMinimum() + 1 + YEARS_DIFFERENCE : range.getMaximum() - YEARS_DIFFERENCE);
-                        return DateTimeValueRange.of(1, max);
+                        return ValueRange.of(1, max);
                     }
                 }
                 return getChrono().range(f);
@@ -118,7 +118,7 @@ final class MinguoDate
     }
 
     @Override
-    public long getLong(DateTimeField field) {
+    public long getLong(TemporalField field) {
         if (field instanceof ChronoField) {
             switch ((ChronoField) field) {
                 case YEAR_OF_ERA: {
@@ -141,7 +141,7 @@ final class MinguoDate
 
     //-----------------------------------------------------------------------
     @Override
-    public MinguoDate with(DateTimeField field, long newValue) {
+    public MinguoDate with(TemporalField field, long newValue) {
         if (field instanceof ChronoField) {
             ChronoField f = (ChronoField) field;
             if (getLong(f) == newValue) {

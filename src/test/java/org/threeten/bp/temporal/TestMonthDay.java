@@ -49,7 +49,7 @@ import org.threeten.bp.AbstractDateTimeTest;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.Month;
 import org.threeten.bp.MonthDay;
-import org.threeten.bp.temporal.DateTime.WithAdjuster;
+import org.threeten.bp.temporal.Temporal.WithAdjuster;
 
 /**
  * Test MonthDay.
@@ -66,8 +66,8 @@ public class TestMonthDay extends AbstractDateTimeTest {
 
     //-----------------------------------------------------------------------
     @Override
-    protected List<DateTimeAccessor> samples() {
-        DateTimeAccessor[] array = {TEST_07_15, };
+    protected List<TemporalAccessor> samples() {
+        TemporalAccessor[] array = {TEST_07_15, };
         return Arrays.asList(array);
     }
 
@@ -84,8 +84,8 @@ public class TestMonthDay extends AbstractDateTimeTest {
 
     //-----------------------------------------------------------------------
     @Override
-    protected List<DateTimeField> validFields() {
-        DateTimeField[] array = {
+    protected List<TemporalField> validFields() {
+        TemporalField[] array = {
             DAY_OF_MONTH,
             MONTH_OF_YEAR,
         };
@@ -93,12 +93,12 @@ public class TestMonthDay extends AbstractDateTimeTest {
     }
 
     @Override
-    protected List<DateTimeField> invalidFields() {
-        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(ChronoField.values()));
+    protected List<TemporalField> invalidFields() {
+        List<TemporalField> list = new ArrayList<>(Arrays.<TemporalField>asList(ChronoField.values()));
         list.removeAll(validFields());
-        list.add(JulianDayField.JULIAN_DAY);
-        list.add(JulianDayField.MODIFIED_JULIAN_DAY);
-        list.add(JulianDayField.RATA_DIE);
+        list.add(JulianFields.JULIAN_DAY);
+        list.add(JulianFields.MODIFIED_JULIAN_DAY);
+        list.add(JulianFields.RATA_DIE);
         return list;
     }
 

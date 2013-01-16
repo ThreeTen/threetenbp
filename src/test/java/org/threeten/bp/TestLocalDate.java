@@ -59,9 +59,9 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
-import org.threeten.bp.temporal.DateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeField;
-import org.threeten.bp.temporal.JulianDayField;
+import org.threeten.bp.temporal.JulianFields;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalField;
 
 /**
  * Test LocalDate.
@@ -78,14 +78,14 @@ public class TestLocalDate extends AbstractDateTimeTest {
 
     //-----------------------------------------------------------------------
     @Override
-    protected List<DateTimeAccessor> samples() {
-        DateTimeAccessor[] array = {TEST_2007_07_15, LocalDate.MAX_DATE, LocalDate.MIN_DATE, };
+    protected List<TemporalAccessor> samples() {
+        TemporalAccessor[] array = {TEST_2007_07_15, LocalDate.MAX_DATE, LocalDate.MIN_DATE, };
         return Arrays.asList(array);
     }
 
     @Override
-    protected List<DateTimeField> validFields() {
-        DateTimeField[] array = {
+    protected List<TemporalField> validFields() {
+        TemporalField[] array = {
             DAY_OF_WEEK,
             ALIGNED_DAY_OF_WEEK_IN_MONTH,
             ALIGNED_DAY_OF_WEEK_IN_YEAR,
@@ -99,16 +99,16 @@ public class TestLocalDate extends AbstractDateTimeTest {
             YEAR_OF_ERA,
             YEAR,
             ERA,
-            JulianDayField.JULIAN_DAY,
-            JulianDayField.MODIFIED_JULIAN_DAY,
-            JulianDayField.RATA_DIE,
+            JulianFields.JULIAN_DAY,
+            JulianFields.MODIFIED_JULIAN_DAY,
+            JulianFields.RATA_DIE,
         };
         return Arrays.asList(array);
     }
 
     @Override
-    protected List<DateTimeField> invalidFields() {
-        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(ChronoField.values()));
+    protected List<TemporalField> invalidFields() {
+        List<TemporalField> list = new ArrayList<>(Arrays.<TemporalField>asList(ChronoField.values()));
         list.removeAll(validFields());
         return list;
     }
@@ -117,7 +117,7 @@ public class TestLocalDate extends AbstractDateTimeTest {
     @Test(groups={"implementation"})
     public void test_interfaces() {
         Object obj = TEST_2007_07_15;
-        assertTrue(obj instanceof DateTimeAccessor);
+        assertTrue(obj instanceof TemporalAccessor);
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
     }

@@ -42,8 +42,9 @@ import static org.threeten.bp.temporal.ChronoUnit.YEARS;
 
 import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDate;
+import org.threeten.bp.format.DateTimeBuilder;
 import org.threeten.bp.jdk8.Jdk8Methods;
-import org.threeten.bp.temporal.PeriodUnit.PeriodBetween;
+import org.threeten.bp.temporal.TemporalUnit.PeriodBetween;
 
 /**
  * Fields and units supporting the week-based-year defined by ISO-8601.
@@ -89,7 +90,7 @@ import org.threeten.bp.temporal.PeriodUnit.PeriodBetween;
  * <p>
  * This class is immutable and thread-safe.
  */
-public final class ISOWeeks {
+public final class ISOFields {
 
     /**
      * The field that represents the week-of-week-based-year.
@@ -98,7 +99,7 @@ public final class ISOWeeks {
      * <p>
      * This unit is an immutable and thread-safe enum.
      */
-    public static final DateTimeField WEEK_OF_WEEK_BASED_YEAR = Field.WEEK_OF_WEEK_BASED_YEAR;
+    public static final TemporalField WEEK_OF_WEEK_BASED_YEAR = Field.WEEK_OF_WEEK_BASED_YEAR;
     /**
      * The field that represents the week-based-year.
      * <p>
@@ -106,7 +107,7 @@ public final class ISOWeeks {
      * <p>
      * This unit is an immutable and thread-safe enum.
      */
-    public static final DateTimeField WEEK_BASED_YEAR = Field.WEEK_BASED_YEAR;
+    public static final TemporalField WEEK_BASED_YEAR = Field.WEEK_BASED_YEAR;
     /**
      * The unit that represents week-based-years for the purpose of addition and subtraction.
      * <p>
@@ -121,12 +122,12 @@ public final class ISOWeeks {
      * <p>
      * This unit is an immutable and thread-safe enum.
      */
-    public static final PeriodUnit WEEK_BASED_YEARS = Unit.WEEK_BASED_YEARS;
+    public static final TemporalUnit WEEK_BASED_YEARS = Unit.WEEK_BASED_YEARS;
 
     /**
      * Restricted constructor.
      */
-    private ISOWeeks() {
+    private ISOFields() {
         throw new AssertionError("Not instantiable");
     }
 
@@ -134,39 +135,39 @@ public final class ISOWeeks {
     /**
      * Implementation of the field.
      */
-    private static enum Field implements DateTimeField {
+    private static enum Field implements TemporalField {
         WEEK_OF_WEEK_BASED_YEAR {
             @Override
             public String getName() {
                 return "WeekOfWeekBasedYear";
             }
             @Override
-            public PeriodUnit getBaseUnit() {
+            public TemporalUnit getBaseUnit() {
                 return WEEKS;
             }
             @Override
-            public PeriodUnit getRangeUnit() {
+            public TemporalUnit getRangeUnit() {
                 return WEEK_BASED_YEARS;
             }
             @Override
-            public DateTimeValueRange range() {
-                return DateTimeValueRange.of(1, 52, 53);
+            public ValueRange range() {
+                return ValueRange.of(1, 52, 53);
             }
             @Override
-            public boolean doIsSupported(DateTimeAccessor dateTime) {
+            public boolean doIsSupported(TemporalAccessor dateTime) {
                 return dateTime.isSupported(EPOCH_DAY);
             }
             @Override
-            public DateTimeValueRange doRange(DateTimeAccessor dateTime) {
+            public ValueRange doRange(TemporalAccessor dateTime) {
                 return getWeekRange(LocalDate.from(dateTime));
             }
             @Override
-            public long doGet(DateTimeAccessor dateTime) {
+            public long doGet(TemporalAccessor dateTime) {
                 return getWeek(LocalDate.from(dateTime));
             }
             @Override
-            public <R extends DateTime> R doWith(R dateTime, long newValue) {
-                DateTimeValueRange.of(1, 53).checkValidValue(newValue, this);
+            public <R extends Temporal> R doWith(R dateTime, long newValue) {
+                ValueRange.of(1, 53).checkValidValue(newValue, this);
                 return (R) dateTime.plus(Jdk8Methods.safeSubtract(newValue, doGet(dateTime)), WEEKS);
             }
         },
@@ -176,31 +177,31 @@ public final class ISOWeeks {
                 return "WeekBasedYear";
             }
             @Override
-            public PeriodUnit getBaseUnit() {
+            public TemporalUnit getBaseUnit() {
                 return WEEK_BASED_YEARS;
             }
             @Override
-            public PeriodUnit getRangeUnit() {
+            public TemporalUnit getRangeUnit() {
                 return FOREVER;
             }
             @Override
-            public DateTimeValueRange range() {
+            public ValueRange range() {
                 return YEAR.range();
             }
             @Override
-            public boolean doIsSupported(DateTimeAccessor dateTime) {
+            public boolean doIsSupported(TemporalAccessor dateTime) {
                 return dateTime.isSupported(EPOCH_DAY);
             }
             @Override
-            public DateTimeValueRange doRange(DateTimeAccessor dateTime) {
+            public ValueRange doRange(TemporalAccessor dateTime) {
                 return YEAR.range();
             }
             @Override
-            public long doGet(DateTimeAccessor dateTime) {
+            public long doGet(TemporalAccessor dateTime) {
                 return getWeekBasedYear(LocalDate.from(dateTime));
             }
             @Override
-            public <R extends DateTime> R doWith(R dateTime, long newValue) {
+            public <R extends Temporal> R doWith(R dateTime, long newValue) {
                 int newVal = range().checkValidIntValue(newValue, WEEK_BASED_YEAR);
                 LocalDate date = LocalDate.from(dateTime);
                 int week = getWeek(date);
@@ -226,18 +227,18 @@ public final class ISOWeeks {
         // JDK8 default interface
         //-------------------------------------------------------------------------
         @Override
-        public int compare(DateTimeAccessor dateTime1, DateTimeAccessor dateTime2) {
+        public int compare(TemporalAccessor dateTime1, TemporalAccessor dateTime2) {
             return Long.compare(dateTime1.getLong(this), dateTime2.getLong(this));
         }
 
-        private static DateTimeValueRange getWeekRange(LocalDate date) {
+        private static ValueRange getWeekRange(LocalDate date) {
             int wby = getWeekBasedYear(date);
             date = date.withDayOfYear(1).withYear(wby);
             // 53 weeks if standard year starts on Thursday, or Wed in a leap year
             if (date.getDayOfWeek() == THURSDAY || (date.getDayOfWeek() == WEDNESDAY && date.isLeapYear())) {
-                return DateTimeValueRange.of(1, 53);
+                return ValueRange.of(1, 53);
             }
-            return DateTimeValueRange.of(1, 52);
+            return ValueRange.of(1, 52);
         }
 
         private static int getWeek(LocalDate date) {
@@ -285,7 +286,7 @@ public final class ISOWeeks {
     /**
      * Implementation of the period unit.
      */
-    private static enum Unit implements PeriodUnit {
+    private static enum Unit implements TemporalUnit {
         WEEK_BASED_YEARS;
 
         @Override
@@ -304,17 +305,17 @@ public final class ISOWeeks {
         }
 
         @Override
-        public boolean isSupported(DateTime dateTime) {
+        public boolean isSupported(Temporal dateTime) {
             return dateTime.isSupported(EPOCH_DAY);
         }
 
         @Override
-        public <R extends DateTime> R doPlus(R dateTime, long periodToAdd) {
+        public <R extends Temporal> R doPlus(R dateTime, long periodToAdd) {
             return (R) dateTime.with(WEEK_BASED_YEAR, Jdk8Methods.safeAdd(dateTime.get(WEEK_BASED_YEAR), periodToAdd));
         }
 
         @Override
-        public <R extends DateTime> PeriodBetween between(R dateTime1, R dateTime2) {
+        public <R extends Temporal> PeriodBetween between(R dateTime1, R dateTime2) {
             long period = Jdk8Methods.safeSubtract(dateTime2.getLong(WEEK_BASED_YEAR), dateTime1.getLong(WEEK_BASED_YEAR));
             return new Between(period, WEEK_BASED_YEARS);
         }
@@ -326,9 +327,9 @@ public final class ISOWeeks {
      */
     private static final class Between implements PeriodBetween {
         private final long amount;
-        private final PeriodUnit unit;
+        private final TemporalUnit unit;
 
-        Between(long amount, PeriodUnit unit) {
+        Between(long amount, TemporalUnit unit) {
             this.amount = amount;
             this.unit = unit;
         }
@@ -339,17 +340,17 @@ public final class ISOWeeks {
         }
 
         @Override
-        public PeriodUnit getUnit() {
+        public TemporalUnit getUnit() {
             return unit;
         }
 
         @Override
-        public DateTime doPlusAdjustment(DateTime dateTime) {
+        public Temporal doPlusAdjustment(Temporal dateTime) {
             return dateTime.plus(amount, unit);
         }
 
         @Override
-        public DateTime doMinusAdjustment(DateTime dateTime) {
+        public Temporal doMinusAdjustment(Temporal dateTime) {
             return dateTime.minus(amount, unit);
         }
 

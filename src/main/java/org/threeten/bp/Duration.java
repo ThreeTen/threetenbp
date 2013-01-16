@@ -49,11 +49,11 @@ import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
-import org.threeten.bp.temporal.DateTime;
-import org.threeten.bp.temporal.DateTime.MinusAdjuster;
-import org.threeten.bp.temporal.DateTime.PlusAdjuster;
-import org.threeten.bp.temporal.DateTimeAccessor;
-import org.threeten.bp.temporal.PeriodUnit;
+import org.threeten.bp.temporal.Temporal;
+import org.threeten.bp.temporal.Temporal.MinusAdjuster;
+import org.threeten.bp.temporal.Temporal.PlusAdjuster;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalUnit;
 
 /**
  * A duration between two instants on the time-line.
@@ -241,7 +241,7 @@ public final class Duration
      *  Duration.of(465, HOURS);
      * </pre>
      * Only a subset of units are accepted by this method.
-     * The unit must either have an {@link PeriodUnit#isDurationEstimated() exact duration} or
+     * The unit must either have an {@link TemporalUnit#isDurationEstimated() exact duration} or
      * be {@link ChronoUnit#DAYS} which is treated as 24 hours. Other units throw an exception.
      *
      * @param amount  the amount of the duration, measured in terms of the unit, positive or negative
@@ -250,7 +250,7 @@ public final class Duration
      * @throws DateTimeException if the period unit has an estimated duration
      * @throws ArithmeticException if a numeric overflow occurs
      */
-    public static Duration of(long amount, PeriodUnit unit) {
+    public static Duration of(long amount, TemporalUnit unit) {
         return ZERO.plus(amount, unit);
     }
 
@@ -267,7 +267,7 @@ public final class Duration
      * @return a {@code Duration}, not null
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
-    public static Duration between(DateTimeAccessor startInclusive, DateTimeAccessor endExclusive) {
+    public static Duration between(TemporalAccessor startInclusive, TemporalAccessor endExclusive) {
         long secs = Jdk8Methods.safeSubtract(endExclusive.getLong(INSTANT_SECONDS), startInclusive.getLong(INSTANT_SECONDS));
         long nanos = endExclusive.getLong(NANO_OF_SECOND) - startInclusive.getLong(NANO_OF_SECOND);
         secs = Jdk8Methods.safeAdd(secs, Jdk8Methods.floorDiv(nanos, NANOS_PER_SECOND));
@@ -484,7 +484,7 @@ public final class Duration
      * <p>
      * The duration amount is measured in terms of the specified unit.
      * Only a subset of units are accepted by this method.
-     * The unit must either have an {@link PeriodUnit#isDurationEstimated() exact duration} or
+     * The unit must either have an {@link TemporalUnit#isDurationEstimated() exact duration} or
      * be {@link ChronoUnit#DAYS} which is treated as 24 hours. Other units throw an exception.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -494,7 +494,7 @@ public final class Duration
      * @return a {@code Duration} based on this duration with the specified duration added, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public Duration plus(long amountToAdd, PeriodUnit unit) {
+    public Duration plus(long amountToAdd, TemporalUnit unit) {
         Objects.requireNonNull(unit, "unit");
         if (unit == DAYS) {
             return plus(Jdk8Methods.safeMultiply(amountToAdd, SECONDS_PER_DAY), 0);
@@ -603,7 +603,7 @@ public final class Duration
      * <p>
      * The duration amount is measured in terms of the specified unit.
      * Only a subset of units are accepted by this method.
-     * The unit must either have an {@link PeriodUnit#isDurationEstimated() exact duration} or
+     * The unit must either have an {@link TemporalUnit#isDurationEstimated() exact duration} or
      * be {@link ChronoUnit#DAYS} which is treated as 24 hours. Other units throw an exception.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -613,7 +613,7 @@ public final class Duration
      * @return a {@code Duration} based on this duration with the specified duration subtracted, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public Duration minus(long amountToSubtract, PeriodUnit unit) {
+    public Duration minus(long amountToSubtract, TemporalUnit unit) {
         return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
 
@@ -771,7 +771,7 @@ public final class Duration
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public DateTime doPlusAdjustment(DateTime dateTime) {
+    public Temporal doPlusAdjustment(Temporal dateTime) {
         long instantSecs = dateTime.getLong(INSTANT_SECONDS);
         long instantNanos = dateTime.getLong(NANO_OF_SECOND);
         instantSecs = Jdk8Methods.safeAdd(instantSecs, seconds);
@@ -797,7 +797,7 @@ public final class Duration
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public DateTime doMinusAdjustment(DateTime dateTime) {
+    public Temporal doMinusAdjustment(Temporal dateTime) {
         long instantSecs = dateTime.getLong(INSTANT_SECONDS);
         long instantNanos = dateTime.getLong(NANO_OF_SECOND);
         instantSecs = Jdk8Methods.safeSubtract(instantSecs, seconds);

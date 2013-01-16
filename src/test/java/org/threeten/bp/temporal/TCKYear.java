@@ -75,14 +75,14 @@ public class TCKYear extends AbstractDateTimeTest {
 
     //-----------------------------------------------------------------------
     @Override
-    protected List<DateTimeAccessor> samples() {
-        DateTimeAccessor[] array = {TEST_2008, };
+    protected List<TemporalAccessor> samples() {
+        TemporalAccessor[] array = {TEST_2008, };
         return Arrays.asList(array);
     }
 
     @Override
-    protected List<DateTimeField> validFields() {
-        DateTimeField[] array = {
+    protected List<TemporalField> validFields() {
+        TemporalField[] array = {
             YEAR_OF_ERA,
             YEAR,
             ERA,
@@ -91,12 +91,12 @@ public class TCKYear extends AbstractDateTimeTest {
     }
 
     @Override
-    protected List<DateTimeField> invalidFields() {
-        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(ChronoField.values()));
+    protected List<TemporalField> invalidFields() {
+        List<TemporalField> list = new ArrayList<>(Arrays.<TemporalField>asList(ChronoField.values()));
         list.removeAll(validFields());
-        list.add(JulianDayField.JULIAN_DAY);
-        list.add(JulianDayField.MODIFIED_JULIAN_DAY);
-        list.add(JulianDayField.RATA_DIE);
+        list.add(JulianFields.JULIAN_DAY);
+        list.add(JulianFields.MODIFIED_JULIAN_DAY);
+        list.add(JulianFields.RATA_DIE);
         return list;
     }
 
@@ -189,7 +189,7 @@ public class TCKYear extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_CalendricalObject_null() {
-        Year.from((DateTimeAccessor) null);
+        Year.from((TemporalAccessor) null);
     }
 
     //-----------------------------------------------------------------------
@@ -289,7 +289,7 @@ public class TCKYear extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
     public void test_get_DateTimeField_null() {
-        TEST_2008.getLong((DateTimeField) null);
+        TEST_2008.getLong((TemporalField) null);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
@@ -448,7 +448,7 @@ public class TCKYear extends AbstractDateTimeTest {
     public void test_adjustDate() {
         LocalDate base = LocalDate.of(2007, 2, 12);
         for (int i = -4; i <= 2104; i++) {
-            DateTime result = Year.of(i).doWithAdjustment(base);
+            Temporal result = Year.of(i).doWithAdjustment(base);
             assertEquals(result, LocalDate.of(i, 2, 12));
         }
     }

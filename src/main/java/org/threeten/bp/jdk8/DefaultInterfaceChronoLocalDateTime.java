@@ -42,8 +42,8 @@ import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoLocalDateTime;
-import org.threeten.bp.temporal.DateTime;
-import org.threeten.bp.temporal.PeriodUnit;
+import org.threeten.bp.temporal.Temporal;
+import org.threeten.bp.temporal.TemporalUnit;
 
 /**
  * A temporary class providing implementations that will become default interface
@@ -71,13 +71,13 @@ public abstract class DefaultInterfaceChronoLocalDateTime<C extends Chrono<C>>
     }
 
     @Override
-    public ChronoLocalDateTime<C> minus(long amountToSubtract, PeriodUnit unit) {
+    public ChronoLocalDateTime<C> minus(long amountToSubtract, TemporalUnit unit) {
         return getDate().getChrono().ensureChronoLocalDateTime(super.minus(amountToSubtract, unit));
     }
 
     //-------------------------------------------------------------------------
     @Override
-    public DateTime doWithAdjustment(DateTime dateTime) {
+    public Temporal doWithAdjustment(Temporal dateTime) {
         return dateTime
                 .with(EPOCH_DAY, getDate().toEpochDay())
                 .with(NANO_OF_DAY, getTime().toNanoOfDay());

@@ -39,21 +39,21 @@ import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
  */
 public final class MockFieldValue extends DefaultInterfaceDateTimeAccessor {
 
-    private final DateTimeField field;
+    private final TemporalField field;
     private final long value;
 
-    public MockFieldValue(DateTimeField field, long value) {
+    public MockFieldValue(TemporalField field, long value) {
         this.field = field;
         this.value = value;
     }
 
     @Override
-    public boolean isSupported(DateTimeField field) {
+    public boolean isSupported(TemporalField field) {
         return field != null && field.equals(this.field);
     }
 
     @Override
-    public DateTimeValueRange range(DateTimeField field) {
+    public ValueRange range(TemporalField field) {
         if (field instanceof ChronoField) {
             if (isSupported(field)) {
                 return field.range();
@@ -64,7 +64,7 @@ public final class MockFieldValue extends DefaultInterfaceDateTimeAccessor {
     }
 
     @Override
-    public long getLong(DateTimeField field) {
+    public long getLong(TemporalField field) {
         if (this.field.equals(field)) {
             return value;
         }

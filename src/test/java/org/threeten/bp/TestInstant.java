@@ -47,7 +47,7 @@ import java.util.Locale;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.format.DateTimeParseException;
-import org.threeten.bp.temporal.DateTimeAccessor.Query;
+import org.threeten.bp.temporal.TemporalAccessor.Query;
 
 /**
  * Test Instant.

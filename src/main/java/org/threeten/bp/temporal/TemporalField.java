@@ -34,6 +34,7 @@ package org.threeten.bp.temporal;
 import java.util.Comparator;
 
 import org.threeten.bp.DateTimeException;
+import org.threeten.bp.format.DateTimeBuilder;
 
 /**
  * A field of date-time, such as month-of-year or hour-of-minute.
@@ -54,7 +55,7 @@ import org.threeten.bp.DateTimeException;
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * It is recommended to use an enum where possible.
  */
-public interface DateTimeField extends Comparator<DateTimeAccessor> {
+public interface TemporalField extends Comparator<TemporalAccessor> {
 
     /**
      * Gets a descriptive name for the field.
@@ -76,7 +77,7 @@ public interface DateTimeField extends Comparator<DateTimeAccessor> {
      *
      * @return the period unit defining the base unit of the field, not null
      */
-    PeriodUnit getBaseUnit();
+    TemporalUnit getBaseUnit();
 
     /**
      * Gets the range that the field is bound by.
@@ -90,12 +91,12 @@ public interface DateTimeField extends Comparator<DateTimeAccessor> {
      *
      * @return the period unit defining the range of the field, not null
      */
-    PeriodUnit getRangeUnit();
+    TemporalUnit getRangeUnit();
 
     /**
      * Compares the value of this field in two date-time objects.
      * <p>
-     * All fields implement {@link Comparator} on {@link DateTimeAccessor}.
+     * All fields implement {@link Comparator} on {@link TemporalAccessor}.
      * This allows a list of date-times to be compared using the value of a field.
      * For example, you could sort a list of arbitrary date-time objects by the value of
      * the month-of-year field - {@code Collections.sort(list, MONTH_OF_YEAR)}
@@ -104,7 +105,7 @@ public interface DateTimeField extends Comparator<DateTimeAccessor> {
      * @param dateTime2  the second date-time object to compare, not null
      * @throws DateTimeException if unable to obtain the value for this field
      */
-    int compare(DateTimeAccessor dateTime1, DateTimeAccessor dateTime2);  // JAVA8 default method
+    int compare(TemporalAccessor dateTime1, TemporalAccessor dateTime2);  // JAVA8 default method
 
     //-----------------------------------------------------------------------
     /**
@@ -120,13 +121,13 @@ public interface DateTimeField extends Comparator<DateTimeAccessor> {
      *
      * @return the range of valid values for the field, not null
      */
-    DateTimeValueRange range();
+    ValueRange range();
 
     /**
      * Implementation of the logic to check if this field is supported by the accessor.
      * <p>
      * This method is not intended to be called by application code directly.
-     * Applications should use {@link DateTimeAccessor#isSupported(DateTimeField)} on the date-time
+     * Applications should use {@link TemporalAccessor#isSupported(DateTimeField)} on the date-time
      * object passing this as the argument.
      * <pre>
      *   boolean supported = date.isSupported(field);
@@ -137,7 +138,7 @@ public interface DateTimeField extends Comparator<DateTimeAccessor> {
      * @param dateTime  the date-time object to query, not null
      * @return true if the date-time can be queried for this field, false if not
      */
-    boolean doIsSupported(DateTimeAccessor dateTime);
+    boolean doIsSupported(TemporalAccessor dateTime);
 
     /**
      * Implementation of the logic to get the range of valid values for this field.
@@ -150,7 +151,7 @@ public interface DateTimeField extends Comparator<DateTimeAccessor> {
      * could be values within the range that are invalid for the field.
      * <p>
      * This method is not intended to be called by application code directly.
-     * Applications should use {@link DateTimeAccessor#range(DateTimeField)} on the date-time
+     * Applications should use {@link TemporalAccessor#range(DateTimeField)} on the date-time
      * object passing this as the argument.
      * <pre>
      *   DateTimeValueRange range = date.range(field);
@@ -161,14 +162,14 @@ public interface DateTimeField extends Comparator<DateTimeAccessor> {
      * @param dateTime  the date-time object used to refine the result, not null
      * @return the range of valid values for this field, not null
      */
-    DateTimeValueRange doRange(DateTimeAccessor dateTime);
+    ValueRange doRange(TemporalAccessor dateTime);
 
     /**
      * Implementation of the logic to get the value of this field.
      * <p>
      * This method is not intended to be called by application code directly.
-     * Applications should use {@link DateTimeAccessor#get(DateTimeField)} or
-     * {@link DateTimeAccessor#getLong(DateTimeField)} on the date-time
+     * Applications should use {@link TemporalAccessor#get(DateTimeField)} or
+     * {@link TemporalAccessor#getLong(DateTimeField)} on the date-time
      * object passing this as the argument.
      * <pre>
      *   long value = date.get(field);
@@ -183,13 +184,13 @@ public interface DateTimeField extends Comparator<DateTimeAccessor> {
      * @return the value of this field, not null
      * @throws DateTimeException if unable to get the field
      */
-    long doGet(DateTimeAccessor dateTime);
+    long doGet(TemporalAccessor dateTime);
 
     /**
      * Implementation of the logic to set the value of this field.
      * <p>
      * This method is not intended to be called by application code directly.
-     * Applications should use {@link DateTime#with(DateTimeField, long)} on the date-time
+     * Applications should use {@link Temporal#with(DateTimeField, long)} on the date-time
      * object passing this as the argument.
      * <pre>
      *   updated = date.with(field, newValue);
@@ -205,7 +206,7 @@ public interface DateTimeField extends Comparator<DateTimeAccessor> {
      * @return the adjusted date-time object, not null
      * @throws DateTimeException if the value is invalid
      */
-    <R extends DateTime> R doWith(R dateTime, long newValue);
+    <R extends Temporal> R doWith(R dateTime, long newValue);
 
     /**
      * Resolves the date/time information in the builder

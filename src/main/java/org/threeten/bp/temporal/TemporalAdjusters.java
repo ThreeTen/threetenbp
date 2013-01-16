@@ -41,7 +41,7 @@ import static org.threeten.bp.temporal.ChronoUnit.YEARS;
 import java.util.Objects;
 
 import org.threeten.bp.DayOfWeek;
-import org.threeten.bp.temporal.DateTime.WithAdjuster;
+import org.threeten.bp.temporal.Temporal.WithAdjuster;
 
 /**
  * Common implementations of {@code DateTime.WithAdjuster}.
@@ -68,12 +68,12 @@ import org.threeten.bp.temporal.DateTime.WithAdjuster;
  * This is a thread-safe utility class.
  * All returned adjusters are immutable and thread-safe.
  */
-public final class DateTimeAdjusters {
+public final class TemporalAdjusters {
 
     /**
      * Private constructor since this is a utility class.
      */
-    private DateTimeAdjusters() {
+    private TemporalAdjusters() {
     }
 
     //-----------------------------------------------------------------------
@@ -181,7 +181,7 @@ public final class DateTimeAdjusters {
         /** First day of next month adjuster. */
         FIRST_DAY_OF_NEXT_YEAR;
         @Override
-        public DateTime doWithAdjustment(DateTime dateTime) {
+        public Temporal doWithAdjustment(Temporal dateTime) {
             switch (this) {
                 case FIRST_DAY_OF_MONTH: return dateTime.with(DAY_OF_MONTH, 1);
                 case LAST_DAY_OF_MONTH: return dateTime.with(DAY_OF_MONTH, dateTime.range(DAY_OF_MONTH).getMaximum());
@@ -278,15 +278,15 @@ public final class DateTimeAdjusters {
             this.dowValue = dow.getValue();
         }
         @Override
-        public DateTime doWithAdjustment(DateTime dateTime) {
+        public Temporal doWithAdjustment(Temporal dateTime) {
             if (ordinal >= 0) {
-                DateTime temp = dateTime.with(DAY_OF_MONTH, 1);
+                Temporal temp = dateTime.with(DAY_OF_MONTH, 1);
                 int curDow = temp.get(DAY_OF_WEEK);
                 int dowDiff = (dowValue - curDow + 7) % 7;
                 dowDiff += (ordinal - 1L) * 7L;  // safe from overflow
                 return temp.plus(dowDiff, DAYS);
             } else {
-                DateTime temp = dateTime.with(DAY_OF_MONTH, dateTime.range(DAY_OF_MONTH).getMaximum());
+                Temporal temp = dateTime.with(DAY_OF_MONTH, dateTime.range(DAY_OF_MONTH).getMaximum());
                 int curDow = temp.get(DAY_OF_WEEK);
                 int daysDiff = dowValue - curDow;
                 daysDiff = (daysDiff == 0 ? 0 : (daysDiff > 0 ? daysDiff - 7 : daysDiff));
@@ -379,7 +379,7 @@ public final class DateTimeAdjusters {
         }
 
         @Override
-        public DateTime doWithAdjustment(DateTime dateTime) {
+        public Temporal doWithAdjustment(Temporal dateTime) {
             int calDow = dateTime.get(DAY_OF_WEEK);
             if (relative < 2 && calDow == dowValue) {
                 return dateTime;

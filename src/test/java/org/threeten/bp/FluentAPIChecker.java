@@ -40,11 +40,11 @@ import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
 import static org.threeten.bp.temporal.ChronoUnit.DAYS;
 import static org.threeten.bp.temporal.ChronoUnit.HOURS;
 import static org.threeten.bp.temporal.ChronoUnit.MINUTES;
-import static org.threeten.bp.temporal.DateTimeAdjusters.dayOfWeekInMonth;
-import static org.threeten.bp.temporal.DateTimeAdjusters.firstInMonth;
-import static org.threeten.bp.temporal.DateTimeAdjusters.lastDayOfMonth;
-import static org.threeten.bp.temporal.DateTimeAdjusters.next;
-import static org.threeten.bp.temporal.DateTimeAdjusters.nextOrSame;
+import static org.threeten.bp.temporal.TemporalAdjusters.dayOfWeekInMonth;
+import static org.threeten.bp.temporal.TemporalAdjusters.firstInMonth;
+import static org.threeten.bp.temporal.TemporalAdjusters.lastDayOfMonth;
+import static org.threeten.bp.temporal.TemporalAdjusters.next;
+import static org.threeten.bp.temporal.TemporalAdjusters.nextOrSame;
 
 import org.threeten.bp.zone.ZoneOffsetTransition;
 

@@ -37,7 +37,7 @@ import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.temporal.DateTime.WithAdjuster;
+import org.threeten.bp.temporal.Temporal.WithAdjuster;
 
 /**
  * A date without time-of-day or time-zone in an arbitrary chronology, intended
@@ -48,7 +48,7 @@ import org.threeten.bp.temporal.DateTime.WithAdjuster;
  * <p>
  * A {@code ChronoLocalDate} is the abstract representation of a date where the
  * {@code Chrono chronology}, or calendar system, is pluggable.
- * The date is defined in terms of fields expressed by {@link DateTimeField},
+ * The date is defined in terms of fields expressed by {@link TemporalField},
  * where most common implementations are defined in {@link ChronoField}.
  * The chronology defines how the calendar system operates and the meaning of
  * the standard fields.
@@ -186,7 +186,7 @@ import org.threeten.bp.temporal.DateTime.WithAdjuster;
  * </ul><p>
  * Developers writing low-level frameworks or libraries should also avoid this interface.
  * Instead, one of the two general purpose access interfaces should be used.
- * Use {@link DateTimeAccessor} if read-only access is required, or use {@link DateTime}
+ * Use {@link TemporalAccessor} if read-only access is required, or use {@link Temporal}
  * if read-write access is required.
  *
  * <h4>Implementation notes</h4>
@@ -200,7 +200,7 @@ import org.threeten.bp.temporal.DateTime.WithAdjuster;
  * @param <C> the chronology of this date
  */
 public interface ChronoLocalDate<C extends Chrono<C>>
-        extends DateTime, WithAdjuster, Comparable<ChronoLocalDate<?>> {
+        extends Temporal, WithAdjuster, Comparable<ChronoLocalDate<?>> {
 
     /**
      * Comparator for two {@code ChronoLocalDate}s ignoring the chronology.
@@ -288,19 +288,19 @@ public interface ChronoLocalDate<C extends Chrono<C>>
     ChronoLocalDate<C> with(WithAdjuster adjuster);
 
     @Override
-    ChronoLocalDate<C> with(DateTimeField field, long newValue);
+    ChronoLocalDate<C> with(TemporalField field, long newValue);
 
     @Override
     ChronoLocalDate<C> plus(PlusAdjuster adjuster);
 
     @Override
-    ChronoLocalDate<C> plus(long amountToAdd, PeriodUnit unit);
+    ChronoLocalDate<C> plus(long amountToAdd, TemporalUnit unit);
 
     @Override
     ChronoLocalDate<C> minus(MinusAdjuster adjuster);
 
     @Override
-    ChronoLocalDate<C> minus(long amountToSubtract, PeriodUnit unit);
+    ChronoLocalDate<C> minus(long amountToSubtract, TemporalUnit unit);
 
     //-----------------------------------------------------------------------
     /**

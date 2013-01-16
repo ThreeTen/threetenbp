@@ -39,7 +39,7 @@ import org.threeten.bp.format.DateTimeFormatterBuilder.CharLiteralPrinterParser;
 import org.threeten.bp.format.DateTimeFormatterBuilder.NumberPrinterParser;
 import org.threeten.bp.format.DateTimeFormatterBuilder.PadPrinterParserDecorator;
 import org.threeten.bp.format.DateTimeFormatterBuilder.StringLiteralPrinterParser;
-import org.threeten.bp.temporal.DateTimeField;
+import org.threeten.bp.temporal.TemporalField;
 
 /**
  * Test PadPrinterParserDecorator.
@@ -105,7 +105,7 @@ public class TestPadParserDecorator extends AbstractTestPrinterParser {
         assertEquals(parseContext.getParsed().size(), 0);
     }
 
-    private void assertParsed(DateTimeField field, Long value) {
+    private void assertParsed(TemporalField field, Long value) {
         if (value == null) {
             assertEquals(parseContext.getParsed(field), null);
         } else {

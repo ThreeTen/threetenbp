@@ -46,12 +46,12 @@ import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
 import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoField;
-import org.threeten.bp.temporal.DateTime;
-import org.threeten.bp.temporal.DateTime.WithAdjuster;
-import org.threeten.bp.temporal.DateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeField;
-import org.threeten.bp.temporal.DateTimeValueRange;
 import org.threeten.bp.temporal.ISOChrono;
+import org.threeten.bp.temporal.Temporal;
+import org.threeten.bp.temporal.Temporal.WithAdjuster;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.ValueRange;
 
 /**
  * A month-day in the ISO-8601 calendar system, such as {@code --12-03}.
@@ -66,7 +66,7 @@ import org.threeten.bp.temporal.ISOChrono;
  * Since a {@code MonthDay} does not possess a year, the leap day of
  * February 29th is considered valid.
  * <p>
- * This class implements {@link DateTimeAccessor} rather than {@link DateTime}.
+ * This class implements {@link TemporalAccessor} rather than {@link Temporal}.
  * This is because it is not possible to define whether February 29th is valid or not
  * without external information, preventing the implementation of plus/minus.
  * Related to this, {@code MonthDay} only provides access to query and set the fields
@@ -83,7 +83,7 @@ import org.threeten.bp.temporal.ISOChrono;
  */
 public final class MonthDay
         extends DefaultInterfaceDateTimeAccessor
-        implements DateTimeAccessor, WithAdjuster, Comparable<MonthDay>, Serializable {
+        implements TemporalAccessor, WithAdjuster, Comparable<MonthDay>, Serializable {
 
     /**
      * Serialization version.
@@ -216,7 +216,7 @@ public final class MonthDay
      * @return the month-day, not null
      * @throws DateTimeException if unable to convert to a {@code MonthDay}
      */
-    public static MonthDay from(DateTimeAccessor dateTime) {
+    public static MonthDay from(TemporalAccessor dateTime) {
         if (dateTime instanceof MonthDay) {
             return (MonthDay) dateTime;
         }
@@ -270,7 +270,7 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean isSupported(DateTimeField field) {
+    public boolean isSupported(TemporalField field) {
         if (field instanceof ChronoField) {
             return field == MONTH_OF_YEAR || field == DAY_OF_MONTH;
         }
@@ -278,17 +278,17 @@ public final class MonthDay
     }
 
     @Override
-    public DateTimeValueRange range(DateTimeField field) {
+    public ValueRange range(TemporalField field) {
         if (field == MONTH_OF_YEAR) {
             return field.range();
         } else if (field == DAY_OF_MONTH) {
-            return DateTimeValueRange.of(1, getMonth().minLength(), getMonth().maxLength());
+            return ValueRange.of(1, getMonth().minLength(), getMonth().maxLength());
         }
         return super.range(field);
     }
 
     @Override
-    public long getLong(DateTimeField field) {
+    public long getLong(TemporalField field) {
         if (field instanceof ChronoField) {
             switch ((ChronoField) field) {
                 // alignedDOW and alignedWOM not supported because they cannot be set in with()
@@ -444,14 +444,14 @@ public final class MonthDay
      * <h4>Implementation notes</h4>
      * Adjusts the specified date-time to have the value of this month-day.
      * The date-time object must use the ISO calendar system.
-     * The adjustment is equivalent to using {@link DateTime#with(DateTimeField, long)}
+     * The adjustment is equivalent to using {@link Temporal#with(TemporalField, long)}
      * twice passing {@code MONTH_OF_YEAR} and {@code DAY_OF_MONTH} as the fields.
      *
      * @param dateTime  the target object to be adjusted, not null
      * @return the adjusted object, not null
      */
     @Override
-    public DateTime doWithAdjustment(DateTime dateTime) {
+    public Temporal doWithAdjustment(Temporal dateTime) {
         if (Chrono.from(dateTime).equals(ISOChrono.INSTANCE) == false) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }

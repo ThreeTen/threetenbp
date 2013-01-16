@@ -39,7 +39,7 @@ import static org.threeten.bp.temporal.ChronoField.DAY_OF_WEEK;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.format.DateTimeFormatterBuilder.NumberPrinterParser;
-import org.threeten.bp.temporal.DateTimeField;
+import org.threeten.bp.temporal.TemporalField;
 
 /**
  * Test NumberPrinterParser.
@@ -368,7 +368,7 @@ public class TestNumberParser extends AbstractTestPrinterParser {
         assertParsed(parseContext, DAY_OF_MONTH, (parseVal != null ? (long) parseVal : null));
     }
 
-    private void assertParsed(DateTimeParseContext context, DateTimeField field, Long value) {
+    private void assertParsed(DateTimeParseContext context, TemporalField field, Long value) {
         if (value == null) {
             assertEquals(context.getParsed(field), null);
         } else {

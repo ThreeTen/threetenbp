@@ -50,7 +50,7 @@ import org.threeten.bp.format.DateTimeFormatter;
  * <p>
  * A {@code ChronoZonedDateTime} is the abstract representation of an offset date-time
  * where the {@code Chrono chronology}, or calendar system, is pluggable.
- * The date-time is defined in terms of fields expressed by {@link DateTimeField},
+ * The date-time is defined in terms of fields expressed by {@link TemporalField},
  * where most common implementations are defined in {@link ChronoField}.
  * The chronology defines how the calendar system operates and the meaning of
  * the standard fields.
@@ -71,7 +71,7 @@ import org.threeten.bp.format.DateTimeFormatter;
  * @param <C> the chronology of this date-time
  */
 public interface ChronoZonedDateTime<C extends Chrono<C>>
-        extends DateTime, Comparable<ChronoZonedDateTime<?>> {
+        extends Temporal, Comparable<ChronoZonedDateTime<?>> {
 
     /**
      * Comparator for two {@code ChronoZonedDateTime} instances ignoring the chronology.
@@ -228,19 +228,19 @@ public interface ChronoZonedDateTime<C extends Chrono<C>>
     ChronoZonedDateTime<C> with(WithAdjuster adjuster);
 
     @Override
-    ChronoZonedDateTime<C> with(DateTimeField field, long newValue);
+    ChronoZonedDateTime<C> with(TemporalField field, long newValue);
 
     @Override
     ChronoZonedDateTime<C> plus(PlusAdjuster adjuster);
 
     @Override
-    ChronoZonedDateTime<C> plus(long amountToAdd, PeriodUnit unit);
+    ChronoZonedDateTime<C> plus(long amountToAdd, TemporalUnit unit);
 
     @Override
     ChronoZonedDateTime<C> minus(MinusAdjuster adjuster);
 
     @Override
-    ChronoZonedDateTime<C> minus(long amountToSubtract, PeriodUnit unit);
+    ChronoZonedDateTime<C> minus(long amountToSubtract, TemporalUnit unit);
 
     //-----------------------------------------------------------------------
     /**

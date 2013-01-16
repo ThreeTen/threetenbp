@@ -40,8 +40,8 @@ import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeField;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalField;
 
 /**
  * Abstract PrinterParser test.
@@ -63,12 +63,12 @@ public class AbstractTestPrinterParser {
         buf = new StringBuilder();
     }
 
-    private static final DateTimeAccessor EMPTY = new DefaultInterfaceDateTimeAccessor() {
-        public boolean isSupported(DateTimeField field) {
+    private static final TemporalAccessor EMPTY = new DefaultInterfaceDateTimeAccessor() {
+        public boolean isSupported(TemporalField field) {
             return true;
         }
         @Override
-        public long getLong(DateTimeField field) {
+        public long getLong(TemporalField field) {
             throw new DateTimeException("Mock");
         }
     };

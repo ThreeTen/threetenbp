@@ -45,9 +45,9 @@ import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoLocalDate;
 import org.threeten.bp.temporal.ChronoZonedDateTime;
-import org.threeten.bp.temporal.DateTimeField;
-import org.threeten.bp.temporal.DateTimeValueRange;
-import org.threeten.bp.temporal.PeriodUnit;
+import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalUnit;
+import org.threeten.bp.temporal.ValueRange;
 
 /**
  * A temporary class providing implementations that will become default interface
@@ -60,7 +60,7 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chrono<C>>
         implements ChronoZonedDateTime<C> {
 
     @Override
-    public DateTimeValueRange range(DateTimeField field) {
+    public ValueRange range(TemporalField field) {
         if (field instanceof ChronoField) {
             if (field == INSTANT_SECONDS || field == OFFSET_SECONDS) {
                 return field.range();
@@ -71,7 +71,7 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chrono<C>>
     }
 
     @Override
-    public int get(DateTimeField field) {
+    public int get(TemporalField field) {
         if (field instanceof ChronoField) {
             switch ((ChronoField) field) {
                 case INSTANT_SECONDS: throw new DateTimeException("Field too large for an int: " + field);
@@ -83,7 +83,7 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chrono<C>>
     }
 
     @Override
-    public long getLong(DateTimeField field) {
+    public long getLong(TemporalField field) {
         if (field instanceof ChronoField) {
             switch ((ChronoField) field) {
                 case INSTANT_SECONDS: return toEpochSecond();
@@ -122,7 +122,7 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chrono<C>>
     }
 
     @Override
-    public ChronoZonedDateTime<C> minus(long amountToSubtract, PeriodUnit unit) {
+    public ChronoZonedDateTime<C> minus(long amountToSubtract, TemporalUnit unit) {
         return getDate().getChrono().ensureChronoZonedDateTime(super.minus(amountToSubtract, unit));
     }
 

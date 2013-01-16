@@ -39,7 +39,7 @@ import static org.threeten.bp.temporal.ChronoField.YEAR;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.format.DateTimeFormatterBuilder.ReducedPrinterParser;
-import org.threeten.bp.temporal.DateTimeField;
+import org.threeten.bp.temporal.TemporalField;
 
 /**
  * Test ReducedPrinterParser.
@@ -142,7 +142,7 @@ public class TestReducedParser extends AbstractTestPrinterParser {
         assertParsed(YEAR, parseVal != null ? (long) parseVal : null);
     }
 
-    private void assertParsed(DateTimeField field, Long value) {
+    private void assertParsed(TemporalField field, Long value) {
         if (value == null) {
             assertEquals(parseContext.getParsed(field), null);
         } else {

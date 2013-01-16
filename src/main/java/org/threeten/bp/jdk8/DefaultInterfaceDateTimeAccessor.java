@@ -33,18 +33,18 @@ package org.threeten.bp.jdk8;
 
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.temporal.ChronoField;
-import org.threeten.bp.temporal.DateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeField;
-import org.threeten.bp.temporal.DateTimeValueRange;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.ValueRange;
 
 /**
  * A temporary class providing implementations that will become default interface
  * methods once integrated into JDK 8.
  */
-public abstract class DefaultInterfaceDateTimeAccessor implements DateTimeAccessor {
+public abstract class DefaultInterfaceDateTimeAccessor implements TemporalAccessor {
 
     @Override
-    public DateTimeValueRange range(DateTimeField field) {
+    public ValueRange range(TemporalField field) {
         if (field instanceof ChronoField) {
             if (isSupported(field)) {
                 return field.range();
@@ -55,7 +55,7 @@ public abstract class DefaultInterfaceDateTimeAccessor implements DateTimeAccess
     }
 
     @Override
-    public int get(DateTimeField field) {
+    public int get(TemporalField field) {
         return range(field).checkValidIntValue(getLong(field), field);
     }
 

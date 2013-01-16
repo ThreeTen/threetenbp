@@ -49,12 +49,13 @@ import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.ZoneOffset;
+import org.threeten.bp.format.DateTimeBuilder;
 
 /**
  * A standard set of fields.
  * <p>
  * This set of fields provide field-based access to manipulate a date, time or date-time.
- * The standard set of fields can be extended by implementing {@link DateTimeField}.
+ * The standard set of fields can be extended by implementing {@link TemporalField}.
  * <p>
  * These fields are intended to be applicable in multiple calendar systems.
  * For example, most non-ISO calendar systems define dates as a year, month and day,
@@ -64,7 +65,7 @@ import org.threeten.bp.ZoneOffset;
  * <h4>Implementation notes</h4>
  * This is a final, immutable and thread-safe enum.
  */
-public enum ChronoField implements DateTimeField {
+public enum ChronoField implements TemporalField {
 
     /**
      * The nano-of-second.
@@ -82,7 +83,7 @@ public enum ChronoField implements DateTimeField {
      * For example, if the {@code DateTimeAccessor} stores time to millisecond precision,
      * then the nano-of-second must be divided by 1,000,000 before replacing the milli-of-second.
      */
-    NANO_OF_SECOND("NanoOfSecond", NANOS, SECONDS, DateTimeValueRange.of(0, 999_999_999)),
+    NANO_OF_SECOND("NanoOfSecond", NANOS, SECONDS, ValueRange.of(0, 999_999_999)),
     /**
      * The nano-of-day.
      * <p>
@@ -93,7 +94,7 @@ public enum ChronoField implements DateTimeField {
      * Implementations of {@code DateTimeAccessor} should provide a value for this field if
      * they can return a value for {@link #SECOND_OF_DAY} filling unknown precision with zero.
      */
-    NANO_OF_DAY("NanoOfDay", NANOS, DAYS, DateTimeValueRange.of(0, 86400L * 1000_000_000L - 1)),
+    NANO_OF_DAY("NanoOfDay", NANOS, DAYS, ValueRange.of(0, 86400L * 1000_000_000L - 1)),
     /**
      * The micro-of-second.
      * <p>
@@ -108,7 +109,7 @@ public enum ChronoField implements DateTimeField {
      * When this field is used for setting a value, it should behave in the same way as
      * setting {@link #NANO_OF_SECOND} with the value multiplied by 1,000.
      */
-    MICRO_OF_SECOND("MicroOfSecond", MICROS, SECONDS, DateTimeValueRange.of(0, 999_999)),
+    MICRO_OF_SECOND("MicroOfSecond", MICROS, SECONDS, ValueRange.of(0, 999_999)),
     /**
      * The micro-of-day.
      * <p>
@@ -122,7 +123,7 @@ public enum ChronoField implements DateTimeField {
      * When this field is used for setting a value, it should behave in the same way as
      * setting {@link #NANO_OF_DAY} with the value multiplied by 1,000.
      */
-    MICRO_OF_DAY("MicroOfDay", MICROS, DAYS, DateTimeValueRange.of(0, 86400L * 1000_000L - 1)),
+    MICRO_OF_DAY("MicroOfDay", MICROS, DAYS, ValueRange.of(0, 86400L * 1000_000L - 1)),
     /**
      * The milli-of-second.
      * <p>
@@ -137,7 +138,7 @@ public enum ChronoField implements DateTimeField {
      * When this field is used for setting a value, it should behave in the same way as
      * setting {@link #NANO_OF_SECOND} with the value multiplied by 1,000,000.
      */
-    MILLI_OF_SECOND("MilliOfSecond", MILLIS, SECONDS, DateTimeValueRange.of(0, 999)),
+    MILLI_OF_SECOND("MilliOfSecond", MILLIS, SECONDS, ValueRange.of(0, 999)),
     /**
      * The milli-of-day.
      * <p>
@@ -151,35 +152,35 @@ public enum ChronoField implements DateTimeField {
      * When this field is used for setting a value, it should behave in the same way as
      * setting {@link #NANO_OF_DAY} with the value multiplied by 1,000,000.
      */
-    MILLI_OF_DAY("MilliOfDay", MILLIS, DAYS, DateTimeValueRange.of(0, 86400L * 1000L - 1)),
+    MILLI_OF_DAY("MilliOfDay", MILLIS, DAYS, ValueRange.of(0, 86400L * 1000L - 1)),
     /**
      * The second-of-minute.
      * <p>
      * This counts the second within the minute, from 0 to 59.
      * This field has the same meaning for all calendar systems.
      */
-    SECOND_OF_MINUTE("SecondOfMinute", SECONDS, MINUTES, DateTimeValueRange.of(0, 59)),
+    SECOND_OF_MINUTE("SecondOfMinute", SECONDS, MINUTES, ValueRange.of(0, 59)),
     /**
      * The second-of-day.
      * <p>
      * This counts the second within the day, from 0 to (24 * 60 * 60) - 1.
      * This field has the same meaning for all calendar systems.
      */
-    SECOND_OF_DAY("SecondOfDay", SECONDS, DAYS, DateTimeValueRange.of(0, 86400L - 1)),
+    SECOND_OF_DAY("SecondOfDay", SECONDS, DAYS, ValueRange.of(0, 86400L - 1)),
     /**
      * The minute-of-hour.
      * <p>
      * This counts the minute within the hour, from 0 to 59.
      * This field has the same meaning for all calendar systems.
      */
-    MINUTE_OF_HOUR("MinuteOfHour", MINUTES, HOURS, DateTimeValueRange.of(0, 59)),
+    MINUTE_OF_HOUR("MinuteOfHour", MINUTES, HOURS, ValueRange.of(0, 59)),
     /**
      * The minute-of-day.
      * <p>
      * This counts the minute within the day, from 0 to (24 * 60) - 1.
      * This field has the same meaning for all calendar systems.
      */
-    MINUTE_OF_DAY("MinuteOfDay", MINUTES, DAYS, DateTimeValueRange.of(0, (24 * 60) - 1)),
+    MINUTE_OF_DAY("MinuteOfDay", MINUTES, DAYS, ValueRange.of(0, (24 * 60) - 1)),
     /**
      * The hour-of-am-pm.
      * <p>
@@ -187,7 +188,7 @@ public enum ChronoField implements DateTimeField {
      * This is the hour that would be observed on a standard 12-hour digital clock.
      * This field has the same meaning for all calendar systems.
      */
-    HOUR_OF_AMPM("HourOfAmPm", HOURS, HALF_DAYS, DateTimeValueRange.of(0, 11)),
+    HOUR_OF_AMPM("HourOfAmPm", HOURS, HALF_DAYS, ValueRange.of(0, 11)),
     /**
      * The clock-hour-of-am-pm.
      * <p>
@@ -195,7 +196,7 @@ public enum ChronoField implements DateTimeField {
      * This is the hour that would be observed on a standard 12-hour analog wall clock.
      * This field has the same meaning for all calendar systems.
      */
-    CLOCK_HOUR_OF_AMPM("ClockHourOfAmPm", HOURS, HALF_DAYS, DateTimeValueRange.of(1, 12)),
+    CLOCK_HOUR_OF_AMPM("ClockHourOfAmPm", HOURS, HALF_DAYS, ValueRange.of(1, 12)),
     /**
      * The hour-of-day.
      * <p>
@@ -203,7 +204,7 @@ public enum ChronoField implements DateTimeField {
      * This is the hour that would be observed on a standard 24-hour digital clock.
      * This field has the same meaning for all calendar systems.
      */
-    HOUR_OF_DAY("HourOfDay", HOURS, DAYS, DateTimeValueRange.of(0, 23)),
+    HOUR_OF_DAY("HourOfDay", HOURS, DAYS, ValueRange.of(0, 23)),
     /**
      * The clock-hour-of-day.
      * <p>
@@ -211,14 +212,14 @@ public enum ChronoField implements DateTimeField {
      * This is the hour that would be observed on a 24-hour analog wall clock.
      * This field has the same meaning for all calendar systems.
      */
-    CLOCK_HOUR_OF_DAY("ClockHourOfDay", HOURS, DAYS, DateTimeValueRange.of(1, 24)),
+    CLOCK_HOUR_OF_DAY("ClockHourOfDay", HOURS, DAYS, ValueRange.of(1, 24)),
     /**
      * The am-pm-of-day.
      * <p>
      * This counts the AM/PM within the day, from 0 (AM) to 1 (PM).
      * This field has the same meaning for all calendar systems.
      */
-    AMPM_OF_DAY("AmPmOfDay", HALF_DAYS, DAYS, DateTimeValueRange.of(0, 1)),
+    AMPM_OF_DAY("AmPmOfDay", HALF_DAYS, DAYS, ValueRange.of(0, 1)),
     /**
      * The day-of-week, such as Tuesday.
      * <p>
@@ -234,7 +235,7 @@ public enum ChronoField implements DateTimeField {
      * if they have a similar concept of named or numbered days within a period similar
      * to a week. It is recommended that the numbering starts from 1.
      */
-    DAY_OF_WEEK("DayOfWeek", DAYS, WEEKS, DateTimeValueRange.of(1, 7)),
+    DAY_OF_WEEK("DayOfWeek", DAYS, WEEKS, ValueRange.of(1, 7)),
     /**
      * The aligned day-of-week within a month.
      * <p>
@@ -252,7 +253,7 @@ public enum ChronoField implements DateTimeField {
      * Calendar systems that do not have a seven day week should typically implement this
      * field in the same way, but using the alternate week length.
      */
-    ALIGNED_DAY_OF_WEEK_IN_MONTH("AlignedDayOfWeekInMonth", DAYS, WEEKS, DateTimeValueRange.of(1, 7)),
+    ALIGNED_DAY_OF_WEEK_IN_MONTH("AlignedDayOfWeekInMonth", DAYS, WEEKS, ValueRange.of(1, 7)),
     /**
      * The aligned day-of-week within a year.
      * <p>
@@ -270,7 +271,7 @@ public enum ChronoField implements DateTimeField {
      * Calendar systems that do not have a seven day week should typically implement this
      * field in the same way, but using the alternate week length.
      */
-    ALIGNED_DAY_OF_WEEK_IN_YEAR("AlignedDayOfWeekInYear", DAYS, WEEKS, DateTimeValueRange.of(1, 7)),
+    ALIGNED_DAY_OF_WEEK_IN_YEAR("AlignedDayOfWeekInYear", DAYS, WEEKS, ValueRange.of(1, 7)),
     /**
      * The day-of-month.
      * <p>
@@ -283,7 +284,7 @@ public enum ChronoField implements DateTimeField {
      * day-of-month values for users of the calendar system.
      * Normally, this is a count of days from 1 to the length of the month.
      */
-    DAY_OF_MONTH("DayOfMonth", DAYS, MONTHS, DateTimeValueRange.of(1, 28, 31)),
+    DAY_OF_MONTH("DayOfMonth", DAYS, MONTHS, ValueRange.of(1, 28, 31)),
     /**
      * The day-of-year.
      * <p>
@@ -295,7 +296,7 @@ public enum ChronoField implements DateTimeField {
      * day-of-year values for users of the calendar system.
      * Normally, this is a count of days from 1 to the length of the year.
      */
-    DAY_OF_YEAR("DayOfYear", DAYS, YEARS, DateTimeValueRange.of(1, 365, 366)),
+    DAY_OF_YEAR("DayOfYear", DAYS, YEARS, ValueRange.of(1, 365, 366)),
     /**
      * The epoch-day, based on the Java epoch of 1970-01-01 (ISO).
      * <p>
@@ -305,7 +306,7 @@ public enum ChronoField implements DateTimeField {
      * This field is strictly defined to have the same meaning in all calendar systems.
      * This is necessary to ensure interoperation between calendars.
      */
-    EPOCH_DAY("EpochDay", DAYS, FOREVER, DateTimeValueRange.of((long) (LocalDate.MIN_YEAR * 365.25), (long) (LocalDate.MAX_YEAR * 365.25))),
+    EPOCH_DAY("EpochDay", DAYS, FOREVER, ValueRange.of((long) (LocalDate.MIN_YEAR * 365.25), (long) (LocalDate.MAX_YEAR * 365.25))),
     /**
      * The aligned week within a month.
      * <p>
@@ -321,7 +322,7 @@ public enum ChronoField implements DateTimeField {
      * Calendar systems that do not have a seven day week should typically implement this
      * field in the same way, but using the alternate week length.
      */
-    ALIGNED_WEEK_OF_MONTH("AlignedWeekOfMonth", WEEKS, MONTHS, DateTimeValueRange.of(1, 4, 5)),
+    ALIGNED_WEEK_OF_MONTH("AlignedWeekOfMonth", WEEKS, MONTHS, ValueRange.of(1, 4, 5)),
     /**
      * The aligned week within a year.
      * <p>
@@ -337,7 +338,7 @@ public enum ChronoField implements DateTimeField {
      * Calendar systems that do not have a seven day week should typically implement this
      * field in the same way, but using the alternate week length.
      */
-    ALIGNED_WEEK_OF_YEAR("AlignedWeekOfYear", WEEKS, YEARS, DateTimeValueRange.of(1, 53)),
+    ALIGNED_WEEK_OF_YEAR("AlignedWeekOfYear", WEEKS, YEARS, ValueRange.of(1, 53)),
     /**
      * The month-of-year, such as March.
      * <p>
@@ -348,7 +349,7 @@ public enum ChronoField implements DateTimeField {
      * month-of-year values for users of the calendar system.
      * Normally, this is a count of months starting from 1.
      */
-    MONTH_OF_YEAR("MonthOfYear", MONTHS, YEARS, DateTimeValueRange.of(1, 12)),
+    MONTH_OF_YEAR("MonthOfYear", MONTHS, YEARS, ValueRange.of(1, 12)),
     /**
      * The epoch-month based on the Java epoch of 1970-01-01.
      * <p>
@@ -358,7 +359,7 @@ public enum ChronoField implements DateTimeField {
      * Non-ISO calendar systems should also implement this field to represent a sequential
      * count of months. It is recommended to define zero as the month of 1970-01-01 (ISO).
      */
-    EPOCH_MONTH("EpochMonth", MONTHS, FOREVER, DateTimeValueRange.of((LocalDate.MIN_YEAR - 1970L) * 12, (LocalDate.MAX_YEAR - 1970L) * 12L - 1L)),
+    EPOCH_MONTH("EpochMonth", MONTHS, FOREVER, ValueRange.of((LocalDate.MIN_YEAR - 1970L) * 12, (LocalDate.MAX_YEAR - 1970L) * 12L - 1L)),
     /**
      * The year within the era.
      * <p>
@@ -393,7 +394,7 @@ public enum ChronoField implements DateTimeField {
      * will typically be the same as that used by the ISO calendar system.
      * The year-of-era value should typically always be positive, however this is not required.
      */
-    YEAR_OF_ERA("YearOfEra", YEARS, FOREVER, DateTimeValueRange.of(1, LocalDate.MAX_YEAR, LocalDate.MAX_YEAR + 1)),
+    YEAR_OF_ERA("YearOfEra", YEARS, FOREVER, ValueRange.of(1, LocalDate.MAX_YEAR, LocalDate.MAX_YEAR + 1)),
     /**
      * The proleptic year, such as 2012.
      * <p>
@@ -417,7 +418,7 @@ public enum ChronoField implements DateTimeField {
      * defined with any appropriate value, although defining it to be the same as ISO may be
      * the best option.
      */
-    YEAR("Year", YEARS, FOREVER, DateTimeValueRange.of(LocalDate.MIN_YEAR, LocalDate.MAX_YEAR)),
+    YEAR("Year", YEARS, FOREVER, ValueRange.of(LocalDate.MIN_YEAR, LocalDate.MAX_YEAR)),
     /**
      * The era.
      * <p>
@@ -434,7 +435,7 @@ public enum ChronoField implements DateTimeField {
      * Earlier eras must have sequentially smaller values.
      * Later eras must have sequentially larger values,
      */
-    ERA("Era", ERAS, FOREVER, DateTimeValueRange.of(0, 1)),
+    ERA("Era", ERAS, FOREVER, ValueRange.of(0, 1)),
     /**
      * The instant epoch-seconds.
      * <p>
@@ -450,7 +451,7 @@ public enum ChronoField implements DateTimeField {
      * This field is strictly defined to have the same meaning in all calendar systems.
      * This is necessary to ensure interoperation between calendars.
      */
-    INSTANT_SECONDS("InstantSeconds", SECONDS, FOREVER, DateTimeValueRange.of(Long.MIN_VALUE, Long.MAX_VALUE)),
+    INSTANT_SECONDS("InstantSeconds", SECONDS, FOREVER, ValueRange.of(Long.MIN_VALUE, Long.MAX_VALUE)),
     /**
      * The offset from UTC/Greenwich.
      * <p>
@@ -464,14 +465,14 @@ public enum ChronoField implements DateTimeField {
      * This field is strictly defined to have the same meaning in all calendar systems.
      * This is necessary to ensure interoperation between calendars.
      */
-    OFFSET_SECONDS("OffsetSeconds", SECONDS, FOREVER, DateTimeValueRange.of(-18 * 3600, 18 * 3600));
+    OFFSET_SECONDS("OffsetSeconds", SECONDS, FOREVER, ValueRange.of(-18 * 3600, 18 * 3600));
 
     private final String name;
-    private final PeriodUnit baseUnit;
-    private final PeriodUnit rangeUnit;
-    private final DateTimeValueRange range;
+    private final TemporalUnit baseUnit;
+    private final TemporalUnit rangeUnit;
+    private final ValueRange range;
 
-    private ChronoField(String name, PeriodUnit baseUnit, PeriodUnit rangeUnit, DateTimeValueRange range) {
+    private ChronoField(String name, TemporalUnit baseUnit, TemporalUnit rangeUnit, ValueRange range) {
         this.name = name;
         this.baseUnit = baseUnit;
         this.rangeUnit = rangeUnit;
@@ -485,17 +486,17 @@ public enum ChronoField implements DateTimeField {
     }
 
     @Override
-    public PeriodUnit getBaseUnit() {
+    public TemporalUnit getBaseUnit() {
         return baseUnit;
     }
 
     @Override
-    public PeriodUnit getRangeUnit() {
+    public TemporalUnit getRangeUnit() {
         return rangeUnit;
     }
 
     @Override
-    public DateTimeValueRange range() {
+    public ValueRange range() {
         return range;
     }
 
@@ -548,28 +549,28 @@ public enum ChronoField implements DateTimeField {
 
     //-------------------------------------------------------------------------
     @Override
-    public int compare(DateTimeAccessor dateTime1, DateTimeAccessor dateTime2) {
+    public int compare(TemporalAccessor dateTime1, TemporalAccessor dateTime2) {
         return Long.compare(dateTime1.getLong(this), dateTime2.getLong(this));
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean doIsSupported(DateTimeAccessor dateTime) {
+    public boolean doIsSupported(TemporalAccessor dateTime) {
         return dateTime.isSupported(this);
     }
 
     @Override
-    public DateTimeValueRange doRange(DateTimeAccessor dateTime) {
+    public ValueRange doRange(TemporalAccessor dateTime) {
         return dateTime.range(this);
     }
 
     @Override
-    public long doGet(DateTimeAccessor dateTime) {
+    public long doGet(TemporalAccessor dateTime) {
         return dateTime.getLong(this);
     }
 
     @Override
-    public <R extends DateTime> R doWith(R dateTime, long newValue) {
+    public <R extends Temporal> R doWith(R dateTime, long newValue) {
         return (R) dateTime.with(this, newValue);
     }
 

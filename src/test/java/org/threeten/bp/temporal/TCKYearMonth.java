@@ -87,14 +87,14 @@ public class TCKYearMonth extends AbstractDateTimeTest {
 
     //-----------------------------------------------------------------------
     @Override
-    protected List<DateTimeAccessor> samples() {
-        DateTimeAccessor[] array = {TEST_2008_06, };
+    protected List<TemporalAccessor> samples() {
+        TemporalAccessor[] array = {TEST_2008_06, };
         return Arrays.asList(array);
     }
 
     @Override
-    protected List<DateTimeField> validFields() {
-        DateTimeField[] array = {
+    protected List<TemporalField> validFields() {
+        TemporalField[] array = {
             MONTH_OF_YEAR,
             EPOCH_MONTH,
             YEAR_OF_ERA,
@@ -105,12 +105,12 @@ public class TCKYearMonth extends AbstractDateTimeTest {
     }
 
     @Override
-    protected List<DateTimeField> invalidFields() {
-        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(ChronoField.values()));
+    protected List<TemporalField> invalidFields() {
+        List<TemporalField> list = new ArrayList<>(Arrays.<TemporalField>asList(ChronoField.values()));
         list.removeAll(validFields());
-        list.add(JulianDayField.JULIAN_DAY);
-        list.add(JulianDayField.MODIFIED_JULIAN_DAY);
-        list.add(JulianDayField.RATA_DIE);
+        list.add(JulianFields.JULIAN_DAY);
+        list.add(JulianFields.MODIFIED_JULIAN_DAY);
+        list.add(JulianFields.RATA_DIE);
         return list;
     }
 
@@ -265,7 +265,7 @@ public class TCKYearMonth extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_CalendricalObject_null() {
-        YearMonth.from((DateTimeAccessor) null);
+        YearMonth.from((TemporalAccessor) null);
     }
 
     //-----------------------------------------------------------------------
@@ -387,7 +387,7 @@ public class TCKYearMonth extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
     public void test_get_DateTimeField_null() {
-        TEST_2008_06.getLong((DateTimeField) null);
+        TEST_2008_06.getLong((TemporalField) null);
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )

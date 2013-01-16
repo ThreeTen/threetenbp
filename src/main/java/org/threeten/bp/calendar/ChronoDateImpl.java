@@ -42,9 +42,9 @@ import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoLocalDate;
 import org.threeten.bp.temporal.ChronoLocalDateTime;
 import org.threeten.bp.temporal.ChronoUnit;
-import org.threeten.bp.temporal.DateTime;
-import org.threeten.bp.temporal.DateTime.WithAdjuster;
-import org.threeten.bp.temporal.PeriodUnit;
+import org.threeten.bp.temporal.Temporal;
+import org.threeten.bp.temporal.Temporal.WithAdjuster;
+import org.threeten.bp.temporal.TemporalUnit;
 
 /**
  * A date expressed in terms of a standard year-month-day calendar system.
@@ -114,7 +114,7 @@ import org.threeten.bp.temporal.PeriodUnit;
  */
 abstract class ChronoDateImpl<C extends Chrono<C>>
         extends DefaultInterfaceChronoLocalDate<C>
-        implements ChronoLocalDate<C>, DateTime, WithAdjuster, Serializable {
+        implements ChronoLocalDate<C>, Temporal, WithAdjuster, Serializable {
 
     /**
      * Serialization version.
@@ -129,7 +129,7 @@ abstract class ChronoDateImpl<C extends Chrono<C>>
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoDateImpl<C> plus(long amountToAdd, PeriodUnit unit) {
+    public ChronoDateImpl<C> plus(long amountToAdd, TemporalUnit unit) {
         if (unit instanceof ChronoUnit) {
             ChronoUnit f = (ChronoUnit) unit;
             switch (f) {
@@ -299,7 +299,7 @@ abstract class ChronoDateImpl<C extends Chrono<C>>
 
     //-----------------------------------------------------------------------
     @Override
-    public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
+    public long periodUntil(Temporal endDateTime, TemporalUnit unit) {
         if (endDateTime instanceof ChronoLocalDate == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }

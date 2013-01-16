@@ -36,7 +36,7 @@ import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
 import static org.threeten.bp.temporal.ChronoField.DAY_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.YEAR;
-import static org.threeten.bp.temporal.DateTimeAdjusters.lastDayOfMonth;
+import static org.threeten.bp.temporal.TemporalAdjusters.lastDayOfMonth;
 
 import java.util.Locale;
 

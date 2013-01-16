@@ -43,10 +43,10 @@ import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.TextStyle;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoLocalDate;
-import org.threeten.bp.temporal.DateTime;
-import org.threeten.bp.temporal.DateTimeField;
-import org.threeten.bp.temporal.DateTimeValueRange;
 import org.threeten.bp.temporal.Era;
+import org.threeten.bp.temporal.Temporal;
+import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.ValueRange;
 
 /**
  * An era in the Minguo calendar system.
@@ -127,7 +127,7 @@ enum MinguoEra implements Era<MinguoChrono>  {
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean isSupported(DateTimeField field) {
+    public boolean isSupported(TemporalField field) {
         if (field instanceof ChronoField) {
             return field == ERA;
         }
@@ -135,7 +135,7 @@ enum MinguoEra implements Era<MinguoChrono>  {
     }
 
     @Override
-    public DateTimeValueRange range(DateTimeField field) {
+    public ValueRange range(TemporalField field) {
         if (field == ERA) {
             return field.range();
         } else if (field instanceof ChronoField) {
@@ -145,7 +145,7 @@ enum MinguoEra implements Era<MinguoChrono>  {
     }
 
     @Override
-    public int get(DateTimeField field) {
+    public int get(TemporalField field) {
         if (field == ERA) {
             return getValue();
         }
@@ -153,7 +153,7 @@ enum MinguoEra implements Era<MinguoChrono>  {
     }
 
     @Override
-    public long getLong(DateTimeField field) {
+    public long getLong(TemporalField field) {
         if (field == ERA) {
             return getValue();
         } else if (field instanceof ChronoField) {
@@ -164,7 +164,7 @@ enum MinguoEra implements Era<MinguoChrono>  {
 
     //-------------------------------------------------------------------------
     @Override
-    public DateTime doWithAdjustment(DateTime dateTime) {
+    public Temporal doWithAdjustment(Temporal dateTime) {
         return dateTime.with(ERA, getValue());
     }
 

@@ -77,7 +77,7 @@ final class ChronoZonedDateTimeImpl<C extends Chrono<C>>
     /**
      * The local date-time.
      */
-    private final ChronoDateTimeImpl<C> dateTime;
+    private final ChronoLocalDateTimeImpl<C> dateTime;
     /**
      * The zone offset.
      */
@@ -98,7 +98,7 @@ final class ChronoZonedDateTimeImpl<C extends Chrono<C>>
      * @return the zoned date-time, not null
      */
     static <R extends Chrono<R>> ChronoZonedDateTime<R> ofBest(
-            ChronoDateTimeImpl<R> localDateTime, ZoneId zoneId, ZoneOffset preferredOffset) {
+            ChronoLocalDateTimeImpl<R> localDateTime, ZoneId zoneId, ZoneOffset preferredOffset) {
         Objects.requireNonNull(localDateTime, "localDateTime");
         Objects.requireNonNull(zoneId, "zoneId");
         if (zoneId instanceof ZoneOffset) {
@@ -133,7 +133,7 @@ final class ChronoZonedDateTimeImpl<C extends Chrono<C>>
      * @return the zoned date-time, validated not null
      */
     private ChronoZonedDateTimeImpl<C> create(Instant instant, ZoneId zoneId) {
-        ChronoDateTimeImpl<C> cldt = getDate().getChrono().localInstant(instant, zoneId);
+        ChronoLocalDateTimeImpl<C> cldt = getDate().getChrono().localInstant(instant, zoneId);
         return new ChronoZonedDateTimeImpl<C>(cldt, offset, zoneId);
     }
 
@@ -145,7 +145,7 @@ final class ChronoZonedDateTimeImpl<C extends Chrono<C>>
      * @param offset  the zone offset, not null
      * @param zone  the zone ID, not null
      */
-    private ChronoZonedDateTimeImpl(ChronoDateTimeImpl<C> dateTime, ZoneOffset offset, ZoneId zoneId) {
+    private ChronoZonedDateTimeImpl(ChronoLocalDateTimeImpl<C> dateTime, ZoneOffset offset, ZoneId zoneId) {
         this.dateTime = Objects.requireNonNull(dateTime, "dateTime");
         this.offset = Objects.requireNonNull(offset, "offset");
         this.zoneId = Objects.requireNonNull(zoneId, "zoneId");
@@ -202,13 +202,13 @@ final class ChronoZonedDateTimeImpl<C extends Chrono<C>>
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean isSupported(DateTimeField field) {
+    public boolean isSupported(TemporalField field) {
         return field instanceof ChronoField || (field != null && field.doIsSupported(this));
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoZonedDateTime<C> with(DateTimeField field, long newValue) {
+    public ChronoZonedDateTime<C> with(TemporalField field, long newValue) {
         if (field instanceof ChronoField) {
             ChronoField f = (ChronoField) field;
             switch (f) {
@@ -225,7 +225,7 @@ final class ChronoZonedDateTimeImpl<C extends Chrono<C>>
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoZonedDateTime<C> plus(long amountToAdd, PeriodUnit unit) {
+    public ChronoZonedDateTime<C> plus(long amountToAdd, TemporalUnit unit) {
         if (unit instanceof ChronoUnit) {
             return with(dateTime.plus(amountToAdd, unit));
         }
@@ -234,7 +234,7 @@ final class ChronoZonedDateTimeImpl<C extends Chrono<C>>
 
     //-----------------------------------------------------------------------
     @Override
-    public long periodUntil(DateTime endDateTime, PeriodUnit unit) {
+    public long periodUntil(Temporal endDateTime, TemporalUnit unit) {
         if (endDateTime instanceof ChronoZonedDateTime == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }

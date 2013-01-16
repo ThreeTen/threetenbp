@@ -41,13 +41,13 @@ import org.threeten.bp.ZoneOffset;
  * General low-level access to a date and/or time object.
  * <p>
  * This interface is implemented by all date-time classes.
- * It provides access to the state using the {@link #get(DateTimeField)} and
- * {@link #getLong(DateTimeField)} methods that takes a {@link DateTimeField}.
+ * It provides access to the state using the {@link #get(TemporalField)} and
+ * {@link #getLong(TemporalField)} methods that takes a {@link TemporalField}.
  * Access is also provided to any additional state using a query interface
  * through {@link #query(Query)}.
  * This provides access to the time-zone, precision and calendar system.
  * <p>
- * A sub-interface, {@link DateTime}, extends this definition to one that also
+ * A sub-interface, {@link Temporal}, extends this definition to one that also
  * supports adjustment and manipulation on more complete date-time objects.
  *
  * <h4>Implementation notes</h4>
@@ -56,23 +56,23 @@ import org.threeten.bp.ZoneOffset;
  * See {@code DateTime} for a full description of whether to implement this
  * interface.
  */
-public interface DateTimeAccessor {
+public interface TemporalAccessor {
 
     /**
      * Checks if the specified date-time field is supported.
      * <p>
      * This checks if the date-time can be queried for the specified field.
-     * If false, then calling the {@link #range(DateTimeField) range} and {@link #get(DateTimeField) get}
+     * If false, then calling the {@link #range(TemporalField) range} and {@link #get(TemporalField) get}
      * methods will throw an exception.
      *
      * <h5>Implementation notes</h5>
      * Implementations must check and handle any fields defined in {@link ChronoField} before
-     * delegating on to the {@link DateTimeField#doRange(DateTimeAccessor) doRange method} on the specified field.
+     * delegating on to the {@link TemporalField#doRange(TemporalAccessor) doRange method} on the specified field.
      *
      * @param field  the field to check, null returns false
      * @return true if this date-time can be queried for the field, false if not
      */
-    boolean isSupported(DateTimeField field);
+    boolean isSupported(TemporalField field);
 
     /**
      * Gets the range of valid values for the specified date-time field.
@@ -88,13 +88,13 @@ public interface DateTimeAccessor {
      *
      * <h5>Implementation notes</h5>
      * Implementations must check and handle any fields defined in {@link ChronoField} before
-     * delegating on to the {@link DateTimeField#doRange(DateTimeAccessor) doRange method} on the specified field.
+     * delegating on to the {@link TemporalField#doRange(TemporalAccessor) doRange method} on the specified field.
      *
      * @param field  the field to get, not null
      * @return the range of valid values for the field, not null
      * @throws DateTimeException if the range for the field cannot be obtained
      */
-    DateTimeValueRange range(DateTimeField field);
+    ValueRange range(TemporalField field);
 
     /**
      * Gets the value of the specified date-time field as an {@code int}.
@@ -106,7 +106,7 @@ public interface DateTimeAccessor {
      *
      * <h5>Implementation notes</h5>
      * Implementations must check and handle any fields defined in {@link ChronoField} before
-     * delegating on to the {@link DateTimeField#doGet(DateTimeAccessor) doGet method} on the specified field.
+     * delegating on to the {@link TemporalField#doGet(TemporalAccessor) doGet method} on the specified field.
      *
      * @param field  the field to get, not null
      * @return the value for the field
@@ -115,7 +115,7 @@ public interface DateTimeAccessor {
      * @throws DateTimeException if the value is outside the range of valid values for the field
      * @throws ArithmeticException if numeric overflow occurs
      */
-    int get(DateTimeField field);
+    int get(TemporalField field);
 
     /**
      * Gets the value of the specified date-time field as a {@code Long}.
@@ -127,14 +127,14 @@ public interface DateTimeAccessor {
      *
      * <h5>Implementation notes</h5>
      * Implementations must check and handle any fields defined in {@link ChronoField} before
-     * delegating on to the {@link DateTimeField#doGet(DateTimeAccessor) doGet method} on the specified field.
+     * delegating on to the {@link TemporalField#doGet(TemporalAccessor) doGet method} on the specified field.
      *
      * @param field  the field to get, not null
      * @return the value for the field
      * @throws DateTimeException if a value for the field cannot be obtained
      * @throws ArithmeticException if numeric overflow occurs
      */
-    long getLong(DateTimeField field);
+    long getLong(TemporalField field);
 
     /**
      * Queries this date-time.
@@ -184,12 +184,12 @@ public interface DateTimeAccessor {
      * in a leap year, or calculates the number of days to your next birthday.
      * <p>
      * Implementations should not normally be used directly.
-     * Instead, the {@link DateTimeAccessor#query(Query)} method must be used:
+     * Instead, the {@link TemporalAccessor#query(Query)} method must be used:
      * <pre>
      *   dateTime = dateTime.query(query);
      * </pre>
      * <p>
-     * See {@link DateTimeAdjusters} for a standard set of adjusters, including finding the
+     * See {@link TemporalAdjusters} for a standard set of adjusters, including finding the
      * last day of the month.
      *
      * <h4>Implementation notes</h4>
@@ -207,7 +207,7 @@ public interface DateTimeAccessor {
          */
         Query<ZoneId> ZONE_ID = new Query<ZoneId>() {
             @Override
-            public ZoneId doQuery(DateTimeAccessor dateTime) {
+            public ZoneId doQuery(TemporalAccessor dateTime) {
                 return null;
             }
         };
@@ -220,7 +220,7 @@ public interface DateTimeAccessor {
          */
         Query<Chrono<?>> CHRONO = new Query<Chrono<?>>() {
             @Override
-            public Chrono<?> doQuery(DateTimeAccessor dateTime) {
+            public Chrono<?> doQuery(TemporalAccessor dateTime) {
                 return null;
             }
         };
@@ -238,7 +238,7 @@ public interface DateTimeAccessor {
          */
         Query<ChronoUnit> TIME_PRECISION = new Query<ChronoUnit>() {
             @Override
-            public ChronoUnit doQuery(DateTimeAccessor dateTime) {
+            public ChronoUnit doQuery(TemporalAccessor dateTime) {
                 return null;
             }
         };
@@ -252,7 +252,7 @@ public interface DateTimeAccessor {
          */
         Query<ZoneOffset> OFFSET = new Query<ZoneOffset>() {
             @Override
-            public ZoneOffset doQuery(DateTimeAccessor dateTime) {
+            public ZoneOffset doQuery(TemporalAccessor dateTime) {
                 if (dateTime.isSupported(OFFSET_SECONDS)) {
                     return ZoneOffset.ofTotalSeconds(dateTime.get(OFFSET_SECONDS));
                 }
@@ -264,7 +264,7 @@ public interface DateTimeAccessor {
          * Implementation of the strategy to query the specified date-time object.
          * <p>
          * This method is not intended to be called by application code directly.
-         * Instead, the {@link DateTimeAccessor#query(Query)} method must be used:
+         * Instead, the {@link TemporalAccessor#query(Query)} method must be used:
          * <pre>
          *   dateTime = dateTime.query(query);
          * </pre>
@@ -283,7 +283,7 @@ public interface DateTimeAccessor {
          * @throws DateTimeException if unable to query
          * @throws ArithmeticException if numeric overflow occurs
          */
-        R doQuery(DateTimeAccessor dateTime);
+        R doQuery(TemporalAccessor dateTime);
     }
 
 }

@@ -35,9 +35,9 @@ import java.util.Locale;
 import java.util.Objects;
 
 import org.threeten.bp.DateTimeException;
-import org.threeten.bp.temporal.DateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeAccessor.Query;
-import org.threeten.bp.temporal.DateTimeField;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalAccessor.Query;
+import org.threeten.bp.temporal.TemporalField;
 
 /**
  * Context object used during date and time printing.
@@ -54,7 +54,7 @@ final class DateTimePrintContext {
     /**
      * The date-time being output.
      */
-    private DateTimeAccessor dateTime;
+    private TemporalAccessor dateTime;
     /**
      * The locale, not null.
      */
@@ -77,7 +77,7 @@ final class DateTimePrintContext {
      * @param locale  the locale to use, not null
      * @param symbols  the symbols to use during parsing, not null
      */
-    DateTimePrintContext(DateTimeAccessor dateTime, Locale locale, DateTimeFormatSymbols symbols) {
+    DateTimePrintContext(TemporalAccessor dateTime, Locale locale, DateTimeFormatSymbols symbols) {
         super();
         setDateTime(dateTime);
         setLocale(locale);
@@ -90,7 +90,7 @@ final class DateTimePrintContext {
      *
      * @return the date-time, not null
      */
-    DateTimeAccessor getDateTime() {
+    TemporalAccessor getDateTime() {
         return dateTime;
     }
 
@@ -99,7 +99,7 @@ final class DateTimePrintContext {
      *
      * @param dateTime  the date-time object, not null
      */
-    void setDateTime(DateTimeAccessor dateTime) {
+    void setDateTime(TemporalAccessor dateTime) {
         Objects.requireNonNull(dateTime, "dateTime");
         this.dateTime = dateTime;
     }
@@ -193,7 +193,7 @@ final class DateTimePrintContext {
      * @return the value, null if not found and optional is true
      * @throws DateTimeException if the field is not available and the section is not optional
      */
-    Long getValue(DateTimeField field) {
+    Long getValue(TemporalField field) {
         try {
             return dateTime.getLong(field);
         } catch (DateTimeException ex) {

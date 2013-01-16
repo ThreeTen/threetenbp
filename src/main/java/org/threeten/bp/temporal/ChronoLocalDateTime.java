@@ -40,7 +40,7 @@ import org.threeten.bp.LocalTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.temporal.DateTime.WithAdjuster;
+import org.threeten.bp.temporal.Temporal.WithAdjuster;
 import org.threeten.bp.zone.ZoneRules;
 
 /**
@@ -52,7 +52,7 @@ import org.threeten.bp.zone.ZoneRules;
  * <p>
  * A {@code ChronoLocalDateTime} is the abstract representation of a local date-time
  * where the {@code Chrono chronology}, or calendar system, is pluggable.
- * The date-time is defined in terms of fields expressed by {@link DateTimeField},
+ * The date-time is defined in terms of fields expressed by {@link TemporalField},
  * where most common implementations are defined in {@link ChronoField}.
  * The chronology defines how the calendar system operates and the meaning of
  * the standard fields.
@@ -73,7 +73,7 @@ import org.threeten.bp.zone.ZoneRules;
  * @param <C> the chronology of this date-time
  */
 public interface ChronoLocalDateTime<C extends Chrono<C>>
-        extends  DateTime, WithAdjuster, Comparable<ChronoLocalDateTime<?>> {
+        extends  Temporal, WithAdjuster, Comparable<ChronoLocalDateTime<?>> {
 
    /**
      * Comparator for two {@code ChronoLocalDateTime} instances ignoring the chronology.
@@ -125,19 +125,19 @@ public interface ChronoLocalDateTime<C extends Chrono<C>>
     ChronoLocalDateTime<C> with(WithAdjuster adjuster);
 
     @Override
-    ChronoLocalDateTime<C> with(DateTimeField field, long newValue);
+    ChronoLocalDateTime<C> with(TemporalField field, long newValue);
 
     @Override
     ChronoLocalDateTime<C> plus(PlusAdjuster adjuster);
 
     @Override
-    ChronoLocalDateTime<C> plus(long amountToAdd, PeriodUnit unit);
+    ChronoLocalDateTime<C> plus(long amountToAdd, TemporalUnit unit);
 
     @Override
     ChronoLocalDateTime<C> minus(MinusAdjuster adjuster);
 
     @Override
-    ChronoLocalDateTime<C> minus(long amountToSubtract, PeriodUnit unit);
+    ChronoLocalDateTime<C> minus(long amountToSubtract, TemporalUnit unit);
 
     //-----------------------------------------------------------------------
     /**

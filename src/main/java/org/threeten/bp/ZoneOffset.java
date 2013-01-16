@@ -44,11 +44,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.threeten.bp.temporal.ChronoField;
-import org.threeten.bp.temporal.DateTime;
-import org.threeten.bp.temporal.DateTime.WithAdjuster;
-import org.threeten.bp.temporal.DateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeField;
-import org.threeten.bp.temporal.DateTimeValueRange;
+import org.threeten.bp.temporal.Temporal;
+import org.threeten.bp.temporal.Temporal.WithAdjuster;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.ValueRange;
 import org.threeten.bp.zone.ZoneOffsetTransition;
 import org.threeten.bp.zone.ZoneOffsetTransitionRule;
 import org.threeten.bp.zone.ZoneRules;
@@ -87,7 +87,7 @@ import org.threeten.bp.zone.ZoneRules;
  */
 public final class ZoneOffset
         extends ZoneId
-        implements DateTimeAccessor, WithAdjuster, Comparable<ZoneOffset>, Serializable {
+        implements TemporalAccessor, WithAdjuster, Comparable<ZoneOffset>, Serializable {
 
     /** Cache of time-zone offset by offset in seconds. */
     private static final ConcurrentMap<Integer, ZoneOffset> SECONDS_CACHE = new ConcurrentHashMap<Integer, ZoneOffset>(16, 0.75f, 4);
@@ -301,7 +301,7 @@ public final class ZoneOffset
      * @return the zone-offset, not null
      * @throws DateTimeException if unable to convert to an {@code ZoneOffset}
      */
-    public static ZoneOffset from(DateTimeAccessor dateTime) {
+    public static ZoneOffset from(TemporalAccessor dateTime) {
         if (dateTime instanceof ZoneOffset) {
             return (ZoneOffset) dateTime;
         }
@@ -474,7 +474,7 @@ public final class ZoneOffset
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean isSupported(DateTimeField field) {
+    public boolean isSupported(TemporalField field) {
         if (field instanceof ChronoField) {
             return field == OFFSET_SECONDS;
         }
@@ -482,7 +482,7 @@ public final class ZoneOffset
     }
 
     @Override
-    public DateTimeValueRange range(DateTimeField field) {
+    public ValueRange range(TemporalField field) {
         if (field == OFFSET_SECONDS) {
             return field.range();
         } else if (field instanceof ChronoField) {
@@ -492,7 +492,7 @@ public final class ZoneOffset
     }
 
     @Override
-    public int get(DateTimeField field) {
+    public int get(TemporalField field) {
         if (field == OFFSET_SECONDS) {
             return totalSeconds;
         } else if (field instanceof ChronoField) {
@@ -502,7 +502,7 @@ public final class ZoneOffset
     }
 
     @Override
-    public long getLong(DateTimeField field) {
+    public long getLong(TemporalField field) {
         if (field == OFFSET_SECONDS) {
             return totalSeconds;
         } else if (field instanceof ChronoField) {
@@ -512,7 +512,7 @@ public final class ZoneOffset
     }
 
     @Override
-    public DateTime doWithAdjustment(DateTime dateTime) {
+    public Temporal doWithAdjustment(Temporal dateTime) {
         return dateTime.with(OFFSET_SECONDS, totalSeconds);
     }
 

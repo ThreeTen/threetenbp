@@ -38,7 +38,7 @@ import org.threeten.bp.DateTimeException;
 /**
  * The range of valid values for a date-time field.
  * <p>
- * All {@link DateTimeField} instances have a valid range of values.
+ * All {@link TemporalField} instances have a valid range of values.
  * For example, the ISO day-of-month runs from 1 to somewhere between 28 and 31.
  * This class captures that valid range.
  * <p>
@@ -47,7 +47,7 @@ import org.threeten.bp.DateTimeException;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-public final class DateTimeValueRange implements Serializable {
+public final class ValueRange implements Serializable {
 
     /**
      * Serialization version.
@@ -80,11 +80,11 @@ public final class DateTimeValueRange implements Serializable {
      * @param min  the minimum value
      * @param max  the maximum value
      */
-    public static DateTimeValueRange of(long min, long max) {
+    public static ValueRange of(long min, long max) {
         if (min > max) {
             throw new IllegalArgumentException("Minimum value must be less than maximum value");
         }
-        return new DateTimeValueRange(min, min, max, max);
+        return new ValueRange(min, min, max, max);
     }
 
     /**
@@ -97,7 +97,7 @@ public final class DateTimeValueRange implements Serializable {
      * @param maxSmallest  the smallest maximum value
      * @param maxLargest  the largest maximum value
      */
-    public static DateTimeValueRange of(long min, long maxSmallest, long maxLargest) {
+    public static ValueRange of(long min, long maxSmallest, long maxLargest) {
         return of(min, min, maxSmallest, maxLargest);
     }
 
@@ -111,7 +111,7 @@ public final class DateTimeValueRange implements Serializable {
      * @param maxSmallest  the smallest maximum value
      * @param maxLargest  the largest maximum value
      */
-    public static DateTimeValueRange of(long minSmallest, long minLargest, long maxSmallest, long maxLargest) {
+    public static ValueRange of(long minSmallest, long minLargest, long maxSmallest, long maxLargest) {
         if (minSmallest > minLargest) {
             throw new IllegalArgumentException("Smallest minimum value must be less than largest minimum value");
         }
@@ -121,7 +121,7 @@ public final class DateTimeValueRange implements Serializable {
         if (minSmallest > maxLargest) {
             throw new IllegalArgumentException("Minimum value must be less than maximum value");
         }
-        return new DateTimeValueRange(minSmallest, minLargest, maxSmallest, maxLargest);
+        return new ValueRange(minSmallest, minLargest, maxSmallest, maxLargest);
     }
 
     /**
@@ -132,7 +132,7 @@ public final class DateTimeValueRange implements Serializable {
      * @param maxSmallest  the smallest minimum value
      * @param maxLargest  the largest minimum value
      */
-    private DateTimeValueRange(long minSmallest, long minLargest, long maxSmallest, long maxLargest) {
+    private ValueRange(long minSmallest, long minLargest, long maxSmallest, long maxLargest) {
         this.minSmallest = minSmallest;
         this.minLargest = minLargest;
         this.maxSmallest = maxSmallest;
@@ -255,7 +255,7 @@ public final class DateTimeValueRange implements Serializable {
      * @return the value that was passed in
      * @see #isValidValue(long)
      */
-    public long checkValidValue(long value, DateTimeField field) {
+    public long checkValidValue(long value, TemporalField field) {
         if (isValidValue(value) == false) {
             if (field != null) {
                 throw new DateTimeException("Invalid value for " + field.getName() + " (valid values " + this + "): " + value);
@@ -278,7 +278,7 @@ public final class DateTimeValueRange implements Serializable {
      * @return the value that was passed in
      * @see #isValidIntValue(long)
      */
-    public int checkValidIntValue(long value, DateTimeField field) {
+    public int checkValidIntValue(long value, TemporalField field) {
         if (isValidIntValue(value) == false) {
             throw new DateTimeException("Invalid int value for " + field.getName() + ": " + value);
         }
@@ -291,8 +291,8 @@ public final class DateTimeValueRange implements Serializable {
         if (obj == this) {
             return true;
         }
-        if (obj instanceof DateTimeValueRange) {
-            DateTimeValueRange other = (DateTimeValueRange) obj;
+        if (obj instanceof ValueRange) {
+            ValueRange other = (ValueRange) obj;
            return minSmallest == other.minSmallest && minLargest == other.minLargest &&
                    maxSmallest == other.maxSmallest && maxLargest == other.maxLargest;
         }

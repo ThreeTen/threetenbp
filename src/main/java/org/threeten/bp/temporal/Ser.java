@@ -115,7 +115,7 @@ final class Ser implements Externalizable {
                 ((Chrono<?>) object).writeExternal(out);
                 break;
             case CHRONO_LOCALDATETIME_TYPE:
-                ((ChronoDateTimeImpl<?>) object).writeExternal(out);
+                ((ChronoLocalDateTimeImpl<?>) object).writeExternal(out);
                 break;
             case CHRONO_ZONEDDATETIME_TYPE:
                 ((ChronoZonedDateTimeImpl<?>) object).writeExternal(out);
@@ -147,7 +147,7 @@ final class Ser implements Externalizable {
             case CHRONO_TYPE:
                 return Chrono.readExternal(in);
             case CHRONO_LOCALDATETIME_TYPE:
-                return ChronoDateTimeImpl.readExternal(in);
+                return ChronoLocalDateTimeImpl.readExternal(in);
             case CHRONO_ZONEDDATETIME_TYPE:
                 return ChronoZonedDateTimeImpl.readExternal(in);
             default:

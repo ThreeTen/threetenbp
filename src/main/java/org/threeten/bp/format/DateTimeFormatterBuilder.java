@@ -61,11 +61,10 @@ import org.threeten.bp.format.SimpleDateTimeTextProvider.LocaleStore;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoField;
-import org.threeten.bp.temporal.DateTimeAccessor.Query;
-import org.threeten.bp.temporal.DateTimeBuilder;
-import org.threeten.bp.temporal.DateTimeField;
-import org.threeten.bp.temporal.DateTimeValueRange;
 import org.threeten.bp.temporal.ISOChrono;
+import org.threeten.bp.temporal.TemporalAccessor.Query;
+import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.ValueRange;
 import org.threeten.bp.zone.ZoneRulesProvider;
 
 /**
@@ -235,12 +234,12 @@ public final class DateTimeFormatterBuilder {
      * <p>
      * The parser for a variable width value such as this normally behaves greedily, accepting as many
      * digits as possible. This behavior can be affected by 'adjacent value parsing'.
-     * See {@link #appendValue(DateTimeField, int)} for full details.
+     * See {@link #appendValue(TemporalField, int)} for full details.
      *
      * @param field  the field to append, not null
      * @return this, for chaining, not null
      */
-    public DateTimeFormatterBuilder appendValue(DateTimeField field) {
+    public DateTimeFormatterBuilder appendValue(TemporalField field) {
         Objects.requireNonNull(field, "field");
         active.valueParserIndex = appendInternal(new NumberPrinterParser(field, 1, 19, SignStyle.NORMAL));
         return this;
@@ -293,7 +292,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      * @throws IllegalArgumentException if the width is invalid
      */
-    public DateTimeFormatterBuilder appendValue(DateTimeField field, int width) {
+    public DateTimeFormatterBuilder appendValue(TemporalField field, int width) {
         Objects.requireNonNull(field, "field");
         if (width < 1 || width > 19) {
             throw new IllegalArgumentException("The width must be from 1 to 19 inclusive but was " + width);
@@ -314,7 +313,7 @@ public final class DateTimeFormatterBuilder {
      * <p>
      * The parser for a variable width value normally behaves greedily, accepting as many
      * digits as possible. This behavior can be affected by 'adjacent value parsing'.
-     * See {@link #appendValue(DateTimeField, int)} for full details.
+     * See {@link #appendValue(TemporalField, int)} for full details.
      *
      * @param field  the field to append, not null
      * @param minWidth  the minimum field width of the printed field, from 1 to 19
@@ -324,7 +323,7 @@ public final class DateTimeFormatterBuilder {
      * @throws IllegalArgumentException if the widths are invalid
      */
     public DateTimeFormatterBuilder appendValue(
-            DateTimeField field, int minWidth, int maxWidth, SignStyle signStyle) {
+            TemporalField field, int minWidth, int maxWidth, SignStyle signStyle) {
         if (minWidth == maxWidth && signStyle == SignStyle.NOT_NEGATIVE) {
             return appendValue(field, maxWidth);
         }
@@ -370,7 +369,7 @@ public final class DateTimeFormatterBuilder {
      * is the value within the range where the last two digits are "12".
      * <p>
      * This is a fixed width parser operating using 'adjacent value parsing'.
-     * See {@link #appendValue(DateTimeField, int)} for full details.
+     * See {@link #appendValue(TemporalField, int)} for full details.
      *
      * @param field  the field to append, not null
      * @param width  the width of the printed and parsed field, from 1 to 18
@@ -379,7 +378,7 @@ public final class DateTimeFormatterBuilder {
      * @throws IllegalArgumentException if the width or base value is invalid
      */
     public DateTimeFormatterBuilder appendValueReduced(
-            DateTimeField field, int width, int baseValue) {
+            TemporalField field, int width, int baseValue) {
         Objects.requireNonNull(field, "field");
         ReducedPrinterParser pp = new ReducedPrinterParser(field, width, baseValue);
         appendFixedWidth(width, pp);
@@ -441,7 +440,7 @@ public final class DateTimeFormatterBuilder {
      * @throws IllegalArgumentException if either width is invalid
      */
     public DateTimeFormatterBuilder appendFraction(
-            DateTimeField field, int minWidth, int maxWidth, boolean decimalPoint) {
+            TemporalField field, int minWidth, int maxWidth, boolean decimalPoint) {
         appendInternal(new FractionPrinterParser(field, minWidth, maxWidth, decimalPoint));
         return this;
     }
@@ -462,7 +461,7 @@ public final class DateTimeFormatterBuilder {
      * @param field  the field to append, not null
      * @return this, for chaining, not null
      */
-    public DateTimeFormatterBuilder appendText(DateTimeField field) {
+    public DateTimeFormatterBuilder appendText(TemporalField field) {
         return appendText(field, TextStyle.FULL);
     }
 
@@ -481,7 +480,7 @@ public final class DateTimeFormatterBuilder {
      * @param textStyle  the text style to use, not null
      * @return this, for chaining, not null
      */
-    public DateTimeFormatterBuilder appendText(DateTimeField field, TextStyle textStyle) {
+    public DateTimeFormatterBuilder appendText(TemporalField field, TextStyle textStyle) {
         Objects.requireNonNull(field, "field");
         Objects.requireNonNull(textStyle, "textStyle");
         appendInternal(new TextPrinterParser(field, textStyle, DateTimeFormatters.getTextProvider()));
@@ -521,7 +520,7 @@ public final class DateTimeFormatterBuilder {
      * @param field  the field to append, not null
      * @return this, for chaining, not null
      */
-    public DateTimeFormatterBuilder appendText(DateTimeField field, Map<Long, String> textLookup) {
+    public DateTimeFormatterBuilder appendText(TemporalField field, Map<Long, String> textLookup) {
         Objects.requireNonNull(field, "field");
         Objects.requireNonNull(textLookup, "textLookup");
         Map<Long, String> copy = new LinkedHashMap<Long, String>(textLookup);
@@ -529,11 +528,11 @@ public final class DateTimeFormatterBuilder {
         final LocaleStore store = new LocaleStore(map);
         DateTimeTextProvider provider = new DateTimeTextProvider() {
             @Override
-            public String getText(DateTimeField field, long value, TextStyle style, Locale locale) {
+            public String getText(TemporalField field, long value, TextStyle style, Locale locale) {
                 return store.getText(value, style);
             }
             @Override
-            public Iterator<Entry<String, Long>> getTextIterator(DateTimeField field, TextStyle style, Locale locale) {
+            public Iterator<Entry<String, Long>> getTextIterator(TemporalField field, TextStyle style, Locale locale) {
                 return store.getTextIterator(style);
             }
             @Override
@@ -863,8 +862,8 @@ public final class DateTimeFormatterBuilder {
      * Exactly 5 pattern letters will use the {@link TextStyle#NARROW narrow form}.
      * <p>
      * <b>Number</b>: If the count of letters is one, then the value is printed using the minimum number
-     * of digits and without padding as per {@link #appendValue(DateTimeField)}. Otherwise, the
-     * count of digits is used as the width of the output field as per {@link #appendValue(DateTimeField, int)}.
+     * of digits and without padding as per {@link #appendValue(TemporalField)}. Otherwise, the
+     * count of digits is used as the width of the output field as per {@link #appendValue(TemporalField, int)}.
      * <p>
      * <b>Number/Text</b>: If the count of pattern letters is 3 or greater, use the Text rules above.
      * Otherwise use the Number rules above.
@@ -960,7 +959,7 @@ public final class DateTimeFormatterBuilder {
                     padNext(pad); // pad and continue parsing
                 }
                 // main rules
-                DateTimeField field = FIELD_MAP.get(cur);
+                TemporalField field = FIELD_MAP.get(cur);
                 if (field != null) {
                     parseField(cur, count, field);
                 } else if (cur == 'z') {
@@ -1027,7 +1026,7 @@ public final class DateTimeFormatterBuilder {
         }
     }
 
-    private void parseField(char cur, int count, DateTimeField field) {
+    private void parseField(char cur, int count, TemporalField field) {
         switch (cur) {
             case 'y':
             case 'Y':
@@ -1094,7 +1093,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     /** Map of letters to fields. */
-    private static final Map<Character, DateTimeField> FIELD_MAP = new HashMap<>();
+    private static final Map<Character, TemporalField> FIELD_MAP = new HashMap<>();
     static {
         FIELD_MAP.put('G', ChronoField.ERA);                       // Java, CLDR (different to both for 1/2 chars)
         FIELD_MAP.put('y', ChronoField.YEAR);                      // CLDR
@@ -1680,7 +1679,7 @@ public final class DateTimeFormatterBuilder {
             1000000000,
         };
 
-        final DateTimeField field;
+        final TemporalField field;
         final int minWidth;
         private final int maxWidth;
         private final SignStyle signStyle;
@@ -1694,7 +1693,7 @@ public final class DateTimeFormatterBuilder {
          * @param maxWidth  the maximum field width, from minWidth to 19
          * @param signStyle  the positive/negative sign style, not null
          */
-        NumberPrinterParser(DateTimeField field, int minWidth, int maxWidth, SignStyle signStyle) {
+        NumberPrinterParser(TemporalField field, int minWidth, int maxWidth, SignStyle signStyle) {
             // validated by caller
             this.field = field;
             this.minWidth = minWidth;
@@ -1712,7 +1711,7 @@ public final class DateTimeFormatterBuilder {
          * @param signStyle  the positive/negative sign style, not null
          * @param subsequentWidth  the width of subsequent non-negative numbers, 0 or greater
          */
-        private NumberPrinterParser(DateTimeField field, int minWidth, int maxWidth, SignStyle signStyle, int subsequentWidth) {
+        private NumberPrinterParser(TemporalField field, int minWidth, int maxWidth, SignStyle signStyle, int subsequentWidth) {
             // validated by caller
             this.field = field;
             this.minWidth = minWidth;
@@ -1945,7 +1944,7 @@ public final class DateTimeFormatterBuilder {
          * @param width  the field width, from 1 to 18
          * @param baseValue  the base value
          */
-        ReducedPrinterParser(DateTimeField field, int width, int baseValue) {
+        ReducedPrinterParser(TemporalField field, int width, int baseValue) {
             super(field, width, width, SignStyle.NOT_NEGATIVE);
             if (width < 1 || width > 18) {
                 throw new IllegalArgumentException("The width must be from 1 to 18 inclusive but was " + width);
@@ -1990,7 +1989,7 @@ public final class DateTimeFormatterBuilder {
      * Prints and parses a numeric date-time field with optional padding.
      */
     static final class FractionPrinterParser implements DateTimePrinterParser {
-        private final DateTimeField field;
+        private final TemporalField field;
         private final int minWidth;
         private final int maxWidth;
         private final boolean decimalPoint;
@@ -2003,7 +2002,7 @@ public final class DateTimeFormatterBuilder {
          * @param maxWidth  the maximum width to output, from 0 to 9
      * @param decimalPoint  whether to output the localized decimal point symbol
          */
-        FractionPrinterParser(DateTimeField field, int minWidth, int maxWidth, boolean decimalPoint) {
+        FractionPrinterParser(TemporalField field, int minWidth, int maxWidth, boolean decimalPoint) {
             Objects.requireNonNull(field, "field");
             if (field.range().isFixed() == false) {
                 throw new IllegalArgumentException("Field must have a fixed set of values: " + field.getName());
@@ -2099,7 +2098,7 @@ public final class DateTimeFormatterBuilder {
          * Converts a value for this field to a fraction between 0 and 1.
          * <p>
          * The fractional value is between 0 (inclusive) and 1 (exclusive).
-         * It can only be returned if the {@link DateTimeField#range() value range} is fixed.
+         * It can only be returned if the {@link TemporalField#range() value range} is fixed.
          * The fraction is obtained by calculation from the field range using 9 decimal
          * places and a rounding mode of {@link RoundingMode#FLOOR FLOOR}.
          * The calculation is inaccurate if the values do not run continuously from smallest to largest.
@@ -2112,7 +2111,7 @@ public final class DateTimeFormatterBuilder {
          * @throws DateTimeException if the value cannot be converted to a fraction
          */
         private BigDecimal convertToFraction(long value) {
-            DateTimeValueRange range = field.range();
+            ValueRange range = field.range();
             if (range.isFixed() == false) {
                 throw new DateTimeException("Unable to obtain fraction as field range is not fixed: " + field.getName());
             }
@@ -2129,7 +2128,7 @@ public final class DateTimeFormatterBuilder {
          * Converts a fraction from 0 to 1 for this field to a value.
          * <p>
          * The fractional value must be between 0 (inclusive) and 1 (exclusive).
-         * It can only be returned if the {@link DateTimeField#range() value range} is fixed.
+         * It can only be returned if the {@link TemporalField#range() value range} is fixed.
          * The value is obtained by calculation from the field range and a rounding
          * mode of {@link RoundingMode#FLOOR FLOOR}.
          * The calculation is inaccurate if the values do not run continuously from smallest to largest.
@@ -2142,7 +2141,7 @@ public final class DateTimeFormatterBuilder {
          * @throws DateTimeException if the value cannot be converted
          */
         private long convertFromFraction(BigDecimal fraction) {
-            DateTimeValueRange range = field.range();
+            ValueRange range = field.range();
             if (range.isFixed() == false) {
                 throw new DateTimeException("Unable to obtain fraction as field range is not fixed: " + field.getName());
             }
@@ -2166,7 +2165,7 @@ public final class DateTimeFormatterBuilder {
      * Prints or parses field text.
      */
     static final class TextPrinterParser implements DateTimePrinterParser {
-        private final DateTimeField field;
+        private final TemporalField field;
         private final TextStyle textStyle;
         private final DateTimeTextProvider provider;
         /**
@@ -2182,7 +2181,7 @@ public final class DateTimeFormatterBuilder {
          * @param textStyle  the text style, not null
          * @param provider  the text provider, not null
          */
-        TextPrinterParser(DateTimeField field, TextStyle textStyle, DateTimeTextProvider provider) {
+        TextPrinterParser(TemporalField field, TextStyle textStyle, DateTimeTextProvider provider) {
             // validated by caller
             this.field = field;
             this.textStyle = textStyle;

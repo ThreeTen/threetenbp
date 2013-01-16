@@ -44,10 +44,10 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoLocalDate;
-import org.threeten.bp.temporal.DateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeValueRange;
 import org.threeten.bp.temporal.Era;
 import org.threeten.bp.temporal.ISOChrono;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.ValueRange;
 
 import sun.util.calendar.CalendarSystem;
 import sun.util.calendar.LocalGregorianCalendar;
@@ -214,7 +214,7 @@ public final class JapaneseChrono extends Chrono<JapaneseChrono> implements Seri
     }
 
     @Override
-    public ChronoLocalDate<JapaneseChrono> date(DateTimeAccessor dateTime) {
+    public ChronoLocalDate<JapaneseChrono> date(TemporalAccessor dateTime) {
         if (dateTime instanceof JapaneseDate) {
             return (JapaneseDate) dateTime;
         }
@@ -280,7 +280,7 @@ public final class JapaneseChrono extends Chrono<JapaneseChrono> implements Seri
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeValueRange range(ChronoField field) {
+    public ValueRange range(ChronoField field) {
         switch (field) {
             case DAY_OF_MONTH:
             case DAY_OF_WEEK:
@@ -306,14 +306,14 @@ public final class JapaneseChrono extends Chrono<JapaneseChrono> implements Seri
         int fieldIndex;
         switch (field) {
             case ERA:
-                return DateTimeValueRange.of(jcal.getMinimum(Calendar.ERA) - JapaneseEra.ERA_OFFSET,
+                return ValueRange.of(jcal.getMinimum(Calendar.ERA) - JapaneseEra.ERA_OFFSET,
                                              jcal.getMaximum(Calendar.ERA) - JapaneseEra.ERA_OFFSET);
             case YEAR:
             case YEAR_OF_ERA:
-                return DateTimeValueRange.of(LocalDate.MIN_YEAR, jcal.getGreatestMinimum(Calendar.YEAR),
+                return ValueRange.of(LocalDate.MIN_YEAR, jcal.getGreatestMinimum(Calendar.YEAR),
                                              jcal.getLeastMaximum(Calendar.YEAR), LocalDate.MAX_YEAR);
             case MONTH_OF_YEAR:
-                return DateTimeValueRange.of(jcal.getMinimum(Calendar.MONTH) + 1, jcal.getGreatestMinimum(Calendar.MONTH) + 1,
+                return ValueRange.of(jcal.getMinimum(Calendar.MONTH) + 1, jcal.getGreatestMinimum(Calendar.MONTH) + 1,
                                              jcal.getLeastMaximum(Calendar.MONTH) + 1, jcal.getMaximum(Calendar.MONTH) + 1);
             case DAY_OF_YEAR:
                 fieldIndex = Calendar.DAY_OF_YEAR;
@@ -322,7 +322,7 @@ public final class JapaneseChrono extends Chrono<JapaneseChrono> implements Seri
                  // TODO: review the remaining fields
                 throw new UnsupportedOperationException("Unimplementable field: " + field);
         }
-        return DateTimeValueRange.of(jcal.getMinimum(fieldIndex), jcal.getGreatestMinimum(fieldIndex),
+        return ValueRange.of(jcal.getMinimum(fieldIndex), jcal.getGreatestMinimum(fieldIndex),
                                      jcal.getLeastMaximum(fieldIndex), jcal.getMaximum(fieldIndex));
     }
 

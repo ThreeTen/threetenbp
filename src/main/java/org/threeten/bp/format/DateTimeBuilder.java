@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.threeten.bp.temporal;
+package org.threeten.bp.format;
 
 import static org.threeten.bp.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
 import static org.threeten.bp.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
@@ -59,7 +59,7 @@ import static org.threeten.bp.temporal.ChronoField.OFFSET_SECONDS;
 import static org.threeten.bp.temporal.ChronoField.SECOND_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.SECOND_OF_MINUTE;
 import static org.threeten.bp.temporal.ChronoField.YEAR;
-import static org.threeten.bp.temporal.DateTimeAdjusters.nextOrSame;
+import static org.threeten.bp.temporal.TemporalAdjusters.nextOrSame;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -82,6 +82,10 @@ import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
 import org.threeten.bp.jdk8.Jdk8Methods;
+import org.threeten.bp.temporal.Chrono;
+import org.threeten.bp.temporal.ChronoField;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalField;
 
 /**
  * Builder that can holds date and time fields and related date and time objects.
@@ -89,9 +93,9 @@ import org.threeten.bp.jdk8.Jdk8Methods;
  * The builder is used to hold onto different elements of date and time.
  * It is designed as two separate maps:
  * <p><ul>
- * <li>from {@link DateTimeField} to {@code long} value, where the value may be
+ * <li>from {@link TemporalField} to {@code long} value, where the value may be
  * outside the valid range for the field
- * <li>from {@code Class} to {@link DateTimeAccessor}, holding larger scale objects
+ * <li>from {@code Class} to {@link TemporalAccessor}, holding larger scale objects
  * like {@code LocalDateTime}.
  * </ul><p>
  *
@@ -101,12 +105,12 @@ import org.threeten.bp.jdk8.Jdk8Methods;
  */
 public final class DateTimeBuilder
         extends DefaultInterfaceDateTimeAccessor
-        implements DateTimeAccessor, Cloneable {
+        implements TemporalAccessor, Cloneable {
 
     /**
      * The map of other fields.
      */
-    private Map<DateTimeField, Long> otherFields;
+    private Map<TemporalField, Long> otherFields;
     /**
      * The map of date-time fields.
      */
@@ -126,12 +130,12 @@ public final class DateTimeBuilder
     /**
      * Creates a new instance of the builder with a single field-value.
      * <p>
-     * This is equivalent to using {@link #addFieldValue(DateTimeField, long)} on an empty builder.
+     * This is equivalent to using {@link #addFieldValue(TemporalField, long)} on an empty builder.
      *
      * @param field  the field to add, not null
      * @param value  the value to add, not null
      */
-    public DateTimeBuilder(DateTimeField field, long value) {
+    public DateTimeBuilder(TemporalField field, long value) {
         addFieldValue(field, value);
     }
 
@@ -156,8 +160,8 @@ public final class DateTimeBuilder
      *
      * @return a modifiable copy of the field-value map, not null
      */
-    public Map<DateTimeField, Long> getFieldValueMap() {
-        Map<DateTimeField, Long> map = new HashMap<DateTimeField, Long>(standardFields);
+    public Map<TemporalField, Long> getFieldValueMap() {
+        Map<TemporalField, Long> map = new HashMap<TemporalField, Long>(standardFields);
         if (otherFields != null) {
             map.putAll(otherFields);
         }
@@ -170,7 +174,7 @@ public final class DateTimeBuilder
      * @param field  the field to find in the field-value map, not null
      * @return true if the field is present
      */
-    public boolean containsFieldValue(DateTimeField field) {
+    public boolean containsFieldValue(TemporalField field) {
         Objects.requireNonNull(field, "field");
         return standardFields.containsKey(field) || (otherFields != null && otherFields.containsKey(field));
     }
@@ -182,7 +186,7 @@ public final class DateTimeBuilder
      * @return the value of the field, may be out of range
      * @throws DateTimeException if the field is not present
      */
-    public long getFieldValue(DateTimeField field) {
+    public long getFieldValue(TemporalField field) {
         Objects.requireNonNull(field, "field");
         Long value = getFieldValue0(field);
         if (value == null) {
@@ -191,7 +195,7 @@ public final class DateTimeBuilder
         return value;
     }
 
-    private Long getFieldValue0(DateTimeField field) {
+    private Long getFieldValue0(TemporalField field) {
         if (field instanceof ChronoField) {
             return standardFields.get(field);
         } else if (otherFields != null) {
@@ -207,7 +211,7 @@ public final class DateTimeBuilder
      * @return the value of the field, may be out of range
      * @throws DateTimeException if the field is not present
      */
-    public long getValidFieldValue(DateTimeField field) {
+    public long getValidFieldValue(TemporalField field) {
         long value = getFieldValue(field);
         return field.range().checkValidValue(value, field);
     }
@@ -226,7 +230,7 @@ public final class DateTimeBuilder
      * @return {@code this}, for method chaining
      * @throws DateTimeException if the field is already present with a different value
      */
-    public DateTimeBuilder addFieldValue(DateTimeField field, long value) {
+    public DateTimeBuilder addFieldValue(TemporalField field, long value) {
         Objects.requireNonNull(field, "field");
         Long old = getFieldValue0(field);  // check first for better error message
         if (old != null && old.longValue() != value) {
@@ -235,12 +239,12 @@ public final class DateTimeBuilder
         return putFieldValue0(field, value);
     }
 
-    private DateTimeBuilder putFieldValue0(DateTimeField field, long value) {
+    private DateTimeBuilder putFieldValue0(TemporalField field, long value) {
         if (field instanceof ChronoField) {
             standardFields.put((ChronoField) field, value);
         } else {
             if (otherFields == null) {
-                otherFields = new LinkedHashMap<DateTimeField, Long>();
+                otherFields = new LinkedHashMap<TemporalField, Long>();
             }
             otherFields.put(field, value);
         }
@@ -251,13 +255,13 @@ public final class DateTimeBuilder
      * Removes a field-value pair from the builder.
      * <p>
      * This removes a field, which must exist, from the builder.
-     * See {@link #removeFieldValues(DateTimeField...)} for a version which does not throw an exception
+     * See {@link #removeFieldValues(TemporalField...)} for a version which does not throw an exception
      *
      * @param field  the field to remove, not null
      * @return the previous value of the field
      * @throws DateTimeException if the field is not found
      */
-    public long removeFieldValue(DateTimeField field) {
+    public long removeFieldValue(TemporalField field) {
         Objects.requireNonNull(field, "field");
         Long value = null;
         if (field instanceof ChronoField) {
@@ -280,8 +284,8 @@ public final class DateTimeBuilder
      *
      * @param fields  the fields to remove, not null
      */
-    public void removeFieldValues(DateTimeField... fields) {
-        for (DateTimeField field : fields) {
+    public void removeFieldValues(TemporalField... fields) {
+        for (TemporalField field : fields) {
             if (field instanceof ChronoField) {
                 standardFields.remove(field);
             } else if (otherFields != null) {
@@ -300,10 +304,10 @@ public final class DateTimeBuilder
      * @param fields  the fields to query, not null
      * @return the array of field values, not null
      */
-    public Long[] queryFieldValues(DateTimeField... fields) {
+    public Long[] queryFieldValues(TemporalField... fields) {
         Long[] values = new Long[fields.length];
         int i = 0;
-        for (DateTimeField field : fields) {
+        for (TemporalField field : fields) {
             values[i++] = getFieldValue0(field);
         }
         return values;
@@ -340,7 +344,7 @@ public final class DateTimeBuilder
         // special case
         if (object instanceof DateTimeBuilder) {
             DateTimeBuilder dtb = (DateTimeBuilder) object;
-            for (DateTimeField field : dtb.getFieldValueMap().keySet()) {
+            for (TemporalField field : dtb.getFieldValueMap().keySet()) {
                 addFieldValue(field, dtb.getFieldValue(field));
             }
             return this;
@@ -384,8 +388,8 @@ public final class DateTimeBuilder
         if (otherFields != null) {
             outer:
             while (true) {
-                Set<Entry<DateTimeField, Long>> entrySet = new HashSet<>(otherFields.entrySet());
-                for (Entry<DateTimeField, Long> entry : entrySet) {
+                Set<Entry<TemporalField, Long>> entrySet = new HashSet<>(otherFields.entrySet());
+                for (Entry<TemporalField, Long> entry : entrySet) {
                     if (entry.getKey().resolve(this, entry.getValue())) {
                         continue outer;
                     }
@@ -582,7 +586,7 @@ public final class DateTimeBuilder
             if (object instanceof ZoneOffset || object instanceof Instant) {
                 objectsToAdd.add(object);
 
-            } else if (object instanceof DateTimeAccessor) {
+            } else if (object instanceof TemporalAccessor) {
                 // TODO
 //                DateTimeAccessor dt = (DateTimeAccessor) object;
 //                objectsToAdd.add(dt.extract(LocalDate.class));
@@ -660,9 +664,9 @@ public final class DateTimeBuilder
      * @return the value returned from the {@code from} method, not null
      * @throws DateTimeException if an error occurs
      */
-    private static <R> R invokeFrom(Class<R> type, DateTimeAccessor dateTime) {
+    private static <R> R invokeFrom(Class<R> type, TemporalAccessor dateTime) {
         try {
-            Method m = type.getDeclaredMethod("from", DateTimeAccessor.class);
+            Method m = type.getDeclaredMethod("from", TemporalAccessor.class);
             return type.cast(m.invoke(null, dateTime));
         } catch (ReflectiveOperationException ex) {
             if (ex.getCause() instanceof DateTimeException == false) {
@@ -696,7 +700,7 @@ public final class DateTimeBuilder
     public String toString() {
         StringBuilder buf = new StringBuilder(128);
         buf.append("DateTimeBuilder[");
-        Map<DateTimeField, Long> fields = getFieldValueMap();
+        Map<TemporalField, Long> fields = getFieldValueMap();
         if (fields.size() > 0) {
             buf.append("fields=").append(fields);
         }
@@ -712,12 +716,12 @@ public final class DateTimeBuilder
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean isSupported(DateTimeField field) {
+    public boolean isSupported(TemporalField field) {
         return field != null && containsFieldValue(field);
     }
 
     @Override
-    public long getLong(DateTimeField field) {
+    public long getLong(TemporalField field) {
         return getFieldValue(field);
     }
 

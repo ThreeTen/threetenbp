@@ -42,7 +42,7 @@ import java.util.Locale;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.format.DateTimeFormatterBuilder.TextPrinterParser;
-import org.threeten.bp.temporal.DateTimeField;
+import org.threeten.bp.temporal.TemporalField;
 
 /**
  * Test TextPrinterParser.
@@ -152,7 +152,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
     }
 
     @Test(dataProvider="parseText")
-    public void test_parseText(DateTimeField field, TextStyle style, int value, String input) throws Exception {
+    public void test_parseText(TemporalField field, TextStyle style, int value, String input) throws Exception {
         TextPrinterParser pp = new TextPrinterParser(field, style, PROVIDER);
         int newPos = pp.parse(parseContext, input, 0);
         assertEquals(newPos, input.length());
@@ -160,7 +160,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
     }
 
     @Test(dataProvider="parseNumber")
-    public void test_parseNumber(DateTimeField field, TextStyle style, int value, String input) throws Exception {
+    public void test_parseNumber(TemporalField field, TextStyle style, int value, String input) throws Exception {
         TextPrinterParser pp = new TextPrinterParser(field, style, PROVIDER);
         int newPos = pp.parse(parseContext, input, 0);
         assertEquals(newPos, input.length());
@@ -169,7 +169,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
     @Test(dataProvider="parseText")
-    public void test_parse_strict_caseSensitive_parseUpper(DateTimeField field, TextStyle style, int value, String input) throws Exception {
+    public void test_parse_strict_caseSensitive_parseUpper(TemporalField field, TextStyle style, int value, String input) throws Exception {
         parseContext.setCaseSensitive(true);
         TextPrinterParser pp = new TextPrinterParser(field, style, PROVIDER);
         int newPos = pp.parse(parseContext, input.toUpperCase(), 0);
@@ -178,7 +178,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
     }
 
     @Test(dataProvider="parseText")
-    public void test_parse_strict_caseInsensitive_parseUpper(DateTimeField field, TextStyle style, int value, String input) throws Exception {
+    public void test_parse_strict_caseInsensitive_parseUpper(TemporalField field, TextStyle style, int value, String input) throws Exception {
         parseContext.setCaseSensitive(false);
         TextPrinterParser pp = new TextPrinterParser(field, style, PROVIDER);
         int newPos = pp.parse(parseContext, input.toUpperCase(), 0);
@@ -188,7 +188,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
     @Test(dataProvider="parseText")
-    public void test_parse_strict_caseSensitive_parseLower(DateTimeField field, TextStyle style, int value, String input) throws Exception {
+    public void test_parse_strict_caseSensitive_parseLower(TemporalField field, TextStyle style, int value, String input) throws Exception {
         parseContext.setCaseSensitive(true);
         TextPrinterParser pp = new TextPrinterParser(field, style, PROVIDER);
         int newPos = pp.parse(parseContext, input.toLowerCase(), 0);
@@ -197,7 +197,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
     }
 
     @Test(dataProvider="parseText")
-    public void test_parse_strict_caseInsensitive_parseLower(DateTimeField field, TextStyle style, int value, String input) throws Exception {
+    public void test_parse_strict_caseInsensitive_parseLower(TemporalField field, TextStyle style, int value, String input) throws Exception {
         parseContext.setCaseSensitive(false);
         TextPrinterParser pp = new TextPrinterParser(field, style, PROVIDER);
         int newPos = pp.parse(parseContext, input.toLowerCase(), 0);
@@ -326,7 +326,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
         assertParsed(parseContext, MONTH_OF_YEAR, 1L);
     }
 
-    private void assertParsed(DateTimeParseContext context, DateTimeField field, Long value) {
+    private void assertParsed(DateTimeParseContext context, TemporalField field, Long value) {
         if (value == null) {
             assertEquals(context.getParsed(field), null);
         } else {

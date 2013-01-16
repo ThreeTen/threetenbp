@@ -32,19 +32,19 @@
 package org.threeten.bp;
 
 import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
-import static org.threeten.bp.temporal.DateTimeAdjusters.previousOrSame;
+import static org.threeten.bp.temporal.TemporalAdjusters.previousOrSame;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.threeten.bp.format.DateTimeBuilder;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
-import org.threeten.bp.temporal.DateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeBuilder;
-import org.threeten.bp.temporal.DateTimeField;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalField;
 
 /**
  * Usability class for package.
@@ -116,19 +116,19 @@ public final class UsabilityBasic {
         output(time, ChronoField.HOUR_OF_DAY);
         output(time, ChronoField.MINUTE_OF_HOUR);
 
-        DateTimeAccessor cal = date;
+        TemporalAccessor cal = date;
         System.out.println("DoM: " + cal.get(DAY_OF_MONTH));
     }
 
-    protected static void output(LocalDate date, DateTimeField field) {
+    protected static void output(LocalDate date, TemporalField field) {
         System.out.println(field + " " + date.getLong(field));
     }
 
-    protected static void output(LocalDateTime dateTime, DateTimeField field) {
+    protected static void output(LocalDateTime dateTime, TemporalField field) {
         System.out.println(field + " " + dateTime.getLong(field));
     }
 
-    protected static void output(LocalTime time, DateTimeField field) {
+    protected static void output(LocalTime time, TemporalField field) {
         System.out.println(field + " " + time.getLong(field));
     }
 
@@ -218,7 +218,7 @@ public final class UsabilityBasic {
     }
 
     private static void sort() {
-        List<DateTimeAccessor> list = Arrays.<DateTimeAccessor>asList(LocalDate.now().plusMonths(3), LocalDate.now().minusMonths(3), LocalDateTime.now());
+        List<TemporalAccessor> list = Arrays.<TemporalAccessor>asList(LocalDate.now().plusMonths(3), LocalDate.now().minusMonths(3), LocalDateTime.now());
         Collections.sort(list, ChronoField.MONTH_OF_YEAR);
         System.out.println(list);
     }

@@ -53,7 +53,7 @@ import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.TextStyle;
 import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeAccessor.Query;
+import org.threeten.bp.temporal.TemporalAccessor.Query;
 import org.threeten.bp.zone.ZoneRules;
 
 /**
@@ -98,7 +98,7 @@ import org.threeten.bp.zone.ZoneRules;
  * <li> {@link #date(org.threeten.bp.temporal.Era, int, int, int) date(era, yearOfEra, month, day)}
  * <li> {@link #dateYearDay(int, int) dateYearDay(yearProleptic, dayOfYear)}
  * <li> {@link #dateYearDay(Era, int, int) dateYearDay(era, yearOfEra, dayOfYear)}
- * <li> {@link #date(DateTimeAccessor) date(DateTimeAccessor)}
+ * <li> {@link #date(TemporalAccessor) date(DateTimeAccessor)}
  * </ul><p>
  *
  * <h4 id="addcalendars">Adding New Calendars</h4>
@@ -164,7 +164,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * @return the chronology, not null
      * @throws DateTimeException if unable to convert to an {@code Chrono}
      */
-    public static Chrono<?> from(DateTimeAccessor dateTime) {
+    public static Chrono<?> from(TemporalAccessor dateTime) {
         Objects.requireNonNull(dateTime, "dateTime");
         Chrono<?> obj = dateTime.query(Query.CHRONO);
         return (obj != null ? obj : ISOChrono.INSTANCE);
@@ -257,7 +257,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * @return the local date-time combining the input date and time, not null
      */
     public static <R extends Chrono<R>> ChronoLocalDateTime<R> dateTime(ChronoLocalDate<R> date, LocalTime time) {
-        return ChronoDateTimeImpl.of(date, time);
+        return ChronoLocalDateTimeImpl.of(date, time);
     }
 
     //-----------------------------------------------------------------------
@@ -281,7 +281,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * @throws ClassCastException if the date-time cannot be cast to ChronoLocalDate
      *  or the chronology is not equal this Chrono
      */
-    public /* package-scoped */ ChronoLocalDate<C> ensureChronoLocalDate(DateTime dateTime) {  // TODO: non-public
+    public /* package-scoped */ ChronoLocalDate<C> ensureChronoLocalDate(Temporal dateTime) {  // TODO: non-public
         @SuppressWarnings("unchecked")
         ChronoLocalDate<C> other = (ChronoLocalDate<C>) dateTime;
         if (this.equals(other.getChrono()) == false) {
@@ -298,9 +298,9 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * @throws ClassCastException if the date-time cannot be cast to ChronoDateTimeImpl
      *  or the chronology is not equal this Chrono
      */
-    public /* package-scoped */ ChronoDateTimeImpl<C> ensureChronoLocalDateTime(DateTime dateTime) {  // TODO: non-public
+    public /* package-scoped */ ChronoLocalDateTimeImpl<C> ensureChronoLocalDateTime(Temporal dateTime) {  // TODO: non-public
         @SuppressWarnings("unchecked")
-        ChronoDateTimeImpl<C> other = (ChronoDateTimeImpl<C>) dateTime;
+        ChronoLocalDateTimeImpl<C> other = (ChronoLocalDateTimeImpl<C>) dateTime;
         if (this.equals(other.getDate().getChrono()) == false) {
             throw new ClassCastException("Chrono mismatch, required: " + getId()
                     + ", supplied: " + other.getDate().getChrono().getId());
@@ -316,7 +316,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * @throws ClassCastException if the date-time cannot be cast to ChronoZonedDateTimeImpl
      *  or the chronology is not equal this Chrono
      */
-    public /* package-scoped */ ChronoZonedDateTimeImpl<C> ensureChronoZonedDateTime(DateTime dateTime) {  // TODO: non-public
+    public /* package-scoped */ ChronoZonedDateTimeImpl<C> ensureChronoZonedDateTime(Temporal dateTime) {  // TODO: non-public
         @SuppressWarnings("unchecked")
         ChronoZonedDateTimeImpl<C> other = (ChronoZonedDateTimeImpl<C>) dateTime;
         if (this.equals(other.getDate().getChrono()) == false) {
@@ -417,7 +417,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * @return the local date in this chronology, not null
      * @throws DateTimeException if unable to create the date
      */
-    public abstract ChronoLocalDate<C> date(DateTimeAccessor dateTime);
+    public abstract ChronoLocalDate<C> date(TemporalAccessor dateTime);
 
     //-----------------------------------------------------------------------
     /**
@@ -477,7 +477,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * This creates a date-time in this chronology based on the specified {@code DateTimeAccessor}.
      * <p>
      * The date of the date-time should be equivalent to that obtained by calling
-     * {@link #date(DateTimeAccessor)}.
+     * {@link #date(TemporalAccessor)}.
      * The standard mechanism for conversion between time types is the
      * {@link ChronoField#NANO_OF_DAY nano-of-day} field.
      *
@@ -485,7 +485,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * @return the local date-time in this chronology, not null
      * @throws DateTimeException if unable to create the date-time
      */
-    public ChronoLocalDateTime<C> localDateTime(DateTimeAccessor dateTime) {
+    public ChronoLocalDateTime<C> localDateTime(TemporalAccessor dateTime) {
         return date(dateTime).atTime(LocalTime.from(dateTime));
     }
 
@@ -496,11 +496,11 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * @param zoneId  the zone ID, not null
      * @return the local date-time, not null
      */
-    ChronoDateTimeImpl<C> localInstant(Instant instant, ZoneId zoneId) {
+    ChronoLocalDateTimeImpl<C> localInstant(Instant instant, ZoneId zoneId) {
         ZoneRules rules = zoneId.getRules();
         ZoneOffset offset = rules.getOffset(instant);
         LocalDateTime ldt = LocalDateTime.ofEpochSecond(instant.getEpochSecond(), instant.getNano(), offset);
-        return ChronoDateTimeImpl.of(dateNow(), LocalTime.MIDNIGHT).with(ldt);  // not very efficient...
+        return ChronoLocalDateTimeImpl.of(dateNow(), LocalTime.MIDNIGHT).with(ldt);  // not very efficient...
     }
 
     /**
@@ -508,7 +508,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * <p>
      * This creates a date-time in this chronology based on the specified {@code DateTimeAccessor}.
      * <p>
-     * This should obtain a {@code ZoneId} using {@link ZoneId#from(DateTimeAccessor)}.
+     * This should obtain a {@code ZoneId} using {@link ZoneId#from(TemporalAccessor)}.
      * The date-time should be obtained by obtaining an {@code Instant}.
      * If that fails, the local date-time should be used.
      *
@@ -516,10 +516,10 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * @return the zoned date-time in this chronology, not null
      * @throws DateTimeException if unable to create the date-time
      */
-    public ChronoZonedDateTime<C> zonedDateTime(DateTimeAccessor dateTime) {
+    public ChronoZonedDateTime<C> zonedDateTime(TemporalAccessor dateTime) {
         try {
             ZoneId zoneId = ZoneId.from(dateTime);
-            ChronoDateTimeImpl<C> cldt;
+            ChronoLocalDateTimeImpl<C> cldt;
             try {
                 Instant instant = Instant.from(dateTime);
                 cldt = localInstant(instant, zoneId);
@@ -609,7 +609,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * @return the range of valid values for the field, not null
      * @throws DateTimeException if the range for the field cannot be obtained
      */
-    public abstract DateTimeValueRange range(ChronoField field);
+    public abstract ValueRange range(ChronoField field);
 
     //-----------------------------------------------------------------------
     /**
@@ -625,11 +625,11 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
     public String getText(TextStyle style, Locale locale) {
         return new DateTimeFormatterBuilder().appendChronoText(style).toFormatter(locale).print(new DefaultInterfaceDateTimeAccessor() {
             @Override
-            public boolean isSupported(DateTimeField field) {
+            public boolean isSupported(TemporalField field) {
                 return false;
             }
             @Override
-            public long getLong(DateTimeField field) {
+            public long getLong(TemporalField field) {
                 throw new DateTimeException("Unsupported field: " + field);
             }
             @SuppressWarnings("unchecked")

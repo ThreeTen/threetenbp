@@ -42,8 +42,7 @@ import java.util.Objects;
 
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.format.DateTimeFormatterBuilder.CompositePrinterParser;
-import org.threeten.bp.temporal.DateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeBuilder;
+import org.threeten.bp.temporal.TemporalAccessor;
 
 /**
  * Formatter for printing and parsing date-time objects.
@@ -152,7 +151,7 @@ public final class DateTimeFormatter {
      * @return the printed string, not null
      * @throws DateTimeException if an error occurs during printing
      */
-    public String print(DateTimeAccessor dateTime) {
+    public String print(TemporalAccessor dateTime) {
         StringBuilder buf = new StringBuilder(32);
         printTo(dateTime, buf);
         return buf.toString();
@@ -176,7 +175,7 @@ public final class DateTimeFormatter {
      * @param appendable  the appendable to print to, not null
      * @throws DateTimeException if an error occurs during printing
      */
-    public void printTo(DateTimeAccessor dateTime, Appendable appendable) {
+    public void printTo(TemporalAccessor dateTime, Appendable appendable) {
         Objects.requireNonNull(dateTime, "dateTime");
         Objects.requireNonNull(appendable, "appendable");
         try {
@@ -256,7 +255,7 @@ public final class DateTimeFormatter {
      * @throws IllegalArgumentException if less than 2 types are specified
      * @throws DateTimeParseException if the parse fails
      */
-    public DateTimeAccessor parseBest(CharSequence text, Class<?>... types) {
+    public TemporalAccessor parseBest(CharSequence text, Class<?>... types) {
         Objects.requireNonNull(text, "text");
         Objects.requireNonNull(types, "types");
         if (types.length < 2) {
@@ -267,7 +266,7 @@ public final class DateTimeFormatter {
             DateTimeBuilder builder = parseToBuilder(str).resolve();
             for (Class<?> type : types) {
                 try {
-                    return (DateTimeAccessor) builder.build(type);
+                    return (TemporalAccessor) builder.build(type);
                 } catch (RuntimeException ex) {
                     // continue
                 }
@@ -369,7 +368,7 @@ public final class DateTimeFormatter {
     /**
      * Returns this formatter as a {@code java.text.Format} instance.
      * <p>
-     * The returned {@link Format} instance will print any {@link DateTimeAccessor}
+     * The returned {@link Format} instance will print any {@link TemporalAccessor}
      * and parses to a resolved {@link DateTimeBuilder}.
      * <p>
      * Exceptions will follow the definitions of {@code Format}, see those methods
@@ -387,7 +386,7 @@ public final class DateTimeFormatter {
      * Returns this formatter as a {@code java.text.Format} instance that will
      * parse to the specified type.
      * <p>
-     * The returned {@link Format} instance will print any {@link DateTimeAccessor}
+     * The returned {@link Format} instance will print any {@link TemporalAccessor}
      * and parses to the type specified.
      * The type must be one that is supported by {@link #parse(CharSequence, Class)}.
      * <p>
@@ -435,13 +434,13 @@ public final class DateTimeFormatter {
             Objects.requireNonNull(obj, "obj");
             Objects.requireNonNull(toAppendTo, "toAppendTo");
             Objects.requireNonNull(pos, "pos");
-            if (obj instanceof DateTimeAccessor == false) {
+            if (obj instanceof TemporalAccessor == false) {
                 throw new IllegalArgumentException("Format target must implement DateTimeAccessor");
             }
             pos.setBeginIndex(0);
             pos.setEndIndex(0);
             try {
-                formatter.printTo((DateTimeAccessor) obj, toAppendTo);
+                formatter.printTo((TemporalAccessor) obj, toAppendTo);
             } catch (RuntimeException ex) {
                 throw new IllegalArgumentException(ex.getMessage(), ex);
             }

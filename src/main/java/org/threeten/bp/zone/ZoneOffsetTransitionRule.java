@@ -31,8 +31,8 @@
  */
 package org.threeten.bp.zone;
 
-import static org.threeten.bp.temporal.DateTimeAdjusters.nextOrSame;
-import static org.threeten.bp.temporal.DateTimeAdjusters.previousOrSame;
+import static org.threeten.bp.temporal.TemporalAdjusters.nextOrSame;
+import static org.threeten.bp.temporal.TemporalAdjusters.previousOrSame;
 
 import java.io.DataInput;
 import java.io.DataOutput;

@@ -45,7 +45,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.Month;
-import org.threeten.bp.temporal.DateTimeField;
+import org.threeten.bp.temporal.TemporalField;
 
 /**
  * Test text printing.
@@ -105,7 +105,7 @@ public class TCKDateTimeTextPrinting {
     }
 
     @Test(dataProvider="printText", groups={"tck"})
-    public void test_appendText2arg_print(DateTimeField field, TextStyle style, int value, String expected) throws Exception {
+    public void test_appendText2arg_print(TemporalField field, TextStyle style, int value, String expected) throws Exception {
         DateTimeFormatter f = builder.appendText(field, style).toFormatter(Locale.ENGLISH);
         LocalDateTime dt = LocalDateTime.of(2010, 1, 1, 0, 0);
         dt = dt.with(field, value);
@@ -114,7 +114,7 @@ public class TCKDateTimeTextPrinting {
     }
 
     @Test(dataProvider="printText", groups={"tck"})
-    public void test_appendText1arg_print(DateTimeField field, TextStyle style, int value, String expected) throws Exception {
+    public void test_appendText1arg_print(TemporalField field, TextStyle style, int value, String expected) throws Exception {
         if (style == TextStyle.FULL) {
             DateTimeFormatter f = builder.appendText(field).toFormatter(Locale.ENGLISH);
             LocalDateTime dt = LocalDateTime.of(2010, 1, 1, 0, 0);

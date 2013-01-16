@@ -81,14 +81,14 @@ import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
-import org.threeten.bp.temporal.DateTime;
-import org.threeten.bp.temporal.DateTime.WithAdjuster;
-import org.threeten.bp.temporal.DateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeAccessor.Query;
-import org.threeten.bp.temporal.DateTimeField;
 import org.threeten.bp.temporal.ISOChrono;
-import org.threeten.bp.temporal.JulianDayField;
+import org.threeten.bp.temporal.JulianFields;
 import org.threeten.bp.temporal.MockFieldNoValue;
+import org.threeten.bp.temporal.Temporal;
+import org.threeten.bp.temporal.Temporal.WithAdjuster;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalAccessor.Query;
+import org.threeten.bp.temporal.TemporalField;
 
 /**
  * Test OffsetDateTime.
@@ -111,14 +111,14 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
 
     //-----------------------------------------------------------------------
     @Override
-    protected List<DateTimeAccessor> samples() {
-        DateTimeAccessor[] array = {TEST_2008_6_30_11_30_59_000000500, };
+    protected List<TemporalAccessor> samples() {
+        TemporalAccessor[] array = {TEST_2008_6_30_11_30_59_000000500, };
         return Arrays.asList(array);
     }
 
     @Override
-    protected List<DateTimeField> validFields() {
-        DateTimeField[] array = {
+    protected List<TemporalField> validFields() {
+        TemporalField[] array = {
             NANO_OF_SECOND,
             NANO_OF_DAY,
             MICRO_OF_SECOND,
@@ -149,16 +149,16 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
             ERA,
             OFFSET_SECONDS,
             INSTANT_SECONDS,
-            JulianDayField.JULIAN_DAY,
-            JulianDayField.MODIFIED_JULIAN_DAY,
-            JulianDayField.RATA_DIE,
+            JulianFields.JULIAN_DAY,
+            JulianFields.MODIFIED_JULIAN_DAY,
+            JulianFields.RATA_DIE,
         };
         return Arrays.asList(array);
     }
 
     @Override
-    protected List<DateTimeField> invalidFields() {
-        List<DateTimeField> list = new ArrayList<>(Arrays.<DateTimeField>asList(ChronoField.values()));
+    protected List<TemporalField> invalidFields() {
+        List<TemporalField> list = new ArrayList<>(Arrays.<TemporalField>asList(ChronoField.values()));
         list.removeAll(validFields());
         return list;
     }
@@ -390,7 +390,7 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_Calendricals_null() {
-        OffsetDateTime.from((DateTimeAccessor) null);
+        OffsetDateTime.from((TemporalAccessor) null);
     }
 
     //-----------------------------------------------------------------------
@@ -535,14 +535,14 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
     }
 
     @Test(dataProvider="invalidFields", expectedExceptions=DateTimeException.class, groups={"tck"} )
-    public void test_get_DateTimeField_invalidField(DateTimeField field) {
+    public void test_get_DateTimeField_invalidField(TemporalField field) {
         TEST_2008_6_30_11_30_59_000000500.getLong(field);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
     public void test_get_DateTimeField_null() {
         OffsetDateTime test = OffsetDateTime.of(2008, 6, 30, 12, 30, 40, 987654321, OFFSET_PONE);
-        test.getLong((DateTimeField) null);
+        test.getLong((TemporalField) null);
     }
 
     //-----------------------------------------------------------------------
@@ -581,7 +581,7 @@ public class TCKOffsetDateTime extends AbstractDateTimeTest {
         final OffsetDateTime sample = OffsetDateTime.of(2012, 3, 4, 23, 5, OFFSET_PONE);
         WithAdjuster adjuster = new WithAdjuster() {
             @Override
-            public DateTime doWithAdjustment(DateTime dateTime) {
+            public Temporal doWithAdjustment(Temporal dateTime) {
                 return sample;
             }
         };

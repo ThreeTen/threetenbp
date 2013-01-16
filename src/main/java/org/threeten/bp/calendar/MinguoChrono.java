@@ -43,10 +43,10 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoLocalDate;
-import org.threeten.bp.temporal.DateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeValueRange;
 import org.threeten.bp.temporal.Era;
 import org.threeten.bp.temporal.ISOChrono;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.ValueRange;
 
 /**
  * The Minguo calendar system.
@@ -159,7 +159,7 @@ public final class MinguoChrono extends Chrono<MinguoChrono> implements Serializ
     }
 
     @Override
-    public ChronoLocalDate<MinguoChrono> date(DateTimeAccessor dateTime) {
+    public ChronoLocalDate<MinguoChrono> date(TemporalAccessor dateTime) {
         if (dateTime instanceof MinguoDate) {
             return (MinguoDate) dateTime;
         }
@@ -202,15 +202,15 @@ public final class MinguoChrono extends Chrono<MinguoChrono> implements Serializ
 
     //-----------------------------------------------------------------------
     @Override
-    public DateTimeValueRange range(ChronoField field) {
+    public ValueRange range(ChronoField field) {
         switch (field) {
             case YEAR_OF_ERA: {
-                DateTimeValueRange range = YEAR.range();
-                return DateTimeValueRange.of(1, range.getMaximum() - YEARS_DIFFERENCE, -range.getMinimum() + 1 + YEARS_DIFFERENCE);
+                ValueRange range = YEAR.range();
+                return ValueRange.of(1, range.getMaximum() - YEARS_DIFFERENCE, -range.getMinimum() + 1 + YEARS_DIFFERENCE);
             }
             case YEAR: {
-                DateTimeValueRange range = YEAR.range();
-                return DateTimeValueRange.of(range.getMinimum() - YEARS_DIFFERENCE, range.getMaximum() - YEARS_DIFFERENCE);
+                ValueRange range = YEAR.range();
+                return ValueRange.of(range.getMinimum() - YEARS_DIFFERENCE, range.getMaximum() - YEARS_DIFFERENCE);
             }
         }
         return field.range();

@@ -34,8 +34,8 @@ package org.threeten.bp.temporal;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.Duration;
 import org.threeten.bp.Period;
-import org.threeten.bp.temporal.DateTime.MinusAdjuster;
-import org.threeten.bp.temporal.DateTime.PlusAdjuster;
+import org.threeten.bp.temporal.Temporal.MinusAdjuster;
+import org.threeten.bp.temporal.Temporal.PlusAdjuster;
 
 /**
  * A unit of date-time, such as Days or Hours.
@@ -59,7 +59,7 @@ import org.threeten.bp.temporal.DateTime.PlusAdjuster;
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * It is recommended to use an enum where possible.
  */
-public interface PeriodUnit {
+public interface TemporalUnit {
 
     /**
      * Gets a descriptive name for the unit.
@@ -108,7 +108,7 @@ public interface PeriodUnit {
      * @param dateTime  the date-time object to check, not null
      * @return true if the unit is supported
      */
-    boolean isSupported(DateTime dateTime);
+    boolean isSupported(Temporal dateTime);
     // JAVA 8
     // default {
     //     try {
@@ -123,7 +123,7 @@ public interface PeriodUnit {
      * Implementation of the logic to add a period to the specified date-time.
      * <p>
      * This method is not intended to be called by application code directly.
-     * Applications should use {@link DateTime#plus(long, PeriodUnit)} or the
+     * Applications should use {@link Temporal#plus(long, TemporalUnit)} or the
      * equivalent {@code minus} method on the date-time object passing this as the argument.
      * <pre>
      *   updated = date.plus(amount, unit);
@@ -141,7 +141,7 @@ public interface PeriodUnit {
      * @return the adjusted date-time object, not null
      * @throws DateTimeException if the period cannot be added
      */
-    <R extends DateTime> R doPlus(R dateTime, long periodToAdd);
+    <R extends Temporal> R doPlus(R dateTime, long periodToAdd);
 
     //-----------------------------------------------------------------------
     /**
@@ -162,7 +162,7 @@ public interface PeriodUnit {
      * @return the period between datetime1 and datetime2 in terms of this unit;
      *      positive if datetime2 is later than datetime1, not null
      */
-    <R extends DateTime> PeriodBetween between(R dateTime1, R dateTime2);
+    <R extends Temporal> PeriodBetween between(R dateTime1, R dateTime2);
 
     //-----------------------------------------------------------------------
     /**
@@ -177,7 +177,7 @@ public interface PeriodUnit {
     /**
      * Simple period representing the amount of time between two date-time objects.
      * <p>
-     * This interface is the return type from {@link PeriodUnit#between}.
+     * This interface is the return type from {@link TemporalUnit#between}.
      * It represents an amount of time measured in a single unit.
      * It can be queried for the amount and unit, or added directly to another date-time:
      * <pre>
@@ -201,7 +201,7 @@ public interface PeriodUnit {
          *
          * @return the unit that the amount is measured in, not null
          */
-        PeriodUnit getUnit();
+        TemporalUnit getUnit();
     }
 
 }

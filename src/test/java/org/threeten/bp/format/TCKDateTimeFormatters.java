@@ -64,10 +64,9 @@ import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeAccessor;
-import org.threeten.bp.temporal.DateTimeBuilder;
-import org.threeten.bp.temporal.DateTimeField;
-import org.threeten.bp.temporal.ISOWeeks;
+import org.threeten.bp.temporal.ISOFields;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalField;
 
 /**
  * Test DateTimeFormatters.
@@ -82,7 +81,7 @@ public class TCKDateTimeFormatters {
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_print_nullCalendrical() {
-        DateTimeFormatters.isoDate().print((DateTimeAccessor) null);
+        DateTimeFormatters.isoDate().print((TemporalAccessor) null);
     }
 
     //-----------------------------------------------------------------------
@@ -157,7 +156,7 @@ public class TCKDateTimeFormatters {
     public void test_print_isoLocalDate(
             Integer year, Integer month, Integer day, String offsetId, String zoneId,
             String expected, Class<?> expectedEx) {
-        DateTimeAccessor test = buildAccessor(year, month, day, null, null, null, null, offsetId, zoneId);
+        TemporalAccessor test = buildAccessor(year, month, day, null, null, null, null, offsetId, zoneId);
         if (expectedEx == null) {
             assertEquals(DateTimeFormatters.isoLocalDate().print(test), expected);
         } else {
@@ -244,7 +243,7 @@ public class TCKDateTimeFormatters {
     public void test_print_isoOffsetDate(
             Integer year, Integer month, Integer day, String offsetId, String zoneId,
             String expected, Class<?> expectedEx) {
-        DateTimeAccessor test = buildAccessor(year, month, day, null, null, null, null, offsetId, zoneId);
+        TemporalAccessor test = buildAccessor(year, month, day, null, null, null, null, offsetId, zoneId);
         if (expectedEx == null) {
             assertEquals(DateTimeFormatters.isoOffsetDate().print(test), expected);
         } else {
@@ -295,7 +294,7 @@ public class TCKDateTimeFormatters {
     public void test_print_isoDate(
             Integer year, Integer month, Integer day, String offsetId, String zoneId,
             String expected, Class<?> expectedEx) {
-        DateTimeAccessor test = buildAccessor(year, month, day, null, null, null, null, offsetId, zoneId);
+        TemporalAccessor test = buildAccessor(year, month, day, null, null, null, null, offsetId, zoneId);
         if (expectedEx == null) {
             assertEquals(DateTimeFormatters.isoDate().print(test), expected);
         } else {
@@ -360,7 +359,7 @@ public class TCKDateTimeFormatters {
     public void test_print_isoLocalTime(
             Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
             String expected, Class<?> expectedEx) {
-        DateTimeAccessor test = buildAccessor(null, null, null, hour, min, sec, nano, offsetId, zoneId);
+        TemporalAccessor test = buildAccessor(null, null, null, hour, min, sec, nano, offsetId, zoneId);
         if (expectedEx == null) {
             assertEquals(DateTimeFormatters.isoLocalTime().print(test), expected);
         } else {
@@ -423,7 +422,7 @@ public class TCKDateTimeFormatters {
     public void test_print_isoOffsetTime(
             Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
             String expected, Class<?> expectedEx) {
-        DateTimeAccessor test = buildAccessor(null, null, null, hour, min, sec, nano, offsetId, zoneId);
+        TemporalAccessor test = buildAccessor(null, null, null, hour, min, sec, nano, offsetId, zoneId);
         if (expectedEx == null) {
             assertEquals(DateTimeFormatters.isoOffsetTime().print(test), expected);
         } else {
@@ -486,7 +485,7 @@ public class TCKDateTimeFormatters {
     public void test_print_isoTime(
             Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
             String expected, Class<?> expectedEx) {
-        DateTimeAccessor test = buildAccessor(null, null, null, hour, min, sec, nano, offsetId, zoneId);
+        TemporalAccessor test = buildAccessor(null, null, null, hour, min, sec, nano, offsetId, zoneId);
         if (expectedEx == null) {
             assertEquals(DateTimeFormatters.isoTime().print(test), expected);
         } else {
@@ -560,7 +559,7 @@ public class TCKDateTimeFormatters {
             Integer year, Integer month, Integer day,
             Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
             String expected, Class<?> expectedEx) {
-        DateTimeAccessor test = buildAccessor(year, month, day, hour, min, sec, nano, offsetId, zoneId);
+        TemporalAccessor test = buildAccessor(year, month, day, hour, min, sec, nano, offsetId, zoneId);
         if (expectedEx == null) {
             assertEquals(DateTimeFormatters.isoLocalDateTime().print(test), expected);
         } else {
@@ -632,7 +631,7 @@ public class TCKDateTimeFormatters {
             Integer year, Integer month, Integer day,
             Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
             String expected, Class<?> expectedEx) {
-        DateTimeAccessor test = buildAccessor(year, month, day, hour, min, sec, nano, offsetId, zoneId);
+        TemporalAccessor test = buildAccessor(year, month, day, hour, min, sec, nano, offsetId, zoneId);
         if (expectedEx == null) {
             assertEquals(DateTimeFormatters.isoOffsetDateTime().print(test), expected);
         } else {
@@ -714,7 +713,7 @@ public class TCKDateTimeFormatters {
             Integer year, Integer month, Integer day,
             Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
             String expected, Class<?> expectedEx) {
-        DateTimeAccessor test = buildAccessor(year, month, day, hour, min, sec, nano, offsetId, zoneId);
+        TemporalAccessor test = buildAccessor(year, month, day, hour, min, sec, nano, offsetId, zoneId);
         if (expectedEx == null) {
             assertEquals(DateTimeFormatters.isoZonedDateTime().print(test), expected);
         } else {
@@ -791,7 +790,7 @@ public class TCKDateTimeFormatters {
             Integer year, Integer month, Integer day,
             Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
             String expected, Class<?> expectedEx) {
-        DateTimeAccessor test = buildAccessor(year, month, day, hour, min, sec, nano, offsetId, zoneId);
+        TemporalAccessor test = buildAccessor(year, month, day, hour, min, sec, nano, offsetId, zoneId);
         if (expectedEx == null) {
             assertEquals(DateTimeFormatters.isoDateTime().print(test), expected);
         } else {
@@ -826,37 +825,37 @@ public class TCKDateTimeFormatters {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_print_isoOrdinalDate() {
-        DateTimeAccessor test = buildAccessor(LocalDateTime.of(2008, 6, 3, 11, 5, 30), null, null);
+        TemporalAccessor test = buildAccessor(LocalDateTime.of(2008, 6, 3, 11, 5, 30), null, null);
         assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "2008-155");
     }
 
     @Test(groups={"tck"})
     public void test_print_isoOrdinalDate_offset() {
-        DateTimeAccessor test = buildAccessor(LocalDateTime.of(2008, 6, 3, 11, 5, 30), "Z", null);
+        TemporalAccessor test = buildAccessor(LocalDateTime.of(2008, 6, 3, 11, 5, 30), "Z", null);
         assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "2008-155Z");
     }
 
     @Test(groups={"tck"})
     public void test_print_isoOrdinalDate_zoned() {
-        DateTimeAccessor test = buildAccessor(LocalDateTime.of(2008, 6, 3, 11, 5, 30), "+02:00", "Europe/Paris");
+        TemporalAccessor test = buildAccessor(LocalDateTime.of(2008, 6, 3, 11, 5, 30), "+02:00", "Europe/Paris");
         assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "2008-155+02:00");
     }
 
     @Test(groups={"tck"})
     public void test_print_isoOrdinalDate_zoned_largeYear() {
-        DateTimeAccessor test = buildAccessor(LocalDateTime.of(123456, 6, 3, 11, 5, 30), "Z", null);
+        TemporalAccessor test = buildAccessor(LocalDateTime.of(123456, 6, 3, 11, 5, 30), "Z", null);
         assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "+123456-155Z");
     }
 
     @Test(groups={"tck"})
     public void test_print_isoOrdinalDate_fields() {
-        DateTimeAccessor test = new DateTimeBuilder(YEAR, 2008).addFieldValue(DAY_OF_YEAR, 231);
+        TemporalAccessor test = new DateTimeBuilder(YEAR, 2008).addFieldValue(DAY_OF_YEAR, 231);
         assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "2008-231");
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_print_isoOrdinalDate_missingField() {
-        DateTimeAccessor test = Year.of(2008);
+        TemporalAccessor test = Year.of(2008);
         DateTimeFormatters.isoOrdinalDate().print(test);
     }
 
@@ -878,37 +877,37 @@ public class TCKDateTimeFormatters {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_print_basicIsoDate() {
-        DateTimeAccessor test = buildAccessor(LocalDateTime.of(2008, 6, 3, 11, 5, 30), null, null);
+        TemporalAccessor test = buildAccessor(LocalDateTime.of(2008, 6, 3, 11, 5, 30), null, null);
         assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080603");
     }
 
     @Test(groups={"tck"})
     public void test_print_basicIsoDate_offset() {
-        DateTimeAccessor test = buildAccessor(LocalDateTime.of(2008, 6, 3, 11, 5, 30), "Z", null);
+        TemporalAccessor test = buildAccessor(LocalDateTime.of(2008, 6, 3, 11, 5, 30), "Z", null);
         assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080603Z");
     }
 
     @Test(groups={"tck"})
     public void test_print_basicIsoDate_zoned() {
-        DateTimeAccessor test = buildAccessor(LocalDateTime.of(2008, 6, 3, 11, 5, 30), "+02:00", "Europe/Paris");
+        TemporalAccessor test = buildAccessor(LocalDateTime.of(2008, 6, 3, 11, 5, 30), "+02:00", "Europe/Paris");
         assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080603+0200");
     }
 
     @Test(expectedExceptions=DateTimePrintException.class, groups={"tck"})
     public void test_print_basicIsoDate_largeYear() {
-        DateTimeAccessor test = buildAccessor(LocalDateTime.of(123456, 6, 3, 11, 5, 30), "Z", null);
+        TemporalAccessor test = buildAccessor(LocalDateTime.of(123456, 6, 3, 11, 5, 30), "Z", null);
         DateTimeFormatters.basicIsoDate().print(test);
     }
 
     @Test(groups={"tck"})
     public void test_print_basicIsoDate_fields() {
-        DateTimeAccessor test = buildAccessor(LocalDate.of(2008, 6, 3), null, null);
+        TemporalAccessor test = buildAccessor(LocalDate.of(2008, 6, 3), null, null);
         assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080603");
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_print_basicIsoDate_missingField() {
-        DateTimeAccessor test = YearMonth.of(2008, 6);
+        TemporalAccessor test = YearMonth.of(2008, 6);
         DateTimeFormatters.basicIsoDate().print(test);
     }
 
@@ -967,25 +966,25 @@ public class TCKDateTimeFormatters {
     }
 
     @Test(dataProvider="weekDate", groups={"tck"})
-    public void test_print_isoWeekDate(DateTimeAccessor test, String expected) {
+    public void test_print_isoWeekDate(TemporalAccessor test, String expected) {
         assertEquals(DateTimeFormatters.isoWeekDate().print(test), expected);
     }
 
     @Test(groups={"tck"})
     public void test_print_isoWeekDate_zoned_largeYear() {
-        DateTimeAccessor test = buildAccessor(LocalDateTime.of(123456, 6, 3, 11, 5, 30), "Z", null);
+        TemporalAccessor test = buildAccessor(LocalDateTime.of(123456, 6, 3, 11, 5, 30), "Z", null);
         assertEquals(DateTimeFormatters.isoWeekDate().print(test), "+123456-W23-2Z");
     }
 
     @Test(groups={"tck"})
     public void test_print_isoWeekDate_fields() {
-        DateTimeAccessor test = buildAccessor(LocalDate.of(2004, 1, 27), null, null);
+        TemporalAccessor test = buildAccessor(LocalDate.of(2004, 1, 27), null, null);
         assertEquals(DateTimeFormatters.isoWeekDate().print(test), "2004-W05-2");
     }
 
     @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
     public void test_print_isoWeekDate_missingField() {
-        DateTimeAccessor test = YearMonth.of(2008, 6);
+        TemporalAccessor test = YearMonth.of(2008, 6);
         DateTimeFormatters.isoWeekDate().print(test);
     }
 
@@ -999,8 +998,8 @@ public class TCKDateTimeFormatters {
     @Test(groups={"tck"})
     public void test_parse_weekDate_largeYear() {
         DateTimeBuilder builder = DateTimeFormatters.isoWeekDate().parseToBuilder("+123456-W04-5", new ParsePosition(0));
-        assertEquals(builder.getFieldValue(ISOWeeks.WEEK_BASED_YEAR), 123456);
-        assertEquals(builder.getFieldValue(ISOWeeks.WEEK_OF_WEEK_BASED_YEAR), 4);
+        assertEquals(builder.getFieldValue(ISOFields.WEEK_BASED_YEAR), 123456);
+        assertEquals(builder.getFieldValue(ISOFields.WEEK_OF_WEEK_BASED_YEAR), 4);
         assertEquals(builder.getFieldValue(DAY_OF_WEEK), 5);
     }
 
@@ -1019,19 +1018,19 @@ public class TCKDateTimeFormatters {
 
     @Test(groups={"tck"}, dataProvider="rfc")
     public void test_print_rfc1123(LocalDateTime base, String offsetId, String expected) {
-        DateTimeAccessor test = buildAccessor(base, offsetId, null);
+        TemporalAccessor test = buildAccessor(base, offsetId, null);
         assertEquals(DateTimeFormatters.rfc1123().print(test), expected);
     }
 
     @Test(groups={"tck"}, dataProvider="rfc")
     public void test_print_rfc1123_french(LocalDateTime base, String offsetId, String expected) {
-        DateTimeAccessor test = buildAccessor(base, offsetId, null);
+        TemporalAccessor test = buildAccessor(base, offsetId, null);
         assertEquals(DateTimeFormatters.rfc1123().withLocale(Locale.FRENCH).print(test), expected);
     }
 
     @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
     public void test_print_rfc1123_missingField() {
-        DateTimeAccessor test = YearMonth.of(2008, 6);
+        TemporalAccessor test = YearMonth.of(2008, 6);
         DateTimeFormatters.rfc1123().print(test);
     }
 
@@ -1097,7 +1096,7 @@ public class TCKDateTimeFormatters {
         return test;
     }
 
-    private DateTimeAccessor buildAccessor(
+    private TemporalAccessor buildAccessor(
                     Integer year, Integer month, Integer day,
                     Integer hour, Integer min, Integer sec, Integer nano,
                     String offsetId, String zoneId) {
@@ -1128,7 +1127,7 @@ public class TCKDateTimeFormatters {
         return mock;
     }
 
-    private DateTimeAccessor buildAccessor(LocalDateTime base, String offsetId, String zoneId) {
+    private TemporalAccessor buildAccessor(LocalDateTime base, String offsetId, String zoneId) {
         MockAccessor mock = new MockAccessor();
         mock.setFields(base);
         mock.setOffset(offsetId);
@@ -1136,7 +1135,7 @@ public class TCKDateTimeFormatters {
         return mock;
     }
 
-    private DateTimeAccessor buildAccessor(LocalDate base, String offsetId, String zoneId) {
+    private TemporalAccessor buildAccessor(LocalDate base, String offsetId, String zoneId) {
         MockAccessor mock = new MockAccessor();
         mock.setFields(base);
         mock.setOffset(offsetId);
@@ -1154,8 +1153,8 @@ public class TCKDateTimeFormatters {
     }
 
     private void assertParseMatch(DateTimeBuilder parsed, DateTimeBuilder expected) {
-        Map<DateTimeField, Long> parsedFVMap = parsed.getFieldValueMap();
-        Map<DateTimeField, Long> expectedFVMap = expected.getFieldValueMap();
+        Map<TemporalField, Long> parsedFVMap = parsed.getFieldValueMap();
+        Map<TemporalField, Long> expectedFVMap = expected.getFieldValueMap();
         assertEquals(parsedFVMap, expectedFVMap);
 
         List<Object> parsedCMap = parsed.getCalendricalList();
@@ -1165,7 +1164,7 @@ public class TCKDateTimeFormatters {
 
     //-------------------------------------------------------------------------
     static class MockAccessor extends DefaultInterfaceDateTimeAccessor {
-        Map<DateTimeField, Long> fields = new HashMap<>();
+        Map<TemporalField, Long> fields = new HashMap<>();
         ZoneId zoneId;
 
         void setFields(LocalDate dt) {
@@ -1175,8 +1174,8 @@ public class TCKDateTimeFormatters {
                 fields.put(DAY_OF_MONTH, (long) dt.getDayOfMonth());
                 fields.put(DAY_OF_YEAR, (long) dt.getDayOfYear());
                 fields.put(DAY_OF_WEEK, (long) dt.getDayOfWeek().getValue());
-                fields.put(ISOWeeks.WEEK_BASED_YEAR, dt.getLong(ISOWeeks.WEEK_BASED_YEAR));
-                fields.put(ISOWeeks.WEEK_OF_WEEK_BASED_YEAR, dt.getLong(ISOWeeks.WEEK_OF_WEEK_BASED_YEAR));
+                fields.put(ISOFields.WEEK_BASED_YEAR, dt.getLong(ISOFields.WEEK_BASED_YEAR));
+                fields.put(ISOFields.WEEK_OF_WEEK_BASED_YEAR, dt.getLong(ISOFields.WEEK_OF_WEEK_BASED_YEAR));
             }
         }
 
@@ -1187,8 +1186,8 @@ public class TCKDateTimeFormatters {
                 fields.put(DAY_OF_MONTH, (long) dt.getDayOfMonth());
                 fields.put(DAY_OF_YEAR, (long) dt.getDayOfYear());
                 fields.put(DAY_OF_WEEK, (long) dt.getDayOfWeek().getValue());
-                fields.put(ISOWeeks.WEEK_BASED_YEAR, dt.getLong(ISOWeeks.WEEK_BASED_YEAR));
-                fields.put(ISOWeeks.WEEK_OF_WEEK_BASED_YEAR, dt.getLong(ISOWeeks.WEEK_OF_WEEK_BASED_YEAR));
+                fields.put(ISOFields.WEEK_BASED_YEAR, dt.getLong(ISOFields.WEEK_BASED_YEAR));
+                fields.put(ISOFields.WEEK_OF_WEEK_BASED_YEAR, dt.getLong(ISOFields.WEEK_OF_WEEK_BASED_YEAR));
                 fields.put(HOUR_OF_DAY, (long) dt.getHour());
                 fields.put(MINUTE_OF_HOUR, (long) dt.getMinute());
                 fields.put(SECOND_OF_MINUTE, (long) dt.getSecond());
@@ -1209,12 +1208,12 @@ public class TCKDateTimeFormatters {
         }
 
         @Override
-        public boolean isSupported(DateTimeField field) {
+        public boolean isSupported(TemporalField field) {
             return fields.containsKey(field);
         }
 
         @Override
-        public long getLong(DateTimeField field) {
+        public long getLong(TemporalField field) {
             try {
                 return fields.get(field);
             } catch (NullPointerException ex) {

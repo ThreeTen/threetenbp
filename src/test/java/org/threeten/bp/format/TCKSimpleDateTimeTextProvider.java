@@ -41,7 +41,7 @@ import java.util.Locale;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.threeten.bp.temporal.DateTimeField;
+import org.threeten.bp.temporal.TemporalField;
 
 /**
  * Test SimpleDateTimeTextProvider.
@@ -151,7 +151,7 @@ public class TCKSimpleDateTimeTextProvider {
     }
 
     @Test(dataProvider = "Text", groups={"tck"})
-    public void test_getText(DateTimeField field, Number value, TextStyle style, Locale locale, String expected) {
+    public void test_getText(TemporalField field, Number value, TextStyle style, Locale locale, String expected) {
         DateTimeTextProvider tp = DateTimeFormatters.getTextProvider();
         assertEquals(tp.getText(field, value.longValue(), style, locale), expected);
     }

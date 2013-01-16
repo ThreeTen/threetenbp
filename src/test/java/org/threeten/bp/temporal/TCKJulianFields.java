@@ -42,7 +42,7 @@ import org.threeten.bp.LocalDate;
  * Test.
  */
 @Test
-public class TCKJulianDayField {
+public class TCKJulianFields {
 
     private static final LocalDate JAN01_1970 = LocalDate.of(1970, 1, 1);
     private static final LocalDate DEC31_1969 = LocalDate.of(1969, 12, 31);
@@ -58,34 +58,34 @@ public class TCKJulianDayField {
     Object[][] data_samples() {
         return new Object[][] {
             {ChronoField.EPOCH_DAY, JAN01_1970, 0L},
-            {JulianDayField.JULIAN_DAY, JAN01_1970, 2400001L + 40587L},
-            {JulianDayField.MODIFIED_JULIAN_DAY, JAN01_1970, 40587L},
-            {JulianDayField.RATA_DIE, JAN01_1970, 710347L + (40587L - 31771L)},
+            {JulianFields.JULIAN_DAY, JAN01_1970, 2400001L + 40587L},
+            {JulianFields.MODIFIED_JULIAN_DAY, JAN01_1970, 40587L},
+            {JulianFields.RATA_DIE, JAN01_1970, 710347L + (40587L - 31771L)},
 
             {ChronoField.EPOCH_DAY, DEC31_1969, -1L},
-            {JulianDayField.JULIAN_DAY, DEC31_1969, 2400001L + 40586L},
-            {JulianDayField.MODIFIED_JULIAN_DAY, DEC31_1969, 40586L},
-            {JulianDayField.RATA_DIE, DEC31_1969, 710347L + (40586L - 31771L)},
+            {JulianFields.JULIAN_DAY, DEC31_1969, 2400001L + 40586L},
+            {JulianFields.MODIFIED_JULIAN_DAY, DEC31_1969, 40586L},
+            {JulianFields.RATA_DIE, DEC31_1969, 710347L + (40586L - 31771L)},
 
             {ChronoField.EPOCH_DAY, NOV12_1945, (-24 * 365 - 6) - 31 - 30 + 11},
-            {JulianDayField.JULIAN_DAY, NOV12_1945, 2431772L},
-            {JulianDayField.MODIFIED_JULIAN_DAY, NOV12_1945, 31771L},
-            {JulianDayField.RATA_DIE, NOV12_1945, 710347L},
+            {JulianFields.JULIAN_DAY, NOV12_1945, 2431772L},
+            {JulianFields.MODIFIED_JULIAN_DAY, NOV12_1945, 31771L},
+            {JulianFields.RATA_DIE, NOV12_1945, 710347L},
 
             {ChronoField.EPOCH_DAY, JAN01_0001, (-24 * 365 - 6) - 31 - 30 + 11 - 710346L},
-            {JulianDayField.JULIAN_DAY, JAN01_0001, 2431772L - 710346L},
-            {JulianDayField.MODIFIED_JULIAN_DAY, JAN01_0001, 31771L - 710346L},
-            {JulianDayField.RATA_DIE, JAN01_0001, 1},
+            {JulianFields.JULIAN_DAY, JAN01_0001, 2431772L - 710346L},
+            {JulianFields.MODIFIED_JULIAN_DAY, JAN01_0001, 31771L - 710346L},
+            {JulianFields.RATA_DIE, JAN01_0001, 1},
         };
     }
 
     @Test(dataProvider="samples", groups={"tck"})
-    public void test_samples_get(DateTimeField field, LocalDate date, long expected) {
+    public void test_samples_get(TemporalField field, LocalDate date, long expected) {
         assertEquals(date.getLong(field), expected);
     }
 
     @Test(dataProvider="samples", groups={"tck"})
-    public void test_samples_set(DateTimeField field, LocalDate date, long value) {
+    public void test_samples_set(TemporalField field, LocalDate date, long value) {
         assertEquals(field.doWith(LocalDate.MAX_DATE, value), date);
         assertEquals(field.doWith(LocalDate.MIN_DATE, value), date);
         assertEquals(field.doWith(JAN01_1970, value), date);
@@ -94,9 +94,9 @@ public class TCKJulianDayField {
     }
 
     @Test(dataProvider="samples", groups={"tck"})
-    public void test_samples_date(DateTimeField field, LocalDate date, long value) {
-        if (field instanceof JulianDayField) {
-            assertEquals(((JulianDayField) field).createDate(value), date);
+    public void test_samples_date(TemporalField field, LocalDate date, long value) {
+        if (field instanceof JulianFields) {
+            assertEquals(((JulianFields) field).createDate(value), date);
         }
     }
 
@@ -105,9 +105,9 @@ public class TCKJulianDayField {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_toString() {
-        assertEquals(JulianDayField.JULIAN_DAY.toString(), "JulianDay");
-        assertEquals(JulianDayField.MODIFIED_JULIAN_DAY.toString(), "ModifiedJulianDay");
-        assertEquals(JulianDayField.RATA_DIE.toString(), "RataDie");
+        assertEquals(JulianFields.JULIAN_DAY.toString(), "JulianDay");
+        assertEquals(JulianFields.MODIFIED_JULIAN_DAY.toString(), "ModifiedJulianDay");
+        assertEquals(JulianFields.RATA_DIE.toString(), "RataDie");
     }
 
     //-----------------------------------------------------------------------
@@ -115,8 +115,8 @@ public class TCKJulianDayField {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_enum() {
-        assertEquals(JulianDayField.valueOf("JULIAN_DAY"), JulianDayField.JULIAN_DAY);
-        assertEquals(JulianDayField.values()[0], JulianDayField.JULIAN_DAY);
+        assertEquals(JulianFields.valueOf("JULIAN_DAY"), JulianFields.JULIAN_DAY);
+        assertEquals(JulianFields.values()[0], JulianFields.JULIAN_DAY);
     }
 
 }

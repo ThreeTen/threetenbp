@@ -37,10 +37,10 @@ import static org.threeten.bp.temporal.ChronoUnit.SECONDS;
 
 import java.util.Objects;
 
-import org.threeten.bp.temporal.DateTime;
-import org.threeten.bp.temporal.DateTime.MinusAdjuster;
-import org.threeten.bp.temporal.DateTime.PlusAdjuster;
-import org.threeten.bp.temporal.PeriodUnit;
+import org.threeten.bp.temporal.Temporal;
+import org.threeten.bp.temporal.Temporal.MinusAdjuster;
+import org.threeten.bp.temporal.Temporal.PlusAdjuster;
+import org.threeten.bp.temporal.TemporalUnit;
 
 /**
  * Mock period of time measured using a single unit, such as {@code 3 Days}.
@@ -64,7 +64,7 @@ public final class MockSimplePeriod
     /**
      * The unit the period is measured in.
      */
-    private final PeriodUnit unit;
+    private final TemporalUnit unit;
 
     /**
      * Obtains a {@code MockSimplePeriod} from an amount and unit.
@@ -76,11 +76,11 @@ public final class MockSimplePeriod
      * @return the {@code MockSimplePeriod} instance, not null
      * @throws DateTimeException if the period unit is {@link org.threeten.bp.temporal.ChronoUnit#FOREVER}.
      */
-    public static MockSimplePeriod of(long amount, PeriodUnit unit) {
+    public static MockSimplePeriod of(long amount, TemporalUnit unit) {
         return new MockSimplePeriod(amount, unit);
     }
 
-    private MockSimplePeriod(long amount, PeriodUnit unit) {
+    private MockSimplePeriod(long amount, TemporalUnit unit) {
         Objects.requireNonNull(unit, "unit");
         if (unit == FOREVER) {
             throw new DateTimeException("Cannot create a period of the Forever unit");
@@ -94,18 +94,18 @@ public final class MockSimplePeriod
         return amount;
     }
 
-    public PeriodUnit getUnit() {
+    public TemporalUnit getUnit() {
         return unit;
     }
 
     //-------------------------------------------------------------------------
     @Override
-    public DateTime doPlusAdjustment(DateTime dateTime) {
+    public Temporal doPlusAdjustment(Temporal dateTime) {
         return dateTime.plus(amount, unit);
     }
 
     @Override
-    public DateTime doMinusAdjustment(DateTime dateTime) {
+    public Temporal doMinusAdjustment(Temporal dateTime) {
         return dateTime.minus(amount, unit);
     }
 

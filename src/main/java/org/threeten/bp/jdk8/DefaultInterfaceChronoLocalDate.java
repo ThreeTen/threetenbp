@@ -46,10 +46,10 @@ import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoLocalDate;
 import org.threeten.bp.temporal.ChronoLocalDateTime;
-import org.threeten.bp.temporal.DateTime;
-import org.threeten.bp.temporal.DateTimeField;
 import org.threeten.bp.temporal.Era;
-import org.threeten.bp.temporal.PeriodUnit;
+import org.threeten.bp.temporal.Temporal;
+import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalUnit;
 
 /**
  * A temporary class providing implementations that will become default interface
@@ -77,7 +77,7 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
     }
 
     @Override
-    public boolean isSupported(DateTimeField field) {
+    public boolean isSupported(TemporalField field) {
         if (field instanceof ChronoField) {
             return ((ChronoField) field).isDateField();
         }
@@ -101,13 +101,13 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
     }
 
     @Override
-    public ChronoLocalDate<C> minus(long amountToSubtract, PeriodUnit unit) {
+    public ChronoLocalDate<C> minus(long amountToSubtract, TemporalUnit unit) {
         return getChrono().ensureChronoLocalDate(super.minus(amountToSubtract, unit));
     }
 
     //-------------------------------------------------------------------------
     @Override
-    public DateTime doWithAdjustment(DateTime dateTime) {
+    public Temporal doWithAdjustment(Temporal dateTime) {
         return dateTime.with(EPOCH_DAY, toEpochDay());
     }
 
