@@ -47,7 +47,7 @@ import static org.threeten.bp.temporal.ChronoUnit.YEARS;
 
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.Instant;
-import org.threeten.bp.LocalDate;
+import org.threeten.bp.Year;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.format.DateTimeBuilder;
 
@@ -62,7 +62,7 @@ import org.threeten.bp.format.DateTimeBuilder;
  * just with slightly different rules.
  * The documentation of each field explains how it operates.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This is a final, immutable and thread-safe enum.
  */
 public enum ChronoField implements TemporalField {
@@ -74,13 +74,13 @@ public enum ChronoField implements TemporalField {
      * This field has the same meaning for all calendar systems.
      * <p>
      * This field is used to represent the nano-of-second handling any fraction of the second.
-     * Implementations of {@code DateTimeAccessor} should provide a value for this field if
+     * Implementations of {@code TemporalAccessor} should provide a value for this field if
      * they can return a value for {@link #SECOND_OF_MINUTE}, {@link #SECOND_OF_DAY} or
      * {@link #INSTANT_SECONDS} filling unknown precision with zero.
      * <p>
      * When this field is used for setting a value, it should set as much precision as the
      * object stores, using integer division to remove excess precision.
-     * For example, if the {@code DateTimeAccessor} stores time to millisecond precision,
+     * For example, if the {@code TemporalAccessor} stores time to millisecond precision,
      * then the nano-of-second must be divided by 1,000,000 before replacing the milli-of-second.
      */
     NANO_OF_SECOND("NanoOfSecond", NANOS, SECONDS, ValueRange.of(0, 999_999_999)),
@@ -91,7 +91,7 @@ public enum ChronoField implements TemporalField {
      * This field has the same meaning for all calendar systems.
      * <p>
      * This field is used to represent the nano-of-day handling any fraction of the second.
-     * Implementations of {@code DateTimeAccessor} should provide a value for this field if
+     * Implementations of {@code TemporalAccessor} should provide a value for this field if
      * they can return a value for {@link #SECOND_OF_DAY} filling unknown precision with zero.
      */
     NANO_OF_DAY("NanoOfDay", NANOS, DAYS, ValueRange.of(0, 86400L * 1000_000_000L - 1)),
@@ -102,7 +102,7 @@ public enum ChronoField implements TemporalField {
      * This field has the same meaning for all calendar systems.
      * <p>
      * This field is used to represent the micro-of-second handling any fraction of the second.
-     * Implementations of {@code DateTimeAccessor} should provide a value for this field if
+     * Implementations of {@code TemporalAccessor} should provide a value for this field if
      * they can return a value for {@link #SECOND_OF_MINUTE}, {@link #SECOND_OF_DAY} or
      * {@link #INSTANT_SECONDS} filling unknown precision with zero.
      * <p>
@@ -117,7 +117,7 @@ public enum ChronoField implements TemporalField {
      * This field has the same meaning for all calendar systems.
      * <p>
      * This field is used to represent the micro-of-day handling any fraction of the second.
-     * Implementations of {@code DateTimeAccessor} should provide a value for this field if
+     * Implementations of {@code TemporalAccessor} should provide a value for this field if
      * they can return a value for {@link #SECOND_OF_DAY} filling unknown precision with zero.
      * <p>
      * When this field is used for setting a value, it should behave in the same way as
@@ -131,7 +131,7 @@ public enum ChronoField implements TemporalField {
      * This field has the same meaning for all calendar systems.
      * <p>
      * This field is used to represent the milli-of-second handling any fraction of the second.
-     * Implementations of {@code DateTimeAccessor} should provide a value for this field if
+     * Implementations of {@code TemporalAccessor} should provide a value for this field if
      * they can return a value for {@link #SECOND_OF_MINUTE}, {@link #SECOND_OF_DAY} or
      * {@link #INSTANT_SECONDS} filling unknown precision with zero.
      * <p>
@@ -146,7 +146,7 @@ public enum ChronoField implements TemporalField {
      * This field has the same meaning for all calendar systems.
      * <p>
      * This field is used to represent the milli-of-day handling any fraction of the second.
-     * Implementations of {@code DateTimeAccessor} should provide a value for this field if
+     * Implementations of {@code TemporalAccessor} should provide a value for this field if
      * they can return a value for {@link #SECOND_OF_DAY} filling unknown precision with zero.
      * <p>
      * When this field is used for setting a value, it should behave in the same way as
@@ -306,7 +306,7 @@ public enum ChronoField implements TemporalField {
      * This field is strictly defined to have the same meaning in all calendar systems.
      * This is necessary to ensure interoperation between calendars.
      */
-    EPOCH_DAY("EpochDay", DAYS, FOREVER, ValueRange.of((long) (LocalDate.MIN_YEAR * 365.25), (long) (LocalDate.MAX_YEAR * 365.25))),
+    EPOCH_DAY("EpochDay", DAYS, FOREVER, ValueRange.of((long) (Year.MIN_YEAR * 365.25), (long) (Year.MAX_YEAR * 365.25))),
     /**
      * The aligned week within a month.
      * <p>
@@ -359,7 +359,7 @@ public enum ChronoField implements TemporalField {
      * Non-ISO calendar systems should also implement this field to represent a sequential
      * count of months. It is recommended to define zero as the month of 1970-01-01 (ISO).
      */
-    EPOCH_MONTH("EpochMonth", MONTHS, FOREVER, ValueRange.of((LocalDate.MIN_YEAR - 1970L) * 12, (LocalDate.MAX_YEAR - 1970L) * 12L - 1L)),
+    EPOCH_MONTH("EpochMonth", MONTHS, FOREVER, ValueRange.of((Year.MIN_YEAR - 1970L) * 12, (Year.MAX_YEAR - 1970L) * 12L - 1L)),
     /**
      * The year within the era.
      * <p>
@@ -378,11 +378,11 @@ public enum ChronoField implements TemporalField {
      * The era 'CE' is the one currently in use and year-of-era runs from 1 to the maximum value.
      * The era 'BCE' is the previous era, and the year-of-era runs backwards.
      * <p>
-     * For example, subtracting a year each time yield the following:<br />
-     * - year-proleptic 2  = 'CE' year-of-era 2<br />
-     * - year-proleptic 1  = 'CE' year-of-era 1<br />
-     * - year-proleptic 0  = 'BCE' year-of-era 1<br />
-     * - year-proleptic -1 = 'BCE' year-of-era 2<br />
+     * For example, subtracting a year each time yield the following:<br>
+     * - year-proleptic 2  = 'CE' year-of-era 2<br>
+     * - year-proleptic 1  = 'CE' year-of-era 1<br>
+     * - year-proleptic 0  = 'BCE' year-of-era 1<br>
+     * - year-proleptic -1 = 'BCE' year-of-era 2<br>
      * <p>
      * Note that the ISO-8601 standard does not actually define eras.
      * Note also that the ISO eras do not align with the well-known AD/BC eras due to the
@@ -394,7 +394,7 @@ public enum ChronoField implements TemporalField {
      * will typically be the same as that used by the ISO calendar system.
      * The year-of-era value should typically always be positive, however this is not required.
      */
-    YEAR_OF_ERA("YearOfEra", YEARS, FOREVER, ValueRange.of(1, LocalDate.MAX_YEAR, LocalDate.MAX_YEAR + 1)),
+    YEAR_OF_ERA("YearOfEra", YEARS, FOREVER, ValueRange.of(1, Year.MAX_YEAR, Year.MAX_YEAR + 1)),
     /**
      * The proleptic year, such as 2012.
      * <p>
@@ -418,7 +418,7 @@ public enum ChronoField implements TemporalField {
      * defined with any appropriate value, although defining it to be the same as ISO may be
      * the best option.
      */
-    YEAR("Year", YEARS, FOREVER, ValueRange.of(LocalDate.MIN_YEAR, LocalDate.MAX_YEAR)),
+    YEAR("Year", YEARS, FOREVER, ValueRange.of(Year.MIN_YEAR, Year.MAX_YEAR)),
     /**
      * The era.
      * <p>
@@ -529,7 +529,7 @@ public enum ChronoField implements TemporalField {
      * @param value  the value to check
      * @return the value that was passed in
      */
-    public long checkValidValue(long value) {  // JAVA8 default method on interface
+    public long checkValidValue(long value) {
         return range().checkValidValue(value, this);
     }
 
@@ -543,7 +543,7 @@ public enum ChronoField implements TemporalField {
      * @param value  the value to check
      * @return the value that was passed in
      */
-    public int checkValidIntValue(long value) {  // JAVA8 default method on interface
+    public int checkValidIntValue(long value) {
         return range().checkValidIntValue(value, this);
     }
 
@@ -570,8 +570,8 @@ public enum ChronoField implements TemporalField {
     }
 
     @Override
-    public <R extends Temporal> R doWith(R dateTime, long newValue) {
-        return (R) dateTime.with(this, newValue);
+    public <R extends Temporal> R doWith(R temporal, long newValue) {
+        return (R) temporal.with(this, newValue);
     }
 
     //-----------------------------------------------------------------------

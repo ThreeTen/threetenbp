@@ -1454,16 +1454,16 @@ public final class LocalDate
     }
 
     void writeExternal(DataOutput out) throws IOException {
-    	out.writeInt(year);
-    	out.writeByte(month);
-    	out.writeByte(day);
+        out.writeInt(year);
+        out.writeByte(month);
+        out.writeByte(day);
     }
 
     static LocalDate readExternal(DataInput in) throws IOException {
-    	int year = in.readInt();
-    	int month = in.readByte();
-    	int dayOfMonth = in.readByte();
-    	return LocalDate.of(year, month, dayOfMonth);
+        int year = in.readInt();
+        int month = in.readByte();
+        int dayOfMonth = in.readByte();
+        return LocalDate.of(year, month, dayOfMonth);
     }
 
 }

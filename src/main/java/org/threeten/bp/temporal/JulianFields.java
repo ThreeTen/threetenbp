@@ -145,7 +145,7 @@ public final class JulianFields {
     /**
      * Hidden implementation.
      */
-	private static enum Field implements TemporalField {
+    private static enum Field implements TemporalField {
         /**
          * Julian Day field.
          */

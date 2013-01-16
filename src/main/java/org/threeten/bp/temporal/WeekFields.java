@@ -242,11 +242,11 @@ public final class WeekFields implements Serializable {
      * @throws InvalidObjectException if invalid
      */
     private Object readResolve() throws InvalidObjectException {
-    	try {
-    		return WeekFields.of(firstDayOfWeek, minimalDays);
-    	} catch (IllegalArgumentException ex) {
-    		throw new InvalidObjectException("Invalid WeekFields" + ex.getMessage());
-    	}
+        try {
+            return WeekFields.of(firstDayOfWeek, minimalDays);
+        } catch (IllegalArgumentException ex) {
+            throw new InvalidObjectException("Invalid WeekFields" + ex.getMessage());
+        }
     }
 
     //-----------------------------------------------------------------------

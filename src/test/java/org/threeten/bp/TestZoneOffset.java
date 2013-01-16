@@ -60,7 +60,7 @@ public class TestZoneOffset extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-	@Test(groups={"tck"})
+    @Test(groups={"tck"})
     public void test_serialization() throws Exception {
         ZoneOffset test = ZoneOffset.of("+01:30");
         ZoneOffset result = (ZoneOffset) writeThenRead(test);
