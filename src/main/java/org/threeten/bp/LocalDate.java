@@ -704,7 +704,7 @@ public final class LocalDate
         if (adjuster instanceof LocalDate) {
             return (LocalDate) adjuster;
         }
-        return (LocalDate) adjuster.doWithAdjustment(this);
+        return (LocalDate) adjuster.adjustInto(this);
     }
 
     /**
@@ -842,7 +842,7 @@ public final class LocalDate
      */
     @Override
     public LocalDate plus(TemporalAdder adjuster) {
-        return (LocalDate) adjuster.doPlusAdjustment(this);
+        return (LocalDate) adjuster.addTo(this);
     }
 
     /**
@@ -1002,7 +1002,7 @@ public final class LocalDate
      */
     @Override
     public LocalDate minus(TemporalSubtractor adjuster) {
-        return (LocalDate) adjuster.doMinusAdjustment(this);
+        return (LocalDate) adjuster.subtractFrom(this);
     }
 
     /**

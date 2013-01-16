@@ -618,7 +618,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
         final OffsetTime sample = OffsetTime.of(23, 5, OFFSET_PONE);
         TemporalAdjuster adjuster = new TemporalAdjuster() {
             @Override
-            public Temporal doWithAdjustment(Temporal dateTime) {
+            public Temporal adjustInto(Temporal dateTime) {
                 return sample;
             }
         };
@@ -647,7 +647,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     public void test_with_adjustment_AmPm() {
         OffsetTime test = TEST_11_30_59_500_PONE.with(new TemporalAdjuster() {
             @Override
-            public Temporal doWithAdjustment(Temporal dateTime) {
+            public Temporal adjustInto(Temporal dateTime) {
                 return dateTime.with(HOUR_OF_DAY, 23);
             }
         });

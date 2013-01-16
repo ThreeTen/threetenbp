@@ -62,7 +62,7 @@ public abstract class DefaultInterfaceDateTimeAccessor implements TemporalAccess
 
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        return query.doQuery(this);
+        return query.queryFrom(this);
     }
 
 }

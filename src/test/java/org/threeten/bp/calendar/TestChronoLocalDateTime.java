@@ -319,17 +319,17 @@ public class TestChronoLocalDateTime {
         }
 
         @Override
-        public Temporal doWithAdjustment(Temporal ignore) {
+        public Temporal adjustInto(Temporal ignore) {
             return datetime;
         }
 
         @Override
-        public Temporal doPlusAdjustment(Temporal ignore) {
+        public Temporal addTo(Temporal ignore) {
             return datetime;
         }
 
         @Override
-        public Temporal doMinusAdjustment(Temporal ignore) {
+        public Temporal subtractFrom(Temporal ignore) {
             return datetime;
         }
 

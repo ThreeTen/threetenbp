@@ -164,7 +164,7 @@ enum ThaiBuddhistEra implements Era<ThaiBuddhistChrono> {
 
     //-------------------------------------------------------------------------
     @Override
-    public Temporal doWithAdjustment(Temporal temporal) {
+    public Temporal adjustInto(Temporal temporal) {
         return temporal.with(ERA, getValue());
     }
 
@@ -174,7 +174,7 @@ enum ThaiBuddhistEra implements Era<ThaiBuddhistChrono> {
         if (query == TemporalQuery.CHRONO) {
             return (R) getChrono();
         }
-        return query.doQuery(this);
+        return query.queryFrom(this);
     }
 
     //-----------------------------------------------------------------------

@@ -448,7 +448,7 @@ public class TCKYear extends AbstractDateTimeTest {
     public void test_adjustDate() {
         LocalDate base = LocalDate.of(2007, 2, 12);
         for (int i = -4; i <= 2104; i++) {
-            Temporal result = Year.of(i).doWithAdjustment(base);
+            Temporal result = Year.of(i).adjustInto(base);
             assertEquals(result, LocalDate.of(i, 2, 12));
         }
     }
@@ -456,13 +456,13 @@ public class TCKYear extends AbstractDateTimeTest {
     @Test(groups={"tck"})
     public void test_adjustDate_resolve() {
         Year test = Year.of(2011);
-        assertEquals(test.doWithAdjustment(LocalDate.of(2012, 2, 29)), LocalDate.of(2011, 2, 28));
+        assertEquals(test.adjustInto(LocalDate.of(2012, 2, 29)), LocalDate.of(2011, 2, 28));
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_adjustDate_nullLocalDate() {
         Year test = Year.of(1);
-        test.doWithAdjustment((LocalDate) null);
+        test.adjustInto((LocalDate) null);
     }
 
     //-----------------------------------------------------------------------

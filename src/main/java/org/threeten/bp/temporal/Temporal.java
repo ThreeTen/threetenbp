@@ -93,7 +93,7 @@ public interface Temporal extends TemporalAccessor {
      * <p>
      * Some example code indicating how and why this method is used:
      * <pre>
-     *  date = date.with(Month.JULY);        // most key classes implement WithAdjuster
+     *  date = date.with(Month.JULY);        // most key classes implement TemporalAdjuster
      *  date = date.with(lastDayOfMonth());  // static import from DateTimeAdjusters
      *  date = date.with(next(WEDNESDAY));   // static import from DateTimeAdjusters and DayOfWeek
      * </pre>

@@ -935,7 +935,7 @@ public final class Period
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public Temporal doPlusAdjustment(Temporal temporal) {
+    public Temporal addTo(Temporal temporal) {
         if ((years | months) != 0) {
             ValueRange startRange = Chrono.from(temporal).range(MONTH_OF_YEAR);
             if (startRange.isFixed() && startRange.isIntValue()) {
@@ -977,7 +977,7 @@ public final class Period
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public Temporal doMinusAdjustment(Temporal temporal) {
+    public Temporal subtractFrom(Temporal temporal) {
         if ((years | months) != 0) {
             ValueRange startRange = Chrono.from(temporal).range(MONTH_OF_YEAR);
             if (startRange.isFixed() && startRange.isIntValue()) {

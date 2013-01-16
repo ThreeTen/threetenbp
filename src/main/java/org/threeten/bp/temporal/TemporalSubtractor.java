@@ -77,6 +77,6 @@ public interface TemporalSubtractor {
      * @throws DateTimeException if unable to subtract
      * @throws ArithmeticException if numeric overflow occurs
      */
-    Temporal doMinusAdjustment(Temporal temporal);
+    Temporal subtractFrom(Temporal temporal);
 
 }

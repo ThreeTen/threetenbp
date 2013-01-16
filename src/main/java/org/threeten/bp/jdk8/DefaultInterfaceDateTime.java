@@ -47,17 +47,17 @@ public abstract class DefaultInterfaceDateTime
 
     @Override
     public Temporal with(TemporalAdjuster adjuster) {
-        return adjuster.doWithAdjustment(this);
+        return adjuster.adjustInto(this);
     }
 
     @Override
     public Temporal plus(TemporalAdder adjuster) {
-        return adjuster.doPlusAdjustment(this);
+        return adjuster.addTo(this);
     }
 
     @Override
     public Temporal minus(TemporalSubtractor adjuster) {
-        return adjuster.doMinusAdjustment(this);
+        return adjuster.subtractFrom(this);
     }
 
     @Override

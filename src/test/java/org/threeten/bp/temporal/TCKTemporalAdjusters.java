@@ -66,7 +66,7 @@ public class TCKTemporalAdjusters {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(false); i++) {
                 LocalDate date = date(2007, month, i);
-                LocalDate test = (LocalDate) TemporalAdjusters.firstDayOfMonth().doWithAdjustment(date);
+                LocalDate test = (LocalDate) TemporalAdjusters.firstDayOfMonth().adjustInto(date);
                 assertEquals(test.getYear(), 2007);
                 assertEquals(test.getMonth(), month);
                 assertEquals(test.getDayOfMonth(), 1);
@@ -79,7 +79,7 @@ public class TCKTemporalAdjusters {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(true); i++) {
                 LocalDate date = date(2008, month, i);
-                LocalDate test = (LocalDate) TemporalAdjusters.firstDayOfMonth().doWithAdjustment(date);
+                LocalDate test = (LocalDate) TemporalAdjusters.firstDayOfMonth().adjustInto(date);
                 assertEquals(test.getYear(), 2008);
                 assertEquals(test.getMonth(), month);
                 assertEquals(test.getDayOfMonth(), 1);
@@ -100,7 +100,7 @@ public class TCKTemporalAdjusters {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(false); i++) {
                 LocalDate date = date(2007, month, i);
-                LocalDate test = (LocalDate) TemporalAdjusters.lastDayOfMonth().doWithAdjustment(date);
+                LocalDate test = (LocalDate) TemporalAdjusters.lastDayOfMonth().adjustInto(date);
                 assertEquals(test.getYear(), 2007);
                 assertEquals(test.getMonth(), month);
                 assertEquals(test.getDayOfMonth(), month.length(false));
@@ -113,7 +113,7 @@ public class TCKTemporalAdjusters {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(true); i++) {
                 LocalDate date = date(2008, month, i);
-                LocalDate test = (LocalDate) TemporalAdjusters.lastDayOfMonth().doWithAdjustment(date);
+                LocalDate test = (LocalDate) TemporalAdjusters.lastDayOfMonth().adjustInto(date);
                 assertEquals(test.getYear(), 2008);
                 assertEquals(test.getMonth(), month);
                 assertEquals(test.getDayOfMonth(), month.length(true));
@@ -134,7 +134,7 @@ public class TCKTemporalAdjusters {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(false); i++) {
                 LocalDate date = date(2007, month, i);
-                LocalDate test = (LocalDate) TemporalAdjusters.firstDayOfNextMonth().doWithAdjustment(date);
+                LocalDate test = (LocalDate) TemporalAdjusters.firstDayOfNextMonth().adjustInto(date);
                 assertEquals(test.getYear(), month == DECEMBER ? 2008 : 2007);
                 assertEquals(test.getMonth(), month.plus(1));
                 assertEquals(test.getDayOfMonth(), 1);
@@ -147,7 +147,7 @@ public class TCKTemporalAdjusters {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(true); i++) {
                 LocalDate date = date(2008, month, i);
-                LocalDate test = (LocalDate) TemporalAdjusters.firstDayOfNextMonth().doWithAdjustment(date);
+                LocalDate test = (LocalDate) TemporalAdjusters.firstDayOfNextMonth().adjustInto(date);
                 assertEquals(test.getYear(), month == DECEMBER ? 2009 : 2008);
                 assertEquals(test.getMonth(), month.plus(1));
                 assertEquals(test.getDayOfMonth(), 1);
@@ -168,7 +168,7 @@ public class TCKTemporalAdjusters {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(false); i++) {
                 LocalDate date = date(2007, month, i);
-                LocalDate test = (LocalDate) TemporalAdjusters.firstDayOfYear().doWithAdjustment(date);
+                LocalDate test = (LocalDate) TemporalAdjusters.firstDayOfYear().adjustInto(date);
                 assertEquals(test.getYear(), 2007);
                 assertEquals(test.getMonth(), Month.JANUARY);
                 assertEquals(test.getDayOfMonth(), 1);
@@ -181,7 +181,7 @@ public class TCKTemporalAdjusters {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(true); i++) {
                 LocalDate date = date(2008, month, i);
-                LocalDate test = (LocalDate) TemporalAdjusters.firstDayOfYear().doWithAdjustment(date);
+                LocalDate test = (LocalDate) TemporalAdjusters.firstDayOfYear().adjustInto(date);
                 assertEquals(test.getYear(), 2008);
                 assertEquals(test.getMonth(), Month.JANUARY);
                 assertEquals(test.getDayOfMonth(), 1);
@@ -202,7 +202,7 @@ public class TCKTemporalAdjusters {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(false); i++) {
                 LocalDate date = date(2007, month, i);
-                LocalDate test = (LocalDate) TemporalAdjusters.lastDayOfYear().doWithAdjustment(date);
+                LocalDate test = (LocalDate) TemporalAdjusters.lastDayOfYear().adjustInto(date);
                 assertEquals(test.getYear(), 2007);
                 assertEquals(test.getMonth(), Month.DECEMBER);
                 assertEquals(test.getDayOfMonth(), 31);
@@ -215,7 +215,7 @@ public class TCKTemporalAdjusters {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(true); i++) {
                 LocalDate date = date(2008, month, i);
-                LocalDate test = (LocalDate) TemporalAdjusters.lastDayOfYear().doWithAdjustment(date);
+                LocalDate test = (LocalDate) TemporalAdjusters.lastDayOfYear().adjustInto(date);
                 assertEquals(test.getYear(), 2008);
                 assertEquals(test.getMonth(), Month.DECEMBER);
                 assertEquals(test.getDayOfMonth(), 31);
@@ -236,7 +236,7 @@ public class TCKTemporalAdjusters {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(false); i++) {
                 LocalDate date = date(2007, month, i);
-                LocalDate test = (LocalDate) TemporalAdjusters.firstDayOfNextYear().doWithAdjustment(date);
+                LocalDate test = (LocalDate) TemporalAdjusters.firstDayOfNextYear().adjustInto(date);
                 assertEquals(test.getYear(), 2008);
                 assertEquals(test.getMonth(), JANUARY);
                 assertEquals(test.getDayOfMonth(), 1);
@@ -249,7 +249,7 @@ public class TCKTemporalAdjusters {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(true); i++) {
                 LocalDate date = date(2008, month, i);
-                LocalDate test = (LocalDate) TemporalAdjusters.firstDayOfNextYear().doWithAdjustment(date);
+                LocalDate test = (LocalDate) TemporalAdjusters.firstDayOfNextYear().adjustInto(date);
                 assertEquals(test.getYear(), 2009);
                 assertEquals(test.getMonth(), JANUARY);
                 assertEquals(test.getDayOfMonth(), 1);
@@ -293,7 +293,7 @@ public class TCKTemporalAdjusters {
         for (int ordinal = 1; ordinal <= 5; ordinal++) {
             for (int day = 1; day <= Month.of(month).length(false); day++) {
                 LocalDate date = date(year, month, day);
-                LocalDate test = (LocalDate) TemporalAdjusters.dayOfWeekInMonth(ordinal, dow).doWithAdjustment(date);
+                LocalDate test = (LocalDate) TemporalAdjusters.dayOfWeekInMonth(ordinal, dow).adjustInto(date);
                 assertEquals(test, expected.plusWeeks(ordinal - 1));
             }
         }
@@ -321,7 +321,7 @@ public class TCKTemporalAdjusters {
     public void test_dayOfWeekInMonth_zero(int year, int month, DayOfWeek dow, LocalDate expected) {
         for (int day = 1; day <= Month.of(month).length(false); day++) {
             LocalDate date = date(year, month, day);
-            LocalDate test = (LocalDate) TemporalAdjusters.dayOfWeekInMonth(0, dow).doWithAdjustment(date);
+            LocalDate test = (LocalDate) TemporalAdjusters.dayOfWeekInMonth(0, dow).adjustInto(date);
             assertEquals(test, expected);
         }
     }
@@ -349,7 +349,7 @@ public class TCKTemporalAdjusters {
         for (int ordinal = 0; ordinal < 5; ordinal++) {
             for (int day = 1; day <= Month.of(month).length(false); day++) {
                 LocalDate date = date(year, month, day);
-                LocalDate test = (LocalDate) TemporalAdjusters.dayOfWeekInMonth(-1 - ordinal, dow).doWithAdjustment(date);
+                LocalDate test = (LocalDate) TemporalAdjusters.dayOfWeekInMonth(-1 - ordinal, dow).adjustInto(date);
                 assertEquals(test, expected.minusWeeks(ordinal));
             }
         }
@@ -372,7 +372,7 @@ public class TCKTemporalAdjusters {
     public void test_firstInMonth(int year, int month, DayOfWeek dow, LocalDate expected) {
         for (int day = 1; day <= Month.of(month).length(false); day++) {
             LocalDate date = date(year, month, day);
-            LocalDate test = (LocalDate) TemporalAdjusters.firstInMonth(dow).doWithAdjustment(date);
+            LocalDate test = (LocalDate) TemporalAdjusters.firstInMonth(dow).adjustInto(date);
             assertEquals(test, expected, "day-of-month=" + day);
         }
     }
@@ -394,7 +394,7 @@ public class TCKTemporalAdjusters {
     public void test_lastInMonth(int year, int month, DayOfWeek dow, LocalDate expected) {
         for (int day = 1; day <= Month.of(month).length(false); day++) {
             LocalDate date = date(year, month, day);
-            LocalDate test = (LocalDate) TemporalAdjusters.lastInMonth(dow).doWithAdjustment(date);
+            LocalDate test = (LocalDate) TemporalAdjusters.lastInMonth(dow).adjustInto(date);
             assertEquals(test, expected, "day-of-month=" + day);
         }
     }
@@ -419,7 +419,7 @@ public class TCKTemporalAdjusters {
                 LocalDate date = date(2007, month, i);
 
                 for (DayOfWeek dow : DayOfWeek.values()) {
-                    LocalDate test = (LocalDate) TemporalAdjusters.next(dow).doWithAdjustment(date);
+                    LocalDate test = (LocalDate) TemporalAdjusters.next(dow).adjustInto(date);
 
                     assertSame(test.getDayOfWeek(), dow, date + " " + test);
 
@@ -458,7 +458,7 @@ public class TCKTemporalAdjusters {
                 LocalDate date = date(2007, month, i);
 
                 for (DayOfWeek dow : DayOfWeek.values()) {
-                    LocalDate test = (LocalDate) TemporalAdjusters.nextOrSame(dow).doWithAdjustment(date);
+                    LocalDate test = (LocalDate) TemporalAdjusters.nextOrSame(dow).adjustInto(date);
 
                     assertSame(test.getDayOfWeek(), dow);
 
@@ -499,7 +499,7 @@ public class TCKTemporalAdjusters {
                 LocalDate date = date(2007, month, i);
 
                 for (DayOfWeek dow : DayOfWeek.values()) {
-                    LocalDate test = (LocalDate) TemporalAdjusters.previous(dow).doWithAdjustment(date);
+                    LocalDate test = (LocalDate) TemporalAdjusters.previous(dow).adjustInto(date);
 
                     assertSame(test.getDayOfWeek(), dow, date + " " + test);
 
@@ -538,7 +538,7 @@ public class TCKTemporalAdjusters {
                 LocalDate date = date(2007, month, i);
 
                 for (DayOfWeek dow : DayOfWeek.values()) {
-                    LocalDate test = (LocalDate) TemporalAdjusters.previousOrSame(dow).doWithAdjustment(date);
+                    LocalDate test = (LocalDate) TemporalAdjusters.previousOrSame(dow).adjustInto(date);
 
                     assertSame(test.getDayOfWeek(), dow);
 

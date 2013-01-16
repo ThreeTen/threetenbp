@@ -43,7 +43,7 @@ import java.util.Objects;
 import org.threeten.bp.DayOfWeek;
 
 /**
- * Common implementations of {@code DateTime.WithAdjuster}.
+ * Common implementations of {@code TemporalAdjuster}.
  * <p>
  * Adjusters are the principal tool for altering date-times.
  * An adjuster should not normally used directly. Instead it should be used as follows:
@@ -180,7 +180,7 @@ public final class TemporalAdjusters {
         /** First day of next month adjuster. */
         FIRST_DAY_OF_NEXT_YEAR;
         @Override
-        public Temporal doWithAdjustment(Temporal temporal) {
+        public Temporal adjustInto(Temporal temporal) {
             switch (this) {
                 case FIRST_DAY_OF_MONTH: return temporal.with(DAY_OF_MONTH, 1);
                 case LAST_DAY_OF_MONTH: return temporal.with(DAY_OF_MONTH, temporal.range(DAY_OF_MONTH).getMaximum());
@@ -277,7 +277,7 @@ public final class TemporalAdjusters {
             this.dowValue = dow.getValue();
         }
         @Override
-        public Temporal doWithAdjustment(Temporal temporal) {
+        public Temporal adjustInto(Temporal temporal) {
             if (ordinal >= 0) {
                 Temporal temp = temporal.with(DAY_OF_MONTH, 1);
                 int curDow = temp.get(DAY_OF_WEEK);
@@ -378,7 +378,7 @@ public final class TemporalAdjusters {
         }
 
         @Override
-        public Temporal doWithAdjustment(Temporal temporal) {
+        public Temporal adjustInto(Temporal temporal) {
             int calDow = temporal.get(DAY_OF_WEEK);
             if (relative < 2 && calDow == dowValue) {
                 return temporal;

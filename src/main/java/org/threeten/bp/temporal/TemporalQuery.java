@@ -68,7 +68,7 @@ public interface TemporalQuery<R> {
      */
     TemporalQuery<ZoneId> ZONE_ID = new TemporalQuery<ZoneId>() {
         @Override
-        public ZoneId doQuery(TemporalAccessor temporal) {
+        public ZoneId queryFrom(TemporalAccessor temporal) {
             return null;
         }
     };
@@ -81,7 +81,7 @@ public interface TemporalQuery<R> {
      */
     TemporalQuery<Chrono<?>> CHRONO = new TemporalQuery<Chrono<?>>() {
         @Override
-        public Chrono<?> doQuery(TemporalAccessor temporal) {
+        public Chrono<?> queryFrom(TemporalAccessor temporal) {
             return null;
         }
     };
@@ -99,7 +99,7 @@ public interface TemporalQuery<R> {
      */
     TemporalQuery<ChronoUnit> TIME_PRECISION = new TemporalQuery<ChronoUnit>() {
         @Override
-        public ChronoUnit doQuery(TemporalAccessor temporal) {
+        public ChronoUnit queryFrom(TemporalAccessor temporal) {
             return null;
         }
     };
@@ -113,7 +113,7 @@ public interface TemporalQuery<R> {
      */
     TemporalQuery<ZoneOffset> OFFSET = new TemporalQuery<ZoneOffset>() {
         @Override
-        public ZoneOffset doQuery(TemporalAccessor temporal) {
+        public ZoneOffset queryFrom(TemporalAccessor temporal) {
             if (temporal.isSupported(OFFSET_SECONDS)) {
                 return ZoneOffset.ofTotalSeconds(temporal.get(OFFSET_SECONDS));
             }
@@ -144,6 +144,6 @@ public interface TemporalQuery<R> {
      * @throws DateTimeException if unable to query
      * @throws ArithmeticException if numeric overflow occurs
      */
-    R doQuery(TemporalAccessor temporal);
+    R queryFrom(TemporalAccessor temporal);
 
 }

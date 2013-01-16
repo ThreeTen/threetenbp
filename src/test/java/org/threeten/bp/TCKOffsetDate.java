@@ -559,7 +559,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         final OffsetDate sample = OffsetDate.of(2012, 3, 4, OFFSET_PONE);
         TemporalAdjuster adjuster = new TemporalAdjuster() {
             @Override
-            public Temporal doWithAdjustment(Temporal dateTime) {
+            public Temporal adjustInto(Temporal dateTime) {
                 return sample;
             }
         };

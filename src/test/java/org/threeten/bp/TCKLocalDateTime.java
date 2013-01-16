@@ -1027,7 +1027,7 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
         final LocalDateTime sample = LocalDateTime.of(2012, 3, 4, 23, 5);
         TemporalAdjuster adjuster = new TemporalAdjuster() {
             @Override
-            public Temporal doWithAdjustment(Temporal dateTime) {
+            public Temporal adjustInto(Temporal dateTime) {
                 return sample;
             }
         };

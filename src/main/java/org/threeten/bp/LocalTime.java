@@ -582,7 +582,7 @@ public final class LocalTime
         if (adjuster instanceof LocalTime) {
             return (LocalTime) adjuster;
         }
-        return (LocalTime) adjuster.doWithAdjustment(this);
+        return (LocalTime) adjuster.adjustInto(this);
     }
 
     /**
@@ -746,7 +746,7 @@ public final class LocalTime
      * @throws ArithmeticException if numeric overflow occurs
      */
     public LocalTime plus(TemporalAdder adjuster) {
-        return (LocalTime) adjuster.doPlusAdjustment(this);
+        return (LocalTime) adjuster.addTo(this);
     }
 
     /**
@@ -899,7 +899,7 @@ public final class LocalTime
      * @throws ArithmeticException if numeric overflow occurs
      */
     public LocalTime minus(TemporalSubtractor adjuster) {
-        return (LocalTime) adjuster.doMinusAdjustment(this);
+        return (LocalTime) adjuster.subtractFrom(this);
     }
 
     /**
@@ -1000,7 +1000,7 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     @Override
-    public Temporal doWithAdjustment(Temporal temporal) {
+    public Temporal adjustInto(Temporal temporal) {
         return temporal.with(NANO_OF_DAY, toNanoOfDay());
     }
 

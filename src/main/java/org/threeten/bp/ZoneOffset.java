@@ -513,7 +513,7 @@ public final class ZoneOffset
     }
 
     @Override
-    public Temporal doWithAdjustment(Temporal temporal) {
+    public Temporal adjustInto(Temporal temporal) {
         return temporal.with(OFFSET_SECONDS, totalSeconds);
     }
 
@@ -522,7 +522,7 @@ public final class ZoneOffset
         if (query == TemporalQuery.ZONE_ID || query == TemporalQuery.CHRONO) {
             return null;
         }
-        return query.doQuery(this);
+        return query.queryFrom(this);
     }
 
     //-----------------------------------------------------------------------

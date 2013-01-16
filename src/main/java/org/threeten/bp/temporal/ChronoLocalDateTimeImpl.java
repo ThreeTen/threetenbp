@@ -229,7 +229,7 @@ final class ChronoLocalDateTimeImpl<C extends Chrono<C>>
         } else if (adjuster instanceof ChronoLocalDateTimeImpl) {
             return date.getChrono().ensureChronoLocalDateTime((ChronoLocalDateTimeImpl<?>) adjuster);
         }
-        return date.getChrono().ensureChronoLocalDateTime((ChronoLocalDateTimeImpl<?>) adjuster.doWithAdjustment(this));
+        return date.getChrono().ensureChronoLocalDateTime((ChronoLocalDateTimeImpl<?>) adjuster.adjustInto(this));
     }
 
     @Override

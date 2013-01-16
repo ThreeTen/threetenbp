@@ -137,7 +137,7 @@ public class TestMonthDay extends AbstractDateTimeTest {
     public void test_adjustDate_same() {
         MonthDay test = MonthDay.of(6, 30);
         LocalDate date = LocalDate.of(2007, 6, 30);
-        assertSame(test.doWithAdjustment(date), date);
+        assertSame(test.adjustInto(date), date);
     }
 
     void doTest_comparisons_MonthDay(MonthDay... localDates) {

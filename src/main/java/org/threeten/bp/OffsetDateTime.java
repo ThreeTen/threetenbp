@@ -765,7 +765,7 @@ public final class OffsetDateTime
         } else if (adjuster instanceof OffsetDateTime) {
             return (OffsetDateTime) adjuster;
         }
-        return (OffsetDateTime) adjuster.doWithAdjustment(this);
+        return (OffsetDateTime) adjuster.adjustInto(this);
     }
 
     /**
@@ -969,7 +969,7 @@ public final class OffsetDateTime
      */
     @Override
     public OffsetDateTime plus(TemporalAdder adjuster) {
-        return (OffsetDateTime) adjuster.doPlusAdjustment(this);
+        return (OffsetDateTime) adjuster.addTo(this);
     }
 
     /**
@@ -1155,7 +1155,7 @@ public final class OffsetDateTime
      */
     @Override
     public OffsetDateTime minus(TemporalSubtractor adjuster) {
-        return (OffsetDateTime) adjuster.doMinusAdjustment(this);
+        return (OffsetDateTime) adjuster.subtractFrom(this);
     }
 
     /**
@@ -1379,7 +1379,7 @@ public final class OffsetDateTime
     }
 
     @Override
-    public Temporal doWithAdjustment(Temporal temporal) {
+    public Temporal adjustInto(Temporal temporal) {
         return temporal
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
                 .with(EPOCH_DAY, getDate().toEpochDay())

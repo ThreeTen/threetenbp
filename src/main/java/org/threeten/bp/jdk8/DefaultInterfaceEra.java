@@ -95,7 +95,7 @@ public abstract class DefaultInterfaceEra<C extends Chrono<C>>
 
     //-------------------------------------------------------------------------
     @Override
-    public Temporal doWithAdjustment(Temporal temporal) {
+    public Temporal adjustInto(Temporal temporal) {
         return temporal.with(ERA, getValue());
     }
 

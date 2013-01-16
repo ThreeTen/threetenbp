@@ -253,14 +253,14 @@ public enum DayOfWeek implements TemporalAccessor, TemporalAdjuster {
     //-----------------------------------------------------------------------
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        return query.doQuery(this);
+        return query.queryFrom(this);
     }
 
     /**
      * Implementation of the strategy to make an adjustment to the specified date-time object.
      * <p>
      * This method is not intended to be called by application code directly.
-     * Applications should use the {@code with(WithAdjuster)} method on the
+     * Applications should use the {@code with(TemporalAdjuster)} method on the
      * date-time object to make the adjustment passing this as the argument.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -275,7 +275,7 @@ public enum DayOfWeek implements TemporalAccessor, TemporalAdjuster {
      * @return the adjusted object, not null
      */
     @Override
-    public Temporal doWithAdjustment(Temporal temporal) {
+    public Temporal adjustInto(Temporal temporal) {
         return temporal.with(DAY_OF_WEEK, getValue());
     }
 

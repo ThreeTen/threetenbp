@@ -174,7 +174,7 @@ public class TestYearMonth extends AbstractDateTimeTest {
     public void test_adjustDate_same() {
         YearMonth test = YearMonth.of(2008, 6);
         LocalDate date = LocalDate.of(2008, 6, 30);
-        assertSame(test.doWithAdjustment(date), date);
+        assertSame(test.adjustInto(date), date);
     }
 
     void doTest_comparisons_YearMonth(YearMonth... localDates) {

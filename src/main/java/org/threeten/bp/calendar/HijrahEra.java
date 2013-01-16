@@ -165,7 +165,7 @@ enum HijrahEra implements Era<HijrahChrono> {
 
     //-------------------------------------------------------------------------
     @Override
-    public Temporal doWithAdjustment(Temporal temporal) {
+    public Temporal adjustInto(Temporal temporal) {
         return temporal.with(ERA, getValue());
     }
 
@@ -175,7 +175,7 @@ enum HijrahEra implements Era<HijrahChrono> {
         if (query == TemporalQuery.CHRONO) {
             return (R) getChrono();
         }
-        return query.doQuery(this);
+        return query.queryFrom(this);
     }
 
     //-----------------------------------------------------------------------

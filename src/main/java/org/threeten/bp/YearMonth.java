@@ -403,7 +403,7 @@ public final class YearMonth
         if (adjuster instanceof YearMonth) {
             return (YearMonth) adjuster;
         }
-        return (YearMonth) adjuster.doWithAdjustment(this);
+        return (YearMonth) adjuster.adjustInto(this);
     }
 
     @Override
@@ -470,7 +470,7 @@ public final class YearMonth
      * @throws ArithmeticException if numeric overflow occurs
      */
     public YearMonth plus(TemporalAdder adjuster) {
-        return (YearMonth) adjuster.doPlusAdjustment(this);
+        return (YearMonth) adjuster.addTo(this);
     }
 
     @Override
@@ -546,7 +546,7 @@ public final class YearMonth
      * @throws ArithmeticException if numeric overflow occurs
      */
     public YearMonth minus(TemporalSubtractor adjuster) {
-        return (YearMonth) adjuster.doMinusAdjustment(this);
+        return (YearMonth) adjuster.subtractFrom(this);
     }
 
     @Override
@@ -630,7 +630,7 @@ public final class YearMonth
      * Implementation of the strategy to make an adjustment to the specified date-time object.
      * <p>
      * This method is not intended to be called by application code directly.
-     * Applications should use the {@code with(WithAdjuster)} method on the
+     * Applications should use the {@code with(TemporalAdjuster)} method on the
      * date-time object to make the adjustment passing this as the argument.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -645,7 +645,7 @@ public final class YearMonth
      * @return the adjusted object, not null
      */
     @Override
-    public Temporal doWithAdjustment(Temporal temporal) {
+    public Temporal adjustInto(Temporal temporal) {
         if (Chrono.from(temporal).equals(ISOChrono.INSTANCE) == false) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }

@@ -77,6 +77,6 @@ public interface TemporalAdder {
      * @throws DateTimeException if unable to add
      * @throws ArithmeticException if numeric overflow occurs
      */
-    Temporal doPlusAdjustment(Temporal temporal);
+    Temporal addTo(Temporal temporal);
 
 }

@@ -437,7 +437,7 @@ public final class MonthDay
      * Implementation of the strategy to make an adjustment to the specified date-time object.
      * <p>
      * This method is not intended to be called by application code directly.
-     * Applications should use the {@code with(WithAdjuster)} method on the
+     * Applications should use the {@code with(TemporalAdjuster)} method on the
      * date-time object to make the adjustment passing this as the argument.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -452,7 +452,7 @@ public final class MonthDay
      * @return the adjusted object, not null
      */
     @Override
-    public Temporal doWithAdjustment(Temporal temporal) {
+    public Temporal adjustInto(Temporal temporal) {
         if (Chrono.from(temporal).equals(ISOChrono.INSTANCE) == false) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }

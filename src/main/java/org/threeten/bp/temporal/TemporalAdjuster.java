@@ -41,7 +41,7 @@ import org.threeten.bp.DateTimeException;
  * sets the date to the last day of the month.
  * <p>
  * Implementations should not normally be used directly.
- * Instead, the {@link Temporal#with(WithAdjuster)} method should be used:
+ * Instead, the {@link Temporal#with(TemporalAdjuster)} method should be used:
  * <pre>
  *   dateTime = dateTime.with(adjuster);
  * </pre>
@@ -59,7 +59,7 @@ public interface TemporalAdjuster {
      * Implementation of the strategy to make an adjustment to the specified date-time object.
      * <p>
      * This method is not intended to be called by application code directly.
-     * Instead, the {@link Temporal#with(WithAdjuster)} method should be used:
+     * Instead, the {@link Temporal#with(TemporalAdjuster)} method should be used:
      * <pre>
      *   dateTime = dateTime.with(adjuster);
      * </pre>
@@ -81,6 +81,6 @@ public interface TemporalAdjuster {
      * @throws DateTimeException if unable to make the adjustment
      * @throws ArithmeticException if numeric overflow occurs
      */
-    Temporal doWithAdjustment(Temporal temporal);
+    Temporal adjustInto(Temporal temporal);
 
 }

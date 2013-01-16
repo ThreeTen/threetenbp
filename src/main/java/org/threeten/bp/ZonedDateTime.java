@@ -890,7 +890,7 @@ public final class ZonedDateTime
         } else if (adjuster instanceof ZoneOffset) {
             return resolveOffset((ZoneOffset) adjuster);
         }
-        return (ZonedDateTime) adjuster.doWithAdjustment(this);
+        return (ZonedDateTime) adjuster.adjustInto(this);
     }
 
     //-----------------------------------------------------------------------
@@ -1163,7 +1163,7 @@ public final class ZonedDateTime
      */
     @Override
     public ZonedDateTime plus(TemporalAdder adjuster) {
-        return (ZonedDateTime) adjuster.doPlusAdjustment(this);
+        return (ZonedDateTime) adjuster.addTo(this);
     }
 
     /**
@@ -1398,7 +1398,7 @@ public final class ZonedDateTime
      */
     @Override
     public ZonedDateTime minus(TemporalSubtractor adjuster) {
-        return (ZonedDateTime) adjuster.doMinusAdjustment(this);
+        return (ZonedDateTime) adjuster.subtractFrom(this);
     }
 
     /**

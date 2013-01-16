@@ -520,26 +520,26 @@ public class TCKMonthDay extends AbstractDateTimeTest {
     public void test_adjustDate() {
         MonthDay test = MonthDay.of(6, 30);
         LocalDate date = LocalDate.of(2007, 1, 1);
-        assertEquals(test.doWithAdjustment(date), LocalDate.of(2007, 6, 30));
+        assertEquals(test.adjustInto(date), LocalDate.of(2007, 6, 30));
     }
 
     @Test(groups={"tck"})
     public void test_adjustDate_resolve() {
         MonthDay test = MonthDay.of(2, 29);
         LocalDate date = LocalDate.of(2007, 6, 30);
-        assertEquals(test.doWithAdjustment(date), LocalDate.of(2007, 2, 28));
+        assertEquals(test.adjustInto(date), LocalDate.of(2007, 2, 28));
     }
 
     @Test(groups={"tck"})
     public void test_adjustDate_equal() {
         MonthDay test = MonthDay.of(6, 30);
         LocalDate date = LocalDate.of(2007, 6, 30);
-        assertEquals(test.doWithAdjustment(date), date);
+        assertEquals(test.adjustInto(date), date);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_adjustDate_null() {
-        TEST_07_15.doWithAdjustment((LocalDate) null);
+        TEST_07_15.adjustInto((LocalDate) null);
     }
 
     //-----------------------------------------------------------------------

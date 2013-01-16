@@ -84,7 +84,7 @@ The fields also provide access to the range of valid values.
 A key part of the date-time problem space is adjusting a date to a new, related value,
 such as the "last day of the month", or "next Wednesday".
 These are modeled as functions that adjust a base date-time.
-The functions implement {@link org.threeten.bp.temporal.DateTime.WithAdjuster} and operate
+The functions implement {@link org.threeten.bp.temporal.TemporalAdjuster} and operate
 on {@link org.threeten.bp.temporal.DateTime}.
 A set of common functions are provided in {@link org.threeten.bp.temporal.DateTimeAdjusters}.
 For example, to find the first occurrence of a day-of-week after a given date, use

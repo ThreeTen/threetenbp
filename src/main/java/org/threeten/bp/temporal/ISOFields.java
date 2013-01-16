@@ -345,12 +345,12 @@ public final class ISOFields {
         }
 
         @Override
-        public Temporal doPlusAdjustment(Temporal temporal) {
+        public Temporal addTo(Temporal temporal) {
             return temporal.plus(amount, unit);
         }
 
         @Override
-        public Temporal doMinusAdjustment(Temporal temporal) {
+        public Temporal subtractFrom(Temporal temporal) {
             return temporal.minus(amount, unit);
         }
 

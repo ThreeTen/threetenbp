@@ -656,7 +656,7 @@ public final class LocalDateTime
         } else if (adjuster instanceof LocalDateTime) {
             return (LocalDateTime) adjuster;
         }
-        return (LocalDateTime) adjuster.doWithAdjustment(this);
+        return (LocalDateTime) adjuster.adjustInto(this);
     }
 
     /**
@@ -850,7 +850,7 @@ public final class LocalDateTime
      */
     @Override
     public LocalDateTime plus(TemporalAdder adjuster) {
-        return (LocalDateTime) adjuster.doPlusAdjustment(this);
+        return (LocalDateTime) adjuster.addTo(this);
     }
 
     /**
@@ -1049,7 +1049,7 @@ public final class LocalDateTime
      */
     @Override
     public LocalDateTime minus(TemporalSubtractor adjuster) {
-        return (LocalDateTime) adjuster.doMinusAdjustment(this);
+        return (LocalDateTime) adjuster.subtractFrom(this);
     }
 
     /**

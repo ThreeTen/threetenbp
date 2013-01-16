@@ -1303,11 +1303,11 @@ public class TestPeriod {
 
     @Test(dataProvider="doPlusAdjustment")
     public void test_doPlusAdjustment(Period period, LocalDate baseDate, LocalDate expected) {
-        assertEquals(period.doPlusAdjustment(baseDate), expected);
+        assertEquals(period.addTo(baseDate), expected);
     }
 
     public void test_doPlusAdjustment_null() {
-        Period.ZERO.doPlusAdjustment(null);
+        Period.ZERO.addTo(null);
     }
 
     //-----------------------------------------------------------------------
@@ -1345,11 +1345,11 @@ public class TestPeriod {
 
     @Test(dataProvider="doMinusAdjustment")
     public void test_doMinusAdjustment(Period period, LocalDate baseDate, LocalDate expected) {
-        assertEquals(period.doMinusAdjustment(baseDate), expected);
+        assertEquals(period.subtractFrom(baseDate), expected);
     }
 
     public void test_doMinusAdjustment_null() {
-        Period.ZERO.doMinusAdjustment(null);
+        Period.ZERO.subtractFrom(null);
     }
 
     //-----------------------------------------------------------------------

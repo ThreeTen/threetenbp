@@ -387,7 +387,7 @@ public final class Instant
     //-------------------------------------------------------------------------
     @Override
     public Instant with(TemporalAdjuster adjuster) {
-        return (Instant) adjuster.doWithAdjustment(this);
+        return (Instant) adjuster.adjustInto(this);
     }
 
     @Override
@@ -415,7 +415,7 @@ public final class Instant
     //-----------------------------------------------------------------------
     @Override
     public Instant plus(TemporalAdder adjuster) {
-        return (Instant) adjuster.doPlusAdjustment(this);
+        return (Instant) adjuster.addTo(this);
     }
 
     @Override
@@ -500,7 +500,7 @@ public final class Instant
     //-----------------------------------------------------------------------
     @Override
     public Instant minus(TemporalSubtractor adjuster) {
-        return (Instant) adjuster.doMinusAdjustment(this);
+        return (Instant) adjuster.subtractFrom(this);
     }
 
     @Override
@@ -559,7 +559,7 @@ public final class Instant
 
     //-------------------------------------------------------------------------
     @Override
-    public Temporal doWithAdjustment(Temporal temporal) {
+    public Temporal adjustInto(Temporal temporal) {
         return temporal.with(INSTANT_SECONDS, seconds).with(NANO_OF_SECOND, nanos);
     }
 

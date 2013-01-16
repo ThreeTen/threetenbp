@@ -771,7 +771,7 @@ public final class Duration
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public Temporal doPlusAdjustment(Temporal temporal) {
+    public Temporal addTo(Temporal temporal) {
         long instantSecs = temporal.getLong(INSTANT_SECONDS);
         long instantNanos = temporal.getLong(NANO_OF_SECOND);
         instantSecs = Jdk8Methods.safeAdd(instantSecs, seconds);
@@ -797,7 +797,7 @@ public final class Duration
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public Temporal doMinusAdjustment(Temporal temporal) {
+    public Temporal subtractFrom(Temporal temporal) {
         long instantSecs = temporal.getLong(INSTANT_SECONDS);
         long instantNanos = temporal.getLong(NANO_OF_SECOND);
         instantSecs = Jdk8Methods.safeSubtract(instantSecs, seconds);

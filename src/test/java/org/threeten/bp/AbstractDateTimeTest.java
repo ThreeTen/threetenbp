@@ -224,7 +224,7 @@ public abstract class AbstractDateTimeTest extends AbstractTest {
         for (TemporalAccessor sample : samples()) {
             assertEquals(sample.query(new TemporalQuery<String>() {
                 @Override
-                public String doQuery(TemporalAccessor dateTime) {
+                public String queryFrom(TemporalAccessor dateTime) {
                     return "foo";
                 }
             }), "foo");
