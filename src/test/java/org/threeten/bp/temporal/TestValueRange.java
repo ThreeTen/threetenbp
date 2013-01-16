@@ -32,44 +32,28 @@
 package org.threeten.bp.temporal;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import org.threeten.bp.AbstractTest;
 
 /**
  * Test.
  */
 @Test
-public class TestValueRange {
+public class TestValueRange extends AbstractTest {
 
     //-----------------------------------------------------------------------
     // Basics
     //-----------------------------------------------------------------------
-    public void test_interfaces() {
-        assertTrue(Serializable.class.isAssignableFrom(ValueRange.class));
-    }
-
+    @Test
     public void test_immutable() {
-        Class<?> cls = ValueRange.class;
-        assertTrue(Modifier.isPublic(cls.getModifiers()));
-        assertTrue(Modifier.isFinal(cls.getModifiers()));
-        Field[] fields = cls.getDeclaredFields();
-        for (Field field : fields) {
-            if (Modifier.isStatic(field.getModifiers())) {
-                assertTrue(Modifier.isFinal(field.getModifiers()), "Field:" + field.getName());
-            } else {
-                assertTrue(Modifier.isPrivate(field.getModifiers()), "Field:" + field.getName());
-                assertTrue(Modifier.isFinal(field.getModifiers()), "Field:" + field.getName());
-            }
-        }
+        assertImmutable(ValueRange.class);
     }
 
     //-----------------------------------------------------------------------
@@ -139,29 +123,49 @@ public class TestValueRange {
     //-----------------------------------------------------------------------
     // of(long,long,long,long)
     //-----------------------------------------------------------------------
-    public void test_of_longlonglonglong() {
-        ValueRange test = ValueRange.of(1, 2, 28, 31);
-        assertEquals(test.getMinimum(), 1);
-        assertEquals(test.getLargestMinimum(), 2);
-        assertEquals(test.getSmallestMaximum(), 28);
-        assertEquals(test.getMaximum(), 31);
-        assertEquals(test.isFixed(), false);
+    @DataProvider(name="valid")
+    Object[][] data_valid() {
+        return new Object[][] {
+                {1, 1, 1, 1},
+                {1, 1, 1, 2},
+                {1, 1, 2, 2},
+                {1, 2, 3, 4},
+                {1, 1, 28, 31},
+                {1, 3, 31, 31},
+                {-5, -4, -3, -2},
+                {-5, -4, 3, 4},
+                {1, 20, 10, 31},
+        };
+    }
+
+    @Test(dataProvider="valid")
+    public void test_of_longlonglonglong(long sMin, long lMin, long sMax, long lMax) {
+        ValueRange test = ValueRange.of(sMin, lMin, sMax, lMax);
+        assertEquals(test.getMinimum(), sMin);
+        assertEquals(test.getLargestMinimum(), lMin);
+        assertEquals(test.getSmallestMaximum(), sMax);
+        assertEquals(test.getMaximum(), lMax);
+        assertEquals(test.isFixed(), sMin == lMin && sMax == lMax);
         assertEquals(test.isIntValue(), true);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void test_of_longlonglonglong_minGtMax() {
-        ValueRange.of(12, 13, 1, 2);
+    @DataProvider(name="invalid")
+    Object[][] data_invalid() {
+        return new Object[][] {
+                {1, 2, 31, 28},
+                {1, 31, 2, 28},
+                {31, 2, 1, 28},
+                {31, 2, 3, 28},
+
+                {2, 1, 28, 31},
+                {2, 1, 31, 28},
+                {12, 13, 1, 2},
+        };
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void test_of_longlonglonglong_smallestmaxminGtMax() {
-        ValueRange.of(1, 2, 31, 28);
-    }
-
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void test_of_longlonglong_minGtLargestMin() {
-        ValueRange.of(2, 1, 31, 28);
+    @Test(dataProvider="invalid", expectedExceptions=IllegalArgumentException.class)
+    public void test_of_longlonglonglong_invalid(long sMin, long lMin, long sMax, long lMax) {
+        ValueRange.of(sMin, lMin, sMax, lMax);
     }
 
     //-----------------------------------------------------------------------

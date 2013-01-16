@@ -42,9 +42,15 @@ import org.threeten.bp.DateTimeException;
  * For example, the ISO day-of-month runs from 1 to somewhere between 28 and 31.
  * This class captures that valid range.
  * <p>
- * Instances of this class are not tied to a specific rule
+ * It is important to be aware of the limitations of this class.
+ * Only the minimum and maximum values are provided.
+ * It is possible for there to be invalid values within the outer range.
+ * For example, a weird field may have valid values of 1, 2, 4, 6, 7, thus
+ * have a range of '1 - 7', despite that fact that values 3 and 5 are invalid.
+ * <p>
+ * Instances of this class are not tied to a specific field.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
 public final class ValueRange implements Serializable {
@@ -79,6 +85,8 @@ public final class ValueRange implements Serializable {
      *
      * @param min  the minimum value
      * @param max  the maximum value
+     * @return the ValueRange for min, max, not null
+     * @throws IllegalArgumentException if the minimum is greater than the maximum
      */
     public static ValueRange of(long min, long max) {
         if (min > max) {
@@ -96,6 +104,10 @@ public final class ValueRange implements Serializable {
      * @param min  the minimum value
      * @param maxSmallest  the smallest maximum value
      * @param maxLargest  the largest maximum value
+     * @return the ValueRange for min, smallest max, largest max, not null
+     * @throws IllegalArgumentException if
+     *     the minimum is greater than the smallest maximum,
+     *  or the smallest maximum is greater than the largest maximum
      */
     public static ValueRange of(long min, long maxSmallest, long maxLargest) {
         return of(min, min, maxSmallest, maxLargest);
@@ -110,6 +122,11 @@ public final class ValueRange implements Serializable {
      * @param minLargest  the largest minimum value
      * @param maxSmallest  the smallest maximum value
      * @param maxLargest  the largest maximum value
+     * @return the ValueRange for smallest min, largest min, smallest max, largest max, not null
+     * @throws IllegalArgumentException if
+     *     the smallest minimum is greater than the smallest maximum,
+     *  or the smallest maximum is greater than the largest maximum
+     *  or the largest minimum is greater than the largest maximum
      */
     public static ValueRange of(long minSmallest, long minLargest, long maxSmallest, long maxLargest) {
         if (minSmallest > minLargest) {
@@ -118,7 +135,7 @@ public final class ValueRange implements Serializable {
         if (maxSmallest > maxLargest) {
             throw new IllegalArgumentException("Smallest maximum value must be less than largest maximum value");
         }
-        if (minSmallest > maxLargest) {
+        if (minLargest > maxLargest) {
             throw new IllegalArgumentException("Minimum value must be less than maximum value");
         }
         return new ValueRange(minSmallest, minLargest, maxSmallest, maxLargest);
@@ -286,6 +303,16 @@ public final class ValueRange implements Serializable {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Checks if this range is equal to another range.
+     * <p>
+     * The comparison is based on the four values, minimum, largest minimum,
+     * smallest maximum and maximum.
+     * Only objects of type {@code ValueRange} are compared, other types return false.
+     *
+     * @param obj  the object to check, null returns false
+     * @return true if this is equal to the other range
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -299,6 +326,11 @@ public final class ValueRange implements Serializable {
         return false;
     }
 
+    /**
+     * A hash code for this range.
+     *
+     * @return a suitable hash code
+     */
     @Override
     public int hashCode() {
         long hash = minSmallest + minLargest << 16 + minLargest >> 48 + maxSmallest << 32 +
@@ -306,6 +338,16 @@ public final class ValueRange implements Serializable {
         return (int) (hash ^ (hash >>> 32));
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Outputs this range as a {@code String}.
+     * <p>
+     * The format will be '{min}/{largestMin} - {smallestMax}/{max}',
+     * where the largestMin or smallestMax sections may be omitted, together
+     * with associated slash, if they are the same as the min or max.
+     *
+     * @return a string representation of this range, not null
+     */
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();

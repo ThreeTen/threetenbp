@@ -33,6 +33,7 @@ package org.threeten.bp;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -40,6 +41,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 /**
  * Base test class.
@@ -92,6 +96,26 @@ public abstract class AbstractTest {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(SERIALISATION_DATA_FOLDER + className + ".bin"))) {
             Object objectFromFile = in.readObject();
             assertEquals(objectFromFile, objectSerialised);
+        }
+    }
+
+    protected static void assertImmutable(Class<?> cls) {
+        assertTrue(Modifier.isPublic(cls.getModifiers()));
+        assertTrue(Modifier.isFinal(cls.getModifiers()));
+        Field[] fields = cls.getDeclaredFields();
+        for (Field field : fields) {
+            if (field.getName().contains("$") == false) {
+                if (Modifier.isStatic(field.getModifiers())) {
+                    assertTrue(Modifier.isFinal(field.getModifiers()), "Field:" + field.getName());
+                } else {
+                    assertTrue(Modifier.isPrivate(field.getModifiers()), "Field:" + field.getName());
+                    assertTrue(Modifier.isFinal(field.getModifiers()), "Field:" + field.getName());
+                }
+            }
+        }
+        Constructor<?>[] cons = cls.getDeclaredConstructors();
+        for (Constructor<?> con : cons) {
+            assertTrue(Modifier.isPrivate(con.getModifiers()));
         }
     }
 
