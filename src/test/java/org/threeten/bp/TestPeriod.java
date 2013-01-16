@@ -31,19 +31,19 @@
  */
 package org.threeten.bp;
 
-import static org.threeten.bp.calendrical.ChronoUnit.DAYS;
-import static org.threeten.bp.calendrical.ChronoUnit.HALF_DAYS;
-import static org.threeten.bp.calendrical.ChronoUnit.HOURS;
-import static org.threeten.bp.calendrical.ChronoUnit.MICROS;
-import static org.threeten.bp.calendrical.ChronoUnit.MILLIS;
-import static org.threeten.bp.calendrical.ChronoUnit.MINUTES;
-import static org.threeten.bp.calendrical.ChronoUnit.MONTHS;
-import static org.threeten.bp.calendrical.ChronoUnit.NANOS;
-import static org.threeten.bp.calendrical.ChronoUnit.SECONDS;
-import static org.threeten.bp.calendrical.ChronoUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
+import static org.threeten.bp.temporal.ChronoUnit.DAYS;
+import static org.threeten.bp.temporal.ChronoUnit.HALF_DAYS;
+import static org.threeten.bp.temporal.ChronoUnit.HOURS;
+import static org.threeten.bp.temporal.ChronoUnit.MICROS;
+import static org.threeten.bp.temporal.ChronoUnit.MILLIS;
+import static org.threeten.bp.temporal.ChronoUnit.MINUTES;
+import static org.threeten.bp.temporal.ChronoUnit.MONTHS;
+import static org.threeten.bp.temporal.ChronoUnit.NANOS;
+import static org.threeten.bp.temporal.ChronoUnit.SECONDS;
+import static org.threeten.bp.temporal.ChronoUnit.YEARS;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -56,13 +56,6 @@ import java.lang.reflect.Modifier;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.threeten.bp.DateTimeException;
-import org.threeten.bp.Duration;
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.LocalTime;
-import org.threeten.bp.Month;
-import org.threeten.bp.Period;
-import org.threeten.bp.YearMonth;
 
 /**
  * Test.

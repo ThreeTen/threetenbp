@@ -36,7 +36,6 @@ import static org.testng.Assert.assertSame;
 import java.util.Locale;
 
 import org.testng.annotations.Test;
-import org.threeten.bp.format.DateTimeFormatSymbols;
 
 /**
  * Test DateTimeFormatSymbols.

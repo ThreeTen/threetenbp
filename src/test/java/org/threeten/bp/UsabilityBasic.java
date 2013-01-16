@@ -31,27 +31,20 @@
  */
 package org.threeten.bp;
 
-import static org.threeten.bp.calendrical.ChronoField.DAY_OF_MONTH;
-import static org.threeten.bp.calendrical.DateTimeAdjusters.previousOrSame;
+import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
+import static org.threeten.bp.temporal.DateTimeAdjusters.previousOrSame;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.threeten.bp.DayOfWeek;
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.LocalDateTime;
-import org.threeten.bp.LocalTime;
-import org.threeten.bp.YearMonth;
-import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.ZonedDateTime;
-import org.threeten.bp.calendrical.ChronoField;
-import org.threeten.bp.calendrical.ChronoUnit;
-import org.threeten.bp.calendrical.DateTimeAccessor;
-import org.threeten.bp.calendrical.DateTimeBuilder;
-import org.threeten.bp.calendrical.DateTimeField;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
+import org.threeten.bp.temporal.ChronoField;
+import org.threeten.bp.temporal.ChronoUnit;
+import org.threeten.bp.temporal.DateTimeAccessor;
+import org.threeten.bp.temporal.DateTimeBuilder;
+import org.threeten.bp.temporal.DateTimeField;
 
 /**
  * Usability class for package.

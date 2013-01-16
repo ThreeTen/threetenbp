@@ -32,18 +32,16 @@
 package org.threeten.bp;
 
 import static org.testng.Assert.assertEquals;
-import static org.threeten.bp.calendrical.ChronoUnit.DAYS;
-import static org.threeten.bp.calendrical.ChronoUnit.HOURS;
-import static org.threeten.bp.calendrical.ChronoUnit.MINUTES;
-import static org.threeten.bp.calendrical.ChronoUnit.MONTHS;
-import static org.threeten.bp.calendrical.ChronoUnit.NANOS;
-import static org.threeten.bp.calendrical.ChronoUnit.SECONDS;
-import static org.threeten.bp.calendrical.ChronoUnit.YEARS;
-
+import static org.threeten.bp.temporal.ChronoUnit.DAYS;
+import static org.threeten.bp.temporal.ChronoUnit.HOURS;
+import static org.threeten.bp.temporal.ChronoUnit.MINUTES;
+import static org.threeten.bp.temporal.ChronoUnit.MONTHS;
+import static org.threeten.bp.temporal.ChronoUnit.NANOS;
+import static org.threeten.bp.temporal.ChronoUnit.SECONDS;
+import static org.threeten.bp.temporal.ChronoUnit.YEARS;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.threeten.bp.Period;
 import org.threeten.bp.format.DateTimeParseException;
 
 /**

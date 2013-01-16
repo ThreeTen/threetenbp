@@ -37,7 +37,6 @@ import static org.testng.Assert.assertSame;
 import java.io.IOException;
 
 import org.testng.annotations.Test;
-import org.threeten.bp.format.DateTimePrintException;
 
 /**
  * Test DateTimePrintException.

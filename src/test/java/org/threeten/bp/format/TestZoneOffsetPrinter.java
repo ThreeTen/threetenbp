@@ -32,15 +32,14 @@
 package org.threeten.bp.format;
 
 import static org.testng.Assert.assertEquals;
-import static org.threeten.bp.calendrical.ChronoField.OFFSET_SECONDS;
-
+import static org.threeten.bp.temporal.ChronoField.OFFSET_SECONDS;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.calendrical.DateTimeBuilder;
 import org.threeten.bp.format.DateTimeFormatterBuilder.ZoneOffsetPrinterParser;
+import org.threeten.bp.temporal.DateTimeBuilder;
 
 /**
  * Test ZoneOffsetPrinterParser.

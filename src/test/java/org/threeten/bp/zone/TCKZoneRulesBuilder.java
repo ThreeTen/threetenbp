@@ -51,7 +51,6 @@ import static org.threeten.bp.zone.ZoneOffsetTransitionRule.TimeDefinition.WALL;
 
 import java.util.List;
 
-
 import org.testng.annotations.Test;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalDateTime;
@@ -59,9 +58,6 @@ import org.threeten.bp.LocalTime;
 import org.threeten.bp.Month;
 import org.threeten.bp.Year;
 import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.zone.ZoneOffsetTransition;
-import org.threeten.bp.zone.ZoneRules;
-import org.threeten.bp.zone.ZoneRulesBuilder;
 import org.threeten.bp.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 /**

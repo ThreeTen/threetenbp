@@ -34,16 +34,16 @@ package org.threeten.bp.format;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
-import static org.threeten.bp.calendrical.ChronoField.DAY_OF_MONTH;
-import static org.threeten.bp.calendrical.ChronoField.DAY_OF_WEEK;
-import static org.threeten.bp.calendrical.ChronoField.DAY_OF_YEAR;
-import static org.threeten.bp.calendrical.ChronoField.HOUR_OF_DAY;
-import static org.threeten.bp.calendrical.ChronoField.MINUTE_OF_HOUR;
-import static org.threeten.bp.calendrical.ChronoField.MONTH_OF_YEAR;
-import static org.threeten.bp.calendrical.ChronoField.NANO_OF_SECOND;
-import static org.threeten.bp.calendrical.ChronoField.OFFSET_SECONDS;
-import static org.threeten.bp.calendrical.ChronoField.SECOND_OF_MINUTE;
-import static org.threeten.bp.calendrical.ChronoField.YEAR;
+import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
+import static org.threeten.bp.temporal.ChronoField.DAY_OF_WEEK;
+import static org.threeten.bp.temporal.ChronoField.DAY_OF_YEAR;
+import static org.threeten.bp.temporal.ChronoField.HOUR_OF_DAY;
+import static org.threeten.bp.temporal.ChronoField.MINUTE_OF_HOUR;
+import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
+import static org.threeten.bp.temporal.ChronoField.NANO_OF_SECOND;
+import static org.threeten.bp.temporal.ChronoField.OFFSET_SECONDS;
+import static org.threeten.bp.temporal.ChronoField.SECOND_OF_MINUTE;
+import static org.threeten.bp.temporal.ChronoField.YEAR;
 
 import java.text.ParsePosition;
 import java.util.HashMap;
@@ -51,7 +51,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -64,15 +63,11 @@ import org.threeten.bp.YearMonth;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.ZonedDateTime;
-import org.threeten.bp.calendrical.DateTimeAccessor;
-import org.threeten.bp.calendrical.DateTimeBuilder;
-import org.threeten.bp.calendrical.DateTimeField;
-import org.threeten.bp.calendrical.ISOWeeks;
-import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.DateTimeFormatters;
-import org.threeten.bp.format.DateTimeParseException;
-import org.threeten.bp.format.DateTimePrintException;
 import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
+import org.threeten.bp.temporal.DateTimeAccessor;
+import org.threeten.bp.temporal.DateTimeBuilder;
+import org.threeten.bp.temporal.DateTimeField;
+import org.threeten.bp.temporal.ISOWeeks;
 
 /**
  * Test DateTimeFormatters.

@@ -32,18 +32,16 @@
 package org.threeten.bp.zone;
 
 import static org.testng.Assert.assertEquals;
-import static org.threeten.bp.calendrical.ChronoUnit.HOURS;
+import static org.threeten.bp.temporal.ChronoUnit.HOURS;
 
 import java.io.IOException;
 
-import org.threeten.bp.AbstractTCKTest;
-
 import org.testng.annotations.Test;
+import org.threeten.bp.AbstractTCKTest;
 import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.Year;
 import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.zone.ZoneOffsetTransition;
 
 /**
  * Test ZoneOffsetTransition.

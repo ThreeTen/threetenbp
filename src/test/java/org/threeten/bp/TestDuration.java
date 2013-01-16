@@ -43,7 +43,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import org.testng.annotations.Test;
-import org.threeten.bp.Duration;
 
 /**
  * Test Duration.

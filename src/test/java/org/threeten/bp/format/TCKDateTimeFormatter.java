@@ -34,14 +34,13 @@ package org.threeten.bp.format;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
-import static org.threeten.bp.calendrical.ChronoField.DAY_OF_MONTH;
+import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
 
 import java.io.IOException;
 import java.text.Format;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.util.Locale;
-
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -50,15 +49,8 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.OffsetDate;
 import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.calendrical.DateTimeAccessor;
-import org.threeten.bp.calendrical.DateTimeBuilder;
-import org.threeten.bp.format.DateTimeFormatSymbols;
-import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.DateTimeFormatterBuilder;
-import org.threeten.bp.format.DateTimeFormatters;
-import org.threeten.bp.format.DateTimeParseException;
-import org.threeten.bp.format.DateTimePrintException;
-import org.threeten.bp.format.SignStyle;
+import org.threeten.bp.temporal.DateTimeAccessor;
+import org.threeten.bp.temporal.DateTimeBuilder;
 
 /**
  * Test DateTimeFormatter.

@@ -31,13 +31,13 @@
  */
 package org.threeten.bp;
 
-import static org.threeten.bp.calendrical.ChronoField.DAY_OF_MONTH;
-import static org.threeten.bp.calendrical.ChronoField.HOUR_OF_DAY;
-import static org.threeten.bp.calendrical.ChronoField.MINUTE_OF_HOUR;
-import static org.threeten.bp.calendrical.ChronoField.MONTH_OF_YEAR;
-import static org.threeten.bp.calendrical.ChronoField.NANO_OF_SECOND;
-import static org.threeten.bp.calendrical.ChronoField.SECOND_OF_MINUTE;
-import static org.threeten.bp.calendrical.ChronoField.YEAR;
+import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
+import static org.threeten.bp.temporal.ChronoField.HOUR_OF_DAY;
+import static org.threeten.bp.temporal.ChronoField.MINUTE_OF_HOUR;
+import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
+import static org.threeten.bp.temporal.ChronoField.NANO_OF_SECOND;
+import static org.threeten.bp.temporal.ChronoField.SECOND_OF_MINUTE;
+import static org.threeten.bp.temporal.ChronoField.YEAR;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -54,12 +54,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
 
-import org.threeten.bp.Instant;
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.LocalDateTime;
-import org.threeten.bp.LocalTime;
-import org.threeten.bp.ZoneId;
-import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeFormatters;
 

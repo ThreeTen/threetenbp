@@ -35,21 +35,19 @@ import static org.testng.Assert.assertTrue;
 import static org.threeten.bp.DayOfWeek.MONDAY;
 import static org.threeten.bp.DayOfWeek.SUNDAY;
 import static org.threeten.bp.DayOfWeek.WEDNESDAY;
-import static org.threeten.bp.calendrical.ChronoField.DAY_OF_WEEK;
+import static org.threeten.bp.temporal.ChronoField.DAY_OF_WEEK;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.threeten.bp.DayOfWeek;
-import org.threeten.bp.calendrical.ChronoField;
-import org.threeten.bp.calendrical.DateTimeAccessor;
-import org.threeten.bp.calendrical.DateTimeField;
-import org.threeten.bp.calendrical.JulianDayField;
+import org.threeten.bp.temporal.ChronoField;
+import org.threeten.bp.temporal.DateTimeAccessor;
+import org.threeten.bp.temporal.DateTimeField;
+import org.threeten.bp.temporal.JulianDayField;
 
 /**
  * Test DayOfWeek.

@@ -37,7 +37,7 @@ import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.threeten.bp.chrono.Chrono;
+import org.threeten.bp.temporal.Chrono;
 
 /**
  * The Service Provider Implementation to obtain date-time formatters for a style.

@@ -36,7 +36,7 @@ import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.spi.LocaleServiceProvider;
 
-import org.threeten.bp.calendrical.DateTimeField;
+import org.threeten.bp.temporal.DateTimeField;
 
 /**
  * The Service Provider Interface (SPI) to be implemented by classes providing

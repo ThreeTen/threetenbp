@@ -40,12 +40,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
 
-import org.threeten.bp.calendrical.DateTimeAccessor;
-import org.threeten.bp.calendrical.DateTimeField;
-import org.threeten.bp.calendrical.DateTimeAccessor.Query;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.TextStyle;
 import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
+import org.threeten.bp.temporal.DateTimeAccessor;
+import org.threeten.bp.temporal.DateTimeAccessor.Query;
+import org.threeten.bp.temporal.DateTimeField;
 import org.threeten.bp.zone.ZoneRules;
 import org.threeten.bp.zone.ZoneRulesException;
 import org.threeten.bp.zone.ZoneRulesProvider;

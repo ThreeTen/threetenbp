@@ -33,18 +33,16 @@ package org.threeten.bp.format;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
-import static org.threeten.bp.calendrical.ChronoField.NANO_OF_SECOND;
-import static org.threeten.bp.calendrical.ChronoField.SECOND_OF_MINUTE;
-
+import static org.threeten.bp.temporal.ChronoField.NANO_OF_SECOND;
+import static org.threeten.bp.temporal.ChronoField.SECOND_OF_MINUTE;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalTime;
-import org.threeten.bp.calendrical.DateTimeField;
-import org.threeten.bp.calendrical.MockFieldValue;
-import org.threeten.bp.format.DateTimeParseContext;
 import org.threeten.bp.format.DateTimeFormatterBuilder.FractionPrinterParser;
+import org.threeten.bp.temporal.DateTimeField;
+import org.threeten.bp.temporal.MockFieldValue;
 
 /**
  * Test FractionPrinterParser.

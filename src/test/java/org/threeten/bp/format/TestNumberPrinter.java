@@ -33,18 +33,15 @@ package org.threeten.bp.format;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
-import static org.threeten.bp.calendrical.ChronoField.DAY_OF_MONTH;
-import static org.threeten.bp.calendrical.ChronoField.HOUR_OF_DAY;
-
+import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
+import static org.threeten.bp.temporal.ChronoField.HOUR_OF_DAY;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalDate;
-import org.threeten.bp.calendrical.MockFieldValue;
-import org.threeten.bp.format.DateTimePrintException;
-import org.threeten.bp.format.SignStyle;
 import org.threeten.bp.format.DateTimeFormatterBuilder.NumberPrinterParser;
+import org.threeten.bp.temporal.MockFieldValue;
 
 /**
  * Test SimpleNumberPrinterParser.

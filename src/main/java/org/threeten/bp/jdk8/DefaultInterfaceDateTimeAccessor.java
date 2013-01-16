@@ -32,10 +32,10 @@
 package org.threeten.bp.jdk8;
 
 import org.threeten.bp.DateTimeException;
-import org.threeten.bp.calendrical.ChronoField;
-import org.threeten.bp.calendrical.DateTimeAccessor;
-import org.threeten.bp.calendrical.DateTimeField;
-import org.threeten.bp.calendrical.DateTimeValueRange;
+import org.threeten.bp.temporal.ChronoField;
+import org.threeten.bp.temporal.DateTimeAccessor;
+import org.threeten.bp.temporal.DateTimeField;
+import org.threeten.bp.temporal.DateTimeValueRange;
 
 /**
  * A temporary class providing implementations that will become default interface

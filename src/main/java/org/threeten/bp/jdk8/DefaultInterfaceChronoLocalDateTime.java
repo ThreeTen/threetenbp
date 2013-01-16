@@ -31,19 +31,19 @@
  */
 package org.threeten.bp.jdk8;
 
-import static org.threeten.bp.calendrical.ChronoField.EPOCH_DAY;
-import static org.threeten.bp.calendrical.ChronoField.NANO_OF_DAY;
-import static org.threeten.bp.calendrical.ChronoUnit.NANOS;
+import static org.threeten.bp.temporal.ChronoField.EPOCH_DAY;
+import static org.threeten.bp.temporal.ChronoField.NANO_OF_DAY;
+import static org.threeten.bp.temporal.ChronoUnit.NANOS;
 
 import java.util.Objects;
 
 import org.threeten.bp.Instant;
 import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.calendrical.DateTime;
-import org.threeten.bp.calendrical.PeriodUnit;
-import org.threeten.bp.chrono.Chrono;
-import org.threeten.bp.chrono.ChronoLocalDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
+import org.threeten.bp.temporal.Chrono;
+import org.threeten.bp.temporal.ChronoLocalDateTime;
+import org.threeten.bp.temporal.DateTime;
+import org.threeten.bp.temporal.PeriodUnit;
 
 /**
  * A temporary class providing implementations that will become default interface

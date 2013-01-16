@@ -34,7 +34,7 @@ package org.threeten.bp;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
-import static org.threeten.bp.calendrical.ChronoUnit.NANOS;
+import static org.threeten.bp.temporal.ChronoUnit.NANOS;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -44,15 +44,10 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Locale;
 
-
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.threeten.bp.Clock;
-import org.threeten.bp.Duration;
-import org.threeten.bp.Instant;
-import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.calendrical.DateTimeAccessor.Query;
 import org.threeten.bp.format.DateTimeParseException;
+import org.threeten.bp.temporal.DateTimeAccessor.Query;
 
 /**
  * Test Instant.

@@ -33,14 +33,13 @@ package org.threeten.bp.format;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-import static org.threeten.bp.calendrical.ChronoField.DAY_OF_YEAR;
-import static org.threeten.bp.calendrical.ChronoField.YEAR;
-
+import static org.threeten.bp.temporal.ChronoField.DAY_OF_YEAR;
+import static org.threeten.bp.temporal.ChronoField.YEAR;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.threeten.bp.calendrical.DateTimeField;
 import org.threeten.bp.format.DateTimeFormatterBuilder.ReducedPrinterParser;
+import org.threeten.bp.temporal.DateTimeField;
 
 /**
  * Test ReducedPrinterParser.

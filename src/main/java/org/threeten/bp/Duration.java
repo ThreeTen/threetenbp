@@ -32,9 +32,9 @@
 package org.threeten.bp;
 
 import static org.threeten.bp.LocalTime.SECONDS_PER_DAY;
-import static org.threeten.bp.calendrical.ChronoField.INSTANT_SECONDS;
-import static org.threeten.bp.calendrical.ChronoField.NANO_OF_SECOND;
-import static org.threeten.bp.calendrical.ChronoUnit.DAYS;
+import static org.threeten.bp.temporal.ChronoField.INSTANT_SECONDS;
+import static org.threeten.bp.temporal.ChronoField.NANO_OF_SECOND;
+import static org.threeten.bp.temporal.ChronoUnit.DAYS;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -45,15 +45,15 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Objects;
 
-import org.threeten.bp.calendrical.ChronoField;
-import org.threeten.bp.calendrical.ChronoUnit;
-import org.threeten.bp.calendrical.DateTime;
-import org.threeten.bp.calendrical.DateTime.MinusAdjuster;
-import org.threeten.bp.calendrical.DateTime.PlusAdjuster;
-import org.threeten.bp.calendrical.DateTimeAccessor;
-import org.threeten.bp.calendrical.PeriodUnit;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.Jdk8Methods;
+import org.threeten.bp.temporal.ChronoField;
+import org.threeten.bp.temporal.ChronoUnit;
+import org.threeten.bp.temporal.DateTime;
+import org.threeten.bp.temporal.DateTime.MinusAdjuster;
+import org.threeten.bp.temporal.DateTime.PlusAdjuster;
+import org.threeten.bp.temporal.DateTimeAccessor;
+import org.threeten.bp.temporal.PeriodUnit;
 
 /**
  * A duration between two instants on the time-line.

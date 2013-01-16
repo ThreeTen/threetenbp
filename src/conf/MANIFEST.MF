@@ -13,9 +13,9 @@ Bundle-Name: ThreeTen-backport
 Bundle-SymbolicName: org.threeten.bp
 Bundle-Version: 0.7
 Export-Package: org.threeten.bp,
- org.threeten.bp.calendrical,
+ org.threeten.bp.temporal,
  org.threeten.bp.chrono,
- org.threeten.bp.chrono.global,
+ org.threeten.bp.calendar,
  org.threeten.bp.format,
  org.threeten.bp.zone
 Bundle-License: BSD 3-clause

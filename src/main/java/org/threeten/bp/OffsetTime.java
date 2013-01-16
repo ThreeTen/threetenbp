@@ -35,9 +35,9 @@ import static org.threeten.bp.LocalTime.NANOS_PER_HOUR;
 import static org.threeten.bp.LocalTime.NANOS_PER_MINUTE;
 import static org.threeten.bp.LocalTime.NANOS_PER_SECOND;
 import static org.threeten.bp.LocalTime.SECONDS_PER_DAY;
-import static org.threeten.bp.calendrical.ChronoField.NANO_OF_DAY;
-import static org.threeten.bp.calendrical.ChronoField.OFFSET_SECONDS;
-import static org.threeten.bp.calendrical.ChronoUnit.NANOS;
+import static org.threeten.bp.temporal.ChronoField.NANO_OF_DAY;
+import static org.threeten.bp.temporal.ChronoField.OFFSET_SECONDS;
+import static org.threeten.bp.temporal.ChronoUnit.NANOS;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -45,18 +45,18 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
 
-import org.threeten.bp.calendrical.ChronoField;
-import org.threeten.bp.calendrical.ChronoUnit;
-import org.threeten.bp.calendrical.DateTime;
-import org.threeten.bp.calendrical.DateTime.WithAdjuster;
-import org.threeten.bp.calendrical.DateTimeAccessor;
-import org.threeten.bp.calendrical.DateTimeField;
-import org.threeten.bp.calendrical.DateTimeValueRange;
-import org.threeten.bp.calendrical.PeriodUnit;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
+import org.threeten.bp.temporal.ChronoField;
+import org.threeten.bp.temporal.ChronoUnit;
+import org.threeten.bp.temporal.DateTime;
+import org.threeten.bp.temporal.DateTime.WithAdjuster;
+import org.threeten.bp.temporal.DateTimeAccessor;
+import org.threeten.bp.temporal.DateTimeField;
+import org.threeten.bp.temporal.DateTimeValueRange;
+import org.threeten.bp.temporal.PeriodUnit;
 import org.threeten.bp.zone.ZoneRules;
 
 /**
@@ -596,7 +596,7 @@ public final class OffsetTime
      * <p>
      * This method returns a new time based on this time with the specified period added.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link org.threeten.bp.calendrical.DateTime.PlusAdjuster} interface.
+     * the {@link org.threeten.bp.temporal.DateTime.PlusAdjuster} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #plus(long, PeriodUnit)}.
      * The offset is not part of the calculation and will be unchanged in the result.
@@ -702,7 +702,7 @@ public final class OffsetTime
      * <p>
      * This method returns a new time based on this time with the specified period subtracted.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link org.threeten.bp.calendrical.DateTime.MinusAdjuster} interface.
+     * the {@link org.threeten.bp.temporal.DateTime.MinusAdjuster} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #minus(long, PeriodUnit)}.
      * The offset is not part of the calculation and will be unchanged in the result.

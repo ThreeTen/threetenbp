@@ -31,9 +31,9 @@
  */
 package org.threeten.bp.zone;
 
-import static org.threeten.bp.calendrical.ChronoField.YEAR;
-import static org.threeten.bp.calendrical.DateTimeAdjusters.nextOrSame;
-import static org.threeten.bp.calendrical.DateTimeAdjusters.previousOrSame;
+import static org.threeten.bp.temporal.ChronoField.YEAR;
+import static org.threeten.bp.temporal.DateTimeAdjusters.nextOrSame;
+import static org.threeten.bp.temporal.DateTimeAdjusters.previousOrSame;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,7 +49,7 @@ import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.Month;
 import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.chrono.ISOChrono;
+import org.threeten.bp.temporal.ISOChrono;
 import org.threeten.bp.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 /**

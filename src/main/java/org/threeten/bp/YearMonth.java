@@ -31,11 +31,11 @@
  */
 package org.threeten.bp;
 
-import static org.threeten.bp.calendrical.ChronoField.EPOCH_MONTH;
-import static org.threeten.bp.calendrical.ChronoField.ERA;
-import static org.threeten.bp.calendrical.ChronoField.MONTH_OF_YEAR;
-import static org.threeten.bp.calendrical.ChronoField.YEAR;
-import static org.threeten.bp.calendrical.ChronoField.YEAR_OF_ERA;
+import static org.threeten.bp.temporal.ChronoField.EPOCH_MONTH;
+import static org.threeten.bp.temporal.ChronoField.ERA;
+import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
+import static org.threeten.bp.temporal.ChronoField.YEAR;
+import static org.threeten.bp.temporal.ChronoField.YEAR_OF_ERA;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -43,22 +43,22 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
 
-import org.threeten.bp.calendrical.ChronoField;
-import org.threeten.bp.calendrical.ChronoUnit;
-import org.threeten.bp.calendrical.DateTime;
-import org.threeten.bp.calendrical.DateTimeAccessor;
-import org.threeten.bp.calendrical.DateTimeField;
-import org.threeten.bp.calendrical.DateTimeValueRange;
-import org.threeten.bp.calendrical.PeriodUnit;
-import org.threeten.bp.calendrical.DateTime.WithAdjuster;
-import org.threeten.bp.chrono.Chrono;
-import org.threeten.bp.chrono.ISOChrono;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.format.SignStyle;
 import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
 import org.threeten.bp.jdk8.Jdk8Methods;
+import org.threeten.bp.temporal.Chrono;
+import org.threeten.bp.temporal.ChronoField;
+import org.threeten.bp.temporal.ChronoUnit;
+import org.threeten.bp.temporal.DateTime;
+import org.threeten.bp.temporal.DateTime.WithAdjuster;
+import org.threeten.bp.temporal.DateTimeAccessor;
+import org.threeten.bp.temporal.DateTimeField;
+import org.threeten.bp.temporal.DateTimeValueRange;
+import org.threeten.bp.temporal.ISOChrono;
+import org.threeten.bp.temporal.PeriodUnit;
 
 /**
  * A year-month in the ISO-8601 calendar system, such as {@code 2007-12}.
@@ -455,7 +455,7 @@ public final class YearMonth
      * <p>
      * This method returns a new year-month based on this year-month with the specified period added.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link org.threeten.bp.calendrical.DateTime.PlusAdjuster} interface.
+     * the {@link org.threeten.bp.temporal.DateTime.PlusAdjuster} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #plus(long, PeriodUnit)}.
      * <p>
@@ -531,7 +531,7 @@ public final class YearMonth
      * <p>
      * This method returns a new year-month based on this year-month with the specified period subtracted.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link org.threeten.bp.calendrical.DateTime.MinusAdjuster} interface.
+     * the {@link org.threeten.bp.temporal.DateTime.MinusAdjuster} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #minus(long, PeriodUnit)}.
      * <p>

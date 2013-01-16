@@ -32,16 +32,14 @@
 package org.threeten.bp.format;
 
 import static org.testng.Assert.assertEquals;
-import static org.threeten.bp.calendrical.ChronoField.MONTH_OF_YEAR;
-
+import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
 
 import org.testng.annotations.Test;
-import org.threeten.bp.calendrical.DateTimeField;
-import org.threeten.bp.format.SignStyle;
 import org.threeten.bp.format.DateTimeFormatterBuilder.CharLiteralPrinterParser;
 import org.threeten.bp.format.DateTimeFormatterBuilder.NumberPrinterParser;
 import org.threeten.bp.format.DateTimeFormatterBuilder.PadPrinterParserDecorator;
 import org.threeten.bp.format.DateTimeFormatterBuilder.StringLiteralPrinterParser;
+import org.threeten.bp.temporal.DateTimeField;
 
 /**
  * Test PadPrinterParserDecorator.

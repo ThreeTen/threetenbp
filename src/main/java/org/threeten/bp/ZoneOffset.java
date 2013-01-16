@@ -31,7 +31,7 @@
  */
 package org.threeten.bp;
 
-import static org.threeten.bp.calendrical.ChronoField.OFFSET_SECONDS;
+import static org.threeten.bp.temporal.ChronoField.OFFSET_SECONDS;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -43,12 +43,12 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.threeten.bp.calendrical.ChronoField;
-import org.threeten.bp.calendrical.DateTime;
-import org.threeten.bp.calendrical.DateTimeAccessor;
-import org.threeten.bp.calendrical.DateTimeField;
-import org.threeten.bp.calendrical.DateTimeValueRange;
-import org.threeten.bp.calendrical.DateTime.WithAdjuster;
+import org.threeten.bp.temporal.ChronoField;
+import org.threeten.bp.temporal.DateTime;
+import org.threeten.bp.temporal.DateTime.WithAdjuster;
+import org.threeten.bp.temporal.DateTimeAccessor;
+import org.threeten.bp.temporal.DateTimeField;
+import org.threeten.bp.temporal.DateTimeValueRange;
 import org.threeten.bp.zone.ZoneOffsetTransition;
 import org.threeten.bp.zone.ZoneOffsetTransitionRule;
 import org.threeten.bp.zone.ZoneRules;

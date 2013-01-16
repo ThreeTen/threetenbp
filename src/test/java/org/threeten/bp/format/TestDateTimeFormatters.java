@@ -39,7 +39,6 @@ import java.util.Collections;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.threeten.bp.format.DateTimeFormatters;
 
 /**
  * Test DateTimeFormatters.

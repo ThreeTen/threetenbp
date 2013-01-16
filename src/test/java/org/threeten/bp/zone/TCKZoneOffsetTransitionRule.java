@@ -35,16 +35,13 @@ import static org.testng.Assert.assertEquals;
 
 import java.io.IOException;
 
-import org.threeten.bp.AbstractTCKTest;
-
 import org.testng.annotations.Test;
+import org.threeten.bp.AbstractTCKTest;
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.Month;
 import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.zone.ZoneOffsetTransition;
-import org.threeten.bp.zone.ZoneOffsetTransitionRule;
 import org.threeten.bp.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 /**

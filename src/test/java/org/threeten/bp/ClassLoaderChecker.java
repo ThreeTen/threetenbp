@@ -44,12 +44,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Pattern;
 import java.util.zip.ZipInputStream;
 
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.LocalDateTime;
-import org.threeten.bp.LocalTime;
-import org.threeten.bp.Month;
-import org.threeten.bp.ZoneId;
-import org.threeten.bp.calendrical.DateTimeAccessor;
+import org.threeten.bp.temporal.DateTimeAccessor;
 
 /**
  * Test Class loading.

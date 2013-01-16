@@ -35,9 +35,9 @@ import java.util.Locale;
 import java.util.Objects;
 
 import org.threeten.bp.DateTimeException;
-import org.threeten.bp.calendrical.DateTimeAccessor;
-import org.threeten.bp.calendrical.DateTimeField;
-import org.threeten.bp.calendrical.DateTimeAccessor.Query;
+import org.threeten.bp.temporal.DateTimeAccessor;
+import org.threeten.bp.temporal.DateTimeAccessor.Query;
+import org.threeten.bp.temporal.DateTimeField;
 
 /**
  * Context object used during date and time printing.

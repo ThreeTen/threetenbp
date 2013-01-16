@@ -32,18 +32,14 @@
 package org.threeten.bp.format;
 
 import static org.testng.Assert.assertSame;
-import static org.threeten.bp.calendrical.ChronoField.DAY_OF_MONTH;
+import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.threeten.bp.format.DateTimeFormatSymbols;
-import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.SignStyle;
 import org.threeten.bp.format.DateTimeFormatterBuilder.CompositePrinterParser;
 import org.threeten.bp.format.DateTimeFormatterBuilder.DateTimePrinterParser;
 import org.threeten.bp.format.DateTimeFormatterBuilder.NumberPrinterParser;

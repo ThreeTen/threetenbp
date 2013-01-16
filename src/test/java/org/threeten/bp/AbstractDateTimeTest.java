@@ -36,12 +36,10 @@ import static org.testng.Assert.fail;
 
 import java.util.List;
 
-
 import org.testng.annotations.Test;
-import org.threeten.bp.DateTimeException;
-import org.threeten.bp.calendrical.DateTimeAccessor;
-import org.threeten.bp.calendrical.DateTimeField;
-import org.threeten.bp.calendrical.DateTimeAccessor.Query;
+import org.threeten.bp.temporal.DateTimeAccessor;
+import org.threeten.bp.temporal.DateTimeAccessor.Query;
+import org.threeten.bp.temporal.DateTimeField;
 
 /**
  * Base test class for {@code DateTime}.

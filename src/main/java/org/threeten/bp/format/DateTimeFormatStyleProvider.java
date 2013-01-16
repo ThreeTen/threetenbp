@@ -34,7 +34,7 @@ package org.threeten.bp.format;
 import java.util.Locale;
 import java.util.spi.LocaleServiceProvider;
 
-import org.threeten.bp.chrono.Chrono;
+import org.threeten.bp.temporal.Chrono;
 
 /**
  * The Service Provider Interface (SPI) to be implemented by classes providing

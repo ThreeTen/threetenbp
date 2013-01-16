@@ -33,16 +33,13 @@ package org.threeten.bp.format;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-import static org.threeten.bp.calendrical.ChronoField.DAY_OF_MONTH;
-import static org.threeten.bp.calendrical.ChronoField.DAY_OF_WEEK;
-
+import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
+import static org.threeten.bp.temporal.ChronoField.DAY_OF_WEEK;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.threeten.bp.calendrical.DateTimeField;
-import org.threeten.bp.format.DateTimeParseContext;
-import org.threeten.bp.format.SignStyle;
 import org.threeten.bp.format.DateTimeFormatterBuilder.NumberPrinterParser;
+import org.threeten.bp.temporal.DateTimeField;
 
 /**
  * Test NumberPrinterParser.

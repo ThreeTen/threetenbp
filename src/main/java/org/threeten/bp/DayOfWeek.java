@@ -31,18 +31,18 @@
  */
 package org.threeten.bp;
 
-import static org.threeten.bp.calendrical.ChronoField.DAY_OF_WEEK;
+import static org.threeten.bp.temporal.ChronoField.DAY_OF_WEEK;
 
 import java.util.Locale;
 
-import org.threeten.bp.calendrical.ChronoField;
-import org.threeten.bp.calendrical.DateTime;
-import org.threeten.bp.calendrical.DateTimeAccessor;
-import org.threeten.bp.calendrical.DateTimeField;
-import org.threeten.bp.calendrical.DateTimeValueRange;
-import org.threeten.bp.calendrical.DateTime.WithAdjuster;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.TextStyle;
+import org.threeten.bp.temporal.ChronoField;
+import org.threeten.bp.temporal.DateTime;
+import org.threeten.bp.temporal.DateTime.WithAdjuster;
+import org.threeten.bp.temporal.DateTimeAccessor;
+import org.threeten.bp.temporal.DateTimeField;
+import org.threeten.bp.temporal.DateTimeValueRange;
 
 /**
  * A day-of-week, such as 'Tuesday'.

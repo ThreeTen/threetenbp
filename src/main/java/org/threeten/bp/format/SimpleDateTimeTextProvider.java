@@ -31,9 +31,9 @@
  */
 package org.threeten.bp.format;
 
-import static org.threeten.bp.calendrical.ChronoField.AMPM_OF_DAY;
-import static org.threeten.bp.calendrical.ChronoField.DAY_OF_WEEK;
-import static org.threeten.bp.calendrical.ChronoField.MONTH_OF_YEAR;
+import static org.threeten.bp.temporal.ChronoField.AMPM_OF_DAY;
+import static org.threeten.bp.temporal.ChronoField.DAY_OF_WEEK;
+import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
 
 import java.text.DateFormatSymbols;
 import java.util.AbstractMap.SimpleImmutableEntry;
@@ -50,7 +50,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.threeten.bp.calendrical.DateTimeField;
+import org.threeten.bp.temporal.DateTimeField;
 
 /**
  * The Service Provider Implementation to obtain date-time text for a field.

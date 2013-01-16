@@ -31,23 +31,23 @@
  */
 package org.threeten.bp.jdk8;
 
-import static org.threeten.bp.calendrical.ChronoField.INSTANT_SECONDS;
-import static org.threeten.bp.calendrical.ChronoField.OFFSET_SECONDS;
-import static org.threeten.bp.calendrical.ChronoUnit.NANOS;
+import static org.threeten.bp.temporal.ChronoField.INSTANT_SECONDS;
+import static org.threeten.bp.temporal.ChronoField.OFFSET_SECONDS;
+import static org.threeten.bp.temporal.ChronoUnit.NANOS;
 
 import java.util.Objects;
 
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalTime;
-import org.threeten.bp.calendrical.ChronoField;
-import org.threeten.bp.calendrical.DateTimeField;
-import org.threeten.bp.calendrical.DateTimeValueRange;
-import org.threeten.bp.calendrical.PeriodUnit;
-import org.threeten.bp.chrono.Chrono;
-import org.threeten.bp.chrono.ChronoLocalDate;
-import org.threeten.bp.chrono.ChronoZonedDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
+import org.threeten.bp.temporal.Chrono;
+import org.threeten.bp.temporal.ChronoField;
+import org.threeten.bp.temporal.ChronoLocalDate;
+import org.threeten.bp.temporal.ChronoZonedDateTime;
+import org.threeten.bp.temporal.DateTimeField;
+import org.threeten.bp.temporal.DateTimeValueRange;
+import org.threeten.bp.temporal.PeriodUnit;
 
 /**
  * A temporary class providing implementations that will become default interface

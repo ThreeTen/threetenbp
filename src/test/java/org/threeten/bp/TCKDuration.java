@@ -33,29 +33,25 @@ package org.threeten.bp;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
-import static org.threeten.bp.calendrical.ChronoUnit.DAYS;
-import static org.threeten.bp.calendrical.ChronoUnit.HALF_DAYS;
-import static org.threeten.bp.calendrical.ChronoUnit.HOURS;
-import static org.threeten.bp.calendrical.ChronoUnit.MICROS;
-import static org.threeten.bp.calendrical.ChronoUnit.MILLIS;
-import static org.threeten.bp.calendrical.ChronoUnit.MINUTES;
-import static org.threeten.bp.calendrical.ChronoUnit.NANOS;
-import static org.threeten.bp.calendrical.ChronoUnit.SECONDS;
-import static org.threeten.bp.calendrical.ChronoUnit.WEEKS;
+import static org.threeten.bp.temporal.ChronoUnit.DAYS;
+import static org.threeten.bp.temporal.ChronoUnit.HALF_DAYS;
+import static org.threeten.bp.temporal.ChronoUnit.HOURS;
+import static org.threeten.bp.temporal.ChronoUnit.MICROS;
+import static org.threeten.bp.temporal.ChronoUnit.MILLIS;
+import static org.threeten.bp.temporal.ChronoUnit.MINUTES;
+import static org.threeten.bp.temporal.ChronoUnit.NANOS;
+import static org.threeten.bp.temporal.ChronoUnit.SECONDS;
+import static org.threeten.bp.temporal.ChronoUnit.WEEKS;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.threeten.bp.DateTimeException;
-import org.threeten.bp.Duration;
-import org.threeten.bp.Instant;
-import org.threeten.bp.calendrical.PeriodUnit;
 import org.threeten.bp.format.DateTimeParseException;
+import org.threeten.bp.temporal.PeriodUnit;
 
 /**
  * Test Duration.

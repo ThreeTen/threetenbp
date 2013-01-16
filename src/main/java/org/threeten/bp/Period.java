@@ -35,30 +35,30 @@ import static org.threeten.bp.LocalTime.NANOS_PER_DAY;
 import static org.threeten.bp.LocalTime.NANOS_PER_HOUR;
 import static org.threeten.bp.LocalTime.NANOS_PER_MINUTE;
 import static org.threeten.bp.LocalTime.NANOS_PER_SECOND;
-import static org.threeten.bp.calendrical.ChronoField.DAY_OF_MONTH;
-import static org.threeten.bp.calendrical.ChronoField.EPOCH_MONTH;
-import static org.threeten.bp.calendrical.ChronoField.MONTH_OF_YEAR;
-import static org.threeten.bp.calendrical.ChronoField.NANO_OF_DAY;
-import static org.threeten.bp.calendrical.ChronoField.YEAR;
-import static org.threeten.bp.calendrical.ChronoUnit.DAYS;
-import static org.threeten.bp.calendrical.ChronoUnit.MONTHS;
-import static org.threeten.bp.calendrical.ChronoUnit.NANOS;
-import static org.threeten.bp.calendrical.ChronoUnit.YEARS;
+import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
+import static org.threeten.bp.temporal.ChronoField.EPOCH_MONTH;
+import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
+import static org.threeten.bp.temporal.ChronoField.NANO_OF_DAY;
+import static org.threeten.bp.temporal.ChronoField.YEAR;
+import static org.threeten.bp.temporal.ChronoUnit.DAYS;
+import static org.threeten.bp.temporal.ChronoUnit.MONTHS;
+import static org.threeten.bp.temporal.ChronoUnit.NANOS;
+import static org.threeten.bp.temporal.ChronoUnit.YEARS;
 
 import java.io.Serializable;
 import java.util.Objects;
 
-import org.threeten.bp.calendrical.ChronoField;
-import org.threeten.bp.calendrical.ChronoUnit;
-import org.threeten.bp.calendrical.DateTime;
-import org.threeten.bp.calendrical.DateTime.MinusAdjuster;
-import org.threeten.bp.calendrical.DateTime.PlusAdjuster;
-import org.threeten.bp.calendrical.DateTimeAccessor;
-import org.threeten.bp.calendrical.DateTimeValueRange;
-import org.threeten.bp.calendrical.PeriodUnit;
-import org.threeten.bp.chrono.Chrono;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.Jdk8Methods;
+import org.threeten.bp.temporal.Chrono;
+import org.threeten.bp.temporal.ChronoField;
+import org.threeten.bp.temporal.ChronoUnit;
+import org.threeten.bp.temporal.DateTime;
+import org.threeten.bp.temporal.DateTime.MinusAdjuster;
+import org.threeten.bp.temporal.DateTime.PlusAdjuster;
+import org.threeten.bp.temporal.DateTimeAccessor;
+import org.threeten.bp.temporal.DateTimeValueRange;
+import org.threeten.bp.temporal.PeriodUnit;
 
 /**
  * An immutable period consisting of the most common units, such as '3 Months, 4 Days and 7 Hours'.

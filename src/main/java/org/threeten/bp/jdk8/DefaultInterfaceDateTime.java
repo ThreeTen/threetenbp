@@ -31,8 +31,8 @@
  */
 package org.threeten.bp.jdk8;
 
-import org.threeten.bp.calendrical.DateTime;
-import org.threeten.bp.calendrical.PeriodUnit;
+import org.threeten.bp.temporal.DateTime;
+import org.threeten.bp.temporal.PeriodUnit;
 
 /**
  * A temporary class providing implementations that will become default interface

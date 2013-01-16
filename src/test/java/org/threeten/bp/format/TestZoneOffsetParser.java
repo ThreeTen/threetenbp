@@ -33,8 +33,7 @@ package org.threeten.bp.format;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-import static org.threeten.bp.calendrical.ChronoField.OFFSET_SECONDS;
-
+import static org.threeten.bp.temporal.ChronoField.OFFSET_SECONDS;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

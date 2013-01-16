@@ -33,20 +33,18 @@ package org.threeten.bp;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
-import static org.threeten.bp.calendrical.ChronoField.OFFSET_SECONDS;
+import static org.threeten.bp.temporal.ChronoField.OFFSET_SECONDS;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
 import org.testng.annotations.Test;
-import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.calendrical.ChronoField;
-import org.threeten.bp.calendrical.DateTimeAccessor;
-import org.threeten.bp.calendrical.DateTimeField;
-import org.threeten.bp.calendrical.JulianDayField;
+import org.threeten.bp.temporal.ChronoField;
+import org.threeten.bp.temporal.DateTimeAccessor;
+import org.threeten.bp.temporal.DateTimeField;
+import org.threeten.bp.temporal.JulianDayField;
 
 /**
  * Test ZoneOffset.

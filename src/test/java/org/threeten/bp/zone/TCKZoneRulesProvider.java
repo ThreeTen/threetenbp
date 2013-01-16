@@ -41,12 +41,8 @@ import java.util.NavigableMap;
 import java.util.Set;
 import java.util.TreeMap;
 
-
 import org.testng.annotations.Test;
 import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.zone.ZoneRules;
-import org.threeten.bp.zone.ZoneRulesException;
-import org.threeten.bp.zone.ZoneRulesProvider;
 
 /**
  * Test ZoneRulesProvider.

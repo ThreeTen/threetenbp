@@ -31,25 +31,23 @@
  */
 package org.threeten.bp;
 
-import static org.threeten.bp.calendrical.ChronoField.DAY_OF_MONTH;
-import static org.threeten.bp.calendrical.ChronoField.DAY_OF_WEEK;
-import static org.threeten.bp.calendrical.ChronoField.EPOCH_DAY;
+import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
+import static org.threeten.bp.temporal.ChronoField.DAY_OF_WEEK;
+import static org.threeten.bp.temporal.ChronoField.EPOCH_DAY;
 
 import java.io.PrintStream;
 import java.util.Set;
 
-import org.threeten.bp.DayOfWeek;
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.calendrical.ChronoField;
-import org.threeten.bp.calendrical.ChronoUnit;
-import org.threeten.bp.calendrical.JulianDayField;
-import org.threeten.bp.chrono.Chrono;
-import org.threeten.bp.chrono.ChronoLocalDate;
-import org.threeten.bp.chrono.ISOChrono;
-import org.threeten.bp.chrono.global.HijrahChrono;
-import org.threeten.bp.chrono.global.JapaneseChrono;
-import org.threeten.bp.chrono.global.MinguoChrono;
-import org.threeten.bp.chrono.global.ThaiBuddhistChrono;
+import org.threeten.bp.calendar.HijrahChrono;
+import org.threeten.bp.calendar.JapaneseChrono;
+import org.threeten.bp.calendar.MinguoChrono;
+import org.threeten.bp.calendar.ThaiBuddhistChrono;
+import org.threeten.bp.temporal.Chrono;
+import org.threeten.bp.temporal.ChronoField;
+import org.threeten.bp.temporal.ChronoLocalDate;
+import org.threeten.bp.temporal.ChronoUnit;
+import org.threeten.bp.temporal.ISOChrono;
+import org.threeten.bp.temporal.JulianDayField;
 
 /**
  * Usability class for package.

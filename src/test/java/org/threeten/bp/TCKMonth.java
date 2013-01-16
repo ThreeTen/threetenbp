@@ -35,27 +35,22 @@ import static org.testng.Assert.assertEquals;
 import static org.threeten.bp.Month.DECEMBER;
 import static org.threeten.bp.Month.JANUARY;
 import static org.threeten.bp.Month.JUNE;
-import static org.threeten.bp.calendrical.ChronoField.MONTH_OF_YEAR;
+import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.threeten.bp.DateTimeException;
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.LocalTime;
-import org.threeten.bp.Month;
-import org.threeten.bp.calendrical.ChronoField;
-import org.threeten.bp.calendrical.DateTimeAccessor;
-import org.threeten.bp.calendrical.DateTimeField;
-import org.threeten.bp.calendrical.JulianDayField;
-import org.threeten.bp.calendrical.DateTimeAccessor.Query;
-import org.threeten.bp.chrono.ISOChrono;
 import org.threeten.bp.format.TextStyle;
+import org.threeten.bp.temporal.ChronoField;
+import org.threeten.bp.temporal.DateTimeAccessor;
+import org.threeten.bp.temporal.DateTimeAccessor.Query;
+import org.threeten.bp.temporal.DateTimeField;
+import org.threeten.bp.temporal.ISOChrono;
+import org.threeten.bp.temporal.JulianDayField;
 
 /**
  * Test Month.

@@ -38,7 +38,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.Duration;
@@ -47,9 +46,6 @@ import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.Month;
 import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.zone.ZoneOffsetTransition;
-import org.threeten.bp.zone.ZoneOffsetTransitionRule;
-import org.threeten.bp.zone.ZoneRules;
 import org.threeten.bp.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 /**

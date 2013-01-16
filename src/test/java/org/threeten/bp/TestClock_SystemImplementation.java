@@ -34,8 +34,6 @@ package org.threeten.bp;
 import static org.testng.Assert.assertSame;
 
 import org.testng.annotations.Test;
-import org.threeten.bp.Clock;
-import org.threeten.bp.ZoneId;
 
 /**
  * Test system clock.

@@ -33,13 +33,11 @@ package org.threeten.bp.zone;
 
 import static org.testng.Assert.assertEquals;
 
-
 import org.testng.annotations.Test;
 import org.threeten.bp.Duration;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.zone.ZoneRules;
 
 /**
  * Test ZoneRules for fixed offset time-zones.

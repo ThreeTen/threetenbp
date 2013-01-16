@@ -32,22 +32,14 @@
 package org.threeten.bp;
 
 import static org.threeten.bp.Month.DECEMBER;
-import static org.threeten.bp.calendrical.ChronoField.DAY_OF_MONTH;
-import static org.threeten.bp.calendrical.ChronoField.DAY_OF_YEAR;
-import static org.threeten.bp.calendrical.ChronoField.MONTH_OF_YEAR;
-import static org.threeten.bp.calendrical.ChronoField.YEAR;
-import static org.threeten.bp.calendrical.DateTimeAdjusters.lastDayOfMonth;
+import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
+import static org.threeten.bp.temporal.ChronoField.DAY_OF_YEAR;
+import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
+import static org.threeten.bp.temporal.ChronoField.YEAR;
+import static org.threeten.bp.temporal.DateTimeAdjusters.lastDayOfMonth;
 
 import java.util.Locale;
 
-import org.threeten.bp.Clock;
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.LocalDateTime;
-import org.threeten.bp.LocalTime;
-import org.threeten.bp.MonthDay;
-import org.threeten.bp.Year;
-import org.threeten.bp.ZoneId;
-import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.DateTimeFormatters;

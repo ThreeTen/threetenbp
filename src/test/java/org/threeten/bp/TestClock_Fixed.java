@@ -42,11 +42,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import org.testng.annotations.Test;
-import org.threeten.bp.Clock;
-import org.threeten.bp.Instant;
-import org.threeten.bp.LocalDateTime;
-import org.threeten.bp.ZoneId;
-import org.threeten.bp.ZoneOffset;
 
 /**
  * Test fixed clock.

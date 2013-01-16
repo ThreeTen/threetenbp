@@ -31,14 +31,14 @@
  */
 package org.threeten.bp;
 
-import static org.threeten.bp.calendrical.ChronoField.HOUR_OF_DAY;
-import static org.threeten.bp.calendrical.ChronoField.MICRO_OF_DAY;
-import static org.threeten.bp.calendrical.ChronoField.MINUTE_OF_HOUR;
-import static org.threeten.bp.calendrical.ChronoField.NANO_OF_DAY;
-import static org.threeten.bp.calendrical.ChronoField.NANO_OF_SECOND;
-import static org.threeten.bp.calendrical.ChronoField.SECOND_OF_DAY;
-import static org.threeten.bp.calendrical.ChronoField.SECOND_OF_MINUTE;
-import static org.threeten.bp.calendrical.ChronoUnit.NANOS;
+import static org.threeten.bp.temporal.ChronoField.HOUR_OF_DAY;
+import static org.threeten.bp.temporal.ChronoField.MICRO_OF_DAY;
+import static org.threeten.bp.temporal.ChronoField.MINUTE_OF_HOUR;
+import static org.threeten.bp.temporal.ChronoField.NANO_OF_DAY;
+import static org.threeten.bp.temporal.ChronoField.NANO_OF_SECOND;
+import static org.threeten.bp.temporal.ChronoField.SECOND_OF_DAY;
+import static org.threeten.bp.temporal.ChronoField.SECOND_OF_MINUTE;
+import static org.threeten.bp.temporal.ChronoUnit.NANOS;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -46,21 +46,21 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
 
-import org.threeten.bp.calendrical.ChronoField;
-import org.threeten.bp.calendrical.ChronoUnit;
-import org.threeten.bp.calendrical.DateTime;
-import org.threeten.bp.calendrical.DateTime.WithAdjuster;
-import org.threeten.bp.calendrical.DateTimeAccessor;
-import org.threeten.bp.calendrical.DateTimeBuilder;
-import org.threeten.bp.calendrical.DateTimeField;
-import org.threeten.bp.calendrical.DateTimeValueRange;
-import org.threeten.bp.calendrical.PeriodUnit;
-import org.threeten.bp.chrono.ChronoLocalDateTime;
-import org.threeten.bp.chrono.ChronoZonedDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
+import org.threeten.bp.temporal.ChronoField;
+import org.threeten.bp.temporal.ChronoLocalDateTime;
+import org.threeten.bp.temporal.ChronoUnit;
+import org.threeten.bp.temporal.ChronoZonedDateTime;
+import org.threeten.bp.temporal.DateTime;
+import org.threeten.bp.temporal.DateTime.WithAdjuster;
+import org.threeten.bp.temporal.DateTimeAccessor;
+import org.threeten.bp.temporal.DateTimeBuilder;
+import org.threeten.bp.temporal.DateTimeField;
+import org.threeten.bp.temporal.DateTimeValueRange;
+import org.threeten.bp.temporal.PeriodUnit;
 
 /**
  * A time without time-zone in the ISO-8601 calendar system,
@@ -731,7 +731,7 @@ public final class LocalTime
      * <p>
      * This method returns a new time based on this time with the specified period added.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link org.threeten.bp.calendrical.DateTime.PlusAdjuster} interface.
+     * the {@link org.threeten.bp.temporal.DateTime.PlusAdjuster} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #plus(long, PeriodUnit)}.
      * <p>
@@ -884,7 +884,7 @@ public final class LocalTime
      * <p>
      * This method returns a new time based on this time with the specified period subtracted.
      * The adjuster is typically {@link Period} but may be any other type implementing
-     * the {@link org.threeten.bp.calendrical.DateTime.MinusAdjuster} interface.
+     * the {@link org.threeten.bp.temporal.DateTime.MinusAdjuster} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #minus(long, PeriodUnit)}.
      * <p>

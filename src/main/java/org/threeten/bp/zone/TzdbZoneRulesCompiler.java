@@ -31,9 +31,9 @@
  */
 package org.threeten.bp.zone;
 
-import static org.threeten.bp.calendrical.ChronoField.HOUR_OF_DAY;
-import static org.threeten.bp.calendrical.ChronoField.MINUTE_OF_HOUR;
-import static org.threeten.bp.calendrical.ChronoField.SECOND_OF_MINUTE;
+import static org.threeten.bp.temporal.ChronoField.HOUR_OF_DAY;
+import static org.threeten.bp.temporal.ChronoField.MINUTE_OF_HOUR;
+import static org.threeten.bp.temporal.ChronoField.SECOND_OF_MINUTE;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -63,12 +63,12 @@ import org.threeten.bp.LocalTime;
 import org.threeten.bp.Month;
 import org.threeten.bp.Year;
 import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.calendrical.DateTimeAdjusters;
-import org.threeten.bp.calendrical.DateTimeBuilder;
-import org.threeten.bp.calendrical.DateTimeField;
-import org.threeten.bp.calendrical.JulianDayField;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
+import org.threeten.bp.temporal.DateTimeAdjusters;
+import org.threeten.bp.temporal.DateTimeBuilder;
+import org.threeten.bp.temporal.DateTimeField;
+import org.threeten.bp.temporal.JulianDayField;
 import org.threeten.bp.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 /**

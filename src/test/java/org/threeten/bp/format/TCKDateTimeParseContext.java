@@ -32,22 +32,19 @@
 package org.threeten.bp.format;
 
 import static org.testng.Assert.assertEquals;
-import static org.threeten.bp.calendrical.ChronoField.DAY_OF_MONTH;
-import static org.threeten.bp.calendrical.ChronoField.MONTH_OF_YEAR;
-import static org.threeten.bp.calendrical.ChronoField.YEAR;
+import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
+import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
+import static org.threeten.bp.temporal.ChronoField.YEAR;
 
 import java.util.Locale;
 import java.util.Map;
-
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.calendrical.DateTimeBuilder;
-import org.threeten.bp.calendrical.DateTimeField;
-import org.threeten.bp.format.DateTimeFormatSymbols;
-import org.threeten.bp.format.DateTimeParseContext;
+import org.threeten.bp.temporal.DateTimeBuilder;
+import org.threeten.bp.temporal.DateTimeField;
 
 /**
  * Test DateTimeParseContext.

@@ -43,7 +43,6 @@ import java.io.ObjectOutputStream;
 import java.util.Iterator;
 import java.util.List;
 
-
 import org.testng.annotations.Test;
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.Duration;
@@ -56,9 +55,6 @@ import org.threeten.bp.Year;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.ZonedDateTime;
-import org.threeten.bp.zone.ZoneOffsetTransition;
-import org.threeten.bp.zone.ZoneOffsetTransitionRule;
-import org.threeten.bp.zone.ZoneRules;
 import org.threeten.bp.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 /**

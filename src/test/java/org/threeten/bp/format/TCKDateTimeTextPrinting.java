@@ -32,24 +32,20 @@
 package org.threeten.bp.format;
 
 import static org.testng.Assert.assertEquals;
-import static org.threeten.bp.calendrical.ChronoField.DAY_OF_MONTH;
-import static org.threeten.bp.calendrical.ChronoField.DAY_OF_WEEK;
-import static org.threeten.bp.calendrical.ChronoField.MONTH_OF_YEAR;
+import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
+import static org.threeten.bp.temporal.ChronoField.DAY_OF_WEEK;
+import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.Month;
-import org.threeten.bp.calendrical.DateTimeField;
-import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.DateTimeFormatterBuilder;
-import org.threeten.bp.format.TextStyle;
+import org.threeten.bp.temporal.DateTimeField;
 
 /**
  * Test text printing.

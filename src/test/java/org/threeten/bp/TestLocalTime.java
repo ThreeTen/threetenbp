@@ -35,7 +35,6 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 
 import org.testng.annotations.Test;
-import org.threeten.bp.LocalTime;
 
 /**
  * Test LocalTime.

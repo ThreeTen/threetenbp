@@ -34,11 +34,11 @@ package org.threeten.bp;
 import static org.threeten.bp.LocalTime.SECONDS_PER_DAY;
 import static org.threeten.bp.LocalTime.SECONDS_PER_HOUR;
 import static org.threeten.bp.LocalTime.SECONDS_PER_MINUTE;
-import static org.threeten.bp.calendrical.ChronoField.INSTANT_SECONDS;
-import static org.threeten.bp.calendrical.ChronoField.MICRO_OF_SECOND;
-import static org.threeten.bp.calendrical.ChronoField.MILLI_OF_SECOND;
-import static org.threeten.bp.calendrical.ChronoField.NANO_OF_SECOND;
-import static org.threeten.bp.calendrical.ChronoUnit.NANOS;
+import static org.threeten.bp.temporal.ChronoField.INSTANT_SECONDS;
+import static org.threeten.bp.temporal.ChronoField.MICRO_OF_SECOND;
+import static org.threeten.bp.temporal.ChronoField.MILLI_OF_SECOND;
+import static org.threeten.bp.temporal.ChronoField.NANO_OF_SECOND;
+import static org.threeten.bp.temporal.ChronoUnit.NANOS;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -46,17 +46,17 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
 
-import org.threeten.bp.calendrical.ChronoField;
-import org.threeten.bp.calendrical.ChronoUnit;
-import org.threeten.bp.calendrical.DateTime;
-import org.threeten.bp.calendrical.DateTime.WithAdjuster;
-import org.threeten.bp.calendrical.DateTimeAccessor;
-import org.threeten.bp.calendrical.DateTimeField;
-import org.threeten.bp.calendrical.PeriodUnit;
 import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
 import org.threeten.bp.jdk8.Jdk8Methods;
+import org.threeten.bp.temporal.ChronoField;
+import org.threeten.bp.temporal.ChronoUnit;
+import org.threeten.bp.temporal.DateTime;
+import org.threeten.bp.temporal.DateTime.WithAdjuster;
+import org.threeten.bp.temporal.DateTimeAccessor;
+import org.threeten.bp.temporal.DateTimeField;
+import org.threeten.bp.temporal.PeriodUnit;
 
 /**
  * An instantaneous point on the time-line.

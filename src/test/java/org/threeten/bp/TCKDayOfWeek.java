@@ -36,28 +36,23 @@ import static org.testng.Assert.assertSame;
 import static org.threeten.bp.DayOfWeek.MONDAY;
 import static org.threeten.bp.DayOfWeek.SUNDAY;
 import static org.threeten.bp.DayOfWeek.WEDNESDAY;
-import static org.threeten.bp.calendrical.ChronoField.DAY_OF_WEEK;
+import static org.threeten.bp.temporal.ChronoField.DAY_OF_WEEK;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.threeten.bp.DateTimeException;
-import org.threeten.bp.DayOfWeek;
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.LocalTime;
-import org.threeten.bp.calendrical.ChronoField;
-import org.threeten.bp.calendrical.DateTime;
-import org.threeten.bp.calendrical.DateTimeAccessor;
-import org.threeten.bp.calendrical.DateTimeField;
-import org.threeten.bp.calendrical.JulianDayField;
-import org.threeten.bp.calendrical.DateTimeAccessor.Query;
 import org.threeten.bp.format.TextStyle;
+import org.threeten.bp.temporal.ChronoField;
+import org.threeten.bp.temporal.DateTime;
+import org.threeten.bp.temporal.DateTimeAccessor;
+import org.threeten.bp.temporal.DateTimeAccessor.Query;
+import org.threeten.bp.temporal.DateTimeField;
+import org.threeten.bp.temporal.JulianDayField;
 
 /**
  * Test DayOfWeek.
