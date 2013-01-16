@@ -146,7 +146,7 @@ class ZoneRulesBuilder {
      * @throws IllegalStateException if a forever window has already been added
      */
     public ZoneRulesBuilder addWindowForever(ZoneOffset standardOffset) {
-        return addWindow(standardOffset, LocalDateTime.MAX_DATE_TIME, TimeDefinition.WALL);
+        return addWindow(standardOffset, LocalDateTime.MAX, TimeDefinition.WALL);
     }
 
     //-----------------------------------------------------------------------
@@ -546,7 +546,7 @@ class ZoneRulesBuilder {
             }
 
             // handle last rules
-            if (windowEnd.equals(LocalDateTime.MAX_DATE_TIME)) {
+            if (windowEnd.equals(LocalDateTime.MAX)) {
                 // setup at least one real rule, which closes off other windows nicely
                 maxLastRuleStartYear = Math.max(maxLastRuleStartYear, windowStartYear) + 1;
                 for (TZRule lastRule : lastRuleList) {
@@ -586,7 +586,7 @@ class ZoneRulesBuilder {
          * @return true if the window is only a standard offset
          */
         boolean isSingleWindowStandardOffset() {
-            return windowEnd.equals(LocalDateTime.MAX_DATE_TIME) && timeDefinition == TimeDefinition.WALL &&
+            return windowEnd.equals(LocalDateTime.MAX) && timeDefinition == TimeDefinition.WALL &&
                     fixedSavingAmountSecs == null && lastRuleList.isEmpty() && ruleList.isEmpty();
         }
 

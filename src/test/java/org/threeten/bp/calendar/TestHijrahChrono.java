@@ -170,7 +170,7 @@ public class TestHijrahChrono {
     @Test(groups={"tck"})
     public void test_LocalDateTime_adjustToHijrahDate() {
         ChronoLocalDate<?> hijrahDate = HijrahChrono.INSTANCE.date(1728, 10, 29);
-        LocalDateTime test = LocalDateTime.MIN_DATE_TIME.with(hijrahDate);
+        LocalDateTime test = LocalDateTime.MIN.with(hijrahDate);
         assertEquals(test, LocalDateTime.of(2298, 12, 4, 0, 0));
     }
 

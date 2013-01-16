@@ -206,7 +206,7 @@ public class TestMinguoChrono {
     @Test(groups={"tck"})
     public void test_LocalDateTime_adjustToMinguoDate() {
         ChronoLocalDate<MinguoChrono> minguo = MinguoChrono.INSTANCE.date(101, 10, 29);
-        LocalDateTime test = LocalDateTime.MIN_DATE_TIME.with(minguo);
+        LocalDateTime test = LocalDateTime.MIN.with(minguo);
         assertEquals(test, LocalDateTime.of(2012, 10, 29, 0, 0));
     }
 

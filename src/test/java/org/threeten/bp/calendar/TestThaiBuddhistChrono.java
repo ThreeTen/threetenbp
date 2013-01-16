@@ -221,7 +221,7 @@ public class TestThaiBuddhistChrono {
     @Test(groups={"tck"})
     public void test_LocalDateTime_adjustToBuddhistDate() {
         ChronoLocalDate<ThaiBuddhistChrono> jdate = ThaiBuddhistChrono.INSTANCE.date(2555, 10, 29);
-        LocalDateTime test = LocalDateTime.MIN_DATE_TIME.with(jdate);
+        LocalDateTime test = LocalDateTime.MIN.with(jdate);
         assertEquals(test, LocalDateTime.of(2012, 10, 29, 0, 0));
     }
 

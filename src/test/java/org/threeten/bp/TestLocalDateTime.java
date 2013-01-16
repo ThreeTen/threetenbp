@@ -88,7 +88,7 @@ public class TestLocalDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Override
     protected List<TemporalAccessor> samples() {
-        TemporalAccessor[] array = {TEST_2007_07_15_12_30_40_987654321, LocalDateTime.MAX_DATE_TIME, LocalDateTime.MIN_DATE_TIME, };
+        TemporalAccessor[] array = {TEST_2007_07_15_12_30_40_987654321, LocalDateTime.MAX, LocalDateTime.MIN, };
         return Arrays.asList(array);
     }
 
@@ -173,12 +173,12 @@ public class TestLocalDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(groups={"implementation"})
     public void constant_MIN_DATE_TIME() {
-        check(LocalDateTime.MIN_DATE_TIME, Year.MIN_VALUE, 1, 1, 0, 0, 0, 0);
+        check(LocalDateTime.MIN, Year.MIN_VALUE, 1, 1, 0, 0, 0, 0);
     }
 
     @Test(groups={"implementation"})
     public void constant_MAX_DATE_TIME() {
-        check(LocalDateTime.MAX_DATE_TIME, Year.MAX_VALUE, 12, 31,  23, 59, 59, 999999999);
+        check(LocalDateTime.MAX, Year.MAX_VALUE, 12, 31,  23, 59, 59, 999999999);
     }
 
     //-----------------------------------------------------------------------

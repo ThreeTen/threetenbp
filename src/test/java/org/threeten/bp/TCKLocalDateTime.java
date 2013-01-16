@@ -117,8 +117,8 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
 
     @BeforeMethod(groups={"implementation","tck"})
     public void setUp() {
-        MAX_DATE_TIME = LocalDateTime.MAX_DATE_TIME;
-        MIN_DATE_TIME = LocalDateTime.MIN_DATE_TIME;
+        MAX_DATE_TIME = LocalDateTime.MAX;
+        MIN_DATE_TIME = LocalDateTime.MIN;
         MAX_INSTANT = MAX_DATE_TIME.atZone(ZoneOffset.UTC).toInstant();
         MIN_INSTANT = MIN_DATE_TIME.atZone(ZoneOffset.UTC).toInstant();
     }
@@ -126,7 +126,7 @@ public class TCKLocalDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Override
     protected List<TemporalAccessor> samples() {
-        TemporalAccessor[] array = {TEST_2007_07_15_12_30_40_987654321, LocalDateTime.MAX_DATE_TIME, LocalDateTime.MIN_DATE_TIME, };
+        TemporalAccessor[] array = {TEST_2007_07_15_12_30_40_987654321, LocalDateTime.MAX, LocalDateTime.MIN, };
         return Arrays.asList(array);
     }
 

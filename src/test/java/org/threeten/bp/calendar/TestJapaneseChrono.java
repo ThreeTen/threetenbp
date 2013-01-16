@@ -174,7 +174,7 @@ public class TestJapaneseChrono {
     @Test(groups={"tck"})
     public void test_LocalDateTime_adjustToJapaneseDate() {
         ChronoLocalDate<JapaneseChrono> jdate = JapaneseChrono.INSTANCE.date(1728, 10, 29);
-        LocalDateTime test = LocalDateTime.MIN_DATE_TIME.with(jdate);
+        LocalDateTime test = LocalDateTime.MIN.with(jdate);
         assertEquals(test, LocalDateTime.of(1728, 10, 29, 0, 0));
     }
 
