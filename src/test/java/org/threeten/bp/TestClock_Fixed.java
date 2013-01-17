@@ -34,12 +34,7 @@ package org.threeten.bp;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 
 import org.testng.annotations.Test;
 
@@ -47,59 +42,56 @@ import org.testng.annotations.Test;
  * Test fixed clock.
  */
 @Test
-public class TestClock_Fixed {
+public class TestClock_Fixed extends AbstractTest {
 
     private static final ZoneId MOSCOW = ZoneId.of("Europe/Moscow");
     private static final ZoneId PARIS = ZoneId.of("Europe/Paris");
     private static final Instant INSTANT = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500).atZone(ZoneOffset.ofHours(2)).toInstant();
 
     //-----------------------------------------------------------------------
-    public void test_fixed_isSerializable() throws IOException, ClassNotFoundException {
-        Clock fixed = Clock.fixed(INSTANT, ZoneOffset.UTC);
-        assertEquals(fixed instanceof Serializable, true);
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(fixed);
-        oos.close();
-
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        assertEquals(ois.readObject(), fixed);
+    public void test_isSerializable() throws IOException, ClassNotFoundException {
+        assertSerializable(Clock.fixed(INSTANT, ZoneOffset.UTC));
+        assertSerializable(Clock.fixed(INSTANT, PARIS));
     }
 
     //-------------------------------------------------------------------------
-    public void test_fixed_zoneId() {
-        Clock fixed = Clock.fixed(INSTANT, PARIS);
-        assertEquals(fixed.instant(), INSTANT);
-        assertEquals(fixed.getZone(), PARIS);
+    public void test_fixed_InstantZoneId() {
+        Clock test = Clock.fixed(INSTANT, PARIS);
+        assertEquals(test.instant(), INSTANT);
+        assertEquals(test.getZone(), PARIS);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
-    public void test_fixed_zoneId_nullInstant() {
+    public void test_fixed_InstantZoneId_nullInstant() {
         Clock.fixed(null, PARIS);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
-    public void test_fixed_zoneId_nullZoneId() {
+    public void test_fixed_InstantZoneId_nullZoneId() {
         Clock.fixed(INSTANT, null);
     }
 
     //-------------------------------------------------------------------------
     public void test_withZone() {
-        Clock test = Clock.system(PARIS);
+        Clock test = Clock.fixed(INSTANT, PARIS);
         Clock changed = test.withZone(MOSCOW);
         assertEquals(test.getZone(), PARIS);
         assertEquals(changed.getZone(), MOSCOW);
     }
 
     public void test_withZone_same() {
-        Clock test = Clock.system(PARIS);
-        Clock changed = test.withZone(ZoneId.of("Europe/Paris"));
+        Clock test = Clock.fixed(INSTANT, PARIS);
+        Clock changed = test.withZone(PARIS);
         assertSame(test, changed);
     }
 
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_withZone_null() {
+        Clock.fixed(INSTANT, PARIS).withZone(null);
+    }
+
     //-----------------------------------------------------------------------
-    public void test_fixed_equals() {
+    public void test_equals() {
         Clock a = Clock.fixed(INSTANT, ZoneOffset.UTC);
         Clock b = Clock.fixed(INSTANT, ZoneOffset.UTC);
         assertEquals(a.equals(a), true);
@@ -118,7 +110,7 @@ public class TestClock_Fixed {
         assertEquals(a.equals(Clock.systemUTC()), false);
     }
 
-    public void test_fixed_hashCode() {
+    public void test_hashCode() {
         Clock a = Clock.fixed(INSTANT, ZoneOffset.UTC);
         Clock b = Clock.fixed(INSTANT, ZoneOffset.UTC);
         assertEquals(a.hashCode(), a.hashCode());
@@ -132,9 +124,9 @@ public class TestClock_Fixed {
     }
 
     //-----------------------------------------------------------------------
-    public void test_fixed_toString() {
-        Clock fixed = Clock.fixed(INSTANT, PARIS);
-        assertEquals(fixed.toString(), "FixedClock[2008-06-30T09:30:10.000000500Z,Europe/Paris]");
+    public void test_toString() {
+        Clock test = Clock.fixed(INSTANT, PARIS);
+        assertEquals(test.toString(), "FixedClock[2008-06-30T09:30:10.000000500Z,Europe/Paris]");
     }
 
 }

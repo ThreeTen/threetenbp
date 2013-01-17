@@ -33,104 +33,133 @@ package org.threeten.bp;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
-import static org.testng.Assert.fail;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 
 import org.testng.annotations.Test;
 
 /**
- * Test offset clock.
+ * Test tick clock.
  */
 @Test
-public class TestClock_Tick {
+public class TestClock_Tick extends AbstractTest {
 
     private static final ZoneId MOSCOW = ZoneId.of("Europe/Moscow");
     private static final ZoneId PARIS = ZoneId.of("Europe/Paris");
+    private static final Duration AMOUNT = Duration.ofSeconds(2);
     private static final ZonedDateTime ZDT = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500).atZone(ZoneOffset.ofHours(2));
+    private static final Instant INSTANT = ZDT.toInstant();
 
     //-----------------------------------------------------------------------
-    public void test_tick_isSerializable() throws IOException, ClassNotFoundException {
-        Clock test = Clock.tickSeconds(PARIS);
-        assertEquals(test instanceof Serializable, true);
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(test);
-        oos.close();
-
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        assertEquals(ois.readObject(), test);
+    public void test_isSerializable() throws IOException, ClassNotFoundException {
+        assertSerializable(Clock.tickSeconds(PARIS));
+        assertSerializable(Clock.tickMinutes(MOSCOW));
+        assertSerializable(Clock.tick(Clock.fixed(INSTANT, PARIS), AMOUNT));
     }
 
     //-----------------------------------------------------------------------
-    public void test_tick_clockDuration_zero() {
-        Clock test = Clock.tick(Clock.systemUTC(), Duration.ZERO);
-        assertEquals(test, Clock.systemUTC());
+    public void test_tick_ClockDuration_250millis() {
+        for (int i = 0; i < 1000; i++) {
+            Clock test = Clock.tick(Clock.fixed(ZDT.withNano(i * 1000_000).toInstant(), PARIS), Duration.ofMillis(250));
+            assertEquals(test.instant(), ZDT.withNano((i / 250) * 250_000_000).toInstant());
+            assertEquals(test.getZone(), PARIS);
+        }
+    }
+
+    public void test_tick_ClockDuration_250micros() {
+        for (int i = 0; i < 1000; i++) {
+            Clock test = Clock.tick(Clock.fixed(ZDT.withNano(i * 1000).toInstant(), PARIS), Duration.ofNanos(250_000));
+            assertEquals(test.instant(), ZDT.withNano((i / 250) * 250_000).toInstant());
+            assertEquals(test.getZone(), PARIS);
+        }
+    }
+
+    public void test_tick_ClockDuration_20nanos() {
+        for (int i = 0; i < 1000; i++) {
+            Clock test = Clock.tick(Clock.fixed(ZDT.withNano(i).toInstant(), PARIS), Duration.ofNanos(20));
+            assertEquals(test.instant(), ZDT.withNano((i / 20) * 20).toInstant());
+            assertEquals(test.getZone(), PARIS);
+        }
+    }
+
+    public void test_tick_ClockDuration_zeroDuration() {
+        Clock underlying = Clock.system(PARIS);
+        Clock test = Clock.tick(underlying, Duration.ZERO);
+        assertSame(test, underlying);  // spec says same
+    }
+
+    public void test_tick_ClockDuration_1nsDuration() {
+        Clock underlying = Clock.system(PARIS);
+        Clock test = Clock.tick(underlying, Duration.ofNanos(1));
+        assertSame(test, underlying);  // spec says same
+    }
+
+    @Test(expectedExceptions = ArithmeticException.class)
+    public void test_tick_ClockDuration_maxDuration() {
+        Clock.tick(Clock.systemUTC(), Duration.ofSeconds(Long.MAX_VALUE));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_tick_ClockDuration_subMilliNotDivisible_123ns() {
+        Clock.tick(Clock.systemUTC(), Duration.ofSeconds(0, 123));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_tick_ClockDuration_subMilliNotDivisible_999ns() {
+        Clock.tick(Clock.systemUTC(), Duration.ofSeconds(0, 999));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_tick_ClockDuration_subMilliNotDivisible_999_999_999ns() {
+        Clock.tick(Clock.systemUTC(), Duration.ofSeconds(0, 999_999_999));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_tick_ClockDuration_negative1ns() {
+        Clock.tick(Clock.systemUTC(), Duration.ofSeconds(0, -1));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_tick_ClockDuration_negative1s() {
+        Clock.tick(Clock.systemUTC(), Duration.ofSeconds(-1));
     }
 
     @Test(expectedExceptions = NullPointerException.class)
-    public void test_tickSeconds_nullZoneId() {
-        Clock.tickSeconds(null);
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_tickMinutes_nullZoneId() {
-        Clock.tickMinutes(null);
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_tick_clockDuration_nullClock() {
+    public void test_tick_ClockDuration_nullClock() {
         Clock.tick(null, Duration.ZERO);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
-    public void test_tick_clockDuration_nullDuration() {
+    public void test_tick_ClockDuration_nullDuration() {
         Clock.tick(Clock.systemUTC(), null);
     }
 
     //-----------------------------------------------------------------------
-    public void test_tickSeconds() {
+    public void test_tickSeconds_ZoneId() throws Exception {
         Clock test = Clock.tickSeconds(PARIS);
         assertEquals(test.getZone(), PARIS);
-        for (int i = 0; i < 10000; i++) {
-            // assume can eventually get these within 10 milliseconds
-            long instant = test.millis();
-            assertEquals(instant % 1000, 0);
-            long systemMillis = System.currentTimeMillis();
-            if ((systemMillis / 1000) * 1000 == instant) {
-                return;  // success
-            }
-        }
-        fail();
+        assertEquals(test.instant().getNano(), 0);
+        Thread.sleep(100);
+        assertEquals(test.instant().getNano(), 0);
     }
 
-    public void test_tickMinutes() {
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_tickSeconds_ZoneId_nullZoneId() {
+        Clock.tickSeconds(null);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_tickMinutes_ZoneId() {
         Clock test = Clock.tickMinutes(PARIS);
         assertEquals(test.getZone(), PARIS);
-        for (int i = 0; i < 10000; i++) {
-            // assume can eventually get these within 10 milliseconds
-            long instant = test.millis();
-            assertEquals(instant % 60000, 0);
-            long systemMillis = System.currentTimeMillis();
-            if ((systemMillis / 60000) * 60000 == instant) {
-                return;  // success
-            }
-        }
-        fail();
+        Instant instant = test.instant();
+        assertEquals(instant.getEpochSecond() % 60, 0);
+        assertEquals(instant.getNano(), 0);
     }
 
-    public void test_tick_clockDuration() {
-        for (int i = 0; i < 1000; i++) {
-            Clock test = Clock.tick(Clock.fixed(ZDT.withNano(i * 1000000).toInstant(), PARIS), Duration.ofMillis(250));
-            assertEquals(test.instant(), ZDT.withNano((i / 250) * 250 * 1000000).toInstant());
-            assertEquals(test.getZone(), PARIS);
-        }
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_tickMinutes_ZoneId_nullZoneId() {
+        Clock.tickMinutes(null);
     }
 
     //-------------------------------------------------------------------------
@@ -143,12 +172,17 @@ public class TestClock_Tick {
 
     public void test_withZone_same() {
         Clock test = Clock.tick(Clock.system(PARIS), Duration.ofMillis(500));
-        Clock changed = test.withZone(ZoneId.of("Europe/Paris"));
+        Clock changed = test.withZone(PARIS);
         assertSame(test, changed);
     }
 
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_withZone_null() {
+        Clock.tick(Clock.system(PARIS), Duration.ofMillis(500)).withZone(null);
+    }
+
     //-----------------------------------------------------------------------
-    public void test_tick_equals() {
+    public void test__equals() {
         Clock a = Clock.tick(Clock.system(PARIS), Duration.ofMillis(500));
         Clock b = Clock.tick(Clock.system(PARIS), Duration.ofMillis(500));
         assertEquals(a.equals(a), true);
@@ -167,7 +201,7 @@ public class TestClock_Tick {
         assertEquals(a.equals(Clock.systemUTC()), false);
     }
 
-    public void test_tick_hashCode() {
+    public void test_hashCode() {
         Clock a = Clock.tick(Clock.system(PARIS), Duration.ofMillis(500));
         Clock b = Clock.tick(Clock.system(PARIS), Duration.ofMillis(500));
         assertEquals(a.hashCode(), a.hashCode());
@@ -181,9 +215,9 @@ public class TestClock_Tick {
     }
 
     //-----------------------------------------------------------------------
-    public void test_tick_toString() {
-        Clock offset = Clock.tick(Clock.systemUTC(), Duration.ofMillis(500));
-        assertEquals(offset.toString(), "TickClock[SystemClock[Z],PT0.5S]");
+    public void test_toString() {
+        Clock test = Clock.tick(Clock.systemUTC(), Duration.ofMillis(500));
+        assertEquals(test.toString(), "TickClock[SystemClock[Z],PT0.5S]");
     }
 
 }

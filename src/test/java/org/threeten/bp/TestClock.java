@@ -39,7 +39,7 @@ import org.testng.annotations.Test;
  * Test Clock.
  */
 @Test
-public class TCKClock {
+public class TestClock {
 
     static class MockInstantClock extends Clock {
         final long millis;

@@ -33,14 +33,8 @@ package org.threeten.bp;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
-import static org.testng.Assert.fail;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 
 import org.testng.annotations.Test;
 
@@ -48,69 +42,41 @@ import org.testng.annotations.Test;
  * Test offset clock.
  */
 @Test
-public class TestClock_Offset {
+public class TestClock_Offset extends AbstractTest {
 
     private static final ZoneId MOSCOW = ZoneId.of("Europe/Moscow");
     private static final ZoneId PARIS = ZoneId.of("Europe/Paris");
+    private static final Instant INSTANT = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500).atZone(ZoneOffset.ofHours(2)).toInstant();
     private static final Duration OFFSET = Duration.ofSeconds(2);
 
     //-----------------------------------------------------------------------
-    public void test_offset_isSerializable() throws IOException, ClassNotFoundException {
-        Clock offset = Clock.offset(Clock.system(PARIS), OFFSET);
-        assertEquals(offset instanceof Serializable, true);
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(offset);
-        oos.close();
-
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        assertEquals(ois.readObject(), offset);
+    public void test_isSerializable() throws IOException, ClassNotFoundException {
+        assertSerializable(Clock.offset(Clock.system(PARIS), OFFSET));
     }
 
     //-----------------------------------------------------------------------
-    public void test_offset_zero() {
-        Clock test = Clock.offset(Clock.systemUTC(), Duration.ZERO);
-        assertEquals(test, Clock.systemUTC());
+    public void test_offset_ClockDuration() {
+        Clock test = Clock.offset(Clock.fixed(INSTANT, PARIS), OFFSET);
+        System.out.println(test.instant());
+        System.out.println(INSTANT.plus(OFFSET));
+        assertEquals(test.instant(), INSTANT.plus(OFFSET));
+        assertEquals(test.getZone(), PARIS);
+    }
+
+    public void test_offset_ClockDuration_zeroDuration() {
+        Clock underlying = Clock.system(PARIS);
+        Clock test = Clock.offset(underlying, Duration.ZERO);
+        assertSame(test, underlying);  // spec says same
     }
 
     @Test(expectedExceptions = NullPointerException.class)
-    public void test_offset_nullClock() {
+    public void test_offset_ClockDuration_nullClock() {
         Clock.offset(null, Duration.ZERO);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
-    public void test_offset_nullDuration() {
+    public void test_offset_ClockDuration_nullDuration() {
         Clock.offset(Clock.systemUTC(), null);
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_offset_utc() {
-        Clock offset = Clock.offset(Clock.systemUTC(), OFFSET);
-        assertEquals(offset.getZone(), ZoneOffset.UTC);
-        for (int i = 0; i < 10000; i++) {
-            // assume can eventually get these within 10 milliseconds
-            Instant instant = offset.instant();
-            long systemMillis = System.currentTimeMillis();
-            if (systemMillis - instant.toEpochMilli() + 2000 < 10) {
-                return;  // success
-            }
-        }
-        fail();
-    }
-
-    public void test_offset_paris() {
-        Clock offset = Clock.offset(Clock.system(PARIS), OFFSET);
-        assertEquals(offset.getZone(), PARIS);
-        for (int i = 0; i < 10000; i++) {
-            // assume can eventually get these within 10 milliseconds
-            Instant instant = offset.instant();
-            long systemMillis = System.currentTimeMillis();
-            if (systemMillis - instant.toEpochMilli() + 2000 < 10) {
-                return;  // success
-            }
-        }
-        fail();
     }
 
     //-------------------------------------------------------------------------
@@ -123,12 +89,17 @@ public class TestClock_Offset {
 
     public void test_withZone_same() {
         Clock test = Clock.offset(Clock.system(PARIS), OFFSET);
-        Clock changed = test.withZone(ZoneId.of("Europe/Paris"));
+        Clock changed = test.withZone(PARIS);
         assertSame(test, changed);
     }
 
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_withZone_null() {
+        Clock.offset(Clock.system(PARIS), OFFSET).withZone(null);
+    }
+
     //-----------------------------------------------------------------------
-    public void test_offset_equals() {
+    public void test_equals() {
         Clock a = Clock.offset(Clock.system(PARIS), OFFSET);
         Clock b = Clock.offset(Clock.system(PARIS), OFFSET);
         assertEquals(a.equals(a), true);
@@ -147,7 +118,7 @@ public class TestClock_Offset {
         assertEquals(a.equals(Clock.systemUTC()), false);
     }
 
-    public void test_offset_hashCode() {
+    public void test_hashCode() {
         Clock a = Clock.offset(Clock.system(PARIS), OFFSET);
         Clock b = Clock.offset(Clock.system(PARIS), OFFSET);
         assertEquals(a.hashCode(), a.hashCode());
@@ -161,9 +132,9 @@ public class TestClock_Offset {
     }
 
     //-----------------------------------------------------------------------
-    public void test_offset_toString() {
-        Clock offset = Clock.offset(Clock.systemUTC(), OFFSET);
-        assertEquals(offset.toString(), "OffsetClock[SystemClock[Z],PT2S]");
+    public void test_toString() {
+        Clock test = Clock.offset(Clock.systemUTC(), OFFSET);
+        assertEquals(test.toString(), "OffsetClock[SystemClock[Z],PT2S]");
     }
 
 }
