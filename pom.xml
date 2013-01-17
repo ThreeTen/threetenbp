@@ -256,23 +256,18 @@
   </reporting>
   <!--distributionManagement>
     <repository>
-      <id>sonatype-joda-staging</id>
+      <id>sonatype-threeten-staging</id>
       <name>Sonatype OSS staging repository</name>
       <url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
       <layout>default</layout>
     </repository>
     <snapshotRepository>
       <uniqueVersion>false</uniqueVersion>
-      <id>sonatype-joda-snapshot</id>
+      <id>sonatype-threeten-snapshot</id>
       <name>Sonatype OSS snapshot repository</name>
-      <url>http://oss.sonatype.org/content/repositories/joda-snapshots</url>
+      <url>http://oss.sonatype.org/content/repositories/threeten-snapshots</url>
       <layout>default</layout>
     </snapshotRepository>
-    <site>
-      <id>sf-web-joda-beans</id>
-      <name>Sourceforge Site</name>
-      <url>scpexe://shell.sourceforge.net/home/project-web/joda-beans/htdocs</url>
-    </site>
     <downloadUrl>http://oss.sonatype.org/content/repositories/joda-releases</downloadUrl>
   </distributionManagement-->
   <profiles>
