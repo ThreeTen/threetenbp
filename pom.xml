@@ -61,6 +61,23 @@
         </includes>
       </resource>
     </resources>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-provider-gitexe</artifactId>
+        <version>1.3</version>
+      </extension>
+      <extension>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-manager-plexus</artifactId>
+        <version>1.3</version>
+      </extension>
+      <extension>
+        <groupId>com.github.stephenc.wagon</groupId>
+        <artifactId>wagon-gitsite</artifactId>
+        <version>0.4.1</version>
+      </extension>
+    </extensions>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -110,6 +127,16 @@
             <link>http://download.oracle.com/javase/7/docs/api/</link>
           </links>
           <encoding>UTF-8</encoding>
+          <groups>
+            <group>
+              <title>ThreeTen</title>
+              <packages>org.threeten.bp:org.threeten.bp.calendar:org.threeten.bp.format:org.threeten.bp.temporal:org.threeten.bp.zone</packages>
+            </group>
+            <group>
+              <title>Support classes (do not use)</title>
+              <packages>org.threeten.bp.jdk8</packages>
+            </group>
+          </groups>
         </configuration>
         <executions>
           <execution>
@@ -254,7 +281,7 @@
       </plugin>
     </plugins>
   </reporting>
-  <!--distributionManagement>
+  <distributionManagement>
     <repository>
       <id>sonatype-threeten-staging</id>
       <name>Sonatype OSS staging repository</name>
@@ -268,8 +295,13 @@
       <url>http://oss.sonatype.org/content/repositories/threeten-snapshots</url>
       <layout>default</layout>
     </snapshotRepository>
+    <site>
+      <id>github-site-threeten-org</id>
+      <name>ThreeTen organization site</name>
+      <url>scpexe://shell.sourceforge.net/home/project-web/joda-beans/htdocs</url>
+    </site>
     <downloadUrl>http://oss.sonatype.org/content/repositories/joda-releases</downloadUrl>
-  </distributionManagement-->
+  </distributionManagement>
   <profiles>
     <profile>
       <id>repo-sign-artifacts</id>
