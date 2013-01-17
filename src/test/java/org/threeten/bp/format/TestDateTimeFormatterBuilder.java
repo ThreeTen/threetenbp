@@ -50,7 +50,7 @@ import org.testng.annotations.Test;
  * Test DateTimeFormatterBuilder.
  */
 @Test
-public class TCKDateTimeFormatterBuilder {
+public class TestDateTimeFormatterBuilder {
 
     private DateTimeFormatterBuilder builder;
 

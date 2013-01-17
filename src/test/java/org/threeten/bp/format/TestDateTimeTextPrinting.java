@@ -51,7 +51,7 @@ import org.threeten.bp.temporal.TemporalField;
  * Test text printing.
  */
 @Test
-public class TCKDateTimeTextPrinting {
+public class TestDateTimeTextPrinting {
 
     private DateTimeFormatterBuilder builder;
 

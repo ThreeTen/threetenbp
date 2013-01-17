@@ -32,7 +32,6 @@
 package org.threeten.bp.format;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
 
 import java.io.IOException;
 
@@ -45,20 +44,26 @@ import org.testng.annotations.Test;
 public class TestDateTimePrintException {
 
     @Test
-    public void test_constructor_StringThrowable_notIOException_same() throws Exception {
+    public void test_constructor_String() throws Exception {
+        DateTimePrintException ex = new DateTimePrintException("TEST");
+        assertEquals(ex.getMessage(), "TEST");
+    }
+
+    @Test
+    public void test_constructor_StringThrowable_notIOException_equal() throws Exception {
         IllegalArgumentException iaex = new IllegalArgumentException("INNER");
         DateTimePrintException ex = new DateTimePrintException("TEST", iaex);
         assertEquals(ex.getMessage(), "TEST");
-        assertSame(ex.getCause(), iaex);
+        assertEquals(ex.getCause(), iaex);
         ex.rethrowIOException();  // no effect
     }
 
     @Test(expectedExceptions=IOException.class)
-    public void test_constructor_StringThrowable_IOException_same() throws Exception {
+    public void test_constructor_StringThrowable_IOException() throws Exception {
         IOException ioex = new IOException("INNER");
         DateTimePrintException ex = new DateTimePrintException("TEST", ioex);
         assertEquals(ex.getMessage(), "TEST");
-        assertSame(ex.getCause(), ioex);
+        assertEquals(ex.getCause(), ioex);
         ex.rethrowIOException();  // rethrows
     }
 

@@ -47,7 +47,7 @@ import org.threeten.bp.temporal.TemporalField;
  * Test SimpleDateTimeTextProvider.
  */
 @Test
-public class TCKSimpleDateTimeTextProvider {
+public class TestSimpleDateTimeTextProvider {
 
     Locale enUS = new Locale("en", "US");
     Locale ptBR = new Locale("pt", "BR");
