@@ -59,6 +59,7 @@ import org.threeten.bp.format.DateTimeBuilder;
 /**
  * Test assertions that must be true for all built-in chronologies.
  */
+@SuppressWarnings("rawtypes")
 @Test
 public class TestChronoZonedDateTime {
     //-----------------------------------------------------------------------
@@ -108,7 +109,7 @@ public class TestChronoZonedDateTime {
             TemporalAdder adjuster = new FixedAdjuster(czdt2);
             if (chrono != chrono2) {
                 try {
-                    ChronoZonedDateTime<?> notreached = czdt.plus(adjuster);
+                    czdt.plus(adjuster);
                     Assert.fail("WithAdjuster should have thrown a ClassCastException, "
                             + "required: " + czdt + ", supplied: " + czdt2);
                 } catch (ClassCastException cce) {
@@ -132,7 +133,7 @@ public class TestChronoZonedDateTime {
             TemporalSubtractor adjuster = new FixedAdjuster(czdt2);
             if (chrono != chrono2) {
                 try {
-                    ChronoZonedDateTime<?> notreached = czdt.minus(adjuster);
+                    czdt.minus(adjuster);
                     Assert.fail("WithAdjuster should have thrown a ClassCastException, "
                             + "required: " + czdt + ", supplied: " + czdt2);
                 } catch (ClassCastException cce) {
@@ -156,7 +157,7 @@ public class TestChronoZonedDateTime {
             TemporalUnit adjuster = new FixedPeriodUnit(czdt2);
             if (chrono != chrono2) {
                 try {
-                    ChronoZonedDateTime<?> notreached = czdt.plus(1, adjuster);
+                    czdt.plus(1, adjuster);
                     Assert.fail("PeriodUnit.doPlus plus should have thrown a ClassCastException, " + czdt
                             + " can not be cast to " + czdt2);
                 } catch (ClassCastException cce) {
@@ -180,7 +181,7 @@ public class TestChronoZonedDateTime {
             TemporalUnit adjuster = new FixedPeriodUnit(czdt2);
             if (chrono != chrono2) {
                 try {
-                    ChronoZonedDateTime<?> notreached = czdt.minus(1, adjuster);
+                    czdt.minus(1, adjuster);
                     Assert.fail("PeriodUnit.doPlus minus should have thrown a ClassCastException, " + czdt.getClass()
                             + " can not be cast to " + czdt2.getClass());
                 } catch (ClassCastException cce) {
@@ -204,7 +205,7 @@ public class TestChronoZonedDateTime {
             TemporalField adjuster = new FixedDateTimeField(czdt2);
             if (chrono != chrono2) {
                 try {
-                    ChronoZonedDateTime<?> notreached = czdt.with(adjuster, 1);
+                    czdt.with(adjuster, 1);
                     Assert.fail("DateTimeField doWith() should have thrown a ClassCastException, " + czdt.getClass()
                             + " can not be cast to " + czdt2.getClass());
                 } catch (ClassCastException cce) {
@@ -221,6 +222,7 @@ public class TestChronoZonedDateTime {
     //-----------------------------------------------------------------------
     // isBefore, isAfter, isEqual, INSTANT_COMPARATOR  test a Chrono against the other Chronos
     //-----------------------------------------------------------------------
+    @SuppressWarnings("unused")
     @Test(dataProvider="calendars")
     public void test_zonedDateTime_comparisons(Chrono chrono) {
         List<ChronoZonedDateTime<?>> dates = new ArrayList<>();
@@ -362,9 +364,10 @@ public class TestChronoZonedDateTime {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public <R extends Temporal> R doPlus(R dateTime, long periodToAdd) {
-            return (R)this.dateTime;
+            return (R) this.dateTime;
         }
 
         @Override

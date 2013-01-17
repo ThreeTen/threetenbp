@@ -66,6 +66,7 @@ import org.threeten.bp.temporal.ValueRange;
 /**
  * Test assertions that must be true for all built-in chronologies.
  */
+@SuppressWarnings("rawtypes")
 @Test
 public class TestChronoLocalDateTime {
     //-----------------------------------------------------------------------
@@ -91,7 +92,7 @@ public class TestChronoLocalDateTime {
             TemporalAdjuster adjuster = new FixedAdjuster(cdt2);
             if (chrono != chrono2) {
                 try {
-                    ChronoLocalDateTime<?> notreached = cdt.with(adjuster);
+                    cdt.with(adjuster);
                     Assert.fail("WithAdjuster should have thrown a ClassCastException, "
                             + "required: " + cdt + ", supplied: " + cdt2);
                 } catch (ClassCastException cce) {
@@ -115,7 +116,7 @@ public class TestChronoLocalDateTime {
             TemporalAdder adjuster = new FixedAdjuster(cdt2);
             if (chrono != chrono2) {
                 try {
-                    ChronoLocalDateTime<?> notreached = cdt.plus(adjuster);
+                    cdt.plus(adjuster);
                     Assert.fail("WithAdjuster should have thrown a ClassCastException, "
                             + "required: " + cdt + ", supplied: " + cdt2);
                 } catch (ClassCastException cce) {
@@ -139,7 +140,7 @@ public class TestChronoLocalDateTime {
             TemporalSubtractor adjuster = new FixedAdjuster(cdt2);
             if (chrono != chrono2) {
                 try {
-                    ChronoLocalDateTime<?> notreached = cdt.minus(adjuster);
+                    cdt.minus(adjuster);
                     Assert.fail("WithAdjuster should have thrown a ClassCastException, "
                             + "required: " + cdt + ", supplied: " + cdt2);
                 } catch (ClassCastException cce) {
@@ -163,7 +164,7 @@ public class TestChronoLocalDateTime {
             TemporalUnit adjuster = new FixedPeriodUnit(cdt2);
             if (chrono != chrono2) {
                 try {
-                    ChronoLocalDateTime<?> notreached = cdt.plus(1, adjuster);
+                    cdt.plus(1, adjuster);
                     Assert.fail("PeriodUnit.doAdd plus should have thrown a ClassCastException" + cdt
                             + ", can not be cast to " + cdt2);
                 } catch (ClassCastException cce) {
@@ -187,7 +188,7 @@ public class TestChronoLocalDateTime {
             TemporalUnit adjuster = new FixedPeriodUnit(cdt2);
             if (chrono != chrono2) {
                 try {
-                    ChronoLocalDateTime<?> notreached = cdt.minus(1, adjuster);
+                    cdt.minus(1, adjuster);
                     Assert.fail("PeriodUnit.doAdd minus should have thrown a ClassCastException" + cdt.getClass()
                             + ", can not be cast to " + cdt2.getClass());
                 } catch (ClassCastException cce) {
@@ -211,7 +212,7 @@ public class TestChronoLocalDateTime {
             TemporalField adjuster = new FixedDateTimeField(cdt2);
             if (chrono != chrono2) {
                 try {
-                    ChronoLocalDateTime<?> notreached = cdt.with(adjuster, 1);
+                    cdt.with(adjuster, 1);
                     Assert.fail("DateTimeField doSet should have thrown a ClassCastException" + cdt.getClass()
                             + ", can not be cast to " + cdt2.getClass());
                 } catch (ClassCastException cce) {

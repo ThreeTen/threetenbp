@@ -64,6 +64,7 @@ import org.threeten.bp.temporal.ValueRange;
 /**
  * Test assertions that must be true for all built-in chronologies.
  */
+@SuppressWarnings("rawtypes")
 @Test
 public class TestChronoLocalDate {
     //-----------------------------------------------------------------------
@@ -89,7 +90,7 @@ public class TestChronoLocalDate {
             TemporalAdjuster adjuster = new FixedAdjuster(date2);
             if (chrono != chrono2) {
                 try {
-                    ChronoLocalDate<?> notreached = date.with(adjuster);
+                    date.with(adjuster);
                     Assert.fail("WithAdjuster should have thrown a ClassCastException");
                 } catch (ClassCastException cce) {
                     // Expected exception; not an error
@@ -112,7 +113,7 @@ public class TestChronoLocalDate {
             TemporalAdder adjuster = new FixedAdjuster(date2);
             if (chrono != chrono2) {
                 try {
-                    ChronoLocalDate<?> notreached = date.plus(adjuster);
+                    date.plus(adjuster);
                     Assert.fail("WithAdjuster should have thrown a ClassCastException");
                 } catch (ClassCastException cce) {
                     // Expected exception; not an error
@@ -135,7 +136,7 @@ public class TestChronoLocalDate {
             TemporalSubtractor adjuster = new FixedAdjuster(date2);
             if (chrono != chrono2) {
                 try {
-                    ChronoLocalDate<?> notreached = date.minus(adjuster);
+                    date.minus(adjuster);
                     Assert.fail("WithAdjuster should have thrown a ClassCastException");
                 } catch (ClassCastException cce) {
                     // Expected exception; not an error
@@ -158,7 +159,7 @@ public class TestChronoLocalDate {
             TemporalUnit adjuster = new FixedPeriodUnit(date2);
             if (chrono != chrono2) {
                 try {
-                    ChronoLocalDate<?> notreached = date.plus(1, adjuster);
+                    date.plus(1, adjuster);
                     Assert.fail("PeriodUnit.doAdd plus should have thrown a ClassCastException" + date.getClass()
                             + ", can not be cast to " + date2.getClass());
                 } catch (ClassCastException cce) {
@@ -182,7 +183,7 @@ public class TestChronoLocalDate {
             TemporalUnit adjuster = new FixedPeriodUnit(date2);
             if (chrono != chrono2) {
                 try {
-                    ChronoLocalDate<?> notreached = date.minus(1, adjuster);
+                    date.minus(1, adjuster);
                     Assert.fail("PeriodUnit.doAdd minus should have thrown a ClassCastException" + date.getClass()
                             + ", can not be cast to " + date2.getClass());
                 } catch (ClassCastException cce) {
@@ -206,7 +207,7 @@ public class TestChronoLocalDate {
             TemporalField adjuster = new FixedDateTimeField(date2);
             if (chrono != chrono2) {
                 try {
-                    ChronoLocalDate<?> notreached = date.with(adjuster, 1);
+                    date.with(adjuster, 1);
                     Assert.fail("DateTimeField doSet should have thrown a ClassCastException" + date.getClass()
                             + ", can not be cast to " + date2.getClass());
                 } catch (ClassCastException cce) {

@@ -611,7 +611,6 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
             public long getLong(TemporalField field) {
                 return TEST_DATE_TIME_PARIS.getDateTime().getLong(field);
             }
-            @SuppressWarnings("unchecked")
             @Override
             public <R> R query(TemporalQuery<R> query) {
                 if (query == TemporalQueries.zoneId()) {
@@ -633,7 +632,6 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
             public long getLong(TemporalField field) {
                 return TEST_DATE_TIME_PARIS.toInstant().getLong(field);
             }
-            @SuppressWarnings("unchecked")
             @Override
             public <R> R query(TemporalQuery<R> query) {
                 if (query == TemporalQueries.zoneId()) {

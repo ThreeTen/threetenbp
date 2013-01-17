@@ -193,7 +193,7 @@ public class TestJapaneseChrono {
     }
 
     @Test(dataProvider="japaneseEras")
-    public void test_Japanese_Eras(Era era, int eraValue, String name) {
+    public void test_Japanese_Eras(Era<?> era, int eraValue, String name) {
         assertEquals(era.getValue(), eraValue, "EraValue");
         assertEquals(era.toString(), name, "Era Name");
         assertEquals(era, JapaneseChrono.INSTANCE.eraOf(eraValue), "JapaneseChrono.eraOf()");
