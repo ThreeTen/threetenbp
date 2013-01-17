@@ -7,3 +7,5 @@
 /temp*
 /nbproject/
 /target/
+/*.launch
+/*.dic
