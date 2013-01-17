@@ -98,7 +98,7 @@ import org.threeten.bp.temporal.ValueRange;
  *   Location: org.threeten.bp.i18n.HijrahDate.deviationConfigDir
  *   File name: org.threeten.bp.i18n.HijrahDate.deviationConfigFile</pre>
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
 final class HijrahDate

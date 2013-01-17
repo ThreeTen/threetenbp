@@ -38,7 +38,7 @@ package org.threeten.bp.format;
  * to be controlled using this enum.
  * See {@link DateTimeFormatterBuilder} for usage.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This is an immutable and thread-safe enum.
  */
 public enum SignStyle {

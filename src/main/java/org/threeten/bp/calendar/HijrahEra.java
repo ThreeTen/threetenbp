@@ -59,7 +59,7 @@ import org.threeten.bp.temporal.ValueRange;
  * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code HijrahEra}.
  * Use {@code getValue()} instead.</b>
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This is an immutable and thread-safe enum.
  */
 enum HijrahEra implements Era<HijrahChrono> {

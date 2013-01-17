@@ -49,7 +49,7 @@ import org.threeten.bp.format.TextStyle;
  * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code ISOEra}.
  * Use {@code getValue()} instead.</b>
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This is an immutable and thread-safe enum.
  */
 enum ISOEra implements Era<ISOChrono> {

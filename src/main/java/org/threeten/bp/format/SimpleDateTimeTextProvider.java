@@ -57,7 +57,7 @@ import org.threeten.bp.temporal.TemporalField;
  * <p>
  * This implementation is based on extraction of data from a {@link DateFormatSymbols}.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
 final class SimpleDateTimeTextProvider extends DateTimeTextProvider {

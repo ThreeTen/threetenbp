@@ -62,7 +62,7 @@ import org.threeten.bp.temporal.TemporalField;
  * <li>Using predefined constants, such as {@code isoLocalDate()}
  * </ul><p>
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This is a thread-safe utility class.
  * All returned formatters are immutable and thread-safe.
  */

@@ -58,7 +58,7 @@ import org.threeten.bp.temporal.ValueRange;
  * <b>Do not use ordinal() to obtain the numeric representation of a ThaiBuddhistEra
  * instance. Use getValue() instead.</b>
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This is an immutable and thread-safe enum.
  */
 enum ThaiBuddhistEra implements Era<ThaiBuddhistChrono> {

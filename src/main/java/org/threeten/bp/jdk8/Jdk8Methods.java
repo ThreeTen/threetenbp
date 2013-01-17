@@ -38,7 +38,7 @@ package org.threeten.bp.jdk8;
  * The contents of this class are likely to be replaced by other methods if and
  * when JSR-310 is integrated into the JDK.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This is a thread-safe utility class.
  * All returned classes are immutable and thread-safe.
  */

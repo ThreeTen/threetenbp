@@ -58,7 +58,7 @@ import org.threeten.bp.temporal.TemporalAccessor;
  * Some applications may need to use the older {@link Format} class for formatting.
  * The {@link #toFormat()} method returns an implementation of the old API.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
 public final class DateTimeFormatter {

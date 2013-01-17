@@ -36,7 +36,7 @@ package org.threeten.bp.format;
  * <p>
  * This defines the "size" of the text to be output.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This is immutable and thread-safe enum.
  */
 public enum TextStyle {

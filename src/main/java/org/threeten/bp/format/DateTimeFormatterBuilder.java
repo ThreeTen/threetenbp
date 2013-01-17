@@ -97,7 +97,7 @@ import org.threeten.bp.zone.ZoneRulesProvider;
  * can be used, see {@link #appendPattern(String)}.
  * In practice, this simply parses the pattern and calls other methods on the builder.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This class is a mutable builder intended for use from a single thread.
  */
 public final class DateTimeFormatterBuilder {
@@ -1332,7 +1332,7 @@ public final class DateTimeFormatterBuilder {
      * for the next parser. If an error occurs, the returned index will be negative
      * and will have the error position encoded using the complement operator.
      *
-     * <h4>Implementation notes</h4>
+     * <h3>Specification for implementors</h3>
      * This interface must be implemented with care to ensure other classes operate correctly.
      * All implementations that can be instantiated must be final, immutable and thread-safe.
      * <p>

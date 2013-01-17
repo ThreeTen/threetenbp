@@ -67,7 +67,7 @@ import org.threeten.bp.ZonedDateTime;
  * <li>leap-year - Leap years occur every 4 years, except where the year is divisble by 100 and not divisble by 400.
  * </ul><p>
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
 public final class ISOChrono extends Chrono<ISOChrono> implements Serializable {

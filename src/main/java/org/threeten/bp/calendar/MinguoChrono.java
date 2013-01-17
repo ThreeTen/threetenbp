@@ -71,7 +71,7 @@ import org.threeten.bp.temporal.ValueRange;
  *  are never out of step.
  * </ul><p>
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
 public final class MinguoChrono extends Chrono<MinguoChrono> implements Serializable {

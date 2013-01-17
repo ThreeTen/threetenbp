@@ -48,7 +48,7 @@ import org.threeten.bp.temporal.TemporalField;
  * Once parsing is complete, the {@link #toBuilder()} is typically used
  * to obtain a builder that can combine the separate parsed fields into meaningful values.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This class is a mutable context intended for use from a single thread.
  * Usage of the class is thread-safe within standard parsing as a new instance of this class
  * is automatically created for each parse and parsing is single-threaded

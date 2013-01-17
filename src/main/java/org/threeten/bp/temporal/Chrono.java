@@ -117,7 +117,7 @@ import org.threeten.bp.zone.ZoneRules;
  * <em>Unicode Locale Data Markup Language (LDML)</em> specification then that
  * calendar type should also be specified.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * Subclasses should be Serializable wherever possible.

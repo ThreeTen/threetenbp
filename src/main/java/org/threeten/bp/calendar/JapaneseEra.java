@@ -56,7 +56,7 @@ import sun.util.calendar.CalendarDate;
  * and the year of era of Seireki is proleptic Gregorian year.
  * (The Julian to Gregorian transition is not supported.)
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
 final class JapaneseEra

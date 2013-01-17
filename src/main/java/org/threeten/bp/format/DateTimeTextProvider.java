@@ -42,7 +42,7 @@ import org.threeten.bp.temporal.TemporalField;
  * The Service Provider Interface (SPI) to be implemented by classes providing
  * the textual form of a date-time field.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This interface is a service provider that can be called by multiple threads.
  * Implementations must be thread-safe.
  * Implementations should cache the textual information.

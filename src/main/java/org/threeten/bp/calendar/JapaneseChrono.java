@@ -64,7 +64,7 @@ import sun.util.calendar.LocalGregorianCalendar;
  * Only Meiji (1865-04-07 - 1868-09-07) and later eras are supported.
  * Older eras are handled as an unknown era where the year-of-era is the ISO year.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
 public final class JapaneseChrono extends Chrono<JapaneseChrono> implements Serializable {

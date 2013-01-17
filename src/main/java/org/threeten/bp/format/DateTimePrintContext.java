@@ -44,7 +44,7 @@ import org.threeten.bp.temporal.TemporalQuery;
  * <p>
  * This class provides a single wrapper to items used in the print.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This class is a mutable context intended for use from a single thread.
  * Usage of the class is thread-safe within standard printing as the framework creates
  * a new instance of the class for each print and printing is single-threaded.

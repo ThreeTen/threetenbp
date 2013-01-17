@@ -56,7 +56,7 @@ import org.threeten.bp.jdk8.Jdk8Methods;
  * It does not store or represent a time-zone. For example, the value
  * "2nd October 2007 at 13:45.30.123456789" can be stored in an {@code ChronoLocalDateTime}.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  *
  * @param <C> the chronology of this date

@@ -63,7 +63,7 @@ import org.threeten.bp.format.DateTimeFormatter;
  * Ensure that the discussion in {@code ChronoLocalDate} has been read and understood
  * before using this interface.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * Subclasses should be Serializable wherever possible.

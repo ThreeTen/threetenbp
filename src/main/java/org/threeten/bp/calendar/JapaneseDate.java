@@ -58,7 +58,7 @@ import sun.util.calendar.LocalGregorianCalendar;
  * This implements {@code ChronoLocalDate} for the
  * {@linkplain JapaneseChrono Japanese Imperial calendar}.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
 final class JapaneseDate

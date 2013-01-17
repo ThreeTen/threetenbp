@@ -60,7 +60,7 @@ import org.threeten.bp.zone.ZoneRules;
  * the local time-line overlaps, typically as a result of the end of daylight time.
  * Information about the local-time can be obtained using methods on the time-zone.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  *
  * @param <C> the chronology of this date

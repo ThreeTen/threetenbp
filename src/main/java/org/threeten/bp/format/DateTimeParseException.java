@@ -38,7 +38,7 @@ import org.threeten.bp.DateTimeException;
  * <p>
  * This exception includes the text being parsed and the error index.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This class is intended for use in a single thread.
  */
 public class DateTimeParseException extends DateTimeException {

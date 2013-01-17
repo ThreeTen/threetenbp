@@ -101,7 +101,7 @@ import org.threeten.bp.temporal.TemporalQuery;
  * like {@code LocalDateTime}.
  * </ul><p>
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This class is mutable and not thread-safe.
  * It should only be used from a single thread.
  */

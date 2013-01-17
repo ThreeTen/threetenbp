@@ -44,7 +44,7 @@ import org.threeten.bp.temporal.Chrono;
  * <p>
  * This implementation is based on extraction of data from a {@link SimpleDateFormat}.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
 final class SimpleDateTimeFormatStyleProvider extends DateTimeFormatStyleProvider {

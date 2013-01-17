@@ -105,7 +105,7 @@ import org.threeten.bp.temporal.TemporalUnit;
  * {@link Chrono#getID calendar name} and
  * {@link Chrono#getCalendarType() calendar type}. </p>
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This abstract class must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * Subclasses should be Serializable wherever possible.
