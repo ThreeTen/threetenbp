@@ -56,12 +56,12 @@ public class TCKTemporalAdjusters {
     //-----------------------------------------------------------------------
     // firstDayOfMonth()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_firstDayOfMonth() {
         assertNotNull(TemporalAdjusters.firstDayOfMonth());
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_firstDayOfMonth_nonLeap() {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(false); i++) {
@@ -74,7 +74,7 @@ public class TCKTemporalAdjusters {
         }
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_firstDayOfMonth_leap() {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(true); i++) {
@@ -90,12 +90,12 @@ public class TCKTemporalAdjusters {
     //-----------------------------------------------------------------------
     // lastDayOfMonth()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_lastDayOfMonth() {
         assertNotNull(TemporalAdjusters.lastDayOfMonth());
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_lastDayOfMonth_nonLeap() {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(false); i++) {
@@ -108,7 +108,7 @@ public class TCKTemporalAdjusters {
         }
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_lastDayOfMonth_leap() {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(true); i++) {
@@ -124,12 +124,12 @@ public class TCKTemporalAdjusters {
     //-----------------------------------------------------------------------
     // firstDayOfNextMonth()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_firstDayOfNextMonth() {
         assertNotNull(TemporalAdjusters.firstDayOfNextMonth());
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_firstDayOfNextMonth_nonLeap() {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(false); i++) {
@@ -142,7 +142,7 @@ public class TCKTemporalAdjusters {
         }
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_firstDayOfNextMonth_leap() {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(true); i++) {
@@ -158,12 +158,12 @@ public class TCKTemporalAdjusters {
     //-----------------------------------------------------------------------
     // firstDayOfYear()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_firstDayOfYear() {
         assertNotNull(TemporalAdjusters.firstDayOfYear());
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_firstDayOfYear_nonLeap() {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(false); i++) {
@@ -176,7 +176,7 @@ public class TCKTemporalAdjusters {
         }
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_firstDayOfYear_leap() {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(true); i++) {
@@ -192,12 +192,12 @@ public class TCKTemporalAdjusters {
     //-----------------------------------------------------------------------
     // lastDayOfYear()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_lastDayOfYear() {
         assertNotNull(TemporalAdjusters.lastDayOfYear());
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_lastDayOfYear_nonLeap() {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(false); i++) {
@@ -210,7 +210,7 @@ public class TCKTemporalAdjusters {
         }
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_lastDayOfYear_leap() {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(true); i++) {
@@ -226,12 +226,12 @@ public class TCKTemporalAdjusters {
     //-----------------------------------------------------------------------
     // firstDayOfNextYear()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_firstDayOfNextYear() {
         assertNotNull(TemporalAdjusters.firstDayOfNextYear());
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_firstDayOfNextYear_nonLeap() {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(false); i++) {
@@ -244,7 +244,7 @@ public class TCKTemporalAdjusters {
         }
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_firstDayOfNextYear_leap() {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(true); i++) {
@@ -260,12 +260,12 @@ public class TCKTemporalAdjusters {
     //-----------------------------------------------------------------------
     // dayOfWeekInMonth()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_dayOfWeekInMonth() {
         assertNotNull(TemporalAdjusters.dayOfWeekInMonth(1, MONDAY));
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void factory_dayOfWeekInMonth_nullDayOfWeek() {
         TemporalAdjusters.dayOfWeekInMonth(1, null);
     }
@@ -288,7 +288,7 @@ public class TCKTemporalAdjusters {
         };
     }
 
-    @Test(groups={"tck"}, dataProvider = "dayOfWeekInMonth_positive")
+    @Test(dataProvider = "dayOfWeekInMonth_positive")
     public void test_dayOfWeekInMonth_positive(int year, int month, DayOfWeek dow, LocalDate expected) {
         for (int ordinal = 1; ordinal <= 5; ordinal++) {
             for (int day = 1; day <= Month.of(month).length(false); day++) {
@@ -317,7 +317,7 @@ public class TCKTemporalAdjusters {
         };
     }
 
-    @Test(groups={"tck"}, dataProvider = "dayOfWeekInMonth_zero")
+    @Test(dataProvider = "dayOfWeekInMonth_zero")
     public void test_dayOfWeekInMonth_zero(int year, int month, DayOfWeek dow, LocalDate expected) {
         for (int day = 1; day <= Month.of(month).length(false); day++) {
             LocalDate date = date(year, month, day);
@@ -344,7 +344,7 @@ public class TCKTemporalAdjusters {
         };
     }
 
-    @Test(groups={"tck"}, dataProvider = "dayOfWeekInMonth_negative")
+    @Test(dataProvider = "dayOfWeekInMonth_negative")
     public void test_dayOfWeekInMonth_negative(int year, int month, DayOfWeek dow, LocalDate expected) {
         for (int ordinal = 0; ordinal < 5; ordinal++) {
             for (int day = 1; day <= Month.of(month).length(false); day++) {
@@ -358,17 +358,17 @@ public class TCKTemporalAdjusters {
     //-----------------------------------------------------------------------
     // firstInMonth()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_firstInMonth() {
         assertNotNull(TemporalAdjusters.firstInMonth(MONDAY));
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void factory_firstInMonth_nullDayOfWeek() {
         TemporalAdjusters.firstInMonth(null);
     }
 
-    @Test(groups={"tck"}, dataProvider = "dayOfWeekInMonth_positive")
+    @Test(dataProvider = "dayOfWeekInMonth_positive")
     public void test_firstInMonth(int year, int month, DayOfWeek dow, LocalDate expected) {
         for (int day = 1; day <= Month.of(month).length(false); day++) {
             LocalDate date = date(year, month, day);
@@ -380,17 +380,17 @@ public class TCKTemporalAdjusters {
     //-----------------------------------------------------------------------
     // lastInMonth()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_lastInMonth() {
         assertNotNull(TemporalAdjusters.lastInMonth(MONDAY));
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void factory_lastInMonth_nullDayOfWeek() {
         TemporalAdjusters.lastInMonth(null);
     }
 
-    @Test(groups={"tck"}, dataProvider = "dayOfWeekInMonth_negative")
+    @Test(dataProvider = "dayOfWeekInMonth_negative")
     public void test_lastInMonth(int year, int month, DayOfWeek dow, LocalDate expected) {
         for (int day = 1; day <= Month.of(month).length(false); day++) {
             LocalDate date = date(year, month, day);
@@ -402,17 +402,17 @@ public class TCKTemporalAdjusters {
     //-----------------------------------------------------------------------
     // next()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_next() {
         assertNotNull(TemporalAdjusters.next(MONDAY));
     }
 
-    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions = NullPointerException.class)
     public void factory_next_nullDayOfWeek() {
         TemporalAdjusters.next(null);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_next() {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(false); i++) {
@@ -441,17 +441,17 @@ public class TCKTemporalAdjusters {
     //-----------------------------------------------------------------------
     // nextOrSame()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_nextOrSame() {
         assertNotNull(TemporalAdjusters.nextOrSame(MONDAY));
     }
 
-    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions = NullPointerException.class)
     public void factory_nextOrSame_nullDayOfWeek() {
         TemporalAdjusters.nextOrSame(null);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_nextOrSame() {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(false); i++) {
@@ -482,17 +482,17 @@ public class TCKTemporalAdjusters {
     //-----------------------------------------------------------------------
     // previous()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_previous() {
         assertNotNull(TemporalAdjusters.previous(MONDAY));
     }
 
-    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions = NullPointerException.class)
     public void factory_previous_nullDayOfWeek() {
         TemporalAdjusters.previous(null);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_previous() {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(false); i++) {
@@ -521,17 +521,17 @@ public class TCKTemporalAdjusters {
     //-----------------------------------------------------------------------
     // previousOrSame()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_previousOrSame() {
         assertNotNull(TemporalAdjusters.previousOrSame(MONDAY));
     }
 
-    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions = NullPointerException.class)
     public void factory_previousOrSame_nullDayOfWeek() {
         TemporalAdjusters.previousOrSame(null);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_previousOrSame() {
         for (Month month : Month.values()) {
             for (int i = 1; i <= month.length(false); i++) {

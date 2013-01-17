@@ -43,13 +43,13 @@ import org.testng.annotations.Test;
 @Test
 public class TCKDateTimePrintException {
 
-    @Test(groups={"tck"})
+    @Test
     public void test_constructor_String() throws Exception {
         DateTimePrintException ex = new DateTimePrintException("TEST");
         assertEquals(ex.getMessage(), "TEST");
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_constructor_StringThrowable_notIOException_equal() throws Exception {
         IllegalArgumentException iaex = new IllegalArgumentException("INNER");
         DateTimePrintException ex = new DateTimePrintException("TEST", iaex);
@@ -58,7 +58,7 @@ public class TCKDateTimePrintException {
         ex.rethrowIOException();  // no effect
     }
 
-    @Test(expectedExceptions=IOException.class, groups={"tck"})
+    @Test(expectedExceptions=IOException.class)
     public void test_constructor_StringThrowable_IOException() throws Exception {
         IOException ioex = new IOException("INNER");
         DateTimePrintException ex = new DateTimePrintException("TEST", ioex);

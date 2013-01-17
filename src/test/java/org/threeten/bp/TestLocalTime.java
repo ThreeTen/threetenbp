@@ -95,7 +95,7 @@ public class TestLocalTime extends AbstractDateTimeTest {
         INVALID_UNITS = (TemporalUnit[]) set.toArray(new TemporalUnit[set.size()]);
     }
 
-    @BeforeMethod(groups={"tck","implementation"})
+    @BeforeMethod
     public void setUp() {
         TEST_12_30_40_987654321 = LocalTime.of(12, 30, 40, 987654321);
     }
@@ -159,7 +159,7 @@ public class TestLocalTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"tck","implementation"})
+    @Test
     public void constant_MIDNIGHT() {
         check(LocalTime.MIDNIGHT, 0, 0, 0, 0);
     }
@@ -170,7 +170,7 @@ public class TestLocalTime extends AbstractDateTimeTest {
         assertEquals(LocalTime.MIDNIGHT, LocalTime.of(0, 0));
     }
 
-    @Test(groups={"tck","implementation"})
+    @Test
     public void constant_MIDDAY() {
         check(LocalTime.NOON, 12, 0, 0, 0);
     }
@@ -182,7 +182,7 @@ public class TestLocalTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"tck","implementation"})
+    @Test
     public void constant_MIN_TIME() {
         check(LocalTime.MIN, 0, 0, 0, 0);
     }
@@ -192,7 +192,7 @@ public class TestLocalTime extends AbstractDateTimeTest {
         assertEquals(LocalTime.MIN, LocalTime.of(0, 0));
     }
 
-    @Test(groups={"tck","implementation"})
+    @Test
     public void constant_MAX_TIME() {
         check(LocalTime.MAX, 23, 59, 59, 999999999);
     }
@@ -588,17 +588,17 @@ public class TestLocalTime extends AbstractDateTimeTest {
         assertEquals(test.getLong(ChronoField.AMPM_OF_DAY), 1);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_get_DateTimeField_null() {
         TEST_12_30_40_987654321.getLong((TemporalField) null);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_get_DateTimeField_invalidField() {
         TEST_12_30_40_987654321.getLong(MockFieldNoValue.INSTANCE);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_get_DateTimeField_dateField() {
         TEST_12_30_40_987654321.getLong(ChronoField.DAY_OF_MONTH);
     }
@@ -881,7 +881,7 @@ public class TestLocalTime extends AbstractDateTimeTest {
         assertEquals(t, LocalTime.of(0, 30));
     }
 
-    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_plus_Adjuster_dateNotAllowed() {
         TemporalAdder period = MockSimplePeriod.of(7, ChronoUnit.MONTHS);
         TEST_12_30_40_987654321.plus(period);
@@ -1364,7 +1364,7 @@ public class TestLocalTime extends AbstractDateTimeTest {
         assertEquals(t, LocalTime.of(23, 30));
     }
 
-    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_minus_Adjuster_dateNotAllowed() {
         TemporalSubtractor period = MockSimplePeriod.of(7, ChronoUnit.MONTHS);
         TEST_12_30_40_987654321.minus(period);

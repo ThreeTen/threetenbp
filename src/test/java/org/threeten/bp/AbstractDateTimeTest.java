@@ -67,7 +67,7 @@ public abstract class AbstractDateTimeTest extends AbstractTest {
     //-----------------------------------------------------------------------
     // isSupported(DateTimeField)
     //-----------------------------------------------------------------------
-    @Test(groups = "tck")
+    @Test
     public void basicTest_isSupported_DateTimeField_supported() {
         for (TemporalAccessor sample : samples()) {
             for (TemporalField field : validFields()) {
@@ -76,7 +76,7 @@ public abstract class AbstractDateTimeTest extends AbstractTest {
         }
     }
 
-    @Test(groups = "tck")
+    @Test
     public void basicTest_isSupported_DateTimeField_unsupported() {
         for (TemporalAccessor sample : samples()) {
             for (TemporalField field : invalidFields()) {
@@ -85,7 +85,7 @@ public abstract class AbstractDateTimeTest extends AbstractTest {
         }
     }
 
-    @Test(groups = "tck")
+    @Test
     public void basicTest_isSupported_DateTimeField_null() {
         for (TemporalAccessor sample : samples()) {
             assertEquals(sample.isSupported(null), false, "Failed on " + sample);
@@ -96,7 +96,7 @@ public abstract class AbstractDateTimeTest extends AbstractTest {
     // range(DateTimeField)
     //-----------------------------------------------------------------------
 // TODO needs implementations of week fields
-//    @Test(groups = "tck")
+//    @Test
 //    public void basicTest_range_DateTimeField_supported() {
 //        for (DateTimeAccessor sample : samples()) {
 //            for (DateTimeField field : validFields()) {
@@ -105,7 +105,7 @@ public abstract class AbstractDateTimeTest extends AbstractTest {
 //        }
 //    }
 
-    @Test(groups = "tck")
+    @Test
     public void basicTest_range_DateTimeField_unsupported() {
         for (TemporalAccessor sample : samples()) {
             for (TemporalField field : invalidFields()) {
@@ -119,7 +119,7 @@ public abstract class AbstractDateTimeTest extends AbstractTest {
         }
     }
 
-    @Test(groups = "tck")
+    @Test
     public void basicTest_range_DateTimeField_null() {
         for (TemporalAccessor sample : samples()) {
             try {
@@ -135,7 +135,7 @@ public abstract class AbstractDateTimeTest extends AbstractTest {
     // get(DateTimeField)
     //-----------------------------------------------------------------------
 // TODO needs implementations of week fields
-//    @Test(groups = "tck")
+//    @Test
 //    public void basicTest_get_DateTimeField_supported() {
 //        for (DateTimeAccessor sample : samples()) {
 //            for (DateTimeField field : validFields()) {
@@ -153,7 +153,7 @@ public abstract class AbstractDateTimeTest extends AbstractTest {
 //        }
 //    }
 
-    @Test(groups = "tck")
+    @Test
     public void basicTest_get_DateTimeField_unsupported() {
         for (TemporalAccessor sample : samples()) {
             for (TemporalField field : invalidFields()) {
@@ -167,7 +167,7 @@ public abstract class AbstractDateTimeTest extends AbstractTest {
         }
     }
 
-    @Test(groups = "tck")
+    @Test
     public void basicTest_get_DateTimeField_null() {
         for (TemporalAccessor sample : samples()) {
             try {
@@ -183,7 +183,7 @@ public abstract class AbstractDateTimeTest extends AbstractTest {
     // getLong(DateTimeField)
     //-----------------------------------------------------------------------
 // TODO needs implementations of week fields
-//    @Test(groups = "tck")
+//    @Test
 //    public void basicTest_getLong_DateTimeField_supported() {
 //        for (DateTimeAccessor sample : samples()) {
 //            for (DateTimeField field : validFields()) {
@@ -192,7 +192,7 @@ public abstract class AbstractDateTimeTest extends AbstractTest {
 //        }
 //    }
 
-    @Test(groups = "tck")
+    @Test
     public void basicTest_getLong_DateTimeField_unsupported() {
         for (TemporalAccessor sample : samples()) {
             for (TemporalField field : invalidFields()) {
@@ -206,7 +206,7 @@ public abstract class AbstractDateTimeTest extends AbstractTest {
         }
     }
 
-    @Test(groups = "tck")
+    @Test
     public void basicTest_getLong_DateTimeField_null() {
         for (TemporalAccessor sample : samples()) {
             try {

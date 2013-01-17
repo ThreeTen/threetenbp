@@ -88,32 +88,32 @@ public class TestYear extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"implementation"})
+    @Test
     public void test_interfaces() {
         assertTrue(Serializable.class.isAssignableFrom(Year.class));
         assertTrue(Comparable.class.isAssignableFrom(Year.class));
         assertTrue(TemporalAdjuster.class.isAssignableFrom(Year.class));
     }
 
-    @Test(groups={"implementation"})
+    @Test
     public void test_plusYear_zero_same() {
         Year base = Year.of(2007);
         assertSame(base.plusYears(0), base);
     }
 
-    @Test(groups={"implementation"})
+    @Test
     public void test_minusYear_zero_same() {
         Year base = Year.of(2007);
         assertSame(base.minusYears(0), base);
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_serialization_format() throws ClassNotFoundException, IOException {
         assertEqualsSerialisedForm(Year.of(2012));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_serialization() throws ClassNotFoundException, IOException {
         assertSerializable(Year.of(-1));
     }

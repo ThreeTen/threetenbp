@@ -60,7 +60,7 @@ import org.threeten.bp.zone.ZoneOffsetTransitionRule.TimeDefinition;
 /**
  * Test ZoneRules.
  */
-@Test(groups="implementation")
+@Test
 public class TestStandardZoneRules {
 
     private static final ZoneOffset OFFSET_ZERO = ZoneOffset.ofHours(0);

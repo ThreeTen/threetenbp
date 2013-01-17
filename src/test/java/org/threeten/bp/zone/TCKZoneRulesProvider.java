@@ -53,7 +53,7 @@ public class TCKZoneRulesProvider {
     //-----------------------------------------------------------------------
     // getAvailableZoneIds()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_getAvailableGroupIds() {
         Set<String> zoneIds = ZoneRulesProvider.getAvailableZoneIds();
         assertEquals(zoneIds.contains("Europe/London"), true);
@@ -66,7 +66,7 @@ public class TCKZoneRulesProvider {
     //-----------------------------------------------------------------------
     // getRules(String)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_getRules_String() {
         ZoneRules rules = ZoneRulesProvider.getRules("Europe/London");
         assertNotNull(rules);
@@ -74,12 +74,12 @@ public class TCKZoneRulesProvider {
         assertEquals(rules2, rules);
     }
 
-    @Test(groups={"tck"}, expectedExceptions=ZoneRulesException.class)
+    @Test(expectedExceptions=ZoneRulesException.class)
     public void test_getRules_String_unknownId() {
         ZoneRulesProvider.getRules("Europe/Lon");
     }
 
-    @Test(groups={"tck"}, expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_getRules_String_null() {
         ZoneRulesProvider.getRules(null);
     }
@@ -87,7 +87,7 @@ public class TCKZoneRulesProvider {
     //-----------------------------------------------------------------------
     // getVersions(String)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_getVersions_String() {
         NavigableMap<String, ZoneRules> versions = ZoneRulesProvider.getVersions("Europe/London");
         assertTrue(versions.size() >= 1);
@@ -101,12 +101,12 @@ public class TCKZoneRulesProvider {
         assertEquals(versions2, copy);
     }
 
-    @Test(groups={"tck"}, expectedExceptions=ZoneRulesException.class)
+    @Test(expectedExceptions=ZoneRulesException.class)
     public void test_getVersions_String_unknownId() {
         ZoneRulesProvider.getVersions("Europe/Lon");
     }
 
-    @Test(groups={"tck"}, expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_getVersions_String_null() {
         ZoneRulesProvider.getVersions(null);
     }
@@ -114,7 +114,7 @@ public class TCKZoneRulesProvider {
     //-----------------------------------------------------------------------
     // refresh()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_refresh() {
         assertEquals(ZoneRulesProvider.refresh(), false);
     }
@@ -122,7 +122,7 @@ public class TCKZoneRulesProvider {
     //-----------------------------------------------------------------------
     // registerProvider()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_registerProvider() {
         Set<String> pre = ZoneRulesProvider.getAvailableZoneIds();
         assertEquals(pre.contains("FooLocation"), false);

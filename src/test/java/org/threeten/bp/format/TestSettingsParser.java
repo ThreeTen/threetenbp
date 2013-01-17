@@ -39,7 +39,7 @@ import org.threeten.bp.format.DateTimeFormatterBuilder.SettingsParser;
 /**
  * Test SettingsParser.
  */
-@Test(groups={"implementation"})
+@Test
 public class TestSettingsParser extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------

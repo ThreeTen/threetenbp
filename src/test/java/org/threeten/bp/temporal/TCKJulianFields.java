@@ -79,12 +79,12 @@ public class TCKJulianFields {
         };
     }
 
-    @Test(dataProvider="samples", groups={"tck"})
+    @Test(dataProvider="samples")
     public void test_samples_get(TemporalField field, LocalDate date, long expected) {
         assertEquals(date.getLong(field), expected);
     }
 
-    @Test(dataProvider="samples", groups={"tck"})
+    @Test(dataProvider="samples")
     public void test_samples_set(TemporalField field, LocalDate date, long value) {
         assertEquals(field.doWith(LocalDate.MAX, value), date);
         assertEquals(field.doWith(LocalDate.MIN, value), date);
@@ -96,7 +96,7 @@ public class TCKJulianFields {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_toString() {
         assertEquals(JulianFields.JULIAN_DAY.toString(), "JulianDay");
         assertEquals(JulianFields.MODIFIED_JULIAN_DAY.toString(), "ModifiedJulianDay");

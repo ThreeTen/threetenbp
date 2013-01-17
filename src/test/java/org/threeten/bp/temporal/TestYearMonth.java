@@ -62,7 +62,7 @@ public class TestYearMonth extends AbstractDateTimeTest {
 
     private YearMonth TEST_2008_06;
 
-    @BeforeMethod(groups={"tck", "implementation"})
+    @BeforeMethod
     public void setUp() {
         TEST_2008_06 = YearMonth.of(2008, 6);
     }
@@ -75,12 +75,12 @@ public class TestYearMonth extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_serialization_format() throws ClassNotFoundException, IOException {
         assertEqualsSerialisedForm(YearMonth.of(2012, 9));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_serialization() throws IOException, ClassNotFoundException {
         assertSerializable(TEST_2008_06);
     }
@@ -108,7 +108,7 @@ public class TestYearMonth extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"implementation"})
+    @Test
     public void test_interfaces() {
         Object obj = TEST_2008_06;
         assertTrue(obj instanceof Serializable);
@@ -122,55 +122,55 @@ public class TestYearMonth extends AbstractDateTimeTest {
         assertEquals(test.getMonth().getValue(), m);
     }
 
-    @Test(groups={"implementation"})
+    @Test
     public void test_with_Year_noChange_same() {
         YearMonth test = YearMonth.of(2008, 6);
         assertSame(test.with(Year.of(2008)), test);
     }
 
-    @Test(groups={"implementation"})
+    @Test
     public void test_with_Month_noChange_same() {
         YearMonth test = YearMonth.of(2008, 6);
         assertSame(test.with(Month.JUNE), test);
     }
 
-    @Test(groups={"implementation"})
+    @Test
     public void test_withYear_int_noChange_same() {
         YearMonth test = YearMonth.of(2008, 6);
         assertSame(test.withYear(2008), test);
     }
 
-    @Test(groups={"implementation"})
+    @Test
     public void test_withMonth_int_noChange_same() {
         YearMonth test = YearMonth.of(2008, 6);
         assertSame(test.withMonth(6), test);
     }
 
-    @Test(groups={"implementation"})
+    @Test
     public void test_plusYears_long_noChange_same() {
         YearMonth test = YearMonth.of(2008, 6);
         assertSame(test.plusYears(0), test);
     }
 
-    @Test(groups={"implementation"})
+    @Test
     public void test_plusMonths_long_noChange_same() {
         YearMonth test = YearMonth.of(2008, 6);
         assertSame(test.plusMonths(0), test);
     }
 
-    @Test(groups={"implementation"})
+    @Test
     public void test_minusYears_long_noChange_same() {
         YearMonth test = YearMonth.of(2008, 6);
         assertSame(test.minusYears(0), test);
     }
 
-    @Test(groups={"implementation"})
+    @Test
     public void test_minusMonths_long_noChange_same() {
         YearMonth test = YearMonth.of(2008, 6);
         assertSame(test.minusMonths(0), test);
     }
 
-    @Test(groups={"implementation"})
+    @Test
     public void test_adjustDate_same() {
         YearMonth test = YearMonth.of(2008, 6);
         LocalDate date = LocalDate.of(2008, 6, 30);

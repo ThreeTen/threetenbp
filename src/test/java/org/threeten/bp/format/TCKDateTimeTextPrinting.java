@@ -55,7 +55,7 @@ public class TCKDateTimeTextPrinting {
 
     private DateTimeFormatterBuilder builder;
 
-    @BeforeMethod(groups={"tck"})
+    @BeforeMethod
     public void setUp() {
         builder = new DateTimeFormatterBuilder();
     }
@@ -104,7 +104,7 @@ public class TCKDateTimeTextPrinting {
        };
     }
 
-    @Test(dataProvider="printText", groups={"tck"})
+    @Test(dataProvider="printText")
     public void test_appendText2arg_print(TemporalField field, TextStyle style, int value, String expected) throws Exception {
         DateTimeFormatter f = builder.appendText(field, style).toFormatter(Locale.ENGLISH);
         LocalDateTime dt = LocalDateTime.of(2010, 1, 1, 0, 0);
@@ -113,7 +113,7 @@ public class TCKDateTimeTextPrinting {
         assertEquals(text, expected);
     }
 
-    @Test(dataProvider="printText", groups={"tck"})
+    @Test(dataProvider="printText")
     public void test_appendText1arg_print(TemporalField field, TextStyle style, int value, String expected) throws Exception {
         if (style == TextStyle.FULL) {
             DateTimeFormatter f = builder.appendText(field).toFormatter(Locale.ENGLISH);
@@ -125,7 +125,7 @@ public class TCKDateTimeTextPrinting {
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_print_appendText2arg_french_long() throws Exception {
         DateTimeFormatter f = builder.appendText(MONTH_OF_YEAR, TextStyle.FULL).toFormatter(Locale.FRENCH);
         LocalDateTime dt = LocalDateTime.of(2010, 1, 1, 0, 0);
@@ -133,7 +133,7 @@ public class TCKDateTimeTextPrinting {
         assertEquals(text, "janvier");
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_print_appendText2arg_french_short() throws Exception {
         DateTimeFormatter f = builder.appendText(MONTH_OF_YEAR, TextStyle.SHORT).toFormatter(Locale.FRENCH);
         LocalDateTime dt = LocalDateTime.of(2010, 1, 1, 0, 0);
@@ -142,7 +142,7 @@ public class TCKDateTimeTextPrinting {
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_appendTextMap() throws Exception {
         Map<Long, String> map = new HashMap<Long, String>();
         map.put(1L, "JNY");
@@ -165,7 +165,7 @@ public class TCKDateTimeTextPrinting {
         }
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_appendTextMap_DOM() throws Exception {
         Map<Long, String> map = new HashMap<Long, String>();
         map.put(1L, "1st");
@@ -179,7 +179,7 @@ public class TCKDateTimeTextPrinting {
         assertEquals(f.print(dt.withDayOfMonth(3)), "3rd");
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_appendTextMapIncomplete() throws Exception {
         Map<Long, String> map = new HashMap<Long, String>();
         map.put(1L, "JNY");

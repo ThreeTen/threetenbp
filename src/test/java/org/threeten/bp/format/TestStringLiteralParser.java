@@ -41,7 +41,7 @@ import org.threeten.bp.format.DateTimeFormatterBuilder.StringLiteralPrinterParse
 /**
  * Test StringLiteralPrinterParser.
  */
-@Test(groups={"implementation"})
+@Test
 public class TestStringLiteralParser extends AbstractTestPrinterParser {
 
     @DataProvider(name="success")

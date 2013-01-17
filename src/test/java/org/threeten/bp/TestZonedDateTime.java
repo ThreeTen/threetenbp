@@ -119,7 +119,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     private ZonedDateTime TEST_DATE_TIME;
     private ZonedDateTime TEST_DATE_TIME_PARIS;
 
-    @BeforeMethod(groups={"tck","implementation"})
+    @BeforeMethod
     public void setUp() {
         TEST_LOCAL_2008_06_30_11_30_59_500 = LocalDateTime.of(2008, 6, 30, 11, 30, 59, 500);
         TEST_DATE_TIME = ZonedDateTime.of(TEST_LOCAL_2008_06_30_11_30_59_500, ZONE_0100);
@@ -772,17 +772,17 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
         assertEquals(test.get(ChronoField.OFFSET_SECONDS), 3600);
     }
 
-    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_get_DateTimeField_long() {
         TEST_DATE_TIME.get(ChronoField.INSTANT_SECONDS);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_get_DateTimeField_invalidField() {
         TEST_DATE_TIME.get(MockFieldNoValue.INSTANCE);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_get_DateTimeField_null() {
         TEST_DATE_TIME.get((TemporalField) null);
     }
@@ -810,12 +810,12 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
         assertEquals(test.getLong(ChronoField.INSTANT_SECONDS), test.toEpochSecond());
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_getLong_DateTimeField_invalidField() {
         TEST_DATE_TIME.getLong(MockFieldNoValue.INSTANCE);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_getLong_DateTimeField_null() {
         TEST_DATE_TIME.getLong((TemporalField) null);
     }
@@ -909,7 +909,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
         assertEquals(test.getDateTime(), base.getDateTime());
     }
 
-    @Test(groups={"implementation"})
+    @Test
     public void test_withZoneSameLocal_noChange() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
@@ -1303,17 +1303,17 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // plus(adjuster)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"}, dataProvider="plusDays")
+    @Test(dataProvider="plusDays")
     public void test_plus_adjuster_Period_days(ZonedDateTime base, long amount, ZonedDateTime expected) {
         assertEquals(base.plus(Period.of(amount, DAYS)), expected);
     }
 
-    @Test(groups={"tck"}, dataProvider="plusTime")
+    @Test(dataProvider="plusTime")
     public void test_plus_adjuster_Period_hours(ZonedDateTime base, long amount, ZonedDateTime expected) {
         assertEquals(base.plus(Period.of(amount, HOURS)), expected);
     }
 
-    @Test(groups={"tck"}, dataProvider="plusTime")
+    @Test(dataProvider="plusTime")
     public void test_plus_adjuster_Duration_hours(ZonedDateTime base, long amount, ZonedDateTime expected) {
         assertEquals(base.plus(Duration.ofHours(amount)), expected);
     }
@@ -1354,27 +1354,27 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // plus(long,PeriodUnit)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"}, dataProvider="plusTime")
+    @Test(dataProvider="plusTime")
     public void test_plus_longUnit_hours(ZonedDateTime base, long amount, ZonedDateTime expected) {
         assertEquals(base.plus(amount, HOURS), expected);
     }
 
-    @Test(groups={"tck"}, dataProvider="plusTime")
+    @Test(dataProvider="plusTime")
     public void test_plus_longUnit_minutes(ZonedDateTime base, long amount, ZonedDateTime expected) {
         assertEquals(base.plus(amount * 60, MINUTES), expected);
     }
 
-    @Test(groups={"tck"}, dataProvider="plusTime")
+    @Test(dataProvider="plusTime")
     public void test_plus_longUnit_seconds(ZonedDateTime base, long amount, ZonedDateTime expected) {
         assertEquals(base.plus(amount * 3600, SECONDS), expected);
     }
 
-    @Test(groups={"tck"}, dataProvider="plusTime")
+    @Test(dataProvider="plusTime")
     public void test_plus_longUnit_nanos(ZonedDateTime base, long amount, ZonedDateTime expected) {
         assertEquals(base.plus(amount * 3600_000_000_000L, NANOS), expected);
     }
 
-    @Test(groups={"tck"}, expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_plus_longUnit_null() {
         TEST_DATE_TIME_PARIS.plus(0, null);
     }
@@ -1439,7 +1439,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // plusDays()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"}, dataProvider="plusDays")
+    @Test(dataProvider="plusDays")
     public void test_plusDays(ZonedDateTime base, long amount, ZonedDateTime expected) {
         assertEquals(base.plusDays(amount), expected);
     }
@@ -1447,7 +1447,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // plusHours()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"}, dataProvider="plusTime")
+    @Test(dataProvider="plusTime")
     public void test_plusHours(ZonedDateTime base, long amount, ZonedDateTime expected) {
         assertEquals(base.plusHours(amount), expected);
     }
@@ -1455,7 +1455,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // plusMinutes()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"}, dataProvider="plusTime")
+    @Test(dataProvider="plusTime")
     public void test_plusMinutes(ZonedDateTime base, long amount, ZonedDateTime expected) {
         assertEquals(base.plusMinutes(amount * 60), expected);
     }
@@ -1471,7 +1471,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // plusSeconds()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"}, dataProvider="plusTime")
+    @Test(dataProvider="plusTime")
     public void test_plusSeconds(ZonedDateTime base, long amount, ZonedDateTime expected) {
         assertEquals(base.plusSeconds(amount * 3600), expected);
     }
@@ -1487,7 +1487,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // plusNanos()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"}, dataProvider="plusTime")
+    @Test(dataProvider="plusTime")
     public void test_plusNanos(ZonedDateTime base, long amount, ZonedDateTime expected) {
         assertEquals(base.plusNanos(amount * 3600_000_000_000L), expected);
     }
@@ -1503,17 +1503,17 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // minus(adjuster)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"}, dataProvider="plusDays")
+    @Test(dataProvider="plusDays")
     public void test_minus_adjuster_Period_days(ZonedDateTime base, long amount, ZonedDateTime expected) {
         assertEquals(base.minus(Period.of(-amount, DAYS)), expected);
     }
 
-    @Test(groups={"tck"}, dataProvider="plusTime")
+    @Test(dataProvider="plusTime")
     public void test_minus_adjuster_Period_hours(ZonedDateTime base, long amount, ZonedDateTime expected) {
         assertEquals(base.minus(Period.of(-amount, HOURS)), expected);
     }
 
-    @Test(groups={"tck"}, dataProvider="plusTime")
+    @Test(dataProvider="plusTime")
     public void test_minus_adjuster_Duration_hours(ZonedDateTime base, long amount, ZonedDateTime expected) {
         assertEquals(base.minus(Duration.ofHours(-amount)), expected);
     }
@@ -1611,7 +1611,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // minusDays()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"}, dataProvider="plusDays")
+    @Test(dataProvider="plusDays")
     public void test_minusDays(ZonedDateTime base, long amount, ZonedDateTime expected) {
         assertEquals(base.minusDays(-amount), expected);
     }
@@ -1619,7 +1619,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // minusHours()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"}, dataProvider="plusTime")
+    @Test(dataProvider="plusTime")
     public void test_minusHours(ZonedDateTime base, long amount, ZonedDateTime expected) {
         assertEquals(base.minusHours(-amount), expected);
     }
@@ -1627,7 +1627,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // minusMinutes()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"}, dataProvider="plusTime")
+    @Test(dataProvider="plusTime")
     public void test_minusMinutes(ZonedDateTime base, long amount, ZonedDateTime expected) {
         assertEquals(base.minusMinutes(-amount * 60), expected);
     }
@@ -1643,7 +1643,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // minusSeconds()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"}, dataProvider="plusTime")
+    @Test(dataProvider="plusTime")
     public void test_minusSeconds(ZonedDateTime base, long amount, ZonedDateTime expected) {
         assertEquals(base.minusSeconds(-amount * 3600), expected);
     }
@@ -1659,7 +1659,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // minusNanos()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"}, dataProvider="plusTime")
+    @Test(dataProvider="plusTime")
     public void test_minusNanos(ZonedDateTime base, long amount, ZonedDateTime expected) {
         assertEquals(base.minusNanos(-amount * 3600_000_000_000L), expected);
     }
@@ -1689,7 +1689,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
         };
     }
 
-    @Test(groups={"tck"}, dataProvider="toInstant")
+    @Test(dataProvider="toInstant")
     public void test_toInstant_UTC(LocalDateTime ldt, long expectedEpSec, int expectedNos) {
         ZonedDateTime dt = ldt.atZone(ZoneOffset.UTC);
         Instant test = dt.toInstant();
@@ -1697,7 +1697,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
         assertEquals(test.getNano(), expectedNos);
     }
 
-    @Test(groups={"tck"}, dataProvider="toInstant")
+    @Test(dataProvider="toInstant")
     public void test_toInstant_P0100(LocalDateTime ldt, long expectedEpSec, int expectedNos) {
         ZonedDateTime dt = ldt.atZone(ZONE_0100);
         Instant test = dt.toInstant();
@@ -1705,7 +1705,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
         assertEquals(test.getNano(), expectedNos);
     }
 
-    @Test(groups={"tck"}, dataProvider="toInstant")
+    @Test(dataProvider="toInstant")
     public void test_toInstant_M0100(LocalDateTime ldt, long expectedEpSec, int expectedNos) {
         ZonedDateTime dt = ldt.atZone(ZONE_M0100);
         Instant test = dt.toInstant();
@@ -1736,19 +1736,19 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
         }
     }
 
-    @Test(groups={"tck"}, dataProvider="toInstant")
+    @Test(dataProvider="toInstant")
     public void test_toEpochSecond_UTC(LocalDateTime ldt, long expectedEpSec, int expectedNos) {
         ZonedDateTime dt = ldt.atZone(ZoneOffset.UTC);
         assertEquals(dt.toEpochSecond(), expectedEpSec);
     }
 
-    @Test(groups={"tck"}, dataProvider="toInstant")
+    @Test(dataProvider="toInstant")
     public void test_toEpochSecond_P0100(LocalDateTime ldt, long expectedEpSec, int expectedNos) {
         ZonedDateTime dt = ldt.atZone(ZONE_0100);
         assertEquals(dt.toEpochSecond(), expectedEpSec - 3600);
     }
 
-    @Test(groups={"tck"}, dataProvider="toInstant")
+    @Test(dataProvider="toInstant")
     public void test_toEpochSecond_M0100(LocalDateTime ldt, long expectedEpSec, int expectedNos) {
         ZonedDateTime dt = ldt.atZone(ZONE_M0100);
         assertEquals(dt.toEpochSecond(), expectedEpSec + 3600);

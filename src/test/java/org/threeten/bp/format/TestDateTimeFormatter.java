@@ -50,15 +50,13 @@ import org.threeten.bp.format.DateTimeFormatterBuilder.StringLiteralPrinterParse
  */
 @Test
 public class TestDateTimeFormatter {
-    // TODO these tests are not tck, as they refer to a non-public class
-    // rewrite whole test case to use BASIC_FORMATTER or similar
 
     private List<DateTimePrinterParser> printerParsers;
     private StringLiteralPrinterParser stringPP;
     private NumberPrinterParser numberPP;
     private CompositePrinterParser compPP;
 
-    @BeforeMethod(groups={"tck"})
+    @BeforeMethod
     public void setUp() {
         printerParsers = new ArrayList<DateTimePrinterParser>();
         stringPP = new StringLiteralPrinterParser("ONE");
@@ -68,7 +66,7 @@ public class TestDateTimeFormatter {
         compPP = new CompositePrinterParser(printerParsers, false);
     }
 
-    @Test(groups={"implementation"})
+    @Test
     public void test_withLocale_same() throws Exception {
         DateTimeFormatter base = new DateTimeFormatter(compPP, Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, null, null);
         DateTimeFormatter test = base.withLocale(Locale.ENGLISH);

@@ -57,7 +57,7 @@ import org.threeten.bp.calendar.ThaiBuddhistChrono;
 @Test
 public class TestChrono {
 
-    @BeforeMethod(groups="tck")
+    @BeforeMethod
     public void setUp() {
         // Ensure each of the classes are initialized (until initialization is fixed)
         Chrono<?> c;
@@ -101,7 +101,7 @@ public class TestChrono {
         assertTrue(cals.contains(chrono), "Required calendar not found in set of available calendars");
     }
 
-    @Test(groups="tck")
+    @Test
     public void test_calendar_list() {
         Set<Chrono<?>> chronos = Chrono.getAvailableChronologies();
         assertNotNull(chronos, "Required list of calendars must be non-null");
@@ -115,7 +115,7 @@ public class TestChrono {
     /**
      * Compute the number of days from the Epoch and compute the date from the number of days.
      */
-    @Test(dataProvider = "calendars", groups="tck")
+    @Test(dataProvider = "calendars")
     public void test_epoch(String name, String alias, String description) {
         Chrono<?> chrono = Chrono.of(name); // a chronology. In practice this is rarely hardcoded
         ChronoLocalDate<?> date1 = chrono.dateNow();
@@ -140,12 +140,12 @@ public class TestChrono {
         };
     }
 
-    @Test(dataProvider = "calendarsystemtype", groups="tck")
+    @Test(dataProvider = "calendarsystemtype")
     public void test_getCalendarType(Chrono<?> chrono, String calendarType) {
         assertEquals(chrono.getCalendarType(), calendarType);
     }
 
-    @Test(dataProvider = "calendarsystemtype", groups="tck")
+    @Test(dataProvider = "calendarsystemtype")
     public void test_lookupLocale(Chrono<?> chrono, String calendarType) {
         Locale locale = new Locale.Builder().setLanguage("en").setRegion("CA").setUnicodeLocaleKeyword("ca", calendarType).build();
         assertEquals(Chrono.ofLocale(locale), chrono);
@@ -155,7 +155,7 @@ public class TestChrono {
     //-----------------------------------------------------------------------
     // serialization; serialize and check each calendar system
     //-----------------------------------------------------------------------
-    @Test(groups={"implementation"}, dataProvider = "calendarsystemtype")
+    @Test(dataProvider = "calendarsystemtype")
     public <C extends Chrono<C>> void test_chronoSerializationSingleton(C chrono, String calendarType) throws Exception {
         C orginal = chrono;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

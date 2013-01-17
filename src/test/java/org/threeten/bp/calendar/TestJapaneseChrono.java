@@ -60,7 +60,7 @@ public class TestJapaneseChrono {
     //-----------------------------------------------------------------------
     // Chrono.ofName("Japanese")  Lookup by name
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_chrono_byName() {
         Chrono<JapaneseChrono> c = JapaneseChrono.INSTANCE;
         Chrono<?> test = Chrono.of("Japanese");
@@ -93,12 +93,12 @@ public class TestJapaneseChrono {
         };
     }
 
-    @Test(dataProvider="samples", groups={"tck"})
+    @Test(dataProvider="samples")
     public void test_toLocalDate(ChronoLocalDate<JapaneseChrono> jdate, LocalDate iso) {
         assertEquals(LocalDate.from(jdate), iso);
     }
 
-    @Test(dataProvider="samples", groups={"tck"})
+    @Test(dataProvider="samples")
     public void test_fromCalendrical(ChronoLocalDate<JapaneseChrono> jdate, LocalDate iso) {
         assertEquals(JapaneseChrono.INSTANCE.date(iso), jdate);
     }
@@ -123,7 +123,7 @@ public class TestJapaneseChrono {
         };
     }
 
-    @Test(dataProvider="badDates", groups={"tck"}, expectedExceptions=DateTimeException.class)
+    @Test(dataProvider="badDates", expectedExceptions=DateTimeException.class)
     public void test_badDates(int year, int month, int dom) {
         JapaneseChrono.INSTANCE.date(year, month, dom);
     }
@@ -131,14 +131,14 @@ public class TestJapaneseChrono {
     //-----------------------------------------------------------------------
     // with(WithAdjuster)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_adjust1() {
         ChronoLocalDate<JapaneseChrono> base = JapaneseChrono.INSTANCE.date(1728, 10, 29);
         ChronoLocalDate<JapaneseChrono> test = base.with(TemporalAdjusters.lastDayOfMonth());
         assertEquals(test, JapaneseChrono.INSTANCE.date(1728, 10, 31));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_adjust2() {
         ChronoLocalDate<JapaneseChrono> base = JapaneseChrono.INSTANCE.date(1728, 12, 2);
         ChronoLocalDate<JapaneseChrono> test = base.with(TemporalAdjusters.lastDayOfMonth());
@@ -148,14 +148,14 @@ public class TestJapaneseChrono {
     //-----------------------------------------------------------------------
     // JapaneseDate.with(Local*)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_adjust_toLocalDate() {
         ChronoLocalDate<JapaneseChrono> jdate = JapaneseChrono.INSTANCE.date(1726, 1, 4);
         ChronoLocalDate<JapaneseChrono> test = jdate.with(LocalDate.of(2012, 7, 6));
         assertEquals(test, JapaneseChrono.INSTANCE.date(2012, 7, 6));
     }
 
-    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_adjust_toMonth() {
         ChronoLocalDate<?> jdate = JapaneseChrono.INSTANCE.date(1726, 1, 4);
         jdate.with(Month.APRIL);
@@ -164,14 +164,14 @@ public class TestJapaneseChrono {
     //-----------------------------------------------------------------------
     // LocalDate.with(JapaneseDate)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_LocalDate_adjustToJapaneseDate() {
         ChronoLocalDate<JapaneseChrono> jdate = JapaneseChrono.INSTANCE.date(1728, 10, 29);
         LocalDate test = LocalDate.MIN.with(jdate);
         assertEquals(test, LocalDate.of(1728, 10, 29));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_LocalDateTime_adjustToJapaneseDate() {
         ChronoLocalDate<JapaneseChrono> jdate = JapaneseChrono.INSTANCE.date(1728, 10, 29);
         LocalDateTime test = LocalDateTime.MIN.with(jdate);
@@ -192,7 +192,7 @@ public class TestJapaneseChrono {
         };
     }
 
-    @Test(groups={"tck"}, dataProvider="japaneseEras")
+    @Test(dataProvider="japaneseEras")
     public void test_Japanese_Eras(Era era, int eraValue, String name) {
         assertEquals(era.getValue(), eraValue, "EraValue");
         assertEquals(era.toString(), name, "Era Name");
@@ -201,7 +201,7 @@ public class TestJapaneseChrono {
         assertTrue(eras.contains(era), "Era is not present in JapaneseChrono.INSTANCE.eras()");
     }
 
-    @Test(groups="tck")
+    @Test
     public void test_Japanese_badEras() {
         int badEras[] = {-1000, -998, -997, -2, 3, 4, 1000};
         for (int badEra : badEras) {
@@ -236,7 +236,7 @@ public class TestJapaneseChrono {
         };
     }
 
-    @Test(dataProvider="toString", groups={"tck"})
+    @Test(dataProvider="toString")
     public void test_toString(ChronoLocalDate<JapaneseChrono> jdate, String expected) {
         assertEquals(jdate.toString(), expected);
     }
@@ -244,12 +244,12 @@ public class TestJapaneseChrono {
     //-----------------------------------------------------------------------
     // equals()
     //-----------------------------------------------------------------------
-    @Test(groups="tck")
+    @Test
     public void test_equals_true() {
         assertTrue(JapaneseChrono.INSTANCE.equals(JapaneseChrono.INSTANCE));
     }
 
-    @Test(groups="tck")
+    @Test
     public void test_equals_false() {
         assertFalse(JapaneseChrono.INSTANCE.equals(ISOChrono.INSTANCE));
     }

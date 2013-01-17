@@ -43,7 +43,7 @@ import org.threeten.bp.format.DateTimeFormatterBuilder.OffsetIdPrinterParser;
 /**
  * Test OffsetIdPrinterParser.
  */
-@Test(groups={"implementation"})
+@Test
 public class TestZoneOffsetParser extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------

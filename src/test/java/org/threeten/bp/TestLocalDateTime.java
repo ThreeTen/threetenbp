@@ -115,7 +115,7 @@ public class TestLocalDateTime extends AbstractDateTimeTest {
     private Instant MAX_INSTANT;
     private Instant MIN_INSTANT;
 
-    @BeforeMethod(groups={"implementation","tck"})
+    @BeforeMethod
     public void setUp() {
         MAX_DATE_TIME = LocalDateTime.MAX;
         MIN_DATE_TIME = LocalDateTime.MIN;
@@ -897,13 +897,13 @@ public class TestLocalDateTime extends AbstractDateTimeTest {
         assertEquals(test.getLong(ChronoField.AMPM_OF_DAY), 1);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_get_DateTimeField_null() {
         LocalDateTime test = LocalDateTime.of(2008, 6, 30, 12, 30, 40, 987654321);
         test.getLong((TemporalField) null);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_get_DateTimeField_invalidField() {
         TEST_2007_07_15_12_30_40_987654321.getLong(MockFieldNoValue.INSTANCE);
     }

@@ -50,7 +50,7 @@ public class TestDateTimeFormatters {
     public void setUp() {
     }
 
-    @Test(groups={"implementation"})
+    @Test
     @SuppressWarnings("rawtypes")
     public void test_constructor() throws Exception {
         for (Constructor constructor : DateTimeFormatters.class.getDeclaredConstructors()) {

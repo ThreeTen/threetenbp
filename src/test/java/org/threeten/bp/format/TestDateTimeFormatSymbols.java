@@ -43,7 +43,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestDateTimeFormatSymbols {
 
-    @Test(groups={"implementation"})
+    @Test
     public void test_of_Locale_cached() {
         DateTimeFormatSymbols loc1 = DateTimeFormatSymbols.of(Locale.CANADA);
         DateTimeFormatSymbols loc2 = DateTimeFormatSymbols.of(Locale.CANADA);
@@ -51,7 +51,7 @@ public class TestDateTimeFormatSymbols {
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"implementation"})
+    @Test
     public void test_ofDefaultLocale_cached() {
         DateTimeFormatSymbols loc1 = DateTimeFormatSymbols.ofDefaultLocale();
         DateTimeFormatSymbols loc2 = DateTimeFormatSymbols.ofDefaultLocale();

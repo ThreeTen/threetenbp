@@ -75,7 +75,7 @@ public class TestChronoZonedDateTime {
         };
     }
 
-    @Test(groups={"tck"}, dataProvider="calendars")
+    @Test(dataProvider="calendars")
     public void test_badWithAdjusterChrono(Chrono<?> chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
         ChronoZonedDateTime czdt = chrono.date(refDate).atTime(LocalTime.NOON).atZone(ZoneOffset.UTC);
@@ -98,7 +98,7 @@ public class TestChronoZonedDateTime {
         }
     }
 
-    @Test(groups={"tck"}, dataProvider="calendars")
+    @Test(dataProvider="calendars")
     public void test_badPlusAdjusterChrono(Chrono chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
         ChronoZonedDateTime czdt = chrono.date(refDate).atTime(LocalTime.NOON).atZone(ZoneOffset.UTC);
@@ -122,7 +122,7 @@ public class TestChronoZonedDateTime {
         }
     }
 
-    @Test(groups={"tck"}, dataProvider="calendars")
+    @Test(dataProvider="calendars")
     public void test_badMinusAdjusterChrono(Chrono chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
         ChronoZonedDateTime czdt = chrono.date(refDate).atTime(LocalTime.NOON).atZone(ZoneOffset.UTC);
@@ -146,7 +146,7 @@ public class TestChronoZonedDateTime {
         }
     }
 
-    @Test(groups={"tck"}, dataProvider="calendars")
+    @Test(dataProvider="calendars")
     public void test_badPlusPeriodUnitChrono(Chrono chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
         ChronoZonedDateTime czdt = chrono.date(refDate).atTime(LocalTime.NOON).atZone(ZoneOffset.UTC);
@@ -170,7 +170,7 @@ public class TestChronoZonedDateTime {
         }
     }
 
-    @Test(groups={"tck"}, dataProvider="calendars")
+    @Test(dataProvider="calendars")
     public void test_badMinusPeriodUnitChrono(Chrono chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
         ChronoZonedDateTime czdt = chrono.date(refDate).atTime(LocalTime.NOON).atZone(ZoneOffset.UTC);
@@ -194,7 +194,7 @@ public class TestChronoZonedDateTime {
         }
     }
 
-    @Test(groups={"tck"}, dataProvider="calendars")
+    @Test(dataProvider="calendars")
     public void test_badDateTimeFieldChrono(Chrono chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
         ChronoZonedDateTime czdt = chrono.date(refDate).atTime(LocalTime.NOON).atZone(ZoneOffset.UTC);
@@ -221,7 +221,7 @@ public class TestChronoZonedDateTime {
     //-----------------------------------------------------------------------
     // isBefore, isAfter, isEqual, INSTANT_COMPARATOR  test a Chrono against the other Chronos
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"}, dataProvider="calendars")
+    @Test(dataProvider="calendars")
     public void test_zonedDateTime_comparisons(Chrono chrono) {
         List<ChronoZonedDateTime<?>> dates = new ArrayList<>();
 
@@ -288,7 +288,7 @@ public class TestChronoZonedDateTime {
     //-----------------------------------------------------------------------
     // Test Serialization of ISO via chrono API
     //-----------------------------------------------------------------------
-    @Test( groups={"tck"}, dataProvider="calendars")
+    @Test( dataProvider="calendars")
     public <C extends Chrono<C>> void test_ChronoZonedDateTimeSerialization(C chrono) throws Exception {
         ZonedDateTime ref = LocalDate.of(2000, 1, 5).atTime(12, 1, 2, 3).atZone(ZoneId.of("GMT+01:23"));
         ChronoZonedDateTime<C> orginal = chrono.date(ref).atTime(ref.getTime()).atZone(ref.getZone());

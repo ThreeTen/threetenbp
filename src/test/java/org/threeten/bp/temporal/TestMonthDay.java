@@ -58,7 +58,7 @@ public class TestMonthDay extends AbstractDateTimeTest {
 
     private MonthDay TEST_07_15;
 
-    @BeforeMethod(groups={"tck","implementation"})
+    @BeforeMethod
     public void setUp() {
         TEST_07_15 = MonthDay.of(7, 15);
     }
@@ -71,12 +71,12 @@ public class TestMonthDay extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_serialization_format() throws ClassNotFoundException, IOException {
         assertEqualsSerialisedForm(MonthDay.of(9, 16));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_serialization() throws ClassNotFoundException, IOException {
         assertSerializable(TEST_07_15);
     }
@@ -102,7 +102,7 @@ public class TestMonthDay extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"implementation"})
+    @Test
     public void test_interfaces() {
         Object obj = TEST_07_15;
         assertTrue(obj instanceof Serializable);
@@ -116,24 +116,24 @@ public class TestMonthDay extends AbstractDateTimeTest {
         assertEquals(test.getDayOfMonth(), d);
     }
 
-    @Test(groups={"implementation"})
+    @Test
     public void test_with_Month_noChangeSame() {
         MonthDay test = MonthDay.of(6, 30);
         assertSame(test.with(Month.JUNE), test);
     }
 
-    @Test(groups={"implementation"})
+    @Test
     public void test_withMonth_int_noChangeSame() {
         MonthDay test = MonthDay.of(6, 30);
         assertSame(test.withMonth(6), test);
     }
-    @Test(groups={"implementation"})
+    @Test
     public void test_withDayOfMonth_noChangeSame() {
         MonthDay test = MonthDay.of(6, 30);
         assertSame(test.withDayOfMonth(30), test);
     }
 
-    @Test(groups={"implementation"})
+    @Test
     public void test_adjustDate_same() {
         MonthDay test = MonthDay.of(6, 30);
         LocalDate date = LocalDate.of(2007, 6, 30);

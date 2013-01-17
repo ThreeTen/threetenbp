@@ -97,7 +97,7 @@ public class TestLocalDate extends AbstractDateTimeTest {
     private Instant MAX_INSTANT;
     private Instant MIN_INSTANT;
 
-    @BeforeMethod(groups={"tck", "implementation"})
+    @BeforeMethod
     public void setUp() {
         TEST_2007_07_15 = LocalDate.of(2007, 7, 15);
 
@@ -576,17 +576,17 @@ public class TestLocalDate extends AbstractDateTimeTest {
         assertEquals(test.getLong(ChronoField.DAY_OF_YEAR), 182);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_get_DateTimeField_null() {
         TEST_2007_07_15.getLong((TemporalField) null);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_get_DateTimeField_invalidField() {
         TEST_2007_07_15.getLong(MockFieldNoValue.INSTANCE);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_get_DateTimeField_timeField() {
         TEST_2007_07_15.getLong(ChronoField.AMPM_OF_DAY);
     }
@@ -760,22 +760,22 @@ public class TestLocalDate extends AbstractDateTimeTest {
         assertEquals(t, LocalDate.of(2008, 7, 15));
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_with_DateTimeField_long_null() {
         TEST_2007_07_15.with((TemporalField) null, 1);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_with_DateTimeField_long_invalidField() {
         TEST_2007_07_15.with(MockFieldNoValue.INSTANCE, 1);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_with_DateTimeField_long_timeField() {
         TEST_2007_07_15.with(ChronoField.AMPM_OF_DAY, 1);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_with_DateTimeField_long_invalidValue() {
         TEST_2007_07_15.with(ChronoField.DAY_OF_WEEK, -1);
     }
@@ -877,7 +877,7 @@ public class TestLocalDate extends AbstractDateTimeTest {
         assertEquals(t, LocalDate.of(2007, 6, 20));
     }
 
-    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_plus_Period_timeNotAllowed() {
         MockSimplePeriod period = MockSimplePeriod.of(7, ChronoUnit.HOURS);
         TEST_2007_07_15.plus(period);
@@ -915,7 +915,7 @@ public class TestLocalDate extends AbstractDateTimeTest {
         assertEquals(t, LocalDate.of(2007, 6, 20));
     }
 
-    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_plus_longPeriodUnit_timeNotAllowed() {
         TEST_2007_07_15.plus(7, ChronoUnit.HOURS);
     }
@@ -1237,7 +1237,7 @@ public class TestLocalDate extends AbstractDateTimeTest {
         assertEquals(t, LocalDate.of(2007, 8, 9));
     }
 
-    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_minus_Period_timeNotAllowed() {
         MockSimplePeriod period = MockSimplePeriod.of(7, ChronoUnit.HOURS);
         TEST_2007_07_15.minus(period);
@@ -1275,7 +1275,7 @@ public class TestLocalDate extends AbstractDateTimeTest {
         assertEquals(t, LocalDate.of(2007, 8, 9));
     }
 
-    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_minus_longPeriodUnit_timeNotAllowed() {
         TEST_2007_07_15.minus(7, ChronoUnit.HOURS);
     }
@@ -1880,7 +1880,7 @@ public class TestLocalDate extends AbstractDateTimeTest {
         assertEquals(a.equals(b), false);
     }
 
-    @Test(groups={"tck", "implementation"})
+    @Test
     public void test_equals_itself_true() {
         assertEquals(TEST_2007_07_15.equals(TEST_2007_07_15), true);
     }

@@ -88,7 +88,7 @@ public class TestOffsetTime extends AbstractDateTimeTest {
     private static final LocalDate DATE = LocalDate.of(2008, 12, 3);
     private OffsetTime TEST_11_30_59_500_PONE;
 
-    @BeforeMethod(groups={"tck","implementation"})
+    @BeforeMethod
     public void setUp() {
         TEST_11_30_59_500_PONE = OffsetTime.of(LocalTime.of(11, 30, 59, 500), OFFSET_PONE);
     }
@@ -665,12 +665,12 @@ public class TestOffsetTime extends AbstractDateTimeTest {
         assertEquals(test.with(ChronoField.OFFSET_SECONDS, 7205), OffsetTime.of(LocalTime.of(12, 30, 40, 987654321), ZoneOffset.ofHoursMinutesSeconds(2, 0, 5)));
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"} )
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_with_TemporalField_null() {
         TEST_11_30_59_500_PONE.with((TemporalField) null, 0);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"} )
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_with_TemporalField_invalidField() {
         TEST_11_30_59_500_PONE.with(ChronoField.YEAR, 0);
     }

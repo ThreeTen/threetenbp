@@ -56,7 +56,7 @@ public class TestHijrahChrono {
     //-----------------------------------------------------------------------
     // Chrono.ofName("Hijrah")  Lookup by name
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_chrono_byName() {
         Chrono<HijrahChrono> c = HijrahChrono.INSTANCE;
         Chrono<?> test = Chrono.of("Hijrah");
@@ -89,12 +89,12 @@ public class TestHijrahChrono {
         };
     }
 
-    @Test(dataProvider="samples", groups={"tck"})
+    @Test(dataProvider="samples")
     public void test_toLocalDate(ChronoLocalDate<?> hijrahDate, LocalDate iso) {
         assertEquals(LocalDate.from(hijrahDate), iso);
     }
 
-    @Test(dataProvider="samples", groups={"tck"})
+    @Test(dataProvider="samples")
     public void test_fromCalendrical(ChronoLocalDate<?> hijrahDate, LocalDate iso) {
         assertEquals(HijrahChrono.INSTANCE.date(iso), hijrahDate);
     }
@@ -119,7 +119,7 @@ public class TestHijrahChrono {
         };
     }
 
-    @Test(dataProvider="badDates", groups={"tck"}, expectedExceptions=DateTimeException.class)
+    @Test(dataProvider="badDates", expectedExceptions=DateTimeException.class)
     public void test_badDates(int year, int month, int dom) {
         HijrahChrono.INSTANCE.date(year, month, dom);
     }
@@ -127,14 +127,14 @@ public class TestHijrahChrono {
     //-----------------------------------------------------------------------
     // with(WithAdjuster)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_adjust1() {
         ChronoLocalDate<?> base = HijrahChrono.INSTANCE.date(1728, 10, 28);
         ChronoLocalDate<?> test = base.with(TemporalAdjusters.lastDayOfMonth());
         assertEquals(test, HijrahChrono.INSTANCE.date(1728, 10, 29));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_adjust2() {
         ChronoLocalDate<?> base = HijrahChrono.INSTANCE.date(1728, 12, 2);
         ChronoLocalDate<?> test = base.with(TemporalAdjusters.lastDayOfMonth());
@@ -144,14 +144,14 @@ public class TestHijrahChrono {
     //-----------------------------------------------------------------------
     // HijrahDate.with(Local*)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_adjust_toLocalDate() {
         ChronoLocalDate<?> hijrahDate = HijrahChrono.INSTANCE.date(1726, 1, 4);
         ChronoLocalDate<?> test = hijrahDate.with(LocalDate.of(2012, 7, 6));
         assertEquals(test, HijrahChrono.INSTANCE.date(1433, 8, 16));
     }
 
-    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_adjust_toMonth() {
         ChronoLocalDate<?> hijrahDate = HijrahChrono.INSTANCE.date(1726, 1, 4);
         hijrahDate.with(Month.APRIL);
@@ -160,14 +160,14 @@ public class TestHijrahChrono {
     //-----------------------------------------------------------------------
     // LocalDate.with(HijrahDate)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_LocalDate_adjustToHijrahDate() {
         ChronoLocalDate<?> hijrahDate = HijrahChrono.INSTANCE.date(1728, 10, 29);
         LocalDate test = LocalDate.MIN.with(hijrahDate);
         assertEquals(test, LocalDate.of(2298, 12, 4));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_LocalDateTime_adjustToHijrahDate() {
         ChronoLocalDate<?> hijrahDate = HijrahChrono.INSTANCE.date(1728, 10, 29);
         LocalDateTime test = LocalDateTime.MIN.with(hijrahDate);
@@ -188,7 +188,7 @@ public class TestHijrahChrono {
         };
     }
 
-    @Test(dataProvider="toString", groups={"tck"})
+    @Test(dataProvider="toString")
     public void test_toString(ChronoLocalDate<?> hijrahDate, String expected) {
         assertEquals(hijrahDate.toString(), expected);
     }
@@ -196,12 +196,12 @@ public class TestHijrahChrono {
     //-----------------------------------------------------------------------
     // equals()
     //-----------------------------------------------------------------------
-    @Test(groups="tck")
+    @Test
     public void test_equals_true() {
         assertTrue(HijrahChrono.INSTANCE.equals(HijrahChrono.INSTANCE));
     }
 
-    @Test(groups="tck")
+    @Test
     public void test_equals_false() {
         assertFalse(HijrahChrono.INSTANCE.equals(ISOChrono.INSTANCE));
     }

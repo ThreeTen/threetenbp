@@ -1511,7 +1511,7 @@ public class TestPeriod extends AbstractTest {
         };
     }
 
-    @Test(groups="tck", dataProvider="toStringAndParse")
+    @Test(dataProvider="toStringAndParse")
     public void test_toString(Period input, String expected) {
         assertEquals(input.toString(), expected);
     }

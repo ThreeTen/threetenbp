@@ -61,7 +61,7 @@ public class TestMinguoChrono {
     //-----------------------------------------------------------------------
     // Chrono.ofName("Minguo")  Lookup by name
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_chrono_byName() {
         Chrono<MinguoChrono> c = MinguoChrono.INSTANCE;
         Chrono<?> test = Chrono.of("Minguo");
@@ -94,18 +94,18 @@ public class TestMinguoChrono {
         };
     }
 
-    @Test(dataProvider="samples", groups={"tck"})
+    @Test(dataProvider="samples")
     public void test_toLocalDate(ChronoLocalDate<MinguoChrono> minguo, LocalDate iso) {
         assertEquals(LocalDate.from(minguo), iso);
     }
 
-    @Test(dataProvider="samples", groups={"tck"})
+    @Test(dataProvider="samples")
     public void test_fromCalendrical(ChronoLocalDate<MinguoChrono> minguo, LocalDate iso) {
         assertEquals(MinguoChrono.INSTANCE.date(iso), minguo);
     }
 
     @SuppressWarnings("unused")
-    @Test(dataProvider="samples", groups={"implementation"})
+    @Test(dataProvider="samples")
     public void test_MinguoDate(ChronoLocalDate<MinguoChrono> minguoDate, LocalDate iso) {
         ChronoLocalDate<MinguoChrono> hd = minguoDate;
         ChronoLocalDateTime<MinguoChrono> hdt = hd.atTime(LocalTime.NOON);
@@ -155,7 +155,7 @@ public class TestMinguoChrono {
             };
     }
 
-    @Test(dataProvider="badDates", groups={"tck"}, expectedExceptions=DateTimeException.class)
+    @Test(dataProvider="badDates", expectedExceptions=DateTimeException.class)
     public void test_badDates(int year, int month, int dom) {
         MinguoChrono.INSTANCE.date(year, month, dom);
     }
@@ -163,14 +163,14 @@ public class TestMinguoChrono {
     //-----------------------------------------------------------------------
     // with(DateTimeAdjuster)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_adjust1() {
         ChronoLocalDate<MinguoChrono> base = MinguoChrono.INSTANCE.date(2012, 10, 29);
         ChronoLocalDate<MinguoChrono> test = base.with(TemporalAdjusters.lastDayOfMonth());
         assertEquals(test, MinguoChrono.INSTANCE.date(2012, 10, 31));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_adjust2() {
         ChronoLocalDate<MinguoChrono> base = MinguoChrono.INSTANCE.date(1728, 12, 2);
         ChronoLocalDate<MinguoChrono> test = base.with(TemporalAdjusters.lastDayOfMonth());
@@ -180,14 +180,14 @@ public class TestMinguoChrono {
     //-----------------------------------------------------------------------
     // MinguoDate.with(Local*)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_adjust_toLocalDate() {
         ChronoLocalDate<MinguoChrono> minguo = MinguoChrono.INSTANCE.date(99, 1, 4);
         ChronoLocalDate<MinguoChrono> test = minguo.with(LocalDate.of(2012, 7, 6));
         assertEquals(test, MinguoChrono.INSTANCE.date(101, 7, 6));
     }
 
-    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_adjust_toMonth() {
         ChronoLocalDate<MinguoChrono> minguo = MinguoChrono.INSTANCE.date(1726, 1, 4);
         minguo.with(Month.APRIL);
@@ -196,14 +196,14 @@ public class TestMinguoChrono {
     //-----------------------------------------------------------------------
     // LocalDate.with(MinguoDate)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_LocalDate_adjustToMinguoDate() {
         ChronoLocalDate<MinguoChrono> minguo = MinguoChrono.INSTANCE.date(101, 10, 29);
         LocalDate test = LocalDate.MIN.with(minguo);
         assertEquals(test, LocalDate.of(2012, 10, 29));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_LocalDateTime_adjustToMinguoDate() {
         ChronoLocalDate<MinguoChrono> minguo = MinguoChrono.INSTANCE.date(101, 10, 29);
         LocalDateTime test = LocalDateTime.MIN.with(minguo);
@@ -224,7 +224,7 @@ public class TestMinguoChrono {
         };
     }
 
-    @Test(dataProvider="toString", groups={"tck"})
+    @Test(dataProvider="toString")
     public void test_toString(ChronoLocalDate<MinguoChrono> minguo, String expected) {
         assertEquals(minguo.toString(), expected);
     }
@@ -232,12 +232,12 @@ public class TestMinguoChrono {
     //-----------------------------------------------------------------------
     // equals()
     //-----------------------------------------------------------------------
-    @Test(groups="tck")
+    @Test
     public void test_equals_true() {
         assertTrue(MinguoChrono.INSTANCE.equals(MinguoChrono.INSTANCE));
     }
 
-    @Test(groups="tck")
+    @Test
     public void test_equals_false() {
         assertFalse(MinguoChrono.INSTANCE.equals(ISOChrono.INSTANCE));
     }

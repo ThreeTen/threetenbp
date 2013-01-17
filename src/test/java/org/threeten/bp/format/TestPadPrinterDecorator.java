@@ -42,7 +42,7 @@ import org.threeten.bp.format.DateTimeFormatterBuilder.StringLiteralPrinterParse
 /**
  * Test PadPrinterDecorator.
  */
-@Test(groups={"implementation"})
+@Test
 public class TestPadPrinterDecorator extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------

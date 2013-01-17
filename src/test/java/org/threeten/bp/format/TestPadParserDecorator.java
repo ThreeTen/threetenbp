@@ -44,7 +44,7 @@ import org.threeten.bp.temporal.TemporalField;
 /**
  * Test PadPrinterParserDecorator.
  */
-@Test(groups={"implementation"})
+@Test
 public class TestPadParserDecorator extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------

@@ -273,12 +273,12 @@ public class TestZoneOffset extends AbstractDateTimeTest {
         }
     }
 
-    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_factory_int_hours_tooBig() {
         ZoneOffset.ofHours(19);
     }
 
-    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_factory_int_hours_tooSmall() {
         ZoneOffset.ofHours(-19);
     }
@@ -300,12 +300,12 @@ public class TestZoneOffset extends AbstractDateTimeTest {
         doTestOffset(test2, 18, 0, 0);
     }
 
-    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_factory_int_hours_minutes_tooBig() {
         ZoneOffset.ofHoursMinutes(19, 0);
     }
 
-    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_factory_int_hours_minutes_tooSmall() {
         ZoneOffset.ofHoursMinutes(-19, 0);
     }
@@ -380,12 +380,12 @@ public class TestZoneOffset extends AbstractDateTimeTest {
         ZoneOffset.ofHoursMinutesSeconds(0, 0, 60);
     }
 
-    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_factory_int_hours_minutes_seconds_hoursTooBig() {
         ZoneOffset.ofHoursMinutesSeconds(19, 0, 0);
     }
 
-    @Test(groups={"tck"}, expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_factory_int_hours_minutes_seconds_hoursTooSmall() {
         ZoneOffset.ofHoursMinutesSeconds(-19, 0, 0);
     }

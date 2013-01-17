@@ -45,7 +45,7 @@ import org.threeten.bp.temporal.MockFieldValue;
 /**
  * Test ReducedPrinterParser.
  */
-@Test(groups={"implementation"})
+@Test
 public class TestReducedPrinter extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------

@@ -44,7 +44,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestDateTimePrintException {
 
-    @Test(groups={"implementation"})
+    @Test
     public void test_constructor_StringThrowable_notIOException_same() throws Exception {
         IllegalArgumentException iaex = new IllegalArgumentException("INNER");
         DateTimePrintException ex = new DateTimePrintException("TEST", iaex);
@@ -53,7 +53,7 @@ public class TestDateTimePrintException {
         ex.rethrowIOException();  // no effect
     }
 
-    @Test(expectedExceptions=IOException.class, groups={"implementation"})
+    @Test(expectedExceptions=IOException.class)
     public void test_constructor_StringThrowable_IOException_same() throws Exception {
         IOException ioex = new IOException("INNER");
         DateTimePrintException ex = new DateTimePrintException("TEST", ioex);

@@ -51,7 +51,7 @@ import org.threeten.bp.format.DateTimeBuilder;
 /**
  * Test.
  */
-@Test(groups={"tck"})
+@Test
 public class TCKISOFields {
 
     public void test_enum() {

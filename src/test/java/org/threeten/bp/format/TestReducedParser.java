@@ -44,7 +44,7 @@ import org.threeten.bp.temporal.TemporalField;
 /**
  * Test ReducedPrinterParser.
  */
-@Test(groups={"implementation"})
+@Test
 public class TestReducedParser extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------

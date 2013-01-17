@@ -43,7 +43,7 @@ import org.testng.annotations.Test;
 /**
  * Test DateTimeAdjusters.
  */
-@Test(groups={"implementation"})
+@Test
 public class TestTemporalAdjusters {
 
     @SuppressWarnings("rawtypes")

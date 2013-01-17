@@ -47,7 +47,7 @@ import org.threeten.bp.temporal.TemporalField;
 /**
  * Test FractionPrinterParser.
  */
-@Test(groups={"implementation"})
+@Test
 public class TestFractionPrinterParser extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------

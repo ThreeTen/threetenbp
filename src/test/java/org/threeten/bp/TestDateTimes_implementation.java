@@ -45,7 +45,7 @@ import org.threeten.bp.jdk8.Jdk8Methods;
 /**
  * Test.
  */
-@Test(groups={"implementation"})
+@Test
 public class TestDateTimes_implementation {
 
     @SuppressWarnings("rawtypes")

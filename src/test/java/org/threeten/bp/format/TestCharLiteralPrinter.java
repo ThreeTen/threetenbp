@@ -39,7 +39,7 @@ import org.threeten.bp.format.DateTimeFormatterBuilder.CharLiteralPrinterParser;
 /**
  * Test CharLiteralPrinterParser.
  */
-@Test(groups={"implementation"})
+@Test
 public class TestCharLiteralPrinter extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------

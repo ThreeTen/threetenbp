@@ -79,7 +79,7 @@ public class TestChronoLocalDate {
                     {ThaiBuddhistChrono.INSTANCE}};
     }
 
-    @Test(groups={"tck"}, dataProvider="calendars")
+    @Test(dataProvider="calendars")
     public void test_badWithAdjusterChrono(Chrono chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
         ChronoLocalDate date = chrono.date(refDate);
@@ -102,7 +102,7 @@ public class TestChronoLocalDate {
         }
     }
 
-    @Test(groups={"tck"}, dataProvider="calendars")
+    @Test(dataProvider="calendars")
     public void test_badPlusAdjusterChrono(Chrono chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
         ChronoLocalDate date = chrono.date(refDate);
@@ -125,7 +125,7 @@ public class TestChronoLocalDate {
         }
     }
 
-    @Test(groups={"tck"}, dataProvider="calendars")
+    @Test(dataProvider="calendars")
     public void test_badMinusAdjusterChrono(Chrono chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
         ChronoLocalDate date = chrono.date(refDate);
@@ -148,7 +148,7 @@ public class TestChronoLocalDate {
         }
     }
 
-    @Test(groups={"tck"}, dataProvider="calendars")
+    @Test(dataProvider="calendars")
     public void test_badPlusPeriodUnitChrono(Chrono chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
         ChronoLocalDate date = chrono.date(refDate);
@@ -172,7 +172,7 @@ public class TestChronoLocalDate {
         }
     }
 
-    @Test(groups={"tck"}, dataProvider="calendars")
+    @Test(dataProvider="calendars")
     public void test_badMinusPeriodUnitChrono(Chrono chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
         ChronoLocalDate date = chrono.date(refDate);
@@ -196,7 +196,7 @@ public class TestChronoLocalDate {
         }
     }
 
-    @Test(groups={"tck"}, dataProvider="calendars")
+    @Test(dataProvider="calendars")
     public void test_badDateTimeFieldChrono(Chrono chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
         ChronoLocalDate date = chrono.date(refDate);
@@ -223,7 +223,7 @@ public class TestChronoLocalDate {
     //-----------------------------------------------------------------------
     // isBefore, isAfter, isEqual, DATE_COMPARATOR
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"}, dataProvider="calendars")
+    @Test(dataProvider="calendars")
     public void test_date_comparisons(Chrono chrono) {
         List<ChronoLocalDate<?>> dates = new ArrayList<>();
 
@@ -284,7 +284,7 @@ public class TestChronoLocalDate {
     //-----------------------------------------------------------------------
     // Test Serialization of Calendars
     //-----------------------------------------------------------------------
-    @Test( groups={"tck"}, dataProvider="calendars")
+    @Test( dataProvider="calendars")
     public <C extends Chrono<C>> void test_ChronoSerialization(C chrono) throws Exception {
         LocalDate ref = LocalDate.of(1900, 1, 5);
         ChronoLocalDate<C> orginal = chrono.date(ref);

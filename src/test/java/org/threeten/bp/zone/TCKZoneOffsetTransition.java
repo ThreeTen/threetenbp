@@ -58,27 +58,27 @@ public class TCKZoneOffsetTransition extends AbstractTest {
     //-----------------------------------------------------------------------
     // factory
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_factory_nullTransition() {
         ZoneOffsetTransition.of(null, OFFSET_0100, OFFSET_0200);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_factory_nullOffsetBefore() {
         ZoneOffsetTransition.of(LocalDateTime.of(2010, 12, 3, 11, 30), null, OFFSET_0200);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_factory_nullOffsetAfter() {
         ZoneOffsetTransition.of(LocalDateTime.of(2010, 12, 3, 11, 30), OFFSET_0200, null);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
+    @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_factory_sameOffset() {
         ZoneOffsetTransition.of(LocalDateTime.of(2010, 12, 3, 11, 30), OFFSET_0200, OFFSET_0200);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
+    @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_factory_noNanos() {
         ZoneOffsetTransition.of(LocalDateTime.of(2010, 12, 3, 11, 30, 0, 500), OFFSET_0200, OFFSET_0300);
     }
@@ -86,7 +86,7 @@ public class TCKZoneOffsetTransition extends AbstractTest {
     //-----------------------------------------------------------------------
     // getters
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_getters_gap() throws Exception {
         LocalDateTime before = LocalDateTime.of(2010, 3, 31, 1, 0);
         LocalDateTime after = LocalDateTime.of(2010, 3, 31, 2, 0);
@@ -102,7 +102,7 @@ public class TCKZoneOffsetTransition extends AbstractTest {
         assertSerializable(test);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_getters_overlap() throws Exception {
         LocalDateTime before = LocalDateTime.of(2010, 10, 31, 1, 0);
         LocalDateTime after = LocalDateTime.of(2010, 10, 31, 0, 0);
@@ -119,21 +119,21 @@ public class TCKZoneOffsetTransition extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_serialization_unusual1() throws Exception {
         LocalDateTime ldt = LocalDateTime.of(Year.MAX_VALUE, 12, 31, 1, 31, 53);
         ZoneOffsetTransition test = ZoneOffsetTransition.of(ldt, ZoneOffset.of("+02:04:56"), ZoneOffset.of("-10:02:34"));
         assertSerializable(test);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_serialization_unusual2() throws Exception {
         LocalDateTime ldt = LocalDateTime.of(Year.MIN_VALUE, 1, 1, 12, 1, 3);
         ZoneOffsetTransition test = ZoneOffsetTransition.of(ldt, ZoneOffset.of("+02:04:56"), ZoneOffset.of("+10:02:34"));
         assertSerializable(test);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_serialization_format() throws ClassNotFoundException, IOException {
         LocalDateTime ldt = LocalDateTime.of(Year.MIN_VALUE, 1, 1, 12, 1, 3);
         ZoneOffsetTransition test = ZoneOffsetTransition.of(ldt, ZoneOffset.of("+02:04:56"), ZoneOffset.of("+10:02:34"));
@@ -143,7 +143,7 @@ public class TCKZoneOffsetTransition extends AbstractTest {
     //-----------------------------------------------------------------------
     // isValidOffset()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_isValidOffset_gap() {
         LocalDateTime ldt = LocalDateTime.of(2010, 3, 31, 1, 0);
         ZoneOffsetTransition test = ZoneOffsetTransition.of(ldt, OFFSET_0200, OFFSET_0300);
@@ -154,7 +154,7 @@ public class TCKZoneOffsetTransition extends AbstractTest {
         assertEquals(test.isValidOffset(OFFSET_0400), false);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_isValidOffset_overlap() {
         LocalDateTime ldt = LocalDateTime.of(2010, 10, 31, 1, 0);
         ZoneOffsetTransition test = ZoneOffsetTransition.of(ldt, OFFSET_0300, OFFSET_0200);
@@ -168,7 +168,7 @@ public class TCKZoneOffsetTransition extends AbstractTest {
     //-----------------------------------------------------------------------
     // compareTo()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_compareTo() {
         ZoneOffsetTransition a = ZoneOffsetTransition.of(
                 LocalDateTime.ofEpochSecond(23875287L - 1, 0, OFFSET_0200), OFFSET_0200, OFFSET_0300);
@@ -190,7 +190,7 @@ public class TCKZoneOffsetTransition extends AbstractTest {
         assertEquals(c.compareTo(c) == 0, true);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_compareTo_sameInstant() {
         ZoneOffsetTransition a = ZoneOffsetTransition.of(
                 LocalDateTime.ofEpochSecond(23875287L, 0, OFFSET_0200), OFFSET_0200, OFFSET_0300);
@@ -215,7 +215,7 @@ public class TCKZoneOffsetTransition extends AbstractTest {
     //-----------------------------------------------------------------------
     // equals()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_equals() {
         LocalDateTime ldtA = LocalDateTime.of(2010, 3, 31, 1, 0);
         ZoneOffsetTransition a1 = ZoneOffsetTransition.of(ldtA, OFFSET_0200, OFFSET_0300);
@@ -240,7 +240,7 @@ public class TCKZoneOffsetTransition extends AbstractTest {
     //-----------------------------------------------------------------------
     // hashCode()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_hashCode_floatingWeek_gap_notEndOfDay() {
         LocalDateTime ldtA = LocalDateTime.of(2010, 3, 31, 1, 0);
         ZoneOffsetTransition a1 = ZoneOffsetTransition.of(ldtA, OFFSET_0200, OFFSET_0300);
@@ -256,14 +256,14 @@ public class TCKZoneOffsetTransition extends AbstractTest {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_toString_gap() {
         LocalDateTime ldt = LocalDateTime.of(2010, 3, 31, 1, 0);
         ZoneOffsetTransition test = ZoneOffsetTransition.of(ldt, OFFSET_0200, OFFSET_0300);
         assertEquals(test.toString(), "Transition[Gap at 2010-03-31T01:00+02:00 to +03:00]");
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_toString_overlap() {
         LocalDateTime ldt = LocalDateTime.of(2010, 10, 31, 1, 0);
         ZoneOffsetTransition test = ZoneOffsetTransition.of(ldt, OFFSET_0300, OFFSET_0200);

@@ -105,7 +105,7 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
     private static final ZoneOffset OFFSET_MTWO = ZoneOffset.ofHours(-2);
     private OffsetDateTime TEST_2008_6_30_11_30_59_000000500;
 
-    @BeforeMethod(groups={"tck","implementation"})
+    @BeforeMethod
     public void setUp() {
         TEST_2008_6_30_11_30_59_000000500 = OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30, 59, 500), OFFSET_PONE);
     }
