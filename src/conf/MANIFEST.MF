@@ -13,10 +13,10 @@ Bundle-Name: ThreeTen-backport
 Bundle-SymbolicName: org.threeten.bp
 Bundle-Version: 0.7
 Export-Package: org.threeten.bp,
- org.threeten.bp.temporal,
- org.threeten.bp.chrono,
  org.threeten.bp.calendar,
  org.threeten.bp.format,
+ org.threeten.bp.jdk8,
+ org.threeten.bp.temporal,
  org.threeten.bp.zone
 Bundle-License: BSD 3-clause
 Bundle-DocURL: https://github.com/ThreeTen/threetenbp
