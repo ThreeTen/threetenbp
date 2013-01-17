@@ -52,7 +52,7 @@ import org.threeten.bp.LocalTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.TextStyle;
-import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
+import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
 
 /**
  * A calendar system, used to organize and identify dates.
@@ -637,7 +637,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * @return the text value of the chronology, not null
      */
     public String getText(TextStyle style, Locale locale) {
-        return new DateTimeFormatterBuilder().appendChronoText(style).toFormatter(locale).print(new DefaultInterfaceDateTimeAccessor() {
+        return new DateTimeFormatterBuilder().appendChronoText(style).toFormatter(locale).print(new DefaultInterfaceTemporalAccessor() {
             @Override
             public boolean isSupported(TemporalField field) {
                 return false;

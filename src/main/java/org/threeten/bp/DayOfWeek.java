@@ -46,6 +46,7 @@ import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.ValueRange;
+import org.threeten.bp.temporal.WeekFields;
 
 /**
  * A day-of-week, such as 'Tuesday'.

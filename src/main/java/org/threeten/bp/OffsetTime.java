@@ -50,7 +50,7 @@ import java.util.Objects;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
-import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
+import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
@@ -80,7 +80,7 @@ import org.threeten.bp.zone.ZoneRules;
  * This class is immutable and thread-safe.
  */
 public final class OffsetTime
-        extends DefaultInterfaceDateTimeAccessor
+        extends DefaultInterfaceTemporalAccessor
         implements Temporal, TemporalAdjuster, Comparable<OffsetTime>, Serializable {
 
     /**

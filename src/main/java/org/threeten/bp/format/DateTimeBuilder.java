@@ -80,7 +80,7 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
+import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoField;
@@ -106,7 +106,7 @@ import org.threeten.bp.temporal.TemporalQuery;
  * It should only be used from a single thread.
  */
 public final class DateTimeBuilder
-        extends DefaultInterfaceDateTimeAccessor
+        extends DefaultInterfaceTemporalAccessor
         implements TemporalAccessor, Cloneable {
 
     /**

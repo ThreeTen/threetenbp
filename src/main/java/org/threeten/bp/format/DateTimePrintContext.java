@@ -40,13 +40,13 @@ import java.util.Objects;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.Instant;
 import org.threeten.bp.ZoneId;
-import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
+import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
 import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoLocalDate;
-import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.ValueRange;
 
@@ -128,7 +128,7 @@ final class DateTimePrintContext {
         } else {  // overrideChrono != null
             // need class here to handle non-standard cases like OffsetDate
             final ChronoLocalDate<?> date = overrideChrono.date(temporal);
-            return new DefaultInterfaceDateTimeAccessor() {
+            return new DefaultInterfaceTemporalAccessor() {
                 @Override
                 public boolean isSupported(TemporalField field) {
                     return temporal.isSupported(field);

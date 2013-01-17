@@ -31,38 +31,42 @@
  */
 package org.threeten.bp.jdk8;
 
-import org.threeten.bp.temporal.Temporal;
-import org.threeten.bp.temporal.TemporalAdder;
-import org.threeten.bp.temporal.TemporalAdjuster;
-import org.threeten.bp.temporal.TemporalSubtractor;
-import org.threeten.bp.temporal.TemporalUnit;
+import org.threeten.bp.DateTimeException;
+import org.threeten.bp.temporal.ChronoField;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalQueries;
+import org.threeten.bp.temporal.TemporalQuery;
+import org.threeten.bp.temporal.ValueRange;
 
 /**
  * A temporary class providing implementations that will become default interface
  * methods once integrated into JDK 8.
  */
-public abstract class DefaultInterfaceDateTime
-        extends DefaultInterfaceDateTimeAccessor
-        implements Temporal {
+public abstract class DefaultInterfaceTemporalAccessor implements TemporalAccessor {
 
     @Override
-    public Temporal with(TemporalAdjuster adjuster) {
-        return adjuster.adjustInto(this);
+    public ValueRange range(TemporalField field) {
+        if (field instanceof ChronoField) {
+            if (isSupported(field)) {
+                return field.range();
+            }
+            throw new DateTimeException("Unsupported field: " + field.getName());
+        }
+        return field.doRange(this);
     }
 
     @Override
-    public Temporal plus(TemporalAdder adjuster) {
-        return adjuster.addTo(this);
+    public int get(TemporalField field) {
+        return range(field).checkValidIntValue(getLong(field), field);
     }
 
     @Override
-    public Temporal minus(TemporalSubtractor adjuster) {
-        return adjuster.subtractFrom(this);
-    }
-
-    @Override
-    public Temporal minus(long amountToSubtract, TemporalUnit unit) {
-        return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
+    public <R> R query(TemporalQuery<R> query) {
+        if (query == TemporalQueries.zoneId() || query == TemporalQueries.chrono() || query == TemporalQueries.precision()) {
+            return null;
+        }
+        return query.queryFrom(this);
     }
 
 }

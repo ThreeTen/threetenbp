@@ -32,12 +32,12 @@
 package org.threeten.bp.temporal;
 
 import org.threeten.bp.DateTimeException;
-import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
+import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
 
 /**
  * Mock simple date-time with one field-value.
  */
-public final class MockFieldValue extends DefaultInterfaceDateTimeAccessor {
+public final class MockFieldValue extends DefaultInterfaceTemporalAccessor {
 
     private final TemporalField field;
     private final long value;

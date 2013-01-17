@@ -61,7 +61,7 @@ import org.threeten.bp.temporal.ValueRange;
  * @param <C> the chronology of this date-time
  */
 public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chrono<C>>
-        extends DefaultInterfaceDateTime
+        extends DefaultInterfaceTemporal
         implements ChronoZonedDateTime<C> {
 
     @Override

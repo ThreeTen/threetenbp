@@ -50,7 +50,7 @@ import java.util.Objects;
 
 import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
-import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
+import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
@@ -155,7 +155,7 @@ import org.threeten.bp.temporal.ValueRange;
  * This class is immutable and thread-safe.
  */
 public final class Instant
-        extends DefaultInterfaceDateTimeAccessor
+        extends DefaultInterfaceTemporalAccessor
         implements Temporal, TemporalAdjuster, Comparable<Instant>, Serializable {
 
     /**

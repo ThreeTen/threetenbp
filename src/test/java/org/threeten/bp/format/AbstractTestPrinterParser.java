@@ -39,7 +39,7 @@ import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
-import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
+import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalField;
 
@@ -63,7 +63,7 @@ public class AbstractTestPrinterParser {
         buf = new StringBuilder();
     }
 
-    private static final TemporalAccessor EMPTY = new DefaultInterfaceDateTimeAccessor() {
+    private static final TemporalAccessor EMPTY = new DefaultInterfaceTemporalAccessor() {
         public boolean isSupported(TemporalField field) {
             return true;
         }

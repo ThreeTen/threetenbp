@@ -54,7 +54,7 @@ import org.threeten.bp.temporal.TemporalQuery;
  * @param <C> the chronology of this era
  */
 public abstract class DefaultInterfaceEra<C extends Chrono<C>>
-        extends DefaultInterfaceDateTimeAccessor
+        extends DefaultInterfaceTemporalAccessor
         implements Era<C> {
 
     @Override

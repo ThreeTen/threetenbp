@@ -83,7 +83,7 @@ import org.testng.annotations.Test;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
-import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
+import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.ISOChrono;
@@ -602,7 +602,7 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void factory_from_DateTimeAccessor_LDT_ZoneId() {
-        assertEquals(ZonedDateTime.from(new DefaultInterfaceDateTimeAccessor() {
+        assertEquals(ZonedDateTime.from(new DefaultInterfaceTemporalAccessor() {
             @Override
             public boolean isSupported(TemporalField field) {
                 return TEST_DATE_TIME_PARIS.getDateTime().isSupported(field);
@@ -624,7 +624,7 @@ public class TCKZonedDateTime extends AbstractDateTimeTest {
 
     @Test(groups={"tck"})
     public void factory_from_DateTimeAccessor_Instant_ZoneId() {
-        assertEquals(ZonedDateTime.from(new DefaultInterfaceDateTimeAccessor() {
+        assertEquals(ZonedDateTime.from(new DefaultInterfaceTemporalAccessor() {
             @Override
             public boolean isSupported(TemporalField field) {
                 return field == INSTANT_SECONDS || field == NANO_OF_SECOND;

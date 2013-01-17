@@ -63,7 +63,7 @@ import org.threeten.bp.YearMonth;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.ZonedDateTime;
-import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
+import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
 import org.threeten.bp.temporal.ISOFields;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalField;
@@ -1165,7 +1165,7 @@ public class TCKDateTimeFormatters {
     }
 
     //-------------------------------------------------------------------------
-    static class MockAccessor extends DefaultInterfaceDateTimeAccessor {
+    static class MockAccessor extends DefaultInterfaceTemporalAccessor {
         Map<TemporalField, Long> fields = new HashMap<>();
         ZoneId zoneId;
 

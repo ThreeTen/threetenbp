@@ -57,7 +57,7 @@ import org.threeten.bp.temporal.TemporalUnit;
  * @param <C> the chronology of this date-time
  */
 public abstract class DefaultInterfaceChronoLocalDateTime<C extends Chrono<C>>
-        extends DefaultInterfaceDateTime
+        extends DefaultInterfaceTemporal
         implements ChronoLocalDateTime<C> {
 
     @Override
