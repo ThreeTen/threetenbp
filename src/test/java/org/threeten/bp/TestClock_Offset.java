@@ -57,8 +57,6 @@ public class TestClock_Offset extends AbstractTest {
     //-----------------------------------------------------------------------
     public void test_offset_ClockDuration() {
         Clock test = Clock.offset(Clock.fixed(INSTANT, PARIS), OFFSET);
-        System.out.println(test.instant());
-        System.out.println(INSTANT.plus(OFFSET));
         assertEquals(test.instant(), INSTANT.plus(OFFSET));
         assertEquals(test.getZone(), PARIS);
     }

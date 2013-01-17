@@ -102,7 +102,7 @@ public class TestZoneId extends AbstractTest {
         assertSerializable(test);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_serialization_format() throws ClassNotFoundException, IOException {
         assertEqualsSerialisedForm(ZoneId.of("Europe/London"), ZoneId.class);
     }

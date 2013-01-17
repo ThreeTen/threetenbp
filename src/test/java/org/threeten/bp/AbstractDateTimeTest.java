@@ -219,7 +219,7 @@ public abstract class AbstractDateTimeTest extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void basicTest_query() {
         for (TemporalAccessor sample : samples()) {
             assertEquals(sample.query(new TemporalQuery<String>() {
