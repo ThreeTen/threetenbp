@@ -64,7 +64,7 @@ import org.threeten.bp.zone.ZoneOffsetTransitionRule.TimeDefinition;
  * Test ZoneRulesBuilder.
  */
 @Test
-public class TCKZoneRulesBuilder {
+public class TestZoneRulesBuilder {
 
     private static final ZoneOffset OFFSET_1 = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_2 = ZoneOffset.ofHours(2);

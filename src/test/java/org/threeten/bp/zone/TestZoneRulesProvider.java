@@ -48,7 +48,7 @@ import org.threeten.bp.ZoneOffset;
  * Test ZoneRulesProvider.
  */
 @Test
-public class TCKZoneRulesProvider {
+public class TestZoneRulesProvider {
 
     //-----------------------------------------------------------------------
     // getAvailableZoneIds()

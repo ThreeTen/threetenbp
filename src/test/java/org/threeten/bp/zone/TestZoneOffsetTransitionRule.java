@@ -48,7 +48,7 @@ import org.threeten.bp.zone.ZoneOffsetTransitionRule.TimeDefinition;
  * Test ZoneOffsetTransitionRule.
  */
 @Test
-public class TCKZoneOffsetTransitionRule extends AbstractTest {
+public class TestZoneOffsetTransitionRule extends AbstractTest {
 
     private static final LocalTime TIME_0100 = LocalTime.of(1, 0);
     private static final ZoneOffset OFFSET_0200 = ZoneOffset.ofHours(2);

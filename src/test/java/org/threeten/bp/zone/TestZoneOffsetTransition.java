@@ -47,7 +47,7 @@ import org.threeten.bp.ZoneOffset;
  * Test ZoneOffsetTransition.
  */
 @Test
-public class TCKZoneOffsetTransition extends AbstractTest {
+public class TestZoneOffsetTransition extends AbstractTest {
 
     private static final ZoneOffset OFFSET_0100 = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_0200 = ZoneOffset.ofHours(2);
