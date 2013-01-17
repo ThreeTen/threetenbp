@@ -78,7 +78,7 @@ import org.threeten.bp.temporal.TemporalSubtractor;
  * Test OffsetDate.
  */
 @Test
-public class TCKOffsetDate extends AbstractDateTimeTest {
+public class TestOffsetDate extends AbstractDateTimeTest {
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
 
@@ -156,7 +156,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // now()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void now() {
         OffsetDate expected = OffsetDate.now(Clock.systemDefaultZone());
         OffsetDate test = OffsetDate.now();
@@ -170,7 +170,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         assertEquals(test, expected);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void now_Clock_allSecsInDay_utc() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSecond(i);
@@ -180,7 +180,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         }
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void now_Clock_allSecsInDay_beforeEpoch() {
         for (int i =-1; i >= -(2 * 24 * 60 * 60); i--) {
             Instant instant = Instant.ofEpochSecond(i);
@@ -190,7 +190,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         }
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void now_Clock_offsets() {
         Instant base = LocalDateTime.of(1970, 1, 1, 12, 0).toInstant(ZoneOffset.UTC);
         for (int i = -9; i < 15; i++) {
@@ -201,12 +201,12 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         }
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void now_Clock_nullZoneId() {
         OffsetDate.now((ZoneId) null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void now_Clock_nullClock() {
         OffsetDate.now((Clock) null);
     }
@@ -228,101 +228,101 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_of_intMonthInt() {
         OffsetDate test = OffsetDate.of(LocalDate.of(2007, Month.JULY, 15), OFFSET_PONE);
         check(test, 2007, 7, 15, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_of_ints() {
         OffsetDate test = OffsetDate.of(LocalDate.of(2007, 7, 15), OFFSET_PONE);
         check(test, 2007, 7, 15, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_of_intsMonthOffset() {
         assertEquals(TEST_2007_07_15_PONE, OffsetDate.of(LocalDate.of(2007, Month.JULY, 15), OFFSET_PONE));
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class)
     public void factory_of_intsMonthOffset_dayTooLow() {
         OffsetDate.of(LocalDate.of(2007, Month.JANUARY, 0), OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class)
     public void factory_of_intsMonthOffset_dayTooHigh() {
         OffsetDate.of(LocalDate.of(2007, Month.JANUARY, 32), OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void factory_of_intsMonthOffset_nullMonth() {
         OffsetDate.of(LocalDate.of(2007, null, 30), OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class)
     public void factory_of_intsMonthOffset_yearTooLow() {
         OffsetDate.of(LocalDate.of(Integer.MIN_VALUE, Month.JANUARY, 1), OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void factory_of_intsMonthOffset_nullOffset() {
         OffsetDate.of(LocalDate.of(2007, Month.JANUARY, 30), null);
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_of_intsOffset() {
         OffsetDate test = OffsetDate.of(LocalDate.of(2007, 7, 15), OFFSET_PONE);
         check(test, 2007, 7, 15, OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class)
     public void factory_of_ints_dayTooLow() {
         OffsetDate.of(LocalDate.of(2007, 1, 0), OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class)
     public void factory_of_ints_dayTooHigh() {
         OffsetDate.of(LocalDate.of(2007, 1, 32), OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class)
     public void factory_of_ints_monthTooLow() {
         OffsetDate.of(LocalDate.of(2007, 0, 1), OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class)
     public void factory_of_ints_monthTooHigh() {
         OffsetDate.of(LocalDate.of(2007, 13, 1), OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class)
     public void factory_of_ints_yearTooLow() {
         OffsetDate.of(LocalDate.of(Integer.MIN_VALUE, 1, 1), OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void factory_of_ints_nullOffset() {
         OffsetDate.of(LocalDate.of(2007, 1, 1), (ZoneOffset) null);
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_of_LocalDateZoneOffset() {
         LocalDate localDate = LocalDate.of(2008, 6, 30);
         OffsetDate test = OffsetDate.of(localDate, OFFSET_PONE);
         check(test, 2008, 6, 30, OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void factory_of_LocalDateZoneOffset_nullDate() {
         OffsetDate.of((LocalDate) null, OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void factory_of_LocalDateZoneOffset_nullOffset() {
         LocalDate localDate = LocalDate.of(2008, 6, 30);
         OffsetDate.of(localDate, (ZoneOffset) null);
@@ -331,23 +331,23 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // from(TemporalAccessor)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_from_TemporalAccessor_OD() {
         assertEquals(OffsetDate.from(TEST_2007_07_15_PONE), TEST_2007_07_15_PONE);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_from_TemporalAccessor_ZDT() {
         ZonedDateTime base = LocalDateTime.of(2007, 7, 15, 17, 30).atZone(OFFSET_PONE);
         assertEquals(OffsetDate.from(base), TEST_2007_07_15_PONE);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_from_TemporalAccessor_invalid_noDerive() {
         OffsetDate.from(LocalTime.of(12, 30));
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_from_TemporalAccessor_null() {
         OffsetDate.from((TemporalAccessor) null);
     }
@@ -355,7 +355,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // parse()
     //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleToString", groups={"tck"})
+    @Test(dataProvider="sampleToString")
     public void factory_parse_validText(int y, int m, int d, String offsetId, String parsable) {
         OffsetDate t = OffsetDate.parse(parsable);
         assertNotNull(t, parsable);
@@ -387,22 +387,22 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="sampleBadParse", expectedExceptions=DateTimeParseException.class, groups={"tck"})
+    @Test(dataProvider="sampleBadParse", expectedExceptions=DateTimeParseException.class)
     public void factory_parse_invalidText(String unparsable) {
         OffsetDate.parse(unparsable);
     }
 
-    @Test(expectedExceptions=DateTimeParseException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeParseException.class)
     public void factory_parse_illegalValue() {
         OffsetDate.parse("2008-06-32+01:00");
     }
 
-    @Test(expectedExceptions=DateTimeParseException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeParseException.class)
     public void factory_parse_invalidValue() {
         OffsetDate.parse("2008-06-31+01:00");
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_nullText() {
         OffsetDate.parse((String) null);
     }
@@ -410,20 +410,20 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // parse(DateTimeFormatter)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_parse_formatter() {
         DateTimeFormatter f = DateTimeFormatters.pattern("y M d XXX");
         OffsetDate test = OffsetDate.parse("2010 12 3 +01:00", f);
         assertEquals(test, OffsetDate.of(LocalDate.of(2010, 12, 3), ZoneOffset.ofHours(1)));
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_formatter_nullText() {
         DateTimeFormatter f = DateTimeFormatters.pattern("y M d");
         OffsetDate.parse((String) null, f);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_formatter_nullFormatter() {
         OffsetDate.parse("ANY", null);
     }
@@ -431,7 +431,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // constructor
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void constructor_nullDate() throws Throwable  {
         Constructor<OffsetDate> con = OffsetDate.class.getDeclaredConstructor(LocalDate.class, ZoneOffset.class);
         con.setAccessible(true);
@@ -442,7 +442,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         }
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void constructor_nullOffset() throws Throwable  {
         Constructor<OffsetDate> con = OffsetDate.class.getDeclaredConstructor(LocalDate.class, ZoneOffset.class);
         con.setAccessible(true);
@@ -469,7 +469,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="sampleDates", groups={"tck"})
+    @Test(dataProvider="sampleDates")
     public void test_get_OffsetDate(int y, int m, int d, ZoneOffset offset) {
         LocalDate localDate = LocalDate.of(y, m, d);
         OffsetDate a = OffsetDate.of(localDate, offset);
@@ -552,7 +552,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // withOffset()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_withOffset() {
         OffsetDate base = OffsetDate.of(LocalDate.of(2008, 6, 30), OFFSET_PONE);
         OffsetDate test = base.withOffset(OFFSET_PTWO);
@@ -560,14 +560,14 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         assertEquals(test.getOffset(), OFFSET_PTWO);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_withOffset_noChange() {
         OffsetDate base = OffsetDate.of(LocalDate.of(2008, 6, 30), OFFSET_PONE);
         OffsetDate test = base.withOffset(OFFSET_PONE);
         assertEquals(test, base);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_withOffset_null() {
         TEST_2007_07_15_PONE.withOffset(null);
     }
@@ -575,7 +575,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // with(WithAdjuster)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_with_adjustment() {
         final OffsetDate sample = OffsetDate.of(LocalDate.of(2012, 3, 4), OFFSET_PONE);
         TemporalAdjuster adjuster = new TemporalAdjuster() {
@@ -587,38 +587,38 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         assertEquals(TEST_2007_07_15_PONE.with(adjuster), sample);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_with_adjustment_LocalDate() {
         OffsetDate test = TEST_2007_07_15_PONE.with(LocalDate.of(2008, 6, 30));
         assertEquals(test, OffsetDate.of(LocalDate.of(2008, 6, 30), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_with_adjustment_OffsetDate() {
         OffsetDate test = TEST_2007_07_15_PONE.with(OffsetDate.of(LocalDate.of(2008, 6, 30), OFFSET_PTWO));
         assertEquals(test, OffsetDate.of(LocalDate.of(2008, 6, 30), OFFSET_PTWO));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_with_adjustment_ZoneOffset() {
         OffsetDate test = TEST_2007_07_15_PONE.with(OFFSET_PTWO);
         assertEquals(test, OffsetDate.of(LocalDate.of(2007, 7, 15), OFFSET_PTWO));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_with_adjustment_Month() {
         OffsetDate test = TEST_2007_07_15_PONE.with(DECEMBER);
         assertEquals(test, OffsetDate.of(LocalDate.of(2007, 12, 15), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_with_adjustment_offsetUnchanged() {
         OffsetDate base = OffsetDate.of(LocalDate.of(2008, 6, 30), OFFSET_PONE);
         OffsetDate test = base.with(Year.of(2008));
         assertEquals(test, base);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_with_adjustment_noChange() {
         LocalDate date = LocalDate.of(2008, 6, 30);
         OffsetDate base = OffsetDate.of(date, OFFSET_PONE);
@@ -626,7 +626,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         assertEquals(test, base);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_with_adjustment_null() {
         TEST_2007_07_15_PONE.with((TemporalAdjuster) null);
     }
@@ -634,7 +634,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // with(TemporalField, long)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_with_TemporalField() {
         OffsetDate test = OffsetDate.of(LocalDate.of(2008, 6, 30), OFFSET_PONE);
         assertEquals(test.with(ChronoField.YEAR, 2009), OffsetDate.of(LocalDate.of(2009, 6, 30), OFFSET_PONE));
@@ -659,24 +659,24 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // withYear()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_withYear_int_normal() {
         OffsetDate t = TEST_2007_07_15_PONE.withYear(2008);
         assertEquals(t, OffsetDate.of(LocalDate.of(2008, 7, 15), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_withYear_int_noChange() {
         OffsetDate t = TEST_2007_07_15_PONE.withYear(2007);
         assertEquals(t, TEST_2007_07_15_PONE);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_withYear_int_invalid() {
         TEST_2007_07_15_PONE.withYear(Year.MIN_VALUE - 1);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_withYear_int_adjustDay() {
         OffsetDate t = OffsetDate.of(LocalDate.of(2008, 2, 29), OFFSET_PONE).withYear(2007);
         OffsetDate expected = OffsetDate.of(LocalDate.of(2007, 2, 28), OFFSET_PONE);
@@ -686,24 +686,24 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // withMonth()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_withMonth_int_normal() {
         OffsetDate t = TEST_2007_07_15_PONE.withMonth(1);
         assertEquals(t, OffsetDate.of(LocalDate.of(2007, 1, 15), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_withMonth_int_noChange() {
         OffsetDate t = TEST_2007_07_15_PONE.withMonth(7);
         assertEquals(t, TEST_2007_07_15_PONE);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_withMonth_int_invalid() {
         TEST_2007_07_15_PONE.withMonth(13);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_withMonth_int_adjustDay() {
         OffsetDate t = OffsetDate.of(LocalDate.of(2007, 12, 31), OFFSET_PONE).withMonth(11);
         OffsetDate expected = OffsetDate.of(LocalDate.of(2007, 11, 30), OFFSET_PONE);
@@ -713,24 +713,24 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // withDayOfMonth()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_withDayOfMonth_normal() {
         OffsetDate t = TEST_2007_07_15_PONE.withDayOfMonth(1);
         assertEquals(t, OffsetDate.of(LocalDate.of(2007, 7, 1), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_withDayOfMonth_noChange() {
         OffsetDate t = TEST_2007_07_15_PONE.withDayOfMonth(15);
         assertEquals(t, OffsetDate.of(LocalDate.of(2007, 7, 15), OFFSET_PONE));
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_withDayOfMonth_invalidForMonth() {
         OffsetDate.of(LocalDate.of(2007, 11, 30), OFFSET_PONE).withDayOfMonth(31);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_withDayOfMonth_invalidAlways() {
         OffsetDate.of(LocalDate.of(2007, 11, 30), OFFSET_PONE).withDayOfMonth(32);
     }
@@ -738,24 +738,24 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // withDayOfYear(int)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_withDayOfYear_normal() {
         OffsetDate t = TEST_2007_07_15_PONE.withDayOfYear(33);
         assertEquals(t, OffsetDate.of(LocalDate.of(2007, 2, 2), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_withDayOfYear_noChange() {
         OffsetDate t = TEST_2007_07_15_PONE.withDayOfYear(31 + 28 + 31 + 30 + 31 + 30 + 15);
         assertEquals(t, TEST_2007_07_15_PONE);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_withDayOfYear_illegal() {
         TEST_2007_07_15_PONE.withDayOfYear(367);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_withDayOfYear_invalid() {
         TEST_2007_07_15_PONE.withDayOfYear(366);
     }
@@ -763,27 +763,27 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // plus(PlusAdjuster)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_plus_PlusAdjuster() {
         MockSimplePeriod period = MockSimplePeriod.of(7, ChronoUnit.MONTHS);
         OffsetDate t = TEST_2007_07_15_PONE.plus(period);
         assertEquals(t, OffsetDate.of(LocalDate.of(2008, 2, 15), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plus_PlusAdjuster_noChange() {
         MockSimplePeriod period = MockSimplePeriod.of(0, ChronoUnit.MONTHS);
         OffsetDate t = TEST_2007_07_15_PONE.plus(period);
         assertEquals(t, TEST_2007_07_15_PONE);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plus_PlusAdjuster_zero() {
         OffsetDate t = TEST_2007_07_15_PONE.plus(Period.ZERO);
         assertEquals(t, TEST_2007_07_15_PONE);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_plus_PlusAdjuster_null() {
         TEST_2007_07_15_PONE.plus((TemporalAdder) null);
     }
@@ -791,56 +791,56 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // plusYears()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_plusYears_long_normal() {
         OffsetDate t = TEST_2007_07_15_PONE.plusYears(1);
         assertEquals(t, OffsetDate.of(LocalDate.of(2008, 7, 15), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusYears_long_negative() {
         OffsetDate t = TEST_2007_07_15_PONE.plusYears(-1);
         assertEquals(t, OffsetDate.of(LocalDate.of(2006, 7, 15), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusYears_long_noChange() {
         OffsetDate t = TEST_2007_07_15_PONE.plusYears(0);
         assertEquals(t, TEST_2007_07_15_PONE);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusYears_long_adjustDay() {
         OffsetDate t = OffsetDate.of(LocalDate.of(2008, 2, 29), OFFSET_PONE).plusYears(1);
         OffsetDate expected = OffsetDate.of(LocalDate.of(2009, 2, 28), OFFSET_PONE);
         assertEquals(t, expected);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusYears_long_big() {
         long years = 20L + Year.MAX_VALUE;
         OffsetDate test = OffsetDate.of(LocalDate.of(-40, 6, 1), OFFSET_PONE).plusYears(years);
         assertEquals(test, OffsetDate.of(LocalDate.of((int) (-40L + years), 6, 1), OFFSET_PONE));
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_plusYears_long_invalidTooLarge() {
         OffsetDate.of(LocalDate.of(Year.MAX_VALUE, 1, 1), OFFSET_PONE).plusYears(1);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_plusYears_long_invalidTooLargeMaxAddMax() {
         OffsetDate test = OffsetDate.of(LocalDate.of(Year.MAX_VALUE, 12, 1), OFFSET_PONE);
         test.plusYears(Long.MAX_VALUE);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_plusYears_long_invalidTooLargeMaxAddMin() {
         OffsetDate test = OffsetDate.of(LocalDate.of(Year.MAX_VALUE, 12, 1), OFFSET_PONE);
         test.plusYears(Long.MIN_VALUE);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_plusYears_long_invalidTooSmall() {
         OffsetDate.of(LocalDate.of(Year.MIN_VALUE, 1, 1), OFFSET_PONE).plusYears(-1);
     }
@@ -848,81 +848,81 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // plusMonths()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_plusMonths_long_normal() {
         OffsetDate t = TEST_2007_07_15_PONE.plusMonths(1);
         assertEquals(t, OffsetDate.of(LocalDate.of(2007, 8, 15), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusMonths_long_overYears() {
         OffsetDate t = TEST_2007_07_15_PONE.plusMonths(25);
         assertEquals(t, OffsetDate.of(LocalDate.of(2009, 8, 15), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusMonths_long_negative() {
         OffsetDate t = TEST_2007_07_15_PONE.plusMonths(-1);
         assertEquals(t, OffsetDate.of(LocalDate.of(2007, 6, 15), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusMonths_long_negativeAcrossYear() {
         OffsetDate t = TEST_2007_07_15_PONE.plusMonths(-7);
         assertEquals(t, OffsetDate.of(LocalDate.of(2006, 12, 15), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusMonths_long_negativeOverYears() {
         OffsetDate t = TEST_2007_07_15_PONE.plusMonths(-31);
         assertEquals(t, OffsetDate.of(LocalDate.of(2004, 12, 15), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusMonths_long_noChange() {
         OffsetDate t = TEST_2007_07_15_PONE.plusMonths(0);
         assertEquals(t, TEST_2007_07_15_PONE);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusMonths_long_adjustDayFromLeapYear() {
         OffsetDate t = OffsetDate.of(LocalDate.of(2008, 2, 29), OFFSET_PONE).plusMonths(12);
         OffsetDate expected = OffsetDate.of(LocalDate.of(2009, 2, 28), OFFSET_PONE);
         assertEquals(t, expected);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusMonths_long_adjustDayFromMonthLength() {
         OffsetDate t = OffsetDate.of(LocalDate.of(2007, 3, 31), OFFSET_PONE).plusMonths(1);
         OffsetDate expected = OffsetDate.of(LocalDate.of(2007, 4, 30), OFFSET_PONE);
         assertEquals(t, expected);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusMonths_long_big() {
         long months = 20L + Integer.MAX_VALUE;
         OffsetDate test = OffsetDate.of(LocalDate.of(-40, 6, 1), OFFSET_PONE).plusMonths(months);
         assertEquals(test, OffsetDate.of(LocalDate.of((int) (-40L + months / 12), 6 + (int) (months % 12), 1), OFFSET_PONE));
     }
 
-    @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
+    @Test(expectedExceptions={DateTimeException.class})
     public void test_plusMonths_long_invalidTooLarge() {
         OffsetDate.of(LocalDate.of(Year.MAX_VALUE, 12, 1), OFFSET_PONE).plusMonths(1);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_plusMonths_long_invalidTooLargeMaxAddMax() {
         OffsetDate test = OffsetDate.of(LocalDate.of(Year.MAX_VALUE, 12, 1), OFFSET_PONE);
         test.plusMonths(Long.MAX_VALUE);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_plusMonths_long_invalidTooLargeMaxAddMin() {
         OffsetDate test = OffsetDate.of(LocalDate.of(Year.MAX_VALUE, 12, 1), OFFSET_PONE);
         test.plusMonths(Long.MIN_VALUE);
     }
 
-    @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
+    @Test(expectedExceptions={DateTimeException.class})
     public void test_plusMonths_long_invalidTooSmall() {
         OffsetDate.of(LocalDate.of(Year.MIN_VALUE, 1, 1), OFFSET_PONE).plusMonths(-1);
     }
@@ -962,7 +962,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="samplePlusWeeksSymmetry", groups={"tck"})
+    @Test(dataProvider="samplePlusWeeksSymmetry")
     public void test_plusWeeks_symmetry(OffsetDate reference) {
         for (int weeks = 0; weeks < 365 * 8; weeks++) {
             OffsetDate t = reference.plusWeeks(weeks).plusWeeks(-weeks);
@@ -973,84 +973,84 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         }
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusWeeks_normal() {
         OffsetDate t = TEST_2007_07_15_PONE.plusWeeks(1);
         assertEquals(t, OffsetDate.of(LocalDate.of(2007, 7, 22), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusWeeks_overMonths() {
         OffsetDate t = TEST_2007_07_15_PONE.plusWeeks(9);
         assertEquals(t, OffsetDate.of(LocalDate.of(2007, 9, 16), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusWeeks_overYears() {
         OffsetDate t = OffsetDate.of(LocalDate.of(2006, 7, 16), OFFSET_PONE).plusWeeks(52);
         assertEquals(t, TEST_2007_07_15_PONE);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusWeeks_overLeapYears() {
         OffsetDate t = TEST_2007_07_15_PONE.plusYears(-1).plusWeeks(104);
         assertEquals(t, OffsetDate.of(LocalDate.of(2008, 7, 12), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusWeeks_negative() {
         OffsetDate t = TEST_2007_07_15_PONE.plusWeeks(-1);
         assertEquals(t, OffsetDate.of(LocalDate.of(2007, 7, 8), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusWeeks_negativeAcrossYear() {
         OffsetDate t = TEST_2007_07_15_PONE.plusWeeks(-28);
         assertEquals(t, OffsetDate.of(LocalDate.of(2006, 12, 31), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusWeeks_negativeOverYears() {
         OffsetDate t = TEST_2007_07_15_PONE.plusWeeks(-104);
         assertEquals(t, OffsetDate.of(LocalDate.of(2005, 7, 17), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusWeeks_noChange() {
         OffsetDate t = TEST_2007_07_15_PONE.plusWeeks(0);
         assertEquals(t, TEST_2007_07_15_PONE);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusWeeks_maximum() {
         OffsetDate t = OffsetDate.of(LocalDate.of(Year.MAX_VALUE, 12, 24), OFFSET_PONE).plusWeeks(1);
         OffsetDate expected = OffsetDate.of(LocalDate.of(Year.MAX_VALUE, 12, 31), OFFSET_PONE);
         assertEquals(t, expected);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusWeeks_minimum() {
         OffsetDate t = OffsetDate.of(LocalDate.of(Year.MIN_VALUE, 1, 8), OFFSET_PONE).plusWeeks(-1);
         OffsetDate expected = OffsetDate.of(LocalDate.of(Year.MIN_VALUE, 1, 1), OFFSET_PONE);
         assertEquals(t, expected);
     }
 
-    @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
+    @Test(expectedExceptions={DateTimeException.class})
     public void test_plusWeeks_invalidTooLarge() {
         OffsetDate.of(LocalDate.of(Year.MAX_VALUE, 12, 25), OFFSET_PONE).plusWeeks(1);
     }
 
-    @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
+    @Test(expectedExceptions={DateTimeException.class})
     public void test_plusWeeks_invalidTooSmall() {
         OffsetDate.of(LocalDate.of(Year.MIN_VALUE, 1, 7), OFFSET_PONE).plusWeeks(-1);
     }
 
-    @Test(expectedExceptions={ArithmeticException.class}, groups={"tck"})
+    @Test(expectedExceptions={ArithmeticException.class})
     public void test_plusWeeks_invalidMaxMinusMax() {
         OffsetDate.of(LocalDate.of(Year.MAX_VALUE, 12, 25), OFFSET_PONE).plusWeeks(Long.MAX_VALUE);
     }
 
-    @Test(expectedExceptions={ArithmeticException.class}, groups={"tck"})
+    @Test(expectedExceptions={ArithmeticException.class})
     public void test_plusWeeks_invalidMaxMinusMin() {
         OffsetDate.of(LocalDate.of(Year.MAX_VALUE, 12, 25), OFFSET_PONE).plusWeeks(Long.MIN_VALUE);
     }
@@ -1090,7 +1090,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="samplePlusDaysSymmetry", groups={"tck"})
+    @Test(dataProvider="samplePlusDaysSymmetry")
     public void test_plusDays_symmetry(OffsetDate reference) {
         for (int days = 0; days < 365 * 8; days++) {
             OffsetDate t = reference.plusDays(days).plusDays(-days);
@@ -1101,84 +1101,84 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         }
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusDays_normal() {
         OffsetDate t = TEST_2007_07_15_PONE.plusDays(1);
         assertEquals(t, OffsetDate.of(LocalDate.of(2007, 7, 16), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusDays_overMonths() {
         OffsetDate t = TEST_2007_07_15_PONE.plusDays(62);
         assertEquals(t, OffsetDate.of(LocalDate.of(2007, 9, 15), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusDays_overYears() {
         OffsetDate t = OffsetDate.of(LocalDate.of(2006, 7, 14), OFFSET_PONE).plusDays(366);
         assertEquals(t, TEST_2007_07_15_PONE);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusDays_overLeapYears() {
         OffsetDate t = TEST_2007_07_15_PONE.plusYears(-1).plusDays(365 + 366);
         assertEquals(t, OffsetDate.of(LocalDate.of(2008, 7, 15), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusDays_negative() {
         OffsetDate t = TEST_2007_07_15_PONE.plusDays(-1);
         assertEquals(t, OffsetDate.of(LocalDate.of(2007, 7, 14), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusDays_negativeAcrossYear() {
         OffsetDate t = TEST_2007_07_15_PONE.plusDays(-196);
         assertEquals(t, OffsetDate.of(LocalDate.of(2006, 12, 31), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusDays_negativeOverYears() {
         OffsetDate t = TEST_2007_07_15_PONE.plusDays(-730);
         assertEquals(t, OffsetDate.of(LocalDate.of(2005, 7, 15), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusDays_noChange() {
         OffsetDate t = TEST_2007_07_15_PONE.plusDays(0);
         assertEquals(t, TEST_2007_07_15_PONE);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusDays_maximum() {
         OffsetDate t = OffsetDate.of(LocalDate.of(Year.MAX_VALUE, 12, 30), OFFSET_PONE).plusDays(1);
         OffsetDate expected = OffsetDate.of(LocalDate.of(Year.MAX_VALUE, 12, 31), OFFSET_PONE);
         assertEquals(t, expected);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusDays_minimum() {
         OffsetDate t = OffsetDate.of(LocalDate.of(Year.MIN_VALUE, 1, 2), OFFSET_PONE).plusDays(-1);
         OffsetDate expected = OffsetDate.of(LocalDate.of(Year.MIN_VALUE, 1, 1), OFFSET_PONE);
         assertEquals(t, expected);
     }
 
-    @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
+    @Test(expectedExceptions={DateTimeException.class})
     public void test_plusDays_invalidTooLarge() {
         OffsetDate.of(LocalDate.of(Year.MAX_VALUE, 12, 31), OFFSET_PONE).plusDays(1);
     }
 
-    @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
+    @Test(expectedExceptions={DateTimeException.class})
     public void test_plusDays_invalidTooSmall() {
         OffsetDate.of(LocalDate.of(Year.MIN_VALUE, 1, 1), OFFSET_PONE).plusDays(-1);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
+    @Test(expectedExceptions=ArithmeticException.class)
     public void test_plusDays_overflowTooLarge() {
         OffsetDate.of(LocalDate.of(Year.MAX_VALUE, 12, 31), OFFSET_PONE).plusDays(Long.MAX_VALUE);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
+    @Test(expectedExceptions=ArithmeticException.class)
     public void test_plusDays_overflowTooSmall() {
         OffsetDate.of(LocalDate.of(Year.MIN_VALUE, 1, 1), OFFSET_PONE).plusDays(Long.MIN_VALUE);
     }
@@ -1186,27 +1186,27 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // minus(MinusAdjuster)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_minus_MinusAdjuster() {
         MockSimplePeriod period = MockSimplePeriod.of(7, ChronoUnit.MONTHS);
         OffsetDate t = TEST_2007_07_15_PONE.minus(period);
         assertEquals(t, OffsetDate.of(LocalDate.of(2006, 12, 15), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minus_MinusAdjuster_noChange() {
         MockSimplePeriod period = MockSimplePeriod.of(0, ChronoUnit.MONTHS);
         OffsetDate t = TEST_2007_07_15_PONE.minus(period);
         assertEquals(t, TEST_2007_07_15_PONE);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minus_MinusAdjuster_zero() {
         OffsetDate t = TEST_2007_07_15_PONE.minus(Period.ZERO);
         assertEquals(t, TEST_2007_07_15_PONE);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_plus_MinusAdjuster_null() {
         TEST_2007_07_15_PONE.minus((TemporalSubtractor) null);
     }
@@ -1214,56 +1214,56 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // minusYears()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_minusYears_long_normal() {
         OffsetDate t = TEST_2007_07_15_PONE.minusYears(1);
         assertEquals(t, OffsetDate.of(LocalDate.of(2006, 7, 15), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusYears_long_negative() {
         OffsetDate t = TEST_2007_07_15_PONE.minusYears(-1);
         assertEquals(t, OffsetDate.of(LocalDate.of(2008, 7, 15), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusYears_long_noChange() {
         OffsetDate t = TEST_2007_07_15_PONE.minusYears(0);
         assertEquals(t, TEST_2007_07_15_PONE);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusYears_long_adjustDay() {
         OffsetDate t = OffsetDate.of(LocalDate.of(2008, 2, 29), OFFSET_PONE).minusYears(1);
         OffsetDate expected = OffsetDate.of(LocalDate.of(2007, 2, 28), OFFSET_PONE);
         assertEquals(t, expected);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusYears_long_big() {
         long years = 20L + Year.MAX_VALUE;
         OffsetDate test = OffsetDate.of(LocalDate.of(40, 6, 1), OFFSET_PONE).minusYears(years);
         assertEquals(test, OffsetDate.of(LocalDate.of((int) (40L - years), 6, 1), OFFSET_PONE));
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_minusYears_long_invalidTooLarge() {
         OffsetDate.of(LocalDate.of(Year.MAX_VALUE, 1, 1), OFFSET_PONE).minusYears(-1);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_minusYears_long_invalidTooLargeMaxAddMax() {
         OffsetDate test = OffsetDate.of(LocalDate.of(Year.MAX_VALUE, 12, 1), OFFSET_PONE);
         test.minusYears(Long.MAX_VALUE);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_minusYears_long_invalidTooLargeMaxAddMin() {
         OffsetDate test = OffsetDate.of(LocalDate.of(Year.MAX_VALUE, 12, 1), OFFSET_PONE);
         test.minusYears(Long.MIN_VALUE);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_minusYears_long_invalidTooSmall() {
         OffsetDate.of(LocalDate.of(Year.MIN_VALUE, 1, 1), OFFSET_PONE).minusYears(1);
     }
@@ -1271,81 +1271,81 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // minusMonths()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_minusMonths_long_normal() {
         OffsetDate t = TEST_2007_07_15_PONE.minusMonths(1);
         assertEquals(t, OffsetDate.of(LocalDate.of(2007, 6, 15), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusMonths_long_overYears() {
         OffsetDate t = TEST_2007_07_15_PONE.minusMonths(25);
         assertEquals(t, OffsetDate.of(LocalDate.of(2005, 6, 15), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusMonths_long_negative() {
         OffsetDate t = TEST_2007_07_15_PONE.minusMonths(-1);
         assertEquals(t, OffsetDate.of(LocalDate.of(2007, 8, 15), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusMonths_long_negativeAcrossYear() {
         OffsetDate t = TEST_2007_07_15_PONE.minusMonths(-7);
         assertEquals(t, OffsetDate.of(LocalDate.of(2008, 2, 15), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusMonths_long_negativeOverYears() {
         OffsetDate t = TEST_2007_07_15_PONE.minusMonths(-31);
         assertEquals(t, OffsetDate.of(LocalDate.of(2010, 2, 15), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusMonths_long_noChange() {
         OffsetDate t = TEST_2007_07_15_PONE.minusMonths(0);
         assertEquals(t, TEST_2007_07_15_PONE);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusMonths_long_adjustDayFromLeapYear() {
         OffsetDate t = OffsetDate.of(LocalDate.of(2008, 2, 29), OFFSET_PONE).minusMonths(12);
         OffsetDate expected = OffsetDate.of(LocalDate.of(2007, 2, 28), OFFSET_PONE);
         assertEquals(t, expected);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusMonths_long_adjustDayFromMonthLength() {
         OffsetDate t = OffsetDate.of(LocalDate.of(2007, 3, 31), OFFSET_PONE).minusMonths(1);
         OffsetDate expected = OffsetDate.of(LocalDate.of(2007, 2, 28), OFFSET_PONE);
         assertEquals(t, expected);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusMonths_long_big() {
         long months = 20L + Integer.MAX_VALUE;
         OffsetDate test = OffsetDate.of(LocalDate.of(40, 6, 1), OFFSET_PONE).minusMonths(months);
         assertEquals(test, OffsetDate.of(LocalDate.of((int) (40L - months / 12), 6 - (int) (months % 12), 1), OFFSET_PONE));
     }
 
-    @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
+    @Test(expectedExceptions={DateTimeException.class})
     public void test_minusMonths_long_invalidTooLarge() {
         OffsetDate.of(LocalDate.of(Year.MAX_VALUE, 12, 1), OFFSET_PONE).minusMonths(-1);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_minusMonths_long_invalidTooLargeMaxAddMax() {
         OffsetDate test = OffsetDate.of(LocalDate.of(Year.MAX_VALUE, 12, 1), OFFSET_PONE);
         test.minusMonths(Long.MAX_VALUE);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_minusMonths_long_invalidTooLargeMaxAddMin() {
         OffsetDate test = OffsetDate.of(LocalDate.of(Year.MAX_VALUE, 12, 1), OFFSET_PONE);
         test.minusMonths(Long.MIN_VALUE);
     }
 
-    @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
+    @Test(expectedExceptions={DateTimeException.class})
     public void test_minusMonths_long_invalidTooSmall() {
         OffsetDate.of(LocalDate.of(Year.MIN_VALUE, 1, 1), OFFSET_PONE).minusMonths(1);
     }
@@ -1385,7 +1385,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="sampleMinusWeeksSymmetry", groups={"tck"})
+    @Test(dataProvider="sampleMinusWeeksSymmetry")
     public void test_minusWeeks_symmetry(OffsetDate reference) {
         for (int weeks = 0; weeks < 365 * 8; weeks++) {
             OffsetDate t = reference.minusWeeks(weeks).minusWeeks(-weeks);
@@ -1396,84 +1396,84 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         }
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusWeeks_normal() {
         OffsetDate t = TEST_2007_07_15_PONE.minusWeeks(1);
         assertEquals(t, OffsetDate.of(LocalDate.of(2007, 7, 8), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusWeeks_overMonths() {
         OffsetDate t = TEST_2007_07_15_PONE.minusWeeks(9);
         assertEquals(t, OffsetDate.of(LocalDate.of(2007, 5, 13), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusWeeks_overYears() {
         OffsetDate t = OffsetDate.of(LocalDate.of(2008, 7, 13), OFFSET_PONE).minusWeeks(52);
         assertEquals(t, TEST_2007_07_15_PONE);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusWeeks_overLeapYears() {
         OffsetDate t = TEST_2007_07_15_PONE.minusYears(-1).minusWeeks(104);
         assertEquals(t, OffsetDate.of(LocalDate.of(2006, 7, 18), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusWeeks_negative() {
         OffsetDate t = TEST_2007_07_15_PONE.minusWeeks(-1);
         assertEquals(t, OffsetDate.of(LocalDate.of(2007, 7, 22), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusWeeks_negativeAcrossYear() {
         OffsetDate t = TEST_2007_07_15_PONE.minusWeeks(-28);
         assertEquals(t, OffsetDate.of(LocalDate.of(2008, 1, 27), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusWeeks_negativeOverYears() {
         OffsetDate t = TEST_2007_07_15_PONE.minusWeeks(-104);
         assertEquals(t, OffsetDate.of(LocalDate.of(2009, 7, 12), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusWeeks_noChange() {
         OffsetDate t = TEST_2007_07_15_PONE.minusWeeks(0);
         assertEquals(t, TEST_2007_07_15_PONE);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusWeeks_maximum() {
         OffsetDate t = OffsetDate.of(LocalDate.of(Year.MAX_VALUE, 12, 24), OFFSET_PONE).minusWeeks(-1);
         OffsetDate expected = OffsetDate.of(LocalDate.of(Year.MAX_VALUE, 12, 31), OFFSET_PONE);
         assertEquals(t, expected);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusWeeks_minimum() {
         OffsetDate t = OffsetDate.of(LocalDate.of(Year.MIN_VALUE, 1, 8), OFFSET_PONE).minusWeeks(1);
         OffsetDate expected = OffsetDate.of(LocalDate.of(Year.MIN_VALUE, 1, 1), OFFSET_PONE);
         assertEquals(t, expected);
     }
 
-    @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
+    @Test(expectedExceptions={DateTimeException.class})
     public void test_minusWeeks_invalidTooLarge() {
         OffsetDate.of(LocalDate.of(Year.MAX_VALUE, 12, 25), OFFSET_PONE).minusWeeks(-1);
     }
 
-    @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
+    @Test(expectedExceptions={DateTimeException.class})
     public void test_minusWeeks_invalidTooSmall() {
         OffsetDate.of(LocalDate.of(Year.MIN_VALUE, 1, 7), OFFSET_PONE).minusWeeks(1);
     }
 
-    @Test(expectedExceptions={ArithmeticException.class}, groups={"tck"})
+    @Test(expectedExceptions={ArithmeticException.class})
     public void test_minusWeeks_invalidMaxMinusMax() {
         OffsetDate.of(LocalDate.of(Year.MAX_VALUE, 12, 25), OFFSET_PONE).minusWeeks(Long.MAX_VALUE);
     }
 
-    @Test(expectedExceptions={ArithmeticException.class}, groups={"tck"})
+    @Test(expectedExceptions={ArithmeticException.class})
     public void test_minusWeeks_invalidMaxMinusMin() {
         OffsetDate.of(LocalDate.of(Year.MAX_VALUE, 12, 25), OFFSET_PONE).minusWeeks(Long.MIN_VALUE);
     }
@@ -1513,7 +1513,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="sampleMinusDaysSymmetry", groups={"tck"})
+    @Test(dataProvider="sampleMinusDaysSymmetry")
     public void test_minusDays_symmetry(OffsetDate reference) {
         for (int days = 0; days < 365 * 8; days++) {
             OffsetDate t = reference.minusDays(days).minusDays(-days);
@@ -1524,84 +1524,84 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         }
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusDays_normal() {
         OffsetDate t = TEST_2007_07_15_PONE.minusDays(1);
         assertEquals(t, OffsetDate.of(LocalDate.of(2007, 7, 14), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusDays_overMonths() {
         OffsetDate t = TEST_2007_07_15_PONE.minusDays(62);
         assertEquals(t, OffsetDate.of(LocalDate.of(2007, 5, 14), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusDays_overYears() {
         OffsetDate t = OffsetDate.of(LocalDate.of(2008, 7, 16), OFFSET_PONE).minusDays(367);
         assertEquals(t, TEST_2007_07_15_PONE);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusDays_overLeapYears() {
         OffsetDate t = TEST_2007_07_15_PONE.plusYears(2).minusDays(365 + 366);
         assertEquals(t, TEST_2007_07_15_PONE);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusDays_negative() {
         OffsetDate t = TEST_2007_07_15_PONE.minusDays(-1);
         assertEquals(t, OffsetDate.of(LocalDate.of(2007, 7, 16), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusDays_negativeAcrossYear() {
         OffsetDate t = TEST_2007_07_15_PONE.minusDays(-169);
         assertEquals(t, OffsetDate.of(LocalDate.of(2007, 12, 31), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusDays_negativeOverYears() {
         OffsetDate t = TEST_2007_07_15_PONE.minusDays(-731);
         assertEquals(t, OffsetDate.of(LocalDate.of(2009, 7, 15), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusDays_noChange() {
         OffsetDate t = TEST_2007_07_15_PONE.minusDays(0);
         assertEquals(t, TEST_2007_07_15_PONE);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusDays_maximum() {
         OffsetDate t = OffsetDate.of(LocalDate.of(Year.MAX_VALUE, 12, 30), OFFSET_PONE).minusDays(-1);
         OffsetDate expected = OffsetDate.of(LocalDate.of(Year.MAX_VALUE, 12, 31), OFFSET_PONE);
         assertEquals(t, expected);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusDays_minimum() {
         OffsetDate t = OffsetDate.of(LocalDate.of(Year.MIN_VALUE, 1, 2), OFFSET_PONE).minusDays(1);
         OffsetDate expected = OffsetDate.of(LocalDate.of(Year.MIN_VALUE, 1, 1), OFFSET_PONE);
         assertEquals(t, expected);
     }
 
-    @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
+    @Test(expectedExceptions={DateTimeException.class})
     public void test_minusDays_invalidTooLarge() {
         OffsetDate.of(LocalDate.of(Year.MAX_VALUE, 12, 31), OFFSET_PONE).minusDays(-1);
     }
 
-    @Test(expectedExceptions={DateTimeException.class}, groups={"tck"})
+    @Test(expectedExceptions={DateTimeException.class})
     public void test_minusDays_invalidTooSmall() {
         OffsetDate.of(LocalDate.of(Year.MIN_VALUE, 1, 1), OFFSET_PONE).minusDays(1);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
+    @Test(expectedExceptions=ArithmeticException.class)
     public void test_minusDays_overflowTooLarge() {
         OffsetDate.of(LocalDate.of(Year.MAX_VALUE, 12, 31), OFFSET_PONE).minusDays(Long.MIN_VALUE);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
+    @Test(expectedExceptions=ArithmeticException.class)
     public void test_minusDays_overflowTooSmall() {
         OffsetDate.of(LocalDate.of(Year.MIN_VALUE, 1, 1), OFFSET_PONE).minusDays(Long.MAX_VALUE);
     }
@@ -1609,14 +1609,14 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // atTime()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_atTime_Local() {
         OffsetDate t = OffsetDate.of(LocalDate.of(2008, 6, 30), OFFSET_PTWO);
         assertEquals(t.atTime(LocalTime.of(11, 30)),
                 OffsetDateTime.of(LocalDate.of(2008, 6, 30), LocalTime.of(11, 30), OFFSET_PTWO));
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_atTime_Local_nullLocalTime() {
         OffsetDate t = OffsetDate.of(LocalDate.of(2008, 6, 30), OFFSET_PTWO);
         t.atTime((LocalTime) null);
@@ -1625,7 +1625,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // getDate()
     //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleDates", groups={"tck"})
+    @Test(dataProvider="sampleDates")
     public void test_getDate(int year, int month, int day, ZoneOffset offset) {
         LocalDate t = LocalDate.of(year, month, day);
         assertEquals(OffsetDate.of(LocalDate.of(year, month, day), offset).getDate(), t);
@@ -1634,7 +1634,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // compareTo()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_compareTo_date() {
         OffsetDate a = OffsetDate.of(LocalDate.of(2008, 6, 29), OFFSET_PONE);
         OffsetDate b = OffsetDate.of(LocalDate.of(2008, 6, 30), OFFSET_PONE);  // a is before b due to date
@@ -1645,7 +1645,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         assertEquals(a.atTime(LocalTime.MIDNIGHT).toInstant().compareTo(b.atTime(LocalTime.MIDNIGHT).toInstant()) < 0, true);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_compareTo_offset() {
         OffsetDate a = OffsetDate.of(LocalDate.of(2008, 6, 30), OFFSET_PTWO);
         OffsetDate b = OffsetDate.of(LocalDate.of(2008, 6, 30), OFFSET_PONE);  // a is before b due to offset
@@ -1656,7 +1656,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         assertEquals(a.atTime(LocalTime.MIDNIGHT).toInstant().compareTo(b.atTime(LocalTime.MIDNIGHT).toInstant()) < 0, true);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_compareTo_both() {
         OffsetDate a = OffsetDate.of(LocalDate.of(2008, 6, 29), OFFSET_PTWO);
         OffsetDate b = OffsetDate.of(LocalDate.of(2008, 6, 30), OFFSET_PONE);  // a is before b on instant scale
@@ -1667,7 +1667,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         assertEquals(a.atTime(LocalTime.MIDNIGHT).toInstant().compareTo(b.atTime(LocalTime.MIDNIGHT).toInstant()) < 0, true);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_compareTo_24hourDifference() {
         OffsetDate a = OffsetDate.of(LocalDate.of(2008, 6, 29), ZoneOffset.ofHours(-12));
         OffsetDate b = OffsetDate.of(LocalDate.of(2008, 6, 30), ZoneOffset.ofHours(12));  // a is before b despite being same time-line time
@@ -1678,13 +1678,13 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         assertEquals(a.atTime(LocalTime.MIDNIGHT).toInstant().compareTo(b.atTime(LocalTime.MIDNIGHT).toInstant()) == 0, true);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_compareTo_null() {
         OffsetDate a = OffsetDate.of(LocalDate.of(2008, 6, 30), OFFSET_PONE);
         a.compareTo(null);
     }
 
-    @Test(expectedExceptions=ClassCastException.class, groups={"tck"})
+    @Test(expectedExceptions=ClassCastException.class)
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void compareToNonOffsetDate() {
        Comparable c = TEST_2007_07_15_PONE;
@@ -1694,7 +1694,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // isAfter() / isBefore() / isEqual()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_isBeforeIsAfterIsEqual1() {
         OffsetDate a = OffsetDate.of(LocalDate.of(2008, 6, 29), OFFSET_PONE);
         OffsetDate b = OffsetDate.of(LocalDate.of(2008, 6, 30), OFFSET_PONE);  // a is before b due to time
@@ -1716,7 +1716,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         assertEquals(b.isAfter(b), false);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_isBeforeIsAfterIsEqual2() {
         OffsetDate a = OffsetDate.of(LocalDate.of(2008, 6, 30), OFFSET_PTWO);
         OffsetDate b = OffsetDate.of(LocalDate.of(2008, 6, 30), OFFSET_PONE);  // a is before b due to offset
@@ -1738,7 +1738,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         assertEquals(b.isAfter(b), false);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_isBeforeIsAfterIsEqual_instantComparison() {
         OffsetDate a = OffsetDate.of(LocalDate.of(2008, 6, 30), ZoneOffset.ofHours(12));
         OffsetDate b = OffsetDate.of(LocalDate.of(2008, 6, 29), ZoneOffset.ofHours(-12));  // a is same instant as b
@@ -1760,19 +1760,19 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         assertEquals(b.isAfter(b), false);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_isBefore_null() {
         OffsetDate a = OffsetDate.of(LocalDate.of(2008, 6, 30), OFFSET_PONE);
         a.isBefore(null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_isAfter_null() {
         OffsetDate a = OffsetDate.of(LocalDate.of(2008, 6, 30), OFFSET_PONE);
         a.isAfter(null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_isEqual_null() {
         OffsetDate a = OffsetDate.of(LocalDate.of(2008, 6, 30), OFFSET_PONE);
         a.isEqual(null);
@@ -1781,47 +1781,47 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // equals() / hashCode()
     //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleDates", groups={"tck"})
+    @Test(dataProvider="sampleDates")
     public void test_equals_true(int y, int m, int d, ZoneOffset offset) {
         OffsetDate a = OffsetDate.of(LocalDate.of(y, m, d), offset);
         OffsetDate b = OffsetDate.of(LocalDate.of(y, m, d), offset);
         assertEquals(a.equals(b), true);
         assertEquals(a.hashCode() == b.hashCode(), true);
     }
-    @Test(dataProvider="sampleDates", groups={"tck"})
+    @Test(dataProvider="sampleDates")
     public void test_equals_false_year_differs(int y, int m, int d, ZoneOffset offset) {
         OffsetDate a = OffsetDate.of(LocalDate.of(y, m, d), offset);
         OffsetDate b = OffsetDate.of(LocalDate.of(y + 1, m, d), offset);
         assertEquals(a.equals(b), false);
     }
 
-    @Test(dataProvider="sampleDates", groups={"tck"})
+    @Test(dataProvider="sampleDates")
     public void test_equals_false_month_differs(int y, int m, int d, ZoneOffset offset) {
         OffsetDate a = OffsetDate.of(LocalDate.of(y, m, d), offset);
         OffsetDate b = OffsetDate.of(LocalDate.of(y, m + 1, d), offset);
         assertEquals(a.equals(b), false);
     }
 
-    @Test(dataProvider="sampleDates", groups={"tck"})
+    @Test(dataProvider="sampleDates")
     public void test_equals_false_day_differs(int y, int m, int d, ZoneOffset offset) {
         OffsetDate a = OffsetDate.of(LocalDate.of(y, m, d), offset);
         OffsetDate b = OffsetDate.of(LocalDate.of(y, m, d + 1), offset);
         assertEquals(a.equals(b), false);
     }
 
-    @Test(dataProvider="sampleDates", groups={"tck"})
+    @Test(dataProvider="sampleDates")
     public void test_equals_false_offset_differs(int y, int m, int d, ZoneOffset ignored) {
         OffsetDate a = OffsetDate.of(LocalDate.of(y, m, d), OFFSET_PONE);
         OffsetDate b = OffsetDate.of(LocalDate.of(y, m, d), OFFSET_PTWO);
         assertEquals(a.equals(b), false);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_equals_itself_true() {
         assertEquals(TEST_2007_07_15_PONE.equals(TEST_2007_07_15_PONE), true);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_equals_string_false() {
         assertEquals(TEST_2007_07_15_PONE.equals("2007-07-15"), false);
     }
@@ -1857,7 +1857,7 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="sampleToString", groups={"tck"})
+    @Test(dataProvider="sampleToString")
     public void test_toString(int y, int m, int d, String offsetId, String expected) {
         OffsetDate t = OffsetDate.of(LocalDate.of(y, m, d), ZoneOffset.of(offsetId));
         String str = t.toString();
@@ -1867,14 +1867,14 @@ public class TCKOffsetDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // toString(DateTimeFormatter)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_toString_formatter() {
         DateTimeFormatter f = DateTimeFormatters.pattern("y M d");
         String t = OffsetDate.of(LocalDate.of(2010, 12, 3), OFFSET_PONE).toString(f);
         assertEquals(t, "2010 12 3");
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_toString_formatter_null() {
         OffsetDate.of(LocalDate.of(2010, 12, 3), OFFSET_PONE).toString(null);
     }

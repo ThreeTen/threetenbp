@@ -81,7 +81,7 @@ import org.threeten.bp.temporal.TemporalSubtractor;
  * Test OffsetTime.
  */
 @Test
-public class TCKOffsetTime extends AbstractDateTimeTest {
+public class TestOffsetTime extends AbstractDateTimeTest {
 
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
@@ -162,7 +162,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // now()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void now() {
         ZonedDateTime nowDT = ZonedDateTime.now();
 
@@ -176,7 +176,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // now(Clock)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void now_Clock_allSecsInDay() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSecond(i, 8);
@@ -190,7 +190,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
         }
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void now_Clock_beforeEpoch() {
         for (int i =-1; i >= -(24 * 60 * 60); i--) {
             Instant instant = Instant.ofEpochSecond(i, 8);
@@ -204,7 +204,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
         }
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void now_Clock_offsets() {
         Instant base = LocalDateTime.of(1970, 1, 1, 12, 0).toInstant(ZoneOffset.UTC);
         for (int i = -9; i < 15; i++) {
@@ -219,12 +219,12 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
         }
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void now_Clock_nullZoneId() {
         OffsetTime.now((ZoneId) null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void now_Clock_nullClock() {
         OffsetTime.now((Clock) null);
     }
@@ -247,40 +247,40 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_intsHM() {
         OffsetTime test = OffsetTime.of(LocalTime.of(11, 30), OFFSET_PONE);
         check(test, 11, 30, 0, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_intsHMS() {
         OffsetTime test = OffsetTime.of(LocalTime.of(11, 30, 10), OFFSET_PONE);
         check(test, 11, 30, 10, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_intsHMSN() {
         OffsetTime test = OffsetTime.of(LocalTime.of(11, 30, 10, 500), OFFSET_PONE);
         check(test, 11, 30, 10, 500, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_LocalTimeZoneOffset() {
         LocalTime localTime = LocalTime.of(11, 30, 10, 500);
         OffsetTime test = OffsetTime.of(localTime, OFFSET_PONE);
         check(test, 11, 30, 10, 500, OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void factory_LocalTimeZoneOffset_nullTime() {
         OffsetTime.of((LocalTime) null, OFFSET_PONE);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void factory_LocalTimeZoneOffset_nullOffset() {
         LocalTime localTime = LocalTime.of(11, 30, 10, 500);
         OffsetTime.of(localTime, (ZoneOffset) null);
@@ -289,18 +289,18 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // ofInstant()
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void factory_ofInstant_nullInstant() {
         OffsetTime.ofInstant((Instant) null, ZoneOffset.UTC);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void factory_ofInstant_nullOffset() {
         Instant instant = Instant.ofEpochSecond(0L);
         OffsetTime.ofInstant(instant, (ZoneOffset) null);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void factory_ofInstant_allSecsInDay() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSecond(i, 8);
@@ -312,7 +312,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
         }
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void factory_ofInstant_beforeEpoch() {
         for (int i =-1; i >= -(24 * 60 * 60); i--) {
             Instant instant = Instant.ofEpochSecond(i, 8);
@@ -325,7 +325,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_ofInstant_maxYear() {
         OffsetTime test = OffsetTime.ofInstant(Instant.MAX, ZoneOffset.UTC);
         assertEquals(test.getHour(), 23);
@@ -334,7 +334,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
         assertEquals(test.getNano(), 999_999_999);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void factory_ofInstant_minYear() {
         OffsetTime test = OffsetTime.ofInstant(Instant.MIN, ZoneOffset.UTC);
         assertEquals(test.getHour(), 0);
@@ -346,23 +346,23 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // from(TemporalAccessor)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_from_TemporalAccessor_OT() {
         assertEquals(OffsetTime.from(OffsetTime.of(LocalTime.of(17, 30), OFFSET_PONE)), OffsetTime.of(LocalTime.of(17, 30), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_from_TemporalAccessor_ZDT() {
         ZonedDateTime base = LocalDateTime.of(2007, 7, 15, 11, 30, 59, 500).atZone(OFFSET_PONE);
         assertEquals(OffsetTime.from(base), TEST_11_30_59_500_PONE);
     }
 
-    @Test(expectedExceptions=DateTimeException.class, groups={"tck"})
+    @Test(expectedExceptions=DateTimeException.class)
     public void factory_from_TemporalAccessor_invalid_noDerive() {
         OffsetTime.from(LocalDate.of(2007, 7, 15));
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void factory_from_TemporalAccessor_null() {
         OffsetTime.from((TemporalAccessor) null);
     }
@@ -370,7 +370,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // parse()
     //-----------------------------------------------------------------------
-    @Test(dataProvider = "sampleToString", groups={"tck"})
+    @Test(dataProvider = "sampleToString")
     public void factory_parse_validText(int h, int m, int s, int n, String offsetId, String parsable) {
         OffsetTime t = OffsetTime.parse(parsable);
         assertNotNull(t, parsable);
@@ -392,23 +392,23 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider = "sampleBadParse", expectedExceptions={DateTimeParseException.class}, groups={"tck"})
+    @Test(dataProvider = "sampleBadParse", expectedExceptions={DateTimeParseException.class})
     public void factory_parse_invalidText(String unparsable) {
         OffsetTime.parse(unparsable);
     }
 
     //-----------------------------------------------------------------------s
-    @Test(expectedExceptions={DateTimeParseException.class}, groups={"tck"})
+    @Test(expectedExceptions={DateTimeParseException.class})
     public void factory_parse_illegalHour() {
         OffsetTime.parse("25:00+01:00");
     }
 
-    @Test(expectedExceptions={DateTimeParseException.class}, groups={"tck"})
+    @Test(expectedExceptions={DateTimeParseException.class})
     public void factory_parse_illegalMinute() {
         OffsetTime.parse("12:60+01:00");
     }
 
-    @Test(expectedExceptions={DateTimeParseException.class}, groups={"tck"})
+    @Test(expectedExceptions={DateTimeParseException.class})
     public void factory_parse_illegalSecond() {
         OffsetTime.parse("12:12:60+01:00");
     }
@@ -416,20 +416,20 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // parse(DateTimeFormatter)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void factory_parse_formatter() {
         DateTimeFormatter f = DateTimeFormatters.pattern("H m s XXX");
         OffsetTime test = OffsetTime.parse("11 30 0 +01:00", f);
         assertEquals(test, OffsetTime.of(LocalTime.of(11, 30), ZoneOffset.ofHours(1)));
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_formatter_nullText() {
         DateTimeFormatter f = DateTimeFormatters.pattern("y M d H m s");
         OffsetTime.parse((String) null, f);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_formatter_nullFormatter() {
         OffsetTime.parse("ANY", null);
     }
@@ -437,7 +437,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // constructor
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void constructor_nullTime() throws Throwable  {
         Constructor<OffsetTime> con = OffsetTime.class.getDeclaredConstructor(LocalTime.class, ZoneOffset.class);
         con.setAccessible(true);
@@ -448,7 +448,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
         }
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void constructor_nullOffset() throws Throwable  {
         Constructor<OffsetTime> con = OffsetTime.class.getDeclaredConstructor(LocalTime.class, ZoneOffset.class);
         con.setAccessible(true);
@@ -471,7 +471,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="sampleTimes", groups={"tck"})
+    @Test(dataProvider="sampleTimes")
     public void test_get(int h, int m, int s, int n, ZoneOffset offset) {
         LocalTime localTime = LocalTime.of(h, m, s, n);
         OffsetTime a = OffsetTime.of(localTime, offset);
@@ -555,7 +555,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // withOffsetSameLocal()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_withOffsetSameLocal() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetTime test = base.withOffsetSameLocal(OFFSET_PTWO);
@@ -563,14 +563,14 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
         assertEquals(test.getOffset(), OFFSET_PTWO);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_withOffsetSameLocal_noChange() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetTime test = base.withOffsetSameLocal(OFFSET_PONE);
         assertEquals(test, base);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_withOffsetSameLocal_null() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         base.withOffsetSameLocal(null);
@@ -579,7 +579,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // withOffsetSameInstant()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_withOffsetSameInstant() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetTime test = base.withOffsetSameInstant(OFFSET_PTWO);
@@ -587,14 +587,14 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
         assertEquals(test, expected);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_withOffsetSameInstant_noChange() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetTime test = base.withOffsetSameInstant(OFFSET_PONE);
         assertEquals(test, base);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_withOffsetSameInstant_null() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         base.withOffsetSameInstant(null);
@@ -603,7 +603,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // with(WithAdjuster)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_with_adjustment() {
         final OffsetTime sample = OffsetTime.of(LocalTime.of(23, 5), OFFSET_PONE);
         TemporalAdjuster adjuster = new TemporalAdjuster() {
@@ -615,25 +615,25 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
         assertEquals(TEST_11_30_59_500_PONE.with(adjuster), sample);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_with_adjustment_LocalTime() {
         OffsetTime test = TEST_11_30_59_500_PONE.with(LocalTime.of(13, 30));
         assertEquals(test, OffsetTime.of(LocalTime.of(13, 30), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_with_adjustment_OffsetTime() {
         OffsetTime test = TEST_11_30_59_500_PONE.with(OffsetTime.of(LocalTime.of(13, 35), OFFSET_PTWO));
         assertEquals(test, OffsetTime.of(LocalTime.of(13, 35), OFFSET_PTWO));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_with_adjustment_ZoneOffset() {
         OffsetTime test = TEST_11_30_59_500_PONE.with(OFFSET_PTWO);
         assertEquals(test, OffsetTime.of(LocalTime.of(11, 30, 59, 500), OFFSET_PTWO));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_with_adjustment_AmPm() {
         OffsetTime test = TEST_11_30_59_500_PONE.with(new TemporalAdjuster() {
             @Override
@@ -644,7 +644,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
         assertEquals(test, OffsetTime.of(LocalTime.of(23, 30, 59, 500), OFFSET_PONE));
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_with_adjustment_null() {
         TEST_11_30_59_500_PONE.with((TemporalAdjuster) null);
     }
@@ -652,7 +652,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // with(TemporalField, long)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_with_TemporalField() {
         OffsetTime test = OffsetTime.of(LocalTime.of(12, 30, 40, 987654321), OFFSET_PONE);
         assertEquals(test.with(ChronoField.HOUR_OF_DAY, 15), OffsetTime.of(LocalTime.of(15, 30, 40, 987654321), OFFSET_PONE));
@@ -678,14 +678,14 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // withHour()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_withHour_normal() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetTime test = base.withHour(15);
         assertEquals(test, OffsetTime.of(LocalTime.of(15, 30, 59), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_withHour_noChange() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetTime test = base.withHour(11);
@@ -695,14 +695,14 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // withMinute()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_withMinute_normal() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetTime test = base.withMinute(15);
         assertEquals(test, OffsetTime.of(LocalTime.of(11, 15, 59), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_withMinute_noChange() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetTime test = base.withMinute(30);
@@ -712,14 +712,14 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // withSecond()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_withSecond_normal() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetTime test = base.withSecond(15);
         assertEquals(test, OffsetTime.of(LocalTime.of(11, 30, 15), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_withSecond_noChange() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetTime test = base.withSecond(59);
@@ -729,14 +729,14 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // withNano()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_withNanoOfSecond_normal() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59, 1), OFFSET_PONE);
         OffsetTime test = base.withNano(15);
         assertEquals(test, OffsetTime.of(LocalTime.of(11, 30, 59, 15), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_withNanoOfSecond_noChange() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59, 1), OFFSET_PONE);
         OffsetTime test = base.withNano(1);
@@ -746,14 +746,14 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // truncatedTo(TemporalUnit)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_truncatedTo_normal() {
         assertEquals(TEST_11_30_59_500_PONE.truncatedTo(NANOS), TEST_11_30_59_500_PONE);
         assertEquals(TEST_11_30_59_500_PONE.truncatedTo(SECONDS), TEST_11_30_59_500_PONE.withNano(0));
         assertEquals(TEST_11_30_59_500_PONE.truncatedTo(DAYS), TEST_11_30_59_500_PONE.with(LocalTime.MIDNIGHT));
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_truncatedTo_null() {
         TEST_11_30_59_500_PONE.truncatedTo(null);
     }
@@ -761,26 +761,26 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // plus(PlusAdjuster)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_plus_PlusAdjuster() {
         MockSimplePeriod period = MockSimplePeriod.of(7, ChronoUnit.MINUTES);
         OffsetTime t = TEST_11_30_59_500_PONE.plus(period);
         assertEquals(t, OffsetTime.of(LocalTime.of(11, 37, 59, 500), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plus_PlusAdjuster_noChange() {
         OffsetTime t = TEST_11_30_59_500_PONE.plus(MockSimplePeriod.of(0, SECONDS));
         assertEquals(t, TEST_11_30_59_500_PONE);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plus_PlusAdjuster_zero() {
         OffsetTime t = TEST_11_30_59_500_PONE.plus(Period.ZERO);
         assertEquals(t, TEST_11_30_59_500_PONE);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_plus_PlusAdjuster_null() {
         TEST_11_30_59_500_PONE.plus((TemporalAdder) null);
     }
@@ -788,14 +788,14 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // plusHours()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_plusHours() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetTime test = base.plusHours(13);
         assertEquals(test, OffsetTime.of(LocalTime.of(0, 30, 59), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusHours_zero() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetTime test = base.plusHours(0);
@@ -805,14 +805,14 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // plusMinutes()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_plusMinutes() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetTime test = base.plusMinutes(30);
         assertEquals(test, OffsetTime.of(LocalTime.of(12, 0, 59), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusMinutes_zero() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetTime test = base.plusMinutes(0);
@@ -822,14 +822,14 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // plusSeconds()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_plusSeconds() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetTime test = base.plusSeconds(1);
         assertEquals(test, OffsetTime.of(LocalTime.of(11, 31, 0), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusSeconds_zero() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetTime test = base.plusSeconds(0);
@@ -839,14 +839,14 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // plusNanos()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_plusNanos() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59, 0), OFFSET_PONE);
         OffsetTime test = base.plusNanos(1);
         assertEquals(test, OffsetTime.of(LocalTime.of(11, 30, 59, 1), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_plusNanos_zero() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetTime test = base.plusNanos(0);
@@ -856,26 +856,26 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // minus(MinusAdjuster)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_minus_MinusAdjuster() {
         MockSimplePeriod period = MockSimplePeriod.of(7, ChronoUnit.MINUTES);
         OffsetTime t = TEST_11_30_59_500_PONE.minus(period);
         assertEquals(t, OffsetTime.of(LocalTime.of(11, 23, 59, 500), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minus_MinusAdjuster_noChange() {
         OffsetTime t = TEST_11_30_59_500_PONE.minus(MockSimplePeriod.of(0, SECONDS));
         assertEquals(t, TEST_11_30_59_500_PONE);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minus_MinusAdjuster_zero() {
         OffsetTime t = TEST_11_30_59_500_PONE.minus(Period.ZERO);
         assertEquals(t, TEST_11_30_59_500_PONE);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_minus_MinusAdjuster_null() {
         TEST_11_30_59_500_PONE.minus((TemporalSubtractor) null);
     }
@@ -883,14 +883,14 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // minusHours()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_minusHours() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetTime test = base.minusHours(-13);
         assertEquals(test, OffsetTime.of(LocalTime.of(0, 30, 59), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusHours_zero() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetTime test = base.minusHours(0);
@@ -900,14 +900,14 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // minusMinutes()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_minusMinutes() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetTime test = base.minusMinutes(50);
         assertEquals(test, OffsetTime.of(LocalTime.of(10, 40, 59), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusMinutes_zero() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetTime test = base.minusMinutes(0);
@@ -917,14 +917,14 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // minusSeconds()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_minusSeconds() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetTime test = base.minusSeconds(60);
         assertEquals(test, OffsetTime.of(LocalTime.of(11, 29, 59), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusSeconds_zero() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetTime test = base.minusSeconds(0);
@@ -934,14 +934,14 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // minusNanos()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_minusNanos() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59, 0), OFFSET_PONE);
         OffsetTime test = base.minusNanos(1);
         assertEquals(test, OffsetTime.of(LocalTime.of(11, 30, 58, 999999999), OFFSET_PONE));
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_minusNanos_zero() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetTime test = base.minusNanos(0);
@@ -951,7 +951,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // compareTo()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_compareTo_time() {
         OffsetTime a = OffsetTime.of(LocalTime.of(11, 29), OFFSET_PONE);
         OffsetTime b = OffsetTime.of(LocalTime.of(11, 30), OFFSET_PONE);  // a is before b due to time
@@ -962,7 +962,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
         assertEquals(convertInstant(a).compareTo(convertInstant(b)) < 0, true);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_compareTo_offset() {
         OffsetTime a = OffsetTime.of(LocalTime.of(11, 30), OFFSET_PTWO);
         OffsetTime b = OffsetTime.of(LocalTime.of(11, 30), OFFSET_PONE);  // a is before b due to offset
@@ -973,7 +973,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
         assertEquals(convertInstant(a).compareTo(convertInstant(b)) < 0, true);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_compareTo_both() {
         OffsetTime a = OffsetTime.of(LocalTime.of(11, 50), OFFSET_PTWO);
         OffsetTime b = OffsetTime.of(LocalTime.of(11, 20), OFFSET_PONE);  // a is before b on instant scale
@@ -984,7 +984,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
         assertEquals(convertInstant(a).compareTo(convertInstant(b)) < 0, true);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_compareTo_bothNearStartOfDay() {
         OffsetTime a = OffsetTime.of(LocalTime.of(0, 10), OFFSET_PONE);
         OffsetTime b = OffsetTime.of(LocalTime.of(2, 30), OFFSET_PTWO);  // a is before b on instant scale
@@ -995,7 +995,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
         assertEquals(convertInstant(a).compareTo(convertInstant(b)) < 0, true);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_compareTo_hourDifference() {
         OffsetTime a = OffsetTime.of(LocalTime.of(10, 0), OFFSET_PONE);
         OffsetTime b = OffsetTime.of(LocalTime.of(11, 0), OFFSET_PTWO);  // a is before b despite being same time-line time
@@ -1006,13 +1006,13 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
         assertEquals(convertInstant(a).compareTo(convertInstant(b)) == 0, true);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_compareTo_null() {
         OffsetTime a = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         a.compareTo(null);
     }
 
-    @Test(expectedExceptions=ClassCastException.class, groups={"tck"})
+    @Test(expectedExceptions=ClassCastException.class)
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void compareToNonOffsetTime() {
        Comparable c = TEST_11_30_59_500_PONE;
@@ -1026,7 +1026,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // isAfter() / isBefore() / isEqual()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_isBeforeIsAfterIsEqual1() {
         OffsetTime a = OffsetTime.of(LocalTime.of(11, 30, 58), OFFSET_PONE);
         OffsetTime b = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);  // a is before b due to time
@@ -1048,7 +1048,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
         assertEquals(b.isAfter(b), false);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_isBeforeIsAfterIsEqual1nanos() {
         OffsetTime a = OffsetTime.of(LocalTime.of(11, 30, 59, 3), OFFSET_PONE);
         OffsetTime b = OffsetTime.of(LocalTime.of(11, 30, 59, 4), OFFSET_PONE);  // a is before b due to time
@@ -1070,7 +1070,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
         assertEquals(b.isAfter(b), false);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_isBeforeIsAfterIsEqual2() {
         OffsetTime a = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PTWO);
         OffsetTime b = OffsetTime.of(LocalTime.of(11, 30, 58), OFFSET_PONE);  // a is before b due to offset
@@ -1092,7 +1092,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
         assertEquals(b.isAfter(b), false);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_isBeforeIsAfterIsEqual2nanos() {
         OffsetTime a = OffsetTime.of(LocalTime.of(11, 30, 59, 4), ZoneOffset.ofTotalSeconds(OFFSET_PONE.getTotalSeconds() + 1));
         OffsetTime b = OffsetTime.of(LocalTime.of(11, 30, 59, 3), OFFSET_PONE);  // a is before b due to offset
@@ -1114,7 +1114,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
         assertEquals(b.isAfter(b), false);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_isBeforeIsAfterIsEqual_instantComparison() {
         OffsetTime a = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PTWO);
         OffsetTime b = OffsetTime.of(LocalTime.of(10, 30, 59), OFFSET_PONE);  // a is same instant as b
@@ -1136,19 +1136,19 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
         assertEquals(b.isAfter(b), false);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_isBefore_null() {
         OffsetTime a = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         a.isBefore(null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_isAfter_null() {
         OffsetTime a = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         a.isAfter(null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_isEqual_null() {
         OffsetTime a = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         a.isEqual(null);
@@ -1157,59 +1157,59 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // equals() / hashCode()
     //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleTimes", groups={"tck"})
+    @Test(dataProvider="sampleTimes")
     public void test_equals_true(int h, int m, int s, int n, ZoneOffset ignored) {
         OffsetTime a = OffsetTime.of(LocalTime.of(h, m, s, n), OFFSET_PONE);
         OffsetTime b = OffsetTime.of(LocalTime.of(h, m, s, n), OFFSET_PONE);
         assertEquals(a.equals(b), true);
         assertEquals(a.hashCode() == b.hashCode(), true);
     }
-    @Test(dataProvider="sampleTimes", groups={"tck"})
+    @Test(dataProvider="sampleTimes")
     public void test_equals_false_hour_differs(int h, int m, int s, int n, ZoneOffset ignored) {
         h = (h == 23 ? 22 : h);
         OffsetTime a = OffsetTime.of(LocalTime.of(h, m, s, n), OFFSET_PONE);
         OffsetTime b = OffsetTime.of(LocalTime.of(h + 1, m, s, n), OFFSET_PONE);
         assertEquals(a.equals(b), false);
     }
-    @Test(dataProvider="sampleTimes", groups={"tck"})
+    @Test(dataProvider="sampleTimes")
     public void test_equals_false_minute_differs(int h, int m, int s, int n, ZoneOffset ignored) {
         m = (m == 59 ? 58 : m);
         OffsetTime a = OffsetTime.of(LocalTime.of(h, m, s, n), OFFSET_PONE);
         OffsetTime b = OffsetTime.of(LocalTime.of(h, m + 1, s, n), OFFSET_PONE);
         assertEquals(a.equals(b), false);
     }
-    @Test(dataProvider="sampleTimes", groups={"tck"})
+    @Test(dataProvider="sampleTimes")
     public void test_equals_false_second_differs(int h, int m, int s, int n, ZoneOffset ignored) {
         s = (s == 59 ? 58 : s);
         OffsetTime a = OffsetTime.of(LocalTime.of(h, m, s, n), OFFSET_PONE);
         OffsetTime b = OffsetTime.of(LocalTime.of(h, m, s + 1, n), OFFSET_PONE);
         assertEquals(a.equals(b), false);
     }
-    @Test(dataProvider="sampleTimes", groups={"tck"})
+    @Test(dataProvider="sampleTimes")
     public void test_equals_false_nano_differs(int h, int m, int s, int n, ZoneOffset ignored) {
         n = (n == 999999999 ? 999999998 : n);
         OffsetTime a = OffsetTime.of(LocalTime.of(h, m, s, n), OFFSET_PONE);
         OffsetTime b = OffsetTime.of(LocalTime.of(h, m, s, n + 1), OFFSET_PONE);
         assertEquals(a.equals(b), false);
     }
-    @Test(dataProvider="sampleTimes", groups={"tck"})
+    @Test(dataProvider="sampleTimes")
     public void test_equals_false_offset_differs(int h, int m, int s, int n, ZoneOffset ignored) {
         OffsetTime a = OffsetTime.of(LocalTime.of(h, m, s, n), OFFSET_PONE);
         OffsetTime b = OffsetTime.of(LocalTime.of(h, m, s, n), OFFSET_PTWO);
         assertEquals(a.equals(b), false);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_equals_itself_true() {
         assertEquals(TEST_11_30_59_500_PONE.equals(TEST_11_30_59_500_PONE), true);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_equals_string_false() {
         assertEquals(TEST_11_30_59_500_PONE.equals("2007-07-15"), false);
     }
 
-    @Test(groups={"tck"})
+    @Test
     public void test_equals_null_false() {
         assertEquals(TEST_11_30_59_500_PONE.equals(null), false);
     }
@@ -1231,7 +1231,7 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
         };
     }
 
-    @Test(dataProvider="sampleToString", groups={"tck"})
+    @Test(dataProvider="sampleToString")
     public void test_toString(int h, int m, int s, int n, String offsetId, String expected) {
         OffsetTime t = OffsetTime.of(LocalTime.of(h, m, s, n), ZoneOffset.of(offsetId));
         String str = t.toString();
@@ -1241,14 +1241,14 @@ public class TCKOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // toString(DateTimeFormatter)
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test
     public void test_toString_formatter() {
         DateTimeFormatter f = DateTimeFormatters.pattern("H m s");
         String t = OffsetTime.of(LocalTime.of(11, 30), OFFSET_PONE).toString(f);
         assertEquals(t, "11 30 0");
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_toString_formatter_null() {
         OffsetTime.of(LocalTime.of(11, 30), OFFSET_PONE).toString(null);
     }
