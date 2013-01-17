@@ -31,13 +31,24 @@
  */
 package org.threeten.bp.format;
 
+import static org.threeten.bp.temporal.ChronoField.EPOCH_DAY;
+import static org.threeten.bp.temporal.ChronoField.INSTANT_SECONDS;
+
 import java.util.Locale;
 import java.util.Objects;
 
 import org.threeten.bp.DateTimeException;
+import org.threeten.bp.Instant;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
+import org.threeten.bp.temporal.Chrono;
+import org.threeten.bp.temporal.ChronoField;
+import org.threeten.bp.temporal.ChronoLocalDate;
+import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQuery;
+import org.threeten.bp.temporal.ValueRange;
 
 /**
  * Context object used during date and time printing.
@@ -52,7 +63,7 @@ import org.threeten.bp.temporal.TemporalQuery;
 final class DateTimePrintContext {
 
     /**
-     * The date-time being output.
+     * The temporal being output.
      */
     private TemporalAccessor temporal;
     /**
@@ -60,7 +71,7 @@ final class DateTimePrintContext {
      */
     private Locale locale;
     /**
-     * The date time format symbols, not null.
+     * The symbols, not null.
      */
     private DateTimeFormatSymbols symbols;
     /**
@@ -70,41 +81,101 @@ final class DateTimePrintContext {
 
     /**
      * Creates a new instance of the context.
-     * <p>
-     * This should normally only be created by the printer.
      *
-     * @param temporal  the date-time being output, not null
-     * @param locale  the locale to use, not null
-     * @param symbols  the symbols to use during parsing, not null
+     * @param temporal  the temporal object being output, not null
+     * @param formatter  the formatter controlling the print, not null
      */
-    DateTimePrintContext(TemporalAccessor temporal, Locale locale, DateTimeFormatSymbols symbols) {
+    DateTimePrintContext(TemporalAccessor temporal, DateTimeFormatter formatter) {
         super();
-        setDateTime(temporal);
-        setLocale(locale);
-        setSymbols(symbols);
+        this.temporal = adjust(temporal, formatter);
+        this.locale = formatter.getLocale();
+        this.symbols = formatter.getSymbols();
+    }
+
+    // for testing
+    DateTimePrintContext(TemporalAccessor temporal, Locale locale, DateTimeFormatSymbols symbols) {
+        this.temporal = temporal;
+        this.locale = locale;
+        this.symbols = symbols;
+    }
+
+    private static TemporalAccessor adjust(final TemporalAccessor temporal, DateTimeFormatter formatter) {
+        // normal case first
+        Chrono<?> overrideChrono = formatter.getChrono();
+        ZoneId overrideZone = formatter.getZone();
+        if (overrideChrono == null && overrideZone == null) {
+            return temporal;
+        }
+
+        // ensure minimal change
+        Chrono<?> temporalChrono = Chrono.from(temporal);  // default to ISO, handles Instant
+        ZoneId temporalZone = temporal.query(TemporalQueries.zone());  // zone then offset, handles OffsetDateTime
+        if (temporal.isSupported(EPOCH_DAY) == false || Objects.equals(overrideChrono, temporalChrono)) {
+            overrideChrono = null;
+        }
+        if (temporal.isSupported(INSTANT_SECONDS) == false || Objects.equals(overrideZone, temporalZone)) {
+            overrideZone = null;
+        }
+        if (overrideChrono == null && overrideZone == null) {
+            return temporal;
+        }
+
+        // make adjustment
+        if (overrideChrono != null && overrideZone != null) {
+            return overrideChrono.zonedDateTime(Instant.from(temporal), overrideZone);
+        } else if (overrideZone != null) {
+            return temporalChrono.zonedDateTime(Instant.from(temporal), overrideZone);
+        } else {  // overrideChrono != null
+            // need class here to handle non-standard cases like OffsetDate
+            final ChronoLocalDate<?> date = overrideChrono.date(temporal);
+            return new DefaultInterfaceDateTimeAccessor() {
+                @Override
+                public boolean isSupported(TemporalField field) {
+                    return temporal.isSupported(field);
+                }
+                @Override
+                public ValueRange range(TemporalField field) {
+                    if (field instanceof ChronoField) {
+                        if (((ChronoField) field).isDateField()) {
+                            return date.range(field);
+                        } else {
+                            return temporal.range(field);
+                        }
+                    }
+                    return field.doRange(this);
+                }
+                @Override
+                public long getLong(TemporalField field) {
+                    if (field instanceof ChronoField) {
+                        if (((ChronoField) field).isDateField()) {
+                            return date.getLong(field);
+                        } else {
+                            return temporal.getLong(field);
+                        }
+                    }
+                    return field.doGet(this);
+                }
+                @Override
+                public <R> R query(TemporalQuery<R> query) {
+                    if (query == TemporalQueries.zoneId() || query == TemporalQueries.chrono() || query == TemporalQueries.precision()) {
+                        return temporal.query(query);
+                    }
+                    return query.queryFrom(this);
+                }
+            };
+        }
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the date-time being output.
+     * Gets the temporal object being output.
      *
-     * @return the date-time, not null
+     * @return the temporal object, not null
      */
-    TemporalAccessor getDateTime() {
+    TemporalAccessor getTemporal() {
         return temporal;
     }
 
-    /**
-     * Sets the date-time being output.
-     *
-     * @param temporal  the date-time object, not null
-     */
-    void setDateTime(TemporalAccessor temporal) {
-        Objects.requireNonNull(temporal, "temporal");
-        this.temporal = temporal;
-    }
-
-    //-----------------------------------------------------------------------
     /**
      * Gets the locale.
      * <p>
@@ -118,20 +189,6 @@ final class DateTimePrintContext {
     }
 
     /**
-     * Sets the locale.
-     * <p>
-     * This locale is used to control localization in the print output except
-     * where localization is controlled by the symbols.
-     *
-     * @param locale  the locale, not null
-     */
-    void setLocale(Locale locale) {
-        Objects.requireNonNull(locale, "locale");
-        this.locale = locale;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the formatting symbols.
      * <p>
      * The symbols control the localization of numeric output.
@@ -140,18 +197,6 @@ final class DateTimePrintContext {
      */
     DateTimeFormatSymbols getSymbols() {
         return symbols;
-    }
-
-    /**
-     * Sets the formatting symbols.
-     * <p>
-     * The symbols control the localization of numeric output.
-     *
-     * @param symbols  the formatting symbols, not null
-     */
-    void setSymbols(DateTimeFormatSymbols symbols) {
-        Objects.requireNonNull(symbols, "symbols");
-        this.symbols = symbols;
     }
 
     //-----------------------------------------------------------------------
@@ -213,6 +258,31 @@ final class DateTimePrintContext {
     @Override
     public String toString() {
         return temporal.toString();
+    }
+
+    //-------------------------------------------------------------------------
+    // for testing
+    /**
+     * Sets the date-time being output.
+     *
+     * @param temporal  the date-time object, not null
+     */
+    void setDateTime(TemporalAccessor temporal) {
+        Objects.requireNonNull(temporal, "temporal");
+        this.temporal = temporal;
+    }
+
+    /**
+     * Sets the locale.
+     * <p>
+     * This locale is used to control localization in the print output except
+     * where localization is controlled by the symbols.
+     *
+     * @param locale  the locale, not null
+     */
+    void setLocale(Locale locale) {
+        Objects.requireNonNull(locale, "locale");
+        this.locale = locale;
     }
 
 }

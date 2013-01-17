@@ -70,7 +70,7 @@ public class TestDateTimeFormatter {
 
     @Test(groups={"implementation"})
     public void test_withLocale_same() throws Exception {
-        DateTimeFormatter base = new DateTimeFormatter(compPP, Locale.ENGLISH, DateTimeFormatSymbols.STANDARD);
+        DateTimeFormatter base = new DateTimeFormatter(compPP, Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, null, null);
         DateTimeFormatter test = base.withLocale(Locale.ENGLISH);
         assertSame(test, base);
     }

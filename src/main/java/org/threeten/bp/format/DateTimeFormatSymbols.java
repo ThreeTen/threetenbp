@@ -57,7 +57,7 @@ public final class DateTimeFormatSymbols {
     /**
      * The cache of symbols instances.
      */
-    private static final ConcurrentMap<Locale, DateTimeFormatSymbols> CACHE = new ConcurrentHashMap<Locale, DateTimeFormatSymbols>(16, 0.75f, 2);
+    private static final ConcurrentMap<Locale, DateTimeFormatSymbols> CACHE = new ConcurrentHashMap<>(16, 0.75f, 2);
 
     /**
      * The zero digit.
@@ -166,6 +166,8 @@ public final class DateTimeFormatSymbols {
      * This method specifies the zero character to use, which implies the characters for one to nine.
      *
      * @param zeroDigit  the character for zero
+     * @return  a copy with a new character that represents zero, not null
+
      */
     public DateTimeFormatSymbols withZeroDigit(char zeroDigit) {
         if (zeroDigit == this.zeroDigit) {
@@ -194,6 +196,7 @@ public final class DateTimeFormatSymbols {
      * This method specifies the character to use.
      *
      * @param positiveSign  the character for the positive sign
+     * @return  a copy with a new character that represents the positive sign, not null
      */
     public DateTimeFormatSymbols withPositiveSign(char positiveSign) {
         if (positiveSign == this.positiveSign) {
@@ -222,6 +225,7 @@ public final class DateTimeFormatSymbols {
      * This method specifies the character to use.
      *
      * @param negativeSign  the character for the negative sign
+     * @return  a copy with a new character that represents the negative sign, not null
      */
     public DateTimeFormatSymbols withNegativeSign(char negativeSign) {
         if (negativeSign == this.negativeSign) {
@@ -250,6 +254,7 @@ public final class DateTimeFormatSymbols {
      * This method specifies the character to use.
      *
      * @param decimalSeparator  the character for the decimal point
+     * @return  a copy with a new character that represents the decimal point, not null
      */
     public DateTimeFormatSymbols withDecimalSeparator(char decimalSeparator) {
         if (decimalSeparator == this.decimalSeparator) {

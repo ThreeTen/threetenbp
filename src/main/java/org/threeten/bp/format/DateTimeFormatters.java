@@ -97,7 +97,9 @@ public final class DateTimeFormatters {
      *
      *   Q       quarter-of-year             number/text       3; 03; Q3
      *   Y       week-based-year             year              1996; 96
-     *   w       week-of-week-based-year     number            27
+     *   w       week-of-year                number            27
+     *   W       week-of-month               number            27
+     *   e       localized day-of-week       number            2; Tue; Tuesday; T
      *   E       day-of-week                 number/text       2; Tue; Tuesday; T
      *   F       week-of-month               number            3
      *
@@ -117,7 +119,7 @@ public final class DateTimeFormatters {
      *   I       time-zone ID                zoneId            America/Los_Angeles
      *   z       time-zone name              text              Pacific Standard Time; PST
      *   Z       zone-offset                 offset-Z          +0000; -0800; -08:00;
-     *   X       zone-offset 'Z' for zero    offset-X          Z; -0800; -08:00;
+     *   X       zone-offset 'Z' for zero    offset-X          Z; -08; -0830; -08:30; -083015; -08:30:15;
      *
      *   p       pad next                    pad modifier      1
      *
@@ -125,6 +127,7 @@ public final class DateTimeFormatters {
      *   ''      single quote                literal           '
      *   [       optional section start
      *   ]       optional section end
+     *   {}      reserved for future use
      * </pre>
      * <p>
      * The count of pattern letters determine the format.
@@ -184,13 +187,12 @@ public final class DateTimeFormatters {
      * For example, 'ppH' outputs the hour-of-day padded on the left with spaces to a width of 2.
      * <p>
      * Any unrecognized letter is an error.
-     * Any non-letter character, other than '[', ']' and the single quote will be output directly.
+     * Any non-letter character, other than '[', ']', '{', '}' and the single quote will be output directly.
      * Despite this, it is recommended to use single quotes around all characters that you want to
      * output directly to ensure that future changes do not break your application.
      * <p>
      * The pattern string is similar, but not identical, to {@link java.text.SimpleDateFormat SimpleDateFormat}.
      * Pattern letters 'E' and 'u' are merged, which changes the meaning of "E" and "EE" to be numeric.
-     * Pattern letter 'W' is not available.
      * Pattern letters 'Z' and 'X' are extended.
      * Pattern letter 'y' and 'Y' parse years of two digits and more than 4 digits differently.
      * Pattern letters 'n', 'A', 'N', 'I' and 'p' are added.
@@ -373,6 +375,7 @@ public final class DateTimeFormatters {
      * <li>The {@link #isoLocalDate()}
      * <li>The {@link ZoneOffset#getId() offset ID}. If the offset has seconds then
      *  they will be handled even though this is not part of the ISO-8601 standard.
+     *  Parsing is case insensitive.
      * </ul><p>
      *
      * @return the ISO offset date formatter, not null
@@ -385,6 +388,7 @@ public final class DateTimeFormatters {
     private static final DateTimeFormatter ISO_OFFSET_DATE;
     static {
         ISO_OFFSET_DATE = new DateTimeFormatterBuilder()
+            .parseCaseInsensitive()
             .append(ISO_LOCAL_DATE)
             .appendOffsetId()
             .toFormatter();
@@ -403,9 +407,10 @@ public final class DateTimeFormatters {
      * <li>If the offset is not available to print/parse then the format is complete.
      * <li>The {@link ZoneOffset#getId() offset ID}. If the offset has seconds then
      *  they will be handled even though this is not part of the ISO-8601 standard.
+     *  Parsing is case insensitive.
      * </ul><p>
      * As this formatter has an optional element, it may be necessary to parse using
-     * {@link DateTimeFormatter#parseBest(CharSequence, Class...)}.
+     * {@link DateTimeFormatter#parseBest}.
      *
      * @return the ISO date formatter, not null
      */
@@ -417,6 +422,7 @@ public final class DateTimeFormatters {
     private static final DateTimeFormatter ISO_DATE;
     static {
         ISO_DATE = new DateTimeFormatterBuilder()
+            .parseCaseInsensitive()
             .append(ISO_LOCAL_DATE)
             .optionalStart()
             .appendOffsetId()
@@ -480,6 +486,7 @@ public final class DateTimeFormatters {
      * <li>The {@link #isoLocalTime()}
      * <li>The {@link ZoneOffset#getId() offset ID}. If the offset has seconds then
      *  they will be handled even though this is not part of the ISO-8601 standard.
+     *  Parsing is case insensitive.
      * </ul><p>
      *
      * @return the ISO offset time formatter, not null
@@ -492,6 +499,7 @@ public final class DateTimeFormatters {
     private static final DateTimeFormatter ISO_OFFSET_TIME;
     static {
         ISO_OFFSET_TIME = new DateTimeFormatterBuilder()
+            .parseCaseInsensitive()
             .append(ISO_LOCAL_TIME)
             .appendOffsetId()
             .toFormatter();
@@ -510,9 +518,10 @@ public final class DateTimeFormatters {
      * <li>If the offset is not available to print/parse then the format is complete.
      * <li>The {@link ZoneOffset#getId() offset ID}. If the offset has seconds then
      *  they will be handled even though this is not part of the ISO-8601 standard.
+     *  Parsing is case insensitive.
      * </ul><p>
      * As this formatter has an optional element, it may be necessary to parse using
-     * {@link DateTimeFormatter#parseBest(CharSequence, Class...)}.
+     * {@link DateTimeFormatter#parseBest}.
      *
      * @return the ISO time formatter, not null
      */
@@ -524,6 +533,7 @@ public final class DateTimeFormatters {
     private static final DateTimeFormatter ISO_TIME;
     static {
         ISO_TIME = new DateTimeFormatterBuilder()
+            .parseCaseInsensitive()
             .append(ISO_LOCAL_TIME)
             .optionalStart()
             .appendOffsetId()
@@ -573,6 +583,7 @@ public final class DateTimeFormatters {
      * <li>The {@link #isoLocalDateTime()}
      * <li>The {@link ZoneOffset#getId() offset ID}. If the offset has seconds then
      *  they will be handled even though this is not part of the ISO-8601 standard.
+     *  Parsing is case insensitive.
      * </ul><p>
      *
      * @return the ISO offset date-time formatter, not null
@@ -585,6 +596,7 @@ public final class DateTimeFormatters {
     private static final DateTimeFormatter ISO_OFFSET_DATE_TIME;
     static {
         ISO_OFFSET_DATE_TIME = new DateTimeFormatterBuilder()
+            .parseCaseInsensitive()
             .append(ISO_LOCAL_DATE_TIME)
             .appendOffsetId()
             .toFormatter();
@@ -604,6 +616,7 @@ public final class DateTimeFormatters {
      * <li>If the zone ID is not available or is a {@code ZoneOffset} then the format is complete.
      * <li>An open square bracket '['.
      * <li>The {@link ZoneId#getId() zone ID}. This is not part of the ISO-8601 standard.
+     *  Parsing is case sensitive.
      * <li>A close square bracket ']'.
      * </ul><p>
      *
@@ -620,6 +633,7 @@ public final class DateTimeFormatters {
             .append(ISO_OFFSET_DATE_TIME)
             .optionalStart()
             .appendLiteral('[')
+            .parseCaseSensitive()
             .appendZoneRegionId()
             .appendLiteral(']')
             .toFormatter();
@@ -636,17 +650,17 @@ public final class DateTimeFormatters {
      * The format consists of:
      * <p><ul>
      * <li>The {@link #isoLocalDateTime()}
-     * <li>The letter 'T'. Parsing is case insensitive.
      * <li>If the offset is not available to print/parse then the format is complete.
      * <li>The {@link ZoneOffset#getId() offset ID}. If the offset has seconds then
      *  they will be handled even though this is not part of the ISO-8601 standard.
      * <li>If the zone ID is not available or is a {@code ZoneOffset} then the format is complete.
      * <li>An open square bracket '['.
      * <li>The {@link ZoneId#getId() zone ID}. This is not part of the ISO-8601 standard.
+     *  Parsing is case sensitive.
      * <li>A close square bracket ']'.
      * </ul><p>
      * As this formatter has an optional element, it may be necessary to parse using
-     * {@link DateTimeFormatter#parseBest(CharSequence, Class...)}.
+     * {@link DateTimeFormatter#parseBest}.
      *
      * @return the ISO date-time formatter, not null
      */
@@ -663,6 +677,7 @@ public final class DateTimeFormatters {
             .appendOffsetId()
             .optionalStart()
             .appendLiteral('[')
+            .parseCaseSensitive()
             .appendZoneRegionId()
             .appendLiteral(']')
             .toFormatter();
@@ -686,9 +701,10 @@ public final class DateTimeFormatters {
      * <li>If the offset is not available to print/parse then the format is complete.
      * <li>The {@link ZoneOffset#getId() offset ID}. If the offset has seconds then
      *  they will be handled even though this is not part of the ISO-8601 standard.
+     *  Parsing is case insensitive.
      * </ul><p>
      * As this formatter has an optional element, it may be necessary to parse using
-     * {@link DateTimeFormatter#parseBest(CharSequence, Class...)}.
+     * {@link DateTimeFormatter#parseBest}.
      *
      * @return the ISO ordinal date formatter, not null
      */
@@ -700,6 +716,7 @@ public final class DateTimeFormatters {
     private static final DateTimeFormatter ISO_ORDINAL_DATE;
     static {
         ISO_ORDINAL_DATE = new DateTimeFormatterBuilder()
+            .parseCaseInsensitive()
             .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
             .appendLiteral('-')
             .appendValue(DAY_OF_YEAR, 3)
@@ -730,9 +747,10 @@ public final class DateTimeFormatters {
      * <li>If the offset is not available to print/parse then the format is complete.
      * <li>The {@link ZoneOffset#getId() offset ID}. If the offset has seconds then
      *  they will be handled even though this is not part of the ISO-8601 standard.
+     *  Parsing is case insensitive.
      * </ul><p>
      * As this formatter has an optional element, it may be necessary to parse using
-     * {@link DateTimeFormatter#parseBest(CharSequence, Class...)}.
+     * {@link DateTimeFormatter#parseBest}.
      *
      * @return the ISO week-based date formatter, not null
      */
@@ -765,7 +783,7 @@ public final class DateTimeFormatters {
      * <p><ul>
      * <li>The {@link #isoOffsetDateTime()} where the instant is converted from
      *  {@link ChronoField#INSTANT_SECONDS} and {@link ChronoField#NANO_OF_SECOND}
-     *  using the {@code UTC} offset.
+     *  using the {@code UTC} offset. Parsing is case insensitive.
      * </ul><p>
      *
      * @return the ISO instant formatter, not null
@@ -801,9 +819,10 @@ public final class DateTimeFormatters {
      * <li>If the offset is not available to print/parse then the format is complete.
      * <li>The {@link ZoneOffset#getId() offset ID} without colons. If the offset has
      *  seconds then they will be handled even though this is not part of the ISO-8601 standard.
+     *  Parsing is case insensitive.
      * </ul><p>
      * As this formatter has an optional element, it may be necessary to parse using
-     * {@link DateTimeFormatter#parseBest(CharSequence, Class...)}.
+     * {@link DateTimeFormatter#parseBest}.
      *
      * @return the ISO basic local date formatter, not null
      */
@@ -861,6 +880,7 @@ public final class DateTimeFormatters {
      * <li>The {@link ZoneOffset#getId() offset ID} without colons or seconds.
      *  An offset of zero uses "GMT". North American zone names and military zone names are not handled.
      * </ul><p>
+     * Parsing is case insensitive.
      *
      * @return the RFC-1123 formatter, not null
      */
@@ -873,7 +893,7 @@ public final class DateTimeFormatters {
     static {
         // manually code maps to ensure correct data always used
         // (locale data can be changed by application code)
-        Map<Long, String> dow = new HashMap<Long, String>();
+        Map<Long, String> dow = new HashMap<>();
         dow.put(1L, "Mon");
         dow.put(2L, "Tue");
         dow.put(3L, "Wed");
@@ -881,7 +901,7 @@ public final class DateTimeFormatters {
         dow.put(5L, "Fri");
         dow.put(6L, "Sat");
         dow.put(7L, "Sun");
-        Map<Long, String> moy = new HashMap<Long, String>();
+        Map<Long, String> moy = new HashMap<>();
         moy.put(1L, "Jan");
         moy.put(2L, "Feb");
         moy.put(3L, "Mar");
@@ -917,27 +937,6 @@ public final class DateTimeFormatters {
             .appendLiteral(' ')
             .appendOffset("+HHMM", "GMT")  // should handle UT/Z/EST/EDT/CST/CDT/MST/MDT/PST/MDT
             .toFormatter();
-    }
-
-    //-------------------------------------------------------------------------
-    /**
-     * Gets the provider of text.
-     *
-     * @return the provider, not null
-     */
-    public static DateTimeTextProvider getTextProvider() {
-        // TODO: obtain provider properly
-        return new SimpleDateTimeTextProvider();
-    }
-
-    /**
-     * Gets the provider of format styles.
-     *
-     * @return the provider, not null
-     */
-    public static DateTimeFormatStyleProvider getFormatStyleProvider() {
-        // TODO: obtain provider properly
-        return new SimpleDateTimeFormatStyleProvider();
     }
 
 }

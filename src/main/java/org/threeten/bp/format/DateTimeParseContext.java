@@ -60,7 +60,7 @@ final class DateTimeParseContext {
      */
     private Locale locale;
     /**
-     * The date time format symbols, not null.
+     * The symbols, not null.
      */
     private DateTimeFormatSymbols symbols;
     /**
@@ -78,16 +78,21 @@ final class DateTimeParseContext {
 
     /**
      * Creates a new instance of the context.
-     * <p>
-     * This should normally only be created by the parser.
      *
-     * @param locale  the locale to use, not null
-     * @param symbols  the symbols to use during parsing, not null
+     * @param formatter  the formatter controlling the parse, not null
      */
+    DateTimeParseContext(DateTimeFormatter formatter) {
+        super();
+        this.locale = formatter.getLocale();
+        this.symbols = formatter.getSymbols();
+        parsed.add(new Parsed());
+    }
+
+    // for testing
     DateTimeParseContext(Locale locale, DateTimeFormatSymbols symbols) {
         super();
-        setLocale(locale);
-        setSymbols(symbols);
+        this.locale = locale;
+        this.symbols = symbols;
         parsed.add(new Parsed());
     }
 
@@ -112,20 +117,6 @@ final class DateTimeParseContext {
     }
 
     /**
-     * Sets the locale.
-     * <p>
-     * This locale is used to control localization in the parse except
-     * where localization is controlled by the symbols.
-     *
-     * @param locale  the locale, not null
-     */
-    public void setLocale(Locale locale) {
-        Objects.requireNonNull(locale, "locale");
-        this.locale = locale;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the formatting symbols.
      * <p>
      * The symbols control the localization of numeric parsing.
@@ -134,18 +125,6 @@ final class DateTimeParseContext {
      */
     public DateTimeFormatSymbols getSymbols() {
         return symbols;
-    }
-
-    /**
-     * Sets the formatting symbols.
-     * <p>
-     * The symbols control the localization of numeric parsing.
-     *
-     * @param symbols  the formatting symbols, not null
-     */
-    public void setSymbols(DateTimeFormatSymbols symbols) {
-        Objects.requireNonNull(symbols, "symbols");
-        this.symbols = symbols;
     }
 
     //-----------------------------------------------------------------------
@@ -229,7 +208,7 @@ final class DateTimeParseContext {
      * Starts the parsing of an optional segment of the input.
      */
     void startOptional() {
-        parsed.add(currentParsed().clone());
+        parsed.add(currentParsed().copy());
     }
 
     /**
@@ -247,9 +226,9 @@ final class DateTimeParseContext {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the currently active date-time objects.
+     * Gets the currently active temporal objects.
      *
-     * @return the current date-time objects, not null
+     * @return the current temporal objects, not null
      */
     private Parsed currentParsed() {
         return parsed.get(parsed.size() - 1);
@@ -286,7 +265,7 @@ final class DateTimeParseContext {
      * of the specified type. No attempt is made to derive a value.
      *
      * @param clazz  the type to query from the map, not null
-     * @return the date-time object, null if it was not parsed
+     * @return the temporal object, null if it was not parsed
      */
     @SuppressWarnings("unchecked")
     public <T> T getParsed(Class<T> clazz) {
@@ -299,9 +278,9 @@ final class DateTimeParseContext {
     }
 
     /**
-     * Gets the list of parsed date-time information.
+     * Gets the list of parsed temporal information.
      *
-     * @return the list of parsed date-time objects, not null, no nulls
+     * @return the list of parsed temporal objects, not null, no nulls
      */
     List<Object> getParsed() {
         // package scoped for testing
@@ -381,8 +360,7 @@ final class DateTimeParseContext {
         final List<Object> parsed = new ArrayList<>();
         private Parsed() {
         }
-        @Override
-        protected Parsed clone() {
+        protected Parsed copy() {
             Parsed cloned = new Parsed();
             cloned.parsed.addAll(this.parsed);
             return cloned;
@@ -408,6 +386,21 @@ final class DateTimeParseContext {
         public String toString() {
             return field.getName() + ' ' + value;
         }
+    }
+
+    //-------------------------------------------------------------------------
+    // for testing
+    /**
+     * Sets the locale.
+     * <p>
+     * This locale is used to control localization in the print output except
+     * where localization is controlled by the symbols.
+     *
+     * @param locale  the locale, not null
+     */
+    void setLocale(Locale locale) {
+        Objects.requireNonNull(locale, "locale");
+        this.locale = locale;
     }
 
 }

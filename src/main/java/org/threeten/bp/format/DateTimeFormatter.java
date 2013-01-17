@@ -41,16 +41,27 @@ import java.util.Locale;
 import java.util.Objects;
 
 import org.threeten.bp.DateTimeException;
+import org.threeten.bp.ZoneId;
 import org.threeten.bp.format.DateTimeFormatterBuilder.CompositePrinterParser;
+import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.TemporalAccessor;
 
 /**
  * Formatter for printing and parsing date-time objects.
  * <p>
  * This class provides the main application entry point for printing and parsing.
- * Instances of DateTimeFormatter are constructed using DateTimeFormatterBuilder
- * or by using one of the predefined constants on DateTimeFormatters.
+ * Common instances of {@code DateTimeFormatter} are provided by {@link DateTimeFormatters}.
+ * For more complex formatters, a {@link DateTimeFormatterBuilder builder} is provided.
  * <p>
+ * In most cases, it is not necessary to use this class directly when formatting.
+ * The main date-time classes provide two methods - one for printing,
+ * {@code toString(DateTimeFormatter formatter)}, and one for parsing,
+ * {@code parse(CharSequence text, DateTimeFormatter formatter)}.
+ * For example:
+ * <pre>
+ *  String text = date.toString(formatter);
+ *  LocalDate date = LocalDate.parse(text, formatter);
+ * </pre>
  * Some aspects of printing and parsing are dependent on the locale.
  * The locale can be changed using the {@link #withLocale(Locale)} method
  * which returns a new formatter in the requested locale.
@@ -64,6 +75,10 @@ import org.threeten.bp.temporal.TemporalAccessor;
 public final class DateTimeFormatter {
 
     /**
+     * The printer and/or parser to use, not null.
+     */
+    private final CompositePrinterParser printerParser;
+    /**
      * The locale to use for formatting, not null.
      */
     private final Locale locale;
@@ -72,9 +87,13 @@ public final class DateTimeFormatter {
      */
     private final DateTimeFormatSymbols symbols;
     /**
-     * The printer and/or parser to use, not null.
+     * The chronology to use for formatting, null for no override.
      */
-    private final CompositePrinterParser printerParser;
+    private final Chrono<?> chrono;
+    /**
+     * The zone to use for formatting, null for no override.
+     */
+    private final ZoneId zone;
 
     /**
      * Constructor.
@@ -82,16 +101,24 @@ public final class DateTimeFormatter {
      * @param printerParser  the printer/parser to use, not null
      * @param locale  the locale to use, not null
      * @param symbols  the symbols to use, not null
+     * @param chrono  the chronology to use, null for no override
+     * @param zone  the zone to use, null for no override
      */
-    DateTimeFormatter(CompositePrinterParser printerParser, Locale locale, DateTimeFormatSymbols symbols) {
-        this.locale = locale;
-        this.symbols = symbols;
-        this.printerParser = printerParser;
+    DateTimeFormatter(CompositePrinterParser printerParser, Locale locale,
+                      DateTimeFormatSymbols symbols, Chrono<?> chrono, ZoneId zone) {
+        this.printerParser = Objects.requireNonNull(printerParser, "printerParser");
+        this.locale = Objects.requireNonNull(locale, "locale");
+        this.symbols = Objects.requireNonNull(symbols, "symbols");
+        this.chrono = chrono;
+        this.zone = zone;
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the locale to be used during formatting.
+     * <p>
+     * This is used to lookup any part of the formatter needing specific
+     * localization, such as the text or localized pattern.
      *
      * @return the locale of this formatter, not null
      */
@@ -102,17 +129,19 @@ public final class DateTimeFormatter {
     /**
      * Returns a copy of this formatter with a new locale.
      * <p>
+     * This is used to lookup any part of the formatter needing specific
+     * localization, such as the text or localized pattern.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param locale  the new locale, not null
-     * @return a {@code DateTimeFormatter} based on this one with the requested locale, not null
+     * @return a formatter based on this formatter with the requested locale, not null
      */
     public DateTimeFormatter withLocale(Locale locale) {
-        Objects.requireNonNull(locale, "locale");
-        if (locale.equals(this.locale)) {
+        if (this.locale.equals(locale)) {
             return this;
         }
-        return new DateTimeFormatter(printerParser, locale, symbols);
+        return new DateTimeFormatter(printerParser, locale, symbols, chrono, zone);
     }
 
     //-----------------------------------------------------------------------
@@ -131,14 +160,105 @@ public final class DateTimeFormatter {
      * This instance is immutable and unaffected by this method call.
      *
      * @param symbols  the new symbols, not null
-     * @return a {@code DateTimeFormatter} based on this one with the requested symbols, not null
+     * @return a formatter based on this formatter with the requested symbols, not null
      */
     public DateTimeFormatter withSymbols(DateTimeFormatSymbols symbols) {
-        Objects.requireNonNull(symbols, "symbols");
-        if (symbols.equals(this.symbols)) {
+        if (this.symbols.equals(symbols)) {
             return this;
         }
-        return new DateTimeFormatter(printerParser, locale, symbols);
+        return new DateTimeFormatter(printerParser, locale, symbols, chrono, zone);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the overriding chronology to be used during formatting.
+     * <p>
+     * This returns the override chronology, used to convert dates.
+     * By default, a formatter has no override chronology, returning null.
+     * See {@link #withChrono(Chrono)} for more details on overriding.
+     *
+     * @return the chronology of this formatter, null if no override
+     */
+    public Chrono<?> getChrono() {
+        return chrono;
+    }
+
+    /**
+     * Returns a copy of this formatter with a new override chronology.
+     * <p>
+     * This returns a formatter with similar state to this formatter but
+     * with the override chronology set.
+     * By default, a formatter has no override chronology, returning null.
+     * <p>
+     * If an override is added, then any date that is printed or parsed will be affected.
+     * <p>
+     * When printing, if the {@code Temporal} object contains a date then it will
+     * be converted to a date in the override chronology.
+     * Any time or zone will be retained unless overridden.
+     * The converted result will behave in a manner equivalent to an implementation
+     * of {@code ChronoLocalDate},{@code ChronoLocalDateTime} or {@code ChronoZonedDateTime}.
+     * <p>
+     * When parsing, the override chronology will be used to interpret the
+     * {@link java.time.temporal.ChronoField fields} into a date unless the
+     * formatter directly parses a valid chronology.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param chrono  the new chronology, not null
+     * @return a formatter based on this formatter with the requested override chronology, not null
+     */
+    public DateTimeFormatter withChrono(Chrono<?> chrono) {
+        if (Objects.equals(this.chrono, chrono)) {
+            return this;
+        }
+        return new DateTimeFormatter(printerParser, locale, symbols, chrono, zone);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the overriding zone to be used during formatting.
+     * <p>
+     * This returns the override zone, used to convert instants.
+     * By default, a formatter has no override zone, returning null.
+     * See {@link #withZone(ZoneId)} for more details on overriding.
+     *
+     * @return the chronology of this formatter, null if no override
+     */
+    public ZoneId getZone() {
+        return zone;
+    }
+
+    /**
+     * Returns a copy of this formatter with a new override zone.
+     * <p>
+     * This returns a formatter with similar state to this formatter but
+     * with the override zone set.
+     * By default, a formatter has no override zone, returning null.
+     * <p>
+     * If an override is added, then any instant that is printed or parsed will be affected.
+     * <p>
+     * When printing, if the {@code Temporal} object contains an instant then it will
+     * be converted to a zoned date-time using the override zone.
+     * If the input has a chronology then it will be retained unless overridden.
+     * If the input does not have a chronology, such as {@code Instant}, then
+     * the ISO chronology will be used.
+     * The converted result will behave in a manner equivalent to an implementation
+     * of {@code ChronoZonedDateTime}.
+     * <p>
+     * When parsing, the override zone will be used to interpret the
+     * {@link java.time.temporal.ChronoField fields} into an instant unless the
+     * formatter directly parses a valid zone.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param zone  the new override zone, not null
+     * @return a formatter based on this formatter with the requested override zone, not null
+     */
+    public DateTimeFormatter withZone(ZoneId zone) {
+        if (Objects.equals(this.zone, zone)) {
+            return this;
+        }
+        return new DateTimeFormatter(printerParser, locale, symbols, chrono, zone);
     }
 
     //-----------------------------------------------------------------------
@@ -147,7 +267,7 @@ public final class DateTimeFormatter {
      * <p>
      * This prints the date-time to a String using the rules of the formatter.
      *
-     * @param temporal  the date-time object to print, not null
+     * @param temporal  the temporal object to print, not null
      * @return the printed string, not null
      * @throws DateTimeException if an error occurs during printing
      */
@@ -171,7 +291,7 @@ public final class DateTimeFormatter {
      * See {@link DateTimePrintException#rethrowIOException()} for a means
      * to extract the {@code IOException}.
      *
-     * @param temporal  the date-time object to print, not null
+     * @param temporal  the temporal object to print, not null
      * @param appendable  the appendable to print to, not null
      * @throws DateTimeException if an error occurs during printing
      */
@@ -179,7 +299,7 @@ public final class DateTimeFormatter {
         Objects.requireNonNull(temporal, "temporal");
         Objects.requireNonNull(appendable, "appendable");
         try {
-            DateTimePrintContext context = new DateTimePrintContext(temporal, locale, symbols);
+            DateTimePrintContext context = new DateTimePrintContext(temporal, this);
             if (appendable instanceof StringBuilder) {
                 printerParser.print(context, (StringBuilder) appendable);
             } else {
@@ -201,7 +321,7 @@ public final class DateTimeFormatter {
      * It parses the entire text to produce the required date-time.
      * For example:
      * <pre>
-     * LocalDateTime dt = parser.parse(str, LocalDateTime.class);
+     *  LocalDateTime dt = parser.parse(str, LocalDateTime.class);
      * </pre>
      * If the parse completes without reading the entire length of the text,
      * or a problem occurs during parsing or merging, then an exception is thrown.
@@ -239,18 +359,18 @@ public final class DateTimeFormatter {
      * Normally, applications will use {@code instanceof} to check the result.
      * For example:
      * <pre>
-     * DateTimeAccessor dt = parser.parseBest(str, OffsetDate.class, LocalDate.class);
-     * if (dt instanceof OffsetDate) {
-     *  ...
-     * } else {
-     *  ...
-     * }
+     *  TemporalAccessor dt = parser.parseBest(str, OffsetDate.class, LocalDate.class);
+     *  if (dt instanceof OffsetDate) {
+     *   ...
+     *  } else {
+     *   ...
+     *  }
      * </pre>
      * If the parse completes without reading the entire length of the text,
      * or a problem occurs during parsing or merging, then an exception is thrown.
      *
      * @param text  the text to parse, not null
-     * @param types  the types to attempt to parse to, which must implement {@code DateTimeAccessor}, not null
+     * @param types  the types to attempt to parse to, which must implement {@code TemporalAccessor}, not null
      * @return the parsed date-time, not null
      * @throws IllegalArgumentException if less than 2 types are specified
      * @throws DateTimeParseException if the parse fails
@@ -298,7 +418,6 @@ public final class DateTimeFormatter {
      * @param text  the text to parse, not null
      * @return the engine representing the result of the parse, not null
      * @throws DateTimeParseException if the parse fails
-     * @throws DateTimeException if there is a date/time problem
      */
     public DateTimeBuilder parseToBuilder(CharSequence text) {
         Objects.requireNonNull(text, "text");
@@ -306,7 +425,7 @@ public final class DateTimeFormatter {
         ParsePosition pos = new ParsePosition(0);
         DateTimeBuilder result = parseToBuilder(str, pos);
         if (result == null || pos.getErrorIndex() >= 0 || pos.getIndex() < str.length()) {
-            String abbr = str.toString();
+            String abbr = str;
             if (abbr.length() > 64) {
                 abbr = abbr.substring(0, 64) + "...";
             }
@@ -337,13 +456,11 @@ public final class DateTimeFormatter {
      *  and the index of any error, not null
      * @return the parsed text, null only if the parse results in an error
      * @throws IndexOutOfBoundsException if the position is invalid
-     * @throws DateTimeParseException if the parse fails
-     * @throws DateTimeException if there is a date/time problem
      */
     public DateTimeBuilder parseToBuilder(CharSequence text, ParsePosition position) {
         Objects.requireNonNull(text, "text");
         Objects.requireNonNull(position, "position");
-        DateTimeParseContext context = new DateTimeParseContext(locale, symbols);
+        DateTimeParseContext context = new DateTimeParseContext(this);
         int pos = position.getIndex();
         pos = printerParser.parse(context, text, pos);
         if (pos < 0) {
@@ -388,13 +505,14 @@ public final class DateTimeFormatter {
      * <p>
      * The returned {@link Format} instance will print any {@link TemporalAccessor}
      * and parses to the type specified.
-     * The type must be one that is supported by {@link #parse(CharSequence, Class)}.
+     * The type must be one that is supported by {@link #parse}.
      * <p>
      * Exceptions will follow the definitions of {@code Format}, see those methods
      * for details about {@code IllegalArgumentException} during formatting and
      * {@code ParseException} or null during parsing.
      * The format does not support attributing of the returned format string.
      *
+     * @param parseType  the type to parse to, not null
      * @return this formatter as a classic format instance, not null
      */
     public Format toFormat(Class<?> parseType) {
@@ -402,10 +520,11 @@ public final class DateTimeFormatter {
         return new ClassicFormat(this, parseType);
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Returns a description of the underlying formatters.
      *
-     * @return the pattern that will be used, not null
+     * @return a description of this formatter, not null
      */
     @Override
     public String toString() {
@@ -416,6 +535,7 @@ public final class DateTimeFormatter {
     //-----------------------------------------------------------------------
     /**
      * Implements the classic Java Format API.
+     * @serial exclude
      */
     @SuppressWarnings("serial")  // not actually serializable
     static class ClassicFormat extends Format {
@@ -435,7 +555,7 @@ public final class DateTimeFormatter {
             Objects.requireNonNull(toAppendTo, "toAppendTo");
             Objects.requireNonNull(pos, "pos");
             if (obj instanceof TemporalAccessor == false) {
-                throw new IllegalArgumentException("Format target must implement DateTimeAccessor");
+                throw new IllegalArgumentException("Format target must implement TemporalAccessor");
             }
             pos.setBeginIndex(0);
             pos.setEndIndex(0);

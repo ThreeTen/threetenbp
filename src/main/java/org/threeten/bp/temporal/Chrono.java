@@ -34,6 +34,8 @@ package org.threeten.bp.temporal;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.InvalidObjectException;
+import java.io.ObjectStreamException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -46,21 +48,18 @@ import org.threeten.bp.Clock;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
-import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.ZoneId;
-import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.TextStyle;
 import org.threeten.bp.jdk8.DefaultInterfaceDateTimeAccessor;
-import org.threeten.bp.zone.ZoneRules;
 
 /**
- * A calendar system, defining a set of human-scale date fields.
+ * A calendar system, used to organize and identify dates.
  * <p>
  * The main date and time API is built on the ISO calendar system.
  * This class operates behind the scenes to represent the general concept of a calendar system.
- * For example, the Gregorian, Japanese, Minguo, Thai Buddhist and others.
+ * For example, the Japanese, Minguo, Thai Buddhist and others.
  * <p>
  * Most other calendar systems also operate on the shared concepts of year, month and day,
  * linked to the cycles of the Earth around the Sun, and the Moon around the Earth.
@@ -94,13 +93,13 @@ import org.threeten.bp.zone.ZoneRules;
  * <li> {@link #dateNow(Clock) dateNow(clock)}
  * <li> {@link #dateNow(ZoneId) dateNow(zone)}
  * <li> {@link #date(int, int, int) date(yearProleptic, month, day)}
- * <li> {@link #date(org.threeten.bp.temporal.Era, int, int, int) date(era, yearOfEra, month, day)}
+ * <li> {@link #date(Era, int, int, int) date(era, yearOfEra, month, day)}
  * <li> {@link #dateYearDay(int, int) dateYearDay(yearProleptic, dayOfYear)}
  * <li> {@link #dateYearDay(Era, int, int) dateYearDay(era, yearOfEra, dayOfYear)}
- * <li> {@link #date(TemporalAccessor) date(DateTimeAccessor)}
+ * <li> {@link #date(TemporalAccessor) date(TemporalAccessor)}
  * </ul><p>
  *
- * <h4 id="addcalendars">Adding New Calendars</h4>
+ * <p id="addcalendars">Adding New Calendars</p>
  * The set of available chronologies can be extended by applications.
  * Adding a new calendar system requires the writing of an implementation of
  * {@code Chrono}, {@code ChronoLocalDate} and {@code Era}.
@@ -110,7 +109,9 @@ import org.threeten.bp.zone.ZoneRules;
  * To permit the discovery of additional chronologies, the {@link java.util.ServiceLoader ServiceLoader}
  * is used. A file must be added to the {@code META-INF/services} directory with the
  * name 'org.threeten.bp.chrono.Chrono' listing the implementation classes.
- * See the service loader for more details on service loading.
+ * See the ServiceLoader for more details on service loading.
+ * For lookup by id or calendarType, the system provided calendars are found
+ * first followed by application provided calendars.
  * <p>
  * Each chronology must define a chronology ID that is unique within the system.
  * If the chronology represents a calendar system defined by the
@@ -118,7 +119,7 @@ import org.threeten.bp.zone.ZoneRules;
  * calendar type should also be specified.
  *
  * <h3>Specification for implementors</h3>
- * This interface must be implemented with care to ensure other classes operate correctly.
+ * This class must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * Subclasses should be Serializable wherever possible.
  *
@@ -153,13 +154,18 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Chrono} from a date-time object.
+     * Obtains an instance of {@code Chrono} from a temporal object.
      * <p>
-     * A {@code DateTimeAccessor} represents some form of date and time information.
-     * This factory converts the arbitrary date-time object to an instance of {@code Chrono}.
-     * If the specified date-time object does not have a chronology, {@link ISOChrono} is returned.
+     * A {@code TemporalAccessor} represents some form of date and time information.
+     * This factory converts the arbitrary temporal object to an instance of {@code Chrono}.
+     * If the specified temporal object does not have a chronology, {@link ISOChrono} is returned.
+     * <p>
+     * The conversion will obtain the chronology using {@link Queries#chrono()}.
+     * <p>
+     * This method matches the signature of the functional interface {@link TemporalQuery}
+     * allowing it to be used in queries via method reference, {@code Chrono::from}.
      *
-     * @param temporal  the date-time to convert, not null
+     * @param temporal  the temporal to convert, not null
      * @return the chronology, not null
      * @throws DateTimeException if unable to convert to an {@code Chrono}
      */
@@ -208,6 +214,9 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * This returns a chronology based on either the ID or the type.
      * The {@link #getId() chronology ID} uniquely identifies the chronology.
      * The {@link #getCalendarType() calendar system type} is defined by the LDML specification.
+     * <p>
+     * The chronology may be a system chronology or a chronology
+     * provided by the application via ServiceLoader configuration.
      * <p>
      * Since some calendars can be customized, the ID or type typically refers
      * to the default customization. For example, the Gregorian calendar can have multiple
@@ -272,15 +281,16 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
         }
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Casts the {@code DateTime} to {@code ChronoLocalDate} with the same chronology.
+     * Casts the {@code Temporal} to {@code ChronoLocalDate} with the same chronology.
      *
      * @param temporal  a date-time to cast, not null
      * @return the date-time checked and cast to {@code ChronoLocalDate}, not null
      * @throws ClassCastException if the date-time cannot be cast to ChronoLocalDate
      *  or the chronology is not equal this Chrono
      */
-    public /* package-scoped */ ChronoLocalDate<C> ensureChronoLocalDate(Temporal temporal) {  // TODO: non-public
+    public /* should be package-scoped */ ChronoLocalDate<C> ensureChronoLocalDate(Temporal temporal) {
         @SuppressWarnings("unchecked")
         ChronoLocalDate<C> other = (ChronoLocalDate<C>) temporal;
         if (this.equals(other.getChrono()) == false) {
@@ -290,14 +300,14 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
     }
 
     /**
-     * Casts the {@code DateTime} to {@code ChronoLocalDateTime} with the same chronology.
+     * Casts the {@code Temporal} to {@code ChronoLocalDateTime} with the same chronology.
      *
      * @param temporal   a date-time to cast, not null
      * @return the date-time checked and cast to {@code ChronoLocalDateTime}, not null
-     * @throws ClassCastException if the date-time cannot be cast to ChronoDateTimeImpl
+     * @throws ClassCastException if the date-time cannot be cast to ChronoLocalDateTimeImpl
      *  or the chronology is not equal this Chrono
      */
-    public /* package-scoped */ ChronoLocalDateTimeImpl<C> ensureChronoLocalDateTime(Temporal temporal) {  // TODO: non-public
+    public /* should be package-scoped */ ChronoLocalDateTimeImpl<C> ensureChronoLocalDateTime(Temporal temporal) {
         @SuppressWarnings("unchecked")
         ChronoLocalDateTimeImpl<C> other = (ChronoLocalDateTimeImpl<C>) temporal;
         if (this.equals(other.getDate().getChrono()) == false) {
@@ -308,14 +318,14 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
     }
 
     /**
-     * Casts the {@code DateTime} to {@code ChronoZonedDateTimeImpl} with the same chronology.
+     * Casts the {@code Temporal} to {@code ChronoZonedDateTimeImpl} with the same chronology.
      *
      * @param temporal  a date-time to cast, not null
      * @return the date-time checked and cast to {@code ChronoZonedDateTimeImpl}, not null
      * @throws ClassCastException if the date-time cannot be cast to ChronoZonedDateTimeImpl
      *  or the chronology is not equal this Chrono
      */
-    public /* package-scoped */ ChronoZonedDateTimeImpl<C> ensureChronoZonedDateTime(Temporal temporal) {  // TODO: non-public
+    public /* should be package-scoped */ ChronoZonedDateTimeImpl<C> ensureChronoZonedDateTime(Temporal temporal) {
         @SuppressWarnings("unchecked")
         ChronoZonedDateTimeImpl<C> other = (ChronoZonedDateTimeImpl<C>) temporal;
         if (this.equals(other.getDate().getChrono()) == false) {
@@ -405,14 +415,14 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
     public abstract ChronoLocalDate<C> dateYearDay(int prolepticYear, int dayOfYear);
 
     /**
-     * Obtains a local date in this chronology from another date-time object.
+     * Obtains a local date in this chronology from another temporal object.
      * <p>
-     * This creates a date in this chronology based on the specified {@code DateTimeAccessor}.
+     * This creates a date in this chronology based on the specified {@code TemporalAccessor}.
      * <p>
      * The standard mechanism for conversion between date types is the
      * {@link ChronoField#EPOCH_DAY local epoch-day} field.
      *
-     * @param temporal  the date-time object to convert, not null
+     * @param temporal  the temporal object to convert, not null
      * @return the local date in this chronology, not null
      * @throws DateTimeException if unable to create the date
      */
@@ -446,6 +456,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      *
+     * @param zone  the zone ID to use, not null
      * @return the current local date using the system clock, not null
      * @throws DateTimeException if unable to create the date
      */
@@ -471,64 +482,68 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
 
     //-----------------------------------------------------------------------
     /**
-     * Creates a local date-time in this chronology from another date-time object.
+     * Obtains a local date-time in this chronology from another temporal object.
      * <p>
-     * This creates a date-time in this chronology based on the specified {@code DateTimeAccessor}.
+     * This creates a date-time in this chronology based on the specified {@code TemporalAccessor}.
      * <p>
      * The date of the date-time should be equivalent to that obtained by calling
      * {@link #date(TemporalAccessor)}.
      * The standard mechanism for conversion between time types is the
      * {@link ChronoField#NANO_OF_DAY nano-of-day} field.
      *
-     * @param temporal  the date-time object to convert, not null
+     * @param temporal  the temporal object to convert, not null
      * @return the local date-time in this chronology, not null
      * @throws DateTimeException if unable to create the date-time
      */
     public ChronoLocalDateTime<C> localDateTime(TemporalAccessor temporal) {
-        return date(temporal).atTime(LocalTime.from(temporal));
+        try {
+            return date(temporal).atTime(LocalTime.from(temporal));
+        } catch (DateTimeException ex) {
+            throw new DateTimeException("Unable to obtain ChronoLocalDateTime from TemporalAccessor: " + temporal.getClass(), ex);
+        }
     }
 
     /**
-     * Creates a local date-time in this chronology from an instant and zone.
-     *
-     * @param instant  the instant, not null
-     * @param zoneId  the zone ID, not null
-     * @return the local date-time, not null
-     */
-    ChronoLocalDateTimeImpl<C> localInstant(Instant instant, ZoneId zoneId) {
-        ZoneRules rules = zoneId.getRules();
-        ZoneOffset offset = rules.getOffset(instant);
-        LocalDateTime ldt = LocalDateTime.ofEpochSecond(instant.getEpochSecond(), instant.getNano(), offset);
-        return ChronoLocalDateTimeImpl.of(dateNow(), LocalTime.MIDNIGHT).with(ldt);  // not very efficient...
-    }
-
-    /**
-     * Creates a zoned date-time in this chronology from another date-time object.
+     * Obtains a zoned date-time in this chronology from another temporal object.
      * <p>
-     * This creates a date-time in this chronology based on the specified {@code DateTimeAccessor}.
+     * This creates a date-time in this chronology based on the specified {@code TemporalAccessor}.
      * <p>
      * This should obtain a {@code ZoneId} using {@link ZoneId#from(TemporalAccessor)}.
      * The date-time should be obtained by obtaining an {@code Instant}.
      * If that fails, the local date-time should be used.
      *
-     * @param temporal  the date-time object to convert, not null
+     * @param temporal  the temporal object to convert, not null
      * @return the zoned date-time in this chronology, not null
      * @throws DateTimeException if unable to create the date-time
      */
     public ChronoZonedDateTime<C> zonedDateTime(TemporalAccessor temporal) {
         try {
-            ZoneId zoneId = ZoneId.from(temporal);
-            ChronoLocalDateTimeImpl<C> cldt;
+            ZoneId zone = ZoneId.from(temporal);
             try {
                 Instant instant = Instant.from(temporal);
-                cldt = localInstant(instant, zoneId);
+                return zonedDateTime(instant, zone);
+
             } catch (DateTimeException ex1) {
-                cldt = ensureChronoLocalDateTime(localDateTime(temporal));
+                ChronoLocalDateTimeImpl<C> cldt = ensureChronoLocalDateTime(localDateTime(temporal));
+                return ChronoZonedDateTimeImpl.ofBest(cldt, zone, null);
             }
-            return ChronoZonedDateTimeImpl.ofBest(cldt, zoneId, null);
         } catch (DateTimeException ex) {
-            throw new DateTimeException("Unable to convert TemporalAccessor to ZonedDateTime: " + temporal.getClass(), ex);
+            throw new DateTimeException("Unable to obtain ChronoZonedDateTime from TemporalAccessor: " + temporal.getClass(), ex);
         }
+    }
+
+    /**
+     * Obtains a zoned date-time in this chronology from an {@code Instant}.
+     * <p>
+     * This creates a zoned date-time with the same instant as that specified.
+     *
+     * @param instant  the instant to create the date-time from, not null
+     * @param zone  the time-zone, not null
+     * @return the zoned date-time, not null
+     * @throws DateTimeException if the result exceeds the supported range
+     */
+    public ChronoZonedDateTime<C> zonedDateTime(Instant instant, ZoneId zone) {
+        return ChronoZonedDateTimeImpl.ofInstant(this, instant, zone);
     }
 
     //-----------------------------------------------------------------------
@@ -615,9 +630,9 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * Gets the textual representation of this chronology.
      * <p>
      * This returns the textual name used to identify the chronology.
-     * The parameters control the length of the returned text and the locale.
+     * The parameters control the style of the returned text and the locale.
      *
-     * @param style  the length of the text required, not null
+     * @param style  the style of the text required, not null
      * @param locale  the locale to use, not null
      * @return the text value of the chronology, not null
      */
@@ -709,6 +724,15 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
     //-----------------------------------------------------------------------
     private Object writeReplace() {
         return new Ser(Ser.CHRONO_TYPE, this);
+    }
+
+    /**
+     * Defend against malicious streams.
+     * @return never
+     * @throws InvalidObjectException always
+     */
+    private Object readResolve() throws ObjectStreamException {
+        throw new InvalidObjectException("Deserialization via serialization delegate");
     }
 
     void writeExternal(DataOutput out) throws IOException {

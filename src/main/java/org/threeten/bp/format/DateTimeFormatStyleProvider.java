@@ -45,9 +45,18 @@ import org.threeten.bp.temporal.Chrono;
  * Implementations must be thread-safe.
  * Implementations should cache the returned formatters.
  */
- public abstract class DateTimeFormatStyleProvider extends LocaleServiceProvider {
+ abstract class DateTimeFormatStyleProvider extends LocaleServiceProvider {
 
-    /**
+     /**
+      * Gets the provider.
+      *
+      * @return the provider, not null
+      */
+     static DateTimeFormatStyleProvider getInstance() {
+         return new SimpleDateTimeFormatStyleProvider();
+     }
+
+   /**
      * Gets a localized date, time or date-time formatter.
      * <p>
      * The formatter will be the most appropriate to use for the date and time style in the locale.

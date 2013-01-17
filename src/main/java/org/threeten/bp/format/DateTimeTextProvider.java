@@ -47,7 +47,16 @@ import org.threeten.bp.temporal.TemporalField;
  * Implementations must be thread-safe.
  * Implementations should cache the textual information.
  */
-public abstract class DateTimeTextProvider extends LocaleServiceProvider {
+abstract class DateTimeTextProvider extends LocaleServiceProvider {
+
+    /**
+     * Gets the provider.
+     *
+     * @return the provider, not null
+     */
+    static DateTimeTextProvider getInstance() {
+        return new SimpleDateTimeTextProvider();
+    }
 
     /**
      * Gets the text for the specified field, locale and style

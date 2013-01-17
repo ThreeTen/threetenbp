@@ -38,10 +38,10 @@ import static org.threeten.bp.temporal.ChronoField.OFFSET_SECONDS;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.format.DateTimeFormatterBuilder.ZoneOffsetPrinterParser;
+import org.threeten.bp.format.DateTimeFormatterBuilder.OffsetIdPrinterParser;
 
 /**
- * Test ZoneOffsetPrinterParser.
+ * Test OffsetIdPrinterParser.
  */
 @Test(groups={"implementation"})
 public class TestZoneOffsetParser extends AbstractTestPrinterParser {
@@ -50,13 +50,13 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
     @DataProvider(name="error")
     Object[][] data_error() {
         return new Object[][] {
-            {new ZoneOffsetPrinterParser("Z", "+HH:MM:ss"), "hello", -1, IndexOutOfBoundsException.class},
-            {new ZoneOffsetPrinterParser("Z", "+HH:MM:ss"), "hello", 6, IndexOutOfBoundsException.class},
+            {new OffsetIdPrinterParser("Z", "+HH:MM:ss"), "hello", -1, IndexOutOfBoundsException.class},
+            {new OffsetIdPrinterParser("Z", "+HH:MM:ss"), "hello", 6, IndexOutOfBoundsException.class},
         };
     }
 
     @Test(dataProvider="error")
-    public void test_parse_error(ZoneOffsetPrinterParser pp, String text, int pos, Class<?> expected) {
+    public void test_parse_error(OffsetIdPrinterParser pp, String text, int pos, Class<?> expected) {
         try {
             pp.parse(parseContext, text, pos);
         } catch (RuntimeException ex) {
@@ -67,28 +67,28 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
     public void test_parse_exactMatch_UTC() throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
+        OffsetIdPrinterParser pp = new OffsetIdPrinterParser("Z", "+HH:MM:ss");
         int result = pp.parse(parseContext, "Z", 0);
         assertEquals(result, 1);
         assertParsed(ZoneOffset.UTC);
     }
 
     public void test_parse_startStringMatch_UTC() throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
+        OffsetIdPrinterParser pp = new OffsetIdPrinterParser("Z", "+HH:MM:ss");
         int result = pp.parse(parseContext, "ZOTHER", 0);
         assertEquals(result, 1);
         assertParsed(ZoneOffset.UTC);
     }
 
     public void test_parse_midStringMatch_UTC() throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
+        OffsetIdPrinterParser pp = new OffsetIdPrinterParser("Z", "+HH:MM:ss");
         int result = pp.parse(parseContext, "OTHERZOTHER", 5);
         assertEquals(result, 6);
         assertParsed(ZoneOffset.UTC);
     }
 
     public void test_parse_endStringMatch_UTC() throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
+        OffsetIdPrinterParser pp = new OffsetIdPrinterParser("Z", "+HH:MM:ss");
         int result = pp.parse(parseContext, "OTHERZ", 5);
         assertEquals(result, 6);
         assertParsed(ZoneOffset.UTC);
@@ -96,28 +96,28 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
     public void test_parse_exactMatch_UTC_EmptyUTC() throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", "+HH:MM:ss");
+        OffsetIdPrinterParser pp = new OffsetIdPrinterParser("", "+HH:MM:ss");
         int result = pp.parse(parseContext, "", 0);
         assertEquals(result, 0);
         assertParsed(ZoneOffset.UTC);
     }
 
     public void test_parse_startStringMatch_UTC_EmptyUTC() throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", "+HH:MM:ss");
+        OffsetIdPrinterParser pp = new OffsetIdPrinterParser("", "+HH:MM:ss");
         int result = pp.parse(parseContext, "OTHER", 0);
         assertEquals(result, 0);
         assertParsed(ZoneOffset.UTC);
     }
 
     public void test_parse_midStringMatch_UTC_EmptyUTC() throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", "+HH:MM:ss");
+        OffsetIdPrinterParser pp = new OffsetIdPrinterParser("", "+HH:MM:ss");
         int result = pp.parse(parseContext, "OTHEROTHER", 5);
         assertEquals(result, 5);
         assertParsed(ZoneOffset.UTC);
     }
 
     public void test_parse_endStringMatch_UTC_EmptyUTC() throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", "+HH:MM:ss");
+        OffsetIdPrinterParser pp = new OffsetIdPrinterParser("", "+HH:MM:ss");
         int result = pp.parse(parseContext, "OTHER", 5);
         assertEquals(result, 5);
         assertParsed(ZoneOffset.UTC);
@@ -201,7 +201,7 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
 
     @Test(dataProvider="offsets")
     public void test_parse_exactMatch(String pattern, String parse, ZoneOffset expected) throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", pattern);
+        OffsetIdPrinterParser pp = new OffsetIdPrinterParser("Z", pattern);
         int result = pp.parse(parseContext, parse, 0);
         assertEquals(result, parse.length());
         assertParsed(expected);
@@ -209,7 +209,7 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
 
     @Test(dataProvider="offsets")
     public void test_parse_startStringMatch(String pattern, String parse, ZoneOffset expected) throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", pattern);
+        OffsetIdPrinterParser pp = new OffsetIdPrinterParser("Z", pattern);
         int result = pp.parse(parseContext, parse + ":OTHER", 0);
         assertEquals(result, parse.length());
         assertParsed(expected);
@@ -217,7 +217,7 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
 
     @Test(dataProvider="offsets")
     public void test_parse_midStringMatch(String pattern, String parse, ZoneOffset expected) throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", pattern);
+        OffsetIdPrinterParser pp = new OffsetIdPrinterParser("Z", pattern);
         int result = pp.parse(parseContext, "OTHER" + parse + ":OTHER", 5);
         assertEquals(result, parse.length() + 5);
         assertParsed(expected);
@@ -225,7 +225,7 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
 
     @Test(dataProvider="offsets")
     public void test_parse_endStringMatch(String pattern, String parse, ZoneOffset expected) throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", pattern);
+        OffsetIdPrinterParser pp = new OffsetIdPrinterParser("Z", pattern);
         int result = pp.parse(parseContext, "OTHER" + parse, 5);
         assertEquals(result, parse.length() + 5);
         assertParsed(expected);
@@ -233,7 +233,7 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
 
     @Test(dataProvider="offsets")
     public void test_parse_exactMatch_EmptyUTC(String pattern, String parse, ZoneOffset expected) throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", pattern);
+        OffsetIdPrinterParser pp = new OffsetIdPrinterParser("", pattern);
         int result = pp.parse(parseContext, parse, 0);
         assertEquals(result, parse.length());
         assertParsed(expected);
@@ -241,7 +241,7 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
 
     @Test(dataProvider="offsets")
     public void test_parse_startStringMatch_EmptyUTC(String pattern, String parse, ZoneOffset expected) throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", pattern);
+        OffsetIdPrinterParser pp = new OffsetIdPrinterParser("", pattern);
         int result = pp.parse(parseContext, parse + ":OTHER", 0);
         assertEquals(result, parse.length());
         assertParsed(expected);
@@ -249,7 +249,7 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
 
     @Test(dataProvider="offsets")
     public void test_parse_midStringMatch_EmptyUTC(String pattern, String parse, ZoneOffset expected) throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", pattern);
+        OffsetIdPrinterParser pp = new OffsetIdPrinterParser("", pattern);
         int result = pp.parse(parseContext, "OTHER" + parse + ":OTHER", 5);
         assertEquals(result, parse.length() + 5);
         assertParsed(expected);
@@ -257,7 +257,7 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
 
     @Test(dataProvider="offsets")
     public void test_parse_endStringMatch_EmptyUTC(String pattern, String parse, ZoneOffset expected) throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", pattern);
+        OffsetIdPrinterParser pp = new OffsetIdPrinterParser("", pattern);
         int result = pp.parse(parseContext, "OTHER" + parse, 5);
         assertEquals(result, parse.length() + 5);
         assertParsed(expected);
@@ -292,7 +292,7 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
 
     @Test(dataProvider="bigOffsets")
     public void test_parse_bigOffsets(String pattern, String parse, long offsetSecs) throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", pattern);
+        OffsetIdPrinterParser pp = new OffsetIdPrinterParser("Z", pattern);
         int result = pp.parse(parseContext, parse, 0);
         assertEquals(result, parse.length());
         assertEquals(parseContext.getParsed(OFFSET_SECONDS), (Long) offsetSecs);
@@ -363,7 +363,7 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
 
     @Test(dataProvider="badOffsets")
     public void test_parse_invalid(String pattern, String parse, int expectedPosition) throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", pattern);
+        OffsetIdPrinterParser pp = new OffsetIdPrinterParser("Z", pattern);
         int result = pp.parse(parseContext, parse, 0);
         assertEquals(result, expectedPosition);
     }
@@ -373,7 +373,7 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
     //-----------------------------------------------------------------------
     public void test_parse_caseSensitiveUTC_matchedCase() throws Exception {
         parseContext.setCaseSensitive(true);
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
+        OffsetIdPrinterParser pp = new OffsetIdPrinterParser("Z", "+HH:MM:ss");
         int result = pp.parse(parseContext, "Z", 0);
         assertEquals(result, 1);
         assertParsed(ZoneOffset.UTC);
@@ -381,7 +381,7 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
 
     public void test_parse_caseSensitiveUTC_unmatchedCase() throws Exception {
         parseContext.setCaseSensitive(true);
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
+        OffsetIdPrinterParser pp = new OffsetIdPrinterParser("Z", "+HH:MM:ss");
         int result = pp.parse(parseContext, "z", 0);
         assertEquals(result, ~0);
         assertParsed(null);
@@ -389,7 +389,7 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
 
     public void test_parse_caseInsensitiveUTC_matchedCase() throws Exception {
         parseContext.setCaseSensitive(false);
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
+        OffsetIdPrinterParser pp = new OffsetIdPrinterParser("Z", "+HH:MM:ss");
         int result = pp.parse(parseContext, "Z", 0);
         assertEquals(result, 1);
         assertParsed(ZoneOffset.UTC);
@@ -397,7 +397,7 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
 
     public void test_parse_caseInsensitiveUTC_unmatchedCase() throws Exception {
         parseContext.setCaseSensitive(false);
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
+        OffsetIdPrinterParser pp = new OffsetIdPrinterParser("Z", "+HH:MM:ss");
         int result = pp.parse(parseContext, "z", 0);
         assertEquals(result, 1);
         assertParsed(ZoneOffset.UTC);

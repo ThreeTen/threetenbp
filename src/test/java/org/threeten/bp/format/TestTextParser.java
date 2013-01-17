@@ -50,7 +50,7 @@ import org.threeten.bp.temporal.TemporalField;
 @Test(groups={"implementation"})
 public class TestTextParser extends AbstractTestPrinterParser {
 
-    private static final DateTimeTextProvider PROVIDER = DateTimeFormatters.getTextProvider();
+    private static final DateTimeTextProvider PROVIDER = DateTimeTextProvider.getInstance();
 
     //-----------------------------------------------------------------------
     @DataProvider(name="error")

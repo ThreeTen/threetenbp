@@ -38,7 +38,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.format.DateTimeFormatterBuilder.ZoneOffsetPrinterParser;
+import org.threeten.bp.format.DateTimeFormatterBuilder.OffsetIdPrinterParser;
 
 /**
  * Test ZoneOffsetPrinterParser.
@@ -124,27 +124,27 @@ public class TestZoneOffsetPrinter extends AbstractTestPrinterParser {
     public void test_print(String pattern, String expected, ZoneOffset offset) throws Exception {
         buf.append("EXISTING");
         printContext.setDateTime(new DateTimeBuilder(OFFSET_SECONDS, offset.getTotalSeconds()));
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("NO-OFFSET", pattern);
+        OffsetIdPrinterParser pp = new OffsetIdPrinterParser("NO-OFFSET", pattern);
         pp.print(printContext, buf);
         assertEquals(buf.toString(), "EXISTING" + expected);
     }
 
     @Test(dataProvider="offsets")
     public void test_toString(String pattern, String expected, ZoneOffset offset) throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("NO-OFFSET", pattern);
+        OffsetIdPrinterParser pp = new OffsetIdPrinterParser("NO-OFFSET", pattern);
         assertEquals(pp.toString(), "Offset('NO-OFFSET'," + pattern + ")");
     }
 
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=DateTimeException.class)
     public void test_print_emptyCalendrical() throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
+        OffsetIdPrinterParser pp = new OffsetIdPrinterParser("Z", "+HH:MM:ss");
         pp.print(printEmptyContext, buf);
     }
 
     public void test_print_emptyAppendable() throws Exception {
         printContext.setDateTime(new DateTimeBuilder(OFFSET_SECONDS, OFFSET_0130.getTotalSeconds()));
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
+        OffsetIdPrinterParser pp = new OffsetIdPrinterParser("Z", "+HH:MM:ss");
         pp.print(printContext, buf);
         assertEquals(buf.toString(), "+01:30");
     }
