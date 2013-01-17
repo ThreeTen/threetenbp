@@ -58,7 +58,7 @@ import org.threeten.bp.jdk8.Jdk8Methods;
  * <h4>Implementation notes</h4>
  * This class is immutable and thread-safe.
  */
-final class StandardZoneRules implements ZoneRules, Serializable {
+final class StandardZoneRules extends ZoneRules implements Serializable {
 
     /**
      * Serialization version.

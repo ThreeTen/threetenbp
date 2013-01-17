@@ -31,7 +31,10 @@
  */
 package org.threeten.bp.zone;
 
+import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.threeten.bp.Duration;
 import org.threeten.bp.Instant;
@@ -60,18 +63,60 @@ import org.threeten.bp.ZoneOffset;
  * available to the implementation of this rule.
  *
  * <h4>Implementation notes</h4>
- * This interface must be implemented with care to ensure other classes operate correctly.
- * All implementations that can be instantiated must be final, immutable and thread-safe.
- * Subclasses should be Serializable wherever possible.
+ * The supplied implementations of this class are immutable and thread-safe.
  */
-public interface ZoneRules {
+public abstract class ZoneRules {
 
+    /**
+     * Obtains an instance of {@code ZoneRules} with full transition rules.
+     *
+     * @param baseStandardOffset  the standard offset to use before legal rules were set, not null
+     * @param baseWallOffset  the wall offset to use before legal rules were set, not null
+     * @param standardOffsetTransitionList  the list of changes to the standard offset, not null
+     * @param transitionList  the list of transitions, not null
+     * @param lastRules  the recurring last rules, size 16 or less, not null
+     * @return the zone rules, not null
+     */
+    public static ZoneRules of(ZoneOffset baseStandardOffset,
+                               ZoneOffset baseWallOffset,
+                               List<ZoneOffsetTransition> standardOffsetTransitionList,
+                               List<ZoneOffsetTransition> transitionList,
+                               List<ZoneOffsetTransitionRule> lastRules) {
+        Objects.requireNonNull(baseStandardOffset, "baseStandardOffset");
+        Objects.requireNonNull(baseWallOffset, "baseWallOffset");
+        Objects.requireNonNull(standardOffsetTransitionList, "standardOffsetTransitionList");
+        Objects.requireNonNull(transitionList, "transitionList");
+        Objects.requireNonNull(lastRules, "lastRules");
+        return new StandardZoneRules(baseStandardOffset, baseWallOffset,
+                             standardOffsetTransitionList, transitionList, lastRules);
+    }
+
+    /**
+     * Obtains an instance of {@code ZoneRules} that always uses the same offset.
+     * <p>
+     * The returned rules always have the same offset.
+     *
+     * @param offset  the offset, not null
+     * @return the zone rules, not null
+     */
+    public static ZoneRules of(ZoneOffset offset) {
+        Objects.requireNonNull(offset, "offset");
+        return new Fixed(offset);
+    }
+
+    /**
+     * Restricted constructor.
+     */
+    ZoneRules() {
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Checks of the zone rules are fixed, such that the offset never varies.
      *
      * @return true if the time-zone is fixed and the offset never changes
      */
-    boolean isFixedOffset();
+    public abstract boolean isFixedOffset();
 
     //-----------------------------------------------------------------------
     /**
@@ -85,7 +130,7 @@ public interface ZoneRules {
      *  may be ignored if the rules have a single offset for all instants
      * @return the offset, not null
      */
-    ZoneOffset getOffset(Instant instant);
+    public abstract ZoneOffset getOffset(Instant instant);
 
     /**
      * Gets a suitable offset for the specified local date-time in these rules.
@@ -115,7 +160,7 @@ public interface ZoneRules {
      *  may be ignored if the rules have a single offset for all instants
      * @return the best available offset for the local date-time, not null
      */
-    ZoneOffset getOffset(LocalDateTime localDateTime);
+    public abstract ZoneOffset getOffset(LocalDateTime localDateTime);
 
     /**
      * Gets the offset applicable at the specified local date-time in these rules.
@@ -159,7 +204,7 @@ public interface ZoneRules {
      *  may be ignored if the rules have a single offset for all instants
      * @return the list of valid offsets, may be immutable, not null
      */
-    List<ZoneOffset> getValidOffsets(LocalDateTime localDateTime);
+    public abstract List<ZoneOffset> getValidOffsets(LocalDateTime localDateTime);
 
     /**
      * Gets the offset transition applicable at the specified local date-time in these rules.
@@ -195,7 +240,7 @@ public interface ZoneRules {
      *  may be ignored if the rules have a single offset for all instants
      * @return the offset transition, null if the local date-time is not in transition
      */
-    ZoneOffsetTransition getTransition(LocalDateTime localDateTime);
+    public abstract ZoneOffsetTransition getTransition(LocalDateTime localDateTime);
 
     //-----------------------------------------------------------------------
     /**
@@ -210,7 +255,7 @@ public interface ZoneRules {
      *  may be ignored if the rules have a single offset for all instants
      * @return the standard offset, not null
      */
-    ZoneOffset getStandardOffset(Instant instant);
+    public abstract ZoneOffset getStandardOffset(Instant instant);
 
     /**
      * Gets the amount of daylight savings in use for the specified instant in this zone.
@@ -225,7 +270,7 @@ public interface ZoneRules {
      *  may be ignored if the rules have a single offset for all instants
      * @return the difference between the standard and actual offset, not null
      */
-    Duration getDaylightSavings(Instant instant);
+    public abstract Duration getDaylightSavings(Instant instant);
     //    default {
     //        ZoneOffset standardOffset = getStandardOffset(instant);
     //        ZoneOffset actualOffset = getOffset(instant);
@@ -241,7 +286,7 @@ public interface ZoneRules {
      *  may be ignored if the rules have a single offset for all instants
      * @return the standard offset, not null
      */
-    boolean isDaylightSavings(Instant instant);
+    public abstract boolean isDaylightSavings(Instant instant);
     //    default {
     //        return (getStandardOffset(instant).equals(getOffset(instant)) == false);
     //    }
@@ -257,7 +302,7 @@ public interface ZoneRules {
      * @param offset  the offset to check, null returns false
      * @return true if the offset date-time is valid for these rules
      */
-    boolean isValidOffset(LocalDateTime localDateTime, ZoneOffset offset);
+    public abstract boolean isValidOffset(LocalDateTime localDateTime, ZoneOffset offset);
     //    default {
     //        return getValidOffsets(dateTime).contains(offset);
     //    }
@@ -274,7 +319,7 @@ public interface ZoneRules {
      *  may be ignored if the rules have a single offset for all instants
      * @return the next transition after the specified instant, null if this is after the last transition
      */
-    ZoneOffsetTransition nextTransition(Instant instant);
+    public abstract ZoneOffsetTransition nextTransition(Instant instant);
 
     /**
      * Gets the previous transition before the specified instant.
@@ -287,7 +332,7 @@ public interface ZoneRules {
      *  may be ignored if the rules have a single offset for all instants
      * @return the previous transition after the specified instant, null if this is before the first transition
      */
-    ZoneOffsetTransition previousTransition(Instant instant);
+    public abstract ZoneOffsetTransition previousTransition(Instant instant);
 
     /**
      * Gets the complete list of fully defined transitions.
@@ -301,7 +346,7 @@ public interface ZoneRules {
      *
      * @return an immutable list of fully defined transitions, not null
      */
-    List<ZoneOffsetTransition> getTransitions();
+    public abstract List<ZoneOffsetTransition> getTransitions();
 
     /**
      * Gets the list of transition rules for years beyond those defined in the transition list.
@@ -324,7 +369,7 @@ public interface ZoneRules {
      *
      * @return an immutable list of transition rules, not null
      */
-    List<ZoneOffsetTransitionRule> getTransitionRules();
+    public abstract List<ZoneOffsetTransitionRule> getTransitionRules();
 
     //-----------------------------------------------------------------------
     /**
@@ -340,7 +385,7 @@ public interface ZoneRules {
      * @return true if this rules is the same as that specified
      */
     @Override
-    boolean equals(Object otherRules);
+    public abstract boolean equals(Object otherRules);
 
     /**
      * Returns a suitable hash code given the definition of {@code #equals}.
@@ -348,6 +393,111 @@ public interface ZoneRules {
      * @return the hash code
      */
     @Override
-    int hashCode();
+    public abstract int hashCode();
+
+    //-----------------------------------------------------------------------
+    /**
+     * Fixed time-zone.
+     */
+    static final class Fixed extends ZoneRules implements Serializable {
+        /** A serialization identifier for this class. */
+        private static final long serialVersionUID = -8733721350312276297L;
+        /** The offset. */
+        private final ZoneOffset offset;
+
+        /**
+         * Constructor.
+         *
+         * @param offset  the offset, not null
+         */
+        Fixed(ZoneOffset offset) {
+            this.offset = offset;
+        }
+
+        //-------------------------------------------------------------------------
+        @Override
+        public boolean isFixedOffset() {
+            return true;
+        }
+
+        @Override
+        public ZoneOffset getOffset(Instant instant) {
+            return offset;
+        }
+
+        @Override
+        public ZoneOffset getOffset(LocalDateTime localDateTime) {
+            return offset;
+        }
+
+        @Override
+        public List<ZoneOffset> getValidOffsets(LocalDateTime localDateTime) {
+            return Collections.singletonList(offset);
+        }
+
+        @Override
+        public ZoneOffsetTransition getTransition(LocalDateTime localDateTime) {
+            return null;
+        }
+
+        @Override
+        public boolean isValidOffset(LocalDateTime dateTime, ZoneOffset offset) {
+            return this.offset.equals(offset);
+        }
+
+        //-------------------------------------------------------------------------
+        @Override
+        public ZoneOffset getStandardOffset(Instant instant) {
+            return offset;
+        }
+
+        @Override
+        public Duration getDaylightSavings(Instant instant) {
+            return Duration.ZERO;
+        }
+
+        @Override
+        public boolean isDaylightSavings(Instant instant) {
+            return false;
+        }
+
+        //-------------------------------------------------------------------------
+        @Override
+        public ZoneOffsetTransition nextTransition(Instant instant) {
+            return null;
+        }
+
+        @Override
+        public ZoneOffsetTransition previousTransition(Instant instant) {
+            return null;
+        }
+
+        @Override
+        public List<ZoneOffsetTransition> getTransitions() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public List<ZoneOffsetTransitionRule> getTransitionRules() {
+            return Collections.emptyList();
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+               return true;
+            }
+            if (obj instanceof Fixed) {
+                return offset.equals(((Fixed) obj).offset);
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return offset.hashCode() + 1;
+        }
+    }
 
 }
