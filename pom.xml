@@ -86,7 +86,6 @@
         <configuration>
           <includes>
             <include>**/Test*.java</include>
-            <include>**/TCK*.java</include>
           </includes>
         </configuration>
       </plugin>
