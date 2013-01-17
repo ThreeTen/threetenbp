@@ -42,7 +42,7 @@ import org.threeten.bp.LocalDate;
  * Test.
  */
 @Test
-public class TCKJulianFields {
+public class TestJulianFields {
 
     private static final LocalDate JAN01_1970 = LocalDate.of(1970, 1, 1);
     private static final LocalDate DEC31_1969 = LocalDate.of(1969, 12, 31);

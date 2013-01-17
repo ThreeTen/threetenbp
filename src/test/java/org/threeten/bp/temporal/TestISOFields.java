@@ -52,7 +52,7 @@ import org.threeten.bp.format.DateTimeBuilder;
  * Test.
  */
 @Test
-public class TCKISOFields {
+public class TestISOFields {
 
     public void test_enum() {
         assertTrue(ISOFields.WEEK_OF_WEEK_BASED_YEAR instanceof Enum);
