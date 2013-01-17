@@ -160,7 +160,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * This factory converts the arbitrary temporal object to an instance of {@code Chrono}.
      * If the specified temporal object does not have a chronology, {@link ISOChrono} is returned.
      * <p>
-     * The conversion will obtain the chronology using {@link Queries#chrono()}.
+     * The conversion will obtain the chronology using {@link TemporalQueries#chrono()}.
      * <p>
      * This method matches the signature of the functional interface {@link TemporalQuery}
      * allowing it to be used in queries via method reference, {@code Chrono::from}.

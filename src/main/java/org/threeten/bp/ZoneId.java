@@ -331,7 +331,7 @@ public abstract class ZoneId implements Serializable {
      * This factory converts the arbitrary temporal object to an instance of {@code ZoneId}.
      * <p>
      * The conversion will try to obtain the zone in a way that favours region-based
-     * zones over offset-based zones using {@link Queries#zone()}.
+     * zones over offset-based zones using {@link TemporalQueries#zone()}.
      * <p>
      * This method matches the signature of the functional interface {@link TemporalQuery}
      * allowing it to be used in queries via method reference, {@code ZoneId::from}.

@@ -382,7 +382,7 @@ public enum DayOfWeek implements TemporalAccessor, TemporalAdjuster {
      * passing {@link ChronoField#DAY_OF_WEEK} as the field.
      * Note that this adjusts forwards or backwards within a Monday to Sunday week.
      * See {@link WeekFields#dayOfWeek} for localized week start days.
-     * See {@link java.time.temporal.Adjusters Adjusters} for other adjusters
+     * See {@link TemporalAdjusters} for other adjusters
      * with more control, such as {@code next(MONDAY)}.
      * <p>
      * In most cases, it is clearer to reverse the calling pattern by using

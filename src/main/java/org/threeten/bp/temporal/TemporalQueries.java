@@ -83,8 +83,8 @@ public final class TemporalQueries {
      * This queries a {@code TemporalAccessor} for the zone.
      * The zone is only returned if the date-time conceptually contains a {@code ZoneId}.
      * It will not be returned if the date-time only conceptually has an {@code ZoneOffset}.
-     * Thus a {@link java.time.ZonedDateTime ZonedDateTime} will return the result of
-     * {@code getZone()}, but an {@link java.time.temporal.OffsetDateTime OffsetDateTime} will
+     * Thus a {@link ZonedDateTime} will return the result of
+     * {@code getZone()}, but an {@link OffsetDateTime} will
      * return null.
      * <p>
      * In most cases, applications should use {@link #ZONE} as this query is too strict.
@@ -219,7 +219,7 @@ public final class TemporalQueries {
      * <p>
      * In most cases, applications should use this query rather than {@code #zoneId()}.
      * <p>
-     * This query examines the {@link java.time.temporal.ChronoField#OFFSET_SECONDS offset-seconds}
+     * This query examines the {@link ChronoField#OFFSET_SECONDS offset-seconds}
      * field and uses it to create a {@code ZoneOffset}.
      * <p>
      * The method {@link ZoneId#from(TemporalAccessor)} can be used as a
@@ -244,7 +244,7 @@ public final class TemporalQueries {
      * <p>
      * This queries a {@code TemporalAccessor} for the offset.
      * <p>
-     * This query examines the {@link java.time.temporal.ChronoField#OFFSET_SECONDS offset-seconds}
+     * This query examines the {@link ChronoField#OFFSET_SECONDS offset-seconds}
      * field and uses it to create a {@code ZoneOffset}.
      * <p>
      * The method {@link ZoneOffset#from(TemporalAccessor)} can be used as a

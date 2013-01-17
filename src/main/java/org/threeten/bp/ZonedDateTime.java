@@ -1017,8 +1017,8 @@ public final class ZonedDateTime
      * <p>
      * For example this code returns a date on the last day of July:
      * <pre>
-     *  import static java.time.Month.*;
-     *  import static java.time.temporal.Adjusters.*;
+     *  import static org.threeten.bp.Month.*;
+     *  import static org.threeten.bp.temporal.Adjusters.*;
      *
      *  result = zonedDateTime.with(JULY).with(lastDayOfMonth());
      * </pre>
@@ -1823,7 +1823,7 @@ public final class ZonedDateTime
      * what the result of this method will be.
      * <p>
      * The result of this method is obtained by invoking the
-     * {@link java.time.temporal.TemporalQuery#queryFrom(TemporalAccessor)} method on the
+     * {@link TemporalQuery#queryFrom(TemporalAccessor)} method on the
      * specified query passing {@code this} as the argument.
      *
      * @param <R> the type of the result

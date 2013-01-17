@@ -67,6 +67,7 @@ import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalAdder;
 import org.threeten.bp.temporal.TemporalAdjuster;
+import org.threeten.bp.temporal.TemporalAdjusters;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.TemporalSubtractor;
@@ -795,17 +796,17 @@ public final class LocalDate
      * <p>
      * A simple adjuster might simply set the one of the fields, such as the year field.
      * A more complex adjuster might set the date to the last day of the month.
-     * A selection of common adjustments is provided in {@link java.time.temporal.Adjusters}.
+     * A selection of common adjustments is provided in {@link TemporalAdjusters}.
      * These include finding the "last day of the month" and "next Wednesday".
      * Key date-time classes also implement the {@code TemporalAdjuster} interface,
-     * such as {@link Month} and {@link java.time.temporal.MonthDay MonthDay}.
+     * such as {@link Month} and {@link MonthDay}.
      * The adjuster is responsible for handling special cases, such as the varying
      * lengths of month and leap years.
      * <p>
      * For example this code returns a date on the last day of July:
      * <pre>
-     *  import static java.time.Month.*;
-     *  import static java.time.temporal.Adjusters.*;
+     *  import static org.threeten.bp.Month.*;
+     *  import static org.threeten.bp.temporal.Adjusters.*;
      *
      *  result = localDate.with(JULY).with(lastDayOfMonth());
      * </pre>

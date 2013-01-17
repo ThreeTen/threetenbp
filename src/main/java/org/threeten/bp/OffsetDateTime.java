@@ -745,14 +745,14 @@ public final class OffsetDateTime
      * A selection of common adjustments is provided in {@link TemporalAdjusters}.
      * These include finding the "last day of the month" and "next Wednesday".
      * Key date-time classes also implement the {@code TemporalAdjuster} interface,
-     * such as {@link Month} and {@link java.time.temporal.MonthDay MonthDay}.
+     * such as {@link Month} and {@link MonthDay}.
      * The adjuster is responsible for handling special cases, such as the varying
      * lengths of month and leap years.
      * <p>
      * For example this code returns a date on the last day of July:
      * <pre>
-     *  import static java.time.Month.*;
-     *  import static java.time.temporal.Adjusters.*;
+     *  import static org.threeten.bp.Month.*;
+     *  import static org.threeten.bp.temporal.Adjusters.*;
      *
      *  result = offsetDateTime.with(JULY).with(lastDayOfMonth());
      * </pre>

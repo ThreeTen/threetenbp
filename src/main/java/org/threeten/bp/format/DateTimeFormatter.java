@@ -44,6 +44,7 @@ import org.threeten.bp.DateTimeException;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.format.DateTimeFormatterBuilder.CompositePrinterParser;
 import org.threeten.bp.temporal.Chrono;
+import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.TemporalAccessor;
 
 /**
@@ -199,7 +200,7 @@ public final class DateTimeFormatter {
      * of {@code ChronoLocalDate},{@code ChronoLocalDateTime} or {@code ChronoZonedDateTime}.
      * <p>
      * When parsing, the override chronology will be used to interpret the
-     * {@link java.time.temporal.ChronoField fields} into a date unless the
+     * {@linkplain ChronoField fields} into a date unless the
      * formatter directly parses a valid chronology.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -246,7 +247,7 @@ public final class DateTimeFormatter {
      * of {@code ChronoZonedDateTime}.
      * <p>
      * When parsing, the override zone will be used to interpret the
-     * {@link java.time.temporal.ChronoField fields} into an instant unless the
+     * {@linkplain ChronoField fields} into an instant unless the
      * formatter directly parses a valid zone.
      * <p>
      * This instance is immutable and unaffected by this method call.

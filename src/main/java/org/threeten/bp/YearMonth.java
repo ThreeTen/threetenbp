@@ -630,7 +630,7 @@ public final class YearMonth
      * Returns a copy of this year-month with the specified period added.
      * <p>
      * This method returns a new year-month based on this year-month with the specified period added.
-     * The adder is typically {@link Period} but may be any other type implementing
+     * The adder is typically {@link org.threeten.bp.Period Period} but may be any other type implementing
      * the {@link TemporalAdder} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #plus(long, TemporalUnit)}.
@@ -710,7 +710,7 @@ public final class YearMonth
      * Returns a copy of this year-month with the specified period subtracted.
      * <p>
      * This method returns a new year-month based on this year-month with the specified period subtracted.
-     * The subtractor is typically {@link java.time.Period} but may be any other type implementing
+     * The subtractor is typically {@link org.threeten.bp.Period Period} but may be any other type implementing
      * the {@link TemporalSubtractor} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #minus(long, TemporalUnit)}.

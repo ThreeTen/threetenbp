@@ -342,7 +342,7 @@ public final class DateTimeFormatterBuilder {
      * The parser for a variable width value such as this normally behaves greedily,
      * accepting as many digits as possible.
      * This behavior can be affected by 'adjacent value parsing'.
-     * See {@link #appendValue(java.time.temporal.TemporalField, int)} for full details.
+     * See {@link #appendValue(TemporalField, int)} for full details.
      * <p>
      * In strict parsing mode, the minimum number of parsed digits is {@code minWidth}.
      * In lenient parsing mode, the minimum number of parsed digits is one.
@@ -620,7 +620,7 @@ public final class DateTimeFormatterBuilder {
      * This appends an instruction to print/parse the offset ID to the builder.
      * <p>
      * During printing, the offset is obtained using a mechanism equivalent
-     * to querying the temporal with {@link Queries#offset()}.
+     * to querying the temporal with {@link TemporalQueries#offset()}.
      * It will be printed using the format defined below.
      * If the offset cannot be obtained then an exception is thrown unless the
      * section of the formatter is optional.
@@ -664,7 +664,7 @@ public final class DateTimeFormatterBuilder {
      * for use with this method, see {@link #appendZoneOrOffsetId()}.
      * <p>
      * During printing, the zone is obtained using a mechanism equivalent
-     * to querying the temporal with {@link Queries#zoneId()}.
+     * to querying the temporal with {@link TemporalQueries#zoneId()}.
      * It will be printed using the result of {@link ZoneId#getId()}.
      * If the zone cannot be obtained then an exception is thrown unless the
      * section of the formatter is optional.
@@ -689,7 +689,7 @@ public final class DateTimeFormatterBuilder {
      * only if it is a region-based ID.
      * <p>
      * During printing, the zone is obtained using a mechanism equivalent
-     * to querying the temporal with {@link Queries#zoneId()}.
+     * to querying the temporal with {@link TemporalQueries#zoneId()}.
      * If the zone is a {@code ZoneOffset} or it cannot be obtained then
      * an exception is thrown unless the section of the formatter is optional.
      * If the zone is not an offset, then the zone will be printed using
@@ -720,7 +720,7 @@ public final class DateTimeFormatterBuilder {
      * then attempts to find an offset, such as that on {@code OffsetDateTime}.
      * <p>
      * During printing, the zone is obtained using a mechanism equivalent
-     * to querying the temporal with {@link Queries#zone()}.
+     * to querying the temporal with {@link TemporalQueries#zone()}.
      * It will be printed using the result of {@link ZoneId#getId()}.
      * If the zone cannot be obtained then an exception is thrown unless the
      * section of the formatter is optional.
@@ -746,7 +746,7 @@ public final class DateTimeFormatterBuilder {
      * This appends an instruction to print the textual name of the zone to the builder.
      * <p>
      * During printing, the zone is obtained using a mechanism equivalent
-     * to querying the temporal with {@link Queries#zoneId()}.
+     * to querying the temporal with {@link TemporalQueries#zoneId()}.
      * If the zone is a {@code ZoneOffset} it will be printed using the
      * result of {@link ZoneOffset#getId()}.
      * If the zone is not an offset, the textual name will be looked up
