@@ -55,7 +55,7 @@ import org.threeten.bp.jdk8.Jdk8Methods;
  * <p>
  * This class is used by the TZDB time-zone rules.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
 final class StandardZoneRules extends ZoneRules implements Serializable {

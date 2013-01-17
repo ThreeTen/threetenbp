@@ -61,7 +61,7 @@ import org.threeten.bp.temporal.ISOChrono;
  * </ul><p>
  * These different rule types can be expressed and queried.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
 public final class ZoneOffsetTransitionRule implements Serializable {
@@ -115,10 +115,10 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     private final ZoneOffset offsetAfter;
 
     /**
-     * Creates an instance defining the yearly rule to create transitions between two offsets.
+     * Obtains an instance defining the yearly rule to create transitions between two offsets.
      * <p>
      * Applications should normally obtain an instance from {@link ZoneRules}.
-     * This constructor is intended for use by implementors of {@code ZoneRules}.
+     * This factory is only intended for use when creating {@link ZoneRules}.
      *
      * @param month  the month of the month-day of the first day of the cutover week, not null
      * @param dayOfMonthIndicator  the day of the month-day of the cutover week, positive if the week is that
@@ -131,6 +131,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      * @param standardOffset  the standard offset in force at the cutover, not null
      * @param offsetBefore  the offset before the cutover, not null
      * @param offsetAfter  the offset after the cutover, not null
+     * @return the rule, not null
      * @throws IllegalArgumentException if the day of month indicator is invalid
      * @throws IllegalArgumentException if the end of day flag is true when the time is not midnight
      */
@@ -223,14 +224,14 @@ public final class ZoneOffsetTransitionRule implements Serializable {
         final int beforeByte = (beforeDiff == 0 || beforeDiff == 1800 || beforeDiff == 3600 ? beforeDiff / 1800 : 3);
         final int afterByte = (afterDiff == 0 || afterDiff == 1800 || afterDiff == 3600 ? afterDiff / 1800 : 3);
         final int dowByte = (dow == null ? 0 : dow.getValue());
-        int b = (month.getValue() << 28) +          // 4 bytes
-                ((dom + 32) << 22) +                // 6 bytes
-                (dowByte << 19) +                   // 3 bytes
-                (timeByte << 14) +                  // 5 bytes
-                (timeDefinition.ordinal() << 12) +  // 2 bytes
-                (stdOffsetByte << 4) +              // 8 bytes
-                (beforeByte << 2) +                 // 2 bytes
-                afterByte;                          // 2 bytes
+        int b = (month.getValue() << 28) +          // 4 bits
+                ((dom + 32) << 22) +                // 6 bits
+                (dowByte << 19) +                   // 3 bits
+                (timeByte << 14) +                  // 5 bits
+                (timeDefinition.ordinal() << 12) +  // 2 bits
+                (stdOffsetByte << 4) +              // 8 bits
+                (beforeByte << 2) +                 // 2 bits
+                afterByte;                          // 2 bits
         out.writeInt(b);
         if (timeByte == 31) {
             out.writeInt(timeSecs);

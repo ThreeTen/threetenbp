@@ -39,7 +39,7 @@ import org.threeten.bp.DateTimeException;
  * This exception is used to indicate a problems with the configured
  * time-zone rules.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This class is intended for use in a single thread.
  */
 public class ZoneRulesException extends DateTimeException {

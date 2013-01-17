@@ -60,7 +60,7 @@ import org.threeten.bp.ZoneOffset;
  * An example would be when the offset changes from {@code +04:00} to {@code +03:00}.
  * This might be described as 'the clocks will move back one hour tonight at 2am'.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
 public final class ZoneOffsetTransition
@@ -88,12 +88,15 @@ public final class ZoneOffsetTransition
      * Obtains an instance defining a transition between two offsets.
      * <p>
      * Applications should normally obtain an instance from {@link ZoneRules}.
-     * This constructor is intended for use by implementors of {@code ZoneRules}.
+     * This factory is only intended for use when creating {@link ZoneRules}.
      *
      * @param transition  the transition date-time at the transition, which never
      *  actually occurs, expressed local to the before offset, not null
      * @param offsetBefore  the offset before the transition, not null
      * @param offsetAfter  the offset at and after the transition, not null
+     * @return the transition, not null
+     * @throws IllegalArgumentException if {@code offsetBefore} and {@code offsetAfter}
+     *         are equal, or {@code transition.getNano()} returns non-zero value
      */
     public static ZoneOffsetTransition of(LocalDateTime transition, ZoneOffset offsetBefore, ZoneOffset offsetAfter) {
         Objects.requireNonNull(transition, "transition");
@@ -194,7 +197,7 @@ public final class ZoneOffsetTransition
      *
      * @return the transition epoch second
      */
-    long toEpochSecond() {
+    public long toEpochSecond() {
         return transition.toEpochSecond(offsetBefore);
     }
 

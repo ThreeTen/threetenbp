@@ -51,28 +51,28 @@ import org.threeten.bp.ZonedDateTime;
 
 /**
  * Provider of time-zone rules to the system.
-  * <p>
-  * This class manages the configuration of time-zone rules.
-  * The static methods provide the public API that can be used to manage the providers.
-  * The abstract methods provide the SPI that allows rules to be provided.
-  * <p>
-  * Rules are looked up primarily by zone ID, as used by {@link ZoneId}.
-  * Only zone region IDs may be used, zone offset IDs are not used here.
-  * <p>
-  * Time-zone rules are political, thus the data can change at any time.
-  * Each provider will provide the latest rules for each zone ID, but they
-  * may also provide the history of how the rules changed.
+ * <p>
+ * This class manages the configuration of time-zone rules.
+ * The static methods provide the public API that can be used to manage the providers.
+ * The abstract methods provide the SPI that allows rules to be provided.
+ * <p>
+ * Rules are looked up primarily by zone ID, as used by {@link ZoneId}.
+ * Only zone region IDs may be used, zone offset IDs are not used here.
+ * <p>
+ * Time-zone rules are political, thus the data can change at any time.
+ * Each provider will provide the latest rules for each zone ID, but they
+ * may also provide the history of how the rules changed.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This interface is a service provider that can be called by multiple threads.
  * Implementations must be immutable and thread-safe.
  * <p>
  * Providers must ensure that once a rule has been seen by the application, the
  * rule must continue to be available.
-  * <p>
-  * Many systems would like to update time-zone rules dynamically without stopping the JVM.
-  * When examined in detail, this is a complex problem.
-  * Providers may choose to handle dynamic updates, however the default provider does not.
+ * <p>
+ * Many systems would like to update time-zone rules dynamically without stopping the JVM.
+ * When examined in detail, this is a complex problem.
+ * Providers may choose to handle dynamic updates, however the default provider does not.
  */
 public abstract class ZoneRulesProvider {
 

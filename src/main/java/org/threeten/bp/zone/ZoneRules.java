@@ -62,7 +62,7 @@ import org.threeten.bp.ZoneOffset;
  * Applications should treat the data provided as representing the best information
  * available to the implementation of this rule.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * The supplied implementations of this class are immutable and thread-safe.
  */
 public abstract class ZoneRules {

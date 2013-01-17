@@ -54,7 +54,7 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
  * <p>
  * This class is public for the service loader to access.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
 public final class TzdbZoneRulesProvider extends ZoneRulesProvider {

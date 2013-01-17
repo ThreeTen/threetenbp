@@ -74,7 +74,7 @@ import org.threeten.bp.zone.ZoneOffsetTransitionRule.TimeDefinition;
 /**
  * A builder that can read the TZDB time-zone files and build {@code ZoneRules} instances.
  *
- * <h4>Implementation notes</h4>
+ * <h3>Specification for implementors</h3>
  * This class is a mutable builder. A new instance must be created for each compile.
  */
 final class TzdbZoneRulesCompiler {
