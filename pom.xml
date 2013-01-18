@@ -241,6 +241,16 @@
             <link>http://download.oracle.com/javase/7/docs/api/</link>
           </links>
           <encoding>UTF-8</encoding>
+          <groups>
+            <group>
+              <title>ThreeTen</title>
+              <packages>org.threeten.bp:org.threeten.bp.calendar:org.threeten.bp.format:org.threeten.bp.temporal:org.threeten.bp.zone</packages>
+            </group>
+            <group>
+              <title>Support classes (do not use)</title>
+              <packages>org.threeten.bp.jdk8</packages>
+            </group>
+          </groups>
         </configuration>
       </plugin>
       <plugin>
@@ -271,12 +281,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
-        <version>2.5</version>
+        <version>2.7.1</version>
         <configuration>
           <linkXref>true</linkXref>
           <sourceEncoding>utf-8</sourceEncoding>
           <minimumTokens>100</minimumTokens>
-          <targetJdk>1.5</targetJdk>
+          <targetJdk>1.7</targetJdk>
         </configuration>
       </plugin>
     </plugins>
@@ -300,7 +310,7 @@
       <name>ThreeTen organization site</name>
       <url>scpexe://shell.sourceforge.net/home/project-web/joda-beans/htdocs</url>
     </site>
-    <downloadUrl>http://oss.sonatype.org/content/repositories/joda-releases</downloadUrl>
+    <downloadUrl>http://oss.sonatype.org/content/repositories/threeten-releases</downloadUrl>
   </distributionManagement>
   <profiles>
     <profile>
@@ -328,8 +338,8 @@
             <configuration>
               <toolchains>
                 <jdk>
-                  <version>1.6</version>
-                  <vendor>sun</vendor>
+                  <version>1.7</version>
+                  <vendor>oracle</vendor>
                 </jdk>
               </toolchains>
             </configuration>
