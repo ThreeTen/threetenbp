@@ -59,7 +59,7 @@ import org.threeten.bp.DateTimeException;
  * <p>
  * The most common implementations are method references, such as
  * {@code LocalDate::from} and {@code ZoneId::from}.
- * Further implementations are on {@link Queries}.
+ * Further implementations are on {@link TemporalQueries}.
  * Queries may also be defined by applications.
  *
  * <h3>Specification for implementors</h3>

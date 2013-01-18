@@ -51,7 +51,7 @@ import org.threeten.bp.ZoneId;
  * Two pieces of date/time information cannot be represented by numbers,
  * the {@link Chrono chronology} and the {@link ZoneId time-zone}.
  * These can be accessed via {@link #query(TemporalQuery) queries} using
- * the static methods defined on {@link Queries}.
+ * the static methods defined on {@link TemporalQueries}.
  * <p>
  * A sub-interface, {@link Temporal}, extends this definition to one that also
  * supports adjustment and manipulation on more complete temporal objects.
@@ -189,7 +189,7 @@ public interface TemporalAccessor {
      * <p>
      * The most common query implementations are method references, such as
      * {@code LocalDate::from} and {@code ZoneId::from}.
-     * Further implementations are on {@link Queries}.
+     * Further implementations are on {@link TemporalQueries}.
      * Queries may also be defined by applications.
      *
      * <h3>Specification for implementors</h3>

@@ -53,7 +53,7 @@ import org.threeten.bp.DateTimeException;
  * It is recommended to use the second approach, {@code with(TemporalAdjuster)},
  * as it is a lot clearer to read in code.
  * <p>
- * See {@link Adjusters} for a standard set of adjusters, including finding the
+ * See {@link TemporalAdjusters} for a standard set of adjusters, including finding the
  * last day of the month.
  * Adjusters may also be defined by applications.
  *

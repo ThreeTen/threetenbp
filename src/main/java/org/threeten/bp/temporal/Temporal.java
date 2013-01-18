@@ -55,7 +55,7 @@ import org.threeten.bp.ZoneId;
  * Two pieces of date/time information cannot be represented by numbers,
  * the {@link Chrono chronology} and the {@link ZoneId time-zone}.
  * These can be accessed via {@link #query(TemporalQuery) queries} using
- * the static methods defined on {@link Queries}.
+ * the static methods defined on {@link TemporalQueries}.
  * <p>
  * This interface is a framework-level interface that should not be widely
  * used in application code. Instead, applications should create and pass
@@ -104,7 +104,7 @@ public interface Temporal extends TemporalAccessor {
      * This adjusts this date-time according to the rules of the specified adjuster.
      * A simple adjuster might simply set the one of the fields, such as the year field.
      * A more complex adjuster might set the date to the last day of the month.
-     * A selection of common adjustments is provided in {@link Adjusters}.
+     * A selection of common adjustments is provided in {@link TemporalAdjusters}.
      * These include finding the "last day of the month" and "next Wednesday".
      * The adjuster is responsible for handling special cases, such as the varying
      * lengths of month and leap years.
@@ -112,8 +112,8 @@ public interface Temporal extends TemporalAccessor {
      * Some example code indicating how and why this method is used:
      * <pre>
      *  date = date.with(Month.JULY);        // most key classes implement TemporalAdjuster
-     *  date = date.with(lastDayOfMonth());  // static import from Adjusters
-     *  date = date.with(next(WEDNESDAY));   // static import from Adjusters and DayOfWeek
+     *  date = date.with(lastDayOfMonth());  // static import from TemporalAdjusters
+     *  date = date.with(next(WEDNESDAY));   // static import from TemporalAdjusters and DayOfWeek
      * </pre>
      *
      * <h3>Specification for implementors</h3>
