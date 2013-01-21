@@ -99,7 +99,7 @@ public final class LocalTime
      */
     public static final LocalTime MIN;
     /**
-     * The minimum supported {@code LocalTime}, '23:59:59.999999999'.
+     * The maximum supported {@code LocalTime}, '23:59:59.999999999'.
      * This is the time just before midnight at the end of the day.
      */
     public static final LocalTime MAX;
