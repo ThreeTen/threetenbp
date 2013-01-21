@@ -26,3 +26,19 @@ The version of the time-zone data used is stored within the dat file (near the s
 Updating the time-zone database involves using the `TzdbZoneRulesCompiler` class
 and re-compiling the jar file.
 Pull requests with later versions of the dat file will be accepted.
+
+#### FAQs
+
+1. What version of JDK 1.8 does this project map to?
+This project currently maps to the M6 milestone, with some minor differences.
+Most notably, the classes `Year`, `YearMonth`, `MonthDay`, and the three `Offset` classes are
+in a different package to M6.
+
+2. Will the backport be kept up to date?
+There will be a release matching the final JDK 1.8 version.
+There may or may not be further updates between now and then.
+
+3. Is this project derived from OpenJDK?
+No. This project is derived from the Reference Implementation previously hosted on GitHub.
+That project had a BSD license, which has been preserved here.
+Thus, this project is a fork of the original code before entry to OpenJDK.
