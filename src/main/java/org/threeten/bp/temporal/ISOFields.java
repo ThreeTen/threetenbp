@@ -520,8 +520,8 @@ public final class ISOFields {
                     long period = Jdk8Methods.safeSubtract(temporal2.getLong(WEEK_BASED_YEAR), temporal1.getLong(WEEK_BASED_YEAR));
                     return new SimplePeriod(period, WEEK_BASED_YEARS);
                 case QUARTER_YEARS:
-                    long period2 = Jdk8Methods.safeSubtract(temporal2.getLong(QUARTER_OF_YEAR), temporal1.getLong(QUARTER_OF_YEAR));
-                    return new SimplePeriod(period2, QUARTER_YEARS);
+                    long quarters = temporal1.periodUntil(temporal2, MONTHS) / 3;
+                    return new SimplePeriod(quarters, QUARTER_YEARS);
                 default:
                     throw new IllegalStateException("Unreachable");
             }

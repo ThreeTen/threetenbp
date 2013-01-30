@@ -143,5 +143,45 @@ public class TestISOFields {
         }
     }
 
+    //-----------------------------------------------------------------------
+     // quarters between
+     //-----------------------------------------------------------------------
+     @DataProvider(name="quartersBetween")
+     Object[][] data_quartersBetween() {
+         return new Object[][] {
+                 {LocalDate.of(2000, 1, 1), LocalDate.of(2000, 1, 1), 0},
+                 {LocalDate.of(2000, 1, 1), LocalDate.of(2000, 1, 2), 0},
+                 {LocalDate.of(2000, 1, 1), LocalDate.of(2000, 2, 1), 0},
+                 {LocalDate.of(2000, 1, 1), LocalDate.of(2000, 3, 1), 0},
+                 {LocalDate.of(2000, 1, 1), LocalDate.of(2000, 3, 31), 0},
+                 {LocalDate.of(2000, 1, 1), LocalDate.of(2000, 4, 1), 1},
+                 {LocalDate.of(2000, 1, 1), LocalDate.of(2000, 4, 2), 1},
+                 {LocalDate.of(2000, 1, 1), LocalDate.of(2000, 6, 30), 1},
+                 {LocalDate.of(2000, 1, 1), LocalDate.of(2000, 7, 1), 2},
+                 {LocalDate.of(2000, 1, 1), LocalDate.of(2000, 10, 1), 3},
+                 {LocalDate.of(2000, 1, 1), LocalDate.of(2000, 12, 31), 3},
+                 {LocalDate.of(2000, 1, 1), LocalDate.of(2001, 1, 1), 4},
+                 {LocalDate.of(2000, 1, 1), LocalDate.of(2002, 1, 1), 8},
+
+                 {LocalDate.of(2000, 1, 1), LocalDate.of(1999, 12, 31), 0},
+                 {LocalDate.of(2000, 1, 1), LocalDate.of(1999, 10, 2), 0},
+                 {LocalDate.of(2000, 1, 1), LocalDate.of(1999, 10, 1), -1},
+                 {LocalDate.of(2000, 1, 1), LocalDate.of(1999, 7, 2), -1},
+                 {LocalDate.of(2000, 1, 1), LocalDate.of(1999, 7, 1), -2},
+                 {LocalDate.of(2000, 1, 1), LocalDate.of(1999, 4, 2), -2},
+                 {LocalDate.of(2000, 1, 1), LocalDate.of(1999, 4, 1), -3},
+                 {LocalDate.of(2000, 1, 1), LocalDate.of(1999, 1, 2), -3},
+                 {LocalDate.of(2000, 1, 1), LocalDate.of(1999, 1, 1), -4},
+                 {LocalDate.of(2000, 1, 1), LocalDate.of(1998, 12, 31), -4},
+                 {LocalDate.of(2000, 1, 1), LocalDate.of(1998, 10, 2), -4},
+                 {LocalDate.of(2000, 1, 1), LocalDate.of(1998, 10, 1), -5},
+         };
+     }
+
+     @Test(dataProvider="quartersBetween")
+     public void test_quarters_between(LocalDate start, LocalDate end, long expected) {
+         assertEquals(ISOFields.QUARTER_YEARS.between(start, end).getAmount(), expected);
+     }
+
     // TODO: more tests
 }
