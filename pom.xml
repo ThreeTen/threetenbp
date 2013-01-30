@@ -8,7 +8,7 @@
   <artifactId>threetenbp</artifactId>
   <packaging>jar</packaging>
   <name>ThreeTen backport</name>
-  <version>0.7.1-SNAPSHOT</version>
+  <version>0.7.1</version>
   <description>Backport of JSR-310 to JDK 1.7. NOT an implementation of the JSR.</description>
   <url>https://github.com/ThreeTen/threetenbp</url>
   <issueManagement>

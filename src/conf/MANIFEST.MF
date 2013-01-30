@@ -5,13 +5,13 @@ Specification-Vendor: ThreeTen.org
 Specification-Version: 0.7
 Implementation-Vendor: Joda.org
 Implementation-Title: org.threeten.bp
-Implementation-Version: 0.7
+Implementation-Version: 0.7.1
 Implementation-Vendor-Id: org.threeten
 Bundle-ManifestVersion: 2
 Bundle-Vendor: ThreeTen.org
 Bundle-Name: ThreeTen-backport
 Bundle-SymbolicName: org.threeten.bp
-Bundle-Version: 0.7
+Bundle-Version: 0.7.1
 Export-Package: org.threeten.bp,
  org.threeten.bp.calendar,
  org.threeten.bp.format,
