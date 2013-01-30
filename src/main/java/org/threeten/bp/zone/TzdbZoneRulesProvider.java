@@ -83,7 +83,7 @@ public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
      */
     public TzdbZoneRulesProvider() {
         super();
-        if (load(ClassLoader.getSystemClassLoader()) == false) {
+        if (load(ZoneRulesProvider.class.getClassLoader()) == false) {
             throw new ZoneRulesException("No time-zone rules found for 'TZDB'");
         }
     }
