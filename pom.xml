@@ -8,7 +8,7 @@
   <artifactId>threetenbp</artifactId>
   <packaging>jar</packaging>
   <name>ThreeTen backport</name>
-  <version>0.7.1</version>
+  <version>0.7.2</version>
   <description>Backport of JSR-310 to JDK 1.7. NOT an implementation of the JSR.</description>
   <url>https://github.com/ThreeTen/threetenbp</url>
   <issueManagement>
@@ -29,6 +29,9 @@
       <id>scolebourne</id>
       <name>Stephen Colebourne</name>
       <email></email>
+      <roles>
+        <role>Lead developer</role>
+      </roles>
       <timezone>0</timezone>
     </developer>
   </developers>
@@ -51,43 +54,26 @@
   <build>
     <resources>
       <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-      <resource>
         <targetPath>META-INF</targetPath>
         <directory>${basedir}</directory>
         <includes>
           <include>LICENSE.txt</include>
         </includes>
       </resource>
+      <resource>
+        <directory>${basedir}/src/main/resources</directory>
+      </resource>
     </resources>
-    <extensions>
-      <extension>
-        <groupId>org.apache.maven.scm</groupId>
-        <artifactId>maven-scm-provider-gitexe</artifactId>
-        <version>1.3</version>
-      </extension>
-      <extension>
-        <groupId>org.apache.maven.scm</groupId>
-        <artifactId>maven-scm-manager-plexus</artifactId>
-        <version>1.3</version>
-      </extension>
-      <extension>
-        <groupId>com.github.stephenc.wagon</groupId>
-        <artifactId>wagon-gitsite</artifactId>
-        <version>0.4.1</version>
-      </extension>
-    </extensions>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-clean-plugin</artifactId>
-        <version>2.4.1</version>
+        <version>2.5</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
+        <version>3.0</version>
         <configuration>
           <verbose>true</verbose>
           <fork>true</fork>
@@ -99,7 +85,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.12</version>
+        <version>2.13</version>
         <configuration>
           <argLine>-Xmx768m</argLine>
           <includes>
@@ -120,7 +106,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.8.1</version>
+        <version>2.9</version>
         <configuration>
           <linksource>true</linksource>
           <links>
@@ -151,7 +137,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <version>2.1.2</version>
+        <version>2.2.1</version>
         <configuration>
           <excludeResources>true</excludeResources>
         </configuration>
@@ -168,7 +154,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <version>2.3</version>
+        <version>3.2</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -177,23 +163,18 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.6</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>2.7</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.3</version>
-        <!-- configuration>
-          <descriptors>
-            <descriptor>src/main/assembly/dist.xml</descriptor>
-          </descriptors>
-          <tarLongFileMode>gnu</tarLongFileMode>
-        </configuration>
-        <executions>
-          <execution>
-            <id>make-assembly</id>
-            <phase>deploy</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-          </execution>
-        </executions-->
+        <version>2.4</version>
       </plugin>
     </plugins>
   </build>
@@ -238,7 +219,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.8.1</version>
+        <version>2.9</version>
         <configuration>
           <linksource>true</linksource>
           <links>
@@ -260,7 +241,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
-        <version>2.12</version>
+        <version>2.13</version>
         <configuration>
            <showSuccess>true</showSuccess>
         </configuration>
@@ -268,7 +249,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-changes-plugin</artifactId>
-        <version>2.6</version>
+        <version>2.8</version>
         <reportSets>
           <reportSet>
             <reports>
@@ -309,11 +290,6 @@
       <url>http://oss.sonatype.org/content/repositories/threeten-snapshots</url>
       <layout>default</layout>
     </snapshotRepository>
-    <site>
-      <id>github-site-threeten-org</id>
-      <name>ThreeTen organization site</name>
-      <url>scpexe://shell.sourceforge.net/home/project-web/joda-beans/htdocs</url>
-    </site>
     <downloadUrl>http://oss.sonatype.org/content/repositories/threeten-releases</downloadUrl>
   </distributionManagement>
   <profiles>
