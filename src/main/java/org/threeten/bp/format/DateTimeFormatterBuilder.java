@@ -2687,21 +2687,32 @@ public final class DateTimeFormatterBuilder {
             if (position > length) {
                 throw new IndexOutOfBoundsException();
             }
+            if (position == length) {
+                return ~position;
+            }
 
             // handle fixed time-zone IDs
-            String remainder = text.subSequence(position, text.length()).toString();
-            if (remainder.length() >= 1) {
-                char nextChar = remainder.charAt(0);
-                if (nextChar == '+' || nextChar == '-') {
-                    DateTimeParseContext newContext = context.copy();
-                    int endPos = OffsetIdPrinterParser.INSTANCE_ID.parse(newContext, text, position);
-                    if (endPos < 0) {
-                        return endPos;
-                    }
-                    int offset = (int) (long) newContext.getParsed(OFFSET_SECONDS);
-                    ZoneId zone = ZoneOffset.ofTotalSeconds(offset);
-                    context.setParsed(zone);
+            char nextChar = text.charAt(position);
+            if (nextChar == '+' || nextChar == '-') {
+                DateTimeParseContext newContext = context.copy();
+                int endPos = OffsetIdPrinterParser.INSTANCE_ID.parse(newContext, text, position);
+                if (endPos < 0) {
                     return endPos;
+                }
+                int offset = (int) newContext.getParsed(OFFSET_SECONDS).longValue();
+                ZoneId zone = ZoneOffset.ofTotalSeconds(offset);
+                context.setParsed(zone);
+                return endPos;
+            } else if (length >= position + 2) {
+                char nextNextChar = text.charAt(position + 1);
+                if (nextChar == 'U' && nextNextChar == 'T') {
+                    if (length >= position + 3 && text.charAt(position + 2) == 'C') {
+                        return parsePrefixedOffset(context, text, position + 3);
+                    }
+                    return parsePrefixedOffset(context, text, position + 2);
+                } else if (nextChar == 'G' && length >= position + 3 &&
+                        nextNextChar == 'M' && text.charAt(position + 2) == 'T') {
+                    return parsePrefixedOffset(context, text, position + 3);
                 }
             }
 
@@ -2731,7 +2742,7 @@ public final class DateTimeFormatterBuilder {
             }
 
             if (parsedZoneId == null || regionIds.contains(parsedZoneId) == false) {
-                if (remainder.startsWith("Z")) {
+                if (nextChar == 'Z') {
                     context.setParsed(ZoneOffset.UTC);
                     return position + 1;
                 }
@@ -2739,6 +2750,19 @@ public final class DateTimeFormatterBuilder {
             }
             context.setParsed(ZoneId.of(parsedZoneId));
             return position + parsedZoneId.length();
+        }
+
+        private int parsePrefixedOffset(DateTimeParseContext context, CharSequence text, int position) {
+            DateTimeParseContext newContext = context.copy();
+            int endPos = OffsetIdPrinterParser.INSTANCE_ID.parse(newContext, text, position);
+            if (endPos < 0) {
+                context.setParsed(ZoneOffset.UTC);
+                return position;
+            }
+            int offset = (int) newContext.getParsed(OFFSET_SECONDS).longValue();
+            ZoneId zone = ZoneOffset.ofTotalSeconds(offset);
+            context.setParsed(zone);
+            return endPos;
         }
 
         //-----------------------------------------------------------------------

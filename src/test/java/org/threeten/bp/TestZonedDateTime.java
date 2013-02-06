@@ -668,6 +668,37 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
         assertEquals(t.getZone().getId(), zoneId);
     }
 
+    @DataProvider(name="parseAdditional")
+    Object[][] data_parseAdditional() {
+        return new Object[][] {
+                {"2012-06-30T12:30:40Z[GMT]", 2012, 6, 30, 12, 30, 40, 0, "Z"},
+                {"2012-06-30T12:30:40Z[UT]", 2012, 6, 30, 12, 30, 40, 0, "Z"},
+                {"2012-06-30T12:30:40Z[UTC]", 2012, 6, 30, 12, 30, 40, 0, "Z"},
+                {"2012-06-30T12:30:40+01:00[+01:00]", 2012, 6, 30, 12, 30, 40, 0, "+01:00"},
+                {"2012-06-30T12:30:40+01:00[GMT+01:00]", 2012, 6, 30, 12, 30, 40, 0, "+01:00"},
+                {"2012-06-30T12:30:40+01:00[UT+01:00]", 2012, 6, 30, 12, 30, 40, 0, "+01:00"},
+                {"2012-06-30T12:30:40+01:00[UTC+01:00]", 2012, 6, 30, 12, 30, 40, 0, "+01:00"},
+                {"2012-06-30T12:30:40-01:00[-01:00]", 2012, 6, 30, 12, 30, 40, 0, "-01:00"},
+                {"2012-06-30T12:30:40-01:00[GMT-01:00]", 2012, 6, 30, 12, 30, 40, 0, "-01:00"},
+                {"2012-06-30T12:30:40-01:00[UT-01:00]", 2012, 6, 30, 12, 30, 40, 0, "-01:00"},
+                {"2012-06-30T12:30:40-01:00[UTC-01:00]", 2012, 6, 30, 12, 30, 40, 0, "-01:00"},
+                {"2012-06-30T12:30:40+01:00[Europe/London]", 2012, 6, 30, 12, 30, 40, 0, "Europe/London"},
+        };
+    }
+
+    @Test(dataProvider="parseAdditional")
+    public void test_parseAdditional(String text, int y, int month, int d, int h, int m, int s, int n, String zoneId) {
+        ZonedDateTime t = ZonedDateTime.parse(text);
+        assertEquals(t.getYear(), y);
+        assertEquals(t.getMonth().getValue(), month);
+        assertEquals(t.getDayOfMonth(), d);
+        assertEquals(t.getHour(), h);
+        assertEquals(t.getMinute(), m);
+        assertEquals(t.getSecond(), s);
+        assertEquals(t.getNano(), n);
+        assertEquals(t.getZone().getId(), zoneId);
+    }
+
     @Test(expectedExceptions=DateTimeParseException.class)
     public void factory_parse_illegalValue() {
         ZonedDateTime.parse("2008-06-32T11:15+01:00[Europe/Paris]");
