@@ -187,12 +187,12 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
     public void now() {
         OffsetDateTime expected = OffsetDateTime.now(Clock.systemDefaultZone());
         OffsetDateTime test = OffsetDateTime.now();
-        long diff = Math.abs(test.getTime().toNanoOfDay() - expected.getTime().toNanoOfDay());
+        long diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
         if (diff >= 100000000) {
             // may be date change
             expected = OffsetDateTime.now(Clock.systemDefaultZone());
             test = OffsetDateTime.now();
-            diff = Math.abs(test.getTime().toNanoOfDay() - expected.getTime().toNanoOfDay());
+            diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
         }
         assertTrue(diff < 100000000);  // less than 0.1 secs
     }
@@ -245,7 +245,7 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
             assertEquals(test.getMonth(), Month.DECEMBER);
             assertEquals(test.getDayOfMonth(), 31);
             expected = expected.minusSeconds(1);
-            assertEquals(test.getTime(), expected);
+            assertEquals(test.toLocalTime(), expected);
             assertEquals(test.getOffset(), ZoneOffset.UTC);
         }
     }
@@ -1041,7 +1041,7 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
     @Test
     public void test_atZone_dstOverlapSummer() {
         OffsetDateTime t = OffsetDateTime.of(LocalDate.of(2007, 10, 28), LocalTime.of(2, 30), OFFSET_PTWO);
-        assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).getDateTime(), t.getDateTime());
+        assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).toLocalDateTime(), t.toLocalDateTime());
         assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).getOffset(), OFFSET_PTWO);
         assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).getZone(), ZONE_PARIS);
     }
@@ -1049,7 +1049,7 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
     @Test
     public void test_atZone_dstOverlapWinter() {
         OffsetDateTime t = OffsetDateTime.of(LocalDate.of(2007, 10, 28), LocalTime.of(2, 30), OFFSET_PONE);
-        assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).getDateTime(), t.getDateTime());
+        assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).toLocalDateTime(), t.toLocalDateTime());
         assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).getOffset(), OFFSET_PONE);
         assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).getZone(), ZONE_PARIS);
     }

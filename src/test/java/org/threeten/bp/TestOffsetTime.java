@@ -166,7 +166,7 @@ public class TestOffsetTime extends AbstractDateTimeTest {
 
         OffsetTime expected = OffsetTime.now(Clock.systemDefaultZone());
         OffsetTime test = OffsetTime.now();
-        long diff = Math.abs(test.getTime().toNanoOfDay() - expected.getTime().toNanoOfDay());
+        long diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
         assertTrue(diff < 100000000);  // less than 0.1 secs
         assertEquals(test.getOffset(), nowDT.getOffset());
     }
@@ -231,7 +231,7 @@ public class TestOffsetTime extends AbstractDateTimeTest {
     // factories
     //-----------------------------------------------------------------------
     private void check(OffsetTime test, int h, int m, int s, int n, ZoneOffset offset) {
-        assertEquals(test.getTime(), LocalTime.of(h, m, s, n));
+        assertEquals(test.toLocalTime(), LocalTime.of(h, m, s, n));
         assertEquals(test.getOffset(), offset);
 
         assertEquals(test.getHour(), h);
@@ -474,7 +474,7 @@ public class TestOffsetTime extends AbstractDateTimeTest {
         LocalTime localTime = LocalTime.of(h, m, s, n);
         OffsetTime a = OffsetTime.of(localTime, offset);
 
-        assertEquals(a.getTime(), localTime);
+        assertEquals(a.toLocalTime(), localTime);
         assertEquals(a.getOffset(), offset);
         assertEquals(a.toString(), localTime.toString() + offset.toString());
         assertEquals(a.getHour(), localTime.getHour());
@@ -557,7 +557,7 @@ public class TestOffsetTime extends AbstractDateTimeTest {
     public void test_withOffsetSameLocal() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetTime test = base.withOffsetSameLocal(OFFSET_PTWO);
-        assertEquals(test.getTime(), base.getTime());
+        assertEquals(test.toLocalTime(), base.toLocalTime());
         assertEquals(test.getOffset(), OFFSET_PTWO);
     }
 
@@ -1018,7 +1018,7 @@ public class TestOffsetTime extends AbstractDateTimeTest {
     }
 
     private Instant convertInstant(OffsetTime ot) {
-        return DATE.atTime(ot.getTime()).toInstant(ot.getOffset());
+        return DATE.atTime(ot.toLocalTime()).toInstant(ot.getOffset());
     }
 
     //-----------------------------------------------------------------------

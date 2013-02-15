@@ -817,7 +817,7 @@ public final class ZonedDateTime
      */
     @Override
     public ZonedDateTime withLaterOffsetAtOverlap() {
-        ZoneOffsetTransition trans = getZone().getRules().getTransition(getDateTime());
+        ZoneOffsetTransition trans = getZone().getRules().getTransition(toLocalDateTime());
         if (trans != null) {
             ZoneOffset laterOffset = trans.getOffsetAfter();
             if (laterOffset.equals(offset) == false) {
@@ -916,33 +916,6 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the {@code LocalDateTime} part of this date-time.
-     * <p>
-     * This returns a {@code LocalDateTime} with the same year, month, day and time
-     * as this date-time.
-     *
-     * @return the local date-time part of this date-time, not null
-     */
-    @Override  // override for return type
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the {@code LocalDate} part of this date-time.
-     * <p>
-     * This returns a {@code LocalDate} with the same year, month and day
-     * as this date-time.
-     *
-     * @return the date part of this date-time, not null
-     */
-    @Override  // override for return type
-    public LocalDate getDate() {
-        return dateTime.getDate();
-    }
-
-    /**
      * Gets the year field.
      * <p>
      * This method returns the primitive {@code int} value for the year.
@@ -1025,19 +998,6 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the {@code LocalTime} part of this date-time.
-     * <p>
-     * This returns a {@code LocalTime} with the same hour, minute, second and
-     * nanosecond as this date-time.
-     *
-     * @return the time part of this date-time, not null
-     */
-    @Override  // override for Javadoc and performance
-    public LocalTime getTime() {
-        return dateTime.getTime();
-    }
-
     /**
      * Gets the hour-of-day field.
      *
@@ -1131,9 +1091,9 @@ public final class ZonedDateTime
     public ZonedDateTime with(TemporalAdjuster adjuster) {
         // optimizations
         if (adjuster instanceof LocalDate) {
-            return resolveLocal(LocalDateTime.of((LocalDate) adjuster, dateTime.getTime()));
+            return resolveLocal(LocalDateTime.of((LocalDate) adjuster, dateTime.toLocalTime()));
         } else if (adjuster instanceof LocalTime) {
-            return resolveLocal(LocalDateTime.of(dateTime.getDate(), (LocalTime) adjuster));
+            return resolveLocal(LocalDateTime.of(dateTime.toLocalDate(), (LocalTime) adjuster));
         } else if (adjuster instanceof LocalDateTime) {
             return resolveLocal((LocalDateTime) adjuster);
         } else if (adjuster instanceof Instant) {
@@ -1995,6 +1955,45 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the {@code LocalDateTime} part of this date-time.
+     * <p>
+     * This returns a {@code LocalDateTime} with the same year, month, day and time
+     * as this date-time.
+     *
+     * @return the local date-time part of this date-time, not null
+     */
+    @Override  // override for return type
+    public LocalDateTime toLocalDateTime() {
+        return dateTime;
+    }
+
+    /**
+     * Gets the {@code LocalDate} part of this date-time.
+     * <p>
+     * This returns a {@code LocalDate} with the same year, month and day
+     * as this date-time.
+     *
+     * @return the date part of this date-time, not null
+     */
+    @Override  // override for return type
+    public LocalDate toLocalDate() {
+        return dateTime.toLocalDate();
+    }
+
+    /**
+     * Gets the {@code LocalTime} part of this date-time.
+     * <p>
+     * This returns a {@code LocalTime} with the same hour, minute, second and
+     * nanosecond as this date-time.
+     *
+     * @return the time part of this date-time, not null
+     */
+    @Override  // override for Javadoc and performance
+    public LocalTime toLocalTime() {
+        return dateTime.toLocalTime();
+    }
+
     /**
      * Converts this date-time to an {@code OffsetDateTime}.
      * <p>

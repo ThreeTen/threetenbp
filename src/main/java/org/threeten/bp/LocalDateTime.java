@@ -395,7 +395,7 @@ public final class LocalDateTime
         if (temporal instanceof LocalDateTime) {
             return (LocalDateTime) temporal;
         } else if (temporal instanceof ZonedDateTime) {
-            return ((ZonedDateTime) temporal).getDateTime();
+            return ((ZonedDateTime) temporal).toLocalDateTime();
         }
         try {
             LocalDate date = LocalDate.from(temporal);
@@ -620,19 +620,6 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the {@code LocalDate} part of this date-time.
-     * <p>
-     * This returns a {@code LocalDate} with the same year, month and day
-     * as this date-time.
-     *
-     * @return the date part of this date-time, not null
-     */
-    @Override
-    public LocalDate getDate() {
-        return date;
-    }
-
-    /**
      * Gets the year field.
      * <p>
      * This method returns the primitive {@code int} value for the year.
@@ -715,19 +702,6 @@ public final class LocalDateTime
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the {@code LocalTime} part of this date-time.
-     * <p>
-     * This returns a {@code LocalTime} with the same hour, minute, second and
-     * nanosecond as this date-time.
-     *
-     * @return the time part of this date-time, not null
-     */
-    @Override
-    public LocalTime getTime() {
-        return time;
-    }
-
     /**
      * Gets the hour-of-day field.
      *
@@ -1607,6 +1581,33 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the {@code LocalDate} part of this date-time.
+     * <p>
+     * This returns a {@code LocalDate} with the same year, month and day
+     * as this date-time.
+     *
+     * @return the date part of this date-time, not null
+     */
+    @Override
+    public LocalDate toLocalDate() {
+        return date;
+    }
+
+    /**
+     * Gets the {@code LocalTime} part of this date-time.
+     * <p>
+     * This returns a {@code LocalTime} with the same hour, minute, second and
+     * nanosecond as this date-time.
+     *
+     * @return the time part of this date-time, not null
+     */
+    @Override
+    public LocalTime toLocalTime() {
+        return time;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Compares this date-time to another date-time.
      * <p>
      * The comparison is primarily based on the date-time, from earliest to latest.
@@ -1629,9 +1630,9 @@ public final class LocalDateTime
     }
 
     private int compareTo0(LocalDateTime other) {
-        int cmp = date.compareTo0(other.getDate());
+        int cmp = date.compareTo0(other.toLocalDate());
         if (cmp == 0) {
-            cmp = time.compareTo(other.getTime());
+            cmp = time.compareTo(other.toLocalTime());
         }
         return cmp;
     }

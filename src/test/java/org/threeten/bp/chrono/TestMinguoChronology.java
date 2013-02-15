@@ -114,9 +114,9 @@ public class TestMinguoChronology {
         hdt = hdt.plus(1, ChronoUnit.MINUTES);
         hdt = hdt.plus(1, ChronoUnit.SECONDS);
         hdt = hdt.plus(1, ChronoUnit.NANOS);
-        ChronoLocalDateTime<MinguoChronology> a2 = hzdt.getDateTime();
-        ChronoLocalDate<MinguoChronology> a3 = a2.getDate();
-        ChronoLocalDate<MinguoChronology> a5 = hzdt.getDate();
+        ChronoLocalDateTime<MinguoChronology> a2 = hzdt.toLocalDateTime();
+        ChronoLocalDate<MinguoChronology> a3 = a2.toLocalDate();
+        ChronoLocalDate<MinguoChronology> a5 = hzdt.toLocalDate();
         //System.out.printf(" d: %s, dt: %s; odt: %s; zodt: %s; a4: %s%n", date, hdt, hodt, hzdt, a5);
     }
 

@@ -69,7 +69,7 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chronology<C
             if (field == INSTANT_SECONDS || field == OFFSET_SECONDS) {
                 return field.range();
             }
-            return getDateTime().range(field);
+            return toLocalDateTime().range(field);
         }
         return field.rangeRefinedBy(this);
     }
@@ -81,7 +81,7 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chronology<C
                 case INSTANT_SECONDS: throw new DateTimeException("Field too large for an int: " + field);
                 case OFFSET_SECONDS: return getOffset().getTotalSeconds();
             }
-            return getDateTime().get(field);
+            return toLocalDateTime().get(field);
         }
         return super.get(field);
     }
@@ -93,41 +93,41 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chronology<C
                 case INSTANT_SECONDS: return toEpochSecond();
                 case OFFSET_SECONDS: return getOffset().getTotalSeconds();
             }
-            return getDateTime().getLong(field);
+            return toLocalDateTime().getLong(field);
         }
         return field.getFrom(this);
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDate<C> getDate() {
-        return getDateTime().getDate();
+    public ChronoLocalDate<C> toLocalDate() {
+        return toLocalDateTime().toLocalDate();
     }
 
     @Override
-    public LocalTime getTime() {
-        return getDateTime().getTime();
+    public LocalTime toLocalTime() {
+        return toLocalDateTime().toLocalTime();
     }
 
     //-----------------------------------------------------------------------
     @Override
     public ChronoZonedDateTime<C> with(TemporalAdjuster adjuster) {
-        return getDate().getChronology().ensureChronoZonedDateTime(super.with(adjuster));
+        return toLocalDate().getChronology().ensureChronoZonedDateTime(super.with(adjuster));
     }
 
     @Override
     public ChronoZonedDateTime<C> plus(TemporalAmount amount) {
-        return getDate().getChronology().ensureChronoZonedDateTime(super.plus(amount));
+        return toLocalDate().getChronology().ensureChronoZonedDateTime(super.plus(amount));
     }
 
     @Override
     public ChronoZonedDateTime<C> minus(TemporalAmount amount) {
-        return getDate().getChronology().ensureChronoZonedDateTime(super.minus(amount));
+        return toLocalDate().getChronology().ensureChronoZonedDateTime(super.minus(amount));
     }
 
     @Override
     public ChronoZonedDateTime<C> minus(long amountToSubtract, TemporalUnit unit) {
-        return getDate().getChronology().ensureChronoZonedDateTime(super.minus(amountToSubtract, unit));
+        return toLocalDate().getChronology().ensureChronoZonedDateTime(super.minus(amountToSubtract, unit));
     }
 
     //-------------------------------------------------------------------------
@@ -137,15 +137,15 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chronology<C
         if (query == TemporalQueries.zoneId()) {
             return (R) getZone();
         } else if (query == TemporalQueries.chronology()) {
-            return (R) getDate().getChronology();
+            return (R) toLocalDate().getChronology();
         } else if (query == TemporalQueries.precision()) {
             return (R) NANOS;
         } else if (query == TemporalQueries.offset()) {
             return (R) getOffset();
         } else if (query == TemporalQueries.localDate()) {
-            return (R) getDate();
+            return (R) toLocalDate();
         } else if (query == TemporalQueries.localTime()) {
-            return (R) getTime();
+            return (R) toLocalTime();
         }
         return super.query(query);
     }
@@ -153,13 +153,13 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chronology<C
     //-------------------------------------------------------------------------
     @Override
     public Instant toInstant() {
-        return Instant.ofEpochSecond(toEpochSecond(), getTime().getNano());
+        return Instant.ofEpochSecond(toEpochSecond(), toLocalTime().getNano());
     }
 
     @Override
     public long toEpochSecond() {
-        long epochDay = getDate().toEpochDay();
-        long secs = epochDay * 86400 + getTime().toSecondOfDay();
+        long epochDay = toLocalDate().toEpochDay();
+        long secs = epochDay * 86400 + toLocalTime().toSecondOfDay();
         secs -= getOffset().getTotalSeconds();
         return secs;
     }
@@ -169,13 +169,13 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chronology<C
     public int compareTo(ChronoZonedDateTime<?> other) {
         int cmp = Long.compare(toEpochSecond(), other.toEpochSecond());
         if (cmp == 0) {
-            cmp = getTime().getNano() - other.getTime().getNano();
+            cmp = toLocalTime().getNano() - other.toLocalTime().getNano();
             if (cmp == 0) {
-                cmp = getDateTime().compareTo(other.getDateTime());
+                cmp = toLocalDateTime().compareTo(other.toLocalDateTime());
                 if (cmp == 0) {
                     cmp = getZone().getId().compareTo(other.getZone().getId());
                     if (cmp == 0) {
-                        cmp = getDate().getChronology().compareTo(other.getDate().getChronology());
+                        cmp = toLocalDate().getChronology().compareTo(other.toLocalDate().getChronology());
                     }
                 }
             }
@@ -188,7 +188,7 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chronology<C
         long thisEpochSec = toEpochSecond();
         long otherEpochSec = other.toEpochSecond();
         return thisEpochSec > otherEpochSec ||
-            (thisEpochSec == otherEpochSec && getTime().getNano() > other.getTime().getNano());
+            (thisEpochSec == otherEpochSec && toLocalTime().getNano() > other.toLocalTime().getNano());
     }
 
     @Override
@@ -196,13 +196,13 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chronology<C
         long thisEpochSec = toEpochSecond();
         long otherEpochSec = other.toEpochSecond();
         return thisEpochSec < otherEpochSec ||
-            (thisEpochSec == otherEpochSec && getTime().getNano() < other.getTime().getNano());
+            (thisEpochSec == otherEpochSec && toLocalTime().getNano() < other.toLocalTime().getNano());
     }
 
     @Override
     public boolean isEqual(ChronoZonedDateTime<?> other) {
         return toEpochSecond() == other.toEpochSecond() &&
-                getTime().getNano() == other.getTime().getNano();
+                toLocalTime().getNano() == other.toLocalTime().getNano();
     }
 
     //-------------------------------------------------------------------------
@@ -219,13 +219,13 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chronology<C
 
     @Override
     public int hashCode() {
-        return getDateTime().hashCode() ^ getOffset().hashCode() ^ Integer.rotateLeft(getZone().hashCode(), 3);
+        return toLocalDateTime().hashCode() ^ getOffset().hashCode() ^ Integer.rotateLeft(getZone().hashCode(), 3);
     }
 
     //-------------------------------------------------------------------------
     @Override
     public String toString() {
-        String str = getDateTime().toString() + getOffset().toString();
+        String str = toLocalDateTime().toString() + getOffset().toString();
         if (getOffset() != getZone()) {
             str += '[' + getZone().toString() + ']';
         }

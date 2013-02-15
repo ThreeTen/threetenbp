@@ -261,7 +261,7 @@ public class TestChronoZonedDateTime {
             List<ChronoZonedDateTime<?>> otherDates = new ArrayList<>();
             Chronology chrono2 = IsoChronology.INSTANCE; //clist[0];
             for (ChronoZonedDateTime<?> d : dates) {
-                otherDates.add(chrono2.date(d).atTime(d.getTime()).atZone(d.getZone()));
+                otherDates.add(chrono2.date(d).atTime(d.toLocalTime()).atZone(d.getZone()));
             }
 
             // Now compare  the sequence of original dates with the sequence of converted dates
@@ -297,7 +297,7 @@ public class TestChronoZonedDateTime {
     @Test( dataProvider="calendars")
     public <C extends Chronology<C>> void test_ChronoZonedDateTimeSerialization(C chrono) throws Exception {
         ZonedDateTime ref = LocalDate.of(2000, 1, 5).atTime(12, 1, 2, 3).atZone(ZoneId.of("GMT+01:23"));
-        ChronoZonedDateTime<C> orginal = chrono.date(ref).atTime(ref.getTime()).atZone(ref.getZone());
+        ChronoZonedDateTime<C> orginal = chrono.date(ref).atTime(ref.toLocalTime()).atZone(ref.getZone());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);
         out.writeObject(orginal);

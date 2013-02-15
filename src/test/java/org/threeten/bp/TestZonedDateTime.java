@@ -212,12 +212,12 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     public void now() {
         ZonedDateTime expected = ZonedDateTime.now(Clock.systemDefaultZone());
         ZonedDateTime test = ZonedDateTime.now();
-        long diff = Math.abs(test.getTime().toNanoOfDay() - expected.getTime().toNanoOfDay());
+        long diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
         if (diff >= 100000000) {
             // may be date change
             expected = ZonedDateTime.now(Clock.systemDefaultZone());
             test = ZonedDateTime.now();
-            diff = Math.abs(test.getTime().toNanoOfDay() - expected.getTime().toNanoOfDay());
+            diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
         }
         assertTrue(diff < 100000000);  // less than 0.1 secs
     }
@@ -294,7 +294,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
             assertEquals(test.getMonth(), Month.DECEMBER);
             assertEquals(test.getDayOfMonth(), 31);
             expected = expected.minusSeconds(1);
-            assertEquals(test.getTime(), expected);
+            assertEquals(test.toLocalTime(), expected);
             assertEquals(test.getOffset(), ZoneOffset.UTC);
             assertEquals(test.getZone(), ZoneOffset.UTC);
         }
@@ -602,11 +602,11 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
         assertEquals(ZonedDateTime.from(new DefaultInterfaceTemporalAccessor() {
             @Override
             public boolean isSupported(TemporalField field) {
-                return TEST_DATE_TIME_PARIS.getDateTime().isSupported(field);
+                return TEST_DATE_TIME_PARIS.toLocalDateTime().isSupported(field);
             }
             @Override
             public long getLong(TemporalField field) {
-                return TEST_DATE_TIME_PARIS.getDateTime().getLong(field);
+                return TEST_DATE_TIME_PARIS.toLocalDateTime().getLong(field);
             }
             @Override
             public <R> R query(TemporalQuery<R> query) {
@@ -766,9 +766,9 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
         assertEquals(a.getSecond(), localTime.getSecond());
         assertEquals(a.getNano(), localTime.getNano());
 
-        assertEquals(a.getDate(), localDate);
-        assertEquals(a.getTime(), localTime);
-        assertEquals(a.getDateTime(), localDateTime);
+        assertEquals(a.toLocalDate(), localDate);
+        assertEquals(a.toLocalTime(), localTime);
+        assertEquals(a.toLocalDateTime(), localDateTime);
         if (zone instanceof ZoneOffset) {
             assertEquals(a.toString(), localDateTime.toString() + offset.toString());
         } else {
@@ -889,7 +889,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
         ZonedDateTime base = ZonedDateTime.ofStrict(TEST_PARIS_OVERLAP_2008_10_26_02_30, OFFSET_0100, ZONE_PARIS);
         ZonedDateTime test = base.withEarlierOffsetAtOverlap();
         assertEquals(test.getOffset(), OFFSET_0200);  // offset changed to earlier
-        assertEquals(test.getDateTime(), base.getDateTime());  // date-time not changed
+        assertEquals(test.toLocalDateTime(), base.toLocalDateTime());  // date-time not changed
     }
 
     @Test
@@ -914,7 +914,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
         ZonedDateTime base = ZonedDateTime.ofStrict(TEST_PARIS_OVERLAP_2008_10_26_02_30, OFFSET_0200, ZONE_PARIS);
         ZonedDateTime test = base.withLaterOffsetAtOverlap();
         assertEquals(test.getOffset(), OFFSET_0100);  // offset changed to later
-        assertEquals(test.getDateTime(), base.getDateTime());  // date-time not changed
+        assertEquals(test.toLocalDateTime(), base.toLocalDateTime());  // date-time not changed
     }
 
     @Test
@@ -932,7 +932,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withZoneSameLocal(ZONE_0200);
-        assertEquals(test.getDateTime(), base.getDateTime());
+        assertEquals(test.toLocalDateTime(), base.toLocalDateTime());
     }
 
     @Test

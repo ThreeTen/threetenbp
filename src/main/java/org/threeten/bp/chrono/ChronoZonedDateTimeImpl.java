@@ -156,7 +156,7 @@ final class ChronoZonedDateTimeImpl<C extends Chronology<C>>
      * @return the zoned date-time, validated not null
      */
     private ChronoZonedDateTimeImpl<C> create(Instant instant, ZoneId zone) {
-        return ofInstant(getDate().getChronology(), instant, zone);
+        return ofInstant(toLocalDate().getChronology(), instant, zone);
     }
 
     //-----------------------------------------------------------------------
@@ -204,7 +204,7 @@ final class ChronoZonedDateTimeImpl<C extends Chronology<C>>
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDateTime<C> getDateTime() {
+    public ChronoLocalDateTime<C> toLocalDateTime() {
         return dateTime;
     }
 
@@ -242,7 +242,7 @@ final class ChronoZonedDateTimeImpl<C extends Chronology<C>>
             }
             return ofBest(dateTime.with(field, newValue), zone, offset);
         }
-        return getDate().getChronology().ensureChronoZonedDateTime(field.adjustInto(this, newValue));
+        return toLocalDate().getChronology().ensureChronoZonedDateTime(field.adjustInto(this, newValue));
     }
 
     //-----------------------------------------------------------------------
@@ -251,7 +251,7 @@ final class ChronoZonedDateTimeImpl<C extends Chronology<C>>
         if (unit instanceof ChronoUnit) {
             return with(dateTime.plus(amountToAdd, unit));
         }
-        return getDate().getChronology().ensureChronoZonedDateTime(unit.addTo(this, amountToAdd));   /// TODO: Generics replacement Risk!
+        return toLocalDate().getChronology().ensureChronoZonedDateTime(unit.addTo(this, amountToAdd));   /// TODO: Generics replacement Risk!
     }
 
     //-----------------------------------------------------------------------
@@ -262,12 +262,12 @@ final class ChronoZonedDateTimeImpl<C extends Chronology<C>>
         }
         @SuppressWarnings("unchecked")
         ChronoZonedDateTime<C> end = (ChronoZonedDateTime<C>) endDateTime;
-        if (getDate().getChronology().equals(end.getDate().getChronology()) == false) {
+        if (toLocalDate().getChronology().equals(end.toLocalDate().getChronology()) == false) {
             throw new DateTimeException("Unable to calculate period between two different chronologies");
         }
         if (unit instanceof ChronoUnit) {
             end = end.withZoneSameInstant(offset);
-            return dateTime.periodUntil(end.getDateTime(), unit);
+            return dateTime.periodUntil(end.toLocalDateTime(), unit);
         }
         return unit.between(this, endDateTime);
     }
@@ -314,12 +314,12 @@ final class ChronoZonedDateTimeImpl<C extends Chronology<C>>
 
     @Override
     public int hashCode() {
-        return getDateTime().hashCode() ^ getOffset().hashCode() ^ Integer.rotateLeft(getZone().hashCode(), 3);
+        return toLocalDateTime().hashCode() ^ getOffset().hashCode() ^ Integer.rotateLeft(getZone().hashCode(), 3);
     }
 
     @Override
     public String toString() {
-        String str = getDateTime().toString() + getOffset().toString();
+        String str = toLocalDateTime().toString() + getOffset().toString();
         if (getOffset() != getZone()) {
             str += '[' + getZone().toString() + ']';
         }

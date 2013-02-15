@@ -178,12 +178,12 @@ final class ChronoLocalDateTimeImpl<C extends Chronology<C>>
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDate<C> getDate() {
+    public ChronoLocalDate<C> toLocalDate() {
         return date;
     }
 
     @Override
-    public LocalTime getTime() {
+    public LocalTime toLocalTime() {
         return time;
     }
 
@@ -327,7 +327,7 @@ final class ChronoLocalDateTimeImpl<C extends Chronology<C>>
         }
         @SuppressWarnings("unchecked")
         ChronoLocalDateTime<C> end = (ChronoLocalDateTime<C>) endDateTime;
-        if (getDate().getChronology().equals(end.getDate().getChronology()) == false) {
+        if (toLocalDate().getChronology().equals(end.toLocalDate().getChronology()) == false) {
             throw new DateTimeException("Unable to calculate period between two different chronologies");
         }
         if (unit instanceof ChronoUnit) {
@@ -343,10 +343,10 @@ final class ChronoLocalDateTimeImpl<C extends Chronology<C>>
                     case HOURS: amount = Jdk8Methods.safeMultiply(amount, HOURS_PER_DAY); break;
                     case HALF_DAYS: amount = Jdk8Methods.safeMultiply(amount, 2); break;
                 }
-                return Jdk8Methods.safeAdd(amount, time.periodUntil(end.getTime(), unit));
+                return Jdk8Methods.safeAdd(amount, time.periodUntil(end.toLocalTime(), unit));
             }
-            ChronoLocalDate<C> endDate = end.getDate();
-            if (end.getTime().isBefore(time)) {
+            ChronoLocalDate<C> endDate = end.toLocalDate();
+            if (end.toLocalTime().isBefore(time)) {
                 endDate = endDate.minus(1, ChronoUnit.DAYS);
             }
             return date.periodUntil(endDate, unit);

@@ -324,9 +324,9 @@ public final class LocalDate
         if (temporal instanceof LocalDate) {
             return (LocalDate) temporal;
         } else if (temporal instanceof LocalDateTime) {
-            return ((LocalDateTime) temporal).getDate();
+            return ((LocalDateTime) temporal).toLocalDate();
         } else if (temporal instanceof ZonedDateTime) {
-            return ((ZonedDateTime) temporal).getDate();
+            return ((ZonedDateTime) temporal).toLocalDate();
         }
         // handle builder as a special case
         if (temporal instanceof DateTimeBuilder) {
@@ -1587,7 +1587,7 @@ public final class LocalDate
      * @return the offset date-time formed from this date and the specified time, not null
      */
     public OffsetDateTime atTime(OffsetTime time) {
-        return OffsetDateTime.of(LocalDateTime.of(this, time.getTime()), time.getOffset());
+        return OffsetDateTime.of(LocalDateTime.of(this, time.toLocalTime()), time.getOffset());
     }
 
     /**

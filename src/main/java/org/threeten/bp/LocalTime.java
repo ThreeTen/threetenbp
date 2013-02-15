@@ -395,9 +395,9 @@ public final class LocalTime
         if (temporal instanceof LocalTime) {
             return (LocalTime) temporal;
         } else if (temporal instanceof ChronoLocalDateTime) {
-            return ((ChronoLocalDateTime<?>) temporal).getTime();
+            return ((ChronoLocalDateTime<?>) temporal).toLocalTime();
         } else if (temporal instanceof ChronoZonedDateTime) {
-            return ((ChronoZonedDateTime<?>) temporal).getTime();
+            return ((ChronoZonedDateTime<?>) temporal).toLocalTime();
         }
         // handle builder as a special case
         if (temporal instanceof DateTimeBuilder) {

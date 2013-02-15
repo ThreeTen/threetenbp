@@ -205,7 +205,7 @@ public class TestOffsetDateTime_instants {
             try {
                 OffsetDateTime test = OffsetDateTime.ofInstant(instant, ZoneOffset.UTC);
                 assertEquals(test, expected);
-                if (expected.getDate().equals(maxDate) == false) {
+                if (expected.toLocalDate().equals(maxDate) == false) {
                     expected = expected.plusDays(1);
                 }
             } catch (RuntimeException|Error ex) {

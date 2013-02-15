@@ -517,19 +517,6 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the {@code LocalTime} part of this date-time.
-     * <p>
-     * This returns a {@code LocalTime} with the same hour, minute, second and
-     * nanosecond as this date-time.
-     *
-     * @return the time part of this date-time, not null
-     */
-    public LocalTime getTime() {
-        return time;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the hour-of-day field.
      *
      * @return the hour-of-day, from 0 to 23
@@ -1097,6 +1084,19 @@ public final class OffsetTime
      */
     public OffsetDateTime atDate(LocalDate date) {
         return OffsetDateTime.of(date, time, offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the {@code LocalTime} part of this date-time.
+     * <p>
+     * This returns a {@code LocalTime} with the same hour, minute, second and
+     * nanosecond as this date-time.
+     *
+     * @return the time part of this date-time, not null
+     */
+    public LocalTime toLocalTime() {
+        return time;
     }
 
     //-----------------------------------------------------------------------

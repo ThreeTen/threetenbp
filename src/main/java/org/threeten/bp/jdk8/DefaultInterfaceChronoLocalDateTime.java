@@ -61,43 +61,43 @@ public abstract class DefaultInterfaceChronoLocalDateTime<C extends Chronology<C
 
     @Override
     public ChronoLocalDateTime<C> with(TemporalAdjuster adjuster) {
-        return getDate().getChronology().ensureChronoLocalDateTime(super.with(adjuster));
+        return toLocalDate().getChronology().ensureChronoLocalDateTime(super.with(adjuster));
     }
 
     @Override
     public ChronoLocalDateTime<C> plus(TemporalAmount amount) {
-        return getDate().getChronology().ensureChronoLocalDateTime(super.plus(amount));
+        return toLocalDate().getChronology().ensureChronoLocalDateTime(super.plus(amount));
     }
 
     @Override
     public ChronoLocalDateTime<C> minus(TemporalAmount amount) {
-        return getDate().getChronology().ensureChronoLocalDateTime(super.minus(amount));
+        return toLocalDate().getChronology().ensureChronoLocalDateTime(super.minus(amount));
     }
 
     @Override
     public ChronoLocalDateTime<C> minus(long amountToSubtract, TemporalUnit unit) {
-        return getDate().getChronology().ensureChronoLocalDateTime(super.minus(amountToSubtract, unit));
+        return toLocalDate().getChronology().ensureChronoLocalDateTime(super.minus(amountToSubtract, unit));
     }
 
     //-------------------------------------------------------------------------
     @Override
     public Temporal adjustInto(Temporal temporal) {
         return temporal
-                .with(EPOCH_DAY, getDate().toEpochDay())
-                .with(NANO_OF_DAY, getTime().toNanoOfDay());
+                .with(EPOCH_DAY, toLocalDate().toEpochDay())
+                .with(NANO_OF_DAY, toLocalTime().toNanoOfDay());
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <R> R query(TemporalQuery<R> query) {
         if (query == TemporalQueries.chronology()) {
-            return (R) getDate().getChronology();
+            return (R) toLocalDate().getChronology();
         } else if (query == TemporalQueries.precision()) {
             return (R) NANOS;
         } else if (query == TemporalQueries.localDate()) {
-            return (R) getDate();
+            return (R) toLocalDate();
         } else if (query == TemporalQueries.localTime()) {
-            return (R) getTime();
+            return (R) toLocalTime();
         }
         return super.query(query);
     }
@@ -105,14 +105,14 @@ public abstract class DefaultInterfaceChronoLocalDateTime<C extends Chronology<C
     //-----------------------------------------------------------------------
     @Override
     public Instant toInstant(ZoneOffset offset) {
-        return Instant.ofEpochSecond(toEpochSecond(offset), getTime().getNano());
+        return Instant.ofEpochSecond(toEpochSecond(offset), toLocalTime().getNano());
     }
 
     @Override
     public long toEpochSecond(ZoneOffset offset) {
         Objects.requireNonNull(offset, "offset");
-        long epochDay = getDate().toEpochDay();
-        long secs = epochDay * 86400 + getTime().toSecondOfDay();
+        long epochDay = toLocalDate().toEpochDay();
+        long secs = epochDay * 86400 + toLocalTime().toSecondOfDay();
         secs -= offset.getTotalSeconds();
         return secs;
     }
@@ -120,11 +120,11 @@ public abstract class DefaultInterfaceChronoLocalDateTime<C extends Chronology<C
     //-----------------------------------------------------------------------
     @Override
     public int compareTo(ChronoLocalDateTime<?> other) {
-        int cmp = getDate().compareTo(other.getDate());
+        int cmp = toLocalDate().compareTo(other.toLocalDate());
         if (cmp == 0) {
-            cmp = getTime().compareTo(other.getTime());
+            cmp = toLocalTime().compareTo(other.toLocalTime());
             if (cmp == 0) {
-                cmp = getDate().getChronology().compareTo(other.getDate().getChronology());
+                cmp = toLocalDate().getChronology().compareTo(other.toLocalDate().getChronology());
             }
         }
         return cmp;
@@ -132,25 +132,25 @@ public abstract class DefaultInterfaceChronoLocalDateTime<C extends Chronology<C
 
     @Override
     public boolean isAfter(ChronoLocalDateTime<?> other) {
-        long thisEpDay = this.getDate().toEpochDay();
-        long otherEpDay = other.getDate().toEpochDay();
+        long thisEpDay = this.toLocalDate().toEpochDay();
+        long otherEpDay = other.toLocalDate().toEpochDay();
         return thisEpDay > otherEpDay ||
-            (thisEpDay == otherEpDay && this.getTime().toNanoOfDay() > other.getTime().toNanoOfDay());
+            (thisEpDay == otherEpDay && this.toLocalTime().toNanoOfDay() > other.toLocalTime().toNanoOfDay());
     }
 
     @Override
     public boolean isBefore(ChronoLocalDateTime<?> other) {
-        long thisEpDay = this.getDate().toEpochDay();
-        long otherEpDay = other.getDate().toEpochDay();
+        long thisEpDay = this.toLocalDate().toEpochDay();
+        long otherEpDay = other.toLocalDate().toEpochDay();
         return thisEpDay < otherEpDay ||
-            (thisEpDay == otherEpDay && this.getTime().toNanoOfDay() < other.getTime().toNanoOfDay());
+            (thisEpDay == otherEpDay && this.toLocalTime().toNanoOfDay() < other.toLocalTime().toNanoOfDay());
     }
 
     @Override
     public boolean isEqual(ChronoLocalDateTime<?> other) {
         // Do the time check first, it is cheaper than computing EPOCH day.
-        return this.getTime().toNanoOfDay() == other.getTime().toNanoOfDay() &&
-               this.getDate().toEpochDay() == other.getDate().toEpochDay();
+        return this.toLocalTime().toNanoOfDay() == other.toLocalTime().toNanoOfDay() &&
+               this.toLocalDate().toEpochDay() == other.toLocalDate().toEpochDay();
     }
 
     //-------------------------------------------------------------------------
@@ -167,13 +167,13 @@ public abstract class DefaultInterfaceChronoLocalDateTime<C extends Chronology<C
 
     @Override
     public int hashCode() {
-        return getDate().hashCode() ^ getTime().hashCode();
+        return toLocalDate().hashCode() ^ toLocalTime().hashCode();
     }
 
     //-------------------------------------------------------------------------
     @Override
     public String toString() {
-        return getDate().toString() + 'T' + getTime().toString();
+        return toLocalDate().toString() + 'T' + toLocalTime().toString();
     }
 
     @Override

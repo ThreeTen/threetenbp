@@ -317,9 +317,9 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
     public /* should be package-scoped */ ChronoLocalDateTimeImpl<C> ensureChronoLocalDateTime(Temporal temporal) {
         @SuppressWarnings("unchecked")
         ChronoLocalDateTimeImpl<C> other = (ChronoLocalDateTimeImpl<C>) temporal;
-        if (this.equals(other.getDate().getChronology()) == false) {
+        if (this.equals(other.toLocalDate().getChronology()) == false) {
             throw new ClassCastException("Chrono mismatch, required: " + getId()
-                    + ", supplied: " + other.getDate().getChronology().getId());
+                    + ", supplied: " + other.toLocalDate().getChronology().getId());
         }
         return other;
     }
@@ -335,9 +335,9 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
     public /* should be package-scoped */ ChronoZonedDateTimeImpl<C> ensureChronoZonedDateTime(Temporal temporal) {
         @SuppressWarnings("unchecked")
         ChronoZonedDateTimeImpl<C> other = (ChronoZonedDateTimeImpl<C>) temporal;
-        if (this.equals(other.getDate().getChronology()) == false) {
+        if (this.equals(other.toLocalDate().getChronology()) == false) {
             throw new ClassCastException("Chrono mismatch, required: " + getId()
-                    + ", supplied: " + other.getDate().getChronology().getId());
+                    + ", supplied: " + other.toLocalDate().getChronology().getId());
         }
         return other;
     }

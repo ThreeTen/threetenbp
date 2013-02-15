@@ -196,7 +196,7 @@ class ZoneRulesBuilder {
         return addRuleToWindow(
                 transitionDateTime.getYear(), transitionDateTime.getYear(),
                 transitionDateTime.getMonth(), transitionDateTime.getDayOfMonth(),
-                null, transitionDateTime.getTime(), false, timeDefinition, savingAmountSecs);
+                null, transitionDateTime.toLocalTime(), false, timeDefinition, savingAmountSecs);
     }
 
     /**

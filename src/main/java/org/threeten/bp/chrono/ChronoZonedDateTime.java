@@ -96,7 +96,7 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
         public int compare(ChronoZonedDateTime<?> datetime1, ChronoZonedDateTime<?> datetime2) {
             int cmp = Long.compare(datetime1.toEpochSecond(), datetime2.toEpochSecond());
             if (cmp == 0) {
-                cmp = Long.compare(datetime1.getTime().toNanoOfDay(), datetime2.getTime().toNanoOfDay());
+                cmp = Long.compare(datetime1.toLocalTime().toNanoOfDay(), datetime2.toLocalTime().toNanoOfDay());
             }
             return cmp;
         }
@@ -110,7 +110,7 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
      *
      * @return the date part of this date-time, not null
      */
-    ChronoLocalDate<C> getDate() ;
+    ChronoLocalDate<C> toLocalDate() ;
 
     /**
      * Gets the local time part of this date-time.
@@ -120,7 +120,7 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
      *
      * @return the time part of this date-time, not null
      */
-    LocalTime getTime();
+    LocalTime toLocalTime();
 
     /**
      * Gets the local date-time part of this date-time.
@@ -130,7 +130,7 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
      *
      * @return the local date-time part of this date-time, not null
      */
-    ChronoLocalDateTime<C> getDateTime();
+    ChronoLocalDateTime<C> toLocalDateTime();
 
     /**
      * Gets the zone offset, such as '+01:00'.
@@ -252,7 +252,7 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
     /**
      * Converts this date-time to an {@code Instant}.
      * <p>
-     * This combines the {@link #getDateTime() local date-time} and
+     * This combines the {@link #toLocalDateTime() local date-time} and
      * {@link #getOffset() offset} to form an {@code Instant}.
      *
      * @return an {@code Instant} representing the same instant, not null
@@ -263,7 +263,7 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
      * Converts this date-time to the number of seconds from the epoch
      * of 1970-01-01T00:00:00Z.
      * <p>
-     * This uses the {@link #getDateTime() local date-time} and
+     * This uses the {@link #toLocalDateTime() local date-time} and
      * {@link #getOffset() offset} to calculate the epoch-second value,
      * which is the number of elapsed seconds from 1970-01-01T00:00:00Z.
      * Instants on the time-line after the epoch are positive, earlier are negative.

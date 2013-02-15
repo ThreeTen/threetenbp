@@ -256,7 +256,7 @@ public class TestChronoLocalDateTime {
             List<ChronoLocalDateTime<?>> otherDates = new ArrayList<>();
             Chronology chrono2 = clist[0];
             for (ChronoLocalDateTime<?> d : dates) {
-                otherDates.add(chrono2.date(d).atTime(d.getTime()));
+                otherDates.add(chrono2.date(d).atTime(d.toLocalTime()));
             }
 
             // Now compare  the sequence of original dates with the sequence of converted dates
@@ -292,7 +292,7 @@ public class TestChronoLocalDateTime {
     @Test( dataProvider="calendars")
     public <C extends Chronology<C>> void test_ChronoLocalDateTimeSerialization(C chrono) throws Exception {
         LocalDateTime ref = LocalDate.of(2000, 1, 5).atTime(12, 1, 2, 3);
-        ChronoLocalDateTime<C> orginal = chrono.date(ref).atTime(ref.getTime());
+        ChronoLocalDateTime<C> orginal = chrono.date(ref).atTime(ref.toLocalTime());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);
         out.writeObject(orginal);

@@ -123,7 +123,7 @@ public final class OffsetDateTime
         public int compare(OffsetDateTime datetime1, OffsetDateTime datetime2) {
             int cmp = Long.compare(datetime1.toEpochSecond(), datetime2.toEpochSecond());
             if (cmp == 0) {
-                cmp = Long.compare(datetime1.getTime().toNanoOfDay(), datetime2.getTime().toNanoOfDay());
+                cmp = Long.compare(datetime1.toLocalTime().toNanoOfDay(), datetime2.toLocalTime().toNanoOfDay());
             }
             return cmp;
         }
@@ -592,31 +592,6 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the {@code LocalDateTime} part of this offset date-time.
-     * <p>
-     * This returns a {@code LocalDateTime} with the same year, month, day and time
-     * as this date-time.
-     *
-     * @return the local date-time part of this date-time, not null
-     */
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the {@code LocalDate} part of this date-time.
-     * <p>
-     * This returns a {@code LocalDate} with the same year, month and day
-     * as this date-time.
-     *
-     * @return the date part of this date-time, not null
-     */
-    public LocalDate getDate() {
-        return dateTime.getDate();
-    }
-
-    /**
      * Gets the year field.
      * <p>
      * This method returns the primitive {@code int} value for the year.
@@ -699,18 +674,6 @@ public final class OffsetDateTime
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the {@code LocalTime} part of this date-time.
-     * <p>
-     * This returns a {@code LocalTime} with the same hour, minute, second and
-     * nanosecond as this date-time.
-     *
-     * @return the time part of this date-time, not null
-     */
-    public LocalTime getTime() {
-        return dateTime.getTime();
-    }
-
     /**
      * Gets the hour-of-day field.
      *
@@ -1402,7 +1365,7 @@ public final class OffsetDateTime
     @Override
     public <R> R query(TemporalQuery<R> query) {
         if (query == TemporalQueries.chronology()) {
-            return (R) getDate().getChronology();
+            return (R) toLocalDate().getChronology();
         } else if (query == TemporalQueries.precision()) {
             return (R) NANOS;
         } else if (query == TemporalQueries.offset() || query == TemporalQueries.zone()) {
@@ -1441,8 +1404,8 @@ public final class OffsetDateTime
     public Temporal adjustInto(Temporal temporal) {
         return temporal
                 .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
-                .with(EPOCH_DAY, getDate().toEpochDay())
-                .with(NANO_OF_DAY, getTime().toNanoOfDay());
+                .with(EPOCH_DAY, toLocalDate().toEpochDay())
+                .with(NANO_OF_DAY, toLocalTime().toNanoOfDay());
     }
 
     /**
@@ -1556,6 +1519,43 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the {@code LocalDateTime} part of this offset date-time.
+     * <p>
+     * This returns a {@code LocalDateTime} with the same year, month, day and time
+     * as this date-time.
+     *
+     * @return the local date-time part of this date-time, not null
+     */
+    public LocalDateTime toLocalDateTime() {
+        return dateTime;
+    }
+
+    /**
+     * Gets the {@code LocalDate} part of this date-time.
+     * <p>
+     * This returns a {@code LocalDate} with the same year, month and day
+     * as this date-time.
+     *
+     * @return the date part of this date-time, not null
+     */
+    public LocalDate toLocalDate() {
+        return dateTime.toLocalDate();
+    }
+
+    /**
+     * Gets the {@code LocalTime} part of this date-time.
+     * <p>
+     * This returns a {@code LocalTime} with the same hour, minute, second and
+     * nanosecond as this date-time.
+     *
+     * @return the time part of this date-time, not null
+     */
+    public LocalTime toLocalTime() {
+        return dateTime.toLocalTime();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Converts this date-time to an {@code OffsetTime}.
      * <p>
      * This returns an offset time with the same local time and offset.
@@ -1563,7 +1563,7 @@ public final class OffsetDateTime
      * @return an OffsetTime representing the time and offset, not null
      */
     public OffsetTime toOffsetTime() {
-        return OffsetTime.of(dateTime.getTime(), offset);
+        return OffsetTime.of(dateTime.toLocalTime(), offset);
     }
 
     /**
@@ -1630,13 +1630,13 @@ public final class OffsetDateTime
     @Override
     public int compareTo(OffsetDateTime other) {
         if (getOffset().equals(other.getOffset())) {
-            return getDateTime().compareTo(other.getDateTime());
+            return toLocalDateTime().compareTo(other.toLocalDateTime());
         }
         int cmp = Long.compare(toEpochSecond(), other.toEpochSecond());
         if (cmp == 0) {
-            cmp = getTime().getNano() - other.getTime().getNano();
+            cmp = toLocalTime().getNano() - other.toLocalTime().getNano();
             if (cmp == 0) {
-                cmp = getDateTime().compareTo(other.getDateTime());
+                cmp = toLocalDateTime().compareTo(other.toLocalDateTime());
             }
         }
         return cmp;
@@ -1657,7 +1657,7 @@ public final class OffsetDateTime
         long thisEpochSec = toEpochSecond();
         long otherEpochSec = other.toEpochSecond();
         return thisEpochSec > otherEpochSec ||
-            (thisEpochSec == otherEpochSec && getTime().getNano() > other.getTime().getNano());
+            (thisEpochSec == otherEpochSec && toLocalTime().getNano() > other.toLocalTime().getNano());
     }
 
     /**
@@ -1674,7 +1674,7 @@ public final class OffsetDateTime
         long thisEpochSec = toEpochSecond();
         long otherEpochSec = other.toEpochSecond();
         return thisEpochSec < otherEpochSec ||
-            (thisEpochSec == otherEpochSec && getTime().getNano() < other.getTime().getNano());
+            (thisEpochSec == otherEpochSec && toLocalTime().getNano() < other.toLocalTime().getNano());
     }
 
     /**
@@ -1689,7 +1689,7 @@ public final class OffsetDateTime
      */
     public boolean isEqual(OffsetDateTime other) {
         return toEpochSecond() == other.toEpochSecond() &&
-                getTime().getNano() == other.getTime().getNano();
+                toLocalTime().getNano() == other.toLocalTime().getNano();
     }
 
     //-----------------------------------------------------------------------

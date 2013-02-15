@@ -96,9 +96,9 @@ public interface ChronoLocalDateTime<C extends Chronology<C>>
             new Comparator<ChronoLocalDateTime<?>>() {
         @Override
         public int compare(ChronoLocalDateTime<?> datetime1, ChronoLocalDateTime<?> datetime2) {
-            int cmp = Long.compare(datetime1.getDate().toEpochDay(), datetime2.getDate().toEpochDay());
+            int cmp = Long.compare(datetime1.toLocalDate().toEpochDay(), datetime2.toLocalDate().toEpochDay());
             if (cmp == 0) {
-                cmp = Long.compare(datetime1.getTime().toNanoOfDay(), datetime2.getTime().toNanoOfDay());
+                cmp = Long.compare(datetime1.toLocalTime().toNanoOfDay(), datetime2.toLocalTime().toNanoOfDay());
             }
             return cmp;
         }
@@ -112,7 +112,7 @@ public interface ChronoLocalDateTime<C extends Chronology<C>>
      *
      * @return the date part of this date-time, not null
      */
-    ChronoLocalDate<C> getDate() ;
+    ChronoLocalDate<C> toLocalDate() ;
 
     /**
      * Gets the local time part of this date-time.
@@ -122,7 +122,7 @@ public interface ChronoLocalDateTime<C extends Chronology<C>>
      *
      * @return the time part of this date-time, not null
      */
-    LocalTime getTime();
+    LocalTime toLocalTime();
 
     //-------------------------------------------------------------------------
     // override for covariant return type
