@@ -45,7 +45,7 @@ import org.threeten.bp.Period;
  * See {@link Period} for a class that represents an amount in terms of the common units.
  * <p>
  * The most commonly used units are defined in {@link ChronoUnit}.
- * Further units are supplied in {@link ISOFields}.
+ * Further units are supplied in {@link IsoFields}.
  * Units can also be written by application code by implementing this interface.
  * <p>
  * The unit works using double dispatch. Client code calls methods on a date-time like

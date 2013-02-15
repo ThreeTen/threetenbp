@@ -175,7 +175,7 @@ public final class MinguoChronology extends Chronology<MinguoChronology> impleme
      */
     @Override
     public boolean isLeapYear(long prolepticYear) {
-        return ISOChronology.INSTANCE.isLeapYear(prolepticYear + YEARS_DIFFERENCE);
+        return IsoChronology.INSTANCE.isLeapYear(prolepticYear + YEARS_DIFFERENCE);
     }
 
     @Override

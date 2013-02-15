@@ -165,7 +165,7 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
      * <p>
      * A {@code TemporalAccessor} represents some form of date and time information.
      * This factory converts the arbitrary temporal object to an instance of {@code Chrono}.
-     * If the specified temporal object does not have a chronology, {@link ISOChronology} is returned.
+     * If the specified temporal object does not have a chronology, {@link IsoChronology} is returned.
      * <p>
      * The conversion will obtain the chronology using {@link TemporalQueries#chronology()}.
      * <p>
@@ -179,7 +179,7 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
     public static Chronology<?> from(TemporalAccessor temporal) {
         Objects.requireNonNull(temporal, "temporal");
         Chronology<?> obj = temporal.query(TemporalQueries.chronology());
-        return (obj != null ? obj : ISOChronology.INSTANCE);
+        return (obj != null ? obj : IsoChronology.INSTANCE);
     }
 
     //-----------------------------------------------------------------------
@@ -201,9 +201,9 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
         Objects.requireNonNull(locale, "locale");
         String type = locale.getUnicodeLocaleType("ca");
         if (type == null) {
-            return ISOChronology.INSTANCE;
+            return IsoChronology.INSTANCE;
         } else if ("iso".equals(type) || "iso8601".equals(type)) {
-            return ISOChronology.INSTANCE;
+            return IsoChronology.INSTANCE;
         } else {
             Chronology<?> chrono = CHRONOS_BY_TYPE.get(type);
             if (chrono == null) {

@@ -44,7 +44,7 @@ import java.util.Locale;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.threeten.bp.chrono.ISOChronology;
+import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.format.TextStyle;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
@@ -139,8 +139,8 @@ public class TestMonth extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_query_chrono() {
-        assertEquals(Month.JUNE.query(TemporalQueries.chronology()), ISOChronology.INSTANCE);
-        assertEquals(TemporalQueries.chronology().queryFrom(Month.JUNE), ISOChronology.INSTANCE);
+        assertEquals(Month.JUNE.query(TemporalQueries.chronology()), IsoChronology.INSTANCE);
+        assertEquals(TemporalQueries.chronology().queryFrom(Month.JUNE), IsoChronology.INSTANCE);
     }
 
     @Test

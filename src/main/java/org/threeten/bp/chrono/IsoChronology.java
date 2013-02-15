@@ -73,26 +73,26 @@ import org.threeten.bp.temporal.ValueRange;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
-public final class ISOChronology extends Chronology<ISOChronology> implements Serializable {
+public final class IsoChronology extends Chronology<IsoChronology> implements Serializable {
 
     /**
      * Singleton instance of the ISO chronology.
      */
-    public static final ISOChronology INSTANCE = new ISOChronology();
+    public static final IsoChronology INSTANCE = new IsoChronology();
     /**
      * The singleton instance for the era BCE - 'Before Current Era'.
      * The 'ISO' part of the name emphasizes that this differs from the BCE
      * era in the Gregorian calendar system.
      * This has the numeric value of {@code 0}.
      */
-    public static final Era<ISOChronology> ERA_BCE = ISOEra.BCE;
+    public static final Era<IsoChronology> ERA_BCE = IsoEra.BCE;
     /**
      * The singleton instance for the era CE - 'Current Era'.
      * The 'ISO' part of the name emphasizes that this differs from the CE
      * era in the Gregorian calendar system.
      * This has the numeric value of {@code 1}.
      */
-    public static final Era<ISOChronology> ERA_CE = ISOEra.CE;
+    public static final Era<IsoChronology> ERA_CE = IsoEra.CE;
 
     /**
      * Serialization version.
@@ -102,7 +102,7 @@ public final class ISOChronology extends Chronology<ISOChronology> implements Se
     /**
      * Restricted constructor.
      */
-    private ISOChronology() {
+    private IsoChronology() {
     }
 
     /**
@@ -159,7 +159,7 @@ public final class ISOChronology extends Chronology<ISOChronology> implements Se
      * @throws DateTimeException if unable to create the date
      */
     @Override  // override with covariant return type
-    public LocalDate date(Era<ISOChronology> era, int yearOfEra, int month, int dayOfMonth) {
+    public LocalDate date(Era<IsoChronology> era, int yearOfEra, int month, int dayOfMonth) {
         return date(prolepticYear(era, yearOfEra), month, dayOfMonth);
     }
 
@@ -190,7 +190,7 @@ public final class ISOChronology extends Chronology<ISOChronology> implements Se
      * @throws DateTimeException if unable to create the date
      */
     @Override  // override with covariant return type
-    public LocalDate dateYearDay(Era<ISOChronology> era, int yearOfEra, int dayOfYear) {
+    public LocalDate dateYearDay(Era<IsoChronology> era, int yearOfEra, int dayOfYear) {
         return dateYearDay(prolepticYear(era, yearOfEra), dayOfYear);
     }
 
@@ -330,21 +330,21 @@ public final class ISOChronology extends Chronology<ISOChronology> implements Se
     }
 
     @Override
-    public int prolepticYear(Era<ISOChronology> era, int yearOfEra) {
-        if (era instanceof ISOEra == false) {
-            throw new DateTimeException("Era must be ISOEra");
+    public int prolepticYear(Era<IsoChronology> era, int yearOfEra) {
+        if (era instanceof IsoEra == false) {
+            throw new DateTimeException("Era must be IsoEra");
         }
-        return (era == ISOEra.CE ? yearOfEra : 1 - yearOfEra);
+        return (era == IsoEra.CE ? yearOfEra : 1 - yearOfEra);
     }
 
     @Override
-    public Era<ISOChronology> eraOf(int eraValue) {
-        return ISOEra.of(eraValue);
+    public Era<IsoChronology> eraOf(int eraValue) {
+        return IsoEra.of(eraValue);
     }
 
     @Override
-    public List<Era<ISOChronology>> eras() {
-        return Arrays.<Era<ISOChronology>>asList(ISOEra.values());
+    public List<Era<IsoChronology>> eras() {
+        return Arrays.<Era<IsoChronology>>asList(IsoEra.values());
     }
 
     //-----------------------------------------------------------------------

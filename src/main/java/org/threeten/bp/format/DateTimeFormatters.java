@@ -49,7 +49,7 @@ import java.util.Objects;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.temporal.ChronoField;
-import org.threeten.bp.temporal.ISOFields;
+import org.threeten.bp.temporal.IsoFields;
 import org.threeten.bp.temporal.TemporalField;
 
 /**
@@ -734,12 +734,12 @@ public final class DateTimeFormatters {
      * the ISO-8601 extended week-based date format.
      * The format consists of:
      * <p><ul>
-     * <li>Four digits or more for the {@link ISOFields#WEEK_BASED_YEAR week-based-year}.
+     * <li>Four digits or more for the {@link IsoFields#WEEK_BASED_YEAR week-based-year}.
      * Years in the range 0000 to 9999 will be pre-padded by zero to ensure four digits.
      * Years outside that range will have a prefixed positive or negative symbol.
      * <li>A dash
      * <li>The letter 'W'. Parsing is case insensitive.
-     * <li>Two digits for the {@link ISOFields#WEEK_OF_WEEK_BASED_YEAR week-of-week-based-year}.
+     * <li>Two digits for the {@link IsoFields#WEEK_OF_WEEK_BASED_YEAR week-of-week-based-year}.
      *  This is pre-padded by zero to ensure three digits.
      * <li>A dash
      * <li>One digit for the {@link ChronoField#DAY_OF_WEEK day-of-week}.
@@ -763,9 +763,9 @@ public final class DateTimeFormatters {
     static {
         ISO_WEEK_DATE = new DateTimeFormatterBuilder()
             .parseCaseInsensitive()
-            .appendValue(ISOFields.WEEK_BASED_YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
+            .appendValue(IsoFields.WEEK_BASED_YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
             .appendLiteral("-W")
-            .appendValue(ISOFields.WEEK_OF_WEEK_BASED_YEAR, 2)
+            .appendValue(IsoFields.WEEK_OF_WEEK_BASED_YEAR, 2)
             .appendLiteral('-')
             .appendValue(DAY_OF_WEEK, 1)
             .optionalStart()

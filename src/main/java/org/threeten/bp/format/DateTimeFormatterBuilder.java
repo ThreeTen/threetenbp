@@ -63,11 +63,11 @@ import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.chrono.Chronology;
-import org.threeten.bp.chrono.ISOChronology;
+import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.format.SimpleDateTimeTextProvider.LocaleStore;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
-import org.threeten.bp.temporal.ISOFields;
+import org.threeten.bp.temporal.IsoFields;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
@@ -813,7 +813,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendLocalized(FormatStyle dateStyle, FormatStyle timeStyle) {
-        return appendLocalized(dateStyle, timeStyle, ISOChronology.INSTANCE);
+        return appendLocalized(dateStyle, timeStyle, IsoChronology.INSTANCE);
     }
 
     /**
@@ -1208,7 +1208,7 @@ public final class DateTimeFormatterBuilder {
         // FIELD_MAP.put('y', ChronoField.YEAR_OF_ERA);            // Java, CLDR  // TODO redefine from above
         // FIELD_MAP.put('u', ChronoField.YEAR);                   // CLDR  // TODO
         // FIELD_MAP.put('Y', ISODateTimeField.WEEK_BASED_YEAR);          // Java7, CLDR (needs localized week number)  // TODO
-        FIELD_MAP.put('Q', ISOFields.QUARTER_OF_YEAR);             // CLDR (removed quarter from 310)
+        FIELD_MAP.put('Q', IsoFields.QUARTER_OF_YEAR);             // CLDR (removed quarter from 310)
         FIELD_MAP.put('M', ChronoField.MONTH_OF_YEAR);             // Java, CLDR
         // FIELD_MAP.put('w', WeekFields.weekOfYear());            // Java, CLDR (needs localized week number)
         // FIELD_MAP.put('W', WeekFields.weekOfMonth());           // Java, CLDR (needs localized week number)

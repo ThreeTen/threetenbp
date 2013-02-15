@@ -267,7 +267,7 @@ public class TestThaiBuddhistChronology {
 
     @Test
     public void test_equals_false() {
-        assertFalse(ThaiBuddhistChronology.INSTANCE.equals(ISOChronology.INSTANCE));
+        assertFalse(ThaiBuddhistChronology.INSTANCE.equals(IsoChronology.INSTANCE));
     }
 
 }

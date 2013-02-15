@@ -64,7 +64,7 @@ import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
-import org.threeten.bp.temporal.ISOFields;
+import org.threeten.bp.temporal.IsoFields;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
@@ -1000,8 +1000,8 @@ public class TestDateTimeFormatters {
     @Test
     public void test_parse_weekDate_largeYear() {
         DateTimeBuilder builder = DateTimeFormatters.isoWeekDate().parseToBuilder("+123456-W04-5", new ParsePosition(0));
-        assertEquals(builder.getFieldValue(ISOFields.WEEK_BASED_YEAR), 123456);
-        assertEquals(builder.getFieldValue(ISOFields.WEEK_OF_WEEK_BASED_YEAR), 4);
+        assertEquals(builder.getFieldValue(IsoFields.WEEK_BASED_YEAR), 123456);
+        assertEquals(builder.getFieldValue(IsoFields.WEEK_OF_WEEK_BASED_YEAR), 4);
         assertEquals(builder.getFieldValue(DAY_OF_WEEK), 5);
     }
 
@@ -1176,8 +1176,8 @@ public class TestDateTimeFormatters {
                 fields.put(DAY_OF_MONTH, (long) dt.getDayOfMonth());
                 fields.put(DAY_OF_YEAR, (long) dt.getDayOfYear());
                 fields.put(DAY_OF_WEEK, (long) dt.getDayOfWeek().getValue());
-                fields.put(ISOFields.WEEK_BASED_YEAR, dt.getLong(ISOFields.WEEK_BASED_YEAR));
-                fields.put(ISOFields.WEEK_OF_WEEK_BASED_YEAR, dt.getLong(ISOFields.WEEK_OF_WEEK_BASED_YEAR));
+                fields.put(IsoFields.WEEK_BASED_YEAR, dt.getLong(IsoFields.WEEK_BASED_YEAR));
+                fields.put(IsoFields.WEEK_OF_WEEK_BASED_YEAR, dt.getLong(IsoFields.WEEK_OF_WEEK_BASED_YEAR));
             }
         }
 
@@ -1188,8 +1188,8 @@ public class TestDateTimeFormatters {
                 fields.put(DAY_OF_MONTH, (long) dt.getDayOfMonth());
                 fields.put(DAY_OF_YEAR, (long) dt.getDayOfYear());
                 fields.put(DAY_OF_WEEK, (long) dt.getDayOfWeek().getValue());
-                fields.put(ISOFields.WEEK_BASED_YEAR, dt.getLong(ISOFields.WEEK_BASED_YEAR));
-                fields.put(ISOFields.WEEK_OF_WEEK_BASED_YEAR, dt.getLong(ISOFields.WEEK_OF_WEEK_BASED_YEAR));
+                fields.put(IsoFields.WEEK_BASED_YEAR, dt.getLong(IsoFields.WEEK_BASED_YEAR));
+                fields.put(IsoFields.WEEK_OF_WEEK_BASED_YEAR, dt.getLong(IsoFields.WEEK_OF_WEEK_BASED_YEAR));
                 fields.put(HOUR_OF_DAY, (long) dt.getHour());
                 fields.put(MINUTE_OF_HOUR, (long) dt.getMinute());
                 fields.put(SECOND_OF_MINUTE, (long) dt.getSecond());

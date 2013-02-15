@@ -80,7 +80,7 @@ import java.util.List;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.threeten.bp.chrono.ISOChronology;
+import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
@@ -854,7 +854,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_query_chrono() {
-        assertEquals(TEST_DATE_TIME.query(TemporalQueries.chronology()), ISOChronology.INSTANCE);
+        assertEquals(TEST_DATE_TIME.query(TemporalQueries.chronology()), IsoChronology.INSTANCE);
     }
 
     @Test

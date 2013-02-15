@@ -45,7 +45,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 import org.threeten.bp.chrono.Chronology;
-import org.threeten.bp.chrono.ISOChronology;
+import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.DateTimeParseException;
@@ -210,7 +210,7 @@ public final class Year
             return (Year) temporal;
         }
         try {
-            if (ISOChronology.INSTANCE.equals(Chronology.from(temporal)) == false) {
+            if (IsoChronology.INSTANCE.equals(Chronology.from(temporal)) == false) {
                 temporal = LocalDate.from(temporal);
             }
             return of(temporal.get(YEAR));
@@ -673,7 +673,7 @@ public final class Year
     @Override
     public <R> R query(TemporalQuery<R> query) {
         if (query == TemporalQueries.chronology()) {
-            return (R) ISOChronology.INSTANCE;
+            return (R) IsoChronology.INSTANCE;
         } else if (query == TemporalQueries.precision()) {
             return (R) YEARS;
         }
@@ -708,7 +708,7 @@ public final class Year
      */
     @Override
     public Temporal adjustInto(Temporal temporal) {
-        if (Chronology.from(temporal).equals(ISOChronology.INSTANCE) == false) {
+        if (Chronology.from(temporal).equals(IsoChronology.INSTANCE) == false) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }
         return temporal.with(YEAR, year);

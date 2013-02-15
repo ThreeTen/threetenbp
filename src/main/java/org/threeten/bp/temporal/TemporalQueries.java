@@ -130,21 +130,21 @@ public final class TemporalQueries {
      * {@code LocalTime}, will return null.
      * <p>
      * The result from JDK classes implementing {@code TemporalAccessor} is as follows:<br>
-     * {@code LocalDate} returns {@code ISOChrono.INSTANCE}<br>
+     * {@code LocalDate} returns {@code IsoChronology.INSTANCE}<br>
      * {@code LocalTime} returns null (does not represent a date)<br>
-     * {@code LocalDateTime} returns {@code ISOChrono.INSTANCE}<br>
-     * {@code ZonedDateTime} returns {@code ISOChrono.INSTANCE}<br>
+     * {@code LocalDateTime} returns {@code IsoChronology.INSTANCE}<br>
+     * {@code ZonedDateTime} returns {@code IsoChronology.INSTANCE}<br>
      * {@code OffsetTime} returns null (does not represent a date)<br>
-     * {@code OffsetDateTime} returns {@code ISOChrono.INSTANCE}<br>
+     * {@code OffsetDateTime} returns {@code IsoChronology.INSTANCE}<br>
      * {@code ChronoLocalDate} returns the associated chronology<br>
      * {@code ChronoLocalDateTime} returns the associated chronology<br>
      * {@code ChronoZonedDateTime} returns the associated chronology<br>
      * {@code Era} returns the associated chronology<br>
      * {@code DayOfWeek} returns null (shared across chronologies)<br>
-     * {@code Month} returns {@code ISOChrono.INSTANCE}<br>
-     * {@code Year} returns {@code ISOChrono.INSTANCE}<br>
-     * {@code YearMonth} returns {@code ISOChrono.INSTANCE}<br>
-     * {@code MonthDay} returns null {@code ISOChrono.INSTANCE}<br>
+     * {@code Month} returns {@code IsoChronology.INSTANCE}<br>
+     * {@code Year} returns {@code IsoChronology.INSTANCE}<br>
+     * {@code YearMonth} returns {@code IsoChronology.INSTANCE}<br>
+     * {@code MonthDay} returns null {@code IsoChronology.INSTANCE}<br>
      * {@code ZoneOffset} returns null (does not represent a date)<br>
      * {@code Instant} returns null (does not represent a date)<br>
      * <p>

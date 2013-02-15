@@ -77,7 +77,7 @@ public class TestChronoLocalDateTime {
     Chronology[][] data_of_calendars() {
         return new Chronology[][]{
                     {HijrahChronology.INSTANCE},
-                    {ISOChronology.INSTANCE},
+                    {IsoChronology.INSTANCE},
                     {JapaneseChronology.INSTANCE},
                     {MinguoChronology.INSTANCE},
                     {ThaiBuddhistChronology.INSTANCE}};

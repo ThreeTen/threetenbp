@@ -52,13 +52,13 @@ import org.threeten.bp.temporal.ValueRange;
  * A definition has therefore been created with two eras - 'Current era' (CE) for
  * years from 0001-01-01 (ISO) and 'Before current era' (BCE) for years before that.
  * <p>
- * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code ISOEra}.
+ * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code IsoEra}.
  * Use {@code getValue()} instead.</b>
  *
  * <h3>Specification for implementors</h3>
  * This is an immutable and thread-safe enum.
  */
-enum ISOEra implements Era<ISOChronology> {
+enum IsoEra implements Era<IsoChronology> {
 
     /**
      * The singleton instance for the era BCE, 'Before Current Era'.
@@ -77,16 +77,16 @@ enum ISOEra implements Era<ISOChronology> {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code ISOEra} from an {@code int} value.
+     * Obtains an instance of {@code IsoEra} from an {@code int} value.
      * <p>
-     * {@code ISOEra} is an enum representing the ISO eras of BCE/CE.
+     * {@code IsoEra} is an enum representing the ISO eras of BCE/CE.
      * This factory allows the enum to be obtained from the {@code int} value.
      *
      * @param era  the BCE/CE value to represent, from 0 (BCE) to 1 (CE)
      * @return the era singleton, not null
      * @throws DateTimeException if the value is invalid
      */
-    public static ISOEra of(int era) {
+    public static IsoEra of(int era) {
         switch (era) {
             case 0:
                 return BCE;
@@ -111,19 +111,19 @@ enum ISOEra implements Era<ISOChronology> {
     }
 
     @Override
-    public ISOChronology getChronology() {
-        return ISOChronology.INSTANCE;
+    public IsoChronology getChronology() {
+        return IsoChronology.INSTANCE;
     }
 
     // JDK8 default methods:
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDate<ISOChronology> date(int year, int month, int day) {
+    public ChronoLocalDate<IsoChronology> date(int year, int month, int day) {
         return getChronology().date(this, year, month, day);
     }
 
     @Override
-    public ChronoLocalDate<ISOChronology> dateYearDay(int year, int dayOfYear) {
+    public ChronoLocalDate<IsoChronology> dateYearDay(int year, int dayOfYear) {
         return getChronology().dateYearDay(this, year, dayOfYear);
     }
 

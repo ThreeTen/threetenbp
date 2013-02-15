@@ -52,12 +52,12 @@ import org.threeten.bp.format.DateTimeBuilder;
  * Test.
  */
 @Test
-public class TestISOFields {
+public class TestIsoFields {
 
     public void test_enum() {
-        assertTrue(ISOFields.WEEK_OF_WEEK_BASED_YEAR instanceof Enum);
-        assertTrue(ISOFields.WEEK_BASED_YEAR instanceof Enum);
-        assertTrue(ISOFields.WEEK_BASED_YEARS instanceof Enum);
+        assertTrue(IsoFields.WEEK_OF_WEEK_BASED_YEAR instanceof Enum);
+        assertTrue(IsoFields.WEEK_BASED_YEAR instanceof Enum);
+        assertTrue(IsoFields.WEEK_BASED_YEARS instanceof Enum);
     }
 
     @DataProvider(name="week")
@@ -84,8 +84,8 @@ public class TestISOFields {
     @Test(dataProvider="week")
     public void test_WOWBY(LocalDate date, DayOfWeek dow, int week, int wby) {
         assertEquals(date.getDayOfWeek(), dow);
-        assertEquals(ISOFields.WEEK_OF_WEEK_BASED_YEAR.doGet(date), week);
-        assertEquals(date.get(ISOFields.WEEK_OF_WEEK_BASED_YEAR), week);
+        assertEquals(IsoFields.WEEK_OF_WEEK_BASED_YEAR.doGet(date), week);
+        assertEquals(date.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR), week);
     }
 
     //-----------------------------------------------------------------------
@@ -94,8 +94,8 @@ public class TestISOFields {
     @Test(dataProvider="week")
     public void test_WBY(LocalDate date, DayOfWeek dow, int week, int wby) {
         assertEquals(date.getDayOfWeek(), dow);
-        assertEquals(ISOFields.WEEK_BASED_YEAR.doGet(date), wby);
-        assertEquals(date.get(ISOFields.WEEK_BASED_YEAR), wby);
+        assertEquals(IsoFields.WEEK_BASED_YEAR.doGet(date), wby);
+        assertEquals(date.get(IsoFields.WEEK_BASED_YEAR), wby);
     }
 
     //-----------------------------------------------------------------------
@@ -104,8 +104,8 @@ public class TestISOFields {
     @Test(dataProvider="week")
     public void test_builder(LocalDate date, DayOfWeek dow, int week, int wby) {
         DateTimeBuilder builder = new DateTimeBuilder();
-        builder.addFieldValue(ISOFields.WEEK_BASED_YEAR, wby);
-        builder.addFieldValue(ISOFields.WEEK_OF_WEEK_BASED_YEAR, week);
+        builder.addFieldValue(IsoFields.WEEK_BASED_YEAR, wby);
+        builder.addFieldValue(IsoFields.WEEK_OF_WEEK_BASED_YEAR, week);
         builder.addFieldValue(DAY_OF_WEEK, dow.getValue());
         builder.resolve();
         assertEquals(builder.build(LocalDate.class), date);
@@ -134,11 +134,11 @@ public class TestISOFields {
                     wby++;
                 }
             }
-            assertEquals(ISOFields.WEEK_OF_WEEK_BASED_YEAR.doRange(date), ValueRange.of(1, weekLen), "Failed on " + date + " " + date.getDayOfWeek());
-            assertEquals(ISOFields.WEEK_OF_WEEK_BASED_YEAR.doGet(date), week, "Failed on " + date + " " + date.getDayOfWeek());
-            assertEquals(date.get(ISOFields.WEEK_OF_WEEK_BASED_YEAR), week, "Failed on " + date + " " + date.getDayOfWeek());
-            assertEquals(ISOFields.WEEK_BASED_YEAR.doGet(date), wby, "Failed on " + date + " " + date.getDayOfWeek());
-            assertEquals(date.get(ISOFields.WEEK_BASED_YEAR), wby, "Failed on " + date + " " + date.getDayOfWeek());
+            assertEquals(IsoFields.WEEK_OF_WEEK_BASED_YEAR.doRange(date), ValueRange.of(1, weekLen), "Failed on " + date + " " + date.getDayOfWeek());
+            assertEquals(IsoFields.WEEK_OF_WEEK_BASED_YEAR.doGet(date), week, "Failed on " + date + " " + date.getDayOfWeek());
+            assertEquals(date.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR), week, "Failed on " + date + " " + date.getDayOfWeek());
+            assertEquals(IsoFields.WEEK_BASED_YEAR.doGet(date), wby, "Failed on " + date + " " + date.getDayOfWeek());
+            assertEquals(date.get(IsoFields.WEEK_BASED_YEAR), wby, "Failed on " + date + " " + date.getDayOfWeek());
             date = date.plusDays(1);
         }
     }
@@ -180,7 +180,7 @@ public class TestISOFields {
 
      @Test(dataProvider="quartersBetween")
      public void test_quarters_between(LocalDate start, LocalDate end, long expected) {
-         assertEquals(ISOFields.QUARTER_YEARS.between(start, end).getAmount(), expected);
+         assertEquals(IsoFields.QUARTER_YEARS.between(start, end).getAmount(), expected);
      }
 
     // TODO: more tests

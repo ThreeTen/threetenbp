@@ -53,7 +53,7 @@ import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.ChronoZonedDateTime;
 import org.threeten.bp.chrono.HijrahChronology;
-import org.threeten.bp.chrono.ISOChronology;
+import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.chrono.JapaneseChronology;
 import org.threeten.bp.chrono.MinguoChronology;
 import org.threeten.bp.chrono.ThaiBuddhistChronology;
@@ -82,7 +82,7 @@ public class TestChronoZonedDateTime {
     Chronology[][] data_of_calendars() {
         return new Chronology[][]{
                     {HijrahChronology.INSTANCE},
-                    {ISOChronology.INSTANCE},
+                    {IsoChronology.INSTANCE},
                     {JapaneseChronology.INSTANCE},
                     {MinguoChronology.INSTANCE},
                     {ThaiBuddhistChronology.INSTANCE},
@@ -268,7 +268,7 @@ public class TestChronoZonedDateTime {
         // Check these dates against the corresponding dates for every calendar
         for (Chronology[] clist : data_of_calendars()) {
             List<ChronoZonedDateTime<?>> otherDates = new ArrayList<>();
-            Chronology chrono2 = ISOChronology.INSTANCE; //clist[0];
+            Chronology chrono2 = IsoChronology.INSTANCE; //clist[0];
             for (ChronoZonedDateTime<?> d : dates) {
                 otherDates.add(chrono2.date(d).atTime(d.getTime()).atZone(d.getZone()));
             }

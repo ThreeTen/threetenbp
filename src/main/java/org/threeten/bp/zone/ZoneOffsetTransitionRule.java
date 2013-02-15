@@ -46,7 +46,7 @@ import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.Month;
 import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.chrono.ISOChronology;
+import org.threeten.bp.chrono.IsoChronology;
 
 /**
  * A rule expressing how to create a transition.
@@ -399,7 +399,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     public ZoneOffsetTransition createTransition(int year) {
         LocalDate date;
         if (dom < 0) {
-            date = LocalDate.of(year, month, month.length(ISOChronology.INSTANCE.isLeapYear(year)) + 1 + dom);
+            date = LocalDate.of(year, month, month.length(IsoChronology.INSTANCE.isLeapYear(year)) + 1 + dom);
             if (dow != null) {
                 date = date.with(previousOrSame(dow));
             }

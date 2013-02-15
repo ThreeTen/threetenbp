@@ -37,7 +37,7 @@ import static org.threeten.bp.temporal.ChronoUnit.MONTHS;
 import java.util.Locale;
 
 import org.threeten.bp.chrono.Chronology;
-import org.threeten.bp.chrono.ISOChronology;
+import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.TextStyle;
 import org.threeten.bp.temporal.ChronoField;
@@ -180,7 +180,7 @@ public enum Month implements TemporalAccessor, TemporalAdjuster {
             return (Month) temporal;
         }
         try {
-            if (ISOChronology.INSTANCE.equals(Chronology.from(temporal)) == false) {
+            if (IsoChronology.INSTANCE.equals(Chronology.from(temporal)) == false) {
                 temporal = LocalDate.from(temporal);
             }
             return of(temporal.get(MONTH_OF_YEAR));
@@ -526,7 +526,7 @@ public enum Month implements TemporalAccessor, TemporalAdjuster {
     @Override
     public <R> R query(TemporalQuery<R> query) {
         if (query == TemporalQueries.chronology()) {
-            return (R) ISOChronology.INSTANCE;
+            return (R) IsoChronology.INSTANCE;
         } else if (query == TemporalQueries.precision()) {
             return (R) MONTHS;
         } else if (query == TemporalQueries.zoneId()) {
@@ -572,7 +572,7 @@ public enum Month implements TemporalAccessor, TemporalAdjuster {
      */
     @Override
     public Temporal adjustInto(Temporal temporal) {
-        if (Chronology.from(temporal).equals(ISOChronology.INSTANCE) == false) {
+        if (Chronology.from(temporal).equals(IsoChronology.INSTANCE) == false) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }
         return temporal.with(MONTH_OF_YEAR, getValue());

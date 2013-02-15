@@ -231,7 +231,7 @@ public final class JapaneseChronology extends Chronology<JapaneseChronology> imp
      */
     @Override
     public boolean isLeapYear(long prolepticYear) {
-        return ISOChronology.INSTANCE.isLeapYear(prolepticYear);
+        return IsoChronology.INSTANCE.isLeapYear(prolepticYear);
     }
 
     @Override

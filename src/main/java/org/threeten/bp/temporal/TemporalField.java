@@ -43,7 +43,7 @@ import org.threeten.bp.format.DateTimeBuilder;
  * meaningful for humans. Implementations of this interface represent those fields.
  * <p>
  * The most commonly used units are defined in {@link ChronoField}.
- * Further fields are supplied in {@link ISOFields}, {@link WeekFields} and {@link JulianFields}.
+ * Further fields are supplied in {@link IsoFields}, {@link WeekFields} and {@link JulianFields}.
  * Fields can also be written by application code by implementing this interface.
  * <p>
  * The field works using double dispatch. Client code calls methods on a date-time like

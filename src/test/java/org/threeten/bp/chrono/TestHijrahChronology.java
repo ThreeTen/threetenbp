@@ -201,7 +201,7 @@ public class TestHijrahChronology {
 
     @Test
     public void test_equals_false() {
-        assertFalse(HijrahChronology.INSTANCE.equals(ISOChronology.INSTANCE));
+        assertFalse(HijrahChronology.INSTANCE.equals(IsoChronology.INSTANCE));
     }
 
 }

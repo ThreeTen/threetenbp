@@ -49,7 +49,7 @@ import org.testng.annotations.Test;
 import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.HijrahChronology;
-import org.threeten.bp.chrono.ISOChronology;
+import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.chrono.JapaneseChronology;
 import org.threeten.bp.chrono.MinguoChronology;
 import org.threeten.bp.chrono.ThaiBuddhistChronology;
@@ -66,7 +66,7 @@ public class TestChronology {
         // Ensure each of the classes are initialized (until initialization is fixed)
         Chronology<?> c;
         c = HijrahChronology.INSTANCE;
-        c = ISOChronology.INSTANCE;
+        c = IsoChronology.INSTANCE;
         c = JapaneseChronology.INSTANCE;
         c = MinguoChronology.INSTANCE;
         c = ThaiBuddhistChronology.INSTANCE;
@@ -137,7 +137,7 @@ public class TestChronology {
     Object[][] data_CalendarType() {
         return new Object[][] {
             {HijrahChronology.INSTANCE, "islamicc"},
-            {ISOChronology.INSTANCE, "iso8601"},
+            {IsoChronology.INSTANCE, "iso8601"},
             {JapaneseChronology.INSTANCE, "japanese"},
             {MinguoChronology.INSTANCE, "roc"},
             {ThaiBuddhistChronology.INSTANCE, "buddhist"},

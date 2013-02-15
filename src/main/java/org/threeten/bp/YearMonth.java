@@ -47,7 +47,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 import org.threeten.bp.chrono.Chronology;
-import org.threeten.bp.chrono.ISOChronology;
+import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.DateTimeParseException;
@@ -212,7 +212,7 @@ public final class YearMonth
             return (YearMonth) temporal;
         }
         try {
-            if (ISOChronology.INSTANCE.equals(Chronology.from(temporal)) == false) {
+            if (IsoChronology.INSTANCE.equals(Chronology.from(temporal)) == false) {
                 temporal = LocalDate.from(temporal);
             }
             return of(temporal.get(YEAR), temporal.get(MONTH_OF_YEAR));
@@ -465,7 +465,7 @@ public final class YearMonth
      * @return true if the year is leap, false otherwise
      */
     public boolean isLeapYear() {
-        return ISOChronology.INSTANCE.isLeapYear(year);
+        return IsoChronology.INSTANCE.isLeapYear(year);
     }
 
     /**
@@ -786,7 +786,7 @@ public final class YearMonth
     @Override
     public <R> R query(TemporalQuery<R> query) {
         if (query == TemporalQueries.chronology()) {
-            return (R) ISOChronology.INSTANCE;
+            return (R) IsoChronology.INSTANCE;
         } else if (query == TemporalQueries.precision()) {
             return (R) MONTHS;
         }
@@ -821,7 +821,7 @@ public final class YearMonth
      */
     @Override
     public Temporal adjustInto(Temporal temporal) {
-        if (Chronology.from(temporal).equals(ISOChronology.INSTANCE) == false) {
+        if (Chronology.from(temporal).equals(IsoChronology.INSTANCE) == false) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }
         return temporal.with(EPOCH_MONTH, getEpochMonth());

@@ -210,7 +210,7 @@ public final class ThaiBuddhistChronology extends Chronology<ThaiBuddhistChronol
      */
     @Override
     public boolean isLeapYear(long prolepticYear) {
-        return ISOChronology.INSTANCE.isLeapYear(prolepticYear - YEARS_DIFFERENCE);
+        return IsoChronology.INSTANCE.isLeapYear(prolepticYear - YEARS_DIFFERENCE);
     }
 
     @Override

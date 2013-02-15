@@ -78,7 +78,7 @@ import java.util.List;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.threeten.bp.chrono.ISOChronology;
+import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
@@ -561,8 +561,8 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_query_chrono() {
-        assertEquals(TEST_2008_6_30_11_30_59_000000500.query(TemporalQueries.chronology()), ISOChronology.INSTANCE);
-        assertEquals(TemporalQueries.chronology().queryFrom(TEST_2008_6_30_11_30_59_000000500), ISOChronology.INSTANCE);
+        assertEquals(TEST_2008_6_30_11_30_59_000000500.query(TemporalQueries.chronology()), IsoChronology.INSTANCE);
+        assertEquals(TemporalQueries.chronology().queryFrom(TEST_2008_6_30_11_30_59_000000500), IsoChronology.INSTANCE);
     }
 
     @Test

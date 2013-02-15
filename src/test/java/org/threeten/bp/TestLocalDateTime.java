@@ -80,7 +80,7 @@ import java.util.List;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.threeten.bp.chrono.ISOChronology;
+import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
@@ -913,7 +913,7 @@ public class TestLocalDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_query_chrono() {
-        assertEquals(TEST_2007_07_15_12_30_40_987654321.query(TemporalQueries.chronology()), ISOChronology.INSTANCE);
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.query(TemporalQueries.chronology()), IsoChronology.INSTANCE);
     }
 
     @Test

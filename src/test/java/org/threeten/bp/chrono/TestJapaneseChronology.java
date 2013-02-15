@@ -248,7 +248,7 @@ public class TestJapaneseChronology {
 
     @Test
     public void test_equals_false() {
-        assertFalse(JapaneseChronology.INSTANCE.equals(ISOChronology.INSTANCE));
+        assertFalse(JapaneseChronology.INSTANCE.equals(IsoChronology.INSTANCE));
     }
 
 }

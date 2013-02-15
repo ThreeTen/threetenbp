@@ -235,7 +235,7 @@ public class TestMinguoChronology {
 
     @Test
     public void test_equals_false() {
-        assertFalse(MinguoChronology.INSTANCE.equals(ISOChronology.INSTANCE));
+        assertFalse(MinguoChronology.INSTANCE.equals(IsoChronology.INSTANCE));
     }
 
 }
