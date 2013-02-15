@@ -184,7 +184,7 @@ public enum DayOfWeek implements TemporalAccessor, TemporalAdjuster {
      * @param locale  the locale to use, not null
      * @return the text value of the day-of-week, not null
      */
-    public String getText(TextStyle style, Locale locale) {
+    public String getDisplayName(TextStyle style, Locale locale) {
         return new DateTimeFormatterBuilder().appendText(DAY_OF_WEEK, style).toFormatter(locale).print(this);
     }
 

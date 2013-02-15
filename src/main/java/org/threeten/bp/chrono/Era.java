@@ -133,7 +133,7 @@ public interface Era<C extends Chronology<C>> extends TemporalAccessor, Temporal
      * @param locale  the locale to use, not null
      * @return the text value of the era, not null
      */
-    String getText(TextStyle style, Locale locale);
+    String getDisplayName(TextStyle style, Locale locale);
 
     // NOTE: methods to convert year-of-era/proleptic-year cannot be here as they may depend on month/day (Japanese)
 }

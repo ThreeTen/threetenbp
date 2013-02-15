@@ -110,7 +110,7 @@ public abstract class DefaultInterfaceEra<C extends Chronology<C>>
 
     //-----------------------------------------------------------------------
     @Override
-    public String getText(TextStyle style, Locale locale) {
+    public String getDisplayName(TextStyle style, Locale locale) {
         return new DateTimeFormatterBuilder().appendText(ERA, style).toFormatter(locale).print(this);
     }
 

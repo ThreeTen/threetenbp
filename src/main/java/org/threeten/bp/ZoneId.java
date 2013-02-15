@@ -405,7 +405,7 @@ public abstract class ZoneId implements Serializable {
      * @param locale  the locale to use, not null
      * @return the text value of the zone, not null
      */
-    public String getText(TextStyle style, Locale locale) {
+    public String getDisplayName(TextStyle style, Locale locale) {
         return new DateTimeFormatterBuilder().appendZoneText(style).toFormatter(locale).print(new DefaultInterfaceTemporalAccessor() {
             @Override
             public boolean isSupported(TemporalField field) {

@@ -643,7 +643,7 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
      * @param locale  the locale to use, not null
      * @return the text value of the chronology, not null
      */
-    public String getText(TextStyle style, Locale locale) {
+    public String getDisplayName(TextStyle style, Locale locale) {
         return new DateTimeFormatterBuilder().appendChronoText(style).toFormatter(locale).print(new DefaultInterfaceTemporalAccessor() {
             @Override
             public boolean isSupported(TemporalField field) {
