@@ -108,11 +108,11 @@ import org.threeten.bp.temporal.TemporalUnit;
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * Subclasses should be Serializable wherever possible.
  *
- * @param <C> the chronology of this date
+ * @param <D> the date type
  */
-abstract class ChronoDateImpl<C extends Chronology<C>>
-        extends DefaultInterfaceChronoLocalDate<C>
-        implements ChronoLocalDate<C>, Temporal, TemporalAdjuster, Serializable {
+abstract class ChronoDateImpl<D extends ChronoLocalDate<D>>
+        extends DefaultInterfaceChronoLocalDate<D>
+        implements ChronoLocalDate<D>, Temporal, TemporalAdjuster, Serializable {
 
     /**
      * Serialization version.
@@ -127,7 +127,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoDateImpl<C> plus(long amountToAdd, TemporalUnit unit) {
+    public ChronoDateImpl<D> plus(long amountToAdd, TemporalUnit unit) {
         if (unit instanceof ChronoUnit) {
             ChronoUnit f = (ChronoUnit) unit;
             switch (f) {
@@ -143,7 +143,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
             }
             throw new DateTimeException(unit.getName() + " not valid for chronology " + getChronology().getId());
         }
-        return (ChronoDateImpl<C>) getChronology().ensureChronoLocalDate(unit.addTo(this, amountToAdd));
+        return (ChronoDateImpl<D>) getChronology().ensureChronoLocalDate(unit.addTo(this, amountToAdd));
     }
 
     //-----------------------------------------------------------------------
@@ -161,7 +161,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
      * @return a date based on this one with the years added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    abstract ChronoDateImpl<C> plusYears(long yearsToAdd);
+    abstract ChronoDateImpl<D> plusYears(long yearsToAdd);
 
     /**
      * Returns a copy of this date with the specified period in months added.
@@ -177,7 +177,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
      * @return a date based on this one with the months added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    abstract ChronoDateImpl<C> plusMonths(long monthsToAdd);
+    abstract ChronoDateImpl<D> plusMonths(long monthsToAdd);
 
     /**
      * Returns a copy of this date with the specified period in weeks added.
@@ -194,7 +194,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
      * @return a date based on this one with the weeks added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    ChronoDateImpl<C> plusWeeks(long weeksToAdd) {
+    ChronoDateImpl<D> plusWeeks(long weeksToAdd) {
         return plusDays(Jdk8Methods.safeMultiply(weeksToAdd, 7));
     }
 
@@ -209,7 +209,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
      * @return a date based on this one with the days added, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    abstract ChronoDateImpl<C> plusDays(long daysToAdd);
+    abstract ChronoDateImpl<D> plusDays(long daysToAdd);
 
     //-----------------------------------------------------------------------
     /**
@@ -228,7 +228,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
      * @return a date based on this one with the years subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    ChronoDateImpl<C> minusYears(long yearsToSubtract) {
+    ChronoDateImpl<D> minusYears(long yearsToSubtract) {
         return (yearsToSubtract == Long.MIN_VALUE ? plusYears(Long.MAX_VALUE).plusYears(1) : plusYears(-yearsToSubtract));
     }
 
@@ -248,7 +248,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
      * @return a date based on this one with the months subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    ChronoDateImpl<C> minusMonths(long monthsToSubtract) {
+    ChronoDateImpl<D> minusMonths(long monthsToSubtract) {
         return (monthsToSubtract == Long.MIN_VALUE ? plusMonths(Long.MAX_VALUE).plusMonths(1) : plusMonths(-monthsToSubtract));
     }
 
@@ -267,7 +267,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
      * @return a date based on this one with the weeks subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    ChronoDateImpl<C> minusWeeks(long weeksToSubtract) {
+    ChronoDateImpl<D> minusWeeks(long weeksToSubtract) {
         return (weeksToSubtract == Long.MIN_VALUE ? plusWeeks(Long.MAX_VALUE).plusWeeks(1) : plusWeeks(-weeksToSubtract));
     }
 
@@ -284,12 +284,12 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
      * @return a date based on this one with the days subtracted, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    ChronoDateImpl<C> minusDays(long daysToSubtract) {
+    ChronoDateImpl<D> minusDays(long daysToSubtract) {
         return (daysToSubtract == Long.MIN_VALUE ? plusDays(Long.MAX_VALUE).plusDays(1) : plusDays(-daysToSubtract));
     }
 
     @Override
-    public final ChronoLocalDateTime<C> atTime(LocalTime localTime) {
+    public final ChronoLocalDateTime<D> atTime(LocalTime localTime) {
         return Chronology.dateTime(this, localTime);
     }
 

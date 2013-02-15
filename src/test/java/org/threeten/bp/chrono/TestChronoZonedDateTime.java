@@ -81,7 +81,7 @@ public class TestChronoZonedDateTime {
     }
 
     @Test(dataProvider="calendars")
-    public void test_badWithAdjusterChrono(Chronology<?> chrono) {
+    public void test_badWithAdjusterChrono(Chronology chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
         ChronoZonedDateTime czdt = chrono.date(refDate).atTime(LocalTime.NOON).atZone(ZoneOffset.UTC);
         for (Chronology[] clist : data_of_calendars()) {
@@ -295,16 +295,16 @@ public class TestChronoZonedDateTime {
     // Test Serialization of ISO via chrono API
     //-----------------------------------------------------------------------
     @Test( dataProvider="calendars")
-    public <C extends Chronology<C>> void test_ChronoZonedDateTimeSerialization(C chrono) throws Exception {
+    public void test_ChronoZonedDateTimeSerialization(Chronology chrono) throws Exception {
         ZonedDateTime ref = LocalDate.of(2000, 1, 5).atTime(12, 1, 2, 3).atZone(ZoneId.of("GMT+01:23"));
-        ChronoZonedDateTime<C> orginal = chrono.date(ref).atTime(ref.toLocalTime()).atZone(ref.getZone());
+        ChronoZonedDateTime<?> orginal = chrono.date(ref).atTime(ref.toLocalTime()).atZone(ref.getZone());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);
         out.writeObject(orginal);
         out.close();
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream in = new ObjectInputStream(bais);
-        ChronoZonedDateTime<C> ser = (ChronoZonedDateTime<C>) in.readObject();
+        ChronoZonedDateTime<?> ser = (ChronoZonedDateTime<?>) in.readObject();
         assertEquals(ser, orginal, "deserialized date is wrong");
     }
 

@@ -56,8 +56,8 @@ import org.threeten.bp.temporal.ValueRange;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
-final class ThaiBuddhistDate
-        extends ChronoDateImpl<ThaiBuddhistChronology>
+public final class ThaiBuddhistDate
+        extends ChronoDateImpl<ThaiBuddhistDate>
         implements Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
@@ -222,7 +222,7 @@ final class ThaiBuddhistDate
         out.writeByte(this.get(DAY_OF_MONTH));
     }
 
-    static ChronoLocalDate<ThaiBuddhistChronology> readExternal(DataInput in) throws IOException {
+    static ChronoLocalDate<?> readExternal(DataInput in) throws IOException {
         int year = in.readInt();
         int month = in.readByte();
         int dayOfMonth = in.readByte();

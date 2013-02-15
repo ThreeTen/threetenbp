@@ -60,7 +60,7 @@ import sun.util.calendar.CalendarDate;
  * This class is immutable and thread-safe.
  */
 final class JapaneseEra
-        extends DefaultInterfaceEra<JapaneseChronology>
+        extends DefaultInterfaceEra
         implements Serializable {
 
     // The offset value to 0-based index from the era value.

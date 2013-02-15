@@ -38,9 +38,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
+import org.threeten.bp.Clock;
 import org.threeten.bp.DateTimeException;
+import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
+import org.threeten.bp.ZoneId;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.ValueRange;
@@ -71,7 +75,7 @@ import org.threeten.bp.temporal.ValueRange;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
-public final class ThaiBuddhistChronology extends Chronology<ThaiBuddhistChronology> implements Serializable {
+public final class ThaiBuddhistChronology extends Chronology implements Serializable {
 
     /**
      * Singleton instance of the Buddhist chronology.
@@ -81,11 +85,11 @@ public final class ThaiBuddhistChronology extends Chronology<ThaiBuddhistChronol
      * The singleton instance for the era before the current one - Before Buddhist -
      * which has the value 0.
      */
-    public static final Era<ThaiBuddhistChronology> ERA_BEFORE_BE = ThaiBuddhistEra.BEFORE_BE;
+    public static final Era ERA_BEFORE_BE = ThaiBuddhistEra.BEFORE_BE;
     /**
      * The singleton instance for the current era - Buddhist - which has the value 1.
      */
-    public static final Era<ThaiBuddhistChronology> ERA_BE = ThaiBuddhistEra.BE;
+    public static final Era ERA_BE = ThaiBuddhistEra.BE;
 
     /**
      * Serialization version.
@@ -179,22 +183,65 @@ public final class ThaiBuddhistChronology extends Chronology<ThaiBuddhistChronol
     }
 
     //-----------------------------------------------------------------------
-    @Override
-    public ChronoLocalDate<ThaiBuddhistChronology> date(int prolepticYear, int month, int dayOfMonth) {
+    @Override  // override with covariant return type
+    public ThaiBuddhistDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
+        return (ThaiBuddhistDate) super.date(era, yearOfEra, month, dayOfMonth);
+    }
+
+    @Override  // override with covariant return type
+    public ThaiBuddhistDate date(int prolepticYear, int month, int dayOfMonth) {
         return new ThaiBuddhistDate(LocalDate.of(prolepticYear - YEARS_DIFFERENCE, month, dayOfMonth));
     }
 
-    @Override
-    public ChronoLocalDate<ThaiBuddhistChronology> dateYearDay(int prolepticYear, int dayOfYear) {
+    @Override  // override with covariant return type
+    public ThaiBuddhistDate dateYearDay(Era era, int yearOfEra, int dayOfYear) {
+        return (ThaiBuddhistDate) super.dateYearDay(era, yearOfEra, dayOfYear);
+    }
+
+    @Override  // override with covariant return type
+    public ThaiBuddhistDate dateYearDay(int prolepticYear, int dayOfYear) {
         return new ThaiBuddhistDate(LocalDate.ofYearDay(prolepticYear - YEARS_DIFFERENCE, dayOfYear));
     }
 
-    @Override
-    public ChronoLocalDate<ThaiBuddhistChronology> date(TemporalAccessor temporal) {
+    //-----------------------------------------------------------------------
+    @Override  // override with covariant return type
+    public ThaiBuddhistDate date(TemporalAccessor temporal) {
         if (temporal instanceof ThaiBuddhistDate) {
             return (ThaiBuddhistDate) temporal;
         }
         return new ThaiBuddhistDate(LocalDate.from(temporal));
+    }
+
+    @Override  // override with covariant return type
+    public ChronoLocalDateTime<ThaiBuddhistDate> localDateTime(TemporalAccessor temporal) {
+        return (ChronoLocalDateTime<ThaiBuddhistDate>) super.localDateTime(temporal);
+    }
+
+    @Override  // override with covariant return type
+    public ChronoZonedDateTime<ThaiBuddhistDate> zonedDateTime(TemporalAccessor temporal) {
+        return (ChronoZonedDateTime<ThaiBuddhistDate>) super.zonedDateTime(temporal);
+    }
+
+    @Override  // override with covariant return type
+    public ChronoZonedDateTime<ThaiBuddhistDate> zonedDateTime(Instant instant, ZoneId zone) {
+        return (ChronoZonedDateTime<ThaiBuddhistDate>) super.zonedDateTime(instant, zone);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override  // override with covariant return type
+    public ThaiBuddhistDate dateNow() {
+        return (ThaiBuddhistDate) super.dateNow();
+    }
+
+    @Override  // override with covariant return type
+    public ThaiBuddhistDate dateNow(ZoneId zone) {
+        return (ThaiBuddhistDate) super.dateNow(zone);
+    }
+
+    @Override  // override with covariant return type
+    public ThaiBuddhistDate dateNow(Clock clock) {
+        Objects.requireNonNull(clock, "clock");
+        return (ThaiBuddhistDate) super.dateNow(clock);
     }
 
     //-----------------------------------------------------------------------
@@ -214,7 +261,7 @@ public final class ThaiBuddhistChronology extends Chronology<ThaiBuddhistChronol
     }
 
     @Override
-    public int prolepticYear(Era<ThaiBuddhistChronology> era, int yearOfEra) {
+    public int prolepticYear(Era era, int yearOfEra) {
         if (era instanceof ThaiBuddhistEra == false) {
             throw new DateTimeException("Era must be BuddhistEra");
         }
@@ -222,13 +269,13 @@ public final class ThaiBuddhistChronology extends Chronology<ThaiBuddhistChronol
     }
 
     @Override
-    public Era<ThaiBuddhistChronology> eraOf(int eraValue) {
+    public Era eraOf(int eraValue) {
         return ThaiBuddhistEra.of(eraValue);
     }
 
     @Override
-    public List<Era<ThaiBuddhistChronology>> eras() {
-        return Arrays.<Era<ThaiBuddhistChronology>>asList(ThaiBuddhistEra.values());
+    public List<Era> eras() {
+        return Arrays.<Era>asList(ThaiBuddhistEra.values());
     }
 
     //-----------------------------------------------------------------------

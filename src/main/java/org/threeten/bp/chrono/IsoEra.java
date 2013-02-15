@@ -36,6 +36,7 @@ import static org.threeten.bp.temporal.ChronoField.ERA;
 import java.util.Locale;
 
 import org.threeten.bp.DateTimeException;
+import org.threeten.bp.LocalDate;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.TextStyle;
 import org.threeten.bp.temporal.ChronoField;
@@ -58,7 +59,7 @@ import org.threeten.bp.temporal.ValueRange;
  * <h3>Specification for implementors</h3>
  * This is an immutable and thread-safe enum.
  */
-enum IsoEra implements Era<IsoChronology> {
+enum IsoEra implements Era {
 
     /**
      * The singleton instance for the era BCE, 'Before Current Era'.
@@ -118,12 +119,12 @@ enum IsoEra implements Era<IsoChronology> {
     // JDK8 default methods:
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDate<IsoChronology> date(int year, int month, int day) {
+    public LocalDate date(int year, int month, int day) {
         return getChronology().date(this, year, month, day);
     }
 
     @Override
-    public ChronoLocalDate<IsoChronology> dateYearDay(int year, int dayOfYear) {
+    public LocalDate dateYearDay(int year, int dayOfYear) {
         return getChronology().dateYearDay(this, year, dayOfYear);
     }
 

@@ -147,7 +147,7 @@ public final class DateTimeBuilder
      * @param zone  the zone, may be null
      * @param chrono  the chronology, may be null
      */
-    public DateTimeBuilder(ZoneId zone, Chronology<?> chrono) {
+    public DateTimeBuilder(ZoneId zone, Chronology chrono) {
         if (zone != null) {
             objects.add(zone);
         }

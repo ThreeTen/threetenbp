@@ -101,8 +101,8 @@ import org.threeten.bp.zone.ZoneRules;
  * This class is immutable and thread-safe.
  */
 public final class LocalDate
-        extends DefaultInterfaceChronoLocalDate<IsoChronology>
-        implements Temporal, TemporalAdjuster, ChronoLocalDate<IsoChronology>, Serializable {
+        extends DefaultInterfaceChronoLocalDate<LocalDate>
+        implements Temporal, TemporalAdjuster, ChronoLocalDate<LocalDate>, Serializable {
 
     /**
      * The minimum supported {@code LocalDate}, '-999999999-01-01'.
@@ -639,7 +639,7 @@ public final class LocalDate
      * @return the {@code IsoChronology} era constant applicable at this date, not null
      */
     @Override // override for Javadoc
-    public Era<IsoChronology> getEra() {
+    public Era getEra() {
         return super.getEra();
     }
 

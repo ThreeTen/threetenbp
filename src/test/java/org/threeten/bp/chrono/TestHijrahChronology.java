@@ -56,8 +56,8 @@ public class TestHijrahChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_chrono_byName() {
-        Chronology<HijrahChronology> c = HijrahChronology.INSTANCE;
-        Chronology<?> test = Chronology.of("Hijrah");
+        Chronology c = HijrahChronology.INSTANCE;
+        Chronology test = Chronology.of("Hijrah");
         Assert.assertNotNull(test, "The Hijrah calendar could not be found byName");
         Assert.assertEquals(test.getId(), "Hijrah", "ID mismatch");
         Assert.assertEquals(test.getCalendarType(), "islamicc", "Type mismatch");

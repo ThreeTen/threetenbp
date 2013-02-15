@@ -39,8 +39,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
+import org.threeten.bp.Clock;
 import org.threeten.bp.DateTimeException;
+import org.threeten.bp.Instant;
+import org.threeten.bp.ZoneId;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.ValueRange;
@@ -143,7 +147,7 @@ import org.threeten.bp.temporal.ValueRange;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
-public final class HijrahChronology extends Chronology<HijrahChronology> implements Serializable {
+public final class HijrahChronology extends Chronology implements Serializable {
 
     /**
      * Singleton instance of the Hijrah chronology.
@@ -154,11 +158,11 @@ public final class HijrahChronology extends Chronology<HijrahChronology> impleme
      * The singleton instance for the era before the current one - Before Hijrah -
      * which has the value 0.
      */
-    public static final Era<HijrahChronology> ERA_BEFORE_AH = HijrahEra.BEFORE_AH;
+    public static final Era ERA_BEFORE_AH = HijrahEra.BEFORE_AH;
     /**
      * The singleton instance for the current era - Hijrah - which has the value 1.
      */
-    public static final Era<HijrahChronology> ERA_AH = HijrahEra.AH;
+    public static final Era ERA_AH = HijrahEra.AH;
     /**
      * Serialization version.
      */
@@ -241,22 +245,65 @@ public final class HijrahChronology extends Chronology<HijrahChronology> impleme
     }
 
     //-----------------------------------------------------------------------
-    @Override
-    public ChronoLocalDate<HijrahChronology> date(int prolepticYear, int month, int dayOfMonth) {
+    @Override  // override with covariant return type
+    public HijrahDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
+        return (HijrahDate) super.date(era, yearOfEra, month, dayOfMonth);
+    }
+
+    @Override  // override with covariant return type
+    public HijrahDate date(int prolepticYear, int month, int dayOfMonth) {
         return HijrahDate.of(prolepticYear, month, dayOfMonth);
     }
 
-    @Override
-    public ChronoLocalDate<HijrahChronology> dateYearDay(int prolepticYear, int dayOfYear) {
+    @Override  // override with covariant return type
+    public HijrahDate dateYearDay(Era era, int yearOfEra, int dayOfYear) {
+        return (HijrahDate) super.dateYearDay(era, yearOfEra, dayOfYear);
+    }
+
+    @Override  // override with covariant return type
+    public HijrahDate dateYearDay(int prolepticYear, int dayOfYear) {
         return HijrahDate.of(prolepticYear, 1, 1).plusDays(dayOfYear - 1);  // TODO better
     }
 
-    @Override
-    public ChronoLocalDate<HijrahChronology> date(TemporalAccessor temporal) {
+    //-----------------------------------------------------------------------
+    @Override  // override with covariant return type
+    public HijrahDate date(TemporalAccessor temporal) {
         if (temporal instanceof HijrahDate) {
             return (HijrahDate) temporal;
         }
         return HijrahDate.ofEpochDay(temporal.getLong(EPOCH_DAY));
+    }
+
+    @Override  // override with covariant return type
+    public ChronoLocalDateTime<HijrahDate> localDateTime(TemporalAccessor temporal) {
+        return (ChronoLocalDateTime<HijrahDate>) super.localDateTime(temporal);
+    }
+
+    @Override  // override with covariant return type
+    public ChronoZonedDateTime<HijrahDate> zonedDateTime(TemporalAccessor temporal) {
+        return (ChronoZonedDateTime<HijrahDate>) super.zonedDateTime(temporal);
+    }
+
+    @Override  // override with covariant return type
+    public ChronoZonedDateTime<HijrahDate> zonedDateTime(Instant instant, ZoneId zone) {
+        return (ChronoZonedDateTime<HijrahDate>) super.zonedDateTime(instant, zone);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override  // override with covariant return type
+    public HijrahDate dateNow() {
+        return (HijrahDate) super.dateNow();
+    }
+
+    @Override  // override with covariant return type
+    public HijrahDate dateNow(ZoneId zone) {
+        return (HijrahDate) super.dateNow(zone);
+    }
+
+    @Override  // override with covariant return type
+    public HijrahDate dateNow(Clock clock) {
+        Objects.requireNonNull(clock, "clock");
+        return (HijrahDate) super.dateNow(clock);
     }
 
     //-----------------------------------------------------------------------
@@ -266,7 +313,7 @@ public final class HijrahChronology extends Chronology<HijrahChronology> impleme
     }
 
     @Override
-    public int prolepticYear(Era<HijrahChronology> era, int yearOfEra) {
+    public int prolepticYear(Era era, int yearOfEra) {
         if (era instanceof HijrahEra == false) {
             throw new DateTimeException("Era must be HijrahEra");
         }
@@ -274,7 +321,7 @@ public final class HijrahChronology extends Chronology<HijrahChronology> impleme
     }
 
     @Override
-    public Era<HijrahChronology> eraOf(int eraValue) {
+    public Era eraOf(int eraValue) {
         switch (eraValue) {
             case 0:
                 return HijrahEra.BEFORE_AH;
@@ -286,8 +333,8 @@ public final class HijrahChronology extends Chronology<HijrahChronology> impleme
     }
 
     @Override
-    public List<Era<HijrahChronology>> eras() {
-        return Arrays.<Era<HijrahChronology>>asList(HijrahEra.values());
+    public List<Era> eras() {
+        return Arrays.<Era>asList(HijrahEra.values());
     }
 
     //-----------------------------------------------------------------------

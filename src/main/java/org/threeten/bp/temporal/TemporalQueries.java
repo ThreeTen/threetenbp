@@ -158,12 +158,12 @@ public final class TemporalQueries {
      * exception if a chronology cannot be obtained.
      * @return a Chrono, may be null
      */
-    public static final TemporalQuery<Chronology<?>> chronology() {
+    public static final TemporalQuery<Chronology> chronology() {
         return CHRONO;
     }
-    static final TemporalQuery<Chronology<?>> CHRONO = new TemporalQuery<Chronology<?>>() {
+    static final TemporalQuery<Chronology> CHRONO = new TemporalQuery<Chronology>() {
         @Override
-        public Chronology<?> queryFrom(TemporalAccessor temporal) {
+        public Chronology queryFrom(TemporalAccessor temporal) {
             return temporal.query(this);
         }
     };

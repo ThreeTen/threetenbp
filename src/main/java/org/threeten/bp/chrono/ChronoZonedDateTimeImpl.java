@@ -70,11 +70,11 @@ import org.threeten.bp.zone.ZoneRules;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  *
- * @param <C> the chronology of this date
+ * @param <D> the date type
  */
-final class ChronoZonedDateTimeImpl<C extends Chronology<C>>
-        extends DefaultInterfaceChronoZonedDateTime<C>
-        implements ChronoZonedDateTime<C>, Serializable {
+final class ChronoZonedDateTimeImpl<D extends ChronoLocalDate<D>>
+        extends DefaultInterfaceChronoZonedDateTime<D>
+        implements ChronoZonedDateTime<D>, Serializable {
 
     /**
      * Serialization version.
@@ -84,7 +84,7 @@ final class ChronoZonedDateTimeImpl<C extends Chronology<C>>
     /**
      * The local date-time.
      */
-    private final ChronoLocalDateTimeImpl<C> dateTime;
+    private final ChronoLocalDateTimeImpl<D> dateTime;
     /**
      * The zone offset.
      */
@@ -103,7 +103,7 @@ final class ChronoZonedDateTimeImpl<C extends Chronology<C>>
      * @param preferredOffset  the zone offset, null if no preference
      * @return the zoned date-time, not null
      */
-    static <R extends Chronology<R>> ChronoZonedDateTime<R> ofBest(
+    static <R extends ChronoLocalDate<R>> ChronoZonedDateTime<R> ofBest(
             ChronoLocalDateTimeImpl<R> localDateTime, ZoneId zone, ZoneOffset preferredOffset) {
         Objects.requireNonNull(localDateTime, "localDateTime");
         Objects.requireNonNull(zone, "zone");
@@ -139,7 +139,7 @@ final class ChronoZonedDateTimeImpl<C extends Chronology<C>>
      * @param zone  the zone identifier, not null
      * @return the zoned date-time, not null
      */
-    static <R extends Chronology<R>> ChronoZonedDateTimeImpl<R> ofInstant(Chronology<R> chrono, Instant instant, ZoneId zone) {
+    static <R extends ChronoLocalDate<R>> ChronoZonedDateTimeImpl<R> ofInstant(Chronology chrono, Instant instant, ZoneId zone) {
         ZoneRules rules = zone.getRules();
         ZoneOffset offset = rules.getOffset(instant);
         Objects.requireNonNull(offset, "offset");  // protect against bad ZoneRules
@@ -155,7 +155,7 @@ final class ChronoZonedDateTimeImpl<C extends Chronology<C>>
      * @param zone  the time-zone to use, validated not null
      * @return the zoned date-time, validated not null
      */
-    private ChronoZonedDateTimeImpl<C> create(Instant instant, ZoneId zone) {
+    private ChronoZonedDateTimeImpl<D> create(Instant instant, ZoneId zone) {
         return ofInstant(toLocalDate().getChronology(), instant, zone);
     }
 
@@ -167,7 +167,7 @@ final class ChronoZonedDateTimeImpl<C extends Chronology<C>>
      * @param offset  the zone offset, not null
      * @param zone  the zone ID, not null
      */
-    private ChronoZonedDateTimeImpl(ChronoLocalDateTimeImpl<C> dateTime, ZoneOffset offset, ZoneId zone) {
+    private ChronoZonedDateTimeImpl(ChronoLocalDateTimeImpl<D> dateTime, ZoneOffset offset, ZoneId zone) {
         this.dateTime = Objects.requireNonNull(dateTime, "dateTime");
         this.offset = Objects.requireNonNull(offset, "offset");
         this.zone = Objects.requireNonNull(zone, "zone");
@@ -179,24 +179,24 @@ final class ChronoZonedDateTimeImpl<C extends Chronology<C>>
     }
 
     @Override
-    public ChronoZonedDateTime<C> withEarlierOffsetAtOverlap() {
+    public ChronoZonedDateTime<D> withEarlierOffsetAtOverlap() {
         ZoneOffsetTransition trans = getZone().getRules().getTransition(LocalDateTime.from(this));
         if (trans != null && trans.isOverlap()) {
             ZoneOffset earlierOffset = trans.getOffsetBefore();
             if (earlierOffset.equals(offset) == false) {
-                return new ChronoZonedDateTimeImpl<C>(dateTime, earlierOffset, zone);
+                return new ChronoZonedDateTimeImpl<D>(dateTime, earlierOffset, zone);
             }
         }
         return this;
     }
 
     @Override
-    public ChronoZonedDateTime<C> withLaterOffsetAtOverlap() {
+    public ChronoZonedDateTime<D> withLaterOffsetAtOverlap() {
         ZoneOffsetTransition trans = getZone().getRules().getTransition(LocalDateTime.from(this));
         if (trans != null) {
             ZoneOffset offset = trans.getOffsetAfter();
             if (offset.equals(getOffset()) == false) {
-                return new ChronoZonedDateTimeImpl<C>(dateTime, offset, zone);
+                return new ChronoZonedDateTimeImpl<D>(dateTime, offset, zone);
             }
         }
         return this;
@@ -204,7 +204,7 @@ final class ChronoZonedDateTimeImpl<C extends Chronology<C>>
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDateTime<C> toLocalDateTime() {
+    public ChronoLocalDateTime<D> toLocalDateTime() {
         return dateTime;
     }
 
@@ -212,12 +212,12 @@ final class ChronoZonedDateTimeImpl<C extends Chronology<C>>
         return zone;
     }
 
-    public ChronoZonedDateTime<C> withZoneSameLocal(ZoneId zone) {
+    public ChronoZonedDateTime<D> withZoneSameLocal(ZoneId zone) {
         return ofBest(dateTime, zone, offset);
     }
 
     @Override
-    public ChronoZonedDateTime<C> withZoneSameInstant(ZoneId zone) {
+    public ChronoZonedDateTime<D> withZoneSameInstant(ZoneId zone) {
         Objects.requireNonNull(zone, "zone");
         return this.zone.equals(zone) ? this : create(dateTime.toInstant(offset), zone);
     }
@@ -230,7 +230,7 @@ final class ChronoZonedDateTimeImpl<C extends Chronology<C>>
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoZonedDateTime<C> with(TemporalField field, long newValue) {
+    public ChronoZonedDateTime<D> with(TemporalField field, long newValue) {
         if (field instanceof ChronoField) {
             ChronoField f = (ChronoField) field;
             switch (f) {
@@ -247,7 +247,7 @@ final class ChronoZonedDateTimeImpl<C extends Chronology<C>>
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoZonedDateTime<C> plus(long amountToAdd, TemporalUnit unit) {
+    public ChronoZonedDateTime<D> plus(long amountToAdd, TemporalUnit unit) {
         if (unit instanceof ChronoUnit) {
             return with(dateTime.plus(amountToAdd, unit));
         }
@@ -261,7 +261,7 @@ final class ChronoZonedDateTimeImpl<C extends Chronology<C>>
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
         @SuppressWarnings("unchecked")
-        ChronoZonedDateTime<C> end = (ChronoZonedDateTime<C>) endDateTime;
+        ChronoZonedDateTime<D> end = (ChronoZonedDateTime<D>) endDateTime;
         if (toLocalDate().getChronology().equals(end.toLocalDate().getChronology()) == false) {
             throw new DateTimeException("Unable to calculate period between two different chronologies");
         }

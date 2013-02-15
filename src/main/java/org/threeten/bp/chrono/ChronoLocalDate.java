@@ -204,9 +204,9 @@ import org.threeten.bp.temporal.TemporalUnit;
  * Additional calendar systems may be added to the system.
  * See {@link Chronology} for more details.
  *
- * @param <C> the chronology of this date
+ * @param <D> the date type
  */
-public interface ChronoLocalDate<C extends Chronology<C>>
+public interface ChronoLocalDate<D extends ChronoLocalDate<D>>
         extends Temporal, TemporalAdjuster, Comparable<ChronoLocalDate<?>> {
 
     /**
@@ -238,7 +238,7 @@ public interface ChronoLocalDate<C extends Chronology<C>>
      *
      * @return the chronology, not null
      */
-    C getChronology();
+    Chronology getChronology();
 
     /**
      * Gets the era, as defined by the chronology.
@@ -253,7 +253,7 @@ public interface ChronoLocalDate<C extends Chronology<C>>
      *
      * @return the chronology specific era constant applicable at this date, not null
      */
-    Era<C> getEra();
+    Era getEra();
 
     //-----------------------------------------------------------------------
     /**
@@ -292,22 +292,22 @@ public interface ChronoLocalDate<C extends Chronology<C>>
     //-------------------------------------------------------------------------
     // override for covariant return type
     @Override
-    ChronoLocalDate<C> with(TemporalAdjuster adjuster);
+    ChronoLocalDate<D> with(TemporalAdjuster adjuster);
 
     @Override
-    ChronoLocalDate<C> with(TemporalField field, long newValue);
+    ChronoLocalDate<D> with(TemporalField field, long newValue);
 
     @Override
-    ChronoLocalDate<C> plus(TemporalAmount amount);
+    ChronoLocalDate<D> plus(TemporalAmount amount);
 
     @Override
-    ChronoLocalDate<C> plus(long amountToAdd, TemporalUnit unit);
+    ChronoLocalDate<D> plus(long amountToAdd, TemporalUnit unit);
 
     @Override
-    ChronoLocalDate<C> minus(TemporalAmount amount);
+    ChronoLocalDate<D> minus(TemporalAmount amount);
 
     @Override
-    ChronoLocalDate<C> minus(long amountToSubtract, TemporalUnit unit);
+    ChronoLocalDate<D> minus(long amountToSubtract, TemporalUnit unit);
 
     //-----------------------------------------------------------------------
     /**
@@ -344,7 +344,7 @@ public interface ChronoLocalDate<C extends Chronology<C>>
      * @param localTime  the local time to use, not null
      * @return the local date-time formed from this date and the specified time, not null
      */
-    ChronoLocalDateTime<C> atTime(LocalTime localTime);
+    ChronoLocalDateTime<D> atTime(LocalTime localTime);
 
     //-----------------------------------------------------------------------
     /**

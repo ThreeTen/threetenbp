@@ -39,6 +39,7 @@ import java.util.Objects;
 
 import org.threeten.bp.Clock;
 import org.threeten.bp.DateTimeException;
+import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
@@ -73,7 +74,7 @@ import org.threeten.bp.temporal.ValueRange;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
-public final class IsoChronology extends Chronology<IsoChronology> implements Serializable {
+public final class IsoChronology extends Chronology implements Serializable {
 
     /**
      * Singleton instance of the ISO chronology.
@@ -85,14 +86,14 @@ public final class IsoChronology extends Chronology<IsoChronology> implements Se
      * era in the Gregorian calendar system.
      * This has the numeric value of {@code 0}.
      */
-    public static final Era<IsoChronology> ERA_BCE = IsoEra.BCE;
+    public static final Era ERA_BCE = IsoEra.BCE;
     /**
      * The singleton instance for the era CE - 'Current Era'.
      * The 'ISO' part of the name emphasizes that this differs from the CE
      * era in the Gregorian calendar system.
      * This has the numeric value of {@code 1}.
      */
-    public static final Era<IsoChronology> ERA_CE = IsoEra.CE;
+    public static final Era ERA_CE = IsoEra.CE;
 
     /**
      * Serialization version.
@@ -159,7 +160,7 @@ public final class IsoChronology extends Chronology<IsoChronology> implements Se
      * @throws DateTimeException if unable to create the date
      */
     @Override  // override with covariant return type
-    public LocalDate date(Era<IsoChronology> era, int yearOfEra, int month, int dayOfMonth) {
+    public LocalDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
         return date(prolepticYear(era, yearOfEra), month, dayOfMonth);
     }
 
@@ -190,7 +191,7 @@ public final class IsoChronology extends Chronology<IsoChronology> implements Se
      * @throws DateTimeException if unable to create the date
      */
     @Override  // override with covariant return type
-    public LocalDate dateYearDay(Era<IsoChronology> era, int yearOfEra, int dayOfYear) {
+    public LocalDate dateYearDay(Era era, int yearOfEra, int dayOfYear) {
         return dateYearDay(prolepticYear(era, yearOfEra), dayOfYear);
     }
 
@@ -250,6 +251,21 @@ public final class IsoChronology extends Chronology<IsoChronology> implements Se
     @Override  // override with covariant return type
     public ZonedDateTime zonedDateTime(TemporalAccessor temporal) {
         return ZonedDateTime.from(temporal);
+    }
+
+    /**
+     * Obtains an ISO zoned date-time from an instant.
+     * <p>
+     * This is equivalent to {@link ZonedDateTime#ofInstant(Instant, ZoneId)}.
+     *
+     * @param instant  the instant to convert, not null
+     * @param zone  the zone to use, not null
+     * @return the ISO zoned date-time, not null
+     * @throws DateTimeException if unable to create the date-time
+     */
+    @Override  // override with covariant return type
+    public ZonedDateTime zonedDateTime(Instant instant, ZoneId zone) {
+        return ZonedDateTime.ofInstant(instant, zone);
     }
 
     //-----------------------------------------------------------------------
@@ -330,7 +346,7 @@ public final class IsoChronology extends Chronology<IsoChronology> implements Se
     }
 
     @Override
-    public int prolepticYear(Era<IsoChronology> era, int yearOfEra) {
+    public int prolepticYear(Era era, int yearOfEra) {
         if (era instanceof IsoEra == false) {
             throw new DateTimeException("Era must be IsoEra");
         }
@@ -338,13 +354,13 @@ public final class IsoChronology extends Chronology<IsoChronology> implements Se
     }
 
     @Override
-    public Era<IsoChronology> eraOf(int eraValue) {
+    public Era eraOf(int eraValue) {
         return IsoEra.of(eraValue);
     }
 
     @Override
-    public List<Era<IsoChronology>> eras() {
-        return Arrays.<Era<IsoChronology>>asList(IsoEra.values());
+    public List<Era> eras() {
+        return Arrays.<Era>asList(IsoEra.values());
     }
 
     //-----------------------------------------------------------------------

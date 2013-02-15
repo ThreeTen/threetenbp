@@ -74,9 +74,9 @@ import org.threeten.bp.temporal.TemporalUnit;
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * Subclasses should be Serializable wherever possible.
  *
- * @param <C> the chronology of this date-time
+ * @param <D> the date type
  */
-public interface ChronoZonedDateTime<C extends Chronology<C>>
+public interface ChronoZonedDateTime<D extends ChronoLocalDate<D>>
         extends Temporal, Comparable<ChronoZonedDateTime<?>> {
 
     /**
@@ -110,7 +110,7 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
      *
      * @return the date part of this date-time, not null
      */
-    ChronoLocalDate<C> toLocalDate() ;
+    ChronoLocalDate<D> toLocalDate() ;
 
     /**
      * Gets the local time part of this date-time.
@@ -130,7 +130,7 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
      *
      * @return the local date-time part of this date-time, not null
      */
-    ChronoLocalDateTime<C> toLocalDateTime();
+    ChronoLocalDateTime<D> toLocalDateTime();
 
     /**
      * Gets the zone offset, such as '+01:00'.
@@ -169,7 +169,7 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if no rules can be found for the zone
      * @throws DateTimeException if no rules are valid for this date-time
      */
-    ChronoZonedDateTime<C> withEarlierOffsetAtOverlap();
+    ChronoZonedDateTime<D> withEarlierOffsetAtOverlap();
 
     /**
      * Returns a copy of this date-time changing the zone offset to the
@@ -189,7 +189,7 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
      * @throws DateTimeException if no rules can be found for the zone
      * @throws DateTimeException if no rules are valid for this date-time
      */
-    ChronoZonedDateTime<C> withLaterOffsetAtOverlap();
+    ChronoZonedDateTime<D> withLaterOffsetAtOverlap();
 
     //-----------------------------------------------------------------------
     /**
@@ -207,7 +207,7 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
      * @param zoneId  the time-zone to change to, not null
      * @return a {@code ChronoZonedDateTime} based on this date-time with the requested zone, not null
      */
-    ChronoZonedDateTime<C> withZoneSameLocal(ZoneId zoneId);
+    ChronoZonedDateTime<D> withZoneSameLocal(ZoneId zoneId);
 
     /**
      * Returns a copy of this date-time with a different time-zone,
@@ -226,27 +226,27 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
      * @return a {@code ChronoZonedDateTime} based on this date-time with the requested zone, not null
      * @throws DateTimeException if the result exceeds the supported date range
      */
-    ChronoZonedDateTime<C> withZoneSameInstant(ZoneId zoneId);
+    ChronoZonedDateTime<D> withZoneSameInstant(ZoneId zoneId);
 
     //-------------------------------------------------------------------------
     // override for covariant return type
     @Override
-    ChronoZonedDateTime<C> with(TemporalAdjuster adjuster);
+    ChronoZonedDateTime<D> with(TemporalAdjuster adjuster);
 
     @Override
-    ChronoZonedDateTime<C> with(TemporalField field, long newValue);
+    ChronoZonedDateTime<D> with(TemporalField field, long newValue);
 
     @Override
-    ChronoZonedDateTime<C> plus(TemporalAmount amount);
+    ChronoZonedDateTime<D> plus(TemporalAmount amount);
 
     @Override
-    ChronoZonedDateTime<C> plus(long amountToAdd, TemporalUnit unit);
+    ChronoZonedDateTime<D> plus(long amountToAdd, TemporalUnit unit);
 
     @Override
-    ChronoZonedDateTime<C> minus(TemporalAmount amount);
+    ChronoZonedDateTime<D> minus(TemporalAmount amount);
 
     @Override
-    ChronoZonedDateTime<C> minus(long amountToSubtract, TemporalUnit unit);
+    ChronoZonedDateTime<D> minus(long amountToSubtract, TemporalUnit unit);
 
     //-----------------------------------------------------------------------
     /**

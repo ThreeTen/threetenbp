@@ -100,8 +100,8 @@ import org.threeten.bp.temporal.ValueRange;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
-final class HijrahDate
-        extends ChronoDateImpl<HijrahChronology>
+public final class HijrahDate
+        extends ChronoDateImpl<HijrahDate>
         implements Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
@@ -632,7 +632,7 @@ final class HijrahDate
 
     //-----------------------------------------------------------------------
     @Override
-    public HijrahDate plusYears(long years) {
+    HijrahDate plusYears(long years) {
         if (years == 0) {
             return this;
         }
@@ -641,7 +641,7 @@ final class HijrahDate
     }
 
     @Override
-    public HijrahDate plusMonths(long months) {
+    HijrahDate plusMonths(long months) {
         if (months == 0) {
             return this;
         }
@@ -658,7 +658,7 @@ final class HijrahDate
     }
 
     @Override
-    public HijrahDate plusDays(long days) {
+    HijrahDate plusDays(long days) {
         return new HijrahDate(this.gregorianEpochDay + days);
     }
 
@@ -1645,7 +1645,7 @@ final class HijrahDate
         out.writeByte(get(DAY_OF_MONTH));
     }
 
-    static ChronoLocalDate<HijrahChronology> readExternal(DataInput in) throws IOException {
+    static ChronoLocalDate<HijrahDate> readExternal(DataInput in) throws IOException {
         int year = in.readInt();
         int month = in.readByte();
         int dayOfMonth = in.readByte();

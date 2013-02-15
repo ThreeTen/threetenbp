@@ -129,26 +129,23 @@ import org.threeten.bp.temporal.ValueRange;
  * This class must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * Subclasses should be Serializable wherever possible.
- *
- * @param <C> the type of the implementing subclass
  */
-public abstract class Chronology<C extends Chronology<C>> implements Comparable<Chronology<?>> {
+public abstract class Chronology implements Comparable<Chronology> {
 
     /**
      * Map of available calendars by ID.
      */
-    private static final ConcurrentHashMap<String, Chronology<?>> CHRONOS_BY_ID;
+    private static final ConcurrentHashMap<String, Chronology> CHRONOS_BY_ID;
     /**
      * Map of available calendars by calendar type.
      */
-    private static final ConcurrentHashMap<String, Chronology<?>> CHRONOS_BY_TYPE;
+    private static final ConcurrentHashMap<String, Chronology> CHRONOS_BY_TYPE;
     static {
         // TODO: defer initialization?
-        ConcurrentHashMap<String, Chronology<?>> ids = new ConcurrentHashMap<>();
-        ConcurrentHashMap<String, Chronology<?>> types = new ConcurrentHashMap<>();
-        @SuppressWarnings("rawtypes")
+        ConcurrentHashMap<String, Chronology> ids = new ConcurrentHashMap<>();
+        ConcurrentHashMap<String, Chronology> types = new ConcurrentHashMap<>();
         ServiceLoader<Chronology> loader =  ServiceLoader.load(Chronology.class);
-        for (Chronology<?> chrono : loader) {
+        for (Chronology chrono : loader) {
             ids.putIfAbsent(chrono.getId(), chrono);
             String type = chrono.getCalendarType();
             if (type != null) {
@@ -176,9 +173,9 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
      * @return the chronology, not null
      * @throws DateTimeException if unable to convert to an {@code Chrono}
      */
-    public static Chronology<?> from(TemporalAccessor temporal) {
+    public static Chronology from(TemporalAccessor temporal) {
         Objects.requireNonNull(temporal, "temporal");
-        Chronology<?> obj = temporal.query(TemporalQueries.chronology());
+        Chronology obj = temporal.query(TemporalQueries.chronology());
         return (obj != null ? obj : IsoChronology.INSTANCE);
     }
 
@@ -197,7 +194,7 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
      * @return the calendar system associated with the locale, not null
      * @throws DateTimeException if the locale-specified calendar cannot be found
      */
-    public static Chronology<?> ofLocale(Locale locale) {
+    public static Chronology ofLocale(Locale locale) {
         Objects.requireNonNull(locale, "locale");
         String type = locale.getUnicodeLocaleType("ca");
         if (type == null) {
@@ -205,7 +202,7 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
         } else if ("iso".equals(type) || "iso8601".equals(type)) {
             return IsoChronology.INSTANCE;
         } else {
-            Chronology<?> chrono = CHRONOS_BY_TYPE.get(type);
+            Chronology chrono = CHRONOS_BY_TYPE.get(type);
             if (chrono == null) {
                 throw new DateTimeException("Unknown calendar system: " + type);
             }
@@ -233,8 +230,8 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
      * @return the chronology with the identifier requested, not null
      * @throws DateTimeException if the chronology cannot be found
      */
-    public static Chronology<?> of(String id) {
-        Chronology<?> chrono = CHRONOS_BY_ID.get(id);
+    public static Chronology of(String id) {
+        Chronology chrono = CHRONOS_BY_ID.get(id);
         if (chrono != null) {
             return chrono;
         }
@@ -252,7 +249,7 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
      *
      * @return the independent, modifiable set of the available chronology IDs, not null
      */
-    public static Set<Chronology<?>> getAvailableChronologies() {
+    public static Set<Chronology> getAvailableChronologies() {
         return new HashSet<>(CHRONOS_BY_ID.values());
     }
 
@@ -266,12 +263,12 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
      * This method is intended for chronology implementations.
      * It uses a standard implementation that is shared for all chronologies.
      *
-     * @param <R>  the chronology of the date
+     * @param <D>  the date type
      * @param date  the date, not null
      * @param time  the time, not null
      * @return the local date-time combining the input date and time, not null
      */
-    public static <R extends Chronology<R>> ChronoLocalDateTime<R> dateTime(ChronoLocalDate<R> date, LocalTime time) {
+    public static <D extends ChronoLocalDate<D>> ChronoLocalDateTime<D> dateTime(ChronoLocalDate<D> date, LocalTime time) {
         return ChronoLocalDateTimeImpl.of(date, time);
     }
 
@@ -297,9 +294,9 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
      * @throws ClassCastException if the date-time cannot be cast to ChronoLocalDate
      *  or the chronology is not equal this Chrono
      */
-    public /* should be package-scoped */ ChronoLocalDate<C> ensureChronoLocalDate(Temporal temporal) {
+    public <D extends ChronoLocalDate<D>> /* should be package-scoped */ ChronoLocalDate<D> ensureChronoLocalDate(Temporal temporal) {
         @SuppressWarnings("unchecked")
-        ChronoLocalDate<C> other = (ChronoLocalDate<C>) temporal;
+        ChronoLocalDate<D> other = (ChronoLocalDate<D>) temporal;
         if (this.equals(other.getChronology()) == false) {
             throw new ClassCastException("Chrono mismatch, expected: " + getId() + ", actual: " + other.getChronology().getId());
         }
@@ -314,9 +311,9 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
      * @throws ClassCastException if the date-time cannot be cast to ChronoLocalDateTimeImpl
      *  or the chronology is not equal this Chrono
      */
-    public /* should be package-scoped */ ChronoLocalDateTimeImpl<C> ensureChronoLocalDateTime(Temporal temporal) {
+    public <D extends ChronoLocalDate<D>> /* should be package-scoped */ ChronoLocalDateTimeImpl<D> ensureChronoLocalDateTime(Temporal temporal) {
         @SuppressWarnings("unchecked")
-        ChronoLocalDateTimeImpl<C> other = (ChronoLocalDateTimeImpl<C>) temporal;
+        ChronoLocalDateTimeImpl<D> other = (ChronoLocalDateTimeImpl<D>) temporal;
         if (this.equals(other.toLocalDate().getChronology()) == false) {
             throw new ClassCastException("Chrono mismatch, required: " + getId()
                     + ", supplied: " + other.toLocalDate().getChronology().getId());
@@ -332,9 +329,9 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
      * @throws ClassCastException if the date-time cannot be cast to ChronoZonedDateTimeImpl
      *  or the chronology is not equal this Chrono
      */
-    public /* should be package-scoped */ ChronoZonedDateTimeImpl<C> ensureChronoZonedDateTime(Temporal temporal) {
+    public <D extends ChronoLocalDate<D>> /* should be package-scoped */ ChronoZonedDateTimeImpl<D> ensureChronoZonedDateTime(Temporal temporal) {
         @SuppressWarnings("unchecked")
-        ChronoZonedDateTimeImpl<C> other = (ChronoZonedDateTimeImpl<C>) temporal;
+        ChronoZonedDateTimeImpl<D> other = (ChronoZonedDateTimeImpl<D>) temporal;
         if (this.equals(other.toLocalDate().getChronology()) == false) {
             throw new ClassCastException("Chrono mismatch, required: " + getId()
                     + ", supplied: " + other.toLocalDate().getChronology().getId());
@@ -380,7 +377,7 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
      * @return the local date in this chronology, not null
      * @throws DateTimeException if unable to create the date
      */
-    public ChronoLocalDate<C> date(Era<C> era, int yearOfEra, int month, int dayOfMonth) {
+    public ChronoLocalDate<?> date(Era era, int yearOfEra, int month, int dayOfMonth) {
         return date(prolepticYear(era, yearOfEra), month, dayOfMonth);
     }
 
@@ -394,7 +391,7 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
      * @return the local date in this chronology, not null
      * @throws DateTimeException if unable to create the date
      */
-    public abstract ChronoLocalDate<C> date(int prolepticYear, int month, int dayOfMonth);
+    public abstract ChronoLocalDate<?> date(int prolepticYear, int month, int dayOfMonth);
 
     /**
      * Obtains a local date in this chronology from the era, year-of-era and
@@ -406,7 +403,7 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
      * @return the local date in this chronology, not null
      * @throws DateTimeException if unable to create the date
      */
-    public ChronoLocalDate<C> dateYearDay(Era<C> era, int yearOfEra, int dayOfYear) {
+    public ChronoLocalDate<?> dateYearDay(Era era, int yearOfEra, int dayOfYear) {
         return dateYearDay(prolepticYear(era, yearOfEra), dayOfYear);
     }
 
@@ -419,7 +416,7 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
      * @return the local date in this chronology, not null
      * @throws DateTimeException if unable to create the date
      */
-    public abstract ChronoLocalDate<C> dateYearDay(int prolepticYear, int dayOfYear);
+    public abstract ChronoLocalDate<?> dateYearDay(int prolepticYear, int dayOfYear);
 
     /**
      * Obtains a local date in this chronology from another temporal object.
@@ -433,7 +430,7 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
      * @return the local date in this chronology, not null
      * @throws DateTimeException if unable to create the date
      */
-    public abstract ChronoLocalDate<C> date(TemporalAccessor temporal);
+    public abstract ChronoLocalDate<?> date(TemporalAccessor temporal);
 
     //-----------------------------------------------------------------------
     /**
@@ -450,7 +447,7 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
      * @return the current local date using the system clock and default time-zone, not null
      * @throws DateTimeException if unable to create the date
      */
-    public ChronoLocalDate<C> dateNow() {
+    public ChronoLocalDate<?> dateNow() {
         return dateNow(Clock.systemDefaultZone());
     }
 
@@ -467,7 +464,7 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
      * @return the current local date using the system clock, not null
      * @throws DateTimeException if unable to create the date
      */
-    public ChronoLocalDate<C> dateNow(ZoneId zone) {
+    public ChronoLocalDate<?> dateNow(ZoneId zone) {
         return dateNow(Clock.system(zone));
     }
 
@@ -482,7 +479,7 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
      * @return the current local date, not null
      * @throws DateTimeException if unable to create the date
      */
-    public ChronoLocalDate<C> dateNow(Clock clock) {
+    public ChronoLocalDate<?> dateNow(Clock clock) {
         Objects.requireNonNull(clock, "clock");
         return date(LocalDate.now(clock));
     }
@@ -502,9 +499,10 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
      * @return the local date-time in this chronology, not null
      * @throws DateTimeException if unable to create the date-time
      */
-    public ChronoLocalDateTime<C> localDateTime(TemporalAccessor temporal) {
+    public ChronoLocalDateTime<?> localDateTime(TemporalAccessor temporal) {
         try {
-            return date(temporal).atTime(LocalTime.from(temporal));
+            ChronoLocalDate<?> date = date(temporal);
+            return date.atTime(LocalTime.from(temporal));
         } catch (DateTimeException ex) {
             throw new DateTimeException("Unable to obtain ChronoLocalDateTime from TemporalAccessor: " + temporal.getClass(), ex);
         }
@@ -523,7 +521,7 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
      * @return the zoned date-time in this chronology, not null
      * @throws DateTimeException if unable to create the date-time
      */
-    public ChronoZonedDateTime<C> zonedDateTime(TemporalAccessor temporal) {
+    public ChronoZonedDateTime<?> zonedDateTime(TemporalAccessor temporal) {
         try {
             ZoneId zone = ZoneId.from(temporal);
             try {
@@ -531,7 +529,7 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
                 return zonedDateTime(instant, zone);
 
             } catch (DateTimeException ex1) {
-                ChronoLocalDateTimeImpl<C> cldt = ensureChronoLocalDateTime(localDateTime(temporal));
+                ChronoLocalDateTimeImpl<?> cldt = ensureChronoLocalDateTime(localDateTime(temporal));
                 return ChronoZonedDateTimeImpl.ofBest(cldt, zone, null);
             }
         } catch (DateTimeException ex) {
@@ -549,7 +547,7 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
      * @return the zoned date-time, not null
      * @throws DateTimeException if the result exceeds the supported range
      */
-    public ChronoZonedDateTime<C> zonedDateTime(Instant instant, ZoneId zone) {
+    public ChronoZonedDateTime<?> zonedDateTime(Instant instant, ZoneId zone) {
         return ChronoZonedDateTimeImpl.ofInstant(this, instant, zone);
     }
 
@@ -579,7 +577,7 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
      * @return the proleptic-year
      * @throws DateTimeException if unable to convert
      */
-    public abstract int prolepticYear(Era<C> era, int yearOfEra);
+    public abstract int prolepticYear(Era era, int yearOfEra);
 
     /**
      * Creates the chronology era object from the numeric value.
@@ -600,7 +598,7 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
      * @return the calendar system era, not null
      * @throws DateTimeException if unable to create the era
      */
-    public abstract Era<C> eraOf(int eraValue);
+    public abstract Era eraOf(int eraValue);
 
     /**
      * Gets the list of eras for the chronology.
@@ -611,7 +609,7 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
      *
      * @return the list of eras for the chronology, may be immutable, not null
      */
-    public abstract List<Era<C>> eras();
+    public abstract List<Era> eras();
 
     //-----------------------------------------------------------------------
     /**
@@ -679,7 +677,7 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
      * @return the comparator value, negative if less, positive if greater
      */
     @Override
-    public int compareTo(Chronology<?> other) {
+    public int compareTo(Chronology other) {
         return getId().compareTo(other.getId());
     }
 
@@ -699,7 +697,7 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
            return true;
         }
         if (obj instanceof Chronology) {
-            return compareTo((Chronology<?>) obj) == 0;
+            return compareTo((Chronology) obj) == 0;
         }
         return false;
     }
@@ -746,7 +744,7 @@ public abstract class Chronology<C extends Chronology<C>> implements Comparable<
         out.writeUTF(getId());
     }
 
-    static Chronology<?> readExternal(DataInput in) throws IOException {
+    static Chronology readExternal(DataInput in) throws IOException {
         String id = in.readUTF();
         return Chronology.of(id);
     }

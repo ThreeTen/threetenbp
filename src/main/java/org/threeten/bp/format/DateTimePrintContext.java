@@ -101,14 +101,14 @@ final class DateTimePrintContext {
 
     private static TemporalAccessor adjust(final TemporalAccessor temporal, DateTimeFormatter formatter) {
         // normal case first
-        Chronology<?> overrideChrono = formatter.getChrono();
+        Chronology overrideChrono = formatter.getChrono();
         ZoneId overrideZone = formatter.getZone();
         if (overrideChrono == null && overrideZone == null) {
             return temporal;
         }
 
         // ensure minimal change
-        Chronology<?> temporalChrono = Chronology.from(temporal);  // default to ISO, handles Instant
+        Chronology temporalChrono = Chronology.from(temporal);  // default to ISO, handles Instant
         ZoneId temporalZone = temporal.query(TemporalQueries.zone());  // zone then offset, handles OffsetDateTime
         if (temporal.isSupported(EPOCH_DAY) == false || Objects.equals(overrideChrono, temporalChrono)) {
             overrideChrono = null;

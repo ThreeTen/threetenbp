@@ -57,10 +57,8 @@ import org.threeten.bp.temporal.TemporalAdjuster;
  * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations must be singletons - final, immutable and thread-safe.
  * It is recommended to use an enum whenever possible.
- *
- * @param <C> the chronology of the era
  */
-public interface Era<C extends Chronology<C>> extends TemporalAccessor, TemporalAdjuster {
+public interface Era extends TemporalAccessor, TemporalAdjuster {
 
     /**
      * Gets the numeric value associated with the era as defined by the chronology.
@@ -88,7 +86,7 @@ public interface Era<C extends Chronology<C>> extends TemporalAccessor, Temporal
      *
      * @return the chronology, not null
      */
-    C getChronology();
+    Chronology getChronology();
 
     //-----------------------------------------------------------------------
     /**
@@ -104,7 +102,7 @@ public interface Era<C extends Chronology<C>> extends TemporalAccessor, Temporal
      * @param day  the calendar system day-of-month
      * @return a local date based on this era and the specified year-of-era, month and day
      */
-    ChronoLocalDate<C> date(int yearOfEra, int month, int day);
+    ChronoLocalDate<?> date(int yearOfEra, int month, int day);
 
     /**
      * Obtains a date in this era given year-of-era and day-of-year fields.
@@ -118,7 +116,7 @@ public interface Era<C extends Chronology<C>> extends TemporalAccessor, Temporal
      * @param dayOfYear  the calendar system day-of-year
      * @return a local date based on this era and the specified year-of-era and day-of-year
      */
-    ChronoLocalDate<C> dateYearDay(int yearOfEra, int dayOfYear);
+    ChronoLocalDate<?> dateYearDay(int yearOfEra, int dayOfYear);
 
     //-----------------------------------------------------------------------
     /**

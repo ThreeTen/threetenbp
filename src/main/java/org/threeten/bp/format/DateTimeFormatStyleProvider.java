@@ -71,6 +71,6 @@ import org.threeten.bp.chrono.Chronology;
      * @throws IllegalArgumentException if the locale is not a recognized locale
      */
     public abstract DateTimeFormatter getFormatter(
-            FormatStyle dateStyle, FormatStyle timeStyle, Chronology<?> chrono, Locale locale);
+            FormatStyle dateStyle, FormatStyle timeStyle, Chronology chrono, Locale locale);
 
 }

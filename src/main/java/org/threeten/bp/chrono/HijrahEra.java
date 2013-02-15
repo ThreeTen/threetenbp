@@ -60,7 +60,7 @@ import org.threeten.bp.temporal.ValueRange;
  * <h3>Specification for implementors</h3>
  * This is an immutable and thread-safe enum.
  */
-enum HijrahEra implements Era<HijrahChronology> {
+enum HijrahEra implements Era {
 
     /**
      * The singleton instance for the era before the current one, 'Before Anno Hegirae',
@@ -116,13 +116,13 @@ enum HijrahEra implements Era<HijrahChronology> {
     // JDK8 default methods:
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDate<HijrahChronology> date(int year, int month, int day) {
-        return getChronology().date(this, year, month, day);
+    public HijrahDate date(int year, int month, int day) {
+        return (HijrahDate) getChronology().date(this, year, month, day);
     }
 
     @Override
-    public ChronoLocalDate<HijrahChronology> dateYearDay(int year, int dayOfYear) {
-        return getChronology().dateYearDay(this, year, dayOfYear);
+    public HijrahDate dateYearDay(int year, int dayOfYear) {
+        return (HijrahDate) getChronology().dateYearDay(this, year, dayOfYear);
     }
 
     //-----------------------------------------------------------------------

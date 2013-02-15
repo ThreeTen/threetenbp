@@ -75,9 +75,9 @@ import org.threeten.bp.zone.ZoneRules;
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * Subclasses should be Serializable wherever possible.
  *
- * @param <C> the chronology of this date-time
+ * @param <D> the date type
  */
-public interface ChronoLocalDateTime<C extends Chronology<C>>
+public interface ChronoLocalDateTime<D extends ChronoLocalDate<D>>
         extends  Temporal, TemporalAdjuster, Comparable<ChronoLocalDateTime<?>> {
 
    /**
@@ -112,7 +112,7 @@ public interface ChronoLocalDateTime<C extends Chronology<C>>
      *
      * @return the date part of this date-time, not null
      */
-    ChronoLocalDate<C> toLocalDate() ;
+    ChronoLocalDate<D> toLocalDate() ;
 
     /**
      * Gets the local time part of this date-time.
@@ -127,22 +127,22 @@ public interface ChronoLocalDateTime<C extends Chronology<C>>
     //-------------------------------------------------------------------------
     // override for covariant return type
     @Override
-    ChronoLocalDateTime<C> with(TemporalAdjuster adjuster);
+    ChronoLocalDateTime<D> with(TemporalAdjuster adjuster);
 
     @Override
-    ChronoLocalDateTime<C> with(TemporalField field, long newValue);
+    ChronoLocalDateTime<D> with(TemporalField field, long newValue);
 
     @Override
-    ChronoLocalDateTime<C> plus(TemporalAmount amount);
+    ChronoLocalDateTime<D> plus(TemporalAmount amount);
 
     @Override
-    ChronoLocalDateTime<C> plus(long amountToAdd, TemporalUnit unit);
+    ChronoLocalDateTime<D> plus(long amountToAdd, TemporalUnit unit);
 
     @Override
-    ChronoLocalDateTime<C> minus(TemporalAmount amount);
+    ChronoLocalDateTime<D> minus(TemporalAmount amount);
 
     @Override
-    ChronoLocalDateTime<C> minus(long amountToSubtract, TemporalUnit unit);
+    ChronoLocalDateTime<D> minus(long amountToSubtract, TemporalUnit unit);
 
     //-----------------------------------------------------------------------
     /**
@@ -173,7 +173,7 @@ public interface ChronoLocalDateTime<C extends Chronology<C>>
      * @param zone  the time-zone to use, not null
      * @return the zoned date-time formed from this date-time, not null
      */
-    ChronoZonedDateTime<C> atZone(ZoneId zone);
+    ChronoZonedDateTime<D> atZone(ZoneId zone);
 
     //-----------------------------------------------------------------------
     /**

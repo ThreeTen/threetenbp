@@ -69,7 +69,7 @@ public final class UsabilityChrono {
     }
 
     static {
-        Chronology<?> c = JapaneseChronology.INSTANCE;
+        Chronology c = JapaneseChronology.INSTANCE;
         c = MinguoChronology.INSTANCE;
         c = ThaiBuddhistChronology.INSTANCE;
         c = JapaneseChronology.INSTANCE;
@@ -80,7 +80,7 @@ public final class UsabilityChrono {
     }
 
     private static void newPackagePluggable() {
-        Chronology<?> chrono = MinguoChronology.INSTANCE;
+        Chronology chrono = MinguoChronology.INSTANCE;
 
         ChronoLocalDate<?> date = chrono.dateNow();
         System.out.printf("now: %s%n", date);
@@ -128,7 +128,7 @@ public final class UsabilityChrono {
         System.out.printf("Available Calendars%n");
 
         // Print the Minguo date
-        ChronoLocalDate<MinguoChronology> now1 = MinguoChronology.INSTANCE.dateNow();
+        ChronoLocalDate<?> now1 = MinguoChronology.INSTANCE.dateNow();
         int day = now1.get(ChronoField.DAY_OF_MONTH);
         int dow = now1.get(ChronoField.DAY_OF_WEEK);
         int month = now1.get(ChronoField.MONTH_OF_YEAR);
@@ -137,18 +137,18 @@ public final class UsabilityChrono {
                 DayOfWeek.of(dow), year, month, day);
 
         // Print today's date and the last day of the year for the Minguo Calendar.
-        ChronoLocalDate<MinguoChronology> first = now1
+        ChronoLocalDate<?> first = now1
                 .with(ChronoField.DAY_OF_MONTH, 1)
                 .with(ChronoField.MONTH_OF_YEAR, 1);
-        ChronoLocalDate<MinguoChronology> last = first
+        ChronoLocalDate<?> last = first
                 .plus(1, ChronoUnit.YEARS)
                 .minus(1, ChronoUnit.DAYS);
         System.out.printf("  1st of year: %s; end of year: %s%n", first, last);
 
         // Enumerate the list of available calendars and print today for each
         LocalDate  before = LocalDate.of(-500, 1, 1);
-        Set<Chronology<?>> chronos = Chronology.getAvailableChronologies();
-        for (Chronology<?> chrono : chronos) {
+        Set<Chronology> chronos = Chronology.getAvailableChronologies();
+        for (Chronology chrono : chronos) {
             ChronoLocalDate<?> date = chrono.dateNow();
             ChronoLocalDate<?> date2 = chrono.date(before);
             System.out.printf("   %20s: %22s, %22s%n", chrono.getId(), date, date2);
@@ -160,7 +160,7 @@ public final class UsabilityChrono {
      */
     private static void printMinguoCal() {
         String chronoName = "Minguo";
-        Chronology<?> chrono = Chronology.of(chronoName);
+        Chronology chrono = Chronology.of(chronoName);
         ChronoLocalDate<?> today = chrono.dateNow();
         printMonthCal(today, System.out);
     }
@@ -170,13 +170,13 @@ public final class UsabilityChrono {
      * @param date A date in some calendar
      * @param out a PrintStream
      */
-    private static <C extends Chronology<C>> void printMonthCal(ChronoLocalDate<C> date, PrintStream out) {
+    private static <D extends ChronoLocalDate<D>> void printMonthCal(ChronoLocalDate<D> date, PrintStream out) {
 
         int lengthOfMonth = (int) date.lengthOfMonth();
-        ChronoLocalDate<C> end = date.with(ChronoField.DAY_OF_MONTH, lengthOfMonth);
+        ChronoLocalDate<D> end = date.with(ChronoField.DAY_OF_MONTH, lengthOfMonth);
         end = end.plus(7 - end.get(ChronoField.DAY_OF_WEEK), ChronoUnit.DAYS);
         // Back up to the beginning of the week including the 1st of the month
-        ChronoLocalDate<C> start = date.with(ChronoField.DAY_OF_MONTH, 1);
+        ChronoLocalDate<D> start = date.with(ChronoField.DAY_OF_MONTH, 1);
         start = start.minus(start.get(ChronoField.DAY_OF_WEEK), ChronoUnit.DAYS);
 
         out.printf("%9s Month %2d, %4d%n", date.getChronology().getId(),

@@ -281,16 +281,16 @@ public class TestChronoLocalDate {
     // Test Serialization of Calendars
     //-----------------------------------------------------------------------
     @Test( dataProvider="calendars")
-    public <C extends Chronology<C>> void test_ChronoSerialization(C chrono) throws Exception {
+    public void test_ChronoSerialization(Chronology chrono) throws Exception {
         LocalDate ref = LocalDate.of(1900, 1, 5);
-        ChronoLocalDate<C> orginal = chrono.date(ref);
+        ChronoLocalDate<?> orginal = chrono.date(ref);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);
         out.writeObject(orginal);
         out.close();
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream in = new ObjectInputStream(bais);
-        ChronoLocalDate<C> ser = (ChronoLocalDate<C>) in.readObject();
+        ChronoLocalDate<?> ser = (ChronoLocalDate<?>) in.readObject();
         assertEquals(ser, orginal, "deserialized date is wrong");
     }
 

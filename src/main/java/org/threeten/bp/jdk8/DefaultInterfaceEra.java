@@ -36,7 +36,6 @@ import static org.threeten.bp.temporal.ChronoField.ERA;
 import java.util.Locale;
 
 import org.threeten.bp.DateTimeException;
-import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.Era;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
@@ -51,19 +50,19 @@ import org.threeten.bp.temporal.TemporalQuery;
  * A temporary class providing implementations that will become default interface
  * methods once integrated into JDK 8.
  *
- * @param <C> the chronology of this era
+ * @param  the chronology of this era
  */
-public abstract class DefaultInterfaceEra<C extends Chronology<C>>
+public abstract class DefaultInterfaceEra
         extends DefaultInterfaceTemporalAccessor
-        implements Era<C> {
+        implements Era {
 
     @Override
-    public ChronoLocalDate<C> date(int year, int month, int day) {
+    public ChronoLocalDate<?> date(int year, int month, int day) {
         return getChronology().date(this, year, month, day);
     }
 
     @Override
-    public ChronoLocalDate<C> dateYearDay(int year, int dayOfYear) {
+    public ChronoLocalDate<?> dateYearDay(int year, int dayOfYear) {
         return getChronology().dateYearDay(this, year, dayOfYear);
     }
 

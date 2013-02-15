@@ -37,9 +37,13 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
+import org.threeten.bp.Clock;
 import org.threeten.bp.DateTimeException;
+import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
+import org.threeten.bp.ZoneId;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.ValueRange;
@@ -70,7 +74,7 @@ import org.threeten.bp.temporal.ValueRange;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
-public final class MinguoChronology extends Chronology<MinguoChronology> implements Serializable {
+public final class MinguoChronology extends Chronology implements Serializable {
 
     /**
      * Singleton instance for the Minguo chronology.
@@ -80,12 +84,12 @@ public final class MinguoChronology extends Chronology<MinguoChronology> impleme
     /**
      * The singleton instance for the era ROC.
      */
-    public static final Era<MinguoChronology> ERA_ROC = MinguoEra.ROC;
+    public static final Era ERA_ROC = MinguoEra.ROC;
 
     /**
      * The singleton instance for the era BEFORE_ROC.
      */
-    public static final Era<MinguoChronology> ERA_BEFORE_ROC = MinguoEra.BEFORE_ROC;
+    public static final Era ERA_BEFORE_ROC = MinguoEra.BEFORE_ROC;
 
     /**
      * Serialization version.
@@ -144,22 +148,65 @@ public final class MinguoChronology extends Chronology<MinguoChronology> impleme
     }
 
     //-----------------------------------------------------------------------
-    @Override
-    public ChronoLocalDate<MinguoChronology> date(int prolepticYear, int month, int dayOfMonth) {
+    @Override  // override with covariant return type
+    public MinguoDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
+        return (MinguoDate) super.date(era, yearOfEra, month, dayOfMonth);
+    }
+
+    @Override  // override with covariant return type
+    public MinguoDate date(int prolepticYear, int month, int dayOfMonth) {
         return new MinguoDate(LocalDate.of(prolepticYear + YEARS_DIFFERENCE, month, dayOfMonth));
     }
 
-    @Override
-    public ChronoLocalDate<MinguoChronology> dateYearDay(int prolepticYear, int dayOfYear) {
+    @Override  // override with covariant return type
+    public MinguoDate dateYearDay(Era era, int yearOfEra, int dayOfYear) {
+        return (MinguoDate) super.dateYearDay(era, yearOfEra, dayOfYear);
+    }
+
+    @Override  // override with covariant return type
+    public MinguoDate dateYearDay(int prolepticYear, int dayOfYear) {
         return new MinguoDate(LocalDate.ofYearDay(prolepticYear + YEARS_DIFFERENCE, dayOfYear));
     }
 
-    @Override
-    public ChronoLocalDate<MinguoChronology> date(TemporalAccessor temporal) {
+    //-----------------------------------------------------------------------
+    @Override  // override with covariant return type
+    public MinguoDate date(TemporalAccessor temporal) {
         if (temporal instanceof MinguoDate) {
             return (MinguoDate) temporal;
         }
         return new MinguoDate(LocalDate.from(temporal));
+    }
+
+    @Override  // override with covariant return type
+    public ChronoLocalDateTime<MinguoDate> localDateTime(TemporalAccessor temporal) {
+        return (ChronoLocalDateTime<MinguoDate>) super.localDateTime(temporal);
+    }
+
+    @Override  // override with covariant return type
+    public ChronoZonedDateTime<MinguoDate> zonedDateTime(TemporalAccessor temporal) {
+        return (ChronoZonedDateTime<MinguoDate>) super.zonedDateTime(temporal);
+    }
+
+    @Override  // override with covariant return type
+    public ChronoZonedDateTime<MinguoDate> zonedDateTime(Instant instant, ZoneId zone) {
+        return (ChronoZonedDateTime<MinguoDate>) super.zonedDateTime(instant, zone);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override  // override with covariant return type
+    public MinguoDate dateNow() {
+        return (MinguoDate) super.dateNow();
+    }
+
+    @Override  // override with covariant return type
+    public MinguoDate dateNow(ZoneId zone) {
+        return (MinguoDate) super.dateNow(zone);
+    }
+
+    @Override  // override with covariant return type
+    public MinguoDate dateNow(Clock clock) {
+        Objects.requireNonNull(clock, "clock");
+        return (MinguoDate) super.dateNow(clock);
     }
 
     //-----------------------------------------------------------------------
@@ -179,7 +226,7 @@ public final class MinguoChronology extends Chronology<MinguoChronology> impleme
     }
 
     @Override
-    public int prolepticYear(Era<MinguoChronology> era, int yearOfEra) {
+    public int prolepticYear(Era era, int yearOfEra) {
         if (era instanceof MinguoEra == false) {
             throw new DateTimeException("Era must be MinguoEra");
         }
@@ -187,13 +234,13 @@ public final class MinguoChronology extends Chronology<MinguoChronology> impleme
     }
 
     @Override
-    public Era<MinguoChronology> eraOf(int eraValue) {
+    public Era eraOf(int eraValue) {
         return MinguoEra.of(eraValue);
     }
 
     @Override
-    public List<Era<MinguoChronology>> eras() {
-        return Arrays.<Era<MinguoChronology>>asList(MinguoEra.values());
+    public List<Era> eras() {
+        return Arrays.<Era>asList(MinguoEra.values());
     }
 
     //-----------------------------------------------------------------------

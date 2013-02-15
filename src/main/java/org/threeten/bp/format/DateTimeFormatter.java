@@ -90,7 +90,7 @@ public final class DateTimeFormatter {
     /**
      * The chronology to use for formatting, null for no override.
      */
-    private final Chronology<?> chrono;
+    private final Chronology chrono;
     /**
      * The zone to use for formatting, null for no override.
      */
@@ -106,7 +106,7 @@ public final class DateTimeFormatter {
      * @param zone  the zone to use, null for no override
      */
     DateTimeFormatter(CompositePrinterParser printerParser, Locale locale,
-                      DateTimeFormatSymbols symbols, Chronology<?> chrono, ZoneId zone) {
+                      DateTimeFormatSymbols symbols, Chronology chrono, ZoneId zone) {
         this.printerParser = Objects.requireNonNull(printerParser, "printerParser");
         this.locale = Objects.requireNonNull(locale, "locale");
         this.symbols = Objects.requireNonNull(symbols, "symbols");
@@ -180,7 +180,7 @@ public final class DateTimeFormatter {
      *
      * @return the chronology of this formatter, null if no override
      */
-    public Chronology<?> getChrono() {
+    public Chronology getChrono() {
         return chrono;
     }
 
@@ -208,7 +208,7 @@ public final class DateTimeFormatter {
      * @param chrono  the new chronology, not null
      * @return a formatter based on this formatter with the requested override chronology, not null
      */
-    public DateTimeFormatter withChrono(Chronology<?> chrono) {
+    public DateTimeFormatter withChrono(Chronology chrono) {
         if (Objects.equals(this.chrono, chrono)) {
             return this;
         }

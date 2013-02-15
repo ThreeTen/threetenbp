@@ -56,8 +56,8 @@ import org.threeten.bp.temporal.ValueRange;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
-final class MinguoDate
-        extends ChronoDateImpl<MinguoChronology>
+public final class MinguoDate
+        extends ChronoDateImpl<MinguoDate>
         implements Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
@@ -223,7 +223,7 @@ final class MinguoDate
 
     }
 
-    static ChronoLocalDate<MinguoChronology> readExternal(DataInput in) throws IOException {
+    static ChronoLocalDate<?> readExternal(DataInput in) throws IOException {
         int year = in.readInt();
         int month = in.readByte();
         int dayOfMonth = in.readByte();

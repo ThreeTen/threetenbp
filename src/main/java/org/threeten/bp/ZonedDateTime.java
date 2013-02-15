@@ -45,7 +45,6 @@ import java.util.List;
 import java.util.Objects;
 
 import org.threeten.bp.chrono.ChronoZonedDateTime;
-import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
@@ -121,8 +120,8 @@ import org.threeten.bp.zone.ZoneRules;
  * This class is immutable and thread-safe.
  */
 public final class ZonedDateTime
-        extends DefaultInterfaceChronoZonedDateTime<IsoChronology>
-        implements Temporal, ChronoZonedDateTime<IsoChronology>, Serializable {
+        extends DefaultInterfaceChronoZonedDateTime<LocalDate>
+        implements Temporal, ChronoZonedDateTime<LocalDate>, Serializable {
 
     /**
      * Serialization version.

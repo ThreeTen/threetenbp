@@ -42,7 +42,6 @@ import org.threeten.bp.Instant;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.ChronoZonedDateTime;
-import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.TemporalAdjuster;
@@ -57,11 +56,11 @@ import org.threeten.bp.temporal.ValueRange;
  * A temporary class providing implementations that will become default interface
  * methods once integrated into JDK 8.
  *
- * @param <C> the chronology of this date-time
+ * @param <D> the chronology of this date-time
  */
-public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chronology<C>>
+public abstract class DefaultInterfaceChronoZonedDateTime<D extends ChronoLocalDate<D>>
         extends DefaultInterfaceTemporal
-        implements ChronoZonedDateTime<C> {
+        implements ChronoZonedDateTime<D> {
 
     @Override
     public ValueRange range(TemporalField field) {
@@ -100,7 +99,7 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chronology<C
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDate<C> toLocalDate() {
+    public ChronoLocalDate<D> toLocalDate() {
         return toLocalDateTime().toLocalDate();
     }
 
@@ -111,22 +110,22 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chronology<C
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoZonedDateTime<C> with(TemporalAdjuster adjuster) {
+    public ChronoZonedDateTime<D> with(TemporalAdjuster adjuster) {
         return toLocalDate().getChronology().ensureChronoZonedDateTime(super.with(adjuster));
     }
 
     @Override
-    public ChronoZonedDateTime<C> plus(TemporalAmount amount) {
+    public ChronoZonedDateTime<D> plus(TemporalAmount amount) {
         return toLocalDate().getChronology().ensureChronoZonedDateTime(super.plus(amount));
     }
 
     @Override
-    public ChronoZonedDateTime<C> minus(TemporalAmount amount) {
+    public ChronoZonedDateTime<D> minus(TemporalAmount amount) {
         return toLocalDate().getChronology().ensureChronoZonedDateTime(super.minus(amount));
     }
 
     @Override
-    public ChronoZonedDateTime<C> minus(long amountToSubtract, TemporalUnit unit) {
+    public ChronoZonedDateTime<D> minus(long amountToSubtract, TemporalUnit unit) {
         return toLocalDate().getChronology().ensureChronoZonedDateTime(super.minus(amountToSubtract, unit));
     }
 

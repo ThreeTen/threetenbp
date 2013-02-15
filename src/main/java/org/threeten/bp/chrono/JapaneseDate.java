@@ -60,8 +60,8 @@ import sun.util.calendar.LocalGregorianCalendar;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
-final class JapaneseDate
-        extends ChronoDateImpl<JapaneseChronology>
+public final class JapaneseDate
+        extends ChronoDateImpl<JapaneseDate>
         implements Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
@@ -352,7 +352,7 @@ final class JapaneseDate
         out.writeByte(get(DAY_OF_MONTH));
     }
 
-    static ChronoLocalDate<JapaneseChronology> readExternal(DataInput in) throws IOException {
+    static ChronoLocalDate<?> readExternal(DataInput in) throws IOException {
         int year = in.readInt();
         int month = in.readByte();
         int dayOfMonth = in.readByte();

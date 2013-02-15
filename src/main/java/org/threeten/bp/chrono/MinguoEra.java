@@ -60,7 +60,7 @@ import org.threeten.bp.temporal.ValueRange;
  * <h3>Specification for implementors</h3>
  * This is an immutable and thread-safe enum.
  */
-enum MinguoEra implements Era<MinguoChronology>  {
+enum MinguoEra implements Era  {
 
     /**
      * The singleton instance for the era BEFORE_ROC, 'Before Republic of China'.
@@ -116,13 +116,13 @@ enum MinguoEra implements Era<MinguoChronology>  {
     // JDK8 default methods:
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDate<MinguoChronology> date(int year, int month, int day) {
-        return getChronology().date(this, year, month, day);
+    public MinguoDate date(int year, int month, int day) {
+        return (MinguoDate) getChronology().date(this, year, month, day);
     }
 
     @Override
-    public ChronoLocalDate<MinguoChronology> dateYearDay(int year, int dayOfYear) {
-        return getChronology().dateYearDay(this, year, dayOfYear);
+    public MinguoDate dateYearDay(int year, int dayOfYear) {
+        return (MinguoDate) getChronology().dateYearDay(this, year, dayOfYear);
     }
 
     //-----------------------------------------------------------------------

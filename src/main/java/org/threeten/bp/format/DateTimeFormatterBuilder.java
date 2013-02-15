@@ -830,7 +830,7 @@ public final class DateTimeFormatterBuilder {
      * @param chrono  the chronology to use, not null
      * @return this, for chaining, not null
      */
-    public DateTimeFormatterBuilder appendLocalized(FormatStyle dateStyle, FormatStyle timeStyle, Chronology<?> chrono) {
+    public DateTimeFormatterBuilder appendLocalized(FormatStyle dateStyle, FormatStyle timeStyle, Chronology chrono) {
         Objects.requireNonNull(chrono, "chrono");
         if (dateStyle != null || timeStyle != null) {
             appendInternal(new LocalizedPrinterParser(dateStyle, timeStyle, chrono));
@@ -2874,7 +2874,7 @@ public final class DateTimeFormatterBuilder {
 
         @Override
         public boolean print(DateTimePrintContext context, StringBuilder buf) {
-            Chronology<?> chrono = context.getValue(TemporalQueries.chronology());
+            Chronology chrono = context.getValue(TemporalQueries.chronology());
             if (chrono == null) {
                 return false;
             }
@@ -2899,7 +2899,7 @@ public final class DateTimeFormatterBuilder {
     static final class LocalizedPrinterParser implements DateTimePrinterParser {
         private final FormatStyle dateStyle;
         private final FormatStyle timeStyle;
-        private final Chronology<?> chrono;
+        private final Chronology chrono;
 
         /**
          * Constructor.
@@ -2908,7 +2908,7 @@ public final class DateTimeFormatterBuilder {
          * @param timeStyle  the time style to use, may be null
          * @param chrono  the chronology to use, not null
          */
-        LocalizedPrinterParser(FormatStyle dateStyle, FormatStyle timeStyle, Chronology<?> chrono) {
+        LocalizedPrinterParser(FormatStyle dateStyle, FormatStyle timeStyle, Chronology chrono) {
             // validated by caller
             this.dateStyle = dateStyle;
             this.timeStyle = timeStyle;

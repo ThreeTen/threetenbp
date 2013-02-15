@@ -59,7 +59,7 @@ import org.threeten.bp.temporal.ValueRange;
  * <h3>Specification for implementors</h3>
  * This is an immutable and thread-safe enum.
  */
-enum ThaiBuddhistEra implements Era<ThaiBuddhistChronology> {
+enum ThaiBuddhistEra implements Era {
 
     /**
      * The singleton instance for the era before the current one, 'Before Buddhist Era',
@@ -115,13 +115,13 @@ enum ThaiBuddhistEra implements Era<ThaiBuddhistChronology> {
     // JDK8 default methods:
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDate<ThaiBuddhistChronology> date(int year, int month, int day) {
-        return getChronology().date(this, year, month, day);
+    public ThaiBuddhistDate date(int year, int month, int day) {
+        return (ThaiBuddhistDate) getChronology().date(this, year, month, day);
     }
 
     @Override
-    public ChronoLocalDate<ThaiBuddhistChronology> dateYearDay(int year, int dayOfYear) {
-        return getChronology().dateYearDay(this, year, dayOfYear);
+    public ThaiBuddhistDate dateYearDay(int year, int dayOfYear) {
+        return (ThaiBuddhistDate) getChronology().dateYearDay(this, year, dayOfYear);
     }
 
     //-----------------------------------------------------------------------

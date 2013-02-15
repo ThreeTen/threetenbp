@@ -39,8 +39,8 @@ import java.util.Objects;
 
 import org.threeten.bp.Instant;
 import org.threeten.bp.ZoneOffset;
+import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.ChronoLocalDateTime;
-import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAdjuster;
@@ -53,29 +53,29 @@ import org.threeten.bp.temporal.TemporalUnit;
  * A temporary class providing implementations that will become default interface
  * methods once integrated into JDK 8.
  *
- * @param <C> the chronology of this date-time
+ * @param <D> the chronology of this date-time
  */
-public abstract class DefaultInterfaceChronoLocalDateTime<C extends Chronology<C>>
+public abstract class DefaultInterfaceChronoLocalDateTime<D extends ChronoLocalDate<D>>
         extends DefaultInterfaceTemporal
-        implements ChronoLocalDateTime<C> {
+        implements ChronoLocalDateTime<D> {
 
     @Override
-    public ChronoLocalDateTime<C> with(TemporalAdjuster adjuster) {
+    public ChronoLocalDateTime<D> with(TemporalAdjuster adjuster) {
         return toLocalDate().getChronology().ensureChronoLocalDateTime(super.with(adjuster));
     }
 
     @Override
-    public ChronoLocalDateTime<C> plus(TemporalAmount amount) {
+    public ChronoLocalDateTime<D> plus(TemporalAmount amount) {
         return toLocalDate().getChronology().ensureChronoLocalDateTime(super.plus(amount));
     }
 
     @Override
-    public ChronoLocalDateTime<C> minus(TemporalAmount amount) {
+    public ChronoLocalDateTime<D> minus(TemporalAmount amount) {
         return toLocalDate().getChronology().ensureChronoLocalDateTime(super.minus(amount));
     }
 
     @Override
-    public ChronoLocalDateTime<C> minus(long amountToSubtract, TemporalUnit unit) {
+    public ChronoLocalDateTime<D> minus(long amountToSubtract, TemporalUnit unit) {
         return toLocalDate().getChronology().ensureChronoLocalDateTime(super.minus(amountToSubtract, unit));
     }
 

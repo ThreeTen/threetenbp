@@ -59,14 +59,14 @@ import org.threeten.bp.temporal.TemporalUnit;
  * A temporary class providing implementations that will become default interface
  * methods once integrated into JDK 8.
  *
- * @param <C> the chronology of this date-time
+ * @param <D> the chronology of this date-time
  */
-public abstract class DefaultInterfaceChronoLocalDate<C extends Chronology<C>>
+public abstract class DefaultInterfaceChronoLocalDate<D extends ChronoLocalDate<D>>
         extends DefaultInterfaceTemporal
-        implements ChronoLocalDate<C> {
+        implements ChronoLocalDate<D> {
 
     @Override
-    public Era<C> getEra() {
+    public Era getEra() {
         return getChronology().eraOf(get(ERA));
     }
 
@@ -90,22 +90,22 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chronology<C>>
 
     //-------------------------------------------------------------------------
     @Override
-    public ChronoLocalDate<C> with(TemporalAdjuster adjuster) {
+    public ChronoLocalDate<D> with(TemporalAdjuster adjuster) {
         return getChronology().ensureChronoLocalDate(super.with(adjuster));
     }
 
     @Override
-    public ChronoLocalDate<C> plus(TemporalAmount amount) {
+    public ChronoLocalDate<D> plus(TemporalAmount amount) {
         return getChronology().ensureChronoLocalDate(super.plus(amount));
     }
 
     @Override
-    public ChronoLocalDate<C> minus(TemporalAmount amount) {
+    public ChronoLocalDate<D> minus(TemporalAmount amount) {
         return getChronology().ensureChronoLocalDate(super.minus(amount));
     }
 
     @Override
-    public ChronoLocalDate<C> minus(long amountToSubtract, TemporalUnit unit) {
+    public ChronoLocalDate<D> minus(long amountToSubtract, TemporalUnit unit) {
         return getChronology().ensureChronoLocalDate(super.minus(amountToSubtract, unit));
     }
 
@@ -116,7 +116,7 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chronology<C>>
     }
 
     @Override
-    public ChronoLocalDateTime<C> atTime(LocalTime localTime) {
+    public ChronoLocalDateTime<D> atTime(LocalTime localTime) {
         return Chronology.dateTime(this, localTime);
     }
 

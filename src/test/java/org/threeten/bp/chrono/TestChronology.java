@@ -64,7 +64,7 @@ public class TestChronology {
     @BeforeMethod
     public void setUp() {
         // Ensure each of the classes are initialized (until initialization is fixed)
-        Chronology<?> c;
+        Chronology c;
         c = HijrahChronology.INSTANCE;
         c = IsoChronology.INSTANCE;
         c = JapaneseChronology.INSTANCE;
@@ -89,7 +89,7 @@ public class TestChronology {
 
     @Test(dataProvider = "calendars")
     public void test_getters(String chronoId, String calendarSystemType, String description) {
-        Chronology<?> chrono = Chronology.of(chronoId);
+        Chronology chrono = Chronology.of(chronoId);
         assertNotNull(chrono, "Required calendar not found by ID: " + chronoId);
         assertEquals(chrono.getId(), chronoId);
         assertEquals(chrono.getCalendarType(), calendarSystemType);
@@ -97,20 +97,20 @@ public class TestChronology {
 
     @Test(dataProvider = "calendars")
     public void test_required_calendars(String chronoId, String calendarSystemType, String description) {
-        Chronology<?> chrono = Chronology.of(chronoId);
+        Chronology chrono = Chronology.of(chronoId);
         assertNotNull(chrono, "Required calendar not found by ID: " + chronoId);
         chrono = Chronology.of(calendarSystemType);
         assertNotNull(chrono, "Required calendar not found by type: " + chronoId);
-        Set<Chronology<?>> cals = Chronology.getAvailableChronologies();
+        Set<Chronology> cals = Chronology.getAvailableChronologies();
         assertTrue(cals.contains(chrono), "Required calendar not found in set of available calendars");
     }
 
     @Test
     public void test_calendar_list() {
-        Set<Chronology<?>> chronos = Chronology.getAvailableChronologies();
+        Set<Chronology> chronos = Chronology.getAvailableChronologies();
         assertNotNull(chronos, "Required list of calendars must be non-null");
-        for (Chronology<?> chrono : chronos) {
-            Chronology<?> lookup = Chronology.of(chrono.getId());
+        for (Chronology chrono : chronos) {
+            Chronology lookup = Chronology.of(chrono.getId());
             assertNotNull(lookup, "Required calendar not found: " + chrono);
         }
         assertEquals(chronos.size() >= data_of_calendars().length, true, "Required list of calendars too short");
@@ -121,7 +121,7 @@ public class TestChronology {
      */
     @Test(dataProvider = "calendars")
     public void test_epoch(String name, String alias, String description) {
-        Chronology<?> chrono = Chronology.of(name); // a chronology. In practice this is rarely hardcoded
+        Chronology chrono = Chronology.of(name); // a chronology. In practice this is rarely hardcoded
         ChronoLocalDate<?> date1 = chrono.dateNow();
         long epoch1 = date1.getLong(ChronoField.EPOCH_DAY);
         ChronoLocalDate<?> date2 = date1.with(ChronoField.EPOCH_DAY, epoch1);
@@ -145,12 +145,12 @@ public class TestChronology {
     }
 
     @Test(dataProvider = "calendarsystemtype")
-    public void test_getCalendarType(Chronology<?> chrono, String calendarType) {
+    public void test_getCalendarType(Chronology chrono, String calendarType) {
         assertEquals(chrono.getCalendarType(), calendarType);
     }
 
     @Test(dataProvider = "calendarsystemtype")
-    public void test_lookupLocale(Chronology<?> chrono, String calendarType) {
+    public void test_lookupLocale(Chronology chrono, String calendarType) {
         Locale locale = new Locale.Builder().setLanguage("en").setRegion("CA").setUnicodeLocaleKeyword("ca", calendarType).build();
         assertEquals(Chronology.ofLocale(locale), chrono);
     }
@@ -160,15 +160,15 @@ public class TestChronology {
     // serialization; serialize and check each calendar system
     //-----------------------------------------------------------------------
     @Test(dataProvider = "calendarsystemtype")
-    public <C extends Chronology<C>> void test_chronoSerializationSingleton(C chrono, String calendarType) throws Exception {
-        C orginal = chrono;
+    public void test_chronoSerializationSingleton(Chronology chrono, String calendarType) throws Exception {
+        Chronology orginal = chrono;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);
         out.writeObject(orginal);
         out.close();
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream in = new ObjectInputStream(bais);
-        C ser = (C)in.readObject();
+        Chronology ser = (Chronology) in.readObject();
         assertSame(ser, chrono, "Deserialized Chrono is not the singleton serialized");
     }
 
