@@ -77,7 +77,7 @@ import org.threeten.bp.temporal.TemporalUnit;
  *
  * @param <C> the chronology of this date-time
  */
-public interface ChronoZonedDateTime<C extends Chrono<C>>
+public interface ChronoZonedDateTime<C extends Chronology<C>>
         extends Temporal, Comparable<ChronoZonedDateTime<?>> {
 
     /**

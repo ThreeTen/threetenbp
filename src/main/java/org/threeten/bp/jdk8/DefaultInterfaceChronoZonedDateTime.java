@@ -40,7 +40,7 @@ import java.util.Objects;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalTime;
-import org.threeten.bp.chrono.Chrono;
+import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.ChronoZonedDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
@@ -60,7 +60,7 @@ import org.threeten.bp.temporal.ValueRange;
  *
  * @param <C> the chronology of this date-time
  */
-public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chrono<C>>
+public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chronology<C>>
         extends DefaultInterfaceTemporal
         implements ChronoZonedDateTime<C> {
 
@@ -113,22 +113,22 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chrono<C>>
     //-----------------------------------------------------------------------
     @Override
     public ChronoZonedDateTime<C> with(TemporalAdjuster adjuster) {
-        return getDate().getChrono().ensureChronoZonedDateTime(super.with(adjuster));
+        return getDate().getChronology().ensureChronoZonedDateTime(super.with(adjuster));
     }
 
     @Override
     public ChronoZonedDateTime<C> plus(TemporalAdder adjuster) {
-        return getDate().getChrono().ensureChronoZonedDateTime(super.plus(adjuster));
+        return getDate().getChronology().ensureChronoZonedDateTime(super.plus(adjuster));
     }
 
     @Override
     public ChronoZonedDateTime<C> minus(TemporalSubtractor adjuster) {
-        return getDate().getChrono().ensureChronoZonedDateTime(super.minus(adjuster));
+        return getDate().getChronology().ensureChronoZonedDateTime(super.minus(adjuster));
     }
 
     @Override
     public ChronoZonedDateTime<C> minus(long amountToSubtract, TemporalUnit unit) {
-        return getDate().getChrono().ensureChronoZonedDateTime(super.minus(amountToSubtract, unit));
+        return getDate().getChronology().ensureChronoZonedDateTime(super.minus(amountToSubtract, unit));
     }
 
     //-------------------------------------------------------------------------
@@ -137,8 +137,8 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chrono<C>>
     public <R> R query(TemporalQuery<R> query) {
         if (query == TemporalQueries.zoneId()) {
             return (R) getZone();
-        } else if (query == TemporalQueries.chrono()) {
-            return (R) getDate().getChrono();
+        } else if (query == TemporalQueries.chronology()) {
+            return (R) getDate().getChronology();
         } else if (query == TemporalQueries.precision()) {
             return (R) NANOS;
         } else if (query == TemporalQueries.offset()) {
@@ -172,7 +172,7 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chrono<C>>
                 if (cmp == 0) {
                     cmp = getZone().getId().compareTo(other.getZone().getId());
                     if (cmp == 0) {
-                        cmp = getDate().getChrono().compareTo(other.getDate().getChrono());
+                        cmp = getDate().getChronology().compareTo(other.getDate().getChronology());
                     }
                 }
             }

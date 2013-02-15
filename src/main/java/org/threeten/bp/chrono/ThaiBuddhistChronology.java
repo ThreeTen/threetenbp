@@ -71,21 +71,21 @@ import org.threeten.bp.temporal.ValueRange;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
-public final class ThaiBuddhistChrono extends Chrono<ThaiBuddhistChrono> implements Serializable {
+public final class ThaiBuddhistChronology extends Chronology<ThaiBuddhistChronology> implements Serializable {
 
     /**
      * Singleton instance of the Buddhist chronology.
      */
-    public static final ThaiBuddhistChrono INSTANCE = new ThaiBuddhistChrono();
+    public static final ThaiBuddhistChronology INSTANCE = new ThaiBuddhistChronology();
     /**
      * The singleton instance for the era before the current one - Before Buddhist -
      * which has the value 0.
      */
-    public static final Era<ThaiBuddhistChrono> ERA_BEFORE_BE = ThaiBuddhistEra.BEFORE_BE;
+    public static final Era<ThaiBuddhistChronology> ERA_BEFORE_BE = ThaiBuddhistEra.BEFORE_BE;
     /**
      * The singleton instance for the current era - Buddhist - which has the value 1.
      */
-    public static final Era<ThaiBuddhistChrono> ERA_BE = ThaiBuddhistEra.BE;
+    public static final Era<ThaiBuddhistChronology> ERA_BE = ThaiBuddhistEra.BE;
 
     /**
      * Serialization version.
@@ -134,7 +134,7 @@ public final class ThaiBuddhistChrono extends Chrono<ThaiBuddhistChrono> impleme
     /**
      * Restricted constructor.
      */
-    private ThaiBuddhistChrono() {
+    private ThaiBuddhistChronology() {
     }
 
     /**
@@ -180,17 +180,17 @@ public final class ThaiBuddhistChrono extends Chrono<ThaiBuddhistChrono> impleme
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDate<ThaiBuddhistChrono> date(int prolepticYear, int month, int dayOfMonth) {
+    public ChronoLocalDate<ThaiBuddhistChronology> date(int prolepticYear, int month, int dayOfMonth) {
         return new ThaiBuddhistDate(LocalDate.of(prolepticYear - YEARS_DIFFERENCE, month, dayOfMonth));
     }
 
     @Override
-    public ChronoLocalDate<ThaiBuddhistChrono> dateYearDay(int prolepticYear, int dayOfYear) {
+    public ChronoLocalDate<ThaiBuddhistChronology> dateYearDay(int prolepticYear, int dayOfYear) {
         return new ThaiBuddhistDate(LocalDate.ofYearDay(prolepticYear - YEARS_DIFFERENCE, dayOfYear));
     }
 
     @Override
-    public ChronoLocalDate<ThaiBuddhistChrono> date(TemporalAccessor temporal) {
+    public ChronoLocalDate<ThaiBuddhistChronology> date(TemporalAccessor temporal) {
         if (temporal instanceof ThaiBuddhistDate) {
             return (ThaiBuddhistDate) temporal;
         }
@@ -210,11 +210,11 @@ public final class ThaiBuddhistChrono extends Chrono<ThaiBuddhistChrono> impleme
      */
     @Override
     public boolean isLeapYear(long prolepticYear) {
-        return ISOChrono.INSTANCE.isLeapYear(prolepticYear - YEARS_DIFFERENCE);
+        return ISOChronology.INSTANCE.isLeapYear(prolepticYear - YEARS_DIFFERENCE);
     }
 
     @Override
-    public int prolepticYear(Era<ThaiBuddhistChrono> era, int yearOfEra) {
+    public int prolepticYear(Era<ThaiBuddhistChronology> era, int yearOfEra) {
         if (era instanceof ThaiBuddhistEra == false) {
             throw new DateTimeException("Era must be BuddhistEra");
         }
@@ -222,13 +222,13 @@ public final class ThaiBuddhistChrono extends Chrono<ThaiBuddhistChrono> impleme
     }
 
     @Override
-    public Era<ThaiBuddhistChrono> eraOf(int eraValue) {
+    public Era<ThaiBuddhistChronology> eraOf(int eraValue) {
         return ThaiBuddhistEra.of(eraValue);
     }
 
     @Override
-    public List<Era<ThaiBuddhistChrono>> eras() {
-        return Arrays.<Era<ThaiBuddhistChrono>>asList(ThaiBuddhistEra.values());
+    public List<Era<ThaiBuddhistChronology>> eras() {
+        return Arrays.<Era<ThaiBuddhistChronology>>asList(ThaiBuddhistEra.values());
     }
 
     //-----------------------------------------------------------------------

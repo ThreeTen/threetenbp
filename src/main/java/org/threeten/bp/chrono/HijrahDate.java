@@ -66,7 +66,7 @@ import org.threeten.bp.temporal.ValueRange;
 /**
  * A date in the Hijrah calendar system.
  * <p>
- * This implements {@code ChronoLocalDate} for the {@link HijrahChrono Hijrah calendar}.
+ * This implements {@code ChronoLocalDate} for the {@link HijrahChronology Hijrah calendar}.
  * <p>
  * The Hijrah calendar has a different total of days in a year than
  * Gregorian calendar, and a month is based on the period of a complete
@@ -101,7 +101,7 @@ import org.threeten.bp.temporal.ValueRange;
  * This class is immutable and thread-safe.
  */
 final class HijrahDate
-        extends ChronoDateImpl<HijrahChrono>
+        extends ChronoDateImpl<HijrahChronology>
         implements Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
@@ -531,8 +531,8 @@ final class HijrahDate
 
     //-----------------------------------------------------------------------
     @Override
-    public HijrahChrono getChrono() {
-        return HijrahChrono.INSTANCE;
+    public HijrahChronology getChronology() {
+        return HijrahChronology.INSTANCE;
     }
 
     @Override
@@ -546,7 +546,7 @@ final class HijrahDate
                     case ALIGNED_WEEK_OF_MONTH: return ValueRange.of(1, 5);  // TODO
                     case YEAR_OF_ERA: return ValueRange.of(1, 1000);  // TODO
                 }
-                return getChrono().range(f);
+                return getChronology().range(f);
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
@@ -1645,11 +1645,11 @@ final class HijrahDate
         out.writeByte(get(DAY_OF_MONTH));
     }
 
-    static ChronoLocalDate<HijrahChrono> readExternal(DataInput in) throws IOException {
+    static ChronoLocalDate<HijrahChronology> readExternal(DataInput in) throws IOException {
         int year = in.readInt();
         int month = in.readByte();
         int dayOfMonth = in.readByte();
-        return HijrahChrono.INSTANCE.date(year, month, dayOfMonth);
+        return HijrahChronology.INSTANCE.date(year, month, dayOfMonth);
     }
 
 }

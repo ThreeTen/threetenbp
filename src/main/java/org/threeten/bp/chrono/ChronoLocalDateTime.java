@@ -78,7 +78,7 @@ import org.threeten.bp.zone.ZoneRules;
  *
  * @param <C> the chronology of this date-time
  */
-public interface ChronoLocalDateTime<C extends Chrono<C>>
+public interface ChronoLocalDateTime<C extends Chronology<C>>
         extends  Temporal, TemporalAdjuster, Comparable<ChronoLocalDateTime<?>> {
 
    /**

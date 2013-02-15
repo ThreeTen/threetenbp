@@ -143,22 +143,22 @@ import org.threeten.bp.temporal.ValueRange;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
-public final class HijrahChrono extends Chrono<HijrahChrono> implements Serializable {
+public final class HijrahChronology extends Chronology<HijrahChronology> implements Serializable {
 
     /**
      * Singleton instance of the Hijrah chronology.
      */
-    public static final HijrahChrono INSTANCE = new HijrahChrono();
+    public static final HijrahChronology INSTANCE = new HijrahChronology();
 
     /**
      * The singleton instance for the era before the current one - Before Hijrah -
      * which has the value 0.
      */
-    public static final Era<HijrahChrono> ERA_BEFORE_AH = HijrahEra.BEFORE_AH;
+    public static final Era<HijrahChronology> ERA_BEFORE_AH = HijrahEra.BEFORE_AH;
     /**
      * The singleton instance for the current era - Hijrah - which has the value 1.
      */
-    public static final Era<HijrahChrono> ERA_AH = HijrahEra.AH;
+    public static final Era<HijrahChronology> ERA_AH = HijrahEra.AH;
     /**
      * Serialization version.
      */
@@ -196,7 +196,7 @@ public final class HijrahChrono extends Chrono<HijrahChrono> implements Serializ
     /**
      * Restrictive constructor.
      */
-    private HijrahChrono() {
+    private HijrahChronology() {
     }
 
     /**
@@ -242,17 +242,17 @@ public final class HijrahChrono extends Chrono<HijrahChrono> implements Serializ
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDate<HijrahChrono> date(int prolepticYear, int month, int dayOfMonth) {
+    public ChronoLocalDate<HijrahChronology> date(int prolepticYear, int month, int dayOfMonth) {
         return HijrahDate.of(prolepticYear, month, dayOfMonth);
     }
 
     @Override
-    public ChronoLocalDate<HijrahChrono> dateYearDay(int prolepticYear, int dayOfYear) {
+    public ChronoLocalDate<HijrahChronology> dateYearDay(int prolepticYear, int dayOfYear) {
         return HijrahDate.of(prolepticYear, 1, 1).plusDays(dayOfYear - 1);  // TODO better
     }
 
     @Override
-    public ChronoLocalDate<HijrahChrono> date(TemporalAccessor temporal) {
+    public ChronoLocalDate<HijrahChronology> date(TemporalAccessor temporal) {
         if (temporal instanceof HijrahDate) {
             return (HijrahDate) temporal;
         }
@@ -266,7 +266,7 @@ public final class HijrahChrono extends Chrono<HijrahChrono> implements Serializ
     }
 
     @Override
-    public int prolepticYear(Era<HijrahChrono> era, int yearOfEra) {
+    public int prolepticYear(Era<HijrahChronology> era, int yearOfEra) {
         if (era instanceof HijrahEra == false) {
             throw new DateTimeException("Era must be HijrahEra");
         }
@@ -274,7 +274,7 @@ public final class HijrahChrono extends Chrono<HijrahChrono> implements Serializ
     }
 
     @Override
-    public Era<HijrahChrono> eraOf(int eraValue) {
+    public Era<HijrahChronology> eraOf(int eraValue) {
         switch (eraValue) {
             case 0:
                 return HijrahEra.BEFORE_AH;
@@ -286,8 +286,8 @@ public final class HijrahChrono extends Chrono<HijrahChrono> implements Serializ
     }
 
     @Override
-    public List<Era<HijrahChrono>> eras() {
-        return Arrays.<Era<HijrahChrono>>asList(HijrahEra.values());
+    public List<Era<HijrahChronology>> eras() {
+        return Arrays.<Era<HijrahChronology>>asList(HijrahEra.values());
     }
 
     //-----------------------------------------------------------------------

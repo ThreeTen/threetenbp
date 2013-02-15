@@ -36,7 +36,7 @@ import static org.threeten.bp.temporal.ChronoField.ERA;
 import java.util.Locale;
 
 import org.threeten.bp.DateTimeException;
-import org.threeten.bp.chrono.Chrono;
+import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.Era;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
@@ -53,18 +53,18 @@ import org.threeten.bp.temporal.TemporalQuery;
  *
  * @param <C> the chronology of this era
  */
-public abstract class DefaultInterfaceEra<C extends Chrono<C>>
+public abstract class DefaultInterfaceEra<C extends Chronology<C>>
         extends DefaultInterfaceTemporalAccessor
         implements Era<C> {
 
     @Override
     public ChronoLocalDate<C> date(int year, int month, int day) {
-        return getChrono().date(this, year, month, day);
+        return getChronology().date(this, year, month, day);
     }
 
     @Override
     public ChronoLocalDate<C> dateYearDay(int year, int dayOfYear) {
-        return getChrono().dateYearDay(this, year, dayOfYear);
+        return getChronology().dateYearDay(this, year, dayOfYear);
     }
 
     //-----------------------------------------------------------------------
@@ -102,8 +102,8 @@ public abstract class DefaultInterfaceEra<C extends Chrono<C>>
 
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.chrono()) {
-            return (R) getChrono();
+        if (query == TemporalQueries.chronology()) {
+            return (R) getChronology();
         }
         return super.query(query);
     }

@@ -35,7 +35,7 @@ import static org.threeten.bp.temporal.ChronoField.OFFSET_SECONDS;
 
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.chrono.Chrono;
+import org.threeten.bp.chrono.Chronology;
 
 /**
  * Common implementations of {@code TemporalQuery}.
@@ -148,18 +148,18 @@ public final class TemporalQueries {
      * {@code ZoneOffset} returns null (does not represent a date)<br>
      * {@code Instant} returns null (does not represent a date)<br>
      * <p>
-     * The method {@link Chrono#from(TemporalAccessor)} can be used as a
+     * The method {@link Chronology#from(TemporalAccessor)} can be used as a
      * {@code TemporalQuery} via a method reference, {@code Chrono::from}.
      * That method is equivalent to this query, except that it throws an
      * exception if a chronology cannot be obtained.
      * @return a Chrono, may be null
      */
-    public static final TemporalQuery<Chrono<?>> chrono() {
+    public static final TemporalQuery<Chronology<?>> chronology() {
         return CHRONO;
     }
-    static final TemporalQuery<Chrono<?>> CHRONO = new TemporalQuery<Chrono<?>>() {
+    static final TemporalQuery<Chronology<?>> CHRONO = new TemporalQuery<Chronology<?>>() {
         @Override
-        public Chrono<?> queryFrom(TemporalAccessor temporal) {
+        public Chronology<?> queryFrom(TemporalAccessor temporal) {
             return temporal.query(this);
         }
     };

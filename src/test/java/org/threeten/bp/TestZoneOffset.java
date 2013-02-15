@@ -496,8 +496,8 @@ public class TestZoneOffset extends AbstractDateTimeTest {
     @Test
     public void test_query_chrono() {
         ZoneOffset test = ZoneOffset.ofHoursMinutes(1, 30);
-        assertEquals(test.query(TemporalQueries.chrono()), null);
-        assertEquals(TemporalQueries.chrono().queryFrom(test), null);
+        assertEquals(test.query(TemporalQueries.chronology()), null);
+        assertEquals(TemporalQueries.chronology().queryFrom(test), null);
     }
 
     @Test

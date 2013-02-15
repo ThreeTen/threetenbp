@@ -519,8 +519,8 @@ public class TestOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_query_chrono() {
-        assertEquals(TEST_11_30_59_500_PONE.query(TemporalQueries.chrono()), null);
-        assertEquals(TemporalQueries.chrono().queryFrom(TEST_11_30_59_500_PONE), null);
+        assertEquals(TEST_11_30_59_500_PONE.query(TemporalQueries.chronology()), null);
+        assertEquals(TemporalQueries.chronology().queryFrom(TEST_11_30_59_500_PONE), null);
     }
 
     @Test

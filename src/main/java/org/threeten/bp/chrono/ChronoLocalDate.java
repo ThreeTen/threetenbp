@@ -202,11 +202,11 @@ import org.threeten.bp.temporal.TemporalUnit;
  * Subclasses should be Serializable wherever possible.
  * <p>
  * Additional calendar systems may be added to the system.
- * See {@link Chrono} for more details.
+ * See {@link Chronology} for more details.
  *
  * @param <C> the chronology of this date
  */
-public interface ChronoLocalDate<C extends Chrono<C>>
+public interface ChronoLocalDate<C extends Chronology<C>>
         extends Temporal, TemporalAdjuster, Comparable<ChronoLocalDate<?>> {
 
     /**
@@ -233,12 +233,12 @@ public interface ChronoLocalDate<C extends Chrono<C>>
     /**
      * Gets the chronology of this date.
      * <p>
-     * The {@code Chrono} represents the calendar system in use.
+     * The {@code Chronology} represents the calendar system in use.
      * The era and other fields in {@link ChronoField} are defined by the chronology.
      *
      * @return the chronology, not null
      */
-    C getChrono();
+    C getChronology();
 
     /**
      * Gets the era, as defined by the chronology.
@@ -263,7 +263,7 @@ public interface ChronoLocalDate<C extends Chrono<C>>
      * The exact meaning is determined by the chronology with the constraint that
      * a leap-year must imply a year-length longer than a non leap-year.
      * <p>
-     * The default implementation uses {@link Chrono#isLeapYear(long)}.
+     * The default implementation uses {@link Chronology#isLeapYear(long)}.
      *
      * @return true if this date is in a leap year, false otherwise
      */

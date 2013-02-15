@@ -34,7 +34,7 @@ package org.threeten.bp.format;
 import java.util.Locale;
 import java.util.spi.LocaleServiceProvider;
 
-import org.threeten.bp.chrono.Chrono;
+import org.threeten.bp.chrono.Chronology;
 
 /**
  * The Service Provider Interface (SPI) to be implemented by classes providing
@@ -71,6 +71,6 @@ import org.threeten.bp.chrono.Chrono;
      * @throws IllegalArgumentException if the locale is not a recognized locale
      */
     public abstract DateTimeFormatter getFormatter(
-            FormatStyle dateStyle, FormatStyle timeStyle, Chrono<?> chrono, Locale locale);
+            FormatStyle dateStyle, FormatStyle timeStyle, Chronology<?> chrono, Locale locale);
 
 }

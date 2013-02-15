@@ -68,7 +68,7 @@ import org.threeten.bp.temporal.ValueRange;
  *
  * @param <C> the chronology of this date
  */
-final class ChronoLocalDateTimeImpl<C extends Chrono<C>>
+final class ChronoLocalDateTimeImpl<C extends Chronology<C>>
         extends DefaultInterfaceChronoLocalDateTime<C>
         implements  ChronoLocalDateTime<C>, Temporal, TemporalAdjuster, Serializable {
 
@@ -142,7 +142,7 @@ final class ChronoLocalDateTimeImpl<C extends Chrono<C>>
      * @param time  the local time, not null
      * @return the local date-time, not null
      */
-    static <R extends Chrono<R>> ChronoLocalDateTimeImpl<R> of(ChronoLocalDate<R> date, LocalTime time) {
+    static <R extends Chronology<R>> ChronoLocalDateTimeImpl<R> of(ChronoLocalDate<R> date, LocalTime time) {
         return new ChronoLocalDateTimeImpl<>(date, time);
     }
 
@@ -172,7 +172,7 @@ final class ChronoLocalDateTimeImpl<C extends Chrono<C>>
             return this;
         }
         // Validate that the new DateTime is a ChronoLocalDate (and not something else)
-        ChronoLocalDate<C> cd = date.getChrono().ensureChronoLocalDate(newDate);
+        ChronoLocalDate<C> cd = date.getChronology().ensureChronoLocalDate(newDate);
         return new ChronoLocalDateTimeImpl<>(cd, newTime);
     }
 
@@ -234,9 +234,9 @@ final class ChronoLocalDateTimeImpl<C extends Chrono<C>>
         } else if (adjuster instanceof LocalTime) {
             return with(date, (LocalTime) adjuster);
         } else if (adjuster instanceof ChronoLocalDateTimeImpl) {
-            return date.getChrono().ensureChronoLocalDateTime((ChronoLocalDateTimeImpl<?>) adjuster);
+            return date.getChronology().ensureChronoLocalDateTime((ChronoLocalDateTimeImpl<?>) adjuster);
         }
-        return date.getChrono().ensureChronoLocalDateTime((ChronoLocalDateTimeImpl<?>) adjuster.adjustInto(this));
+        return date.getChronology().ensureChronoLocalDateTime((ChronoLocalDateTimeImpl<?>) adjuster.adjustInto(this));
     }
 
     @Override
@@ -249,7 +249,7 @@ final class ChronoLocalDateTimeImpl<C extends Chrono<C>>
                 return with(date.with(field, newValue), time);
             }
         }
-        return date.getChrono().ensureChronoLocalDateTime(field.doWith(this, newValue));
+        return date.getChronology().ensureChronoLocalDateTime(field.doWith(this, newValue));
     }
 
     //-----------------------------------------------------------------------
@@ -268,7 +268,7 @@ final class ChronoLocalDateTimeImpl<C extends Chrono<C>>
             }
             return with(date.plus(amountToAdd, unit), time);
         }
-        return date.getChrono().ensureChronoLocalDateTime(unit.doPlus(this, amountToAdd));
+        return date.getChronology().ensureChronoLocalDateTime(unit.doPlus(this, amountToAdd));
     }
 
     private ChronoLocalDateTimeImpl<C> plusDays(long days) {
@@ -327,7 +327,7 @@ final class ChronoLocalDateTimeImpl<C extends Chrono<C>>
         }
         @SuppressWarnings("unchecked")
         ChronoLocalDateTime<C> end = (ChronoLocalDateTime<C>) endDateTime;
-        if (getDate().getChrono().equals(end.getDate().getChrono()) == false) {
+        if (getDate().getChronology().equals(end.getDate().getChronology()) == false) {
             throw new DateTimeException("Unable to calculate period between two different chronologies");
         }
         if (unit instanceof ChronoUnit) {

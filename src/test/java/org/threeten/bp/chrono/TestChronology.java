@@ -46,30 +46,30 @@ import java.util.Set;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.threeten.bp.chrono.Chrono;
+import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.ChronoLocalDate;
-import org.threeten.bp.chrono.HijrahChrono;
-import org.threeten.bp.chrono.ISOChrono;
-import org.threeten.bp.chrono.JapaneseChrono;
-import org.threeten.bp.chrono.MinguoChrono;
-import org.threeten.bp.chrono.ThaiBuddhistChrono;
+import org.threeten.bp.chrono.HijrahChronology;
+import org.threeten.bp.chrono.ISOChronology;
+import org.threeten.bp.chrono.JapaneseChronology;
+import org.threeten.bp.chrono.MinguoChronology;
+import org.threeten.bp.chrono.ThaiBuddhistChronology;
 import org.threeten.bp.temporal.ChronoField;
 
 /**
  * Test Chrono class.
  */
 @Test
-public class TestChrono {
+public class TestChronology {
 
     @BeforeMethod
     public void setUp() {
         // Ensure each of the classes are initialized (until initialization is fixed)
-        Chrono<?> c;
-        c = HijrahChrono.INSTANCE;
-        c = ISOChrono.INSTANCE;
-        c = JapaneseChrono.INSTANCE;
-        c = MinguoChrono.INSTANCE;
-        c = ThaiBuddhistChrono.INSTANCE;
+        Chronology<?> c;
+        c = HijrahChronology.INSTANCE;
+        c = ISOChronology.INSTANCE;
+        c = JapaneseChronology.INSTANCE;
+        c = MinguoChronology.INSTANCE;
+        c = ThaiBuddhistChronology.INSTANCE;
         c.toString();  // avoids variable being marked as unused
     }
 
@@ -89,7 +89,7 @@ public class TestChrono {
 
     @Test(dataProvider = "calendars")
     public void test_getters(String chronoId, String calendarSystemType, String description) {
-        Chrono<?> chrono = Chrono.of(chronoId);
+        Chronology<?> chrono = Chronology.of(chronoId);
         assertNotNull(chrono, "Required calendar not found by ID: " + chronoId);
         assertEquals(chrono.getId(), chronoId);
         assertEquals(chrono.getCalendarType(), calendarSystemType);
@@ -97,20 +97,20 @@ public class TestChrono {
 
     @Test(dataProvider = "calendars")
     public void test_required_calendars(String chronoId, String calendarSystemType, String description) {
-        Chrono<?> chrono = Chrono.of(chronoId);
+        Chronology<?> chrono = Chronology.of(chronoId);
         assertNotNull(chrono, "Required calendar not found by ID: " + chronoId);
-        chrono = Chrono.of(calendarSystemType);
+        chrono = Chronology.of(calendarSystemType);
         assertNotNull(chrono, "Required calendar not found by type: " + chronoId);
-        Set<Chrono<?>> cals = Chrono.getAvailableChronologies();
+        Set<Chronology<?>> cals = Chronology.getAvailableChronologies();
         assertTrue(cals.contains(chrono), "Required calendar not found in set of available calendars");
     }
 
     @Test
     public void test_calendar_list() {
-        Set<Chrono<?>> chronos = Chrono.getAvailableChronologies();
+        Set<Chronology<?>> chronos = Chronology.getAvailableChronologies();
         assertNotNull(chronos, "Required list of calendars must be non-null");
-        for (Chrono<?> chrono : chronos) {
-            Chrono<?> lookup = Chrono.of(chrono.getId());
+        for (Chronology<?> chrono : chronos) {
+            Chronology<?> lookup = Chronology.of(chrono.getId());
             assertNotNull(lookup, "Required calendar not found: " + chrono);
         }
         assertEquals(chronos.size() >= data_of_calendars().length, true, "Required list of calendars too short");
@@ -121,7 +121,7 @@ public class TestChrono {
      */
     @Test(dataProvider = "calendars")
     public void test_epoch(String name, String alias, String description) {
-        Chrono<?> chrono = Chrono.of(name); // a chronology. In practice this is rarely hardcoded
+        Chronology<?> chrono = Chronology.of(name); // a chronology. In practice this is rarely hardcoded
         ChronoLocalDate<?> date1 = chrono.dateNow();
         long epoch1 = date1.getLong(ChronoField.EPOCH_DAY);
         ChronoLocalDate<?> date2 = date1.with(ChronoField.EPOCH_DAY, epoch1);
@@ -136,23 +136,23 @@ public class TestChrono {
     @DataProvider(name = "calendarsystemtype")
     Object[][] data_CalendarType() {
         return new Object[][] {
-            {HijrahChrono.INSTANCE, "islamicc"},
-            {ISOChrono.INSTANCE, "iso8601"},
-            {JapaneseChrono.INSTANCE, "japanese"},
-            {MinguoChrono.INSTANCE, "roc"},
-            {ThaiBuddhistChrono.INSTANCE, "buddhist"},
+            {HijrahChronology.INSTANCE, "islamicc"},
+            {ISOChronology.INSTANCE, "iso8601"},
+            {JapaneseChronology.INSTANCE, "japanese"},
+            {MinguoChronology.INSTANCE, "roc"},
+            {ThaiBuddhistChronology.INSTANCE, "buddhist"},
         };
     }
 
     @Test(dataProvider = "calendarsystemtype")
-    public void test_getCalendarType(Chrono<?> chrono, String calendarType) {
+    public void test_getCalendarType(Chronology<?> chrono, String calendarType) {
         assertEquals(chrono.getCalendarType(), calendarType);
     }
 
     @Test(dataProvider = "calendarsystemtype")
-    public void test_lookupLocale(Chrono<?> chrono, String calendarType) {
+    public void test_lookupLocale(Chronology<?> chrono, String calendarType) {
         Locale locale = new Locale.Builder().setLanguage("en").setRegion("CA").setUnicodeLocaleKeyword("ca", calendarType).build();
-        assertEquals(Chrono.ofLocale(locale), chrono);
+        assertEquals(Chronology.ofLocale(locale), chrono);
     }
 
 
@@ -160,7 +160,7 @@ public class TestChrono {
     // serialization; serialize and check each calendar system
     //-----------------------------------------------------------------------
     @Test(dataProvider = "calendarsystemtype")
-    public <C extends Chrono<C>> void test_chronoSerializationSingleton(C chrono, String calendarType) throws Exception {
+    public <C extends Chronology<C>> void test_chronoSerializationSingleton(C chrono, String calendarType) throws Exception {
         C orginal = chrono;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);

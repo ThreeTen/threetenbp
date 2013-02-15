@@ -63,7 +63,7 @@ public abstract class DefaultInterfaceTemporalAccessor implements TemporalAccess
 
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.zoneId() || query == TemporalQueries.chrono() || query == TemporalQueries.precision()) {
+        if (query == TemporalQueries.zoneId() || query == TemporalQueries.chronology() || query == TemporalQueries.precision()) {
             return null;
         }
         return query.queryFrom(this);

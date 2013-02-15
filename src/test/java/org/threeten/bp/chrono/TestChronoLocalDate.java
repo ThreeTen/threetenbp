@@ -46,10 +46,10 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDate;
-import org.threeten.bp.chrono.HijrahChrono;
-import org.threeten.bp.chrono.JapaneseChrono;
-import org.threeten.bp.chrono.MinguoChrono;
-import org.threeten.bp.chrono.ThaiBuddhistChrono;
+import org.threeten.bp.chrono.HijrahChronology;
+import org.threeten.bp.chrono.JapaneseChronology;
+import org.threeten.bp.chrono.MinguoChronology;
+import org.threeten.bp.chrono.ThaiBuddhistChronology;
 import org.threeten.bp.format.DateTimeBuilder;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.SimplePeriod;
@@ -72,21 +72,21 @@ public class TestChronoLocalDate {
     // regular data factory for names and descriptions of available calendars
     //-----------------------------------------------------------------------
     @DataProvider(name = "calendars")
-    Chrono[][] data_of_calendars() {
-        return new Chrono[][]{
-                    {HijrahChrono.INSTANCE},
-                    {ISOChrono.INSTANCE},
-                    {JapaneseChrono.INSTANCE},
-                    {MinguoChrono.INSTANCE},
-                    {ThaiBuddhistChrono.INSTANCE}};
+    Chronology[][] data_of_calendars() {
+        return new Chronology[][]{
+                    {HijrahChronology.INSTANCE},
+                    {ISOChronology.INSTANCE},
+                    {JapaneseChronology.INSTANCE},
+                    {MinguoChronology.INSTANCE},
+                    {ThaiBuddhistChronology.INSTANCE}};
     }
 
     @Test(dataProvider="calendars")
-    public void test_badWithAdjusterChrono(Chrono chrono) {
+    public void test_badWithAdjusterChrono(Chronology chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
         ChronoLocalDate date = chrono.date(refDate);
-        for (Chrono[] clist : data_of_calendars()) {
-            Chrono chrono2 = clist[0];
+        for (Chronology[] clist : data_of_calendars()) {
+            Chronology chrono2 = clist[0];
             ChronoLocalDate<?> date2 = chrono2.date(refDate);
             TemporalAdjuster adjuster = new FixedAdjuster(date2);
             if (chrono != chrono2) {
@@ -105,11 +105,11 @@ public class TestChronoLocalDate {
     }
 
     @Test(dataProvider="calendars")
-    public void test_badPlusAdjusterChrono(Chrono chrono) {
+    public void test_badPlusAdjusterChrono(Chronology chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
         ChronoLocalDate date = chrono.date(refDate);
-        for (Chrono[] clist : data_of_calendars()) {
-            Chrono chrono2 = clist[0];
+        for (Chronology[] clist : data_of_calendars()) {
+            Chronology chrono2 = clist[0];
             ChronoLocalDate<?> date2 = chrono2.date(refDate);
             TemporalAdder adjuster = new FixedAdjuster(date2);
             if (chrono != chrono2) {
@@ -128,11 +128,11 @@ public class TestChronoLocalDate {
     }
 
     @Test(dataProvider="calendars")
-    public void test_badMinusAdjusterChrono(Chrono chrono) {
+    public void test_badMinusAdjusterChrono(Chronology chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
         ChronoLocalDate date = chrono.date(refDate);
-        for (Chrono[] clist : data_of_calendars()) {
-            Chrono chrono2 = clist[0];
+        for (Chronology[] clist : data_of_calendars()) {
+            Chronology chrono2 = clist[0];
             ChronoLocalDate<?> date2 = chrono2.date(refDate);
             TemporalSubtractor adjuster = new FixedAdjuster(date2);
             if (chrono != chrono2) {
@@ -151,11 +151,11 @@ public class TestChronoLocalDate {
     }
 
     @Test(dataProvider="calendars")
-    public void test_badPlusPeriodUnitChrono(Chrono chrono) {
+    public void test_badPlusPeriodUnitChrono(Chronology chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
         ChronoLocalDate date = chrono.date(refDate);
-        for (Chrono[] clist : data_of_calendars()) {
-            Chrono chrono2 = clist[0];
+        for (Chronology[] clist : data_of_calendars()) {
+            Chronology chrono2 = clist[0];
             ChronoLocalDate<?> date2 = chrono2.date(refDate);
             TemporalUnit adjuster = new FixedPeriodUnit(date2);
             if (chrono != chrono2) {
@@ -175,11 +175,11 @@ public class TestChronoLocalDate {
     }
 
     @Test(dataProvider="calendars")
-    public void test_badMinusPeriodUnitChrono(Chrono chrono) {
+    public void test_badMinusPeriodUnitChrono(Chronology chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
         ChronoLocalDate date = chrono.date(refDate);
-        for (Chrono[] clist : data_of_calendars()) {
-            Chrono chrono2 = clist[0];
+        for (Chronology[] clist : data_of_calendars()) {
+            Chronology chrono2 = clist[0];
             ChronoLocalDate<?> date2 = chrono2.date(refDate);
             TemporalUnit adjuster = new FixedPeriodUnit(date2);
             if (chrono != chrono2) {
@@ -199,11 +199,11 @@ public class TestChronoLocalDate {
     }
 
     @Test(dataProvider="calendars")
-    public void test_badDateTimeFieldChrono(Chrono chrono) {
+    public void test_badDateTimeFieldChrono(Chronology chrono) {
         LocalDate refDate = LocalDate.of(1900, 1, 1);
         ChronoLocalDate date = chrono.date(refDate);
-        for (Chrono[] clist : data_of_calendars()) {
-            Chrono chrono2 = clist[0];
+        for (Chronology[] clist : data_of_calendars()) {
+            Chronology chrono2 = clist[0];
             ChronoLocalDate<?> date2 = chrono2.date(refDate);
             TemporalField adjuster = new FixedDateTimeField(date2);
             if (chrono != chrono2) {
@@ -226,7 +226,7 @@ public class TestChronoLocalDate {
     // isBefore, isAfter, isEqual, DATE_COMPARATOR
     //-----------------------------------------------------------------------
     @Test(dataProvider="calendars")
-    public void test_date_comparisons(Chrono chrono) {
+    public void test_date_comparisons(Chronology chrono) {
         List<ChronoLocalDate<?>> dates = new ArrayList<>();
 
         ChronoLocalDate<?> date = chrono.date(LocalDate.of(1900, 1, 1));
@@ -249,9 +249,9 @@ public class TestChronoLocalDate {
         dates.add(date.plus(1000, ChronoUnit.YEARS));
 
         // Check these dates against the corresponding dates for every calendar
-        for (Chrono[] clist : data_of_calendars()) {
+        for (Chronology[] clist : data_of_calendars()) {
             List<ChronoLocalDate<?>> otherDates = new ArrayList<>();
-            Chrono chrono2 = clist[0];
+            Chronology chrono2 = clist[0];
             for (ChronoLocalDate<?> d : dates) {
                 otherDates.add(chrono2.date(d));
             }
@@ -287,7 +287,7 @@ public class TestChronoLocalDate {
     // Test Serialization of Calendars
     //-----------------------------------------------------------------------
     @Test( dataProvider="calendars")
-    public <C extends Chrono<C>> void test_ChronoSerialization(C chrono) throws Exception {
+    public <C extends Chronology<C>> void test_ChronoSerialization(C chrono) throws Exception {
         LocalDate ref = LocalDate.of(1900, 1, 5);
         ChronoLocalDate<C> orginal = chrono.date(ref);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

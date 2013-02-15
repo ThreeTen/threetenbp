@@ -50,7 +50,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 import org.threeten.bp.chrono.ChronoLocalDateTime;
-import org.threeten.bp.chrono.ISOChrono;
+import org.threeten.bp.chrono.ISOChronology;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
@@ -98,8 +98,8 @@ import org.threeten.bp.zone.ZoneRules;
  * This class is immutable and thread-safe.
  */
 public final class LocalDateTime
-        extends DefaultInterfaceChronoLocalDateTime<ISOChrono>
-        implements Temporal, TemporalAdjuster, ChronoLocalDateTime<ISOChrono>, Serializable {
+        extends DefaultInterfaceChronoLocalDateTime<ISOChronology>
+        implements Temporal, TemporalAdjuster, ChronoLocalDateTime<ISOChronology>, Serializable {
 
     /**
      * The minimum supported {@code LocalDateTime}, '-999999999-01-01T00:00:00'.

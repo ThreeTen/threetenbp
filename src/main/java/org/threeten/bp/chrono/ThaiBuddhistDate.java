@@ -31,7 +31,7 @@
  */
 package org.threeten.bp.chrono;
 
-import static org.threeten.bp.chrono.ThaiBuddhistChrono.YEARS_DIFFERENCE;
+import static org.threeten.bp.chrono.ThaiBuddhistChronology.YEARS_DIFFERENCE;
 import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
 import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.YEAR;
@@ -51,13 +51,13 @@ import org.threeten.bp.temporal.ValueRange;
 /**
  * A date in the Thai Buddhist calendar system.
  * <p>
- * This implements {@code ChronoLocalDate} for the {@link ThaiBuddhistChrono Thai Buddhist calendar}.
+ * This implements {@code ChronoLocalDate} for the {@link ThaiBuddhistChronology Thai Buddhist calendar}.
  *
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
 final class ThaiBuddhistDate
-        extends ChronoDateImpl<ThaiBuddhistChrono>
+        extends ChronoDateImpl<ThaiBuddhistChronology>
         implements Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
@@ -84,8 +84,8 @@ final class ThaiBuddhistDate
 
     //-----------------------------------------------------------------------
     @Override
-    public ThaiBuddhistChrono getChrono() {
-        return ThaiBuddhistChrono.INSTANCE;
+    public ThaiBuddhistChronology getChronology() {
+        return ThaiBuddhistChronology.INSTANCE;
     }
 
     @Override
@@ -109,7 +109,7 @@ final class ThaiBuddhistDate
                         return ValueRange.of(1, max);
                     }
                 }
-                return getChrono().range(f);
+                return getChronology().range(f);
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
@@ -207,7 +207,7 @@ final class ThaiBuddhistDate
 
     @Override  // override for performance
     public int hashCode() {
-        return getChrono().getId().hashCode() ^ isoDate.hashCode();
+        return getChronology().getId().hashCode() ^ isoDate.hashCode();
     }
 
     //-----------------------------------------------------------------------
@@ -222,11 +222,11 @@ final class ThaiBuddhistDate
         out.writeByte(this.get(DAY_OF_MONTH));
     }
 
-    static ChronoLocalDate<ThaiBuddhistChrono> readExternal(DataInput in) throws IOException {
+    static ChronoLocalDate<ThaiBuddhistChronology> readExternal(DataInput in) throws IOException {
         int year = in.readInt();
         int month = in.readByte();
         int dayOfMonth = in.readByte();
-        return ThaiBuddhistChrono.INSTANCE.date(year, month, dayOfMonth);
+        return ThaiBuddhistChronology.INSTANCE.date(year, month, dayOfMonth);
     }
 
 }

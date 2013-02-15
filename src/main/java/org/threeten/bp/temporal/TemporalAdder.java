@@ -92,7 +92,7 @@ public interface TemporalAdder {
      * <p>
      * The input temporal object may be in a calendar system other than ISO.
      * Implementations may choose to document compatibility with other calendar systems,
-     * or reject non-ISO temporal objects by {@link TemporalQueries#chrono() querying the chronology}.
+     * or reject non-ISO temporal objects by {@link TemporalQueries#chronology() querying the chronology}.
      * <p>
      * This method may be called from multiple threads in parallel.
      * It must be thread-safe when invoked.

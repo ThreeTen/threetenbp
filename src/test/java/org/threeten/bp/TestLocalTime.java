@@ -608,7 +608,7 @@ public class TestLocalTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_query_chrono() {
-        assertEquals(TEST_12_30_40_987654321.query(TemporalQueries.chrono()), null);
+        assertEquals(TEST_12_30_40_987654321.query(TemporalQueries.chronology()), null);
     }
 
     @Test

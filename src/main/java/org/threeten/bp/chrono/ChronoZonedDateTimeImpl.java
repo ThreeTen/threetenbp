@@ -72,7 +72,7 @@ import org.threeten.bp.zone.ZoneRules;
  *
  * @param <C> the chronology of this date
  */
-final class ChronoZonedDateTimeImpl<C extends Chrono<C>>
+final class ChronoZonedDateTimeImpl<C extends Chronology<C>>
         extends DefaultInterfaceChronoZonedDateTime<C>
         implements ChronoZonedDateTime<C>, Serializable {
 
@@ -103,7 +103,7 @@ final class ChronoZonedDateTimeImpl<C extends Chrono<C>>
      * @param preferredOffset  the zone offset, null if no preference
      * @return the zoned date-time, not null
      */
-    static <R extends Chrono<R>> ChronoZonedDateTime<R> ofBest(
+    static <R extends Chronology<R>> ChronoZonedDateTime<R> ofBest(
             ChronoLocalDateTimeImpl<R> localDateTime, ZoneId zone, ZoneOffset preferredOffset) {
         Objects.requireNonNull(localDateTime, "localDateTime");
         Objects.requireNonNull(zone, "zone");
@@ -139,7 +139,7 @@ final class ChronoZonedDateTimeImpl<C extends Chrono<C>>
      * @param zone  the zone identifier, not null
      * @return the zoned date-time, not null
      */
-    static <R extends Chrono<R>> ChronoZonedDateTimeImpl<R> ofInstant(Chrono<R> chrono, Instant instant, ZoneId zone) {
+    static <R extends Chronology<R>> ChronoZonedDateTimeImpl<R> ofInstant(Chronology<R> chrono, Instant instant, ZoneId zone) {
         ZoneRules rules = zone.getRules();
         ZoneOffset offset = rules.getOffset(instant);
         Objects.requireNonNull(offset, "offset");  // protect against bad ZoneRules
@@ -156,7 +156,7 @@ final class ChronoZonedDateTimeImpl<C extends Chrono<C>>
      * @return the zoned date-time, validated not null
      */
     private ChronoZonedDateTimeImpl<C> create(Instant instant, ZoneId zone) {
-        return ofInstant(getDate().getChrono(), instant, zone);
+        return ofInstant(getDate().getChronology(), instant, zone);
     }
 
     //-----------------------------------------------------------------------
@@ -242,7 +242,7 @@ final class ChronoZonedDateTimeImpl<C extends Chrono<C>>
             }
             return ofBest(dateTime.with(field, newValue), zone, offset);
         }
-        return getDate().getChrono().ensureChronoZonedDateTime(field.doWith(this, newValue));
+        return getDate().getChronology().ensureChronoZonedDateTime(field.doWith(this, newValue));
     }
 
     //-----------------------------------------------------------------------
@@ -251,7 +251,7 @@ final class ChronoZonedDateTimeImpl<C extends Chrono<C>>
         if (unit instanceof ChronoUnit) {
             return with(dateTime.plus(amountToAdd, unit));
         }
-        return getDate().getChrono().ensureChronoZonedDateTime(unit.doPlus(this, amountToAdd));   /// TODO: Generics replacement Risk!
+        return getDate().getChronology().ensureChronoZonedDateTime(unit.doPlus(this, amountToAdd));   /// TODO: Generics replacement Risk!
     }
 
     //-----------------------------------------------------------------------
@@ -262,7 +262,7 @@ final class ChronoZonedDateTimeImpl<C extends Chrono<C>>
         }
         @SuppressWarnings("unchecked")
         ChronoZonedDateTime<C> end = (ChronoZonedDateTime<C>) endDateTime;
-        if (getDate().getChrono().equals(end.getDate().getChrono()) == false) {
+        if (getDate().getChronology().equals(end.getDate().getChronology()) == false) {
             throw new DateTimeException("Unable to calculate period between two different chronologies");
         }
         if (unit instanceof ChronoUnit) {

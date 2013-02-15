@@ -31,7 +31,7 @@
  */
 package org.threeten.bp.chrono;
 
-import static org.threeten.bp.chrono.MinguoChrono.YEARS_DIFFERENCE;
+import static org.threeten.bp.chrono.MinguoChronology.YEARS_DIFFERENCE;
 import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
 import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.YEAR;
@@ -51,13 +51,13 @@ import org.threeten.bp.temporal.ValueRange;
 /**
  * A date in the Minguo calendar system.
  * <p>
- * This implements {@code ChronoLocalDate} for the {@link MinguoChrono Minguo calendar}.
+ * This implements {@code ChronoLocalDate} for the {@link MinguoChronology Minguo calendar}.
  *
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
 final class MinguoDate
-        extends ChronoDateImpl<MinguoChrono>
+        extends ChronoDateImpl<MinguoChronology>
         implements Serializable {
     // this class is package-scoped so that future conversion to public
     // would not change serialization
@@ -84,8 +84,8 @@ final class MinguoDate
 
     //-----------------------------------------------------------------------
     @Override
-    public MinguoChrono getChrono() {
-        return MinguoChrono.INSTANCE;
+    public MinguoChronology getChronology() {
+        return MinguoChronology.INSTANCE;
     }
 
     @Override
@@ -109,7 +109,7 @@ final class MinguoDate
                         return ValueRange.of(1, max);
                     }
                 }
-                return getChrono().range(f);
+                return getChronology().range(f);
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
@@ -207,7 +207,7 @@ final class MinguoDate
 
     @Override  // override for performance
     public int hashCode() {
-        return getChrono().getId().hashCode() ^ isoDate.hashCode();
+        return getChronology().getId().hashCode() ^ isoDate.hashCode();
     }
 
     //-----------------------------------------------------------------------
@@ -223,11 +223,11 @@ final class MinguoDate
 
     }
 
-    static ChronoLocalDate<MinguoChrono> readExternal(DataInput in) throws IOException {
+    static ChronoLocalDate<MinguoChronology> readExternal(DataInput in) throws IOException {
         int year = in.readInt();
         int month = in.readByte();
         int dayOfMonth = in.readByte();
-        return MinguoChrono.INSTANCE.date(year, month, dayOfMonth);
+        return MinguoChronology.INSTANCE.date(year, month, dayOfMonth);
     }
 
 

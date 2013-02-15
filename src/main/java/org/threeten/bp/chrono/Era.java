@@ -45,7 +45,7 @@ import org.threeten.bp.temporal.TemporalAdjuster;
  * of each leader.
  * In all cases, the era is conceptually the largest division of the time-line.
  * Each chronology defines the Era's that are known Eras and a
- * {@link Chrono#eras Chrono.eras} to get the valid eras.
+ * {@link Chronology#eras Chrono.eras} to get the valid eras.
  * <p>
  * For example, the Thai Buddhist calendar system divides time into two eras,
  * before and after a single date. By contrast, the Japanese calendar system
@@ -60,7 +60,7 @@ import org.threeten.bp.temporal.TemporalAdjuster;
  *
  * @param <C> the chronology of the era
  */
-public interface Era<C extends Chrono<C>> extends TemporalAccessor, TemporalAdjuster {
+public interface Era<C extends Chronology<C>> extends TemporalAccessor, TemporalAdjuster {
 
     /**
      * Gets the numeric value associated with the era as defined by the chronology.
@@ -83,12 +83,12 @@ public interface Era<C extends Chrono<C>> extends TemporalAccessor, TemporalAdju
     /**
      * Gets the chronology of this era.
      * <p>
-     * The {@code Chrono} represents the calendar system in use.
+     * The {@code Chronology} represents the calendar system in use.
      * This always returns the standard form of the chronology.
      *
      * @return the chronology, not null
      */
-    C getChrono();
+    C getChronology();
 
     //-----------------------------------------------------------------------
     /**

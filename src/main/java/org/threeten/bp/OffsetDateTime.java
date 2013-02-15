@@ -1386,8 +1386,8 @@ public final class OffsetDateTime
     @SuppressWarnings("unchecked")
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.chrono()) {
-            return (R) getDate().getChrono();
+        if (query == TemporalQueries.chronology()) {
+            return (R) getDate().getChronology();
         } else if (query == TemporalQueries.precision()) {
             return (R) NANOS;
         } else if (query == TemporalQueries.offset() || query == TemporalQueries.zone()) {

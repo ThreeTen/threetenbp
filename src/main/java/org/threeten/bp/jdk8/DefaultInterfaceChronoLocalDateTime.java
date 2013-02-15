@@ -39,7 +39,7 @@ import java.util.Objects;
 
 import org.threeten.bp.Instant;
 import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.chrono.Chrono;
+import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.ChronoLocalDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.temporal.Temporal;
@@ -56,28 +56,28 @@ import org.threeten.bp.temporal.TemporalUnit;
  *
  * @param <C> the chronology of this date-time
  */
-public abstract class DefaultInterfaceChronoLocalDateTime<C extends Chrono<C>>
+public abstract class DefaultInterfaceChronoLocalDateTime<C extends Chronology<C>>
         extends DefaultInterfaceTemporal
         implements ChronoLocalDateTime<C> {
 
     @Override
     public ChronoLocalDateTime<C> with(TemporalAdjuster adjuster) {
-        return getDate().getChrono().ensureChronoLocalDateTime(super.with(adjuster));
+        return getDate().getChronology().ensureChronoLocalDateTime(super.with(adjuster));
     }
 
     @Override
     public ChronoLocalDateTime<C> plus(TemporalAdder adjuster) {
-        return getDate().getChrono().ensureChronoLocalDateTime(super.plus(adjuster));
+        return getDate().getChronology().ensureChronoLocalDateTime(super.plus(adjuster));
     }
 
     @Override
     public ChronoLocalDateTime<C> minus(TemporalSubtractor adjuster) {
-        return getDate().getChrono().ensureChronoLocalDateTime(super.minus(adjuster));
+        return getDate().getChronology().ensureChronoLocalDateTime(super.minus(adjuster));
     }
 
     @Override
     public ChronoLocalDateTime<C> minus(long amountToSubtract, TemporalUnit unit) {
-        return getDate().getChrono().ensureChronoLocalDateTime(super.minus(amountToSubtract, unit));
+        return getDate().getChronology().ensureChronoLocalDateTime(super.minus(amountToSubtract, unit));
     }
 
     //-------------------------------------------------------------------------
@@ -91,8 +91,8 @@ public abstract class DefaultInterfaceChronoLocalDateTime<C extends Chrono<C>>
     @SuppressWarnings("unchecked")
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.chrono()) {
-            return (R) getDate().getChrono();
+        if (query == TemporalQueries.chronology()) {
+            return (R) getDate().getChronology();
         } else if (query == TemporalQueries.precision()) {
             return (R) NANOS;
         }
@@ -121,7 +121,7 @@ public abstract class DefaultInterfaceChronoLocalDateTime<C extends Chrono<C>>
         if (cmp == 0) {
             cmp = getTime().compareTo(other.getTime());
             if (cmp == 0) {
-                cmp = getDate().getChrono().compareTo(other.getDate().getChrono());
+                cmp = getDate().getChronology().compareTo(other.getDate().getChronology());
             }
         }
         return cmp;

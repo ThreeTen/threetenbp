@@ -37,7 +37,7 @@ import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.threeten.bp.chrono.Chrono;
+import org.threeten.bp.chrono.Chronology;
 
 /**
  * The Service Provider Implementation to obtain date-time formatters for a style.
@@ -61,7 +61,7 @@ final class SimpleDateTimeFormatStyleProvider extends DateTimeFormatStyleProvide
 
     @Override
     public DateTimeFormatter getFormatter(
-            FormatStyle dateStyle, FormatStyle timeStyle, Chrono<?> chrono, Locale locale) {
+            FormatStyle dateStyle, FormatStyle timeStyle, Chronology<?> chrono, Locale locale) {
         if (dateStyle == null && timeStyle == null) {
             throw new IllegalArgumentException("Date and Time style must not both be null");
         }

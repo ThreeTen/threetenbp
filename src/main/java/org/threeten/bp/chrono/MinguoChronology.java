@@ -70,22 +70,22 @@ import org.threeten.bp.temporal.ValueRange;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
-public final class MinguoChrono extends Chrono<MinguoChrono> implements Serializable {
+public final class MinguoChronology extends Chronology<MinguoChronology> implements Serializable {
 
     /**
      * Singleton instance for the Minguo chronology.
      */
-    public static final MinguoChrono INSTANCE = new MinguoChrono();
+    public static final MinguoChronology INSTANCE = new MinguoChronology();
 
     /**
      * The singleton instance for the era ROC.
      */
-    public static final Era<MinguoChrono> ERA_ROC = MinguoEra.ROC;
+    public static final Era<MinguoChronology> ERA_ROC = MinguoEra.ROC;
 
     /**
      * The singleton instance for the era BEFORE_ROC.
      */
-    public static final Era<MinguoChrono> ERA_BEFORE_ROC = MinguoEra.BEFORE_ROC;
+    public static final Era<MinguoChronology> ERA_BEFORE_ROC = MinguoEra.BEFORE_ROC;
 
     /**
      * Serialization version.
@@ -99,7 +99,7 @@ public final class MinguoChrono extends Chrono<MinguoChrono> implements Serializ
     /**
      * Restricted constructor.
      */
-    private MinguoChrono() {
+    private MinguoChronology() {
     }
 
     /**
@@ -145,17 +145,17 @@ public final class MinguoChrono extends Chrono<MinguoChrono> implements Serializ
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDate<MinguoChrono> date(int prolepticYear, int month, int dayOfMonth) {
+    public ChronoLocalDate<MinguoChronology> date(int prolepticYear, int month, int dayOfMonth) {
         return new MinguoDate(LocalDate.of(prolepticYear + YEARS_DIFFERENCE, month, dayOfMonth));
     }
 
     @Override
-    public ChronoLocalDate<MinguoChrono> dateYearDay(int prolepticYear, int dayOfYear) {
+    public ChronoLocalDate<MinguoChronology> dateYearDay(int prolepticYear, int dayOfYear) {
         return new MinguoDate(LocalDate.ofYearDay(prolepticYear + YEARS_DIFFERENCE, dayOfYear));
     }
 
     @Override
-    public ChronoLocalDate<MinguoChrono> date(TemporalAccessor temporal) {
+    public ChronoLocalDate<MinguoChronology> date(TemporalAccessor temporal) {
         if (temporal instanceof MinguoDate) {
             return (MinguoDate) temporal;
         }
@@ -175,11 +175,11 @@ public final class MinguoChrono extends Chrono<MinguoChrono> implements Serializ
      */
     @Override
     public boolean isLeapYear(long prolepticYear) {
-        return ISOChrono.INSTANCE.isLeapYear(prolepticYear + YEARS_DIFFERENCE);
+        return ISOChronology.INSTANCE.isLeapYear(prolepticYear + YEARS_DIFFERENCE);
     }
 
     @Override
-    public int prolepticYear(Era<MinguoChrono> era, int yearOfEra) {
+    public int prolepticYear(Era<MinguoChronology> era, int yearOfEra) {
         if (era instanceof MinguoEra == false) {
             throw new DateTimeException("Era must be MinguoEra");
         }
@@ -187,13 +187,13 @@ public final class MinguoChrono extends Chrono<MinguoChrono> implements Serializ
     }
 
     @Override
-    public Era<MinguoChrono> eraOf(int eraValue) {
+    public Era<MinguoChronology> eraOf(int eraValue) {
         return MinguoEra.of(eraValue);
     }
 
     @Override
-    public List<Era<MinguoChrono>> eras() {
-        return Arrays.<Era<MinguoChrono>>asList(MinguoEra.values());
+    public List<Era<MinguoChronology>> eras() {
+        return Arrays.<Era<MinguoChronology>>asList(MinguoEra.values());
     }
 
     //-----------------------------------------------------------------------

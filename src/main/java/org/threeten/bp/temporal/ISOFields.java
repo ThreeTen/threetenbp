@@ -47,8 +47,8 @@ import static org.threeten.bp.temporal.ChronoUnit.YEARS;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDate;
-import org.threeten.bp.chrono.Chrono;
-import org.threeten.bp.chrono.ISOChrono;
+import org.threeten.bp.chrono.Chronology;
+import org.threeten.bp.chrono.ISOChronology;
 import org.threeten.bp.format.DateTimeBuilder;
 import org.threeten.bp.jdk8.Jdk8Methods;
 
@@ -221,7 +221,7 @@ public final class ISOFields {
             @Override
             public boolean doIsSupported(TemporalAccessor temporal) {
                 return temporal.isSupported(DAY_OF_YEAR) && temporal.isSupported(MONTH_OF_YEAR) &&
-                        temporal.isSupported(YEAR) && Chrono.from(temporal).equals(ISOChrono.INSTANCE);
+                        temporal.isSupported(YEAR) && Chronology.from(temporal).equals(ISOChronology.INSTANCE);
             }
             @Override
             public ValueRange doRange(TemporalAccessor temporal) {
@@ -231,7 +231,7 @@ public final class ISOFields {
                 long qoy = temporal.getLong(QUARTER_OF_YEAR);
                 if (qoy == 1) {
                     long year = temporal.getLong(YEAR);
-                    return (ISOChrono.INSTANCE.isLeapYear(year) ? ValueRange.of(1, 91) : ValueRange.of(1, 90));
+                    return (ISOChronology.INSTANCE.isLeapYear(year) ? ValueRange.of(1, 91) : ValueRange.of(1, 90));
                 } else if (qoy == 2) {
                     return ValueRange.of(1, 91);
                 } else if (qoy == 3 || qoy == 4) {
@@ -247,7 +247,7 @@ public final class ISOFields {
                 int doy = temporal.get(DAY_OF_YEAR);
                 int moy = temporal.get(MONTH_OF_YEAR);
                 long year = temporal.getLong(YEAR);
-                return doy - QUARTER_DAYS[((moy - 1) / 3) + (ISOChrono.INSTANCE.isLeapYear(year) ? 4 : 0)];
+                return doy - QUARTER_DAYS[((moy - 1) / 3) + (ISOChronology.INSTANCE.isLeapYear(year) ? 4 : 0)];
             }
             @Override
             public <R extends Temporal> R doWith(R temporal, long newValue) {
@@ -275,7 +275,7 @@ public final class ISOFields {
             }
             @Override
             public boolean doIsSupported(TemporalAccessor temporal) {
-                return temporal.isSupported(MONTH_OF_YEAR) && Chrono.from(temporal).equals(ISOChrono.INSTANCE);
+                return temporal.isSupported(MONTH_OF_YEAR) && Chronology.from(temporal).equals(ISOChronology.INSTANCE);
             }
             @Override
             public ValueRange doRange(TemporalAccessor temporal) {

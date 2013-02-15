@@ -820,7 +820,7 @@ public final class Instant
             return (R) NANOS;
         }
         // inline TemporalAccessor.super.query(query) as an optimization
-        if (query == TemporalQueries.chrono() || query == TemporalQueries.zoneId() ||
+        if (query == TemporalQueries.chronology() || query == TemporalQueries.zoneId() ||
                 query == TemporalQueries.zone() || query == TemporalQueries.offset()) {
             return null;
         }

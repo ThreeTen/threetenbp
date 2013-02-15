@@ -59,7 +59,7 @@ import org.threeten.bp.temporal.ValueRange;
  * <h3>Specification for implementors</h3>
  * This is an immutable and thread-safe enum.
  */
-enum ThaiBuddhistEra implements Era<ThaiBuddhistChrono> {
+enum ThaiBuddhistEra implements Era<ThaiBuddhistChronology> {
 
     /**
      * The singleton instance for the era before the current one, 'Before Buddhist Era',
@@ -108,20 +108,20 @@ enum ThaiBuddhistEra implements Era<ThaiBuddhistChrono> {
     }
 
     @Override
-    public ThaiBuddhistChrono getChrono() {
-        return ThaiBuddhistChrono.INSTANCE;
+    public ThaiBuddhistChronology getChronology() {
+        return ThaiBuddhistChronology.INSTANCE;
     }
 
     // JDK8 default methods:
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDate<ThaiBuddhistChrono> date(int year, int month, int day) {
-        return getChrono().date(this, year, month, day);
+    public ChronoLocalDate<ThaiBuddhistChronology> date(int year, int month, int day) {
+        return getChronology().date(this, year, month, day);
     }
 
     @Override
-    public ChronoLocalDate<ThaiBuddhistChrono> dateYearDay(int year, int dayOfYear) {
-        return getChrono().dateYearDay(this, year, dayOfYear);
+    public ChronoLocalDate<ThaiBuddhistChronology> dateYearDay(int year, int dayOfYear) {
+        return getChronology().dateYearDay(this, year, dayOfYear);
     }
 
     //-----------------------------------------------------------------------
@@ -170,8 +170,8 @@ enum ThaiBuddhistEra implements Era<ThaiBuddhistChrono> {
     @SuppressWarnings("unchecked")
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.chrono()) {
-            return (R) getChrono();
+        if (query == TemporalQueries.chronology()) {
+            return (R) getChronology();
         }
         return query.queryFrom(this);
     }

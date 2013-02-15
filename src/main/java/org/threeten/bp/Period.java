@@ -48,7 +48,7 @@ import static org.threeten.bp.temporal.ChronoUnit.YEARS;
 import java.io.Serializable;
 import java.util.Objects;
 
-import org.threeten.bp.chrono.Chrono;
+import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
@@ -273,7 +273,7 @@ public final class Period
      * @throws ArithmeticException if numeric overflow occurs
      */
     public static Period between(TemporalAccessor start, TemporalAccessor end) {
-        if (Chrono.from(start).equals(Chrono.from(end)) == false) {
+        if (Chronology.from(start).equals(Chronology.from(end)) == false) {
             throw new DateTimeException("Unable to calculate period as date-times have different chronologies");
         }
         int years = 0;
@@ -287,8 +287,8 @@ public final class Period
         }
         if (start.isSupported(MONTH_OF_YEAR)) {
             months = Jdk8Methods.safeToInt(Jdk8Methods.safeSubtract(end.getLong(MONTH_OF_YEAR), start.getLong(MONTH_OF_YEAR)));
-            ValueRange startRange = Chrono.from(start).range(MONTH_OF_YEAR);
-            ValueRange endRange = Chrono.from(end).range(MONTH_OF_YEAR);
+            ValueRange startRange = Chronology.from(start).range(MONTH_OF_YEAR);
+            ValueRange endRange = Chronology.from(end).range(MONTH_OF_YEAR);
             if (startRange.isFixed() && startRange.isIntValue() && startRange.equals(endRange)) {
                 int monthCount = (int) (startRange.getMaximum() - startRange.getMinimum() + 1);
                 long totMonths = ((long) months) + years * monthCount;
@@ -947,7 +947,7 @@ public final class Period
     public Temporal addTo(Temporal temporal) {
         Objects.requireNonNull(temporal, "temporal");
         if ((years | months) != 0) {
-            ValueRange startRange = Chrono.from(temporal).range(MONTH_OF_YEAR);
+            ValueRange startRange = Chronology.from(temporal).range(MONTH_OF_YEAR);
             if (startRange.isFixed() && startRange.isIntValue()) {
                 long monthCount = startRange.getMaximum() - startRange.getMinimum() + 1;
                 temporal = temporal.plus(years * monthCount + months, MONTHS);
@@ -999,7 +999,7 @@ public final class Period
     public Temporal subtractFrom(Temporal temporal) {
         Objects.requireNonNull(temporal, "temporal");
         if ((years | months) != 0) {
-            ValueRange startRange = Chrono.from(temporal).range(MONTH_OF_YEAR);
+            ValueRange startRange = Chronology.from(temporal).range(MONTH_OF_YEAR);
             if (startRange.isFixed() && startRange.isIntValue()) {
                 long monthCount = startRange.getMaximum() - startRange.getMinimum() + 1;
                 temporal = temporal.minus(years * monthCount + months, MONTHS);

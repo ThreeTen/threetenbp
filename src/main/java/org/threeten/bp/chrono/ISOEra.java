@@ -58,7 +58,7 @@ import org.threeten.bp.temporal.ValueRange;
  * <h3>Specification for implementors</h3>
  * This is an immutable and thread-safe enum.
  */
-enum ISOEra implements Era<ISOChrono> {
+enum ISOEra implements Era<ISOChronology> {
 
     /**
      * The singleton instance for the era BCE, 'Before Current Era'.
@@ -111,20 +111,20 @@ enum ISOEra implements Era<ISOChrono> {
     }
 
     @Override
-    public ISOChrono getChrono() {
-        return ISOChrono.INSTANCE;
+    public ISOChronology getChronology() {
+        return ISOChronology.INSTANCE;
     }
 
     // JDK8 default methods:
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDate<ISOChrono> date(int year, int month, int day) {
-        return getChrono().date(this, year, month, day);
+    public ChronoLocalDate<ISOChronology> date(int year, int month, int day) {
+        return getChronology().date(this, year, month, day);
     }
 
     @Override
-    public ChronoLocalDate<ISOChrono> dateYearDay(int year, int dayOfYear) {
-        return getChrono().dateYearDay(this, year, dayOfYear);
+    public ChronoLocalDate<ISOChronology> dateYearDay(int year, int dayOfYear) {
+        return getChronology().dateYearDay(this, year, dayOfYear);
     }
 
     //-----------------------------------------------------------------------
@@ -173,8 +173,8 @@ enum ISOEra implements Era<ISOChrono> {
     @SuppressWarnings("unchecked")
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.chrono()) {
-            return (R) getChrono();
+        if (query == TemporalQueries.chronology()) {
+            return (R) getChronology();
         }
         return query.queryFrom(this);
     }

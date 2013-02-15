@@ -80,7 +80,7 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.chrono.Chrono;
+import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
@@ -147,7 +147,7 @@ public final class DateTimeBuilder
      * @param zone  the zone, may be null
      * @param chrono  the chronology, may be null
      */
-    public DateTimeBuilder(ZoneId zone, Chrono<?> chrono) {
+    public DateTimeBuilder(ZoneId zone, Chronology<?> chrono) {
         if (zone != null) {
             objects.add(zone);
         }
@@ -582,7 +582,7 @@ public final class DateTimeBuilder
         List<Object> objectsToAdd = new ArrayList<>();
         for (Object object : objects) {
             if (object instanceof LocalDate || object instanceof LocalTime ||
-                            object instanceof ZoneId || object instanceof Chrono) {
+                            object instanceof ZoneId || object instanceof Chronology) {
                 continue;
             }
             if (object instanceof ZoneOffset || object instanceof Instant) {
@@ -617,8 +617,8 @@ public final class DateTimeBuilder
             }
             return zone;
         }
-        if (query == TemporalQueries.chrono()) {
-            return extract(Chrono.class);
+        if (query == TemporalQueries.chronology()) {
+            return extract(Chronology.class);
         }
         // incomplete, so no need to handle TIME_PRECISION
         return super.query(query);

@@ -40,7 +40,7 @@ import java.util.Objects;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.Instant;
 import org.threeten.bp.ZoneId;
-import org.threeten.bp.chrono.Chrono;
+import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
 import org.threeten.bp.temporal.ChronoField;
@@ -101,14 +101,14 @@ final class DateTimePrintContext {
 
     private static TemporalAccessor adjust(final TemporalAccessor temporal, DateTimeFormatter formatter) {
         // normal case first
-        Chrono<?> overrideChrono = formatter.getChrono();
+        Chronology<?> overrideChrono = formatter.getChrono();
         ZoneId overrideZone = formatter.getZone();
         if (overrideChrono == null && overrideZone == null) {
             return temporal;
         }
 
         // ensure minimal change
-        Chrono<?> temporalChrono = Chrono.from(temporal);  // default to ISO, handles Instant
+        Chronology<?> temporalChrono = Chronology.from(temporal);  // default to ISO, handles Instant
         ZoneId temporalZone = temporal.query(TemporalQueries.zone());  // zone then offset, handles OffsetDateTime
         if (temporal.isSupported(EPOCH_DAY) == false || Objects.equals(overrideChrono, temporalChrono)) {
             overrideChrono = null;
@@ -157,7 +157,7 @@ final class DateTimePrintContext {
                 }
                 @Override
                 public <R> R query(TemporalQuery<R> query) {
-                    if (query == TemporalQueries.zoneId() || query == TemporalQueries.chrono() || query == TemporalQueries.precision()) {
+                    if (query == TemporalQueries.zoneId() || query == TemporalQueries.chronology() || query == TemporalQueries.precision()) {
                         return temporal.query(query);
                     }
                     return query.queryFrom(this);

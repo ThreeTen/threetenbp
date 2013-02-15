@@ -41,7 +41,7 @@ import static org.threeten.bp.temporal.ChronoField.YEAR_OF_ERA;
 import java.util.Objects;
 
 import org.threeten.bp.LocalTime;
-import org.threeten.bp.chrono.Chrono;
+import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.ChronoLocalDateTime;
 import org.threeten.bp.chrono.Era;
@@ -62,18 +62,18 @@ import org.threeten.bp.temporal.TemporalUnit;
  *
  * @param <C> the chronology of this date-time
  */
-public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
+public abstract class DefaultInterfaceChronoLocalDate<C extends Chronology<C>>
         extends DefaultInterfaceTemporal
         implements ChronoLocalDate<C> {
 
     @Override
     public Era<C> getEra() {
-        return getChrono().eraOf(get(ERA));
+        return getChronology().eraOf(get(ERA));
     }
 
     @Override
     public boolean isLeapYear() {
-        return getChrono().isLeapYear(getLong(YEAR));
+        return getChronology().isLeapYear(getLong(YEAR));
     }
 
     @Override
@@ -92,22 +92,22 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
     //-------------------------------------------------------------------------
     @Override
     public ChronoLocalDate<C> with(TemporalAdjuster adjuster) {
-        return getChrono().ensureChronoLocalDate(super.with(adjuster));
+        return getChronology().ensureChronoLocalDate(super.with(adjuster));
     }
 
     @Override
     public ChronoLocalDate<C> plus(TemporalAdder adjuster) {
-        return getChrono().ensureChronoLocalDate(super.plus(adjuster));
+        return getChronology().ensureChronoLocalDate(super.plus(adjuster));
     }
 
     @Override
     public ChronoLocalDate<C> minus(TemporalSubtractor adjuster) {
-        return getChrono().ensureChronoLocalDate(super.minus(adjuster));
+        return getChronology().ensureChronoLocalDate(super.minus(adjuster));
     }
 
     @Override
     public ChronoLocalDate<C> minus(long amountToSubtract, TemporalUnit unit) {
-        return getChrono().ensureChronoLocalDate(super.minus(amountToSubtract, unit));
+        return getChronology().ensureChronoLocalDate(super.minus(amountToSubtract, unit));
     }
 
     //-------------------------------------------------------------------------
@@ -118,13 +118,13 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
 
     @Override
     public ChronoLocalDateTime<C> atTime(LocalTime localTime) {
-        return Chrono.dateTime(this, localTime);
+        return Chronology.dateTime(this, localTime);
     }
 
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.chrono()) {
-            return (R) getChrono();
+        if (query == TemporalQueries.chronology()) {
+            return (R) getChronology();
         }
         return super.query(query);
     }
@@ -139,7 +139,7 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
     public int compareTo(ChronoLocalDate<?> other) {
         int cmp = Long.compare(toEpochDay(), other.toEpochDay());
         if (cmp == 0) {
-            cmp = getChrono().compareTo(other.getChrono());
+            cmp = getChronology().compareTo(other.getChronology());
         }
         return cmp;
     }
@@ -174,7 +174,7 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
     @Override
     public int hashCode() {
         long epDay = toEpochDay();
-        return getChrono().hashCode() ^ ((int) (epDay ^ (epDay >>> 32)));
+        return getChronology().hashCode() ^ ((int) (epDay ^ (epDay >>> 32)));
     }
 
     //-------------------------------------------------------------------------
@@ -185,7 +185,7 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
         long moy = getLong(MONTH_OF_YEAR);
         long dom = getLong(DAY_OF_MONTH);
         StringBuilder buf = new StringBuilder(30);
-        buf.append(getChrono().toString())
+        buf.append(getChronology().toString())
                 .append(" ")
                 .append(getEra())
                 .append(" ")

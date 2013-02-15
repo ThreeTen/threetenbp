@@ -62,8 +62,8 @@ import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.chrono.Chrono;
-import org.threeten.bp.chrono.ISOChrono;
+import org.threeten.bp.chrono.Chronology;
+import org.threeten.bp.chrono.ISOChronology;
 import org.threeten.bp.format.SimpleDateTimeTextProvider.LocaleStore;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
@@ -813,7 +813,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendLocalized(FormatStyle dateStyle, FormatStyle timeStyle) {
-        return appendLocalized(dateStyle, timeStyle, ISOChrono.INSTANCE);
+        return appendLocalized(dateStyle, timeStyle, ISOChronology.INSTANCE);
     }
 
     /**
@@ -830,7 +830,7 @@ public final class DateTimeFormatterBuilder {
      * @param chrono  the chronology to use, not null
      * @return this, for chaining, not null
      */
-    public DateTimeFormatterBuilder appendLocalized(FormatStyle dateStyle, FormatStyle timeStyle, Chrono<?> chrono) {
+    public DateTimeFormatterBuilder appendLocalized(FormatStyle dateStyle, FormatStyle timeStyle, Chronology<?> chrono) {
         Objects.requireNonNull(chrono, "chrono");
         if (dateStyle != null || timeStyle != null) {
             appendInternal(new LocalizedPrinterParser(dateStyle, timeStyle, chrono));
@@ -2874,7 +2874,7 @@ public final class DateTimeFormatterBuilder {
 
         @Override
         public boolean print(DateTimePrintContext context, StringBuilder buf) {
-            Chrono<?> chrono = context.getValue(TemporalQueries.chrono());
+            Chronology<?> chrono = context.getValue(TemporalQueries.chronology());
             if (chrono == null) {
                 return false;
             }
@@ -2899,7 +2899,7 @@ public final class DateTimeFormatterBuilder {
     static final class LocalizedPrinterParser implements DateTimePrinterParser {
         private final FormatStyle dateStyle;
         private final FormatStyle timeStyle;
-        private final Chrono<?> chrono;
+        private final Chronology<?> chrono;
 
         /**
          * Constructor.
@@ -2908,7 +2908,7 @@ public final class DateTimeFormatterBuilder {
          * @param timeStyle  the time style to use, may be null
          * @param chrono  the chronology to use, not null
          */
-        LocalizedPrinterParser(FormatStyle dateStyle, FormatStyle timeStyle, Chrono<?> chrono) {
+        LocalizedPrinterParser(FormatStyle dateStyle, FormatStyle timeStyle, Chronology<?> chrono) {
             // validated by caller
             this.dateStyle = dateStyle;
             this.timeStyle = timeStyle;

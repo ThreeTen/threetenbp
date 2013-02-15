@@ -60,7 +60,7 @@ import org.threeten.bp.temporal.ValueRange;
  * <h3>Specification for implementors</h3>
  * This is an immutable and thread-safe enum.
  */
-enum MinguoEra implements Era<MinguoChrono>  {
+enum MinguoEra implements Era<MinguoChronology>  {
 
     /**
      * The singleton instance for the era BEFORE_ROC, 'Before Republic of China'.
@@ -109,20 +109,20 @@ enum MinguoEra implements Era<MinguoChrono>  {
     }
 
     @Override
-    public MinguoChrono getChrono() {
-        return MinguoChrono.INSTANCE;
+    public MinguoChronology getChronology() {
+        return MinguoChronology.INSTANCE;
     }
 
     // JDK8 default methods:
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDate<MinguoChrono> date(int year, int month, int day) {
-        return getChrono().date(this, year, month, day);
+    public ChronoLocalDate<MinguoChronology> date(int year, int month, int day) {
+        return getChronology().date(this, year, month, day);
     }
 
     @Override
-    public ChronoLocalDate<MinguoChrono> dateYearDay(int year, int dayOfYear) {
-        return getChrono().dateYearDay(this, year, dayOfYear);
+    public ChronoLocalDate<MinguoChronology> dateYearDay(int year, int dayOfYear) {
+        return getChronology().dateYearDay(this, year, dayOfYear);
     }
 
     //-----------------------------------------------------------------------
@@ -171,8 +171,8 @@ enum MinguoEra implements Era<MinguoChrono>  {
     @SuppressWarnings("unchecked")
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.chrono()) {
-            return (R) getChrono();
+        if (query == TemporalQueries.chronology()) {
+            return (R) getChronology();
         }
         return query.queryFrom(this);
     }

@@ -42,7 +42,7 @@ import java.util.Objects;
 
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.ZoneId;
-import org.threeten.bp.chrono.Chrono;
+import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.format.DateTimeFormatterBuilder.CompositePrinterParser;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.TemporalAccessor;
@@ -90,7 +90,7 @@ public final class DateTimeFormatter {
     /**
      * The chronology to use for formatting, null for no override.
      */
-    private final Chrono<?> chrono;
+    private final Chronology<?> chrono;
     /**
      * The zone to use for formatting, null for no override.
      */
@@ -106,7 +106,7 @@ public final class DateTimeFormatter {
      * @param zone  the zone to use, null for no override
      */
     DateTimeFormatter(CompositePrinterParser printerParser, Locale locale,
-                      DateTimeFormatSymbols symbols, Chrono<?> chrono, ZoneId zone) {
+                      DateTimeFormatSymbols symbols, Chronology<?> chrono, ZoneId zone) {
         this.printerParser = Objects.requireNonNull(printerParser, "printerParser");
         this.locale = Objects.requireNonNull(locale, "locale");
         this.symbols = Objects.requireNonNull(symbols, "symbols");
@@ -176,11 +176,11 @@ public final class DateTimeFormatter {
      * <p>
      * This returns the override chronology, used to convert dates.
      * By default, a formatter has no override chronology, returning null.
-     * See {@link #withChrono(Chrono)} for more details on overriding.
+     * See {@link #withChrono(Chronology)} for more details on overriding.
      *
      * @return the chronology of this formatter, null if no override
      */
-    public Chrono<?> getChrono() {
+    public Chronology<?> getChrono() {
         return chrono;
     }
 
@@ -208,7 +208,7 @@ public final class DateTimeFormatter {
      * @param chrono  the new chronology, not null
      * @return a formatter based on this formatter with the requested override chronology, not null
      */
-    public DateTimeFormatter withChrono(Chrono<?> chrono) {
+    public DateTimeFormatter withChrono(Chronology<?> chrono) {
         if (Objects.equals(this.chrono, chrono)) {
             return this;
         }

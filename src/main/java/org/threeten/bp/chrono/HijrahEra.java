@@ -60,7 +60,7 @@ import org.threeten.bp.temporal.ValueRange;
  * <h3>Specification for implementors</h3>
  * This is an immutable and thread-safe enum.
  */
-enum HijrahEra implements Era<HijrahChrono> {
+enum HijrahEra implements Era<HijrahChronology> {
 
     /**
      * The singleton instance for the era before the current one, 'Before Anno Hegirae',
@@ -109,20 +109,20 @@ enum HijrahEra implements Era<HijrahChrono> {
     }
 
     @Override
-    public HijrahChrono getChrono() {
-        return HijrahChrono.INSTANCE;
+    public HijrahChronology getChronology() {
+        return HijrahChronology.INSTANCE;
     }
 
     // JDK8 default methods:
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDate<HijrahChrono> date(int year, int month, int day) {
-        return getChrono().date(this, year, month, day);
+    public ChronoLocalDate<HijrahChronology> date(int year, int month, int day) {
+        return getChronology().date(this, year, month, day);
     }
 
     @Override
-    public ChronoLocalDate<HijrahChrono> dateYearDay(int year, int dayOfYear) {
-        return getChrono().dateYearDay(this, year, dayOfYear);
+    public ChronoLocalDate<HijrahChronology> dateYearDay(int year, int dayOfYear) {
+        return getChronology().dateYearDay(this, year, dayOfYear);
     }
 
     //-----------------------------------------------------------------------
@@ -171,8 +171,8 @@ enum HijrahEra implements Era<HijrahChrono> {
     @SuppressWarnings("unchecked")
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.chrono()) {
-            return (R) getChrono();
+        if (query == TemporalQueries.chronology()) {
+            return (R) getChronology();
         }
         return query.queryFrom(this);
     }

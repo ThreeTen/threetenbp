@@ -144,8 +144,8 @@ public class TestDayOfWeek extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_query_chrono() {
-        assertEquals(DayOfWeek.FRIDAY.query(TemporalQueries.chrono()), null);
-        assertEquals(TemporalQueries.chrono().queryFrom(DayOfWeek.FRIDAY), null);
+        assertEquals(DayOfWeek.FRIDAY.query(TemporalQueries.chronology()), null);
+        assertEquals(TemporalQueries.chronology().queryFrom(DayOfWeek.FRIDAY), null);
     }
 
     @Test

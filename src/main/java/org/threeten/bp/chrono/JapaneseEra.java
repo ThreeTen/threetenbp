@@ -60,7 +60,7 @@ import sun.util.calendar.CalendarDate;
  * This class is immutable and thread-safe.
  */
 final class JapaneseEra
-        extends DefaultInterfaceEra<JapaneseChrono>
+        extends DefaultInterfaceEra<JapaneseChronology>
         implements Serializable {
 
     // The offset value to 0-based index from the era value.
@@ -108,7 +108,7 @@ final class JapaneseEra
     private static final JapaneseEra[] KNOWN_ERAS;
 
     static {
-        sun.util.calendar.Era[] sunEras = JapaneseChrono.JCAL.getEras();
+        sun.util.calendar.Era[] sunEras = JapaneseChronology.JCAL.getEras();
         ERA_CONFIG = new sun.util.calendar.Era[sunEras.length + 1];
         for (int i = 1; i < ERA_CONFIG.length; i++) {
             ERA_CONFIG[i] = sunEras[i - 1];
@@ -267,8 +267,8 @@ final class JapaneseEra
     }
 
     @Override
-    public JapaneseChrono getChrono() {
-        return JapaneseChrono.INSTANCE;
+    public JapaneseChronology getChronology() {
+        return JapaneseChronology.INSTANCE;
     }
 
     //-----------------------------------------------------------------------

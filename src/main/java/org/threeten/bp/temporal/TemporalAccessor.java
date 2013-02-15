@@ -33,7 +33,7 @@ package org.threeten.bp.temporal;
 
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.ZoneId;
-import org.threeten.bp.chrono.Chrono;
+import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.ChronoLocalDate;
 
 /**
@@ -51,7 +51,7 @@ import org.threeten.bp.chrono.ChronoLocalDate;
  * See {@link ChronoField} for the standard set of fields.
  * <p>
  * Two pieces of date/time information cannot be represented by numbers,
- * the {@link Chrono chronology} and the {@link ZoneId time-zone}.
+ * the {@link Chronology chronology} and the {@link ZoneId time-zone}.
  * These can be accessed via {@link #query(TemporalQuery) queries} using
  * the static methods defined on {@link TemporalQueries}.
  * <p>
@@ -200,7 +200,7 @@ public interface TemporalAccessor {
      *   public &lt;R&gt; R query(TemporalQuery&lt;R&gt; type) {
      *     // only include an if statement if the implementation can return it
      *     if (query == TemporalQueries.zoneId())  return // the ZoneId
-     *     if (query == TemporalQueries.chrono())  return // the Chrono
+     *     if (query == TemporalQueries.chronology())  return // the Chrono
      *     if (query == TemporalQueries.precision())  return // the precision
      *     // call default method
      *     return super.query(query);

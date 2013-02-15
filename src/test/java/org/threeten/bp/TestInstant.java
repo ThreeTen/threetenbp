@@ -354,8 +354,8 @@ public class TestInstant extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_query_chrono() {
-        assertEquals(TEST_12345_123456789.query(TemporalQueries.chrono()), null);
-        assertEquals(TemporalQueries.chrono().queryFrom(TEST_12345_123456789), null);
+        assertEquals(TEST_12345_123456789.query(TemporalQueries.chronology()), null);
+        assertEquals(TemporalQueries.chronology().queryFrom(TEST_12345_123456789), null);
     }
 
     @Test

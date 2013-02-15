@@ -63,7 +63,7 @@ import sun.util.calendar.LocalGregorianCalendar;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
-public final class JapaneseChrono extends Chrono<JapaneseChrono> implements Serializable {
+public final class JapaneseChronology extends Chronology<JapaneseChronology> implements Serializable {
     // TODO: definition for unknown era may break requirement that year-of-era >= 1
 
     static final LocalGregorianCalendar JCAL =
@@ -75,33 +75,33 @@ public final class JapaneseChrono extends Chrono<JapaneseChrono> implements Seri
     /**
      * Singleton instance for Japanese chronology.
      */
-    public static final JapaneseChrono INSTANCE = new JapaneseChrono();
+    public static final JapaneseChronology INSTANCE = new JapaneseChronology();
 
     /**
      * The singleton instance for the before Meiji era ( - 1868-09-07)
      * which has the value -999.
      */
-    public static final Era<JapaneseChrono> ERA_SEIREKI = JapaneseEra.SEIREKI;
+    public static final Era<JapaneseChronology> ERA_SEIREKI = JapaneseEra.SEIREKI;
     /**
      * The singleton instance for the Meiji era (1868-09-08 - 1912-07-29)
      * which has the value -1.
      */
-    public static final Era<JapaneseChrono> ERA_MEIJI = JapaneseEra.MEIJI;
+    public static final Era<JapaneseChronology> ERA_MEIJI = JapaneseEra.MEIJI;
     /**
      * The singleton instance for the Taisho era (1912-07-30 - 1926-12-24)
      * which has the value 0.
      */
-    public static final Era<JapaneseChrono> ERA_TAISHO = JapaneseEra.TAISHO;
+    public static final Era<JapaneseChronology> ERA_TAISHO = JapaneseEra.TAISHO;
     /**
      * The singleton instance for the Showa era (1926-12-25 - 1989-01-07)
      * which has the value 1.
      */
-    public static final Era<JapaneseChrono> ERA_SHOWA = JapaneseEra.SHOWA;
+    public static final Era<JapaneseChronology> ERA_SHOWA = JapaneseEra.SHOWA;
     /**
      * The singleton instance for the Heisei era (1989-01-08 - current)
      * which has the value 2.
      */
-    public static final Era<JapaneseChrono> ERA_HEISEI = JapaneseEra.HEISEI;
+    public static final Era<JapaneseChronology> ERA_HEISEI = JapaneseEra.HEISEI;
     /**
      * Serialization version.
      */
@@ -146,7 +146,7 @@ public final class JapaneseChrono extends Chrono<JapaneseChrono> implements Seri
     /**
      * Restricted constructor.
      */
-    private JapaneseChrono() {
+    private JapaneseChronology() {
     }
 
     /**
@@ -192,7 +192,7 @@ public final class JapaneseChrono extends Chrono<JapaneseChrono> implements Seri
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDate<JapaneseChrono> date(Era<JapaneseChrono> era, int yearOfEra, int month, int dayOfMonth) {
+    public ChronoLocalDate<JapaneseChronology> date(Era<JapaneseChronology> era, int yearOfEra, int month, int dayOfMonth) {
         if (era instanceof JapaneseEra == false) {
             throw new DateTimeException("Era must be JapaneseEra");
         }
@@ -200,18 +200,18 @@ public final class JapaneseChrono extends Chrono<JapaneseChrono> implements Seri
     }
 
     @Override
-    public ChronoLocalDate<JapaneseChrono> date(int prolepticYear, int month, int dayOfMonth) {
+    public ChronoLocalDate<JapaneseChronology> date(int prolepticYear, int month, int dayOfMonth) {
         return new JapaneseDate(LocalDate.of(prolepticYear, month, dayOfMonth));
     }
 
     @Override
-    public ChronoLocalDate<JapaneseChrono> dateYearDay(int prolepticYear, int dayOfYear) {
+    public ChronoLocalDate<JapaneseChronology> dateYearDay(int prolepticYear, int dayOfYear) {
         LocalDate date = LocalDate.ofYearDay(prolepticYear, dayOfYear);
         return date(prolepticYear, date.getMonthValue(), date.getDayOfMonth());
     }
 
     @Override
-    public ChronoLocalDate<JapaneseChrono> date(TemporalAccessor temporal) {
+    public ChronoLocalDate<JapaneseChronology> date(TemporalAccessor temporal) {
         if (temporal instanceof JapaneseDate) {
             return (JapaneseDate) temporal;
         }
@@ -231,11 +231,11 @@ public final class JapaneseChrono extends Chrono<JapaneseChrono> implements Seri
      */
     @Override
     public boolean isLeapYear(long prolepticYear) {
-        return ISOChrono.INSTANCE.isLeapYear(prolepticYear);
+        return ISOChronology.INSTANCE.isLeapYear(prolepticYear);
     }
 
     @Override
-    public int prolepticYear(Era<JapaneseChrono> era, int yearOfEra) {
+    public int prolepticYear(Era<JapaneseChronology> era, int yearOfEra) {
         if (era instanceof JapaneseEra == false) {
             throw new DateTimeException("Era must be JapaneseEra");
         }
@@ -266,13 +266,13 @@ public final class JapaneseChrono extends Chrono<JapaneseChrono> implements Seri
      * @throws DateTimeException if {@code eraValue} is invalid
      */
     @Override
-    public Era<JapaneseChrono> eraOf(int eraValue) {
+    public Era<JapaneseChronology> eraOf(int eraValue) {
         return JapaneseEra.of(eraValue);
     }
 
     @Override
-    public List<Era<JapaneseChrono>> eras() {
-        return Arrays.<Era<JapaneseChrono>>asList(JapaneseEra.values());
+    public List<Era<JapaneseChronology>> eras() {
+        return Arrays.<Era<JapaneseChronology>>asList(JapaneseEra.values());
     }
 
     //-----------------------------------------------------------------------

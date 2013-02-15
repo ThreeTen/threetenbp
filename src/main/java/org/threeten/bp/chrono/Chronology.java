@@ -132,23 +132,23 @@ import org.threeten.bp.temporal.ValueRange;
  *
  * @param <C> the type of the implementing subclass
  */
-public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?>> {
+public abstract class Chronology<C extends Chronology<C>> implements Comparable<Chronology<?>> {
 
     /**
      * Map of available calendars by ID.
      */
-    private static final ConcurrentHashMap<String, Chrono<?>> CHRONOS_BY_ID;
+    private static final ConcurrentHashMap<String, Chronology<?>> CHRONOS_BY_ID;
     /**
      * Map of available calendars by calendar type.
      */
-    private static final ConcurrentHashMap<String, Chrono<?>> CHRONOS_BY_TYPE;
+    private static final ConcurrentHashMap<String, Chronology<?>> CHRONOS_BY_TYPE;
     static {
         // TODO: defer initialization?
-        ConcurrentHashMap<String, Chrono<?>> ids = new ConcurrentHashMap<>();
-        ConcurrentHashMap<String, Chrono<?>> types = new ConcurrentHashMap<>();
+        ConcurrentHashMap<String, Chronology<?>> ids = new ConcurrentHashMap<>();
+        ConcurrentHashMap<String, Chronology<?>> types = new ConcurrentHashMap<>();
         @SuppressWarnings("rawtypes")
-        ServiceLoader<Chrono> loader =  ServiceLoader.load(Chrono.class);
-        for (Chrono<?> chrono : loader) {
+        ServiceLoader<Chronology> loader =  ServiceLoader.load(Chronology.class);
+        for (Chronology<?> chrono : loader) {
             ids.putIfAbsent(chrono.getId(), chrono);
             String type = chrono.getCalendarType();
             if (type != null) {
@@ -165,9 +165,9 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * <p>
      * A {@code TemporalAccessor} represents some form of date and time information.
      * This factory converts the arbitrary temporal object to an instance of {@code Chrono}.
-     * If the specified temporal object does not have a chronology, {@link ISOChrono} is returned.
+     * If the specified temporal object does not have a chronology, {@link ISOChronology} is returned.
      * <p>
-     * The conversion will obtain the chronology using {@link TemporalQueries#chrono()}.
+     * The conversion will obtain the chronology using {@link TemporalQueries#chronology()}.
      * <p>
      * This method matches the signature of the functional interface {@link TemporalQuery}
      * allowing it to be used in queries via method reference, {@code Chrono::from}.
@@ -176,10 +176,10 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * @return the chronology, not null
      * @throws DateTimeException if unable to convert to an {@code Chrono}
      */
-    public static Chrono<?> from(TemporalAccessor temporal) {
+    public static Chronology<?> from(TemporalAccessor temporal) {
         Objects.requireNonNull(temporal, "temporal");
-        Chrono<?> obj = temporal.query(TemporalQueries.chrono());
-        return (obj != null ? obj : ISOChrono.INSTANCE);
+        Chronology<?> obj = temporal.query(TemporalQueries.chronology());
+        return (obj != null ? obj : ISOChronology.INSTANCE);
     }
 
     //-----------------------------------------------------------------------
@@ -197,15 +197,15 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * @return the calendar system associated with the locale, not null
      * @throws DateTimeException if the locale-specified calendar cannot be found
      */
-    public static Chrono<?> ofLocale(Locale locale) {
+    public static Chronology<?> ofLocale(Locale locale) {
         Objects.requireNonNull(locale, "locale");
         String type = locale.getUnicodeLocaleType("ca");
         if (type == null) {
-            return ISOChrono.INSTANCE;
+            return ISOChronology.INSTANCE;
         } else if ("iso".equals(type) || "iso8601".equals(type)) {
-            return ISOChrono.INSTANCE;
+            return ISOChronology.INSTANCE;
         } else {
-            Chrono<?> chrono = CHRONOS_BY_TYPE.get(type);
+            Chronology<?> chrono = CHRONOS_BY_TYPE.get(type);
             if (chrono == null) {
                 throw new DateTimeException("Unknown calendar system: " + type);
             }
@@ -233,8 +233,8 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * @return the chronology with the identifier requested, not null
      * @throws DateTimeException if the chronology cannot be found
      */
-    public static Chrono<?> of(String id) {
-        Chrono<?> chrono = CHRONOS_BY_ID.get(id);
+    public static Chronology<?> of(String id) {
+        Chronology<?> chrono = CHRONOS_BY_ID.get(id);
         if (chrono != null) {
             return chrono;
         }
@@ -252,7 +252,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      *
      * @return the independent, modifiable set of the available chronology IDs, not null
      */
-    public static Set<Chrono<?>> getAvailableChronologies() {
+    public static Set<Chronology<?>> getAvailableChronologies() {
         return new HashSet<>(CHRONOS_BY_ID.values());
     }
 
@@ -271,7 +271,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * @param time  the time, not null
      * @return the local date-time combining the input date and time, not null
      */
-    public static <R extends Chrono<R>> ChronoLocalDateTime<R> dateTime(ChronoLocalDate<R> date, LocalTime time) {
+    public static <R extends Chronology<R>> ChronoLocalDateTime<R> dateTime(ChronoLocalDate<R> date, LocalTime time) {
         return ChronoLocalDateTimeImpl.of(date, time);
     }
 
@@ -279,7 +279,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
     /**
      * Creates an instance.
      */
-    protected Chrono() {
+    protected Chronology() {
         // register the subclass
         CHRONOS_BY_ID.putIfAbsent(this.getId(), this);
         String type = this.getCalendarType();
@@ -300,8 +300,8 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
     public /* should be package-scoped */ ChronoLocalDate<C> ensureChronoLocalDate(Temporal temporal) {
         @SuppressWarnings("unchecked")
         ChronoLocalDate<C> other = (ChronoLocalDate<C>) temporal;
-        if (this.equals(other.getChrono()) == false) {
-            throw new ClassCastException("Chrono mismatch, expected: " + getId() + ", actual: " + other.getChrono().getId());
+        if (this.equals(other.getChronology()) == false) {
+            throw new ClassCastException("Chrono mismatch, expected: " + getId() + ", actual: " + other.getChronology().getId());
         }
         return other;
     }
@@ -317,9 +317,9 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
     public /* should be package-scoped */ ChronoLocalDateTimeImpl<C> ensureChronoLocalDateTime(Temporal temporal) {
         @SuppressWarnings("unchecked")
         ChronoLocalDateTimeImpl<C> other = (ChronoLocalDateTimeImpl<C>) temporal;
-        if (this.equals(other.getDate().getChrono()) == false) {
+        if (this.equals(other.getDate().getChronology()) == false) {
             throw new ClassCastException("Chrono mismatch, required: " + getId()
-                    + ", supplied: " + other.getDate().getChrono().getId());
+                    + ", supplied: " + other.getDate().getChronology().getId());
         }
         return other;
     }
@@ -335,9 +335,9 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
     public /* should be package-scoped */ ChronoZonedDateTimeImpl<C> ensureChronoZonedDateTime(Temporal temporal) {
         @SuppressWarnings("unchecked")
         ChronoZonedDateTimeImpl<C> other = (ChronoZonedDateTimeImpl<C>) temporal;
-        if (this.equals(other.getDate().getChrono()) == false) {
+        if (this.equals(other.getDate().getChronology()) == false) {
             throw new ClassCastException("Chrono mismatch, required: " + getId()
-                    + ", supplied: " + other.getDate().getChrono().getId());
+                    + ", supplied: " + other.getDate().getChronology().getId());
         }
         return other;
     }
@@ -656,8 +656,8 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
             @SuppressWarnings("unchecked")
             @Override
             public <R> R query(TemporalQuery<R> query) {
-                if (query == TemporalQueries.chrono()) {
-                    return (R) Chrono.this;
+                if (query == TemporalQueries.chronology()) {
+                    return (R) Chronology.this;
                 }
                 return super.query(query);
             }
@@ -679,7 +679,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * @return the comparator value, negative if less, positive if greater
      */
     @Override
-    public int compareTo(Chrono<?> other) {
+    public int compareTo(Chronology<?> other) {
         return getId().compareTo(other.getId());
     }
 
@@ -688,7 +688,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      * <p>
      * The comparison is based on the entire state of the object.
      * <p>
-     * The default implementation checks the type and calls {@link #compareTo(Chrono)}.
+     * The default implementation checks the type and calls {@link #compareTo(Chronology)}.
      *
      * @param obj  the object to check, null returns false
      * @return true if this is equal to the other chronology
@@ -698,8 +698,8 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
         if (this == obj) {
            return true;
         }
-        if (obj instanceof Chrono) {
-            return compareTo((Chrono<?>) obj) == 0;
+        if (obj instanceof Chronology) {
+            return compareTo((Chronology<?>) obj) == 0;
         }
         return false;
     }
@@ -746,9 +746,9 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
         out.writeUTF(getId());
     }
 
-    static Chrono<?> readExternal(DataInput in) throws IOException {
+    static Chronology<?> readExternal(DataInput in) throws IOException {
         String id = in.readUTF();
-        return Chrono.of(id);
+        return Chronology.of(id);
     }
 
 }

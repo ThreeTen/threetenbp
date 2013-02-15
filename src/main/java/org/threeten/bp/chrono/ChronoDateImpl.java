@@ -50,7 +50,7 @@ import org.threeten.bp.temporal.TemporalUnit;
  * For example, the Japanese, Minguo, Thai Buddhist and others.
  * <p>
  * {@code ChronoLocalDate} is built on the generic concepts of year, month and day.
- * The calendar system, represented by a {@link Chrono}, expresses the relationship between
+ * The calendar system, represented by a {@link Chronology}, expresses the relationship between
  * the fields and this class allows the resulting date to be manipulated.
  * <p>
  * Note that not all calendar systems are suitable for use with this class.
@@ -99,8 +99,8 @@ import org.threeten.bp.temporal.TemporalUnit;
  * {@code Chrono} must be registered as a Service implementing the {@code Chrono} interface
  * in the {@code META-INF/Services} file as per the specification of {@link java.util.ServiceLoader}.
  * The subclass must function according to the {@code Chrono} class description and must provide its
- * {@link Chrono#getID calendar name} and
- * {@link Chrono#getCalendarType() calendar type}. </p>
+ * {@link Chronology#getID calendar name} and
+ * {@link Chronology#getCalendarType() calendar type}. </p>
  *
  * <h3>Specification for implementors</h3>
  * This abstract class must be implemented with care to ensure other classes operate correctly.
@@ -109,7 +109,7 @@ import org.threeten.bp.temporal.TemporalUnit;
  *
  * @param <C> the chronology of this date
  */
-abstract class ChronoDateImpl<C extends Chrono<C>>
+abstract class ChronoDateImpl<C extends Chronology<C>>
         extends DefaultInterfaceChronoLocalDate<C>
         implements ChronoLocalDate<C>, Temporal, TemporalAdjuster, Serializable {
 
@@ -140,9 +140,9 @@ abstract class ChronoDateImpl<C extends Chrono<C>>
 //                case ERAS: throw new DateTimeException("Unable to add era, standard calendar system only has one era");
 //                case FOREVER: return (period == 0 ? this : (period > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE));
             }
-            throw new DateTimeException(unit.getName() + " not valid for chronology " + getChrono().getId());
+            throw new DateTimeException(unit.getName() + " not valid for chronology " + getChronology().getId());
         }
-        return (ChronoDateImpl<C>) getChrono().ensureChronoLocalDate(unit.doPlus(this, amountToAdd));
+        return (ChronoDateImpl<C>) getChronology().ensureChronoLocalDate(unit.doPlus(this, amountToAdd));
     }
 
     //-----------------------------------------------------------------------
@@ -289,7 +289,7 @@ abstract class ChronoDateImpl<C extends Chrono<C>>
 
     @Override
     public final ChronoLocalDateTime<C> atTime(LocalTime localTime) {
-        return Chrono.dateTime(this, localTime);
+        return Chronology.dateTime(this, localTime);
     }
 
     //-----------------------------------------------------------------------
@@ -299,7 +299,7 @@ abstract class ChronoDateImpl<C extends Chrono<C>>
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
         ChronoLocalDate<?> end = (ChronoLocalDate<?>) endDateTime;
-        if (getChrono().equals(end.getChrono()) == false) {
+        if (getChronology().equals(end.getChronology()) == false) {
             throw new DateTimeException("Unable to calculate period between two different chronologies");
         }
         if (unit instanceof ChronoUnit) {
