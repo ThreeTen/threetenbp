@@ -260,8 +260,8 @@ public enum ChronoUnit implements TemporalUnit {
 
     //-----------------------------------------------------------------------
     @Override
-    public <R extends Temporal> SimplePeriod between(R dateTime1, R dateTime2) {
-        return new SimplePeriod(dateTime1.periodUntil(dateTime2, this), this);
+    public long between(Temporal temporal1, Temporal temporal2) {
+        return temporal1.periodUntil(temporal2, this);
     }
 
     //-----------------------------------------------------------------------

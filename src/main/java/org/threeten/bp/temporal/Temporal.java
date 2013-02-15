@@ -309,13 +309,21 @@ public interface Temporal extends TemporalAccessor {
      * For example, the period in hours between the times 11:30 and 13:29
      * will only be one hour as it is one minute short of two hours.
      * <p>
-     * This method operates in association with {@link TemporalUnit#between}.
-     * The result of this method is a {@code long} representing the amount of
-     * the specified unit. By contrast, the result of {@code between} is an
-     * object that can be used directly in addition/subtraction:
+     * There are two equivalent ways of using this method.
+     * The first is to invoke this method directly.
+     * The second is to use {@link TemporalUnit#between(Temporal, Temporal)}: 
      * <pre>
-     *   long period = start.periodUntil(end, HOURS);   // this method
-     *   dateTime.plus(HOURS.between(start, end));      // use in plus/minus
+     *   // these two lines are equivalent
+     *   between = thisUnit.between(start, end);
+     *   between = start.periodUntil(end, thisUnit);
+     * </pre>
+     * The choice should be made based on which makes the code more readable. 
+     * <p>
+     * For example, this method allows the number of days between two dates to be calculated:
+     * <pre>
+     *   long daysBetween = DAYS.between(start, end);
+     *   // or alternatively
+     *   long daysBetween = start.periodUntil(end, DAYS);
      * </pre>
      *
      * <h3>Specification for implementors</h3>
@@ -337,7 +345,7 @@ public interface Temporal extends TemporalAccessor {
      *    // if unit is supported, then calculate and return result
      *    // else throw DateTimeException for unsupported units
      *  }
-     *  return unit.between(this, endTime).getAmount();
+     *  return unit.between(this, endTemporal);
      * </pre>
      * <p>
      * The target object must not be altered by this method.

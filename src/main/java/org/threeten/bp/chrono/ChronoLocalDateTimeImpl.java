@@ -351,7 +351,7 @@ final class ChronoLocalDateTimeImpl<C extends Chronology<C>>
             }
             return date.periodUntil(endDate, unit);
         }
-        return unit.between(this, endDateTime).getAmount();
+        return unit.between(this, endDateTime);
     }
 
     //-----------------------------------------------------------------------

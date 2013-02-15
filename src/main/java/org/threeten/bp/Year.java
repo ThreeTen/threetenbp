@@ -775,7 +775,7 @@ public final class Year
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
-        return unit.between(this, endYear).getAmount();
+        return unit.between(this, endYear);
     }
 
     //-----------------------------------------------------------------------

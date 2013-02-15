@@ -1552,7 +1552,7 @@ public final class LocalDateTime
             }
             return date.periodUntil(endDate, unit);
         }
-        return unit.between(this, endDateTime).getAmount();
+        return unit.between(this, endDateTime);
     }
 
     //-----------------------------------------------------------------------

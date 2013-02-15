@@ -1489,7 +1489,7 @@ public final class OffsetDateTime
             end = end.withOffsetSameInstant(offset);
             return dateTime.periodUntil(end.dateTime, unit);
         }
-        return unit.between(this, endDateTime).getAmount();
+        return unit.between(this, endDateTime);
     }
 
     //-----------------------------------------------------------------------

@@ -1915,7 +1915,7 @@ public final class ZonedDateTime
                 return toOffsetDateTime().periodUntil(end.toOffsetDateTime(), unit);
             }
         }
-        return unit.between(this, endDateTime).getAmount();
+        return unit.between(this, endDateTime);
     }
 
     //-----------------------------------------------------------------------

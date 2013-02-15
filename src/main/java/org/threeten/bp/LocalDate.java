@@ -1434,7 +1434,7 @@ public final class LocalDate
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
-        return unit.between(this, endDate).getAmount();
+        return unit.between(this, endDate);
     }
 
     long daysUntil(LocalDate end) {

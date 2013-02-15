@@ -516,14 +516,12 @@ public final class IsoFields {
         }
 
         @Override
-        public <R extends Temporal> SimplePeriod between(R temporal1, R temporal2) {
+        public long between(Temporal temporal1, Temporal temporal2) {
             switch(this) {
                 case WEEK_BASED_YEARS:
-                    long period = Jdk8Methods.safeSubtract(temporal2.getLong(WEEK_BASED_YEAR), temporal1.getLong(WEEK_BASED_YEAR));
-                    return new SimplePeriod(period, WEEK_BASED_YEARS);
+                    return Jdk8Methods.safeSubtract(temporal2.getLong(WEEK_BASED_YEAR), temporal1.getLong(WEEK_BASED_YEAR));
                 case QUARTER_YEARS:
-                    long quarters = temporal1.periodUntil(temporal2, MONTHS) / 3;
-                    return new SimplePeriod(quarters, QUARTER_YEARS);
+                    return temporal1.periodUntil(temporal2, MONTHS) / 3;
                 default:
                     throw new IllegalStateException("Unreachable");
             }

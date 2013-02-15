@@ -918,7 +918,7 @@ public final class Instant
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
-        return unit.between(this, endInstant).getAmount();
+        return unit.between(this, endInstant);
     }
 
     private long nanosUntil(Instant end) {

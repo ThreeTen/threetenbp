@@ -889,7 +889,7 @@ public final class YearMonth
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
-        return unit.between(this, endYearMonth).getAmount();
+        return unit.between(this, endYearMonth);
     }
 
     //-----------------------------------------------------------------------

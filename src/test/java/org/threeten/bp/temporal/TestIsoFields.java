@@ -180,7 +180,7 @@ public class TestIsoFields {
 
      @Test(dataProvider="quartersBetween")
      public void test_quarters_between(LocalDate start, LocalDate end, long expected) {
-         assertEquals(IsoFields.QUARTER_YEARS.between(start, end).getAmount(), expected);
+         assertEquals(IsoFields.QUARTER_YEARS.between(start, end), expected);
      }
 
     // TODO: more tests

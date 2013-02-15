@@ -305,7 +305,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
         if (unit instanceof ChronoUnit) {
             return LocalDate.from(this).periodUntil(end, unit);  // TODO: this is wrong
         }
-        return unit.between(this, endDateTime).getAmount();
+        return unit.between(this, endDateTime);
     }
 
 }

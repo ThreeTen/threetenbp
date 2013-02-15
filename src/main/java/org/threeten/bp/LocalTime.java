@@ -1303,7 +1303,7 @@ public final class LocalTime
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
-        return unit.between(this, endTime).getAmount();
+        return unit.between(this, endTime);
     }
 
     //-----------------------------------------------------------------------

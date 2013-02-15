@@ -50,16 +50,8 @@ import org.threeten.bp.LocalTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.ZonedDateTime;
-import org.threeten.bp.chrono.Chronology;
-import org.threeten.bp.chrono.ChronoZonedDateTime;
-import org.threeten.bp.chrono.HijrahChronology;
-import org.threeten.bp.chrono.IsoChronology;
-import org.threeten.bp.chrono.JapaneseChronology;
-import org.threeten.bp.chrono.MinguoChronology;
-import org.threeten.bp.chrono.ThaiBuddhistChronology;
 import org.threeten.bp.format.DateTimeBuilder;
 import org.threeten.bp.temporal.ChronoUnit;
-import org.threeten.bp.temporal.SimplePeriod;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalAdder;
@@ -384,7 +376,7 @@ public class TestChronoZonedDateTime {
         }
 
         @Override
-        public <R extends Temporal> SimplePeriod between(R dateTime1, R dateTime2) {
+        public long between(Temporal temporal1, Temporal temporal2) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
     }

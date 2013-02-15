@@ -269,7 +269,7 @@ final class ChronoZonedDateTimeImpl<C extends Chronology<C>>
             end = end.withZoneSameInstant(offset);
             return dateTime.periodUntil(end.getDateTime(), unit);
         }
-        return unit.between(this, endDateTime).getAmount();
+        return unit.between(this, endDateTime);
     }
 
     //-----------------------------------------------------------------------
