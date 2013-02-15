@@ -74,11 +74,10 @@ import org.threeten.bp.temporal.JulianFields;
 import org.threeten.bp.temporal.MockFieldNoValue;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
-import org.threeten.bp.temporal.TemporalAdder;
 import org.threeten.bp.temporal.TemporalAdjuster;
+import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
-import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
 
 /**
@@ -855,41 +854,41 @@ public class TestLocalTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_plus_Adjuster_positiveHours() {
-        TemporalAdder period = MockSimplePeriod.of(7, ChronoUnit.HOURS);
+        TemporalAmount period = MockSimplePeriod.of(7, ChronoUnit.HOURS);
         LocalTime t = TEST_12_30_40_987654321.plus(period);
         assertEquals(t, LocalTime.of(19, 30, 40, 987654321));
     }
 
     @Test
     public void test_plus_Adjuster_negativeMinutes() {
-        TemporalAdder period = MockSimplePeriod.of(-25, ChronoUnit.MINUTES);
+        TemporalAmount period = MockSimplePeriod.of(-25, ChronoUnit.MINUTES);
         LocalTime t = TEST_12_30_40_987654321.plus(period);
         assertEquals(t, LocalTime.of(12, 5, 40, 987654321));
     }
 
     @Test
     public void test_plus_Adjuster_zero() {
-        TemporalAdder period = Period.ZERO;
+        TemporalAmount period = Period.ZERO;
         LocalTime t = TEST_12_30_40_987654321.plus(period);
         assertEquals(t, TEST_12_30_40_987654321);
     }
 
     @Test
     public void test_plus_Adjuster_wrap() {
-        TemporalAdder p = Period.ofTime(1, 0, 0);
+        TemporalAmount p = Period.ofTime(1, 0, 0);
         LocalTime t = LocalTime.of(23, 30).plus(p);
         assertEquals(t, LocalTime.of(0, 30));
     }
 
     @Test(expectedExceptions=DateTimeException.class)
     public void test_plus_Adjuster_dateNotAllowed() {
-        TemporalAdder period = MockSimplePeriod.of(7, ChronoUnit.MONTHS);
+        TemporalAmount period = MockSimplePeriod.of(7, ChronoUnit.MONTHS);
         TEST_12_30_40_987654321.plus(period);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_plus_Adjuster_null() {
-        TEST_12_30_40_987654321.plus((TemporalAdder) null);
+        TEST_12_30_40_987654321.plus((TemporalAmount) null);
     }
 
     //-----------------------------------------------------------------------
@@ -970,7 +969,7 @@ public class TestLocalTime extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_plus_adjuster_null() {
-        TEST_12_30_40_987654321.plus((TemporalAdder) null);
+        TEST_12_30_40_987654321.plus((TemporalAmount) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1324,55 +1323,55 @@ public class TestLocalTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_minus_Adjuster() {
-        TemporalSubtractor p = Period.ofTime(0, 0, 62, 3);
+        TemporalAmount p = Period.ofTime(0, 0, 62, 3);
         LocalTime t = TEST_12_30_40_987654321.minus(p);
         assertEquals(t, LocalTime.of(12, 29, 38, 987654318));
     }
 
     @Test
     public void test_minus_Adjuster_positiveHours() {
-        TemporalSubtractor period = MockSimplePeriod.of(7, ChronoUnit.HOURS);
+        TemporalAmount period = MockSimplePeriod.of(7, ChronoUnit.HOURS);
         LocalTime t = TEST_12_30_40_987654321.minus(period);
         assertEquals(t, LocalTime.of(5, 30, 40, 987654321));
     }
 
     @Test
     public void test_minus_Adjuster_negativeMinutes() {
-        TemporalSubtractor period = MockSimplePeriod.of(-25, ChronoUnit.MINUTES);
+        TemporalAmount period = MockSimplePeriod.of(-25, ChronoUnit.MINUTES);
         LocalTime t = TEST_12_30_40_987654321.minus(period);
         assertEquals(t, LocalTime.of(12, 55, 40, 987654321));
     }
 
     @Test
     public void test_minus_Adjuster_big1() {
-        TemporalSubtractor p = Period.ofTime(0, 0, 0, Long.MAX_VALUE);
+        TemporalAmount p = Period.ofTime(0, 0, 0, Long.MAX_VALUE);
         LocalTime t = TEST_12_30_40_987654321.minus(p);
         assertEquals(t, TEST_12_30_40_987654321.minusNanos(Long.MAX_VALUE));
     }
 
     @Test
     public void test_minus_Adjuster_zero() {
-        TemporalSubtractor p = Period.ZERO;
+        TemporalAmount p = Period.ZERO;
         LocalTime t = TEST_12_30_40_987654321.minus(p);
         assertEquals(t, TEST_12_30_40_987654321);
     }
 
     @Test
     public void test_minus_Adjuster_wrap() {
-        TemporalSubtractor p = Period.ofTime(1, 0, 0);
+        TemporalAmount p = Period.ofTime(1, 0, 0);
         LocalTime t = LocalTime.of(0, 30).minus(p);
         assertEquals(t, LocalTime.of(23, 30));
     }
 
     @Test(expectedExceptions=DateTimeException.class)
     public void test_minus_Adjuster_dateNotAllowed() {
-        TemporalSubtractor period = MockSimplePeriod.of(7, ChronoUnit.MONTHS);
+        TemporalAmount period = MockSimplePeriod.of(7, ChronoUnit.MONTHS);
         TEST_12_30_40_987654321.minus(period);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_minus_Adjuster_null() {
-        TEST_12_30_40_987654321.minus((TemporalSubtractor) null);
+        TEST_12_30_40_987654321.minus((TemporalAmount) null);
     }
 
     //-----------------------------------------------------------------------

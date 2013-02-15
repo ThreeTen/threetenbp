@@ -55,12 +55,11 @@ import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
-import org.threeten.bp.temporal.TemporalAdder;
 import org.threeten.bp.temporal.TemporalAdjuster;
+import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
-import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.temporal.ValueRange;
 import org.threeten.bp.zone.ZoneRules;
@@ -721,22 +720,22 @@ public final class OffsetTime
      * Returns a copy of this date with the specified period added.
      * <p>
      * This method returns a new time based on this time with the specified period added.
-     * The adder is typically {@link Period} but may be any other type implementing
-     * the {@link TemporalAdder} interface.
+     * The amount is typically {@link Period} but may be any other type implementing
+     * the {@link TemporalAmount} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #plus(long, TemporalUnit)}.
      * The offset is not part of the calculation and will be unchanged in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param adder  the adder to use, not null
+     * @param amount  the amount to add, not null
      * @return an {@code OffsetTime} based on this time with the addition made, not null
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public OffsetTime plus(TemporalAdder adder) {
-        return (OffsetTime) adder.addTo(this);
+    public OffsetTime plus(TemporalAmount amount) {
+        return (OffsetTime) amount.addTo(this);
     }
 
     /**
@@ -829,22 +828,22 @@ public final class OffsetTime
      * Returns a copy of this time with the specified period subtracted.
      * <p>
      * This method returns a new time based on this time with the specified period subtracted.
-     * The subtractor is typically {@link Period} but may be any other type implementing
-     * the {@link TemporalSubtractor} interface.
+     * The amount is typically {@link Period} but may be any other type implementing
+     * the {@link TemporalAmount} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #minus(long, TemporalUnit)}.
      * The offset is not part of the calculation and will be unchanged in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param subtractor  the subtractor to use, not null
+     * @param amount  the amount to subtract, not null
      * @return an {@code OffsetTime} based on this time with the subtraction made, not null
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public OffsetTime minus(TemporalSubtractor subtractor) {
-        return (OffsetTime) subtractor.subtractFrom(this);
+    public OffsetTime minus(TemporalAmount amount) {
+        return (OffsetTime) amount.subtractFrom(this);
     }
 
     /**

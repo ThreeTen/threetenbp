@@ -167,16 +167,15 @@ public interface Temporal extends TemporalAccessor {
     /**
      * Returns an object of the same type as this object with an amount added.
      * <p>
-     * This adjusts this temporal, adding according to the rules of the specified adder.
-     * The adder is typically a {@link Period} but may be any other type implementing
+     * This adjusts this temporal, adding according to the rules of the specified amount.
+     * The amount is typically a {@link Period} but may be any other type implementing
      * the {@link TemporalAdder} interface, such as {@link Duration}.
      * <p>
      * Some example code indicating how and why this method is used:
      * <pre>
-     *  date = date.plus(period);                      // add a Period instance
-     *  date = date.plus(duration);                    // add a Duration instance
-     *  date = date.plus(MONTHS.between(start, end));  // static import of MONTHS field
-     *  date = date.plus(workingDays(6));              // example user-written workingDays method
+     *  date = date.plus(period);                  // add a Period instance
+     *  date = date.plus(duration);                // add a Duration instance
+     *  date = date.plus(workingDays(6));          // example user-written workingDays method
      * </pre>
      * <p>
      * Note that calling {@code plus} followed by {@code minus} is not guaranteed to
@@ -187,12 +186,12 @@ public interface Temporal extends TemporalAccessor {
      * Instead, an adjusted copy of the original must be returned.
      * This provides equivalent, safe behavior for immutable and mutable implementations.
      *
-     * @param adder  the adder to use, not null
+     * @param amount  the amount to add, not null
      * @return an object of the same type with the specified adjustment made, not null
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    Temporal plus(TemporalAdder adder);
+    Temporal plus(TemporalAmount amount);
 
     /**
      * Returns an object of the same type as this object with the specified period added.
@@ -235,16 +234,15 @@ public interface Temporal extends TemporalAccessor {
     /**
      * Returns an object of the same type as this object with an amount subtracted.
      * <p>
-     * This adjusts this temporal, subtracting according to the rules of the specified subtractor.
-     * The subtractor is typically a {@link Period} but may be any other type implementing
-     * the {@link TemporalSubtractor} interface, such as {@link Duration}.
+     * This adjusts this temporal, subtracting according to the rules of the specified amount.
+     * The amount is typically a {@link Period} but may be any other type implementing
+     * the {@link TemporalAmount} interface, such as {@link Duration}.
      * <p>
      * Some example code indicating how and why this method is used:
      * <pre>
-     *  date = date.minus(period);                      // subtract a Period instance
-     *  date = date.minus(duration);                    // subtract a Duration instance
-     *  date = date.minus(MONTHS.between(start, end));  // static import of MONTHS field
-     *  date = date.minus(workingDays(6));              // example user-written workingDays method
+     *  date = date.minus(period);                  // subtract a Period instance
+     *  date = date.minus(duration);                // subtract a Duration instance
+     *  date = date.minus(workingDays(6));          // example user-written workingDays method
      * </pre>
      * <p>
      * Note that calling {@code plus} followed by {@code minus} is not guaranteed to
@@ -255,12 +253,12 @@ public interface Temporal extends TemporalAccessor {
      * Instead, an adjusted copy of the original must be returned.
      * This provides equivalent, safe behavior for immutable and mutable implementations.
      *
-     * @param subtractor  the subtractor to use, not null
+     * @param amount  the amount to subtract, not null
      * @return an object of the same type with the specified adjustment made, not null
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    Temporal minus(TemporalSubtractor subtractor);
+    Temporal minus(TemporalAmount amount);
 
     /**
      * Returns an object of the same type as this object with the specified period subtracted.

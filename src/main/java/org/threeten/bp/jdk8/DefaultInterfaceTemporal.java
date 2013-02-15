@@ -32,9 +32,8 @@
 package org.threeten.bp.jdk8;
 
 import org.threeten.bp.temporal.Temporal;
-import org.threeten.bp.temporal.TemporalAdder;
 import org.threeten.bp.temporal.TemporalAdjuster;
-import org.threeten.bp.temporal.TemporalSubtractor;
+import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalUnit;
 
 /**
@@ -51,13 +50,13 @@ public abstract class DefaultInterfaceTemporal
     }
 
     @Override
-    public Temporal plus(TemporalAdder adjuster) {
-        return adjuster.addTo(this);
+    public Temporal plus(TemporalAmount amount) {
+        return amount.addTo(this);
     }
 
     @Override
-    public Temporal minus(TemporalSubtractor adjuster) {
-        return adjuster.subtractFrom(this);
+    public Temporal minus(TemporalAmount amount) {
+        return amount.subtractFrom(this);
     }
 
     @Override

@@ -90,12 +90,10 @@ import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.JulianFields;
 import org.threeten.bp.temporal.MockFieldNoValue;
 import org.threeten.bp.temporal.TemporalAccessor;
-import org.threeten.bp.temporal.TemporalAdder;
 import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
-import org.threeten.bp.temporal.TemporalSubtractor;
 
 /**
  * Test ZonedDateTime.
@@ -1377,7 +1375,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_plus_adjuster_null() {
-        TEST_DATE_TIME.plus((TemporalAdder) null);
+        TEST_DATE_TIME.plus(null);
     }
 
     //-----------------------------------------------------------------------
@@ -1577,7 +1575,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_minus_adjuster_null() {
-        TEST_DATE_TIME.minus((TemporalSubtractor) null);
+        TEST_DATE_TIME.minus(null);
     }
 
     //-----------------------------------------------------------------------

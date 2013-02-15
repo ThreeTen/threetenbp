@@ -39,15 +39,14 @@ import java.util.Objects;
 
 import org.threeten.bp.Instant;
 import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.ChronoLocalDateTime;
+import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.temporal.Temporal;
-import org.threeten.bp.temporal.TemporalAdder;
 import org.threeten.bp.temporal.TemporalAdjuster;
+import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
-import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
 
 /**
@@ -66,13 +65,13 @@ public abstract class DefaultInterfaceChronoLocalDateTime<C extends Chronology<C
     }
 
     @Override
-    public ChronoLocalDateTime<C> plus(TemporalAdder adjuster) {
-        return getDate().getChronology().ensureChronoLocalDateTime(super.plus(adjuster));
+    public ChronoLocalDateTime<C> plus(TemporalAmount amount) {
+        return getDate().getChronology().ensureChronoLocalDateTime(super.plus(amount));
     }
 
     @Override
-    public ChronoLocalDateTime<C> minus(TemporalSubtractor adjuster) {
-        return getDate().getChronology().ensureChronoLocalDateTime(super.minus(adjuster));
+    public ChronoLocalDateTime<C> minus(TemporalAmount amount) {
+        return getDate().getChronology().ensureChronoLocalDateTime(super.minus(amount));
     }
 
     @Override

@@ -50,10 +50,9 @@ import org.threeten.bp.format.DateTimeBuilder;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
-import org.threeten.bp.temporal.TemporalAdder;
 import org.threeten.bp.temporal.TemporalAdjuster;
+import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalField;
-import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.temporal.ValueRange;
 
@@ -106,7 +105,7 @@ public class TestChronoLocalDate {
         for (Chronology[] clist : data_of_calendars()) {
             Chronology chrono2 = clist[0];
             ChronoLocalDate<?> date2 = chrono2.date(refDate);
-            TemporalAdder adjuster = new FixedAdjuster(date2);
+            TemporalAmount adjuster = new FixedAdjuster(date2);
             if (chrono != chrono2) {
                 try {
                     date.plus(adjuster);
@@ -129,7 +128,7 @@ public class TestChronoLocalDate {
         for (Chronology[] clist : data_of_calendars()) {
             Chronology chrono2 = clist[0];
             ChronoLocalDate<?> date2 = chrono2.date(refDate);
-            TemporalSubtractor adjuster = new FixedAdjuster(date2);
+            TemporalAmount adjuster = new FixedAdjuster(date2);
             if (chrono != chrono2) {
                 try {
                     date.minus(adjuster);
@@ -299,7 +298,7 @@ public class TestChronoLocalDate {
      * FixedAdjusted returns a fixed DateTime in all adjustments.
      * Construct an adjuster with the DateTime that should be returned from doWithAdjustment.
      */
-    static class FixedAdjuster implements TemporalAdjuster, TemporalAdder, TemporalSubtractor {
+    static class FixedAdjuster implements TemporalAdjuster, TemporalAmount {
         private Temporal datetime;
 
         FixedAdjuster(Temporal datetime) {
@@ -321,6 +320,15 @@ public class TestChronoLocalDate {
             return datetime;
         }
 
+        @Override
+        public List<TemporalUnit> getUnits() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public long get(TemporalUnit unit) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
     }
 
     /**

@@ -42,10 +42,9 @@ import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.Temporal;
-import org.threeten.bp.temporal.TemporalAdder;
 import org.threeten.bp.temporal.TemporalAdjuster;
+import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalField;
-import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
 
 /**
@@ -238,13 +237,13 @@ public interface ChronoZonedDateTime<C extends Chronology<C>>
     ChronoZonedDateTime<C> with(TemporalField field, long newValue);
 
     @Override
-    ChronoZonedDateTime<C> plus(TemporalAdder adjuster);
+    ChronoZonedDateTime<C> plus(TemporalAmount amount);
 
     @Override
     ChronoZonedDateTime<C> plus(long amountToAdd, TemporalUnit unit);
 
     @Override
-    ChronoZonedDateTime<C> minus(TemporalSubtractor adjuster);
+    ChronoZonedDateTime<C> minus(TemporalAmount amount);
 
     @Override
     ChronoZonedDateTime<C> minus(long amountToSubtract, TemporalUnit unit);

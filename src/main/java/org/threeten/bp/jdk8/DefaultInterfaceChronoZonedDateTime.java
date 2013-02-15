@@ -40,17 +40,16 @@ import java.util.Objects;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalTime;
-import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.ChronoZonedDateTime;
+import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.temporal.ChronoField;
-import org.threeten.bp.temporal.TemporalAdder;
 import org.threeten.bp.temporal.TemporalAdjuster;
+import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
-import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.temporal.ValueRange;
 
@@ -117,13 +116,13 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chronology<C
     }
 
     @Override
-    public ChronoZonedDateTime<C> plus(TemporalAdder adjuster) {
-        return getDate().getChronology().ensureChronoZonedDateTime(super.plus(adjuster));
+    public ChronoZonedDateTime<C> plus(TemporalAmount amount) {
+        return getDate().getChronology().ensureChronoZonedDateTime(super.plus(amount));
     }
 
     @Override
-    public ChronoZonedDateTime<C> minus(TemporalSubtractor adjuster) {
-        return getDate().getChronology().ensureChronoZonedDateTime(super.minus(adjuster));
+    public ChronoZonedDateTime<C> minus(TemporalAmount amount) {
+        return getDate().getChronology().ensureChronoZonedDateTime(super.minus(amount));
     }
 
     @Override

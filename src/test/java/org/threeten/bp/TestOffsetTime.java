@@ -71,11 +71,9 @@ import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.JulianFields;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
-import org.threeten.bp.temporal.TemporalAdder;
 import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
-import org.threeten.bp.temporal.TemporalSubtractor;
 
 /**
  * Test OffsetTime.
@@ -782,7 +780,7 @@ public class TestOffsetTime extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_plus_PlusAdjuster_null() {
-        TEST_11_30_59_500_PONE.plus((TemporalAdder) null);
+        TEST_11_30_59_500_PONE.plus(null);
     }
 
     //-----------------------------------------------------------------------
@@ -877,7 +875,7 @@ public class TestOffsetTime extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_minus_MinusAdjuster_null() {
-        TEST_11_30_59_500_PONE.minus((TemporalSubtractor) null);
+        TEST_11_30_59_500_PONE.minus(null);
     }
 
     //-----------------------------------------------------------------------

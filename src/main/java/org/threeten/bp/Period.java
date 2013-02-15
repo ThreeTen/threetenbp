@@ -46,6 +46,9 @@ import static org.threeten.bp.temporal.ChronoUnit.NANOS;
 import static org.threeten.bp.temporal.ChronoUnit.YEARS;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import org.threeten.bp.chrono.Chronology;
@@ -55,8 +58,7 @@ import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
-import org.threeten.bp.temporal.TemporalAdder;
-import org.threeten.bp.temporal.TemporalSubtractor;
+import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.temporal.ValueRange;
 
@@ -82,7 +84,7 @@ import org.threeten.bp.temporal.ValueRange;
  * a single {@code long} nanoseconds for all time units internally.
  */
 public final class Period
-        implements TemporalAdder, TemporalSubtractor, Serializable {
+        implements TemporalAmount, Serializable {
     // maximum hours is 2,562,047
 
     /**
@@ -439,6 +441,29 @@ public final class Period
             return ZERO;
         }
         return this;
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public List<TemporalUnit> getUnits() {
+        return Collections.<TemporalUnit>unmodifiableList(Arrays.asList(YEARS, MONTHS, DAYS, NANOS));
+    }
+
+    @Override
+    public long get(TemporalUnit unit) {
+        if (unit == YEARS) {
+            return years;
+        }
+        if (unit == MONTHS) {
+            return months;
+        }
+        if (unit == DAYS) {
+            return days;
+        }
+        if (unit == NANOS) {
+            return nanos;
+        }
+        throw new DateTimeException("Unsupported unit: " + unit);
     }
 
     //-----------------------------------------------------------------------

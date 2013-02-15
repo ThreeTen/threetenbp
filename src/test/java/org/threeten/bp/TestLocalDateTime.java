@@ -90,11 +90,9 @@ import org.threeten.bp.temporal.JulianFields;
 import org.threeten.bp.temporal.MockFieldNoValue;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
-import org.threeten.bp.temporal.TemporalAdder;
 import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
-import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
 
 /**
@@ -1223,7 +1221,7 @@ public class TestLocalDateTime extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_plus_adjuster_null() {
-        TEST_2007_07_15_12_30_40_987654321.plus((TemporalAdder) null);
+        TEST_2007_07_15_12_30_40_987654321.plus(null);
     }
 
     //-----------------------------------------------------------------------
@@ -1927,7 +1925,7 @@ public class TestLocalDateTime extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_minus_adjuster_null() {
-        TEST_2007_07_15_12_30_40_987654321.minus((TemporalSubtractor) null);
+        TEST_2007_07_15_12_30_40_987654321.minus(null);
     }
 
     //-----------------------------------------------------------------------

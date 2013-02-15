@@ -56,12 +56,11 @@ import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
-import org.threeten.bp.temporal.TemporalAdder;
 import org.threeten.bp.temporal.TemporalAdjuster;
+import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
-import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.temporal.ValueRange;
 
@@ -629,8 +628,8 @@ public final class Instant
      * @throws ArithmeticException {@inheritDoc}
      */
     @Override
-    public Instant plus(TemporalAdder adder) {
-        return (Instant) adder.addTo(this);
+    public Instant plus(TemporalAmount amount) {
+        return (Instant) amount.addTo(this);
     }
 
     /**
@@ -728,8 +727,8 @@ public final class Instant
      * @throws ArithmeticException {@inheritDoc}
      */
     @Override
-    public Instant minus(TemporalSubtractor subtractor) {
-        return (Instant) subtractor.subtractFrom(this);
+    public Instant minus(TemporalAmount amount) {
+        return (Instant) amount.subtractFrom(this);
     }
 
     /**

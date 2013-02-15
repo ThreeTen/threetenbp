@@ -54,10 +54,9 @@ import org.threeten.bp.format.DateTimeBuilder;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
-import org.threeten.bp.temporal.TemporalAdder;
 import org.threeten.bp.temporal.TemporalAdjuster;
+import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalField;
-import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.temporal.ValueRange;
 
@@ -111,7 +110,7 @@ public class TestChronoZonedDateTime {
         for (Chronology[] clist : data_of_calendars()) {
             Chronology chrono2 = clist[0];
             ChronoZonedDateTime<?> czdt2 = chrono2.date(refDate).atTime(LocalTime.NOON).atZone(ZoneOffset.UTC);
-            TemporalAdder adjuster = new FixedAdjuster(czdt2);
+            TemporalAmount adjuster = new FixedAdjuster(czdt2);
             if (chrono != chrono2) {
                 try {
                     czdt.plus(adjuster);
@@ -135,7 +134,7 @@ public class TestChronoZonedDateTime {
         for (Chronology[] clist : data_of_calendars()) {
             Chronology chrono2 = clist[0];
             ChronoZonedDateTime<?> czdt2 = chrono2.date(refDate).atTime(LocalTime.NOON).atZone(ZoneOffset.UTC);
-            TemporalSubtractor adjuster = new FixedAdjuster(czdt2);
+            TemporalAmount adjuster = new FixedAdjuster(czdt2);
             if (chrono != chrono2) {
                 try {
                     czdt.minus(adjuster);
@@ -314,7 +313,7 @@ public class TestChronoZonedDateTime {
      * FixedAdjusted returns a fixed DateTime in all adjustments.
      * Construct an adjuster with the DateTime that should be returned from doWithAdjustment.
      */
-    static class FixedAdjuster implements TemporalAdjuster, TemporalAdder, TemporalSubtractor {
+    static class FixedAdjuster implements TemporalAdjuster, TemporalAmount {
         private Temporal datetime;
 
         FixedAdjuster(Temporal datetime) {
@@ -336,6 +335,15 @@ public class TestChronoZonedDateTime {
             return datetime;
         }
 
+        @Override
+        public List<TemporalUnit> getUnits() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public long get(TemporalUnit unit) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
     }
 
     /**

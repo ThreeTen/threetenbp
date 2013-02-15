@@ -42,10 +42,9 @@ import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.Temporal;
-import org.threeten.bp.temporal.TemporalAdder;
 import org.threeten.bp.temporal.TemporalAdjuster;
+import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalField;
-import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.zone.ZoneRules;
 
@@ -134,13 +133,13 @@ public interface ChronoLocalDateTime<C extends Chronology<C>>
     ChronoLocalDateTime<C> with(TemporalField field, long newValue);
 
     @Override
-    ChronoLocalDateTime<C> plus(TemporalAdder adjuster);
+    ChronoLocalDateTime<C> plus(TemporalAmount amount);
 
     @Override
     ChronoLocalDateTime<C> plus(long amountToAdd, TemporalUnit unit);
 
     @Override
-    ChronoLocalDateTime<C> minus(TemporalSubtractor adjuster);
+    ChronoLocalDateTime<C> minus(TemporalAmount amount);
 
     @Override
     ChronoLocalDateTime<C> minus(long amountToSubtract, TemporalUnit unit);

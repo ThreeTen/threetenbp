@@ -65,12 +65,11 @@ import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
-import org.threeten.bp.temporal.TemporalAdder;
 import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalAdjusters;
+import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQuery;
-import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.temporal.ValueRange;
 import org.threeten.bp.zone.ZoneOffsetTransition;
@@ -1036,21 +1035,21 @@ public final class LocalDate
      * Returns a copy of this date with the specified period added.
      * <p>
      * This method returns a new date based on this date with the specified period added.
-     * The adder is typically {@link Period} but may be any other type implementing
-     * the {@link TemporalAdder} interface.
+     * The amount is typically {@link Period} but may be any other type implementing
+     * the {@link TemporalAmount} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #plus(long, TemporalUnit)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param adder  the adder to use, not null
+     * @param amount  the amount to add, not null
      * @return a {@code LocalDate} based on this date with the addition made, not null
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public LocalDate plus(TemporalAdder adder) {
-        return (LocalDate) adder.addTo(this);
+    public LocalDate plus(TemporalAmount amount) {
+        return (LocalDate) amount.addTo(this);
     }
 
     /**
@@ -1194,21 +1193,21 @@ public final class LocalDate
      * Returns a copy of this date with the specified period subtracted.
      * <p>
      * This method returns a new date based on this date with the specified period subtracted.
-     * The subtractor is typically {@link Period} but may be any other type implementing
-     * the {@link TemporalSubtractor} interface.
+     * The amount is typically {@link Period} but may be any other type implementing
+     * the {@link TemporalAmount} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #minus(long, TemporalUnit)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param subtractor  the subtractor to use, not null
+     * @param amount  the amount to subtract, not null
      * @return a {@code LocalDate} based on this date with the subtraction made, not null
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public LocalDate minus(TemporalSubtractor subtractor) {
-        return (LocalDate) subtractor.subtractFrom(this);
+    public LocalDate minus(TemporalAmount amount) {
+        return (LocalDate) amount.subtractFrom(this);
     }
 
     /**

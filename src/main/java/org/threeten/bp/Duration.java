@@ -35,6 +35,8 @@ import static org.threeten.bp.LocalTime.SECONDS_PER_DAY;
 import static org.threeten.bp.temporal.ChronoField.INSTANT_SECONDS;
 import static org.threeten.bp.temporal.ChronoField.NANO_OF_SECOND;
 import static org.threeten.bp.temporal.ChronoUnit.DAYS;
+import static org.threeten.bp.temporal.ChronoUnit.NANOS;
+import static org.threeten.bp.temporal.ChronoUnit.SECONDS;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -45,6 +47,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import org.threeten.bp.format.DateTimeParseException;
@@ -53,8 +58,7 @@ import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
-import org.threeten.bp.temporal.TemporalAdder;
-import org.threeten.bp.temporal.TemporalSubtractor;
+import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalUnit;
 
 /**
@@ -82,7 +86,7 @@ import org.threeten.bp.temporal.TemporalUnit;
  * This class is immutable and thread-safe.
  */
 public final class Duration
-        implements TemporalAdder, TemporalSubtractor, Comparable<Duration>, Serializable {
+        implements TemporalAmount, Comparable<Duration>, Serializable {
 
     /**
      * Constant for a duration of zero.
@@ -388,6 +392,23 @@ public final class Duration
         super();
         this.seconds = seconds;
         this.nanos = nanos;
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public List<TemporalUnit> getUnits() {
+        return Collections.<TemporalUnit>unmodifiableList(Arrays.asList(SECONDS, NANOS));
+    }
+
+    @Override
+    public long get(TemporalUnit unit) {
+        if (unit == SECONDS) {
+            return seconds;
+        }
+        if (unit == NANOS) {
+            return nanos;
+        }
+        throw new DateTimeException("Unsupported unit: " + unit);
     }
 
     //-----------------------------------------------------------------------

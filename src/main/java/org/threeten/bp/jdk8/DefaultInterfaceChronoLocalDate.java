@@ -41,19 +41,18 @@ import static org.threeten.bp.temporal.ChronoField.YEAR_OF_ERA;
 import java.util.Objects;
 
 import org.threeten.bp.LocalTime;
-import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.ChronoLocalDateTime;
+import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.Era;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.Temporal;
-import org.threeten.bp.temporal.TemporalAdder;
 import org.threeten.bp.temporal.TemporalAdjuster;
+import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
-import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
 
 /**
@@ -96,13 +95,13 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chronology<C>>
     }
 
     @Override
-    public ChronoLocalDate<C> plus(TemporalAdder adjuster) {
-        return getChronology().ensureChronoLocalDate(super.plus(adjuster));
+    public ChronoLocalDate<C> plus(TemporalAmount amount) {
+        return getChronology().ensureChronoLocalDate(super.plus(amount));
     }
 
     @Override
-    public ChronoLocalDate<C> minus(TemporalSubtractor adjuster) {
-        return getChronology().ensureChronoLocalDate(super.minus(adjuster));
+    public ChronoLocalDate<C> minus(TemporalAmount amount) {
+        return getChronology().ensureChronoLocalDate(super.minus(amount));
     }
 
     @Override
