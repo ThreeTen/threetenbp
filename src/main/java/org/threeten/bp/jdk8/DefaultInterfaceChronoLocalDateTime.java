@@ -94,6 +94,10 @@ public abstract class DefaultInterfaceChronoLocalDateTime<C extends Chronology<C
             return (R) getDate().getChronology();
         } else if (query == TemporalQueries.precision()) {
             return (R) NANOS;
+        } else if (query == TemporalQueries.localDate()) {
+            return (R) getDate();
+        } else if (query == TemporalQueries.localTime()) {
+            return (R) getTime();
         }
         return super.query(query);
     }

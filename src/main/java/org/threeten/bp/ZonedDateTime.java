@@ -196,6 +196,36 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains an instance of {@code ZonedDateTime} from a local date and time.
+     * <p>
+     * This creates a zoned date-time matching the input local date and time as closely as possible.
+     * Time-zone rules, such as daylight savings, mean that not every local date-time
+     * is valid for the specified zone, thus the local date-time may be adjusted.
+     * <p>
+     * The local date time and first combined to form a local date-time.
+     * The local date-time is then resolved to a single instant on the time-line.
+     * This is achieved by finding a valid offset from UTC/Greenwich for the local
+     * date-time as defined by the {@link ZoneRules rules} of the zone ID.
+     *<p>
+     * In most cases, there is only one valid offset for a local date-time.
+     * In the case of an overlap, when clocks are set back, there are two valid offsets.
+     * This method uses the earlier offset typically corresponding to "summer".
+     * <p>
+     * In the case of a gap, when clocks jump forward, there is no valid offset.
+     * Instead, the local date-time is adjusted to be later by the length of the gap.
+     * For a typical one hour daylight savings change, the local date-time will be
+     * moved one hour later into the offset typically corresponding to "summer".
+     *
+     * @param date  the local date, not null
+     * @param time  the local time, not null
+     * @param zone  the time-zone, not null
+     * @return the offset date-time, not null
+     */
+    public static ZonedDateTime of(LocalDate date, LocalTime time, ZoneId zone) {
+        return of(LocalDateTime.of(date, time), zone);
+    }
+
+    /**
      * Obtains an instance of {@code ZonedDateTime} from a local date-time.
      * <p>
      * This creates a zoned date-time matching the input local date-time as closely as possible.
@@ -221,6 +251,53 @@ public final class ZonedDateTime
      */
     public static ZonedDateTime of(LocalDateTime localDateTime, ZoneId zone) {
         return ofLocal(localDateTime, zone, null);
+    }
+
+    /**
+     * Obtains an instance of {@code ZonedDateTime} from a year, month, day,
+     * hour, minute, second, nanosecond and time-zone.
+     * <p>
+     * This creates a zoned date-time matching the local date-time of the seven
+     * specified fields as closely as possible.
+     * Time-zone rules, such as daylight savings, mean that not every local date-time
+     * is valid for the specified zone, thus the local date-time may be adjusted.
+     * <p>
+     * The local date-time is resolved to a single instant on the time-line.
+     * This is achieved by finding a valid offset from UTC/Greenwich for the local
+     * date-time as defined by the {@link ZoneRules rules} of the zone ID.
+     *<p>
+     * In most cases, there is only one valid offset for a local date-time.
+     * In the case of an overlap, when clocks are set back, there are two valid offsets.
+     * This method uses the earlier offset typically corresponding to "summer".
+     * <p>
+     * In the case of a gap, when clocks jump forward, there is no valid offset.
+     * Instead, the local date-time is adjusted to be later by the length of the gap.
+     * For a typical one hour daylight savings change, the local date-time will be
+     * moved one hour later into the offset typically corresponding to "summer".
+     * <p>
+     * This method exists primarily for writing test cases.
+     * Non test-code will typically use other methods to create an offset time.
+     * {@code LocalDateTime} has five additional convenience variants of the
+     * equivalent factory method taking fewer arguments.
+     * They are not provided here to reduce the footprint of the API.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
+     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
+     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
+     * @param zone  the time-zone, not null
+     * @return the offset date-time, not null
+     * @throws DateTimeException if the value of any field is out of range, or
+     *  if the day-of-month is invalid for the month-year
+     */
+    public static ZonedDateTime of(
+            int year, int month, int dayOfMonth,
+            int hour, int minute, int second, int nanoOfSecond, ZoneId zone) {
+        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute, second, nanoOfSecond);
+        return ofLocal(dt, zone, null);
     }
 
     /**

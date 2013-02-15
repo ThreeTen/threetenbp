@@ -78,9 +78,10 @@ import org.threeten.bp.temporal.ValueRange;
  * <p>
  * The ISO-8601 calendar system is the modern civil calendar system used today
  * in most of the world. It is equivalent to the proleptic Gregorian calendar
- * system, in which todays's rules for leap years are applied for all time.
+ * system, in which today's rules for leap years are applied for all time.
  * For most applications written today, the ISO-8601 rules are entirely suitable.
- * Any application that uses historical dates should consider using {@code HistoricDate}.
+ * However, any application that makes use of historical dates, and requires them
+ * to be accurate will find the ISO-8601 approach unsuitable.
  *
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
@@ -411,6 +412,20 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the month-of-year field from 1 to 12.
+     * <p>
+     * This method returns the month as an {@code int} from 1 to 12.
+     * Application code is frequently clearer if the enum {@link Month}
+     * is used by calling {@link #getMonth()}.
+     *
+     * @return the month-of-year, from 1 to 12
+     * @see #getMonth()
+     */
+    public int getMonthValue() {
+        return month;
+    }
+
+    /**
      * Gets the month-of-year field using the {@code Month} enum.
      * <p>
      * This method returns the enum {@link Month} for the month.
@@ -419,6 +434,7 @@ public final class MonthDay
      * provides the {@link Month#getValue() int value}.
      *
      * @return the month-of-year, not null
+     * @see #getMonthValue()
      */
     public Month getMonth() {
         return Month.of(month);

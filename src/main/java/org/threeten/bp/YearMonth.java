@@ -78,9 +78,10 @@ import org.threeten.bp.temporal.ValueRange;
  * <p>
  * The ISO-8601 calendar system is the modern civil calendar system used today
  * in most of the world. It is equivalent to the proleptic Gregorian calendar
- * system, in which todays's rules for leap years are applied for all time.
+ * system, in which today's rules for leap years are applied for all time.
  * For most applications written today, the ISO-8601 rules are entirely suitable.
- * Any application that uses historical dates should consider using {@code HistoricDate}.
+ * However, any application that makes use of historical dates, and requires them
+ * to be accurate will find the ISO-8601 approach unsuitable.
  *
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
@@ -912,6 +913,24 @@ public final class YearMonth
      */
     public LocalDate atDay(int dayOfMonth) {
         return LocalDate.of(year, month, dayOfMonth);
+    }
+
+    /**
+     * Returns a {@code LocalDate} at the end of the month.
+     * <p>
+     * This returns a {@code LocalDate} based on this year-month.
+     * The day-of-month is set to the last valid day of the month, taking
+     * into account leap years.
+     * <p>
+     * This method can be used as part of a chain to produce a date:
+     * <pre>
+     *  LocalDate date = year.atMonth(month).atEndOfMonth();
+     * </pre>
+     *
+     * @return the last valid date of this year-month, not null
+     */
+    public LocalDate atEndOfMonth() {
+        return LocalDate.of(year, month, lengthOfMonth());
     }
 
     //-----------------------------------------------------------------------

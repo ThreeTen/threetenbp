@@ -69,6 +69,7 @@ import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalAdjusters;
 import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.temporal.ValueRange;
@@ -1336,8 +1337,12 @@ public final class LocalDate
      * @throws DateTimeException if unable to query (defined by the query)
      * @throws ArithmeticException if numeric overflow occurs (defined by the query)
      */
-    @Override  // override for Javadoc
+    @SuppressWarnings("unchecked")
+    @Override
     public <R> R query(TemporalQuery<R> query) {
+        if (query == TemporalQueries.localDate()) {
+            return (R) this;
+        }
         return super.query(query);
     }
 
@@ -1446,6 +1451,58 @@ public final class LocalDate
         return (packed2 - packed1) / 32;
     }
 
+    /**
+     * Calculates the period between this date and another date as a {@code Period}.
+     * <p>
+     * This calculates the period between two dates in terms of years, months and days.
+     * The start and end points are {@code this} and the specified date.
+     * The result will be negative if the end is before the start.
+     * <p>
+     * The calculation is performed using the ISO calendar system.
+     * If necessary, the input date will be converted to ISO.
+     * <p>
+     * The start date is included, but the end date is not.
+     * The period is calculated by removing complete months, then calculating
+     * the remaining number of days, adjusting to ensure that both have the same sign.
+     * The number of months is then normalized into years and months based on a 12 month year.
+     * A month is considered to be complete if the end day-of-month is greater
+     * than or equal to the start day-of-month.
+     * For example, from {@code 2010-01-15} to {@code 2011-03-18} is "1 year, 2 months and 3 days".
+     * <p>
+     * The result of this method can be a negative period if the end is before the start.
+     * The negative sign will be the same in each of year, month and day.
+     * <p>
+     * There are two equivalent ways of using this method.
+     * The first is to invoke this method.
+     * The second is to use {@link Period#between(LocalDate, LocalDate)}:
+     * <pre>
+     *   // these two lines are equivalent
+     *   period = start.periodUntil(end);
+     *   period = Period.between(start, end);
+     * </pre>
+     * The choice should be made based on which makes the code more readable.
+     *
+     * @param endDate  the end date, exclusive, which may be in any chronology, not null
+     * @return the period between this date and the end date, not null
+     */
+    @Override
+    public Period periodUntil(ChronoLocalDate<?> endDate) {
+        LocalDate end = LocalDate.from(endDate);
+        long totalMonths = end.getEpochMonth() - this.getEpochMonth();  // safe
+        int days = end.day - this.day;
+        if (totalMonths > 0 && days < 0) {
+            totalMonths--;
+            LocalDate calcDate = this.plusMonths(totalMonths);
+            days = (int) (end.toEpochDay() - calcDate.toEpochDay());  // safe
+        } else if (totalMonths < 0 && days > 0) {
+            totalMonths++;
+            days -= end.lengthOfMonth();
+        }
+        long years = totalMonths / 12;  // safe
+        int months = (int) (totalMonths % 12);  // safe
+        return Period.of(Jdk8Methods.safeToInt(years), months, days);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Returns a local date-time formed from this date at the specified time.
@@ -1518,6 +1575,32 @@ public final class LocalDate
      */
     public LocalDateTime atTime(int hour, int minute, int second, int nanoOfSecond) {
         return atTime(LocalTime.of(hour, minute, second, nanoOfSecond));
+    }
+
+    /**
+     * Combines this date with an offset time to create an {@code OffsetDateTime}.
+     * <p>
+     * This returns an {@code OffsetDateTime} formed from this date at the specified time.
+     * All possible combinations of date and time are valid.
+     *
+     * @param time  the time to combine with, not null
+     * @return the offset date-time formed from this date and the specified time, not null
+     */
+    public OffsetDateTime atTime(OffsetTime time) {
+        return OffsetDateTime.of(LocalDateTime.of(this, time.getTime()), time.getOffset());
+    }
+
+    /**
+     * Combines this date with the time of midnight to create a {@code LocalDateTime}
+     * at the start of this date.
+     * <p>
+     * This returns a {@code LocalDateTime} formed from this date at the time of
+     * midnight, 00:00, at the start of this date.
+     *
+     * @return the local date-time of midnight at the start of this date, not null
+     */
+    public LocalDateTime atStartOfDay() {
+        return LocalDateTime.of(this, LocalTime.MIDNIGHT);
     }
 
     /**

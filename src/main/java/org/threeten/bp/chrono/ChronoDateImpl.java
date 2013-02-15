@@ -36,6 +36,7 @@ import java.io.Serializable;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
+import org.threeten.bp.Period;
 import org.threeten.bp.jdk8.DefaultInterfaceChronoLocalDate;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoUnit;
@@ -306,6 +307,11 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
             return LocalDate.from(this).periodUntil(end, unit);  // TODO: this is wrong
         }
         return unit.between(this, endDateTime);
+    }
+
+    @Override
+    public Period periodUntil(ChronoLocalDate<?> endDate) {
+        throw new UnsupportedOperationException("Not supported in ThreeTen backport");
     }
 
 }

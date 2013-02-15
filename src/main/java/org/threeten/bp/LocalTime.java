@@ -345,7 +345,7 @@ public final class LocalTime
      * @return the local time, not null
      * @throws DateTimeException if the either input value is invalid
      */
-    public static LocalTime ofSecondOfDay(long secondOfDay, int nanoOfSecond) {
+    static LocalTime ofSecondOfDay(long secondOfDay, int nanoOfSecond) {
         SECOND_OF_DAY.checkValidValue(secondOfDay);
         NANO_OF_SECOND.checkValidValue(nanoOfSecond);
         int hours = (int) (secondOfDay / SECONDS_PER_HOUR);
@@ -1201,6 +1201,8 @@ public final class LocalTime
     public <R> R query(TemporalQuery<R> query) {
         if (query == TemporalQueries.precision()) {
             return (R) NANOS;
+        } else if (query == TemporalQueries.localTime()) {
+            return (R) this;
         }
         // inline TemporalAccessor.super.query(query) as an optimization
         if (query == TemporalQueries.chronology() || query == TemporalQueries.zoneId() ||

@@ -177,6 +177,29 @@ public final class OffsetTime
         return new OffsetTime(time, offset);
     }
 
+    /**
+     * Obtains an instance of {@code OffsetTime} from an hour, minute, second and nanosecond.
+     * <p>
+     * This creates an offset time with the four specified fields.
+     * <p>
+     * This method exists primarily for writing test cases.
+     * Non test-code will typically use other methods to create an offset time.
+     * {@code LocalTime} has two additional convenience variants of the
+     * equivalent factory method taking fewer arguments.
+     * They are not provided here to reduce the footprint of the API.
+     *
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
+     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
+     * @param offset  the zone offset, not null
+     * @return the offset time, not null
+     * @throws DateTimeException if the value of any field is out of range
+     */
+    public static OffsetTime of(int hour, int minute, int second, int nanoOfSecond, ZoneOffset offset) {
+        return new OffsetTime(LocalTime.of(hour, minute, second, nanoOfSecond), offset);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code OffsetTime} from an {@code Instant} and zone ID.

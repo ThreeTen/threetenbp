@@ -36,6 +36,7 @@ import java.util.Comparator;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
+import org.threeten.bp.Period;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.Temporal;
@@ -307,6 +308,29 @@ public interface ChronoLocalDate<C extends Chronology<C>>
 
     @Override
     ChronoLocalDate<C> minus(long amountToSubtract, TemporalUnit unit);
+
+    //-----------------------------------------------------------------------
+    /**
+     * Calculates the period between this date and another date as a {@code Period}.
+     * <p>
+     * This calculates the period between two dates in terms of years, months and days.
+     * The start and end points are {@code this} and the specified date.
+     * The result will be negative if the end is before the start.
+     * <p>
+     * The calculation is performed using the the chronology of this date.
+     * If necessary, the input date will be converted to match.
+     * <p>
+     * The result of this method can be a negative period if the end is before the start.
+     * The negative sign will be the same in each of year, month and day.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param endDate  the end date, exclusive, which may be in any chronology, not null
+     * @return the period between this date and the end date, not null
+     * @throws DateTimeException if the period cannot be calculated
+     * @throws ArithmeticException if numeric overflow occurs
+     */
+    Period periodUntil(ChronoLocalDate<?> endDate);
 
     //-----------------------------------------------------------------------
     /**

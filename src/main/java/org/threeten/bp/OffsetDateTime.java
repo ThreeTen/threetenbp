@@ -225,18 +225,34 @@ public final class OffsetDateTime
     }
 
     /**
-     * Obtains an instance of {@code OffsetDateTime} from a {@code ZonedDateTime}.
+     * Obtains an instance of {@code OffsetDateTime} from a year, month, day,
+     * hour, minute, second, nanosecond and offset.
      * <p>
-     * This creates an offset date-time with the same local date-time and offset as
-     * the zoned date-time. The result will have the same instant as the input.
+     * This creates an offset date-time with the seven specified fields.
+     * <p>
+     * This method exists primarily for writing test cases.
+     * Non test-code will typically use other methods to create an offset time.
+     * {@code LocalDateTime} has five additional convenience variants of the
+     * equivalent factory method taking fewer arguments.
+     * They are not provided here to reduce the footprint of the API.
      *
-     * @param zonedDateTime  the zoned date-time to convert from, not null
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
+     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
+     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
+     * @param offset  the zone offset, not null
      * @return the offset date-time, not null
-     * @throws DateTimeException if the result exceeds the supported range
+     * @throws DateTimeException if the value of any field is out of range, or
+     *  if the day-of-month is invalid for the month-year
      */
-    public static OffsetDateTime of(ZonedDateTime zonedDateTime) {
-        Objects.requireNonNull(zonedDateTime, "zonedDateTime");
-        return new OffsetDateTime(zonedDateTime.getDateTime(), zonedDateTime.getOffset());
+    public static OffsetDateTime of(
+            int year, int month, int dayOfMonth,
+            int hour, int minute, int second, int nanoOfSecond, ZoneOffset offset) {
+        LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute, second, nanoOfSecond);
+        return new OffsetDateTime(dt, offset);
     }
 
     //-----------------------------------------------------------------------
