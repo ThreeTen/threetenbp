@@ -351,8 +351,8 @@ public final class DateTimeFormatter {
      * Fully parses the text producing an object of one of the specified types.
      * <p>
      * This parse method is convenient for use when the parser can handle optional elements.
-     * For example, a pattern of 'yyyy-MM[-dd[Z]]' can be fully parsed to an {@code OffsetDate},
-     * or partially parsed to a {@code LocalDate} or a {@code YearMonth}.
+     * For example, a pattern of 'yyyy[-MM[-dd]]' can be fully parsed to a {@code LocalDate},
+     * or partially parsed to a {@code YearMonth} or a {@code Year}.
      * The types must be specified in order, starting from the best matching full-parse option
      * and ending with the worst matching minimal parse option.
      * <p>
@@ -360,8 +360,8 @@ public final class DateTimeFormatter {
      * Normally, applications will use {@code instanceof} to check the result.
      * For example:
      * <pre>
-     *  TemporalAccessor dt = parser.parseBest(str, OffsetDate.class, LocalDate.class);
-     *  if (dt instanceof OffsetDate) {
+     *  TemporalAccessor dt = parser.parseBest(str, LocalDate.class, YearMonth.class);
+     *  if (dt instanceof LocalDate) {
      *   ...
      *  } else {
      *   ...

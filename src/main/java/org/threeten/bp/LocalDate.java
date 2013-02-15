@@ -187,7 +187,6 @@ public final class LocalDate
      */
     public static LocalDate now(Clock clock) {
         Objects.requireNonNull(clock, "clock");
-        // inline OffsetDate factory to avoid creating object and InstantProvider checks
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
         long epochSec = now.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
@@ -1520,21 +1519,6 @@ public final class LocalDate
      */
     public LocalDateTime atTime(int hour, int minute, int second, int nanoOfSecond) {
         return atTime(LocalTime.of(hour, minute, second, nanoOfSecond));
-    }
-
-    /**
-     * Returns an offset date formed from this date and the specified offset.
-     * <p>
-     * This combines this date with the specified offset to form an {@code OffsetDate}.
-     * All possible combinations of date and offset are valid.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param offset  the offset to combine with, not null
-     * @return the offset date formed from this date and the specified offset, not null
-     */
-    public OffsetDate atOffset(ZoneOffset offset) {
-        return OffsetDate.of(this, offset);
     }
 
     /**

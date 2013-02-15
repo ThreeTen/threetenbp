@@ -47,8 +47,7 @@ import org.testng.annotations.Test;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
-import org.threeten.bp.OffsetDate;
-import org.threeten.bp.ZoneOffset;
+import org.threeten.bp.YearMonth;
 import org.threeten.bp.temporal.TemporalAccessor;
 
 /**
@@ -213,28 +212,28 @@ public class TestDateTimeFormatter {
     //-----------------------------------------------------------------------
     @Test
     public void test_parseBest_firstOption() throws Exception {
-        DateTimeFormatter test = DateTimeFormatters.pattern("yyyy-MM-dd[ZZZ]");
-        TemporalAccessor result = test.parseBest("2011-06-30+03:00", OffsetDate.class, LocalDate.class);
-        assertEquals(result, OffsetDate.of(LocalDate.of(2011, 6, 30), ZoneOffset.ofHours(3)));
+        DateTimeFormatter test = DateTimeFormatters.pattern("yyyy-MM[-dd]");
+        TemporalAccessor result = test.parseBest("2011-06-30", LocalDate.class, YearMonth.class);
+        assertEquals(result, LocalDate.of(2011, 6, 30));
     }
 
     @Test
     public void test_parseBest_secondOption() throws Exception {
-        DateTimeFormatter test = DateTimeFormatters.pattern("yyyy-MM-dd[ZZZ]");
-        TemporalAccessor result = test.parseBest("2011-06-30", OffsetDate.class, LocalDate.class);
-        assertEquals(result, LocalDate.of(2011, 6, 30));
+        DateTimeFormatter test = DateTimeFormatters.pattern("yyyy-MM[-dd]");
+        TemporalAccessor result = test.parseBest("2011-06", LocalDate.class, YearMonth.class);
+        assertEquals(result, YearMonth.of(2011, 6));
     }
 
     @Test(expectedExceptions=DateTimeParseException.class)
     public void test_parseBest_String_parseError() throws Exception {
-        DateTimeFormatter test = DateTimeFormatters.pattern("yyyy-MM-dd[ZZZ]");
+        DateTimeFormatter test = DateTimeFormatters.pattern("yyyy-MM[-dd]");
         try {
-            test.parseBest("2011-06-XX", OffsetDate.class, LocalDate.class);
+            test.parseBest("2011-XX-30", LocalDate.class, YearMonth.class);
         } catch (DateTimeParseException ex) {
             assertEquals(ex.getMessage().contains("could not be parsed"), true);
             assertEquals(ex.getMessage().contains("XX"), true);
-            assertEquals(ex.getParsedString(), "2011-06-XX");
-            assertEquals(ex.getErrorIndex(), 8);
+            assertEquals(ex.getParsedString(), "2011-XX-30");
+            assertEquals(ex.getErrorIndex(), 5);
             throw ex;
         }
     }
@@ -243,7 +242,7 @@ public class TestDateTimeFormatter {
     public void test_parseBest_String_parseErrorLongText() throws Exception {
         DateTimeFormatter test = fmt.withLocale(Locale.ENGLISH).withSymbols(DateTimeFormatSymbols.STANDARD);
         try {
-            test.parseBest("ONEXXX67890123456789012345678901234567890123456789012345678901234567890123456789", LocalDate.class, OffsetDate.class);
+            test.parseBest("ONEXXX67890123456789012345678901234567890123456789012345678901234567890123456789", LocalDate.class, YearMonth.class);
         } catch (DateTimeParseException ex) {
             assertEquals(ex.getMessage().contains("could not be parsed"), true);
             assertEquals(ex.getMessage().contains("ONEXXX6789012345678901234567890123456789012345678901234567890123..."), true);
@@ -257,7 +256,7 @@ public class TestDateTimeFormatter {
     public void test_parseBest_String_parseIncomplete() throws Exception {
         DateTimeFormatter test = fmt.withLocale(Locale.ENGLISH).withSymbols(DateTimeFormatSymbols.STANDARD);
         try {
-            test.parseBest("ONE30SomethingElse", LocalDate.class, OffsetDate.class);
+            test.parseBest("ONE30SomethingElse", YearMonth.class, LocalDate.class);
         } catch (DateTimeParseException ex) {
             assertEquals(ex.getMessage().contains("could not be parsed"), true);
             assertEquals(ex.getMessage().contains("ONE30SomethingElse"), true);
@@ -270,7 +269,7 @@ public class TestDateTimeFormatter {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_parseBest_String_nullText() throws Exception {
         DateTimeFormatter test = fmt.withLocale(Locale.ENGLISH).withSymbols(DateTimeFormatSymbols.STANDARD);
-        test.parseBest((String) null, LocalDate.class, OffsetDate.class);
+        test.parseBest((String) null, YearMonth.class, LocalDate.class);
     }
 
     @Test(expectedExceptions=NullPointerException.class)

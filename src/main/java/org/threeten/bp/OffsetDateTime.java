@@ -1541,17 +1541,6 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this date-time to an {@code OffsetDate}.
-     * <p>
-     * This returns an offset date with the same local date and offset.
-     *
-     * @return an OffsetDate representing the date and offset, not null
-     */
-    public OffsetDate toOffsetDate() {
-        return OffsetDate.of(dateTime.getDate(), offset);
-    }
-
-    /**
      * Converts this date-time to an {@code OffsetTime}.
      * <p>
      * This returns an offset time with the same local time and offset.

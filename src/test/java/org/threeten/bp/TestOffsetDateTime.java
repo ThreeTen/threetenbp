@@ -510,7 +510,6 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
         assertEquals(a.getSecond(), localDateTime.getSecond());
         assertEquals(a.getNano(), localDateTime.getNano());
 
-        assertEquals(a.toOffsetDate(), OffsetDate.of(localDate, offset));
         assertEquals(a.toOffsetTime(), OffsetTime.of(localTime, offset));
         assertEquals(a.toString(), localDateTime.toString() + offset.toString());
     }
@@ -626,12 +625,6 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
     public void test_with_adjustment_LocalDateTime() {
         OffsetDateTime test = TEST_2008_6_30_11_30_59_000000500.with(LocalDateTime.of(LocalDate.of(2012, 9, 3), LocalTime.of(19, 15)));
         assertEquals(test, OffsetDateTime.of(LocalDate.of(2012, 9, 3), LocalTime.of(19, 15), OFFSET_PONE));
-    }
-
-    @Test
-    public void test_with_adjustment_OffsetDate() {
-        OffsetDateTime test = TEST_2008_6_30_11_30_59_000000500.with(OffsetDate.of(LocalDate.of(2012, 9, 3), OFFSET_PTWO));
-        assertEquals(test, OffsetDateTime.of(LocalDate.of(2012, 9, 3), LocalTime.of(11, 30, 59, 500), OFFSET_PTWO));
     }
 
     @Test

@@ -94,7 +94,6 @@ public final class TemporalQueries {
      * {@code LocalTime} returns null<br>
      * {@code LocalDateTime} returns null<br>
      * {@code ZonedDateTime} returns the associated zone<br>
-     * {@code OffsetDate} returns null<br>
      * {@code OffsetTime} returns null<br>
      * {@code OffsetDateTime} returns null<br>
      * {@code ChronoLocalDate} returns null<br>
@@ -134,7 +133,6 @@ public final class TemporalQueries {
      * {@code LocalTime} returns null (does not represent a date)<br>
      * {@code LocalDateTime} returns {@code ISOChrono.INSTANCE}<br>
      * {@code ZonedDateTime} returns {@code ISOChrono.INSTANCE}<br>
-     * {@code OffsetDate} returns {@code ISOChrono.INSTANCE}<br>
      * {@code OffsetTime} returns null (does not represent a date)<br>
      * {@code OffsetDateTime} returns {@code ISOChrono.INSTANCE}<br>
      * {@code ChronoLocalDate} returns the associated chronology<br>
@@ -182,7 +180,6 @@ public final class TemporalQueries {
      * {@code LocalTime} returns {@code NANOS}<br>
      * {@code LocalDateTime} returns {@code NANOS}<br>
      * {@code ZonedDateTime} returns {@code NANOS}<br>
-     * {@code OffsetDate} returns {@code DAYS}<br>
      * {@code OffsetTime} returns {@code NANOS}<br>
      * {@code OffsetDateTime} returns {@code NANOS}<br>
      * {@code ChronoLocalDate} returns {@code DAYS}<br>

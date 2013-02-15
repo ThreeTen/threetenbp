@@ -409,22 +409,22 @@ public class TestZoneOffset extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // from()
+    // from(TemporalAccessor)
     //-----------------------------------------------------------------------
     @Test
-    public void test_factory_CalendricalObject() {
-        assertEquals(ZoneOffset.from(OffsetDate.of(LocalDate.of(2012, 5, 2), ZoneOffset.ofHours(6))), ZoneOffset.ofHours(6));
+    public void test_factory_TemporalAccessor() {
+        assertEquals(ZoneOffset.from(OffsetTime.of(LocalTime.of(12, 30), ZoneOffset.ofHours(6))), ZoneOffset.ofHours(6));
         assertEquals(ZoneOffset.from(ZonedDateTime.of(LocalDateTime.of(LocalDate.of(2007, 7, 15),
                 LocalTime.of(17, 30)), ZoneOffset.ofHours(2))), ZoneOffset.ofHours(2));
     }
 
     @Test(expectedExceptions=DateTimeException.class)
-    public void test_factory_CalendricalObject_invalid_noDerive() {
+    public void test_factory_TemporalAccessor_invalid_noDerive() {
         ZoneOffset.from(LocalTime.of(12, 30));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_CalendricalObject_null() {
+    public void test_factory_TemporalAccessor_null() {
         ZoneOffset.from((TemporalAccessor) null);
     }
 

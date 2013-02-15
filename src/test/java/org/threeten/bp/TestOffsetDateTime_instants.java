@@ -36,7 +36,7 @@ import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 
 /**
- * Test OffsetDate creation.
+ * Test OffsetDateTime creation.
  */
 @Test
 public class TestOffsetDateTime_instants {

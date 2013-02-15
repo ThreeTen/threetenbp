@@ -49,7 +49,6 @@ import org.testng.annotations.Test;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.LocalTime;
-import org.threeten.bp.OffsetDate;
 import org.threeten.bp.OffsetTime;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.temporal.TemporalField;
@@ -137,7 +136,6 @@ public class TestDateTimeBuilderCombinations {
         assertEquals(builder.build(ZoneOffset.class), ZoneOffset.ofHours(2));
 
         assertEquals(builder.build(LocalDateTime.class), LocalDateTime.of(2012, 6, 30, 12, 30));
-        assertEquals(builder.build(OffsetDate.class), OffsetDate.of(LocalDate.of(2012, 6, 30), ZoneOffset.ofHours(2)));
         assertEquals(builder.build(OffsetTime.class), OffsetTime.of(LocalTime.of(12, 30), ZoneOffset.ofHours(2)));
 //        assertEquals(builder.build(OffsetDateTime.class), OffsetDateTime.of(2012, 6, 30, 12, 30, ZoneOffset.ofHours(2)));
     }
