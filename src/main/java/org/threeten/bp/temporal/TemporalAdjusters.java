@@ -311,10 +311,9 @@ public final class TemporalAdjusters {
      * It uses the {@code DAY_OF_WEEK} and {@code DAY_OF_MONTH} fields
      * and the {@code DAYS} unit, and assumes a seven day week.
      *
-     * @param ordinal  the week within the month, unbound but typically from -5 to 5
+     * @param ordinal  the week within the month, unbounded but typically from -5 to 5
      * @param dayOfWeek  the day-of-week, not null
      * @return the day-of-week in month adjuster, not null
-     * @throws IllegalArgumentException if the ordinal is invalid
      */
     public static TemporalAdjuster dayOfWeekInMonth(int ordinal, DayOfWeek dayOfWeek) {
         Objects.requireNonNull(dayOfWeek, "dayOfWeek");

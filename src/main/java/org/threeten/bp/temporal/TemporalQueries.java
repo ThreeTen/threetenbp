@@ -31,8 +31,12 @@
  */
 package org.threeten.bp.temporal;
 
+import static org.threeten.bp.temporal.ChronoField.EPOCH_DAY;
+import static org.threeten.bp.temporal.ChronoField.NANO_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.OFFSET_SECONDS;
 
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.LocalTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.chrono.Chronology;
@@ -238,18 +242,16 @@ public final class TemporalQueries {
     };
 
     /**
-     * A query for the {@code ZoneOffset}.
+     * A query for {@code ZoneOffset} returning null if not found.
      * <p>
-     * This queries a {@code TemporalAccessor} for the offset.
+     * This returns a {@code TemporalQuery} that can be used to query a temporal
+     * object for the offset. The query will return null if the temporal
+     * object cannot supply an offset.
      * <p>
-     * This query examines the {@link ChronoField#OFFSET_SECONDS offset-seconds}
+     * The query implementation examines the {@link ChronoField#OFFSET_SECONDS OFFSET_SECONDS}
      * field and uses it to create a {@code ZoneOffset}.
-     * <p>
-     * The method {@link ZoneOffset#from(TemporalAccessor)} can be used as a
-     * {@code TemporalQuery} via a method reference, {@code ZoneOffset::from}.
-     * That method is equivalent to this query, except that it throws an
-     * exception if an offset cannot be obtained.
-     * @return a ZoneOffset, may be null
+     *
+     * @return a query that can obtain the offset of a temporal, not null
      */
     public static final TemporalQuery<ZoneOffset> offset() {
         return OFFSET;
@@ -259,6 +261,56 @@ public final class TemporalQueries {
         public ZoneOffset queryFrom(TemporalAccessor temporal) {
             if (temporal.isSupported(OFFSET_SECONDS)) {
                 return ZoneOffset.ofTotalSeconds(temporal.get(OFFSET_SECONDS));
+            }
+            return null;
+        }
+    };
+
+    /**
+     * A query for {@code LocalDate} returning null if not found.
+     * <p>
+     * This returns a {@code TemporalQuery} that can be used to query a temporal
+     * object for the local date. The query will return null if the temporal
+     * object cannot supply a local date.
+     * <p>
+     * The query implementation examines the {@link ChronoField#EPOCH_DAY EPOCH_DAY}
+     * field and uses it to create a {@code LocalDate}.
+     *
+     * @return a query that can obtain the date of a temporal, not null
+     */
+    public static final TemporalQuery<LocalDate> localDate() {
+        return LOCAL_DATE;
+    }
+    static final TemporalQuery<LocalDate> LOCAL_DATE = new TemporalQuery<LocalDate>() {
+        @Override
+        public LocalDate queryFrom(TemporalAccessor temporal) {
+            if (temporal.isSupported(EPOCH_DAY)) {
+                return LocalDate.ofEpochDay(temporal.getLong(EPOCH_DAY));
+            }
+            return null;
+        }
+    };
+
+    /**
+     * A query for {@code LocalTime} returning null if not found.
+     * <p>
+     * This returns a {@code TemporalQuery} that can be used to query a temporal
+     * object for the local time. The query will return null if the temporal
+     * object cannot supply a local time.
+     * <p>
+     * The query implementation examines the {@link ChronoField#NANO_OF_DAY NANO_OF_DAY}
+     * field and uses it to create a {@code LocalTime}.
+     *
+     * @return a query that can obtain the date of a temporal, not null
+     */
+    public static final TemporalQuery<LocalTime> localTime() {
+        return LOCAL_TIME;
+    }
+    static final TemporalQuery<LocalTime> LOCAL_TIME = new TemporalQuery<LocalTime>() {
+        @Override
+        public LocalTime queryFrom(TemporalAccessor temporal) {
+            if (temporal.isSupported(NANO_OF_DAY)) {
+                return LocalTime.ofNanoOfDay(temporal.getLong(NANO_OF_DAY));
             }
             return null;
         }
