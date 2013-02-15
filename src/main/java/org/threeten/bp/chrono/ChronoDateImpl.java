@@ -142,7 +142,7 @@ abstract class ChronoDateImpl<C extends Chronology<C>>
             }
             throw new DateTimeException(unit.getName() + " not valid for chronology " + getChronology().getId());
         }
-        return (ChronoDateImpl<C>) getChronology().ensureChronoLocalDate(unit.doPlus(this, amountToAdd));
+        return (ChronoDateImpl<C>) getChronology().ensureChronoLocalDate(unit.addTo(this, amountToAdd));
     }
 
     //-----------------------------------------------------------------------

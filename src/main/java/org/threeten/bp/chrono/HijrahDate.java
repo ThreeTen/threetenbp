@@ -550,7 +550,7 @@ final class HijrahDate
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return field.doRange(this);
+        return field.rangeRefinedBy(this);
     }
 
     @Override
@@ -572,7 +572,7 @@ final class HijrahDate
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return field.doGet(this);
+        return field.getFrom(this);
     }
 
     @Override
@@ -597,7 +597,7 @@ final class HijrahDate
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return field.doWith(this, newValue);
+        return field.adjustInto(this, newValue);
     }
 
     private static HijrahDate resolvePreviousValid(int yearOfEra, int month, int day) {

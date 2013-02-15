@@ -85,7 +85,7 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chronology<C>>
         if (field instanceof ChronoField) {
             return ((ChronoField) field).isDateField();
         }
-        return field != null && field.doIsSupported(this);
+        return field != null && field.isSupportedBy(this);
     }
 
     //-------------------------------------------------------------------------

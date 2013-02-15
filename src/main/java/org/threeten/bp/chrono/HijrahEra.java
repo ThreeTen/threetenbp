@@ -131,7 +131,7 @@ enum HijrahEra implements Era<HijrahChronology> {
         if (field instanceof ChronoField) {
             return field == ERA;
         }
-        return field != null && field.doIsSupported(this);
+        return field != null && field.isSupportedBy(this);
     }
 
     @Override
@@ -141,7 +141,7 @@ enum HijrahEra implements Era<HijrahChronology> {
         } else if (field instanceof ChronoField) {
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return field.doRange(this);
+        return field.rangeRefinedBy(this);
     }
 
     @Override
@@ -159,7 +159,7 @@ enum HijrahEra implements Era<HijrahChronology> {
         } else if (field instanceof ChronoField) {
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return field.doGet(this);
+        return field.getFrom(this);
     }
 
     //-------------------------------------------------------------------------

@@ -84,7 +84,7 @@ public class TestIsoFields {
     @Test(dataProvider="week")
     public void test_WOWBY(LocalDate date, DayOfWeek dow, int week, int wby) {
         assertEquals(date.getDayOfWeek(), dow);
-        assertEquals(IsoFields.WEEK_OF_WEEK_BASED_YEAR.doGet(date), week);
+        assertEquals(IsoFields.WEEK_OF_WEEK_BASED_YEAR.getFrom(date), week);
         assertEquals(date.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR), week);
     }
 
@@ -94,7 +94,7 @@ public class TestIsoFields {
     @Test(dataProvider="week")
     public void test_WBY(LocalDate date, DayOfWeek dow, int week, int wby) {
         assertEquals(date.getDayOfWeek(), dow);
-        assertEquals(IsoFields.WEEK_BASED_YEAR.doGet(date), wby);
+        assertEquals(IsoFields.WEEK_BASED_YEAR.getFrom(date), wby);
         assertEquals(date.get(IsoFields.WEEK_BASED_YEAR), wby);
     }
 
@@ -134,10 +134,10 @@ public class TestIsoFields {
                     wby++;
                 }
             }
-            assertEquals(IsoFields.WEEK_OF_WEEK_BASED_YEAR.doRange(date), ValueRange.of(1, weekLen), "Failed on " + date + " " + date.getDayOfWeek());
-            assertEquals(IsoFields.WEEK_OF_WEEK_BASED_YEAR.doGet(date), week, "Failed on " + date + " " + date.getDayOfWeek());
+            assertEquals(IsoFields.WEEK_OF_WEEK_BASED_YEAR.rangeRefinedBy(date), ValueRange.of(1, weekLen), "Failed on " + date + " " + date.getDayOfWeek());
+            assertEquals(IsoFields.WEEK_OF_WEEK_BASED_YEAR.getFrom(date), week, "Failed on " + date + " " + date.getDayOfWeek());
             assertEquals(date.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR), week, "Failed on " + date + " " + date.getDayOfWeek());
-            assertEquals(IsoFields.WEEK_BASED_YEAR.doGet(date), wby, "Failed on " + date + " " + date.getDayOfWeek());
+            assertEquals(IsoFields.WEEK_BASED_YEAR.getFrom(date), wby, "Failed on " + date + " " + date.getDayOfWeek());
             assertEquals(date.get(IsoFields.WEEK_BASED_YEAR), wby, "Failed on " + date + " " + date.getDayOfWeek());
             date = date.plusDays(1);
         }

@@ -225,7 +225,7 @@ final class ChronoZonedDateTimeImpl<C extends Chronology<C>>
     //-----------------------------------------------------------------------
     @Override
     public boolean isSupported(TemporalField field) {
-        return field instanceof ChronoField || (field != null && field.doIsSupported(this));
+        return field instanceof ChronoField || (field != null && field.isSupportedBy(this));
     }
 
     //-----------------------------------------------------------------------
@@ -242,7 +242,7 @@ final class ChronoZonedDateTimeImpl<C extends Chronology<C>>
             }
             return ofBest(dateTime.with(field, newValue), zone, offset);
         }
-        return getDate().getChronology().ensureChronoZonedDateTime(field.doWith(this, newValue));
+        return getDate().getChronology().ensureChronoZonedDateTime(field.adjustInto(this, newValue));
     }
 
     //-----------------------------------------------------------------------
@@ -251,7 +251,7 @@ final class ChronoZonedDateTimeImpl<C extends Chronology<C>>
         if (unit instanceof ChronoUnit) {
             return with(dateTime.plus(amountToAdd, unit));
         }
-        return getDate().getChronology().ensureChronoZonedDateTime(unit.doPlus(this, amountToAdd));   /// TODO: Generics replacement Risk!
+        return getDate().getChronology().ensureChronoZonedDateTime(unit.addTo(this, amountToAdd));   /// TODO: Generics replacement Risk!
     }
 
     //-----------------------------------------------------------------------

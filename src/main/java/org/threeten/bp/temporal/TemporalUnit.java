@@ -107,7 +107,7 @@ public interface TemporalUnit {
      * @param temporal  the temporal object to check, not null
      * @return true if the unit is supported
      */
-    boolean isSupported(Temporal temporal);
+    boolean isSupportedBy(Temporal temporal);
 
     /**
      * Returns a copy of the specified temporal object with the specified period added.
@@ -142,7 +142,7 @@ public interface TemporalUnit {
      * @return the adjusted temporal object, not null
      * @throws DateTimeException if the period cannot be added
      */
-    <R extends Temporal> R doPlus(R dateTime, long periodToAdd);
+    <R extends Temporal> R addTo(R dateTime, long periodToAdd);
 
     //-----------------------------------------------------------------------
     /**

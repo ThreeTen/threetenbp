@@ -142,7 +142,7 @@ final class DateTimePrintContext {
                             return temporal.range(field);
                         }
                     }
-                    return field.doRange(this);
+                    return field.rangeRefinedBy(this);
                 }
                 @Override
                 public long getLong(TemporalField field) {
@@ -153,7 +153,7 @@ final class DateTimePrintContext {
                             return temporal.getLong(field);
                         }
                     }
-                    return field.doGet(this);
+                    return field.getFrom(this);
                 }
                 @Override
                 public <R> R query(TemporalQuery<R> query) {

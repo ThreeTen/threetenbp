@@ -447,7 +447,7 @@ public final class WeekFields implements Serializable {
         private static final ValueRange WEEK_OF_YEAR_RANGE = ValueRange.of(0, 1, 52, 53);
 
         @Override
-        public long doGet(TemporalAccessor temporal) {
+        public long getFrom(TemporalAccessor temporal) {
             // Offset the ISO DOW by the start of this week
             int sow = weekDef.getFirstDayOfWeek().getValue();
             int isoDow = temporal.get(ChronoField.DAY_OF_WEEK);
@@ -499,7 +499,7 @@ public final class WeekFields implements Serializable {
         }
 
         @Override
-        public <R extends Temporal> R doWith(R temporal, long newValue) {
+        public <R extends Temporal> R adjustInto(R temporal, long newValue) {
             // Check the new value and get the old value of the field
             int newVal = range.checkValidIntValue(newValue, this);
             int currentVal = temporal.get(this);
@@ -584,7 +584,7 @@ public final class WeekFields implements Serializable {
 
         //-----------------------------------------------------------------------
         @Override
-        public boolean doIsSupported(TemporalAccessor temporal) {
+        public boolean isSupportedBy(TemporalAccessor temporal) {
             if (temporal.isSupported(ChronoField.DAY_OF_WEEK)) {
                 if (rangeUnit == ChronoUnit.WEEKS) {
                     return true;
@@ -598,7 +598,7 @@ public final class WeekFields implements Serializable {
         }
 
         @Override
-        public ValueRange doRange(TemporalAccessor temporal) {
+        public ValueRange rangeRefinedBy(TemporalAccessor temporal) {
             if (rangeUnit == ChronoUnit.WEEKS) {
                 return range;
             }

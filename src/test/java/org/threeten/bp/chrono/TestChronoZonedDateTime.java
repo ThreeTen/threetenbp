@@ -210,7 +210,7 @@ public class TestChronoZonedDateTime {
             if (chrono != chrono2) {
                 try {
                     czdt.with(adjuster, 1);
-                    Assert.fail("DateTimeField doWith() should have thrown a ClassCastException, " + czdt.getClass()
+                    Assert.fail("DateTimeField adjustInto() should have thrown a ClassCastException, " + czdt.getClass()
                             + " can not be cast to " + czdt2.getClass());
                 } catch (ClassCastException cce) {
                     // Expected exception; not an error
@@ -218,7 +218,7 @@ public class TestChronoZonedDateTime {
             } else {
                 // Same chronology,
                 ChronoZonedDateTime<?> result = czdt.with(adjuster, 1);
-                assertEquals(result, czdt2, "DateTimeField doWith() failed to replace date");
+                assertEquals(result, czdt2, "DateTimeField adjustInto() failed to replace date");
             }
         }
     }
@@ -311,7 +311,7 @@ public class TestChronoZonedDateTime {
 
     /**
      * FixedAdjusted returns a fixed DateTime in all adjustments.
-     * Construct an adjuster with the DateTime that should be returned from doWithAdjustment.
+     * Construct an adjuster with the DateTime that should be returned from adjustIntoAdjustment.
      */
     static class FixedAdjuster implements TemporalAdjuster, TemporalAmount {
         private Temporal datetime;
@@ -373,13 +373,13 @@ public class TestChronoZonedDateTime {
         }
 
         @Override
-        public boolean isSupported(Temporal dateTime) {
+        public boolean isSupportedBy(Temporal dateTime) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
         @SuppressWarnings("unchecked")
         @Override
-        public <R extends Temporal> R doPlus(R dateTime, long periodToAdd) {
+        public <R extends Temporal> R addTo(R dateTime, long periodToAdd) {
             return (R) this.dateTime;
         }
 
@@ -391,7 +391,7 @@ public class TestChronoZonedDateTime {
 
     /**
      * FixedDateTimeField returns a fixed DateTime in all adjustments.
-     * Construct an FixedDateTimeField with the DateTime that should be returned from doWith.
+     * Construct an FixedDateTimeField with the DateTime that should be returned from adjustInto.
      */
     static class FixedDateTimeField implements TemporalField {
         private Temporal dateTime;
@@ -425,23 +425,23 @@ public class TestChronoZonedDateTime {
         }
 
         @Override
-        public boolean doIsSupported(TemporalAccessor dateTime) {
+        public boolean isSupportedBy(TemporalAccessor dateTime) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
         @Override
-        public ValueRange doRange(TemporalAccessor dateTime) {
+        public ValueRange rangeRefinedBy(TemporalAccessor dateTime) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
         @Override
-        public long doGet(TemporalAccessor dateTime) {
+        public long getFrom(TemporalAccessor dateTime) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
         @SuppressWarnings("unchecked")
         @Override
-        public <R extends Temporal> R doWith(R dateTime, long newValue) {
+        public <R extends Temporal> R adjustInto(R dateTime, long newValue) {
             return (R) this.dateTime;
         }
 

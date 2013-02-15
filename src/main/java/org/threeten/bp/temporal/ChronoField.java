@@ -555,22 +555,22 @@ public enum ChronoField implements TemporalField {
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean doIsSupported(TemporalAccessor temporal) {
+    public boolean isSupportedBy(TemporalAccessor temporal) {
         return temporal.isSupported(this);
     }
 
     @Override
-    public ValueRange doRange(TemporalAccessor temporal) {
+    public ValueRange rangeRefinedBy(TemporalAccessor temporal) {
         return temporal.range(this);
     }
 
     @Override
-    public long doGet(TemporalAccessor temporal) {
+    public long getFrom(TemporalAccessor temporal) {
         return temporal.getLong(this);
     }
 
     @Override
-    public <R extends Temporal> R doWith(R temporal, long newValue) {
+    public <R extends Temporal> R adjustInto(R temporal, long newValue) {
         return (R) temporal.with(this, newValue);
     }
 

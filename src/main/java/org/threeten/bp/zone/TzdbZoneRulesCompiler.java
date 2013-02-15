@@ -402,7 +402,7 @@ final class TzdbZoneRulesCompiler {
 
             // now treat all the transitions
             for (Map.Entry<LocalDate, Byte> rule : leapSeconds.entrySet()) {
-                out.writeLong(JulianFields.MODIFIED_JULIAN_DAY.doGet(rule.getKey()));
+                out.writeLong(JulianFields.MODIFIED_JULIAN_DAY.getFrom(rule.getKey()));
                 offset += rule.getValue();
                 out.writeInt(offset);
             }

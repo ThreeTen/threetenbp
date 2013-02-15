@@ -83,7 +83,7 @@ public interface TemporalAccessor {
      * If the field is supported, then true is returned, otherwise false
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doIsSupported(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.isSupportedBy(TemporalAccessor)}
      * passing {@code this} as the argument.
      * <p>
      * Implementations must not alter either this object.
@@ -112,7 +112,7 @@ public interface TemporalAccessor {
      * If unsupported, then a {@code DateTimeException} must be thrown.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doRange(TemporalAccessorl)}
+     * is obtained by invoking {@code TemporalField.rangeRefinedBy(TemporalAccessorl)}
      * passing {@code this} as the argument.
      * <p>
      * Implementations must not alter either this object.
@@ -138,7 +138,7 @@ public interface TemporalAccessor {
      * If unsupported, then a {@code DateTimeException} must be thrown.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
      * passing {@code this} as the argument.
      * <p>
      * Implementations must not alter either this object.
@@ -166,7 +166,7 @@ public interface TemporalAccessor {
      * If unsupported, then a {@code DateTimeException} must be thrown.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
      * passing {@code this} as the argument.
      * <p>
      * Implementations must not alter either this object.

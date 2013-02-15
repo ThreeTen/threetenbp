@@ -232,7 +232,7 @@ public enum Month implements TemporalAccessor, TemporalAdjuster {
      * All other {@code ChronoField} instances will return false.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doIsSupported(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.isSupportedBy(TemporalAccessor)}
      * passing {@code this} as the argument.
      * Whether the field is supported is determined by the field.
      *
@@ -244,7 +244,7 @@ public enum Month implements TemporalAccessor, TemporalAdjuster {
         if (field instanceof ChronoField) {
             return field == MONTH_OF_YEAR;
         }
-        return field != null && field.doIsSupported(this);
+        return field != null && field.isSupportedBy(this);
     }
 
     /**
@@ -260,7 +260,7 @@ public enum Month implements TemporalAccessor, TemporalAdjuster {
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doRange(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.rangeRefinedBy(TemporalAccessor)}
      * passing {@code this} as the argument.
      * Whether the range can be obtained is determined by the field.
      *
@@ -275,7 +275,7 @@ public enum Month implements TemporalAccessor, TemporalAdjuster {
         } else if (field instanceof ChronoField) {
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return field.doRange(this);
+        return field.rangeRefinedBy(this);
     }
 
     /**
@@ -291,7 +291,7 @@ public enum Month implements TemporalAccessor, TemporalAdjuster {
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
@@ -322,7 +322,7 @@ public enum Month implements TemporalAccessor, TemporalAdjuster {
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
@@ -338,7 +338,7 @@ public enum Month implements TemporalAccessor, TemporalAdjuster {
         } else if (field instanceof ChronoField) {
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return field.doGet(this);
+        return field.getFrom(this);
     }
 
     //-----------------------------------------------------------------------

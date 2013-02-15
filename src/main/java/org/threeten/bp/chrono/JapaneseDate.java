@@ -173,7 +173,7 @@ final class JapaneseDate
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return field.doRange(this);
+        return field.rangeRefinedBy(this);
     }
 
     private ValueRange actualRange(int calendarField) {
@@ -200,7 +200,7 @@ final class JapaneseDate
             // TODO: review other fields
             return isoDate.getLong(field);
         }
-        return field.doGet(this);
+        return field.getFrom(this);
     }
 
     /**
@@ -249,7 +249,7 @@ final class JapaneseDate
             // TODO: review other fields, such as WEEK_OF_YEAR
             return with(isoDate.with(field, newValue));
         }
-        return field.doWith(this, newValue);
+        return field.adjustInto(this, newValue);
     }
 
     //-----------------------------------------------------------------------

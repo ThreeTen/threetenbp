@@ -148,7 +148,7 @@ public interface Temporal extends TemporalAccessor {
      * If unsupported, then a {@code DateTimeException} must be thrown.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doWith(Temporal, long)}
+     * is obtained by invoking {@code TemporalField.adjustInto(Temporal, long)}
      * passing {@code this} as the first argument.
      * <p>
      * Implementations must not alter either this object or the specified temporal object.
@@ -215,7 +215,7 @@ public interface Temporal extends TemporalAccessor {
      * If unsupported, then a {@code DateTimeException} must be thrown.
      * <p>
      * If the unit is not a {@code ChronoUnit}, then the result of this method
-     * is obtained by invoking {@code TemporalUnit.doPlus(Temporal, long)}
+     * is obtained by invoking {@code TemporalUnit.addTo(Temporal, long)}
      * passing {@code this} as the first argument.
      * <p>
      * Implementations must not alter either this object or the specified temporal object.

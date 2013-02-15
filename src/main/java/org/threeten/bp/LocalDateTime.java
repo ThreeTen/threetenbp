@@ -506,7 +506,7 @@ public final class LocalDateTime
      * All other {@code ChronoField} instances will return false.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doIsSupported(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.isSupportedBy(TemporalAccessor)}
      * passing {@code this} as the argument.
      * Whether the field is supported is determined by the field.
      *
@@ -519,7 +519,7 @@ public final class LocalDateTime
             ChronoField f = (ChronoField) field;
             return f.isDateField() || f.isTimeField();
         }
-        return field != null && field.doIsSupported(this);
+        return field != null && field.isSupportedBy(this);
     }
 
     /**
@@ -536,7 +536,7 @@ public final class LocalDateTime
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doRange(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.rangeRefinedBy(TemporalAccessor)}
      * passing {@code this} as the argument.
      * Whether the range can be obtained is determined by the field.
      *
@@ -550,7 +550,7 @@ public final class LocalDateTime
             ChronoField f = (ChronoField) field;
             return (f.isTimeField() ? time.range(field) : date.range(field));
         }
-        return field.doRange(this);
+        return field.rangeRefinedBy(this);
     }
 
     /**
@@ -569,7 +569,7 @@ public final class LocalDateTime
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
@@ -600,7 +600,7 @@ public final class LocalDateTime
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
@@ -615,7 +615,7 @@ public final class LocalDateTime
             ChronoField f = (ChronoField) field;
             return (f.isTimeField() ? time.getLong(field) : date.getLong(field));
         }
-        return field.doGet(this);
+        return field.getFrom(this);
     }
 
     //-----------------------------------------------------------------------
@@ -841,7 +841,7 @@ public final class LocalDateTime
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doWith(Temporal, long)}
+     * is obtained by invoking {@code TemporalField.adjustInto(Temporal, long)}
      * passing {@code this} as the argument. In this case, the field determines
      * whether and how to adjust the instant.
      * <p>
@@ -863,7 +863,7 @@ public final class LocalDateTime
                 return with(date.with(field, newValue), time);
             }
         }
-        return field.doWith(this, newValue);
+        return field.adjustInto(this, newValue);
     }
 
     //-----------------------------------------------------------------------
@@ -1059,7 +1059,7 @@ public final class LocalDateTime
             }
             return with(date.plus(amountToAdd, unit), time);
         }
-        return unit.doPlus(this, amountToAdd);
+        return unit.addTo(this, amountToAdd);
     }
 
     //-----------------------------------------------------------------------

@@ -136,7 +136,7 @@ public interface TemporalField extends Comparator<TemporalAccessor> {
      * The second is to use {@link TemporalAccessor#isSupported(TemporalField)}:
      * <pre>
      *   // these two lines are equivalent, but the second approach is recommended
-     *   temporal = thisField.doIsSupported(temporal);
+     *   temporal = thisField.isSupportedBy(temporal);
      *   temporal = temporal.isSupported(thisField);
      * </pre>
      * It is recommended to use the second approach, {@code isSupported(TemporalField)},
@@ -148,7 +148,7 @@ public interface TemporalField extends Comparator<TemporalAccessor> {
      * @param temporal  the temporal object to query, not null
      * @return true if the date-time can be queried for this field, false if not
      */
-    boolean doIsSupported(TemporalAccessor temporal);
+    boolean isSupportedBy(TemporalAccessor temporal);
 
     /**
      * Get the range of valid values for this field using the temporal object to
@@ -166,7 +166,7 @@ public interface TemporalField extends Comparator<TemporalAccessor> {
      * The second is to use {@link TemporalAccessor#range(TemporalField)}:
      * <pre>
      *   // these two lines are equivalent, but the second approach is recommended
-     *   temporal = thisField.doRange(temporal);
+     *   temporal = thisField.rangeRefinedBy(temporal);
      *   temporal = temporal.range(thisField);
      * </pre>
      * It is recommended to use the second approach, {@code range(TemporalField)},
@@ -180,7 +180,7 @@ public interface TemporalField extends Comparator<TemporalAccessor> {
      * @return the range of valid values for this field, not null
      * @throws DateTimeException if the range for the field cannot be obtained
      */
-    ValueRange doRange(TemporalAccessor temporal);
+    ValueRange rangeRefinedBy(TemporalAccessor temporal);
 
     /**
      * Gets the value of this field from the specified temporal object.
@@ -193,7 +193,7 @@ public interface TemporalField extends Comparator<TemporalAccessor> {
      * (or {@link TemporalAccessor#get(TemporalField)}):
      * <pre>
      *   // these two lines are equivalent, but the second approach is recommended
-     *   temporal = thisField.doGet(temporal);
+     *   temporal = thisField.getFrom(temporal);
      *   temporal = temporal.getLong(thisField);
      * </pre>
      * It is recommended to use the second approach, {@code getLong(TemporalField)},
@@ -207,7 +207,7 @@ public interface TemporalField extends Comparator<TemporalAccessor> {
      * @return the value of this field, not null
      * @throws DateTimeException if a value for the field cannot be obtained
      */
-    long doGet(TemporalAccessor temporal);
+    long getFrom(TemporalAccessor temporal);
 
     /**
      * Returns a copy of the specified temporal object with the value of this field set.
@@ -228,7 +228,7 @@ public interface TemporalField extends Comparator<TemporalAccessor> {
      * The second is to use {@link Temporal#with(TemporalField, long)}:
      * <pre>
      *   // these two lines are equivalent, but the second approach is recommended
-     *   temporal = thisField.doWith(temporal);
+     *   temporal = thisField.adjustInto(temporal);
      *   temporal = temporal.with(thisField);
      * </pre>
      * It is recommended to use the second approach, {@code with(TemporalField)},
@@ -248,7 +248,7 @@ public interface TemporalField extends Comparator<TemporalAccessor> {
      * @return the adjusted temporal object, not null
      * @throws DateTimeException if the field cannot be set
      */
-    <R extends Temporal> R doWith(R temporal, long newValue);
+    <R extends Temporal> R adjustInto(R temporal, long newValue);
 
     /**
      * Resolves the date/time information in the builder

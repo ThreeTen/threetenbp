@@ -296,7 +296,7 @@ public class TestChronoLocalDate {
 
     /**
      * FixedAdjusted returns a fixed DateTime in all adjustments.
-     * Construct an adjuster with the DateTime that should be returned from doWithAdjustment.
+     * Construct an adjuster with the DateTime that should be returned.
      */
     static class FixedAdjuster implements TemporalAdjuster, TemporalAmount {
         private Temporal datetime;
@@ -333,7 +333,7 @@ public class TestChronoLocalDate {
 
     /**
      * FixedPeriodUnit returns a fixed DateTime in all adjustments.
-     * Construct an FixedPeriodUnit with the DateTime that should be returned from doAdd.
+     * Construct an FixedPeriodUnit with the DateTime that should be returned.
      */
     static class FixedPeriodUnit implements TemporalUnit {
         private Temporal dateTime;
@@ -358,13 +358,13 @@ public class TestChronoLocalDate {
         }
 
         @Override
-        public boolean isSupported(Temporal dateTime) {
+        public boolean isSupportedBy(Temporal dateTime) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
         @SuppressWarnings("unchecked")
         @Override
-        public <R extends Temporal> R doPlus(R dateTime, long periodToAdd) {
+        public <R extends Temporal> R addTo(R dateTime, long periodToAdd) {
             return (R) this.dateTime;
         }
 
@@ -410,23 +410,23 @@ public class TestChronoLocalDate {
         }
 
         @Override
-        public boolean doIsSupported(TemporalAccessor dateTime) {
+        public boolean isSupportedBy(TemporalAccessor dateTime) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
         @Override
-        public ValueRange doRange(TemporalAccessor dateTime) {
+        public ValueRange rangeRefinedBy(TemporalAccessor dateTime) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
         @Override
-        public long doGet(TemporalAccessor dateTime) {
+        public long getFrom(TemporalAccessor dateTime) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
         @SuppressWarnings("unchecked")
         @Override
-        public <R extends Temporal> R doWith(R dateTime, long newValue) {
+        public <R extends Temporal> R adjustInto(R dateTime, long newValue) {
             return (R) this.dateTime;
         }
 

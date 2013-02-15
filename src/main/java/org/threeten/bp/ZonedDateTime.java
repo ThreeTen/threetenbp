@@ -565,7 +565,7 @@ public final class ZonedDateTime
      * All other {@code ChronoField} instances will return false.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doIsSupported(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.isSupportedBy(TemporalAccessor)}
      * passing {@code this} as the argument.
      * Whether the field is supported is determined by the field.
      *
@@ -574,7 +574,7 @@ public final class ZonedDateTime
      */
     @Override
     public boolean isSupported(TemporalField field) {
-        return field instanceof ChronoField || (field != null && field.doIsSupported(this));
+        return field instanceof ChronoField || (field != null && field.isSupportedBy(this));
     }
 
     /**
@@ -591,7 +591,7 @@ public final class ZonedDateTime
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doRange(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.rangeRefinedBy(TemporalAccessor)}
      * passing {@code this} as the argument.
      * Whether the range can be obtained is determined by the field.
      *
@@ -607,7 +607,7 @@ public final class ZonedDateTime
             }
             return dateTime.range(field);
         }
-        return field.doRange(this);
+        return field.rangeRefinedBy(this);
     }
 
     /**
@@ -626,7 +626,7 @@ public final class ZonedDateTime
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
@@ -660,7 +660,7 @@ public final class ZonedDateTime
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
@@ -678,7 +678,7 @@ public final class ZonedDateTime
             }
             return dateTime.getLong(field);
         }
-        return field.doGet(this);
+        return field.getFrom(this);
     }
 
     //-----------------------------------------------------------------------
@@ -1109,7 +1109,7 @@ public final class ZonedDateTime
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doWith(Temporal, long)}
+     * is obtained by invoking {@code TemporalField.adjustInto(Temporal, long)}
      * passing {@code this} as the argument. In this case, the field determines
      * whether and how to adjust the instant.
      * <p>
@@ -1134,7 +1134,7 @@ public final class ZonedDateTime
             }
             return resolveLocal(dateTime.with(field, newValue));
         }
-        return field.doWith(this, newValue);
+        return field.adjustInto(this, newValue);
     }
 
     //-----------------------------------------------------------------------
@@ -1409,7 +1409,7 @@ public final class ZonedDateTime
                 return resolveInstant(dateTime.plus(amountToAdd, unit));
             }
         }
-        return unit.doPlus(this, amountToAdd);
+        return unit.addTo(this, amountToAdd);
     }
 
     //-----------------------------------------------------------------------

@@ -194,7 +194,7 @@ final class ChronoLocalDateTimeImpl<C extends Chronology<C>>
             ChronoField f = (ChronoField) field;
             return f.isDateField() || f.isTimeField();
         }
-        return field != null && field.doIsSupported(this);
+        return field != null && field.isSupportedBy(this);
     }
 
     @Override
@@ -203,7 +203,7 @@ final class ChronoLocalDateTimeImpl<C extends Chronology<C>>
             ChronoField f = (ChronoField) field;
             return (f.isTimeField() ? time.range(field) : date.range(field));
         }
-        return field.doRange(this);
+        return field.rangeRefinedBy(this);
     }
 
     @Override
@@ -221,7 +221,7 @@ final class ChronoLocalDateTimeImpl<C extends Chronology<C>>
             ChronoField f = (ChronoField) field;
             return (f.isTimeField() ? time.getLong(field) : date.getLong(field));
         }
-        return field.doGet(this);
+        return field.getFrom(this);
     }
 
     //-----------------------------------------------------------------------
@@ -249,7 +249,7 @@ final class ChronoLocalDateTimeImpl<C extends Chronology<C>>
                 return with(date.with(field, newValue), time);
             }
         }
-        return date.getChronology().ensureChronoLocalDateTime(field.doWith(this, newValue));
+        return date.getChronology().ensureChronoLocalDateTime(field.adjustInto(this, newValue));
     }
 
     //-----------------------------------------------------------------------
@@ -268,7 +268,7 @@ final class ChronoLocalDateTimeImpl<C extends Chronology<C>>
             }
             return with(date.plus(amountToAdd, unit), time);
         }
-        return date.getChronology().ensureChronoLocalDateTime(unit.doPlus(this, amountToAdd));
+        return date.getChronology().ensureChronoLocalDateTime(unit.addTo(this, amountToAdd));
     }
 
     private ChronoLocalDateTimeImpl<C> plusDays(long days) {

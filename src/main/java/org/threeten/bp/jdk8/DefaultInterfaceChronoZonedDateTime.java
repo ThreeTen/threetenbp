@@ -71,7 +71,7 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chronology<C
             }
             return getDateTime().range(field);
         }
-        return field.doRange(this);
+        return field.rangeRefinedBy(this);
     }
 
     @Override
@@ -95,7 +95,7 @@ public abstract class DefaultInterfaceChronoZonedDateTime<C extends Chronology<C
             }
             return getDateTime().getLong(field);
         }
-        return field.doGet(this);
+        return field.getFrom(this);
     }
 
     //-----------------------------------------------------------------------

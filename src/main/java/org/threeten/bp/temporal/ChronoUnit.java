@@ -230,7 +230,7 @@ public enum ChronoUnit implements TemporalUnit {
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean isSupported(Temporal temporal) {
+    public boolean isSupportedBy(Temporal temporal) {
         if (this == FOREVER) {
             return false;
         }
@@ -254,7 +254,7 @@ public enum ChronoUnit implements TemporalUnit {
     }
 
     @Override
-    public <R extends Temporal> R doPlus(R dateTime, long periodToAdd) {
+    public <R extends Temporal> R addTo(R dateTime, long periodToAdd) {
         return (R) dateTime.plus(periodToAdd, this);
     }
 

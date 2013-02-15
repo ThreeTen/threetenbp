@@ -86,11 +86,11 @@ public class TestJulianFields {
 
     @Test(dataProvider="samples")
     public void test_samples_set(TemporalField field, LocalDate date, long value) {
-        assertEquals(field.doWith(LocalDate.MAX, value), date);
-        assertEquals(field.doWith(LocalDate.MIN, value), date);
-        assertEquals(field.doWith(JAN01_1970, value), date);
-        assertEquals(field.doWith(DEC31_1969, value), date);
-        assertEquals(field.doWith(NOV12_1945, value), date);
+        assertEquals(field.adjustInto(LocalDate.MAX, value), date);
+        assertEquals(field.adjustInto(LocalDate.MIN, value), date);
+        assertEquals(field.adjustInto(JAN01_1970, value), date);
+        assertEquals(field.adjustInto(DEC31_1969, value), date);
+        assertEquals(field.adjustInto(NOV12_1945, value), date);
     }
 
     //-----------------------------------------------------------------------

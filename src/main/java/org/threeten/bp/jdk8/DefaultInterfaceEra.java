@@ -73,7 +73,7 @@ public abstract class DefaultInterfaceEra<C extends Chronology<C>>
         if (field instanceof ChronoField) {
             return field == ERA;
         }
-        return field != null && field.doIsSupported(this);
+        return field != null && field.isSupportedBy(this);
     }
 
     @Override
@@ -91,7 +91,7 @@ public abstract class DefaultInterfaceEra<C extends Chronology<C>>
         } else if (field instanceof ChronoField) {
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return field.doGet(this);
+        return field.getFrom(this);
     }
 
     //-------------------------------------------------------------------------

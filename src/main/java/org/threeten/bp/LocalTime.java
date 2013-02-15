@@ -508,7 +508,7 @@ public final class LocalTime
      * All other {@code ChronoField} instances will return false.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doIsSupported(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.isSupportedBy(TemporalAccessor)}
      * passing {@code this} as the argument.
      * Whether the field is supported is determined by the field.
      *
@@ -520,7 +520,7 @@ public final class LocalTime
         if (field instanceof ChronoField) {
             return ((ChronoField) field).isTimeField();
         }
-        return field != null && field.doIsSupported(this);
+        return field != null && field.isSupportedBy(this);
     }
 
     /**
@@ -537,7 +537,7 @@ public final class LocalTime
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doRange(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.rangeRefinedBy(TemporalAccessor)}
      * passing {@code this} as the argument.
      * Whether the range can be obtained is determined by the field.
      *
@@ -565,7 +565,7 @@ public final class LocalTime
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
@@ -595,7 +595,7 @@ public final class LocalTime
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
@@ -615,7 +615,7 @@ public final class LocalTime
             }
             return get0(field);
         }
-        return field.doGet(this);
+        return field.getFrom(this);
     }
 
     private int get0(TemporalField field) {
@@ -776,7 +776,7 @@ public final class LocalTime
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doWith(Temporal, long)}
+     * is obtained by invoking {@code TemporalField.adjustInto(Temporal, long)}
      * passing {@code this} as the argument. In this case, the field determines
      * whether and how to adjust the instant.
      * <p>
@@ -812,7 +812,7 @@ public final class LocalTime
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return field.doWith(this, newValue);
+        return field.adjustInto(this, newValue);
     }
 
     //-----------------------------------------------------------------------
@@ -972,7 +972,7 @@ public final class LocalTime
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
-        return unit.doPlus(this, amountToAdd);
+        return unit.addTo(this, amountToAdd);
     }
 
     //-----------------------------------------------------------------------

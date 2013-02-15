@@ -113,7 +113,7 @@ final class ThaiBuddhistDate
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return field.doRange(this);
+        return field.rangeRefinedBy(this);
     }
 
     @Override
@@ -131,7 +131,7 @@ final class ThaiBuddhistDate
             }
             return isoDate.getLong(field);
         }
-        return field.doGet(this);
+        return field.getFrom(this);
     }
 
     private int getProlepticYear() {
@@ -164,7 +164,7 @@ final class ThaiBuddhistDate
             }
             return with(isoDate.with(field, newValue));
         }
-        return field.doWith(this, newValue);
+        return field.adjustInto(this, newValue);
     }
 
     //-----------------------------------------------------------------------
