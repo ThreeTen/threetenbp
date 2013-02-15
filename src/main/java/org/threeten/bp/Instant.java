@@ -623,6 +623,45 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
+     * Returns a copy of this {@code Instant} truncated to the specified unit.
+     * <p>
+     * Truncating the instant returns a copy of the original with fields
+     * smaller than the specified unit set to zero.
+     * The fields are calculated on the basis of using a UTC offset as seen
+     * in {@code toString}.
+     * For example, truncating with the {@link ChronoUnit#MINUTES MINUTES} unit will
+     * round down to the nearest minute, setting the seconds and nanoseconds to zero.
+     * <p>
+     * The unit must have a {@linkplain TemporalUnit#getDuration() duration}
+     * that divides into the length of a standard day without remainder.
+     * This includes all supplied time units on {@link ChronoUnit} and
+     * {@link ChronoUnit#DAYS DAYS}. Other units throw an exception.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param unit  the unit to truncate to, not null
+     * @return an {@code Instant} based on this instant with the time truncated, not null
+     * @throws DateTimeException if the unit is invalid for truncation
+     */
+    public Instant truncatedTo(TemporalUnit unit) {
+        if (unit == ChronoUnit.NANOS) {
+            return this;
+        }
+        Duration unitDur = unit.getDuration();
+        if (unitDur.getSeconds() > LocalTime.SECONDS_PER_DAY) {
+            throw new DateTimeException("Unit is too large to be used for truncation");
+        }
+        long dur = unitDur.toNanos();
+        if ((LocalTime.NANOS_PER_DAY % dur) != 0) {
+            throw new DateTimeException("Unit must divide into a standard day without remainder");
+        }
+        long nod = (seconds % LocalTime.SECONDS_PER_DAY) * LocalTime.NANOS_PER_SECOND + nanos;
+        long result = (nod / dur) * dur;
+        return plusNanos(result - nod);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * {@inheritDoc}
      * @throws DateTimeException {@inheritDoc}
      * @throws ArithmeticException {@inheritDoc}
@@ -927,6 +966,43 @@ public final class Instant
 
     private long secondsUntil(Instant end) {
         return Jdk8Methods.safeSubtract(end.seconds, seconds);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Combines this instant with an offset to create an {@code OffsetDateTime}.
+     * <p>
+     * This returns an {@code OffsetDateTime} formed from this instant at the
+     * specified offset from UTC/Greenwich. An exception will be thrown if the
+     * instant is too large to fit into an offset date-time.
+     * <p>
+     * This method is equivalent to
+     * {@link OffsetDateTime#ofInstant(Instant, ZoneId) OffsetDateTime.ofInstant(this, offset)}.
+     *
+     * @param offset  the offset to combine with, not null
+     * @return the offset date-time formed from this instant and the specified offset, not null
+     * @throws DateTimeException if the result exceeds the supported range
+     */
+    public OffsetDateTime atOffset(ZoneOffset offset) {
+        return OffsetDateTime.ofInstant(this, offset);
+    }
+
+    /**
+     * Combines this instant with a time-zone to create a {@code ZonedDateTime}.
+     * <p>
+     * This returns an {@code ZonedDateTime} formed from this instant at the
+     * specified time-zone. An exception will be thrown if the instant is too
+     * large to fit into a zoned date-time.
+     * <p>
+     * This method is equivalent to
+     * {@link ZonedDateTime#ofInstant(Instant, ZoneId) ZonedDateTime.ofInstant(this, zone)}.
+     *
+     * @param zone  the zone to combine with, not null
+     * @return the zoned date-time formed from this instant and the specified zone, not null
+     * @throws DateTimeException if the result exceeds the supported range
+     */
+    public ZonedDateTime atZone(ZoneId zone) {
+        return ZonedDateTime.ofInstant(this, zone);
     }
 
     //-----------------------------------------------------------------------
