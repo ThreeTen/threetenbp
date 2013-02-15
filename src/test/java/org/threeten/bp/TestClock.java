@@ -49,8 +49,8 @@ public class TestClock {
             this.zone = zone;
         }
         @Override
-        public long millis() {
-            return millis;
+        public Instant instant() {
+            return Instant.ofEpochMilli(millis);
         }
         @Override
         public ZoneId getZone() {
