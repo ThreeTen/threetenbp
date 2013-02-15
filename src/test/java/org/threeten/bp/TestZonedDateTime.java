@@ -64,7 +64,6 @@ import static org.threeten.bp.temporal.ChronoField.SECOND_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.SECOND_OF_MINUTE;
 import static org.threeten.bp.temporal.ChronoField.YEAR;
 import static org.threeten.bp.temporal.ChronoField.YEAR_OF_ERA;
-import static org.threeten.bp.temporal.ChronoUnit.DAYS;
 import static org.threeten.bp.temporal.ChronoUnit.HOURS;
 import static org.threeten.bp.temporal.ChronoUnit.MINUTES;
 import static org.threeten.bp.temporal.ChronoUnit.NANOS;
@@ -1332,12 +1331,12 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(dataProvider="plusDays")
     public void test_plus_adjuster_Period_days(ZonedDateTime base, long amount, ZonedDateTime expected) {
-        assertEquals(base.plus(Period.of(amount, DAYS)), expected);
+        assertEquals(base.plus(Period.ofDays((int) amount)), expected);
     }
 
     @Test(dataProvider="plusTime")
     public void test_plus_adjuster_Period_hours(ZonedDateTime base, long amount, ZonedDateTime expected) {
-        assertEquals(base.plus(Period.of(amount, HOURS)), expected);
+        assertEquals(base.plus(Duration.ofHours(amount)), expected);
     }
 
     @Test(dataProvider="plusTime")
@@ -1532,12 +1531,12 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(dataProvider="plusDays")
     public void test_minus_adjuster_Period_days(ZonedDateTime base, long amount, ZonedDateTime expected) {
-        assertEquals(base.minus(Period.of(-amount, DAYS)), expected);
+        assertEquals(base.minus(Period.ofDays((int) -amount)), expected);
     }
 
     @Test(dataProvider="plusTime")
     public void test_minus_adjuster_Period_hours(ZonedDateTime base, long amount, ZonedDateTime expected) {
-        assertEquals(base.minus(Period.of(-amount, HOURS)), expected);
+        assertEquals(base.minus(Duration.ofHours(-amount)), expected);
     }
 
     @Test(dataProvider="plusTime")

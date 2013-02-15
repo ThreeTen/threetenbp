@@ -875,7 +875,7 @@ public class TestLocalTime extends AbstractDateTimeTest {
 
     @Test
     public void test_plus_Adjuster_wrap() {
-        TemporalAmount p = Period.ofTime(1, 0, 0);
+        TemporalAmount p = Duration.ofHours(1);
         LocalTime t = LocalTime.of(23, 30).plus(p);
         assertEquals(t, LocalTime.of(0, 30));
     }
@@ -942,14 +942,14 @@ public class TestLocalTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_plus_adjuster() {
-        Period p = Period.ofTime(0, 0, 62, 3);
+        Duration p = Duration.ofSeconds(62, 3);
         LocalTime t = TEST_12_30_40_987654321.plus(p);
         assertEquals(t, LocalTime.of(12, 31, 42, 987654324));
     }
 
     @Test
     public void test_plus_adjuster_big() {
-        Period p = Period.ofTime(0, 0, 0, Long.MAX_VALUE);
+        Duration p = Duration.ofNanos(Long.MAX_VALUE);
         LocalTime t = TEST_12_30_40_987654321.plus(p);
         assertEquals(t, TEST_12_30_40_987654321.plusNanos(Long.MAX_VALUE));
     }
@@ -962,7 +962,7 @@ public class TestLocalTime extends AbstractDateTimeTest {
 
     @Test
     public void test_plus_adjuster_wrap() {
-        Period p = Period.ofTime(1, 0, 0);
+        Duration p = Duration.ofHours(1);
         LocalTime t = LocalTime.of(23, 30).plus(p);
         assertEquals(t, LocalTime.of(0, 30));
     }
@@ -1323,7 +1323,7 @@ public class TestLocalTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_minus_Adjuster() {
-        TemporalAmount p = Period.ofTime(0, 0, 62, 3);
+        TemporalAmount p = Duration.ofSeconds(62, 3);
         LocalTime t = TEST_12_30_40_987654321.minus(p);
         assertEquals(t, LocalTime.of(12, 29, 38, 987654318));
     }
@@ -1344,7 +1344,7 @@ public class TestLocalTime extends AbstractDateTimeTest {
 
     @Test
     public void test_minus_Adjuster_big1() {
-        TemporalAmount p = Period.ofTime(0, 0, 0, Long.MAX_VALUE);
+        TemporalAmount p = Duration.ofNanos(Long.MAX_VALUE);
         LocalTime t = TEST_12_30_40_987654321.minus(p);
         assertEquals(t, TEST_12_30_40_987654321.minusNanos(Long.MAX_VALUE));
     }
@@ -1358,7 +1358,7 @@ public class TestLocalTime extends AbstractDateTimeTest {
 
     @Test
     public void test_minus_Adjuster_wrap() {
-        TemporalAmount p = Period.ofTime(1, 0, 0);
+        TemporalAmount p = Duration.ofHours(1);
         LocalTime t = LocalTime.of(0, 30).minus(p);
         assertEquals(t, LocalTime.of(23, 30));
     }

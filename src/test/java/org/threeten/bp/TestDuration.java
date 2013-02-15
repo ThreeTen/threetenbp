@@ -47,6 +47,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Locale;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -440,15 +441,14 @@ public class TestDuration extends AbstractTest {
     Object[][] provider_factory_parse() {
         return new Object[][] {
             {"PT0S", 0, 0},
-            {"pT0S", 0, 0},
-            {"Pt0S", 0, 0},
-            {"PT0s", 0, 0},
 
             {"PT1S", 1, 0},
             {"PT12S", 12, 0},
             {"PT123456789S", 123456789, 0},
             {"PT" + Long.MAX_VALUE + "S", Long.MAX_VALUE, 0},
 
+            {"PT+1S", 1, 0},
+            {"PT+12S", 12, 0},
             {"PT-1S", -1, 0},
             {"PT-12S", -12, 0},
             {"PT-123456789S", -123456789, 0},
@@ -476,12 +476,23 @@ public class TestDuration extends AbstractTest {
 
             {"PT" + Long.MAX_VALUE + ".123456789S", Long.MAX_VALUE, 123456789},
             {"PT" + Long.MIN_VALUE + ".000000000S", Long.MIN_VALUE, 0},
+            
+            {"PT12M", 12 * 60, 0},
+            {"PT12H", 12 * 3600, 0},
+            {"P12D", 12 * 24 * 3600, 0},
         };
     }
 
     @Test(dataProvider="Parse")
     public void factory_parse(String text, long expectedSeconds, int expectedNanoOfSecond) {
         Duration t = Duration.parse(text);
+        assertEquals(t.getSeconds(), expectedSeconds);
+        assertEquals(t.getNano(), expectedNanoOfSecond);
+    }
+
+    @Test(dataProvider="Parse")
+    public void factory_parse_ignoreCase(String text, long expectedSeconds, int expectedNanoOfSecond) {
+        Duration t = Duration.parse(text.toLowerCase(Locale.ENGLISH));
         assertEquals(t.getSeconds(), expectedSeconds);
         assertEquals(t.getNano(), expectedNanoOfSecond);
     }
@@ -508,13 +519,6 @@ public class TestDuration extends AbstractTest {
             {"PT.S"},
             {"PTAS"},
 
-            {"PT+0S"},
-            {"PT+00S"},
-            {"PT+000S"},
-            {"PT-0S"},
-            {"PT-00S"},
-            {"PT-000S"},
-            {"PT+1S"},
             {"PT-.S"},
             {"PT+.S"},
 
@@ -523,7 +527,6 @@ public class TestDuration extends AbstractTest {
 
             {"PT123456789123456789123456789S"},
             {"PT0.1234567891S"},
-            {"PT1.S"},
             {"PT.1S"},
 
             {"PT2.-3"},
@@ -595,18 +598,6 @@ public class TestDuration extends AbstractTest {
         assertEquals(Duration.ofNanos(-1).isZero(), false);
         assertEquals(Duration.ofSeconds(-1).isZero(), false);
         assertEquals(Duration.ofSeconds(-1, -1).isZero(), false);
-    }
-
-    @Test
-    public void test_isPositive() {
-        assertEquals(Duration.ofNanos(0).isPositive(), false);
-        assertEquals(Duration.ofSeconds(0).isPositive(), false);
-        assertEquals(Duration.ofNanos(1).isPositive(), true);
-        assertEquals(Duration.ofSeconds(1).isPositive(), true);
-        assertEquals(Duration.ofSeconds(1, 1).isPositive(), true);
-        assertEquals(Duration.ofNanos(-1).isPositive(), false);
-        assertEquals(Duration.ofSeconds(-1).isPositive(), false);
-        assertEquals(Duration.ofSeconds(-1, -1).isPositive(), false);
     }
 
     @Test
@@ -1954,18 +1945,12 @@ public class TestDuration extends AbstractTest {
                 Duration b = durations[j];
                 if (i < j) {
                     assertEquals(a.compareTo(b)< 0, true, a + " <=> " + b);
-                    assertEquals(a.isLessThan(b), true, a + " <=> " + b);
-                    assertEquals(a.isGreaterThan(b), false, a + " <=> " + b);
                     assertEquals(a.equals(b), false, a + " <=> " + b);
                 } else if (i > j) {
                     assertEquals(a.compareTo(b) > 0, true, a + " <=> " + b);
-                    assertEquals(a.isLessThan(b), false, a + " <=> " + b);
-                    assertEquals(a.isGreaterThan(b), true, a + " <=> " + b);
                     assertEquals(a.equals(b), false, a + " <=> " + b);
                 } else {
                     assertEquals(a.compareTo(b), 0, a + " <=> " + b);
-                    assertEquals(a.isLessThan(b), false, a + " <=> " + b);
-                    assertEquals(a.isGreaterThan(b), false, a + " <=> " + b);
                     assertEquals(a.equals(b), true, a + " <=> " + b);
                 }
             }
@@ -1976,18 +1961,6 @@ public class TestDuration extends AbstractTest {
     public void test_compareTo_ObjectNull() {
         Duration a = Duration.ofSeconds(0L, 0);
         a.compareTo(null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_isLessThan_ObjectNull() {
-        Duration a = Duration.ofSeconds(0L, 0);
-        a.isLessThan(null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_isGreaterThan_ObjectNull() {
-        Duration a = Duration.ofSeconds(0L, 0);
-        a.isGreaterThan(null);
     }
 
     @Test(expectedExceptions=ClassCastException.class)
@@ -2086,8 +2059,12 @@ public class TestDuration extends AbstractTest {
             {-1, 0, "PT-1S"},
             {-1, 1000, "PT-0.999999S"},
             {-1, 900000000, "PT-0.1S"},
-            {Long.MAX_VALUE, 0, "PT9223372036854775807S"},
-            {Long.MIN_VALUE, 0, "PT-9223372036854775808S"},
+            
+            {60, 0, "PT1M"},
+            {3600, 0, "PT1H"},
+            {7261, 0, "PT2H1M1S"},
+//            {Long.MAX_VALUE, 0, "PT9223372036854775807S"},
+//            {Long.MIN_VALUE, 0, "PT-9223372036854775808S"},
         };
     }
 
