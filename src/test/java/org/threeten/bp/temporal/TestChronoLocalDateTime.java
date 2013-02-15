@@ -48,10 +48,10 @@ import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.LocalTime;
-import org.threeten.bp.calendar.HijrahChrono;
-import org.threeten.bp.calendar.JapaneseChrono;
-import org.threeten.bp.calendar.MinguoChrono;
-import org.threeten.bp.calendar.ThaiBuddhistChrono;
+import org.threeten.bp.chrono.HijrahChrono;
+import org.threeten.bp.chrono.JapaneseChrono;
+import org.threeten.bp.chrono.MinguoChrono;
+import org.threeten.bp.chrono.ThaiBuddhistChrono;
 import org.threeten.bp.format.DateTimeBuilder;
 
 /**

@@ -46,10 +46,10 @@ import java.util.Set;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.threeten.bp.calendar.HijrahChrono;
-import org.threeten.bp.calendar.JapaneseChrono;
-import org.threeten.bp.calendar.MinguoChrono;
-import org.threeten.bp.calendar.ThaiBuddhistChrono;
+import org.threeten.bp.chrono.HijrahChrono;
+import org.threeten.bp.chrono.JapaneseChrono;
+import org.threeten.bp.chrono.MinguoChrono;
+import org.threeten.bp.chrono.ThaiBuddhistChrono;
 
 /**
  * Test Chrono class.

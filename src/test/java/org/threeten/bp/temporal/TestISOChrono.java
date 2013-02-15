@@ -48,7 +48,7 @@ import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.Month;
-import org.threeten.bp.calendar.HijrahChrono;
+import org.threeten.bp.chrono.HijrahChrono;
 
 /**
  * Test.

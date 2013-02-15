@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.threeten.bp.calendar;
+package org.threeten.bp.chrono;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
@@ -47,6 +47,7 @@ import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.Month;
+import org.threeten.bp.chrono.ThaiBuddhistChrono;
 import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoLocalDate;

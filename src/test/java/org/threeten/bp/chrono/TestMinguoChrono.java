@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.threeten.bp.calendar;
+package org.threeten.bp.chrono;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
@@ -44,6 +44,7 @@ import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.Month;
 import org.threeten.bp.ZoneOffset;
+import org.threeten.bp.chrono.MinguoChrono;
 import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoLocalDate;
 import org.threeten.bp.temporal.ChronoLocalDateTime;

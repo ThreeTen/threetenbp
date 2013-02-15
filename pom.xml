@@ -116,7 +116,7 @@
           <groups>
             <group>
               <title>ThreeTen</title>
-              <packages>org.threeten.bp:org.threeten.bp.calendar:org.threeten.bp.format:org.threeten.bp.temporal:org.threeten.bp.zone</packages>
+              <packages>org.threeten.bp:org.threeten.bp.chrono:org.threeten.bp.format:org.threeten.bp.temporal:org.threeten.bp.zone</packages>
             </group>
             <group>
               <title>Support classes (do not use)</title>
@@ -229,7 +229,7 @@
           <groups>
             <group>
               <title>ThreeTen</title>
-              <packages>org.threeten.bp:org.threeten.bp.calendar:org.threeten.bp.format:org.threeten.bp.temporal:org.threeten.bp.zone</packages>
+              <packages>org.threeten.bp:org.threeten.bp.chrono:org.threeten.bp.format:org.threeten.bp.temporal:org.threeten.bp.zone</packages>
             </group>
             <group>
               <title>Support classes (do not use)</title>

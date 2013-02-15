@@ -30,7 +30,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.threeten.bp.calendar;
+package org.threeten.bp.chrono;
 
 import static org.threeten.bp.temporal.ChronoField.EPOCH_DAY;
 
