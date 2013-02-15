@@ -32,6 +32,9 @@
 package org.threeten.bp.temporal;
 
 import org.threeten.bp.Duration;
+import org.threeten.bp.chrono.ChronoLocalDate;
+import org.threeten.bp.chrono.ChronoLocalDateTime;
+import org.threeten.bp.chrono.ChronoZonedDateTime;
 
 /**
  * A standard set of date periods units.

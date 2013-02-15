@@ -31,8 +31,6 @@
  */
 package org.threeten.bp.chrono;
 
-import java.io.DataInput;
-import java.io.DataOutput;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.InvalidClassException;
@@ -81,6 +79,9 @@ final class Ser implements Externalizable {
     static final byte MINGUO_ERA_TYPE = 6;
     static final byte THAIBUDDHIST_DATE_TYPE = 7;
     static final byte THAIBUDDHIST_ERA_TYPE = 8;
+    static final byte CHRONO_TYPE = 11;
+    static final byte CHRONO_LOCALDATETIME_TYPE = 12;
+    static final byte CHRONO_ZONEDDATETIME_TYPE = 13;
 
     /** The type being serialized. */
     private byte type;
@@ -115,7 +116,7 @@ final class Ser implements Externalizable {
         writeInternal(type, object, out);
     }
 
-    private static void writeInternal(byte type, Object object, DataOutput out) throws IOException {
+    private static void writeInternal(byte type, Object object, ObjectOutput out) throws IOException {
         out.writeByte(type);
         switch (type) {
             case JAPANESE_DATE_TYPE:
@@ -142,6 +143,15 @@ final class Ser implements Externalizable {
             case THAIBUDDHIST_ERA_TYPE:
                 ((ThaiBuddhistEra) object).writeExternal(out);
                 break;
+            case CHRONO_TYPE:
+                ((Chrono<?>) object).writeExternal(out);
+                break;
+            case CHRONO_LOCALDATETIME_TYPE:
+                ((ChronoLocalDateTimeImpl<?>) object).writeExternal(out);
+                break;
+            case CHRONO_ZONEDDATETIME_TYPE:
+                ((ChronoZonedDateTimeImpl<?>) object).writeExternal(out);
+                break;
             default:
                 throw new InvalidClassException("Unknown serialized type");
         }
@@ -159,12 +169,12 @@ final class Ser implements Externalizable {
         object = readInternal(type, in);
     }
 
-    static Object read(DataInput in) throws IOException, ClassNotFoundException {
+    static Object read(ObjectInput in) throws IOException, ClassNotFoundException {
         byte type = in.readByte();
         return readInternal(type, in);
     }
 
-    private static Object readInternal(byte type, DataInput in) throws IOException, ClassNotFoundException {
+    private static Object readInternal(byte type, ObjectInput in) throws IOException, ClassNotFoundException {
         switch (type) {
             case JAPANESE_DATE_TYPE:  return JapaneseDate.readExternal(in);
             case JAPANESE_ERA_TYPE: return JapaneseEra.readExternal(in);
@@ -174,6 +184,9 @@ final class Ser implements Externalizable {
             case MINGUO_ERA_TYPE: return MinguoEra.readExternal(in);
             case THAIBUDDHIST_DATE_TYPE: return ThaiBuddhistDate.readExternal(in);
             case THAIBUDDHIST_ERA_TYPE: return ThaiBuddhistEra.readExternal(in);
+            case CHRONO_TYPE: return Chrono.readExternal(in);
+            case CHRONO_LOCALDATETIME_TYPE: return ChronoLocalDateTimeImpl.readExternal(in);
+            case CHRONO_ZONEDDATETIME_TYPE: return ChronoZonedDateTimeImpl.readExternal(in);
             default:
                 throw new StreamCorruptedException("Unknown serialized type");
         }

@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.threeten.bp.temporal;
+package org.threeten.bp.chrono;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -53,6 +53,13 @@ import org.threeten.bp.ZoneId;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.TextStyle;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
+import org.threeten.bp.temporal.ChronoField;
+import org.threeten.bp.temporal.Temporal;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalQueries;
+import org.threeten.bp.temporal.TemporalQuery;
+import org.threeten.bp.temporal.ValueRange;
 
 /**
  * A calendar system, used to organize and identify dates.
@@ -171,7 +178,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
      */
     public static Chrono<?> from(TemporalAccessor temporal) {
         Objects.requireNonNull(temporal, "temporal");
-        Chrono<?> obj = temporal.query(TemporalQueries.CHRONO);
+        Chrono<?> obj = temporal.query(TemporalQueries.chrono());
         return (obj != null ? obj : ISOChrono.INSTANCE);
     }
 
@@ -649,7 +656,7 @@ public abstract class Chrono<C extends Chrono<C>> implements Comparable<Chrono<?
             @SuppressWarnings("unchecked")
             @Override
             public <R> R query(TemporalQuery<R> query) {
-                if (query == TemporalQueries.CHRONO) {
+                if (query == TemporalQueries.chrono()) {
                     return (R) Chrono.this;
                 }
                 return super.query(query);

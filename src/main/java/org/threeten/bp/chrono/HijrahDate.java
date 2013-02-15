@@ -60,7 +60,6 @@ import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
-import org.threeten.bp.temporal.ChronoLocalDate;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.ValueRange;
 

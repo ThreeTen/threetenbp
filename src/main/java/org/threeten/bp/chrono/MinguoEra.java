@@ -42,8 +42,6 @@ import org.threeten.bp.DateTimeException;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.TextStyle;
 import org.threeten.bp.temporal.ChronoField;
-import org.threeten.bp.temporal.ChronoLocalDate;
-import org.threeten.bp.temporal.Era;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;

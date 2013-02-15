@@ -29,11 +29,13 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.threeten.bp.temporal;
+package org.threeten.bp.chrono;
 
 import java.util.Locale;
 
 import org.threeten.bp.format.TextStyle;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalAdjuster;
 
 /**
  * An era of the time-line.

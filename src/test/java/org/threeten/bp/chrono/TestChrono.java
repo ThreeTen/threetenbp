@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.threeten.bp.temporal;
+package org.threeten.bp.chrono;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
@@ -46,10 +46,14 @@ import java.util.Set;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import org.threeten.bp.chrono.Chrono;
+import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.HijrahChrono;
+import org.threeten.bp.chrono.ISOChrono;
 import org.threeten.bp.chrono.JapaneseChrono;
 import org.threeten.bp.chrono.MinguoChrono;
 import org.threeten.bp.chrono.ThaiBuddhistChrono;
+import org.threeten.bp.temporal.ChronoField;
 
 /**
  * Test Chrono class.

@@ -33,6 +33,8 @@ package org.threeten.bp.temporal;
 
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.ZoneId;
+import org.threeten.bp.chrono.Chrono;
+import org.threeten.bp.chrono.ChronoLocalDate;
 
 /**
  * Framework-level interface defining read-only access to a temporal object,

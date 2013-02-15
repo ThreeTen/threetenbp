@@ -42,8 +42,8 @@ import java.util.Objects;
 
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.ZoneId;
+import org.threeten.bp.chrono.Chrono;
 import org.threeten.bp.format.DateTimeFormatterBuilder.CompositePrinterParser;
-import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.TemporalAccessor;
 

@@ -46,7 +46,7 @@ import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.Month;
 import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.temporal.ISOChrono;
+import org.threeten.bp.chrono.ISOChrono;
 
 /**
  * A rule expressing how to create a transition.
