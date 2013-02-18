@@ -40,6 +40,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.format.DateTimeFormatterBuilder.ReducedPrinterParser;
 import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalQueries;
 
 /**
  * Test ReducedPrinterParser.
@@ -62,7 +63,8 @@ public class TestReducedParser extends AbstractTestPrinterParser {
             pp.parse(parseContext, text, pos);
         } catch (RuntimeException ex) {
             assertTrue(expected.isInstance(ex));
-            assertEquals(parseContext.getParsed().size(), 0);
+            assertEquals(parseContext.toTemporalAccessor().query(TemporalQueries.chronology()), null);
+            assertEquals(parseContext.toTemporalAccessor().query(TemporalQueries.zoneId()), null);
         }
     }
 

@@ -1711,12 +1711,8 @@ public final class DateTimeFormatterBuilder {
                 return ~position;
             }
             char ch = text.charAt(position);
-            if (ch != literal) {
-                if (context.isCaseSensitive() ||
-                        (Character.toUpperCase(ch) != Character.toUpperCase(literal) &&
-                         Character.toLowerCase(ch) != Character.toLowerCase(literal))) {
-                    return ~position;
-                }
+            if (context.charEquals(literal, ch) == false) {
+                return ~position;
             }
             return position + 1;
         }
@@ -2007,11 +2003,9 @@ public final class DateTimeFormatterBuilder {
                     totalBig = totalBig.divide(BigInteger.TEN);
                     pos--;
                 }
-                setValue(context, totalBig.longValue());
-            } else {
-                setValue(context, total);
+                return setValue(context, totalBig.longValue(), position, pos);
             }
-            return pos;
+            return setValue(context, total, position, pos);
         }
 
         /**
@@ -2019,9 +2013,12 @@ public final class DateTimeFormatterBuilder {
          *
          * @param context  the context to store into, not null
          * @param value  the value
+         * @param errorPos  the position of the field being parsed
+         * @param successPos  the position after the field being parsed
+         * @return the new position
          */
-        void setValue(DateTimeParseContext context, long value) {
-            context.setParsedField(field, value);
+        int setValue(DateTimeParseContext context, long value, int errorPos, int successPos) {
+            return context.setParsedField(field, value, errorPos, successPos);
         }
 
         @Override
@@ -2072,7 +2069,7 @@ public final class DateTimeFormatterBuilder {
         }
 
         @Override
-        void setValue(DateTimeParseContext context, long value) {
+        int setValue(DateTimeParseContext context, long value, int errorPos, int successPos) {
             int lastPart = baseValue % range;
             if (baseValue > 0) {
                 value = baseValue - lastPart + value;
@@ -2082,7 +2079,7 @@ public final class DateTimeFormatterBuilder {
             if (value < baseValue) {
                 value += range;
             }
-            context.setParsedField(field, value);
+            return context.setParsedField(field, value, errorPos, successPos);
         }
 
         @Override
@@ -2207,8 +2204,7 @@ public final class DateTimeFormatterBuilder {
             }
             BigDecimal fraction = new BigDecimal(total).movePointLeft(pos - position);
             long value = convertFromFraction(fraction);
-            context.setParsedField(field, value);
-            return pos;
+            return context.setParsedField(field, value, position, pos);
         }
 
         /**
@@ -2324,8 +2320,7 @@ public final class DateTimeFormatterBuilder {
                     Entry<String, Long> entry = it.next();
                     String itText = entry.getKey();
                     if (context.subSequenceEquals(itText, 0, parseText, position, itText.length())) {
-                        context.setParsedField(field, entry.getValue());
-                        return position + itText.length();
+                        return context.setParsedField(field, entry.getValue(), position, position + itText.length());
                     }
                 }
                 if (context.isStrict()) {
@@ -2443,9 +2438,9 @@ public final class DateTimeFormatterBuilder {
             } catch (RuntimeException ex) {
                 return ~position;
             }
-            context.setParsedField(INSTANT_SECONDS, instantSecs);
-            context.setParsedField(NANO_OF_SECOND, nano);
-            return text.length();
+            int successPos = text.length();
+            successPos = context.setParsedField(INSTANT_SECONDS, instantSecs, position, successPos);
+            return context.setParsedField(NANO_OF_SECOND, nano, position, successPos);
         }
 
         @Override
@@ -2522,16 +2517,14 @@ public final class DateTimeFormatterBuilder {
             int noOffsetLen = noOffsetText.length();
             if (noOffsetLen == 0) {
                 if (position == length) {
-                    context.setParsedField(OFFSET_SECONDS, 0);
-                    return position;
+                    return context.setParsedField(OFFSET_SECONDS, 0, position, position);
                 }
             } else {
                 if (position == length) {
                     return ~position;
                 }
                 if (context.subSequenceEquals(text, position, noOffsetText, 0, noOffsetLen)) {
-                    context.setParsedField(OFFSET_SECONDS, 0);
-                    return position + noOffsetLen;
+                    return context.setParsedField(OFFSET_SECONDS, 0, position, position + noOffsetLen);
                 }
             }
 
@@ -2548,13 +2541,11 @@ public final class DateTimeFormatterBuilder {
                     return ~position;
                 }
                 long offsetSecs = negative * (array[1] * 3600L + array[2] * 60L + array[3]);
-                context.setParsedField(OFFSET_SECONDS, offsetSecs);
-                return array[0];
+                return context.setParsedField(OFFSET_SECONDS, offsetSecs, position, array[0]);
             } else {
                 // handle special case of empty no offset text
                 if (noOffsetLen == 0) {
-                    context.setParsedField(OFFSET_SECONDS, 0);
-                    return position + noOffsetLen;
+                    return context.setParsedField(OFFSET_SECONDS, 0, position, position + noOffsetLen);
                 }
                 return ~position;
             }
