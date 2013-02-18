@@ -361,8 +361,7 @@ public class TestDateTimeFormatter {
         DateTimeFormatter test = fmt.withLocale(Locale.ENGLISH).withSymbols(DateTimeFormatSymbols.STANDARD);
         Format format = test.toFormat();
         DateTimeBuilder result = (DateTimeBuilder) format.parseObject("ONE30");
-        assertEquals(result.getFieldValueMap().size(), 1);
-        assertEquals(result.getFieldValue(DAY_OF_MONTH), 30L);
+        assertEquals(result.getLong(DAY_OF_MONTH), 30L);
     }
 
     @Test(expectedExceptions=ParseException.class)
@@ -408,8 +407,7 @@ public class TestDateTimeFormatter {
         DateTimeBuilder result = (DateTimeBuilder) format.parseObject("ONE30XXX", pos);
         assertEquals(pos.getIndex(), 5);
         assertEquals(pos.getErrorIndex(), -1);
-        assertEquals(result.getFieldValueMap().size(), 1);
-        assertEquals(result.getFieldValue(DAY_OF_MONTH), 30L);
+        assertEquals(result.getLong(DAY_OF_MONTH), 30L);
     }
 
     @Test

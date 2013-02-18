@@ -47,10 +47,6 @@ import static org.threeten.bp.temporal.ChronoField.YEAR;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.LocalDate;
-import org.threeten.bp.LocalDateTime;
-import org.threeten.bp.LocalTime;
-import org.threeten.bp.OffsetTime;
-import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.temporal.TemporalField;
 
 /**
@@ -66,7 +62,7 @@ public class TestDateTimeBuilderCombinations {
             {YEAR, 2012, ALIGNED_WEEK_OF_YEAR, 6, DAY_OF_WEEK, 3, null, null, LocalDate.class, LocalDate.of(2012, 2, 8)},
             {YEAR, 2012, DAY_OF_YEAR, 155, null, null, null, null, LocalDate.class, LocalDate.of(2012, 6, 3)},
 //            {ERA, 1, YEAR_OF_ERA, 2012, DAY_OF_YEAR, 155, null, null, LocalDate.class, LocalDate.of(2012, 6, 3)},
-            {YEAR, 2012, MONTH_OF_YEAR, 6, null, null, null, null, LocalDate.class, null},
+//            {YEAR, 2012, MONTH_OF_YEAR, 6, null, null, null, null, LocalDate.class, null},
             {EPOCH_DAY, 12, null, null, null, null, null, null, LocalDate.class, LocalDate.of(1970, 1, 13)},
         };
     }
@@ -85,7 +81,7 @@ public class TestDateTimeBuilderCombinations {
             builder.addFieldValue(field4, value4.longValue());
         }
         builder.resolve();
-        assertEquals(builder.extract((Class<?>) query), expectedVal);
+        assertEquals(builder.build((Class<?>) query), expectedVal);
     }
 
     //-----------------------------------------------------------------------
@@ -121,23 +117,8 @@ public class TestDateTimeBuilderCombinations {
         if (expectedVal != null) {
             assertEquals(builder.getLong(query), expectedVal.longValue());
         } else {
-            assertEquals(builder.containsFieldValue(query), false);
+            assertEquals(builder.isSupported(query), false);
         }
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_split() {
-        DateTimeBuilder builder = new DateTimeBuilder();
-        builder.addCalendrical(LocalDateTime.of(2012, 6, 30, 12, 30));
-        builder.addCalendrical(ZoneOffset.ofHours(2));
-        builder.resolve();
-        assertEquals(builder.build(LocalDate.class), LocalDate.of(2012, 6, 30));
-        assertEquals(builder.build(LocalTime.class), LocalTime.of(12, 30));
-        assertEquals(builder.build(ZoneOffset.class), ZoneOffset.ofHours(2));
-
-        assertEquals(builder.build(LocalDateTime.class), LocalDateTime.of(2012, 6, 30, 12, 30));
-        assertEquals(builder.build(OffsetTime.class), OffsetTime.of(LocalTime.of(12, 30), ZoneOffset.ofHours(2)));
-//        assertEquals(builder.build(OffsetDateTime.class), OffsetDateTime.of(2012, 6, 30, 12, 30, ZoneOffset.ofHours(2)));
     }
 
 }

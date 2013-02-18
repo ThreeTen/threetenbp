@@ -487,13 +487,13 @@ final class DateTimeParseContext {
                 builder.addFieldValue(fv.getKey(), fv.getValue());
             }
             if (chrono != null) {
-                builder.addCalendrical(chrono);
+                builder.addObject(chrono);
             } else if (chronology != null) {
-                builder.addCalendrical(chronology);
+                builder.addObject(chronology);
             }
 //            builder.addCalendrical(getEffectiveChronology());
             if (zone != null) {
-                builder.addCalendrical(zone);
+                builder.addObject(zone);
             }
             return builder;
         }

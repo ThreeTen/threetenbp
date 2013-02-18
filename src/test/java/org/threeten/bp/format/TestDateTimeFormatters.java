@@ -62,6 +62,7 @@ import org.threeten.bp.YearMonth;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.ZonedDateTime;
+import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
 import org.threeten.bp.temporal.IsoFields;
 import org.threeten.bp.temporal.TemporalAccessor;
@@ -175,7 +176,7 @@ public class TestDateTimeFormatters {
             Integer year, Integer month, Integer day, String offsetId, String zoneId,
             String input, Class<?> invalid) {
         if (input != null) {
-            DateTimeBuilder expected = createDate(year, month, day);
+            Expected expected = createDate(year, month, day);
             // offset/zone not expected to be parsed
             assertParseMatch(DateTimeFormatter.ISO_LOCAL_DATE.parseUnresolved(input, new ParsePosition(0)), expected);
         }
@@ -183,14 +184,14 @@ public class TestDateTimeFormatters {
 
     @Test
     public void test_parse_isoLocalDate_999999999() {
-        DateTimeBuilder expected = createDate(999999999, 8, 6);
+        Expected expected = createDate(999999999, 8, 6);
         assertParseMatch(DateTimeFormatter.ISO_LOCAL_DATE.parseUnresolved("+999999999-08-06", new ParsePosition(0)), expected);
         assertEquals(LocalDate.parse("+999999999-08-06"), LocalDate.of(999999999, 8, 6));
     }
 
     @Test
     public void test_parse_isoLocalDate_1000000000() {
-        DateTimeBuilder expected = createDate(1000000000, 8, 6);
+        Expected expected = createDate(1000000000, 8, 6);
         assertParseMatch(DateTimeFormatter.ISO_LOCAL_DATE.parseUnresolved("+1000000000-08-06", new ParsePosition(0)), expected);
     }
 
@@ -201,14 +202,14 @@ public class TestDateTimeFormatters {
 
     @Test
     public void test_parse_isoLocalDate_M999999999() {
-        DateTimeBuilder expected = createDate(-999999999, 8, 6);
+        Expected expected = createDate(-999999999, 8, 6);
         assertParseMatch(DateTimeFormatter.ISO_LOCAL_DATE.parseUnresolved("-999999999-08-06", new ParsePosition(0)), expected);
         assertEquals(LocalDate.parse("-999999999-08-06"), LocalDate.of(-999999999, 8, 6));
     }
 
     @Test
     public void test_parse_isoLocalDate_M1000000000() {
-        DateTimeBuilder expected = createDate(-1000000000, 8, 6);
+        Expected expected = createDate(-1000000000, 8, 6);
         assertParseMatch(DateTimeFormatter.ISO_LOCAL_DATE.parseUnresolved("-1000000000-08-06", new ParsePosition(0)), expected);
     }
 
@@ -262,7 +263,7 @@ public class TestDateTimeFormatters {
             Integer year, Integer month, Integer day, String offsetId, String zoneId,
             String input, Class<?> invalid) {
         if (input != null) {
-            DateTimeBuilder expected = createDate(year, month, day);
+            Expected expected = createDate(year, month, day);
             buildCalendrical(expected, offsetId, null);  // zone not expected to be parsed
             assertParseMatch(DateTimeFormatter.ISO_OFFSET_DATE.parseUnresolved(input, new ParsePosition(0)), expected);
         }
@@ -313,9 +314,9 @@ public class TestDateTimeFormatters {
             Integer year, Integer month, Integer day, String offsetId, String zoneId,
             String input, Class<?> invalid) {
         if (input != null) {
-            DateTimeBuilder expected = createDate(year, month, day);
+            Expected expected = createDate(year, month, day);
             if (offsetId != null) {
-                expected.addFieldValue(OFFSET_SECONDS, ZoneOffset.of(offsetId).getTotalSeconds());
+                expected.fieldValues.put(OFFSET_SECONDS, (long) ZoneOffset.of(offsetId).getTotalSeconds());
             }
             assertParseMatch(DateTimeFormatter.ISO_DATE.parseUnresolved(input, new ParsePosition(0)), expected);
         }
@@ -378,7 +379,7 @@ public class TestDateTimeFormatters {
             Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
             String input, Class<?> invalid) {
         if (input != null) {
-            DateTimeBuilder expected = createTime(hour, min, sec, nano);
+            Expected expected = createTime(hour, min, sec, nano);
             // offset/zone not expected to be parsed
             assertParseMatch(DateTimeFormatter.ISO_LOCAL_TIME.parseUnresolved(input, new ParsePosition(0)), expected);
         }
@@ -441,7 +442,7 @@ public class TestDateTimeFormatters {
             Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
             String input, Class<?> invalid) {
         if (input != null) {
-            DateTimeBuilder expected = createTime(hour, min, sec, nano);
+            Expected expected = createTime(hour, min, sec, nano);
             buildCalendrical(expected, offsetId, null);  // zoneId is not expected from parse
             assertParseMatch(DateTimeFormatter.ISO_OFFSET_TIME.parseUnresolved(input, new ParsePosition(0)), expected);
         }
@@ -504,9 +505,9 @@ public class TestDateTimeFormatters {
             Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
             String input, Class<?> invalid) {
         if (input != null) {
-            DateTimeBuilder expected = createTime(hour, min, sec, nano);
+            Expected expected = createTime(hour, min, sec, nano);
             if (offsetId != null) {
-                expected.addFieldValue(OFFSET_SECONDS, ZoneOffset.of(offsetId).getTotalSeconds());
+                expected.fieldValues.put(OFFSET_SECONDS, (long) ZoneOffset.of(offsetId).getTotalSeconds());
             }
             assertParseMatch(DateTimeFormatter.ISO_TIME.parseUnresolved(input, new ParsePosition(0)), expected);
         }
@@ -579,7 +580,7 @@ public class TestDateTimeFormatters {
             Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
             String input, Class<?> invalid) {
         if (input != null) {
-            DateTimeBuilder expected = createDateTime(year, month, day, hour, min, sec, nano);
+            Expected expected = createDateTime(year, month, day, hour, min, sec, nano);
             assertParseMatch(DateTimeFormatter.ISO_LOCAL_DATE_TIME.parseUnresolved(input, new ParsePosition(0)), expected);
         }
     }
@@ -651,7 +652,7 @@ public class TestDateTimeFormatters {
             Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
             String input, Class<?> invalid) {
         if (input != null) {
-            DateTimeBuilder expected = createDateTime(year, month, day, hour, min, sec, nano);
+            Expected expected = createDateTime(year, month, day, hour, min, sec, nano);
             buildCalendrical(expected, offsetId, null);  // zone not expected to be parsed
             assertParseMatch(DateTimeFormatter.ISO_OFFSET_DATE_TIME.parseUnresolved(input, new ParsePosition(0)), expected);
         }
@@ -733,7 +734,7 @@ public class TestDateTimeFormatters {
             Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
             String input, Class<?> invalid) {
         if (input != null) {
-            DateTimeBuilder expected = createDateTime(year, month, day, hour, min, sec, nano);
+            Expected expected = createDateTime(year, month, day, hour, min, sec, nano);
             if (offsetId.equals(zoneId)) {
                 buildCalendrical(expected, offsetId, null);
             } else {
@@ -810,11 +811,11 @@ public class TestDateTimeFormatters {
             Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
             String input, Class<?> invalid) {
         if (input != null) {
-            DateTimeBuilder expected = createDateTime(year, month, day, hour, min, sec, nano);
+            Expected expected = createDateTime(year, month, day, hour, min, sec, nano);
             if (offsetId != null) {
-                expected.addFieldValue(OFFSET_SECONDS, ZoneOffset.of(offsetId).getTotalSeconds());
+                expected.fieldValues.put(OFFSET_SECONDS, (long) ZoneOffset.of(offsetId).getTotalSeconds());
                 if (zoneId != null) {
-                    expected.addCalendrical(ZoneId.of(zoneId));
+                    expected.zone = ZoneId.of(zoneId);
                 }
             }
             assertParseMatch(DateTimeFormatter.ISO_DATE_TIME.parseUnresolved(input, new ParsePosition(0)), expected);
@@ -850,7 +851,22 @@ public class TestDateTimeFormatters {
 
     @Test
     public void test_print_isoOrdinalDate_fields() {
-        TemporalAccessor test = new DateTimeBuilder(YEAR, 2008).addFieldValue(DAY_OF_YEAR, 231);
+        TemporalAccessor test = new DefaultInterfaceTemporalAccessor() {
+            @Override
+            public boolean isSupported(TemporalField field) {
+                return field == YEAR || field == DAY_OF_YEAR;
+            }
+            @Override
+            public long getLong(TemporalField field) {
+                if (field == YEAR) {
+                    return 2008;
+                }
+                if (field == DAY_OF_YEAR) {
+                    return 231;
+                }
+                throw new DateTimeException("Unsupported");
+            }
+        };
         assertEquals(DateTimeFormatter.ISO_ORDINAL_DATE.format(test), "2008-231");
     }
 
@@ -863,13 +879,13 @@ public class TestDateTimeFormatters {
     //-----------------------------------------------------------------------
     @Test
     public void test_parse_isoOrdinalDate() {
-        DateTimeBuilder expected = new DateTimeBuilder(YEAR, 2008).addFieldValue(DAY_OF_YEAR, 123);
+        Expected expected = new Expected(YEAR, 2008, DAY_OF_YEAR, 123);
         assertParseMatch(DateTimeFormatter.ISO_ORDINAL_DATE.parseUnresolved("2008-123", new ParsePosition(0)), expected);
     }
 
     @Test
     public void test_parse_isoOrdinalDate_largeYear() {
-        DateTimeBuilder expected = new DateTimeBuilder(YEAR, 123456).addFieldValue(DAY_OF_YEAR, 123);
+        Expected expected = new Expected(YEAR, 123456, DAY_OF_YEAR, 123);
         assertParseMatch(DateTimeFormatter.ISO_ORDINAL_DATE.parseUnresolved("+123456-123", new ParsePosition(0)), expected);
     }
 
@@ -1038,61 +1054,61 @@ public class TestDateTimeFormatters {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    private DateTimeBuilder createDate(Integer year, Integer month, Integer day) {
-        DateTimeBuilder test = new DateTimeBuilder();
+    private Expected createDate(Integer year, Integer month, Integer day) {
+        Expected test = new Expected();
         if (year != null) {
-            test.addFieldValue(YEAR, year);
+            test.fieldValues.put(YEAR, (long) year);
         }
         if (month != null) {
-            test.addFieldValue(MONTH_OF_YEAR, month);
+            test.fieldValues.put(MONTH_OF_YEAR, (long) month);
         }
         if (day != null) {
-            test.addFieldValue(DAY_OF_MONTH, day);
+            test.fieldValues.put(DAY_OF_MONTH, (long) day);
         }
         return test;
     }
 
-    private DateTimeBuilder createTime(Integer hour, Integer min, Integer sec, Integer nano) {
-        DateTimeBuilder test = new DateTimeBuilder();
+    private Expected createTime(Integer hour, Integer min, Integer sec, Integer nano) {
+        Expected test = new Expected();
         if (hour != null) {
-            test.addFieldValue(HOUR_OF_DAY, hour);
+            test.fieldValues.put(HOUR_OF_DAY, (long) hour);
         }
         if (min != null) {
-            test.addFieldValue(MINUTE_OF_HOUR, min);
+            test.fieldValues.put(MINUTE_OF_HOUR, (long) min);
         }
         if (sec != null) {
-            test.addFieldValue(SECOND_OF_MINUTE, sec);
+            test.fieldValues.put(SECOND_OF_MINUTE, (long) sec);
         }
         if (nano != null) {
-            test.addFieldValue(NANO_OF_SECOND, nano);
+            test.fieldValues.put(NANO_OF_SECOND, (long) nano);
         }
         return test;
     }
 
-    private DateTimeBuilder createDateTime(
+    private Expected createDateTime(
             Integer year, Integer month, Integer day,
             Integer hour, Integer min, Integer sec, Integer nano) {
-        DateTimeBuilder test = new DateTimeBuilder();
+        Expected test = new Expected();
         if (year != null) {
-            test.addFieldValue(YEAR, year);
+            test.fieldValues.put(YEAR, (long) year);
         }
         if (month != null) {
-            test.addFieldValue(MONTH_OF_YEAR, month);
+            test.fieldValues.put(MONTH_OF_YEAR, (long) month);
         }
         if (day != null) {
-            test.addFieldValue(DAY_OF_MONTH, day);
+            test.fieldValues.put(DAY_OF_MONTH, (long) day);
         }
         if (hour != null) {
-            test.addFieldValue(HOUR_OF_DAY, hour);
+            test.fieldValues.put(HOUR_OF_DAY, (long) hour);
         }
         if (min != null) {
-            test.addFieldValue(MINUTE_OF_HOUR, min);
+            test.fieldValues.put(MINUTE_OF_HOUR, (long) min);
         }
         if (sec != null) {
-            test.addFieldValue(SECOND_OF_MINUTE, sec);
+            test.fieldValues.put(SECOND_OF_MINUTE, (long) sec);
         }
         if (nano != null) {
-            test.addFieldValue(NANO_OF_SECOND, nano);
+            test.fieldValues.put(NANO_OF_SECOND, (long) nano);
         }
         return test;
     }
@@ -1144,22 +1160,22 @@ public class TestDateTimeFormatters {
         return mock;
     }
 
-    private void buildCalendrical(DateTimeBuilder cal, String offsetId, String zoneId) {
+    private void buildCalendrical(Expected expected, String offsetId, String zoneId) {
         if (offsetId != null) {
-            cal.addFieldValue(OFFSET_SECONDS, ZoneOffset.of(offsetId).getTotalSeconds());
+            expected.add(ZoneOffset.of(offsetId));
         }
         if (zoneId != null) {
-            cal.addCalendrical(ZoneId.of(zoneId));
+            expected.zone = ZoneId.of(zoneId);
         }
     }
 
-    private void assertParseMatch(TemporalAccessor parsed, DateTimeBuilder expected) {
-        for (TemporalField field : expected.getFieldValueMap().keySet()) {
+    private void assertParseMatch(TemporalAccessor parsed, Expected expected) {
+        for (TemporalField field : expected.fieldValues.keySet()) {
             assertEquals(parsed.isSupported(field), true);
             parsed.getLong(field);
         }
-        assertEquals(parsed.query(TemporalQueries.chronology()), expected.query(TemporalQueries.chronology()));
-//        assertEquals(parsed.query(TemporalQueries.zoneId()), expected.query(TemporalQueries.zoneId()));
+        assertEquals(parsed.query(TemporalQueries.chronology()), expected.chrono);
+        assertEquals(parsed.query(TemporalQueries.zoneId()), expected.zone);
     }
 
     //-------------------------------------------------------------------------
@@ -1233,6 +1249,25 @@ public class TestDateTimeFormatters {
         @Override
         public String toString() {
             return fields + (zoneId != null ? " " + zoneId : "");
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    static class Expected {
+        Map<TemporalField, Long> fieldValues = new HashMap<>();
+        ZoneId zone;
+        Chronology chrono;
+
+        Expected() {
+        }
+
+        Expected(TemporalField field1, long value1, TemporalField field2, long value2) {
+            fieldValues.put(field1, value1);
+            fieldValues.put(field2, value2);
+        }
+
+        void add(ZoneOffset offset) {
+            fieldValues.put(OFFSET_SECONDS, (long) offset.getTotalSeconds());
         }
     }
 
