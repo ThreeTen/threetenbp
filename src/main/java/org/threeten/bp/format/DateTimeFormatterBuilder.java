@@ -777,22 +777,31 @@ public final class DateTimeFormatterBuilder {
      *
      * @return this, for chaining, not null
      */
-    public DateTimeFormatterBuilder appendChronoId() {
+    public DateTimeFormatterBuilder appendChronologyId() {
         appendInternal(new ChronoPrinterParser(null));
         return this;
     }
 
     /**
-     * Appends the chronology name to the formatter.
+     * Appends the chronology ID, such as 'ISO' or 'ThaiBuddhist', to the formatter.
      * <p>
-     * The calendar system name will be output during a print.
-     * If the chronology cannot be obtained then an exception will be thrown.
-     * The calendar system name is obtained from the formatting symbols.
+     * This appends an instruction to format/parse the chronology ID to the builder.
+     * <p>
+     * During printing, the chronology is obtained using a mechanism equivalent
+     * to querying the temporal with {@link Queries#chronology()}.
+     * It will be printed using the result of {@link Chronology#getId()}.
+     * If the chronology cannot be obtained then an exception is thrown unless the
+     * section of the formatter is optional.
+     * <p>
+     * During parsing, the chronology is parsed and must match one of the chronologies
+     * in {@link Chronology#getAvailableChronologies()}.
+     * If the chronology cannot be parsed then an exception is thrown unless the
+     * section of the formatter is optional.
+     * The parser uses the {@linkplain #parseCaseInsensitive() case sensitive} setting.
      *
-     * @param textStyle  the text style to use, not null
      * @return this, for chaining, not null
      */
-    public DateTimeFormatterBuilder appendChronoText(TextStyle textStyle) {
+    public DateTimeFormatterBuilder appendChronologyText(TextStyle textStyle) {
         Objects.requireNonNull(textStyle, "textStyle");
         appendInternal(new ChronoPrinterParser(textStyle));
         return this;
@@ -2890,7 +2899,26 @@ public final class DateTimeFormatterBuilder {
 
         @Override
         public int parse(DateTimeParseContext context, CharSequence text, int position) {
-            return ~position;  // TODO, including case insensitive
+            // simple looping parser to find the chronology
+            if (position < 0 || position > text.length()) {
+                throw new IndexOutOfBoundsException();
+            }
+            Set<Chronology> chronos = Chronology.getAvailableChronologies();
+            Chronology bestMatch = null;
+            int matchLen = -1;
+            for (Chronology chrono : chronos) {
+                String id = chrono.getId();
+                int idLen = id.length();
+                if (idLen > matchLen && context.subSequenceEquals(text, position, id, 0, idLen)) {
+                    bestMatch = chrono;
+                    matchLen = idLen;
+                }
+            }
+            if (bestMatch == null) {
+                return ~position;
+            }
+            context.setParsed(bestMatch);
+            return position + matchLen;
         }
     }
 

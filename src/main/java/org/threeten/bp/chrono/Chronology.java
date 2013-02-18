@@ -666,7 +666,7 @@ public abstract class Chronology implements Comparable<Chronology> {
      * @return the text value of the chronology, not null
      */
     public String getDisplayName(TextStyle style, Locale locale) {
-        return new DateTimeFormatterBuilder().appendChronoText(style).toFormatter(locale).format(new DefaultInterfaceTemporalAccessor() {
+        return new DateTimeFormatterBuilder().appendChronologyText(style).toFormatter(locale).format(new DefaultInterfaceTemporalAccessor() {
             @Override
             public boolean isSupported(TemporalField field) {
                 return false;
