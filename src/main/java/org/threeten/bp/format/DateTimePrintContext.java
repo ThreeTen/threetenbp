@@ -157,7 +157,10 @@ final class DateTimePrintContext {
                 }
                 @Override
                 public <R> R query(TemporalQuery<R> query) {
-                    if (query == TemporalQueries.zoneId() || query == TemporalQueries.chronology() || query == TemporalQueries.precision()) {
+                    if (query == TemporalQueries.chronology()) {
+                        return (R) date.getChronology();
+                    }
+                    if (query == TemporalQueries.zoneId() || query == TemporalQueries.precision()) {
                         return temporal.query(query);
                     }
                     return query.queryFrom(this);
