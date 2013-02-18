@@ -134,13 +134,13 @@ public class TestDateTimeFormatter {
     }
 
     @Test(expectedExceptions=IOException.class)  // IOException
-    public void test_print_CalendricalAppendable_ioError() throws Exception {
+    public void test_print_CalendricalAppendable_ioError() throws Throwable {
         DateTimeFormatter test = fmt.withLocale(Locale.ENGLISH).withSymbols(DateTimeFormatSymbols.STANDARD);
         try {
             test.printTo(LocalDate.of(2008, 6, 30), new MockIOExceptionAppendable());
-        } catch (DateTimePrintException ex) {
+        } catch (DateTimeException ex) {
             assertEquals(ex.getCause() instanceof IOException, true);
-            ex.rethrowIOException();
+            throw ex.getCause();
         }
     }
 

@@ -1597,7 +1597,7 @@ public final class DateTimeFormatterBuilder {
             }
             int len = buf.length() - preLen;
             if (len > padWidth) {
-                throw new DateTimePrintException(
+                throw new DateTimeException(
                     "Cannot print as output of " + len + " characters exceeds pad width of " + padWidth);
             }
             for (int i = 0; i < padWidth - len; i++) {
@@ -1859,7 +1859,7 @@ public final class DateTimeFormatterBuilder {
             DateTimeFormatSymbols symbols = context.getSymbols();
             String str = (value == Long.MIN_VALUE ? "9223372036854775808" : Long.toString(Math.abs(value)));
             if (str.length() > maxWidth) {
-                throw new DateTimePrintException("Field " + field.getName() +
+                throw new DateTimeException("Field " + field.getName() +
                     " cannot be printed as the value " + value +
                     " exceeds the maximum print width of " + maxWidth);
             }
@@ -1884,7 +1884,7 @@ public final class DateTimeFormatterBuilder {
                         buf.append(symbols.getNegativeSign());
                         break;
                     case NOT_NEGATIVE:
-                        throw new DateTimePrintException("Field " + field.getName() +
+                        throw new DateTimeException("Field " + field.getName() +
                             " cannot be printed as the value " + value +
                             " cannot be negative according to the SignStyle");
                 }

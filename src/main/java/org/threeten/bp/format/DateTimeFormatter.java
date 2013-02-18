@@ -289,8 +289,6 @@ public final class DateTimeFormatter {
      * <p>
      * Although {@code Appendable} methods throw an {@code IOException}, this method does not.
      * Instead, any {@code IOException} is wrapped in a runtime exception.
-     * See {@link DateTimePrintException#rethrowIOException()} for a means
-     * to extract the {@code IOException}.
      *
      * @param temporal  the temporal object to print, not null
      * @param appendable  the appendable to print to, not null
@@ -310,7 +308,7 @@ public final class DateTimeFormatter {
                 appendable.append(buf);
             }
         } catch (IOException ex) {
-            throw new DateTimePrintException(ex.getMessage(), ex);
+            throw new DateTimeException(ex.getMessage(), ex);
         }
     }
 

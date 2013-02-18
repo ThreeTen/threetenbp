@@ -895,7 +895,7 @@ public class TestDateTimeFormatters {
         assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080603+0200");
     }
 
-    @Test(expectedExceptions=DateTimePrintException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_print_basicIsoDate_largeYear() {
         TemporalAccessor test = buildAccessor(LocalDateTime.of(123456, 6, 3, 11, 5, 30), "Z", null);
         DateTimeFormatters.basicIsoDate().print(test);
