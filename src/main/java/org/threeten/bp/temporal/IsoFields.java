@@ -221,7 +221,7 @@ public final class IsoFields {
             @Override
             public boolean isSupportedBy(TemporalAccessor temporal) {
                 return temporal.isSupported(DAY_OF_YEAR) && temporal.isSupported(MONTH_OF_YEAR) &&
-                        temporal.isSupported(YEAR) && Chronology.from(temporal).equals(IsoChronology.INSTANCE);
+                        temporal.isSupported(YEAR) && isIso(temporal);
             }
             @Override
             public ValueRange rangeRefinedBy(TemporalAccessor temporal) {
@@ -275,7 +275,7 @@ public final class IsoFields {
             }
             @Override
             public boolean isSupportedBy(TemporalAccessor temporal) {
-                return temporal.isSupported(MONTH_OF_YEAR) && Chronology.from(temporal).equals(IsoChronology.INSTANCE);
+                return temporal.isSupported(MONTH_OF_YEAR) && isIso(temporal);
             }
             @Override
             public ValueRange rangeRefinedBy(TemporalAccessor temporal) {
@@ -284,7 +284,7 @@ public final class IsoFields {
             @Override
             public long getFrom(TemporalAccessor temporal) {
                 if (isSupportedBy(temporal) == false) {
-                    throw new DateTimeException("Unsupported field: DayOfQuarter");
+                    throw new DateTimeException("Unsupported field: QuarterOfYear");
                 }
                 long moy = temporal.getLong(MONTH_OF_YEAR);
                 return ((moy + 2) / 3);
@@ -328,19 +328,25 @@ public final class IsoFields {
             }
             @Override
             public boolean isSupportedBy(TemporalAccessor temporal) {
-                return temporal.isSupported(EPOCH_DAY);
+                return temporal.isSupported(EPOCH_DAY) && isIso(temporal);
             }
             @Override
             public ValueRange rangeRefinedBy(TemporalAccessor temporal) {
+                if (isSupportedBy(temporal) == false) {
+                    throw new DateTimeException("Unsupported field: WeekOfWeekBasedYear");
+                }
                 return getWeekRange(LocalDate.from(temporal));
             }
             @Override
             public long getFrom(TemporalAccessor temporal) {
+                if (isSupportedBy(temporal) == false) {
+                    throw new DateTimeException("Unsupported field: WeekOfWeekBasedYear");
+                }
                 return getWeek(LocalDate.from(temporal));
             }
             @Override
             public <R extends Temporal> R adjustInto(R temporal, long newValue) {
-                ValueRange.of(1, 53).checkValidValue(newValue, this);
+                range().checkValidValue(newValue, this);
                 return (R) temporal.plus(Jdk8Methods.safeSubtract(newValue, getFrom(temporal)), WEEKS);
             }
         },
@@ -363,7 +369,7 @@ public final class IsoFields {
             }
             @Override
             public boolean isSupportedBy(TemporalAccessor temporal) {
-                return temporal.isSupported(EPOCH_DAY);
+                return temporal.isSupported(EPOCH_DAY) && isIso(temporal);
             }
             @Override
             public ValueRange rangeRefinedBy(TemporalAccessor temporal) {
@@ -371,10 +377,16 @@ public final class IsoFields {
             }
             @Override
             public long getFrom(TemporalAccessor temporal) {
+                if (isSupportedBy(temporal) == false) {
+                    throw new DateTimeException("Unsupported field: WeekBasedYear");
+                }
                 return getWeekBasedYear(LocalDate.from(temporal));
             }
             @Override
             public <R extends Temporal> R adjustInto(R temporal, long newValue) {
+                if (isSupportedBy(temporal) == false) {
+                    throw new DateTimeException("Unsupported field: WeekBasedYear");
+                }
                 int newVal = range().checkValidIntValue(newValue, WEEK_BASED_YEAR);
                 LocalDate date = LocalDate.from(temporal);
                 int week = getWeek(date);
@@ -413,6 +425,10 @@ public final class IsoFields {
 
         //-------------------------------------------------------------------------
         private static final int[] QUARTER_DAYS = {0, 90, 181, 273, 0, 91, 182, 274};
+
+        private static boolean isIso(TemporalAccessor temporal) {
+            return Chronology.from(temporal).equals(IsoChronology.INSTANCE);
+        }
 
         private static ValueRange getWeekRange(LocalDate date) {
             int wby = getWeekBasedYear(date);

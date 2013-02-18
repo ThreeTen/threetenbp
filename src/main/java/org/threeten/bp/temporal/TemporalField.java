@@ -54,7 +54,8 @@ import org.threeten.bp.format.DateTimeBuilder;
  * <h3>Specification for implementors</h3>
  * This interface must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
- * It is recommended to use an enum where possible.
+ * Implementations should be {@code Serializable} where possible.
+ * An enum is as effective implementation choice.
  */
 public interface TemporalField extends Comparator<TemporalAccessor> {
 
