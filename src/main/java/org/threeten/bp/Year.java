@@ -780,33 +780,31 @@ public final class Year
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a date formed from this year at the specified day-of-year.
+     * Combines this year with a day-of-year to create a {@code LocalDate}.
      * <p>
-     * This combines this year and the specified day-of-year to form a {@code LocalDate}.
+     * This returns a {@code LocalDate} formed from this year and the specified day-of-year.
+     * <p>
      * The day-of-year value 366 is only valid in a leap year.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfYear  the day-of-year to use, not null
      * @return the local date formed from this year and the specified date of year, not null
-     * @throws DateTimeException if the day of year is 366 and this is not a leap year
+     * @throws DateTimeException if the day of year is zero or less, 366 or greater or equal
+     *  to 366 and this is not a leap year
      */
     public LocalDate atDay(int dayOfYear) {
         return LocalDate.ofYearDay(year, dayOfYear);
     }
 
     /**
-     * Returns a year-month formed from this year at the specified month.
+     * Combines this year with a month to create a {@code YearMonth}.
      * <p>
-     * This combines this year and the specified month to form a {@code YearMonth}.
+     * This returns a {@code YearMonth} formed from this year and the specified month.
      * All possible combinations of year and month are valid.
      * <p>
      * This method can be used as part of a chain to produce a date:
      * <pre>
      *  LocalDate date = year.atMonth(month).atDay(day);
      * </pre>
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param month  the month-of-year to use, not null
      * @return the year-month formed from this year and the specified month, not null
@@ -816,32 +814,30 @@ public final class Year
     }
 
     /**
-     * Returns a year-month formed from this year at the specified month.
+     * Combines this year with a month to create a {@code YearMonth}.
      * <p>
-     * This combines this year and the specified month to form a {@code YearMonth}.
+     * This returns a {@code YearMonth} formed from this year and the specified month.
      * All possible combinations of year and month are valid.
      * <p>
      * This method can be used as part of a chain to produce a date:
      * <pre>
      *  LocalDate date = year.atMonth(month).atDay(day);
      * </pre>
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param month  the month-of-year to use, from 1 (January) to 12 (December)
      * @return the year-month formed from this year and the specified month, not null
+     * @throws DateTimeException if the month is invalid
      */
     public YearMonth atMonth(int month) {
         return YearMonth.of(year, month);
     }
 
     /**
-     * Returns a date formed from this year at the specified month-day.
+     * Combines this year with a month-day to create a {@code LocalDate}.
      * <p>
-     * This combines this year and the specified month-day to form a {@code LocalDate}.
+     * This returns a {@code LocalDate} formed from this year and the specified month-day.
+     * <p>
      * The month-day value of February 29th is only valid in a leap year.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param monthDay  the month-day to use, not null
      * @return the local date formed from this year and the specified month-day, not null

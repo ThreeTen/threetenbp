@@ -591,9 +591,10 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a date formed from this month-day at the specified year.
+     * Combines this month-day with a year to create a {@code LocalDate}.
      * <p>
-     * This combines this month-day and the specified year to form a {@code LocalDate}.
+     * This returns a {@code LocalDate} formed from this month-day and the specified year.
+     * <p>
      * A month-day of February 29th will be adjusted to February 28th in the resulting
      * date if the year is not a leap year.
      * <p>
@@ -601,7 +602,7 @@ public final class MonthDay
      *
      * @param year  the year to use, from MIN_YEAR to MAX_YEAR
      * @return the local date formed from this month-day and the specified year, not null
-     * @see Year#atMonthDay(MonthDay)
+     * @throws DateTimeException if the year is outside the valid range of years
      */
     public LocalDate atYear(int year) {
         return LocalDate.of(year, month, isValidYear(year) ? day : 28);

@@ -1072,12 +1072,10 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns an offset date-time formed from this time at the specified date.
+     * Combines this time with a date to create an {@code OffsetDateTime}.
      * <p>
-     * This combines this time with the specified date to form an {@code OffsetDateTime}.
+     * This returns an {@code OffsetDateTime} formed from this time and the specified date.
      * All possible combinations of date and time are valid.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param date  the date to combine with, not null
      * @return the offset date-time formed from this time and the specified date, not null

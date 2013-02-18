@@ -1529,12 +1529,10 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns an offset date-time formed from this date-time and the specified offset.
+     * Combines this date-time with an offset to create an {@code OffsetDateTime}.
      * <p>
-     * This combines this date-time with the specified offset to form an {@code OffsetDateTime}.
+     * This returns an {@code OffsetDateTime} formed from this date-time at the specified offset.
      * All possible combinations of date-time and offset are valid.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param offset  the offset to combine with, not null
      * @return the offset date-time formed from this date-time and the specified offset, not null
@@ -1544,9 +1542,10 @@ public final class LocalDateTime
     }
 
     /**
-     * Returns a zoned date-time formed from this date-time and the specified time-zone.
+     * Combines this date-time with a time-zone to create a {@code ZonedDateTime}.
      * <p>
-     * This creates a zoned date-time matching the input date-time as closely as possible.
+     * This returns a {@code ZonedDateTime} formed from this date-time at the
+     * specified time-zone. The result will match this date-time as closely as possible.
      * Time-zone rules, such as daylight savings, mean that not every local date-time
      * is valid for the specified zone, thus the local date-time may be adjusted.
      * <p>
@@ -1567,8 +1566,6 @@ public final class LocalDateTime
      * {@link ZonedDateTime#withLaterOffsetAtOverlap()} on the result of this method.
      * To throw an exception when there is a gap or overlap, use
      * {@link ZonedDateTime#ofStrict(LocalDateTime, ZoneOffset, ZoneId)}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param zone  the time-zone to use, not null
      * @return the zoned date-time formed from this date-time, not null

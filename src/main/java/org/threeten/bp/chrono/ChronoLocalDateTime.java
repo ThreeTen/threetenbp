@@ -146,9 +146,10 @@ public interface ChronoLocalDateTime<D extends ChronoLocalDate<D>>
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a zoned date-time formed from this date-time and the specified time-zone.
+     * Combines this time with a time-zone to create a {@code ChronoZonedDateTime}.
      * <p>
-     * This creates a zoned date-time matching the input date-time as closely as possible.
+     * This returns a {@code ChronoZonedDateTime} formed from this date-time at the
+     * specified time-zone. The result will match this date-time as closely as possible.
      * Time-zone rules, such as daylight savings, mean that not every local date-time
      * is valid for the specified zone, thus the local date-time may be adjusted.
      * <p>
@@ -167,8 +168,6 @@ public interface ChronoLocalDateTime<D extends ChronoLocalDate<D>>
      * <p>
      * To obtain the later offset during an overlap, call
      * {@link ChronoZonedDateTime#withLaterOffsetAtOverlap()} on the result of this method.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param zone  the time-zone to use, not null
      * @return the zoned date-time formed from this date-time, not null

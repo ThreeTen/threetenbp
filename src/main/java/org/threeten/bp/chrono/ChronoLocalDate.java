@@ -334,12 +334,10 @@ public interface ChronoLocalDate<D extends ChronoLocalDate<D>>
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a date-time formed from this date at the specified time.
+     * Combines this date with a time to create a {@code ChronoLocalDateTime}.
      * <p>
-     * This merges the two objects - {@code this} and the specified time -
-     * to form an instance of {@code ChronoLocalDateTime}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
+     * This returns a {@code ChronoLocalDateTime} formed from this date at the specified time.
+     * All possible combinations of date and time are valid.
      *
      * @param localTime  the local time to use, not null
      * @return the local date-time formed from this date and the specified time, not null

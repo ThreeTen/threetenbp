@@ -252,8 +252,10 @@ public interface ChronoZonedDateTime<D extends ChronoLocalDate<D>>
     /**
      * Converts this date-time to an {@code Instant}.
      * <p>
-     * This combines the {@link #toLocalDateTime() local date-time} and
-     * {@link #getOffset() offset} to form an {@code Instant}.
+     * This returns an {@code Instant} representing the same point on the
+     * time-line as this date-time. The calculation combines the
+     * {@linkplain #getDateTime() local date-time} and
+     * {@linkplain #getOffset() offset}.
      *
      * @return an {@code Instant} representing the same instant, not null
      */

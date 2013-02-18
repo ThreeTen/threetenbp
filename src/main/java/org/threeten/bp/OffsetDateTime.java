@@ -1472,17 +1472,16 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a zoned date-time formed from the instant represented by this
-     * date-time and the specified zone ID.
+     * Combines this date-time with a time-zone to create a {@code ZonedDateTime}
+     * ensuring that the result has the same instant.
      * <p>
+     * This returns a {@code ZonedDateTime} formed from this date-time and the specified time-zone.
      * This conversion will ignore the visible local date-time and use the underlying instant instead.
      * This avoids any problems with local time-line gaps or overlaps.
      * The result might have different values for fields such as hour, minute an even day.
      * <p>
      * To attempt to retain the values of the fields, use {@link #atZoneSimilarLocal(ZoneId)}.
      * To use the offset as the zone ID, use {@link #toZonedDateTime()}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param zone  the time-zone to use, not null
      * @return the zoned date-time formed from this date-time, not null
@@ -1492,7 +1491,11 @@ public final class OffsetDateTime
     }
 
     /**
-     * Returns a zoned date-time formed from this date-time and the specified zone ID.
+     * Combines this date-time with a time-zone to create a {@code ZonedDateTime}
+     * trying to keep the same local date and time.
+     * <p>
+     * This returns a {@code ZonedDateTime} formed from this date-time and the specified time-zone.
+     * Where possible, the result will have the same local date-time as this object.
      * <p>
      * Time-zone rules, such as daylight savings, mean that not every time on the
      * local time-line exists. If the local date-time is in a gap or overlap according to
@@ -1507,8 +1510,6 @@ public final class OffsetDateTime
      * To create a zoned date-time at the same instant irrespective of the local time-line,
      * use {@link #atZoneSameInstant(ZoneId)}.
      * To use the offset as the zone ID, use {@link #toZonedDateTime()}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param zone  the time-zone to use, not null
      * @return the zoned date-time formed from this date and the earliest valid time for the zone, not null

@@ -1309,12 +1309,10 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a local date-time formed from this time at the specified date.
+     * Combines this time with a date to create a {@code LocalDateTime}.
      * <p>
-     * This combines this time with the specified date to form a {@code LocalDateTime}.
+     * This returns a {@code LocalDateTime} formed from this time at the specified date.
      * All possible combinations of date and time are valid.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param date  the date to combine with, not null
      * @return the local date-time formed from this time and the specified date, not null
@@ -1324,12 +1322,10 @@ public final class LocalTime
     }
 
     /**
-     * Returns an offset time formed from this time and the specified offset.
+     * Combines this time with an offset to create an {@code OffsetTime}.
      * <p>
-     * This combines this time with the specified offset to form an {@code OffsetTime}.
+     * This returns an {@code OffsetTime} formed from this time at the specified offset.
      * All possible combinations of time and offset are valid.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param offset  the offset to combine with, not null
      * @return the offset time formed from this time and the specified offset, not null

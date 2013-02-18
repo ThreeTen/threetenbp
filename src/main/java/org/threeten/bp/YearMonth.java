@@ -894,21 +894,20 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a date formed from this year-month at the specified day-of-month.
+     * Combines this year-month with a day-of-month to create a {@code LocalDate}.
      * <p>
-     * This combines this year-month and the specified day-of-month to form a {@code LocalDate}.
+     * This returns a {@code LocalDate} formed from this year-month and the specified day-of-month.
+     * <p>
      * The day-of-month value must be valid for the year-month.
      * <p>
      * This method can be used as part of a chain to produce a date:
      * <pre>
      *  LocalDate date = year.atMonth(month).atDay(day);
      * </pre>
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfMonth  the day-of-month to use, from 1 to 31
      * @return the date formed from this year-month and the specified day, not null
-     * @throws DateTimeException when the day is invalid for the year-month
+     * @throws DateTimeException if the day is invalid for the year-month
      * @see #isValidDay(int)
      */
     public LocalDate atDay(int dayOfMonth) {

@@ -1505,12 +1505,10 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a local date-time formed from this date at the specified time.
+     * Combines this date with a time to create a {@code LocalDateTime}.
      * <p>
-     * This combines this date with the specified time to form a {@code LocalDateTime}.
+     * This returns a {@code LocalDateTime} formed from this date at the specified time.
      * All possible combinations of date and time are valid.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param time  the time to combine with, not null
      * @return the local date-time formed from this date and the specified time, not null
@@ -1521,13 +1519,13 @@ public final class LocalDate
     }
 
     /**
-     * Returns a local date-time formed from this date at the specified time.
+     * Combines this date with a time to create a {@code LocalDateTime}.
      * <p>
-     * This combines this date with the specified time to form a {@code LocalDateTime}.
+     * This returns a {@code LocalDateTime} formed from this date at the
+     * specified hour and minute.
+     * The seconds and nanosecond fields will be set to zero.
      * The individual time fields must be within their valid range.
      * All possible combinations of date and time are valid.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param hour  the hour-of-day to use, from 0 to 23
      * @param minute  the minute-of-hour to use, from 0 to 59
@@ -1539,13 +1537,13 @@ public final class LocalDate
     }
 
     /**
-     * Returns a local date-time formed from this date at the specified time.
+     * Combines this date with a time to create a {@code LocalDateTime}.
      * <p>
-     * This combines this date with the specified time to form a {@code LocalDateTime}.
+     * This returns a {@code LocalDateTime} formed from this date at the
+     * specified hour, minute and second.
+     * The nanosecond field will be set to zero.
      * The individual time fields must be within their valid range.
      * All possible combinations of date and time are valid.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param hour  the hour-of-day to use, from 0 to 23
      * @param minute  the minute-of-hour to use, from 0 to 59
@@ -1558,13 +1556,12 @@ public final class LocalDate
     }
 
     /**
-     * Returns a local date-time formed from this date at the specified time.
+     * Combines this date with a time to create a {@code LocalDateTime}.
      * <p>
-     * This combines this date with the specified time to form a {@code LocalDateTime}.
+     * This returns a {@code LocalDateTime} formed from this date at the
+     * specified hour, minute, second and nanosecond.
      * The individual time fields must be within their valid range.
      * All possible combinations of date and time are valid.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param hour  the hour-of-day to use, from 0 to 23
      * @param minute  the minute-of-hour to use, from 0 to 59
@@ -1604,7 +1601,11 @@ public final class LocalDate
     }
 
     /**
-     * Returns a zoned date-time from this date at the earliest valid time according
+     * Combines this date with a time-zone to create a {@code ZonedDateTime}
+     * at the start of the day
+     * <p>
+     * This returns a {@code ZonedDateTime} formed from this date at the
+     * specified zone, with the time set to be the earliest valid time according
      * to the rules in the time-zone.
      * <p>
      * Time-zone rules, such as daylight savings, mean that not every local date-time
@@ -1619,8 +1620,6 @@ public final class LocalDate
      * <p>
      * To convert to a specific time in a given time-zone call {@link #atTime(LocalTime)}
      * followed by {@link LocalDateTime#atZone(ZoneId)}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param zone  the zone ID to use, not null
      * @return the zoned date-time formed from this date and the earliest valid time for the zone, not null
