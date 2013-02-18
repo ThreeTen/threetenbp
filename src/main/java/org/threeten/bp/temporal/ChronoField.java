@@ -495,6 +495,23 @@ public enum ChronoField implements TemporalField {
         return rangeUnit;
     }
 
+    /**
+     * Gets the range of valid values for the field.
+     * <p>
+     * All fields can be expressed as a {@code long} integer.
+     * This method returns an object that describes the valid range for that value.
+     * <p>
+     * This method returns the range of the field in the ISO-8601 calendar system.
+     * This range may be incorrect for other calendar systems.
+     * Use {@link Chronology#range(ChronoField)} to access the correct range
+     * for a different calendar system.
+     * <p>
+     * Note that the result only describes the minimum and maximum valid values
+     * and it is important not to read too much into them. For example, there
+     * could be values within the range that are invalid for the field.
+     *
+     * @return the range of valid values for the field, not null
+     */
     @Override
     public ValueRange range() {
         return range;
@@ -525,6 +542,11 @@ public enum ChronoField implements TemporalField {
      * <p>
      * This validates that the value is within the outer range of valid values
      * returned by {@link #range()}.
+     * <p>
+     * This method checks against the range of the field in the ISO-8601 calendar system.
+     * This range may be incorrect for other calendar systems.
+     * Use {@link Chronology#range(ChronoField)} to access the correct range
+     * for a different calendar system.
      *
      * @param value  the value to check
      * @return the value that was passed in
@@ -539,6 +561,11 @@ public enum ChronoField implements TemporalField {
      * This validates that the value is within the outer range of valid values
      * returned by {@link #range()}.
      * It also checks that all valid values are within the bounds of an {@code int}.
+     * <p>
+     * This method checks against the range of the field in the ISO-8601 calendar system.
+     * This range may be incorrect for other calendar systems.
+     * Use {@link Chronology#range(ChronoField)} to access the correct range
+     * for a different calendar system.
      *
      * @param value  the value to check
      * @return the value that was passed in
