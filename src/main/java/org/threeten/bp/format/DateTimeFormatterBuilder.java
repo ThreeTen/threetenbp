@@ -1249,8 +1249,15 @@ public final class DateTimeFormatterBuilder {
      * <p>
      * This padding will pad to a fixed width using spaces.
      * <p>
-     * An exception will be thrown during printing if the pad width
-     * is exceeded.
+     * During formatting, the decorated element will be output and then padded
+     * to the specified width. An exception will be thrown during printing if
+     * the pad width is exceeded.
+     * <p>
+     * During parsing, the padding and decorated element are parsed.
+     * If parsing is lenient, then the pad width is treated as a maximum.
+     * If parsing is case insensitive, then the pad character is matched ignoring case.
+     * The padding is parsed greedily. Thus, if the decorated element starts with
+     * the pad character, it will not be parsed.
      *
      * @param padWidth  the pad width, 1 or greater
      * @return this, for chaining, not null
@@ -1266,8 +1273,15 @@ public final class DateTimeFormatterBuilder {
      * This padding is intended for padding other than zero-padding.
      * Zero-padding should be achieved using the appendValue methods.
      * <p>
-     * An exception will be thrown during printing if the pad width
-     * is exceeded.
+     * During formatting, the decorated element will be output and then padded
+     * to the specified width. An exception will be thrown during printing if
+     * the pad width is exceeded.
+     * <p>
+     * During parsing, the padding and decorated element are parsed.
+     * If parsing is lenient, then the pad width is treated as a maximum.
+     * If parsing is case insensitive, then the pad character is matched ignoring case.
+     * The padding is parsed greedily. Thus, if the decorated element starts with
+     * the pad character, it will not be parsed.
      *
      * @param padWidth  the pad width, 1 or greater
      * @param padChar  the pad character
@@ -1608,37 +1622,34 @@ public final class DateTimeFormatterBuilder {
 
         @Override
         public int parse(DateTimeParseContext context, CharSequence text, int position) {
+            // cache context before changed by decorated parser
+            final boolean strict = context.isStrict();
+            final boolean caseSensitive = context.isCaseSensitive();
+            // parse
             if (position > text.length()) {
                 throw new IndexOutOfBoundsException();
             }
+            if (position == text.length()) {
+                return ~position;  // no more characters in the string
+            }
             int endPos = position + padWidth;
             if (endPos > text.length()) {
-                return ~position;  // not enough characters in the string to meet the parse width
+                if (strict) {
+                    return ~position;  // not enough characters in the string to meet the parse width
+                }
+                endPos = text.length();
             }
             int pos = position;
-            while (pos < endPos && text.charAt(pos) == padChar) {
+            while (pos < endPos &&
+                    (caseSensitive ? text.charAt(pos) == padChar : context.charEquals(text.charAt(pos), padChar))) {
                 pos++;
             }
             text = text.subSequence(0, endPos);
-            int firstError = 0;
-            while (pos >= position) {
-                int resultPos = printerParser.parse(context, text, pos);
-                if (resultPos < 0) {
-                    // parse of decorated field had an error
-                    if (firstError == 0) {
-                        firstError = resultPos;
-                    }
-                    // loop around in case the decorated parser can handle the padChar at the start
-                    pos--;
-                    continue;
-                }
-                if (resultPos != endPos) {
-                    return ~position;  // parse of decorated field didn't parse to the end
-                }
-                return resultPos;
+            int resultPos = printerParser.parse(context, text, pos);
+            if (resultPos != endPos && strict) {
+                return ~(position + pos);  // parse of decorated field didn't parse to the end
             }
-            // loop runs at least once, so firstError must be set by the time we get here
-            return firstError;  // return error from first parse of decorated field
+            return resultPos;
         }
 
         @Override

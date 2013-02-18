@@ -91,18 +91,10 @@ public class TestPadParserDecorator extends AbstractTestPrinterParser {
     public void test_parse_decoratedDidNotParseToPadWidth() throws Exception {
         PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new NumberPrinterParser(MONTH_OF_YEAR, 1, 3, SignStyle.NEVER), 3, '-');
         int result = pp.parse(parseContext, "-1X", 0);
-        assertEquals(result, ~0);
+        assertEquals(result, ~1);
     }
 
     //-----------------------------------------------------------------------
-    public void test_parse_decoratedStartsWithPad() throws Exception {
-        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new StringLiteralPrinterParser("-HELLO-"), 8, '-');
-        int result = pp.parse(parseContext, "--HELLO-", 0);
-        assertEquals(result, 8);
-        assertEquals(parseContext.toParsed().query(TemporalQueries.chronology()), null);
-        assertEquals(parseContext.toParsed().query(TemporalQueries.zoneId()), null);
-    }
-
     private void assertParsed(TemporalField field, Long value) {
         if (value == null) {
             assertEquals(parseContext.getParsed(field), null);
