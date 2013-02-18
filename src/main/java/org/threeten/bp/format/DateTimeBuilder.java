@@ -605,6 +605,7 @@ public final class DateTimeBuilder
     }
 
     //-----------------------------------------------------------------------
+    @SuppressWarnings("unchecked")
     @Override
     public <R> R query(TemporalQuery<R> query) {
         if (query == TemporalQueries.zoneId()) {
@@ -616,12 +617,20 @@ public final class DateTimeBuilder
                 }
             }
             return zone;
+        } else if (query == TemporalQueries.chronology()) {
+            return (R) extract(Chronology.class);
+        } else if (query == TemporalQueries.localDate()) {
+            return (R) extract(LocalDate.class);
+        } else if (query == TemporalQueries.localTime()) {
+            return (R) extract(LocalTime.class);
+        } else if (query == TemporalQueries.zone() || query == TemporalQueries.offset()) {
+            return query.queryFrom(this);
+        } else if (query == TemporalQueries.precision()) {
+            return null;  // not a complete date/time
         }
-        if (query == TemporalQueries.chronology()) {
-            return extract(Chronology.class);
-        }
-        // incomplete, so no need to handle TIME_PRECISION
-        return super.query(query);
+        // inline TemporalAccessor.super.query(query) as an optimization
+        // non-JDK classes are not permitted to make this optimization
+        return query.queryFrom(this);
     }
 
     @SuppressWarnings("unchecked")

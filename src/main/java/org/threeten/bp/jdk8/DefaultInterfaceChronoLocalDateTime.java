@@ -38,6 +38,7 @@ import static org.threeten.bp.temporal.ChronoUnit.NANOS;
 import java.util.Objects;
 
 import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDate;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.ChronoLocalDateTime;
@@ -95,7 +96,7 @@ public abstract class DefaultInterfaceChronoLocalDateTime<D extends ChronoLocalD
         } else if (query == TemporalQueries.precision()) {
             return (R) NANOS;
         } else if (query == TemporalQueries.localDate()) {
-            return (R) toLocalDate();
+            return (R) LocalDate.ofEpochDay(toLocalDate().toEpochDay());
         } else if (query == TemporalQueries.localTime()) {
             return (R) toLocalTime();
         }

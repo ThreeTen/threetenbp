@@ -55,7 +55,6 @@ import java.util.Objects;
 import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.Era;
 import org.threeten.bp.chrono.IsoChronology;
-import org.threeten.bp.format.DateTimeBuilder;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
@@ -311,7 +310,8 @@ public final class LocalDate
      * A {@code TemporalAccessor} represents some form of date and time information.
      * This factory converts the arbitrary temporal object to an instance of {@code LocalDate}.
      * <p>
-     * The conversion extracts the {@link ChronoField#EPOCH_DAY EPOCH_DAY} field.
+     * The conversion uses the {@link TemporalQueries#localDate()} query, which relies
+     * on extracting the {@link ChronoField#EPOCH_DAY EPOCH_DAY} field.
      * <p>
      * This method matches the signature of the functional interface {@link TemporalQuery}
      * allowing it to be used as a query via method reference, {@code LocalDate::from}.
@@ -321,26 +321,11 @@ public final class LocalDate
      * @throws DateTimeException if unable to convert to a {@code LocalDate}
      */
     public static LocalDate from(TemporalAccessor temporal) {
-        if (temporal instanceof LocalDate) {
-            return (LocalDate) temporal;
-        } else if (temporal instanceof LocalDateTime) {
-            return ((LocalDateTime) temporal).toLocalDate();
-        } else if (temporal instanceof ZonedDateTime) {
-            return ((ZonedDateTime) temporal).toLocalDate();
+        LocalDate date = temporal.query(TemporalQueries.localDate());
+        if (date == null) {
+            throw new DateTimeException("Unable to obtain LocalDate from TemporalAccessor: " + temporal.getClass());
         }
-        // handle builder as a special case
-        if (temporal instanceof DateTimeBuilder) {
-            DateTimeBuilder builder = (DateTimeBuilder) temporal;
-            LocalDate date = builder.extract(LocalDate.class);
-            if (date != null) {
-                return date;
-            }
-        }
-        try {
-            return ofEpochDay(temporal.getLong(EPOCH_DAY));
-        } catch (DateTimeException ex) {
-            throw new DateTimeException("Unable to obtain LocalDate from TemporalAccessor: " + temporal.getClass(), ex);
-        }
+        return date;
     }
 
     //-----------------------------------------------------------------------

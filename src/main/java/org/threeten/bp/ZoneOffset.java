@@ -295,7 +295,8 @@ public final class ZoneOffset
      * A {@code TemporalAccessor} represents some form of date and time information.
      * This factory converts the arbitrary temporal object to an instance of {@code ZoneOffset}.
      * <p>
-     * The conversion extracts the {@link ChronoField#OFFSET_SECONDS offset-seconds} field.
+     * The conversion uses the {@link TemporalQueries#offset()} query, which relies
+     * on extracting the {@link ChronoField#OFFSET_SECONDS OFFSET_SECONDS} field.
      * <p>
      * This method matches the signature of the functional interface {@link TemporalQuery}
      * allowing it to be used in queries via method reference, {@code ZoneOffset::from}.
@@ -305,14 +306,11 @@ public final class ZoneOffset
      * @throws DateTimeException if unable to convert to an {@code ZoneOffset}
      */
     public static ZoneOffset from(TemporalAccessor temporal) {
-        if (temporal instanceof ZoneOffset) {
-            return (ZoneOffset) temporal;
+        ZoneOffset offset = temporal.query(TemporalQueries.offset());
+        if (offset == null) {
+            throw new DateTimeException("Unable to obtain ZoneOffset from TemporalAccessor: " + temporal.getClass());
         }
-        try {
-            return ofTotalSeconds(temporal.get(OFFSET_SECONDS));
-        } catch (DateTimeException ex) {
-            throw new DateTimeException("Unable to obtain ZoneOffset from TemporalAccessor: " + temporal.getClass(), ex);
-        }
+        return offset;
     }
 
     //-----------------------------------------------------------------------

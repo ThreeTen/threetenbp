@@ -48,9 +48,6 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Objects;
 
-import org.threeten.bp.chrono.ChronoLocalDateTime;
-import org.threeten.bp.chrono.ChronoZonedDateTime;
-import org.threeten.bp.format.DateTimeBuilder;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
@@ -382,7 +379,8 @@ public final class LocalTime
      * A {@code TemporalAccessor} represents some form of date and time information.
      * This factory converts the arbitrary temporal object to an instance of {@code LocalTime}.
      * <p>
-     * The conversion extracts the {@link ChronoField#NANO_OF_DAY NANO_OF_DAY} field.
+     * The conversion uses the {@link TemporalQueries#localTime()} query, which relies
+     * on extracting the {@link ChronoField#NANO_OF_DAY NANO_OF_DAY} field.
      * <p>
      * This method matches the signature of the functional interface {@link TemporalQuery}
      * allowing it to be used in queries via method reference, {@code LocalTime::from}.
@@ -392,26 +390,11 @@ public final class LocalTime
      * @throws DateTimeException if unable to convert to a {@code LocalTime}
      */
     public static LocalTime from(TemporalAccessor temporal) {
-        if (temporal instanceof LocalTime) {
-            return (LocalTime) temporal;
-        } else if (temporal instanceof ChronoLocalDateTime) {
-            return ((ChronoLocalDateTime<?>) temporal).toLocalTime();
-        } else if (temporal instanceof ChronoZonedDateTime) {
-            return ((ChronoZonedDateTime<?>) temporal).toLocalTime();
+        LocalTime time = temporal.query(TemporalQueries.localTime());
+        if (time == null) {
+            throw new DateTimeException("Unable to obtain LocalTime from TemporalAccessor: " + temporal.getClass());
         }
-        // handle builder as a special case
-        if (temporal instanceof DateTimeBuilder) {
-            DateTimeBuilder builder = (DateTimeBuilder) temporal;
-            LocalTime time = builder.extract(LocalTime.class);
-            if (time != null) {
-                return time;
-            }
-        }
-        try {
-            return ofNanoOfDay(temporal.getLong(NANO_OF_DAY));
-        } catch (DateTimeException ex) {
-            throw new DateTimeException("Unable to obtain LocalTime from TemporalAccessor: " + temporal.getClass(), ex);
-        }
+        return time;
     }
 
     //-----------------------------------------------------------------------

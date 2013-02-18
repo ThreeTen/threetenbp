@@ -39,6 +39,7 @@ import java.util.Objects;
 
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.ChronoZonedDateTime;
@@ -142,7 +143,7 @@ public abstract class DefaultInterfaceChronoZonedDateTime<D extends ChronoLocalD
         } else if (query == TemporalQueries.offset()) {
             return (R) getOffset();
         } else if (query == TemporalQueries.localDate()) {
-            return (R) toLocalDate();
+            return (R) LocalDate.ofEpochDay(toLocalDate().toEpochDay());
         } else if (query == TemporalQueries.localTime()) {
             return (R) toLocalTime();
         }
