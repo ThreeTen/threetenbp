@@ -115,7 +115,7 @@ final class ZoneRegion extends ZoneId implements Serializable {
         Objects.requireNonNull(zoneId, "zoneId");
         if (zoneId.length() < 2 || zoneId.startsWith("UTC") ||
                 zoneId.startsWith("GMT") || (PATTERN.matcher(zoneId).matches() == false)) {
-            throw new DateTimeException("ZoneId format is not a valid region format");
+            throw new DateTimeException("Invalid ID for region-based ZoneId, invalid format: " + zoneId);
         }
         ZoneRules rules = null;
         try {

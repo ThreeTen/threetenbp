@@ -207,11 +207,11 @@ public final class ZoneOffset
                 seconds = parseNumber(offsetId, 7, true);
                 break;
             default:
-                throw new DateTimeException("Zone offset ID '" + offsetId + "' is invalid");
+                throw new DateTimeException("Invalid ID for ZoneOffset, invalid format: " + offsetId);
         }
         char first = offsetId.charAt(0);
         if (first != '+' && first != '-') {
-            throw new DateTimeException("Zone offset ID '" + offsetId + "' is invalid: Plus/minus not found when expected");
+            throw new DateTimeException("Invalid ID for ZoneOffset, plus/minus not found when expected: " + offsetId);
         }
         if (first == '-') {
             return ofHoursMinutesSeconds(-hours, -minutes, -seconds);
@@ -230,12 +230,12 @@ public final class ZoneOffset
      */
     private static int parseNumber(CharSequence offsetId, int pos, boolean precededByColon) {
         if (precededByColon && offsetId.charAt(pos - 1) != ':') {
-            throw new DateTimeException("Zone offset ID '" + offsetId + "' is invalid: Colon not found when expected");
+            throw new DateTimeException("Invalid ID for ZoneOffset, colon not found when expected: " + offsetId);
         }
         char ch1 = offsetId.charAt(pos);
         char ch2 = offsetId.charAt(pos + 1);
         if (ch1 < '0' || ch1 > '9' || ch2 < '0' || ch2 > '9') {
-            throw new DateTimeException("Zone offset ID '" + offsetId + "' is invalid: Non numeric characters found");
+            throw new DateTimeException("Invalid ID for ZoneOffset, non numeric characters found: " + offsetId);
         }
         return (ch1 - 48) * 10 + (ch2 - 48);
     }
