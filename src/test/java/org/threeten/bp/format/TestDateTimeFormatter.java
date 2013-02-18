@@ -88,20 +88,20 @@ public class TestDateTimeFormatter {
     @Test
     public void test_print_Calendrical() throws Exception {
         DateTimeFormatter test = fmt.withLocale(Locale.ENGLISH).withSymbols(DateTimeFormatSymbols.STANDARD);
-        String result = test.print(LocalDate.of(2008, 6, 30));
+        String result = test.format(LocalDate.of(2008, 6, 30));
         assertEquals(result, "ONE30");
     }
 
     @Test(expectedExceptions=DateTimeException.class)
     public void test_print_Calendrical_noSuchField() throws Exception {
         DateTimeFormatter test = fmt.withLocale(Locale.ENGLISH).withSymbols(DateTimeFormatSymbols.STANDARD);
-        test.print(LocalTime.of(11, 30));
+        test.format(LocalTime.of(11, 30));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_Calendrical_null() throws Exception {
         DateTimeFormatter test = fmt.withLocale(Locale.ENGLISH).withSymbols(DateTimeFormatSymbols.STANDARD);
-        test.print((TemporalAccessor) null);
+        test.format((TemporalAccessor) null);
     }
 
     //-----------------------------------------------------------------------
@@ -109,7 +109,7 @@ public class TestDateTimeFormatter {
     public void test_print_CalendricalAppendable() throws Exception {
         DateTimeFormatter test = fmt.withLocale(Locale.ENGLISH).withSymbols(DateTimeFormatSymbols.STANDARD);
         StringBuilder buf = new StringBuilder();
-        test.printTo(LocalDate.of(2008, 6, 30), buf);
+        test.formatTo(LocalDate.of(2008, 6, 30), buf);
         assertEquals(buf.toString(), "ONE30");
     }
 
@@ -117,27 +117,27 @@ public class TestDateTimeFormatter {
     public void test_print_CalendricalAppendable_noSuchField() throws Exception {
         DateTimeFormatter test = fmt.withLocale(Locale.ENGLISH).withSymbols(DateTimeFormatSymbols.STANDARD);
         StringBuilder buf = new StringBuilder();
-        test.printTo(LocalTime.of(11, 30), buf);
+        test.formatTo(LocalTime.of(11, 30), buf);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_CalendricalAppendable_nullCalendrical() throws Exception {
         DateTimeFormatter test = fmt.withLocale(Locale.ENGLISH).withSymbols(DateTimeFormatSymbols.STANDARD);
         StringBuilder buf = new StringBuilder();
-        test.printTo((TemporalAccessor) null, buf);
+        test.formatTo((TemporalAccessor) null, buf);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_CalendricalAppendable_nullAppendable() throws Exception {
         DateTimeFormatter test = fmt.withLocale(Locale.ENGLISH).withSymbols(DateTimeFormatSymbols.STANDARD);
-        test.printTo(LocalDate.of(2008, 6, 30), (Appendable) null);
+        test.formatTo(LocalDate.of(2008, 6, 30), (Appendable) null);
     }
 
     @Test(expectedExceptions=IOException.class)  // IOException
     public void test_print_CalendricalAppendable_ioError() throws Throwable {
         DateTimeFormatter test = fmt.withLocale(Locale.ENGLISH).withSymbols(DateTimeFormatSymbols.STANDARD);
         try {
-            test.printTo(LocalDate.of(2008, 6, 30), new MockIOExceptionAppendable());
+            test.formatTo(LocalDate.of(2008, 6, 30), new MockIOExceptionAppendable());
         } catch (DateTimeException ex) {
             assertEquals(ex.getCause() instanceof IOException, true);
             throw ex.getCause();

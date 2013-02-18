@@ -1259,7 +1259,7 @@ public final class OffsetTime
      * Outputs this time as a {@code String} using the formatter.
      * <p>
      * This time will be passed to the formatter
-     * {@link DateTimeFormatter#print(TemporalAccessor) print method}.
+     * {@link DateTimeFormatter#format(TemporalAccessor) print method}.
      *
      * @param formatter  the formatter to use, not null
      * @return the formatted time string, not null
@@ -1267,7 +1267,7 @@ public final class OffsetTime
      */
     public String toString(DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
-        return formatter.print(this);
+        return formatter.format(this);
     }
 
     // -----------------------------------------------------------------------

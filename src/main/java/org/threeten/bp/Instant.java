@@ -1113,7 +1113,7 @@ public final class Instant
      */
     @Override
     public String toString() {
-        return DateTimeFormatters.isoInstant().print(this);
+        return DateTimeFormatters.isoInstant().format(this);
     }
 
     //-----------------------------------------------------------------------

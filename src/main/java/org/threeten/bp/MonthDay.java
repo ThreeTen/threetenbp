@@ -697,7 +697,7 @@ public final class MonthDay
      * Outputs this month-day as a {@code String} using the formatter.
      * <p>
      * This month-day will be passed to the formatter
-     * {@link DateTimeFormatter#print(TemporalAccessor) print method}.
+     * {@link DateTimeFormatter#format(TemporalAccessor) print method}.
      *
      * @param formatter  the formatter to use, not null
      * @return the formatted month-day string, not null
@@ -705,7 +705,7 @@ public final class MonthDay
      */
     public String toString(DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
-        return formatter.print(this);
+        return formatter.format(this);
     }
 
     //-----------------------------------------------------------------------

@@ -150,16 +150,16 @@ public final class UsabilityBasic {
     private static void print1() {
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendText(ChronoField.AMPM_OF_DAY)
                 .appendLiteral(' ').appendValue(ChronoField.AMPM_OF_DAY).toFormatter();
-        System.out.println(f.print(LocalTime.of(12, 30)));
-        System.out.println(f.print(ZonedDateTime.now()));
+        System.out.println(f.format(LocalTime.of(12, 30)));
+        System.out.println(f.format(ZonedDateTime.now()));
     }
 
     private static void print2() {
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendText(ChronoField.MONTH_OF_YEAR)
                 .appendLiteral(' ').appendValue(ChronoField.YEAR).toFormatter();
-        System.out.println(f.print(LocalDate.now()));
-        System.out.println(f.print(YearMonth.now()));
-        System.out.println(f.print(ZonedDateTime.now()));
+        System.out.println(f.format(LocalDate.now()));
+        System.out.println(f.format(YearMonth.now()));
+        System.out.println(f.format(ZonedDateTime.now()));
     }
 
     private static void sort() {

@@ -190,7 +190,7 @@ public class Performance {
         long start = System.nanoTime();
         for (LocalDateTime dt : list) {
             buf.setLength(0);
-            buf.append(format.print(dt));
+            buf.append(format.format(dt));
         }
         long end = System.nanoTime();
         System.out.println("LocalDT:   Format: " + NF.format(end - start) + " ns" + " " + buf);
@@ -254,7 +254,7 @@ public class Performance {
         long start = System.nanoTime();
         for (LocalDate dt : list) {
             buf.setLength(0);
-            buf.append(format.print(dt));
+            buf.append(format.format(dt));
         }
         long end = System.nanoTime();
         System.out.println("LocalD:    Format: " + NF.format(end - start) + " ns" + " " + buf);
@@ -304,7 +304,7 @@ public class Performance {
         long start = System.nanoTime();
         for (LocalTime dt : list) {
             buf.setLength(0);
-            buf.append(format.print(dt));
+            buf.append(format.format(dt));
         }
         long end = System.nanoTime();
         System.out.println("LocalT:    Format: " + NF.format(end - start) + " ns" + " " + buf);
@@ -373,7 +373,7 @@ public class Performance {
         long start = System.nanoTime();
         for (ZonedDateTime dt : list) {
             buf.setLength(0);
-            buf.append(format.print(dt));
+            buf.append(format.format(dt));
         }
         long end = System.nanoTime();
         System.out.println("ZonedDT:   Format: " + NF.format(end - start) + " ns" + " " + buf);

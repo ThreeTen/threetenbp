@@ -1046,7 +1046,7 @@ public final class YearMonth
      * Outputs this year-month as a {@code String} using the formatter.
      * <p>
      * This year-month will be passed to the formatter
-     * {@link DateTimeFormatter#print(TemporalAccessor) print method}.
+     * {@link DateTimeFormatter#format(TemporalAccessor) print method}.
      *
      * @param formatter  the formatter to use, not null
      * @return the formatted year-month string, not null
@@ -1054,7 +1054,7 @@ public final class YearMonth
      */
     public String toString(DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
-        return formatter.print(this);
+        return formatter.format(this);
     }
 
     //-----------------------------------------------------------------------

@@ -265,25 +265,25 @@ public final class DateTimeFormatter {
 
     //-----------------------------------------------------------------------
     /**
-     * Prints a date-time object using this formatter.
+     * Formats a date-time object using this formatter.
      * <p>
-     * This prints the date-time to a String using the rules of the formatter.
+     * This formats the date-time to a String using the rules of the formatter.
      *
      * @param temporal  the temporal object to print, not null
      * @return the printed string, not null
-     * @throws DateTimeException if an error occurs during printing
+     * @throws DateTimeException if an error occurs during formatting
      */
-    public String print(TemporalAccessor temporal) {
+    public String format(TemporalAccessor temporal) {
         StringBuilder buf = new StringBuilder(32);
-        printTo(temporal, buf);
+        formatTo(temporal, buf);
         return buf.toString();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Prints a date-time object to an {@code Appendable} using this formatter.
+     * Formats a date-time object to an {@code Appendable} using this formatter.
      * <p>
-     * This prints the date-time to the specified destination.
+     * This formats the date-time to the specified destination.
      * {@link Appendable} is a general purpose interface that is implemented by all
      * key character output classes including {@code StringBuffer}, {@code StringBuilder},
      * {@code PrintStream} and {@code Writer}.
@@ -293,9 +293,9 @@ public final class DateTimeFormatter {
      *
      * @param temporal  the temporal object to print, not null
      * @param appendable  the appendable to print to, not null
-     * @throws DateTimeException if an error occurs during printing
+     * @throws DateTimeException if an error occurs during formatting
      */
-    public void printTo(TemporalAccessor temporal, Appendable appendable) {
+    public void formatTo(TemporalAccessor temporal, Appendable appendable) {
         Objects.requireNonNull(temporal, "temporal");
         Objects.requireNonNull(appendable, "appendable");
         try {
@@ -657,7 +657,7 @@ public final class DateTimeFormatter {
             pos.setBeginIndex(0);
             pos.setEndIndex(0);
             try {
-                formatter.printTo((TemporalAccessor) obj, toAppendTo);
+                formatter.formatTo((TemporalAccessor) obj, toAppendTo);
             } catch (RuntimeException ex) {
                 throw new IllegalArgumentException(ex.getMessage(), ex);
             }

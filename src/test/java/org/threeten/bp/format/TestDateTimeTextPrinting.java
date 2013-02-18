@@ -109,7 +109,7 @@ public class TestDateTimeTextPrinting {
         DateTimeFormatter f = builder.appendText(field, style).toFormatter(Locale.ENGLISH);
         LocalDateTime dt = LocalDateTime.of(2010, 1, 1, 0, 0);
         dt = dt.with(field, value);
-        String text = f.print(dt);
+        String text = f.format(dt);
         assertEquals(text, expected);
     }
 
@@ -119,7 +119,7 @@ public class TestDateTimeTextPrinting {
             DateTimeFormatter f = builder.appendText(field).toFormatter(Locale.ENGLISH);
             LocalDateTime dt = LocalDateTime.of(2010, 1, 1, 0, 0);
             dt = dt.with(field, value);
-            String text = f.print(dt);
+            String text = f.format(dt);
             assertEquals(text, expected);
         }
     }
@@ -129,7 +129,7 @@ public class TestDateTimeTextPrinting {
     public void test_print_appendText2arg_french_long() throws Exception {
         DateTimeFormatter f = builder.appendText(MONTH_OF_YEAR, TextStyle.FULL).toFormatter(Locale.FRENCH);
         LocalDateTime dt = LocalDateTime.of(2010, 1, 1, 0, 0);
-        String text = f.print(dt);
+        String text = f.format(dt);
         assertEquals(text, "janvier");
     }
 
@@ -137,7 +137,7 @@ public class TestDateTimeTextPrinting {
     public void test_print_appendText2arg_french_short() throws Exception {
         DateTimeFormatter f = builder.appendText(MONTH_OF_YEAR, TextStyle.SHORT).toFormatter(Locale.FRENCH);
         LocalDateTime dt = LocalDateTime.of(2010, 1, 1, 0, 0);
-        String text = f.print(dt);
+        String text = f.format(dt);
         assertEquals(text, "janv.");
     }
 
@@ -161,7 +161,7 @@ public class TestDateTimeTextPrinting {
         DateTimeFormatter f = builder.toFormatter();
         LocalDateTime dt = LocalDateTime.of(2010, 1, 1, 0, 0);
         for (Month month : Month.values()) {
-            assertEquals(f.print(dt.with(month)), map.get((long) month.getValue()));
+            assertEquals(f.format(dt.with(month)), map.get((long) month.getValue()));
         }
     }
 
@@ -174,9 +174,9 @@ public class TestDateTimeTextPrinting {
         builder.appendText(DAY_OF_MONTH, map);
         DateTimeFormatter f = builder.toFormatter();
         LocalDateTime dt = LocalDateTime.of(2010, 1, 1, 0, 0);
-        assertEquals(f.print(dt.withDayOfMonth(1)), "1st");
-        assertEquals(f.print(dt.withDayOfMonth(2)), "2nd");
-        assertEquals(f.print(dt.withDayOfMonth(3)), "3rd");
+        assertEquals(f.format(dt.withDayOfMonth(1)), "1st");
+        assertEquals(f.format(dt.withDayOfMonth(2)), "2nd");
+        assertEquals(f.format(dt.withDayOfMonth(3)), "3rd");
     }
 
     @Test
@@ -186,7 +186,7 @@ public class TestDateTimeTextPrinting {
         builder.appendText(MONTH_OF_YEAR, map);
         DateTimeFormatter f = builder.toFormatter();
         LocalDateTime dt = LocalDateTime.of(2010, 2, 1, 0, 0);
-        assertEquals(f.print(dt), "2");
+        assertEquals(f.format(dt), "2");
     }
 
 }
