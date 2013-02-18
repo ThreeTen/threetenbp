@@ -31,10 +31,7 @@
  */
 package org.threeten.bp;
 
-import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
-import static org.threeten.bp.temporal.ChronoField.EPOCH_MONTH;
 import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
-import static org.threeten.bp.temporal.ChronoField.YEAR;
 import static org.threeten.bp.temporal.ChronoUnit.DAYS;
 import static org.threeten.bp.temporal.ChronoUnit.MONTHS;
 import static org.threeten.bp.temporal.ChronoUnit.YEARS;
@@ -47,13 +44,12 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.Jdk8Methods;
-import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
-import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.temporal.ValueRange;
@@ -179,65 +175,6 @@ public final class Period
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a {@code Period} consisting of the number of years, months, days,
-     * hours, minutes, seconds, and nanoseconds between two {@code TemporalAccessor} instances.
-     * <p>
-     * The start date is included, but the end date is not. Only whole years count.
-     * For example, from {@code 2010-01-15} to {@code 2011-03-18} is one year, two months and three days.
-     * <p>
-     * This method examines the {@link ChronoField fields} {@code YEAR}, {@code MONTH_OF_YEAR},
-     * {@code DAY_OF_MONTH} and {@code NANO_OF_DAY}
-     * The difference between each of the fields is calculated independently from the others.
-     * At least one of the four fields must be present.
-     * <p>
-     * The four units are typically retained without normalization.
-     * However, years and months are normalized if the range of months is fixed, as it is with ISO.
-     * <p>
-     * The result of this method can be a negative period if the end is before the start.
-     * The negative sign can be different in each of the four major units.
-     *
-     * @param start  the start date, inclusive, not null
-     * @param end  the end date, exclusive, not null
-     * @return the period between the date-times, not null
-     * @throws DateTimeException if the two date-times do have similar available fields
-     * @throws ArithmeticException if numeric overflow occurs
-     */
-    public static Period between(TemporalAccessor start, TemporalAccessor end) {
-        if (Chronology.from(start).equals(Chronology.from(end)) == false) {
-            throw new DateTimeException("Unable to calculate period as date-times have different chronologies");
-        }
-        int years = 0;
-        int months = 0;
-        int days = 0;
-        boolean valid = false;
-        if (start.isSupported(YEAR)) {
-            years = Jdk8Methods.safeToInt(Jdk8Methods.safeSubtract(end.getLong(YEAR), start.getLong(YEAR)));
-            valid = true;
-        }
-        if (start.isSupported(MONTH_OF_YEAR)) {
-            months = Jdk8Methods.safeToInt(Jdk8Methods.safeSubtract(end.getLong(MONTH_OF_YEAR), start.getLong(MONTH_OF_YEAR)));
-            ValueRange startRange = Chronology.from(start).range(MONTH_OF_YEAR);
-            ValueRange endRange = Chronology.from(end).range(MONTH_OF_YEAR);
-            if (startRange.isFixed() && startRange.isIntValue() && startRange.equals(endRange)) {
-                int monthCount = (int) (startRange.getMaximum() - startRange.getMinimum() + 1);
-                long totMonths = ((long) months) + years * monthCount;
-                months = (int) (totMonths % monthCount);
-                years = Jdk8Methods.safeToInt(totMonths / monthCount);
-            }
-            valid = true;
-        }
-        if (start.isSupported(DAY_OF_MONTH)) {
-            days = Jdk8Methods.safeToInt(Jdk8Methods.safeSubtract(end.getLong(DAY_OF_MONTH), start.getLong(DAY_OF_MONTH)));
-            valid = true;
-        }
-        if (valid == false) {
-            throw new DateTimeException("Unable to calculate period as date-times do not have any valid fields");
-        }
-        return create(years, months, days);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Obtains a {@code Period} consisting of the number of years, months,
      * and days between two dates.
      * <p>
@@ -253,25 +190,11 @@ public final class Period
      *
      * @param startDate  the start date, inclusive, not null
      * @param endDate  the end date, exclusive, not null
-     * @return the period between the dates, not null
-     * @throws ArithmeticException if numeric overflow occurs
+     * @return the period between this date and the end date, not null
+     * @see ChronoLocalDate#periodUntil(ChronoLocalDate)
      */
-    public static Period betweenISO(LocalDate startDate, LocalDate endDate) {
-        long startMonth = startDate.getLong(EPOCH_MONTH);
-        long endMonth = endDate.getLong(EPOCH_MONTH);
-        long totalMonths = endMonth - startMonth;  // safe
-        int days = endDate.getDayOfMonth() - startDate.getDayOfMonth();
-        if (totalMonths > 0 && days < 0) {
-            totalMonths--;
-            LocalDate calcDate = startDate.plusMonths(totalMonths);
-            days = (int) (endDate.toEpochDay() - calcDate.toEpochDay());  // safe
-        } else if (totalMonths < 0 && days > 0) {
-            totalMonths++;
-            days -= endDate.lengthOfMonth();
-        }
-        long years = totalMonths / 12;  // safe
-        int months = (int) (totalMonths % 12);  // safe
-        return of(Jdk8Methods.safeToInt(years), months, days);
+    public static Period between(LocalDate startDate, LocalDate endDate) {
+        return startDate.periodUntil(endDate);
     }
 
     //-----------------------------------------------------------------------

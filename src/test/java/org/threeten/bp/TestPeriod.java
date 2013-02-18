@@ -137,57 +137,8 @@ public class TestPeriod extends AbstractTest {
     //-----------------------------------------------------------------------
     // between
     //-----------------------------------------------------------------------
-    @DataProvider(name="betweenDates")
-    Object[][] data_betweenDates() {
-        return new Object[][] {
-            {2010, 1, 1, 2010, 1, 1,  0, 0, 0},
-            {2010, 1, 1, 2010, 1, 2,  0, 0, 1},
-            {2010, 1, 1, 2010, 2, 1,  0, 1, 0},
-            {2010, 1, 1, 2010, 2, 2,  0, 1, 1},
-            {2010, 1, 1, 2011, 1, 1,  1, 0, 0},
-
-            {2010, 6, 12, 2010, 1, 1,  0, -5, -11},
-            {2010, 6, 12, 2010, 1, 2,  0, -5, -10},
-            {2010, 6, 12, 2010, 2, 1,  0, -4, -11},
-            {2010, 6, 12, 2010, 9, 24,  0, 3, 12},
-
-            {2010, 6, 12, 2009, 1, 1,  -1, -5, -11},
-            {2010, 6, 12, 2009, 1, 2,  -1, -5, -10},
-            {2010, 6, 12, 2009, 2, 1,  -1, -4, -11},
-            {2010, 6, 12, 2009, 9, 24,  0, -9, 12},
-
-            {2010, 6, 12, 2008, 1, 1,  -2, -5, -11},
-            {2010, 6, 12, 2008, 1, 2,  -2, -5, -10},
-            {2010, 6, 12, 2008, 2, 1,  -2, -4, -11},
-            {2010, 6, 12, 2008, 9, 24,  -1, -9, 12},
-        };
-    }
-
-    @Test(dataProvider="betweenDates")
-    public void factory_between_LocalDate(int y1, int m1, int d1, int y2, int m2, int d2, int ye, int me, int de) {
-        LocalDate start = LocalDate.of(y1, m1, d1);
-        LocalDate end = LocalDate.of(y2, m2, d2);
-        Period test = Period.between(start, end);
-        assertPeriod(test, ye, me, de);
-        //assertEquals(start.plus(test), end);
-    }
-
-    public void factory_between_YearMonth() {
-        assertPeriod(Period.between(YearMonth.of(2012, 6), YearMonth.of(2013, 7)), 1, 1, 0);
-        assertPeriod(Period.between(YearMonth.of(2012, 6), YearMonth.of(2013, 3)), 0, 9, 0);
-        assertPeriod(Period.between(YearMonth.of(2012, 6), YearMonth.of(2011, 7)), 0, -11, 0);
-    }
-
-    public void factory_between_Month() {
-        assertPeriod(Period.between(Month.FEBRUARY, Month.MAY), 0, 3, 0);
-        assertPeriod(Period.between(Month.NOVEMBER, Month.MAY), 0, -6, 0);
-    }
-
-    //-----------------------------------------------------------------------
-    // betweenISO
-    //-----------------------------------------------------------------------
-    @DataProvider(name="betweenISO")
-    Object[][] data_betweenISO() {
+    @DataProvider(name="between")
+    Object[][] data_between() {
         return new Object[][] {
             {2010, 1, 1, 2010, 1, 1, 0, 0, 0},
             {2010, 1, 1, 2010, 1, 2, 0, 0, 1},
@@ -273,23 +224,23 @@ public class TestPeriod extends AbstractTest {
         };
     }
 
-    @Test(dataProvider="betweenISO")
-    public void factory_betweenISO_LocalDate(int y1, int m1, int d1, int y2, int m2, int d2, int ye, int me, int de) {
+    @Test(dataProvider="between")
+    public void factory_between_LocalDate(int y1, int m1, int d1, int y2, int m2, int d2, int ye, int me, int de) {
         LocalDate start = LocalDate.of(y1, m1, d1);
         LocalDate end = LocalDate.of(y2, m2, d2);
-        Period test = Period.betweenISO(start, end);
+        Period test = Period.between(start, end);
         assertPeriod(test, ye, me, de);
         //assertEquals(start.plus(test), end);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_betweenISO_LocalDate_nullFirst() {
-        Period.betweenISO((LocalDate) null, LocalDate.of(2010, 1, 1));
+    public void factory_between_LocalDate_nullFirst() {
+        Period.between((LocalDate) null, LocalDate.of(2010, 1, 1));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_betweenISO_LocalDate_nullSecond() {
-        Period.betweenISO(LocalDate.of(2010, 1, 1), (LocalDate) null);
+    public void factory_between_LocalDate_nullSecond() {
+        Period.between(LocalDate.of(2010, 1, 1), (LocalDate) null);
     }
 
     //-----------------------------------------------------------------------
