@@ -57,8 +57,7 @@ import org.threeten.bp.LocalDateTime;
  * The serialisation format is determined on a per class basis.  In the case of field based classes each
  * of the fields is written out with an appropriate size format in descending order of the field's size.  For
  * example in the case of {@link LocalDate} year is written before month.  Composite classes, such as
- * {@link LocalDateTime} are serialised as one object.  Enum classes are serialised using the index of their
- * element in the index, an ordering which is defined by JSR-310.
+ * {@link LocalDateTime} are serialised as one object.
  * <p>
  * This class is mutable and should be created once per serialization.
  *

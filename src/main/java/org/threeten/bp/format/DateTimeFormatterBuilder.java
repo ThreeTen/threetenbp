@@ -1208,7 +1208,7 @@ public final class DateTimeFormatterBuilder {
         // FIELD_MAP.put('y', ChronoField.YEAR_OF_ERA);            // Java, CLDR  // TODO redefine from above
         // FIELD_MAP.put('u', ChronoField.YEAR);                   // CLDR  // TODO
         // FIELD_MAP.put('Y', ISODateTimeField.WEEK_BASED_YEAR);          // Java7, CLDR (needs localized week number)  // TODO
-        FIELD_MAP.put('Q', IsoFields.QUARTER_OF_YEAR);             // CLDR (removed quarter from 310)
+        FIELD_MAP.put('Q', IsoFields.QUARTER_OF_YEAR);             // CLDR
         FIELD_MAP.put('M', ChronoField.MONTH_OF_YEAR);             // Java, CLDR
         // FIELD_MAP.put('w', WeekFields.weekOfYear());            // Java, CLDR (needs localized week number)
         // FIELD_MAP.put('W', WeekFields.weekOfMonth());           // Java, CLDR (needs localized week number)
@@ -1226,21 +1226,21 @@ public final class DateTimeFormatterBuilder {
         FIELD_MAP.put('s', ChronoField.SECOND_OF_MINUTE);          // Java, CLDR
         FIELD_MAP.put('S', ChronoField.NANO_OF_SECOND);            // CLDR (Java uses milli-of-second number)
         FIELD_MAP.put('A', ChronoField.MILLI_OF_DAY);              // CLDR
-        FIELD_MAP.put('n', ChronoField.NANO_OF_SECOND);            // 310
-        FIELD_MAP.put('N', ChronoField.NANO_OF_DAY);               // 310
+        FIELD_MAP.put('n', ChronoField.NANO_OF_SECOND);            // ThreeTen
+        FIELD_MAP.put('N', ChronoField.NANO_OF_DAY);               // ThreeTen
         // reserved - z,Z,X,I,p
         // Java - X - compatible, but extended to 4 and 5 letters
         // Java - u - clashes with CLDR, go with CLDR (year-proleptic) here
-        // CLDR - U - cycle year name, not supported by 310 yet
+        // CLDR - U - cycle year name, not supported by ThreeTen yet
         // CLDR - l - deprecated
         // CLDR - j - not relevant
         // CLDR - g - modified-julian-day
         // CLDR - z - time-zone names  // TODO properly
-        // CLDR - Z - different approach here  // TODO bring 310 in line with CLDR
+        // CLDR - Z - different approach here  // TODO bring ThreeTen in line with CLDR
         // CLDR - v,V - extended time-zone names
         // CLDR - q/c/L - standalone quarter/day-of-week/month
-        //  310 - I - time-zone id
-        //  310 - p - prefix for padding
+        //  ThreeTen - I - time-zone id
+        //  ThreeTen - p - prefix for padding
     }
 
     //-----------------------------------------------------------------------

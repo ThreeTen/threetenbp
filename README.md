@@ -7,6 +7,7 @@ The backport is NOT an implementation of JSR-310, as that would require
 jumping through lots of unecessary hoops.
 Instead, this is a simple backport intended to allow users to quickly
 use the JSR-310 API on JDK 1.7.
+The backport should be referred to using the "ThreeTen" name.
 
 Active development on JSR-310 is at [OpenJDK](http://openjdk.java.net/projects/threeten/):
 

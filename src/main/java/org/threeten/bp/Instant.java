@@ -146,7 +146,7 @@ import org.threeten.bp.temporal.ValueRange;
  * It is intended that instants before 1972 be interpreted based on the solar day divided
  * into 86400 subdivisions.
  * <p>
- * The Java time-scale is used for all date-time classes supplied by JSR-310.
+ * The Java time-scale is used by all date-time classes.
  * This includes {@code Instant}, {@code LocalDate}, {@code LocalTime}, {@code OffsetDateTime},
  * {@code ZonedDateTime} and {@code Duration}.
  *

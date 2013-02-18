@@ -260,7 +260,7 @@ final class TzdbZoneRulesCompiler {
                 SortedMap<LocalDate, Byte> parsedLeapSeconds = compiler.getLeapSeconds();
 
                 // output version-specific file
-                File dstFile = new File(dstDir, "jsr-310-TZDB-" + loopVersion + ".jar");
+                File dstFile = new File(dstDir, "threeten-TZDB-" + loopVersion + ".jar");
                 if (verbose) {
                     System.out.println("Outputting file: " + dstFile);
                 }
@@ -287,7 +287,7 @@ final class TzdbZoneRulesCompiler {
         }
 
         // output merged file
-        File dstFile = new File(dstDir, "jsr-310-TZDB-all.jar");
+        File dstFile = new File(dstDir, "threeten-TZDB-all.jar");
         if (verbose) {
             System.out.println("Outputting combined file: " + dstFile);
         }
