@@ -53,7 +53,7 @@ import org.threeten.bp.temporal.ValueRange;
  * <p>
  * This chronology defines the rules of the Minguo calendar system.
  * This calendar system is primarily used in the Republic of China, often known as Taiwan.
- * Dates are aligned such that {@code 0001-01-01 (Minguo)} is {@code 1911-01-01 (ISO)}.
+ * Dates are aligned such that {@code 0001-01-01 (Minguo)} is {@code 1912-01-01 (ISO)}.
  * <p>
  * The fields are defined as follows:
  * <p><ul>
