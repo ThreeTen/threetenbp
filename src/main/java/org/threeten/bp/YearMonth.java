@@ -432,6 +432,20 @@ public final class YearMonth
     }
 
     /**
+     * Gets the month-of-year field from 1 to 12.
+     * <p>
+     * This method returns the month as an {@code int} from 1 to 12.
+     * Application code is frequently clearer if the enum {@link Month}
+     * is used by calling {@link #getMonth()}.
+     *
+     * @return the month-of-year, from 1 to 12
+     * @see #getMonth()
+     */
+    public int getMonthValue() {
+        return month;
+    }
+
+    /**
      * Gets the month-of-year field using the {@code Month} enum.
      * <p>
      * This method returns the enum {@link Month} for the month.
