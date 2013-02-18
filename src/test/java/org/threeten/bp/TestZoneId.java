@@ -125,8 +125,8 @@ public class TestZoneId extends AbstractTest {
     //-----------------------------------------------------------------------
     public void test_constant_OLD_IDS_PRE_2005() {
         Map<String, String> ids = ZoneId.OLD_IDS_PRE_2005;
-        assertEquals(ids.get("EST"), "America/Indianapolis");
-        assertEquals(ids.get("MST"), "America/Phoenix");
+        assertEquals(ids.get("EST"), "America/New_York");
+        assertEquals(ids.get("MST"), "America/Denver");
         assertEquals(ids.get("HST"), "Pacific/Honolulu");
         assertEquals(ids.get("ACT"), "Australia/Darwin");
         assertEquals(ids.get("AET"), "Australia/Sydney");
