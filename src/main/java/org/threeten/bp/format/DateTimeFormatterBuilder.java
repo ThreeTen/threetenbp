@@ -44,6 +44,7 @@ import static org.threeten.bp.temporal.ChronoField.YEAR;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.text.DateFormat;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -63,7 +64,6 @@ import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.chrono.Chronology;
-import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.format.SimpleDateTimeTextProvider.LocaleStore;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
@@ -811,39 +811,36 @@ public final class DateTimeFormatterBuilder {
     /**
      * Appends a localized date-time pattern to the formatter.
      * <p>
-     * The pattern is resolved lazily using the locale being used during the print/parse
-     * (stored in {@link DateTimeFormatter}.
+     * This appends a localized section to the builder, suitable for outputting
+     * a date, time or date-time combination. The format of the localized
+     * section is lazily looked up based on four items:
+     * <p><ul>
+     * <li>the {@code dateStyle} specified to this method
+     * <li>the {@code timeStyle} specified to this method
+     * <li>the {@code Locale} of the {@code DateTimeFormatter}
+     * <li>the {@code Chronology}, selecting the best available
+     * </ul><p>
+     * During formatting, the chronology is obtained from the temporal object
+     * being formatted, which may have been overridden by
+     * {@link DateTimeFormatter#withChronology(Chronology)}.
      * <p>
-     * The pattern can vary by chronology, although typically it doesn't.
-     * This method uses the standard ISO chronology patterns.
+     * During parsing, if a chronology has already been parsed, then it is used.
+     * Otherwise the default from {@code DateTimeFormatter.withChronology(Chronology)}
+     * is used, with {@code IsoChronology} as the fallback.
+     * <p>
+     * Note that this method provides similar functionality to methods on
+     * {@code DateFormat} such as {@link DateFormat#getDateTimeInstance(int, int)}.
      *
      * @param dateStyle  the date style to use, null means no date required
      * @param timeStyle  the time style to use, null means no time required
      * @return this, for chaining, not null
+     * @throws IllegalArgumentException if both the date and time styles are null
      */
     public DateTimeFormatterBuilder appendLocalized(FormatStyle dateStyle, FormatStyle timeStyle) {
-        return appendLocalized(dateStyle, timeStyle, IsoChronology.INSTANCE);
-    }
-
-    /**
-     * Appends a localized date-time pattern to the formatter.
-     * <p>
-     * The pattern is resolved lazily using the locale being used during the print/parse,
-     * stored in {@link DateTimeFormatter}.
-     * <p>
-     * The pattern can vary by chronology, although typically it doesn't.
-     * This method allows the chronology to be specified.
-     *
-     * @param dateStyle  the date style to use, null means no date required
-     * @param timeStyle  the time style to use, null means no time required
-     * @param chrono  the chronology to use, not null
-     * @return this, for chaining, not null
-     */
-    public DateTimeFormatterBuilder appendLocalized(FormatStyle dateStyle, FormatStyle timeStyle, Chronology chrono) {
-        Objects.requireNonNull(chrono, "chrono");
-        if (dateStyle != null || timeStyle != null) {
-            appendInternal(new LocalizedPrinterParser(dateStyle, timeStyle, chrono));
+        if (dateStyle == null && timeStyle == null) {
+            throw new IllegalArgumentException("Either the date or time style must be non-null");
         }
+        appendInternal(new LocalizedPrinterParser(dateStyle, timeStyle));
         return this;
     }
 
@@ -2929,30 +2926,29 @@ public final class DateTimeFormatterBuilder {
     static final class LocalizedPrinterParser implements DateTimePrinterParser {
         private final FormatStyle dateStyle;
         private final FormatStyle timeStyle;
-        private final Chronology chrono;
 
         /**
          * Constructor.
          *
          * @param dateStyle  the date style to use, may be null
          * @param timeStyle  the time style to use, may be null
-         * @param chrono  the chronology to use, not null
          */
-        LocalizedPrinterParser(FormatStyle dateStyle, FormatStyle timeStyle, Chronology chrono) {
+        LocalizedPrinterParser(FormatStyle dateStyle, FormatStyle timeStyle) {
             // validated by caller
             this.dateStyle = dateStyle;
             this.timeStyle = timeStyle;
-            this.chrono = chrono;
         }
 
         @Override
         public boolean print(DateTimePrintContext context, StringBuilder buf) {
-            return formatter(context.getLocale()).toPrinterParser(false).print(context, buf);
+            Chronology chrono = Chronology.from(context.getTemporal());
+            return formatter(context.getLocale(), chrono).toPrinterParser(false).print(context, buf);
         }
 
         @Override
         public int parse(DateTimeParseContext context, CharSequence text, int position) {
-            return formatter(context.getLocale()).toPrinterParser(false).parse(context, text, position);
+            Chronology chrono = context.getEffectiveChronology();
+            return formatter(context.getLocale(), chrono).toPrinterParser(false).parse(context, text, position);
         }
 
         /**
@@ -2962,7 +2958,7 @@ public final class DateTimeFormatterBuilder {
          * @return the formatter, not null
          * @throws IllegalArgumentException if the formatter cannot be found
          */
-        private DateTimeFormatter formatter(Locale locale) {
+        private DateTimeFormatter formatter(Locale locale, Chronology chrono) {
             return DateTimeFormatStyleProvider.getInstance()
                     .getFormatter(dateStyle, timeStyle, chrono, locale);
         }
@@ -2970,7 +2966,7 @@ public final class DateTimeFormatterBuilder {
         @Override
         public String toString() {
             return "Localized(" + (dateStyle != null ? dateStyle : "") + "," +
-                (timeStyle != null ? timeStyle : "") + "," + chrono.getId() + ")";
+                (timeStyle != null ? timeStyle : "") + ")";
         }
     }
 
