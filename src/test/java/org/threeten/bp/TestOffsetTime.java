@@ -64,7 +64,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
@@ -416,14 +415,14 @@ public class TestOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void factory_parse_formatter() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("H m s XXX");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("H m s XXX");
         OffsetTime test = OffsetTime.parse("11 30 0 +01:00", f);
         assertEquals(test, OffsetTime.of(LocalTime.of(11, 30), ZoneOffset.ofHours(1)));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_formatter_nullText() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("y M d H m s");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("y M d H m s");
         OffsetTime.parse((String) null, f);
     }
 
@@ -1241,7 +1240,7 @@ public class TestOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_toString_formatter() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("H m s");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("H m s");
         String t = OffsetTime.of(LocalTime.of(11, 30), OFFSET_PONE).toString(f);
         assertEquals(t, "11 30 0");
     }

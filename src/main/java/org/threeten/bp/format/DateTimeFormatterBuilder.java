@@ -2362,8 +2362,8 @@ public final class DateTimeFormatterBuilder {
         private static final long SECONDS_0000_TO_1970 = ((146097L * 5L) - (30L * 365L + 7L)) * 86400L;
         private static final CompositePrinterParser PARSER = new DateTimeFormatterBuilder()
                     .parseCaseInsensitive()
-                    .append(DateTimeFormatters.isoLocalDate()).appendLiteral('T')
-                    .append(DateTimeFormatters.isoLocalTime()).appendLiteral('Z')
+                    .append(DateTimeFormatter.ISO_LOCAL_DATE).appendLiteral('T')
+                    .append(DateTimeFormatter.ISO_LOCAL_TIME).appendLiteral('Z')
                     .toFormatter().toPrinterParser(false);
 
         InstantPrinterParser() {

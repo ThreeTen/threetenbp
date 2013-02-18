@@ -48,7 +48,7 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Objects;
 
-import org.threeten.bp.format.DateTimeFormatters;
+import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
 import org.threeten.bp.jdk8.Jdk8Methods;
@@ -336,7 +336,7 @@ public final class Instant
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static Instant parse(final CharSequence text) {
-        return DateTimeFormatters.isoInstant().parse(text, Instant.class);
+        return DateTimeFormatter.ISO_INSTANT.parse(text, Instant.class);
     }
 
     //-----------------------------------------------------------------------
@@ -1113,7 +1113,7 @@ public final class Instant
      */
     @Override
     public String toString() {
-        return DateTimeFormatters.isoInstant().format(this);
+        return DateTimeFormatter.ISO_INSTANT.format(this);
     }
 
     //-----------------------------------------------------------------------

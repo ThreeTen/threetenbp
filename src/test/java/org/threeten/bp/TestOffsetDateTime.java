@@ -80,7 +80,6 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
@@ -440,14 +439,14 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void factory_parse_formatter() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("y M d H m s XXX");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("y M d H m s XXX");
         OffsetDateTime test = OffsetDateTime.parse("2010 12 3 11 30 0 +01:00", f);
         assertEquals(test, OffsetDateTime.of(LocalDate.of(2010, 12, 3), LocalTime.of(11, 30), ZoneOffset.ofHours(1)));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_formatter_nullText() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("y M d H m s");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("y M d H m s");
         OffsetDateTime.parse((String) null, f);
     }
 
@@ -1385,7 +1384,7 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_toString_formatter() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("y M d H m s");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("y M d H m s");
         String t = OffsetDateTime.of(LocalDate.of(2010, 12, 3), LocalTime.of(11, 30), OFFSET_PONE).toString(f);
         assertEquals(t, "2010 12 3 11 30 0");
     }

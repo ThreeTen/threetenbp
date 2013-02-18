@@ -51,7 +51,6 @@ import java.util.Objects;
 
 import org.threeten.bp.chrono.ChronoLocalDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.DefaultInterfaceChronoLocalDateTime;
 import org.threeten.bp.jdk8.Jdk8Methods;
@@ -417,7 +416,7 @@ public final class LocalDateTime
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static LocalDateTime parse(CharSequence text) {
-        return parse(text, DateTimeFormatters.isoLocalDateTime());
+        return parse(text, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 
     /**

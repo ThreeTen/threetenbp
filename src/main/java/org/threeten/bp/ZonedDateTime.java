@@ -46,7 +46,6 @@ import java.util.Objects;
 
 import org.threeten.bp.chrono.ChronoZonedDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.DefaultInterfaceChronoZonedDateTime;
 import org.threeten.bp.temporal.ChronoField;
@@ -530,7 +529,7 @@ public final class ZonedDateTime
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static ZonedDateTime parse(CharSequence text) {
-        return parse(text, DateTimeFormatters.isoZonedDateTime());
+        return parse(text, DateTimeFormatter.ISO_ZONED_DATE_TIME);
     }
 
     /**

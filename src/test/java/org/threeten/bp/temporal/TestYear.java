@@ -59,7 +59,6 @@ import org.threeten.bp.YearMonth;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
 
 /**
@@ -278,14 +277,14 @@ public class TestYear extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void factory_parse_formatter() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("y");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("y");
         Year test = Year.parse("2010", f);
         assertEquals(test, Year.of(2010));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_formatter_nullText() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("y");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("y");
         Year.parse((String) null, f);
     }
 
@@ -739,7 +738,7 @@ public class TestYear extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_toString_formatter() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("y");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("y");
         String t = Year.of(2010).toString(f);
         assertEquals(t, "2010");
     }

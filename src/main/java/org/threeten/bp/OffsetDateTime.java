@@ -47,7 +47,6 @@ import java.util.Comparator;
 import java.util.Objects;
 
 import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporal;
 import org.threeten.bp.temporal.ChronoField;
@@ -325,7 +324,7 @@ public final class OffsetDateTime
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static OffsetDateTime parse(CharSequence text) {
-        return parse(text, DateTimeFormatters.isoOffsetDateTime());
+        return parse(text, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
     }
 
     /**

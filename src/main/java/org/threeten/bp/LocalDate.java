@@ -56,7 +56,6 @@ import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.Era;
 import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.DefaultInterfaceChronoLocalDate;
 import org.threeten.bp.jdk8.Jdk8Methods;
@@ -340,7 +339,7 @@ public final class LocalDate
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static LocalDate parse(CharSequence text) {
-        return parse(text, DateTimeFormatters.isoLocalDate());
+        return parse(text, DateTimeFormatter.ISO_LOCAL_DATE);
     }
 
     /**

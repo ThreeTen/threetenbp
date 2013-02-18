@@ -56,8 +56,8 @@ import org.threeten.bp.temporal.TemporalAccessor;
 @Test
 public class TestDateTimeFormatter {
 
-    private static final DateTimeFormatter BASIC_FORMATTER = DateTimeFormatters.pattern("'ONE'd");
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatters.pattern("'ONE'yyyy MM dd");
+    private static final DateTimeFormatter BASIC_FORMATTER = DateTimeFormatter.ofPattern("'ONE'd");
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("'ONE'yyyy MM dd");
 
     private DateTimeFormatter fmt;
 
@@ -212,21 +212,21 @@ public class TestDateTimeFormatter {
     //-----------------------------------------------------------------------
     @Test
     public void test_parseBest_firstOption() throws Exception {
-        DateTimeFormatter test = DateTimeFormatters.pattern("yyyy-MM[-dd]");
+        DateTimeFormatter test = DateTimeFormatter.ofPattern("yyyy-MM[-dd]");
         TemporalAccessor result = test.parseBest("2011-06-30", LocalDate.class, YearMonth.class);
         assertEquals(result, LocalDate.of(2011, 6, 30));
     }
 
     @Test
     public void test_parseBest_secondOption() throws Exception {
-        DateTimeFormatter test = DateTimeFormatters.pattern("yyyy-MM[-dd]");
+        DateTimeFormatter test = DateTimeFormatter.ofPattern("yyyy-MM[-dd]");
         TemporalAccessor result = test.parseBest("2011-06", LocalDate.class, YearMonth.class);
         assertEquals(result, YearMonth.of(2011, 6));
     }
 
     @Test(expectedExceptions=DateTimeParseException.class)
     public void test_parseBest_String_parseError() throws Exception {
-        DateTimeFormatter test = DateTimeFormatters.pattern("yyyy-MM[-dd]");
+        DateTimeFormatter test = DateTimeFormatter.ofPattern("yyyy-MM[-dd]");
         try {
             test.parseBest("2011-XX-30", LocalDate.class, YearMonth.class);
         } catch (DateTimeParseException ex) {

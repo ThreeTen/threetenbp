@@ -73,7 +73,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
@@ -559,14 +558,14 @@ public class TestLocalTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void factory_parse_formatter() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("H m s");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("H m s");
         LocalTime test = LocalTime.parse("14 30 40", f);
         assertEquals(test, LocalTime.of(14, 30, 40));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_formatter_nullText() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("H m s");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("H m s");
         LocalTime.parse((String) null, f);
     }
 
@@ -2174,7 +2173,7 @@ public class TestLocalTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_toString_formatter() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("H m s");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("H m s");
         String t = LocalTime.of(11, 30, 45).toString(f);
         assertEquals(t, "11 30 45");
     }

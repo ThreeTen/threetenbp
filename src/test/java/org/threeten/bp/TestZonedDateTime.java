@@ -81,7 +81,6 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
 import org.threeten.bp.temporal.ChronoField;
@@ -716,14 +715,14 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void factory_parse_formatter() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("y M d H m s I");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("y M d H m s I");
         ZonedDateTime test = ZonedDateTime.parse("2010 12 3 11 30 0 Europe/London", f);
         assertEquals(test, ZonedDateTime.of(LocalDateTime.of(2010, 12, 3, 11, 30), ZoneId.of("Europe/London")));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_formatter_nullText() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("y M d H m s");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("y M d H m s");
         ZonedDateTime.parse((String) null, f);
     }
 
@@ -2011,7 +2010,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_toString_formatter() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("y M d H m s");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("y M d H m s");
         String t = ZonedDateTime.of(dateTime(2010, 12, 3, 11, 30), ZONE_PARIS).toString(f);
         assertEquals(t, "2010 12 3 11 30 0");
     }
