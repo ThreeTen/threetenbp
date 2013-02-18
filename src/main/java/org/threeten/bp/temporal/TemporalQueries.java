@@ -112,7 +112,8 @@ public final class TemporalQueries {
      * {@code MonthDay} returns null<br>
      * {@code ZoneOffset} returns null<br>
      * {@code Instant} returns null<br>
-     * @return a ZoneId, may be null
+     *
+     * @return a query that can obtain the zone ID of a temporal, not null
      */
     public static final TemporalQuery<ZoneId> zoneId() {
         return ZONE_ID;
@@ -156,7 +157,8 @@ public final class TemporalQueries {
      * {@code TemporalQuery} via a method reference, {@code Chrono::from}.
      * That method is equivalent to this query, except that it throws an
      * exception if a chronology cannot be obtained.
-     * @return a Chrono, may be null
+     *
+     * @return a query that can obtain the chronology of a temporal, not null
      */
     public static final TemporalQuery<Chronology> chronology() {
         return CHRONO;
@@ -198,7 +200,8 @@ public final class TemporalQueries {
      * {@code MonthDay} returns null (does not represent a complete date or time)<br>
      * {@code ZoneOffset} returns null (does not represent a date or time)<br>
      * {@code Instant} returns {@code NANOS}<br>
-     * @return a ChronoUnit, may be null
+     *
+     * @return a query that can obtain the precision of a temporal, not null
      */
     public static final TemporalQuery<TemporalUnit> precision() {
         return PRECISION;
@@ -228,7 +231,8 @@ public final class TemporalQueries {
      * {@code TemporalQuery} via a method reference, {@code ZoneId::from}.
      * That method is equivalent to this query, except that it throws an
      * exception if a zone cannot be obtained.
-     * @return a ZoneId, may be null
+     *
+     * @return a query that can obtain the zone ID or offset of a temporal, not null
      */
     public static final TemporalQuery<ZoneId> zone() {
         return ZONE;
