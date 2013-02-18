@@ -200,12 +200,12 @@ public final class TemporalQueries {
      * {@code Instant} returns {@code NANOS}<br>
      * @return a ChronoUnit, may be null
      */
-    public static final TemporalQuery<ChronoUnit> precision() {
+    public static final TemporalQuery<TemporalUnit> precision() {
         return PRECISION;
     }
-    static final TemporalQuery<ChronoUnit> PRECISION = new TemporalQuery<ChronoUnit>() {
+    static final TemporalQuery<TemporalUnit> PRECISION = new TemporalQuery<TemporalUnit>() {
         @Override
-        public ChronoUnit queryFrom(TemporalAccessor temporal) {
+        public TemporalUnit queryFrom(TemporalAccessor temporal) {
             return temporal.query(this);
         }
     };
