@@ -715,7 +715,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void factory_parse_formatter() {
-        DateTimeFormatter f = DateTimeFormatter.ofPattern("y M d H m s I");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("y M d H m s VV");
         ZonedDateTime test = ZonedDateTime.parse("2010 12 3 11 30 0 Europe/London", f);
         assertEquals(test, ZonedDateTime.of(LocalDateTime.of(2010, 12, 3, 11, 30), ZoneId.of("Europe/London")));
     }

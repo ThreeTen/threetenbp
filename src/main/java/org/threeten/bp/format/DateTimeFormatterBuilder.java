@@ -632,15 +632,18 @@ public final class DateTimeFormatterBuilder {
      * The format of the offset is controlled by a pattern which must be one
      * of the following:
      * <p><ul>
-     * <li>{@code +HH} - hour only, ignoring any minute
-     * <li>{@code +HHMM} - hour and minute, no colon
-     * <li>{@code +HH:MM} - hour and minute, with colon
-     * <li>{@code +HHMMss} - hour and minute, with second if non-zero and no colon
-     * <li>{@code +HH:MM:ss} - hour and minute, with second if non-zero and colon
+     * <li>{@code +HH} - hour only, ignoring minute and second
+     * <li>{@code +HHmm} - hour, with minute if non-zero, ignoring second, no colon
+     * <li>{@code +HH:mm} - hour, with minute if non-zero, ignoring second, with colon
+     * <li>{@code +HHMM} - hour and minute, ignoring second, no colon
+     * <li>{@code +HH:MM} - hour and minute, ignoring second, with colon
+     * <li>{@code +HHMMss} - hour and minute, with second if non-zero, no colon
+     * <li>{@code +HH:MM:ss} - hour and minute, with second if non-zero, with colon
      * <li>{@code +HHMMSS} - hour, minute and second, no colon
      * <li>{@code +HH:MM:SS} - hour, minute and second, with colon
      * </ul><p>
-     * The "no offset" text controls what text is printed when the offset is zero.
+     * The "no offset" text controls what text is printed when the total amount of
+     * the offset fields to be output is zero.
      * Example values would be 'Z', '+00:00', 'UTC' or 'GMT'.
      * Three formats are accepted for parsing UTC - the "no offset" text, and the
      * plus and minus versions of zero defined by the pattern.
@@ -953,10 +956,11 @@ public final class DateTimeFormatterBuilder {
      *   n       nano-of-second              number            987654321
      *   N       nano-of-day                 number            1234000000
      *
-     *   I       time-zone ID                zoneId            America/Los_Angeles
-     *   z       time-zone name              text              Pacific Standard Time; PST
-     *   Z       zone-offset                 offset-Z          +0000; -0800; -08:00;
+     *   V       time-zone ID                zone-id           America/Los_Angeles; Z; -08:30
+     *   z       time-zone name              zone-name         Pacific Standard Time; PST
      *   X       zone-offset 'Z' for zero    offset-X          Z; -08; -0830; -08:30; -083015; -08:30:15;
+     *   x       zone-offset                 offset-x          +0000; -08; -0830; -08:30; -083015; -08:30:15;
+     *   Z       zone-offset                 offset-Z          +0000; -0800; -08:00;
      *
      *   p       pad next                    pad modifier      1
      *
@@ -997,20 +1001,60 @@ public final class DateTimeFormatterBuilder {
      * years as per {@link SignStyle#NORMAL}.
      * Otherwise, the sign is output if the pad width is exceeded, as per {@link SignStyle#EXCEEDS_PAD}
      * <p>
-     * <b>ZoneId</b>: 'I' outputs the zone ID, such as 'Europe/Paris'.
+     * <b>ZoneId</b>: This outputs the time-zone ID, such as 'Europe/Paris'.
+     * If the count of letters is two, then the time-zone ID is output.
+     * Any other count of letters throws {@code IllegalArgumentException}.
+     * <pre>
+     *  Pattern     Equivalent builder methods
+     *   VV          appendZoneId()
+     * </pre>
      * <p>
-     * <b>Offset X</b>: This formats the offset using 'Z' when the offset is zero.
-     * One letter outputs just the hour', such as '+01'
+     * <b>Zone names</b>: This outputs the display name of the time-zone ID.
+     * If the count of letters is one, two or three, then the short name is output.
+     * If the count of letters is four, then the full name is output.
+     * Five or more letters throws {@code IllegalArgumentException}.
+     * <pre>
+     *  Pattern     Equivalent builder methods
+     *   z           appendZoneText(TextStyle.SHORT)
+     *   zz          appendZoneText(TextStyle.SHORT)
+     *   zzz         appendZoneText(TextStyle.SHORT)
+     *   zzzz        appendZoneText(TextStyle.FULL)
+     * </pre>
+     * <p>
+     * <b>Offset X and x</b>: This formats the offset based on the number of pattern letters.
+     * One letter outputs just the hour', such as '+01', unless the minute is non-zero
+     * in which case the minute is also output, such as '+0130'.
      * Two letters outputs the hour and minute, without a colon, such as '+0130'.
      * Three letters outputs the hour and minute, with a colon, such as '+01:30'.
      * Four letters outputs the hour and minute and optional second, without a colon, such as '+013015'.
      * Five letters outputs the hour and minute and optional second, with a colon, such as '+01:30:15'.
+     * Six or more letters throws {@code IllegalArgumentException}.
+     * Pattern letter 'X' (upper case) will output 'Z' when the offset to be output would be zero,
+     * whereas pattern letter 'x' (lower case) will output '+00', '+0000', or '+00:00'.
+     * <pre>
+     *  Pattern     Equivalent builder methods
+     *   X           appendOffset("+HHmm","Z")
+     *   XX          appendOffset("+HHMM","Z")
+     *   XXX         appendOffset("+HH:MM","Z")
+     *   XXXX        appendOffset("+HHMMss","Z")
+     *   XXXXX       appendOffset("+HH:MM:ss","Z")
+     *   x           appendOffset("+HHmm","+00")
+     *   xx          appendOffset("+HHMM","+0000")
+     *   xxx         appendOffset("+HH:MM","+00:00")
+     *   xxxx        appendOffset("+HHMMss","+0000")
+     *   xxxxx       appendOffset("+HH:MM:ss","+00:00")
+     * </pre>
      * <p>
-     * <b>Offset Z</b>: This formats the offset using '+0000' or '+00:00' when the offset is zero.
-     * One or two letters outputs the hour and minute, without a colon, such as '+0130'.
-     * Three letters outputs the hour and minute, with a colon, such as '+01:30'.
-     * <p>
-     * <b>Zone names</b>: Time zone names ('z') cannot be parsed.
+     * <b>Offset Z</b>: This formats the offset based on the number of pattern letters.
+     * One, two or three letters outputs the hour and minute, without a colon, such as '+0130'.
+     * Four or more letters throws {@code IllegalArgumentException}.
+     * The output will be '+0000' when the offset is zero.
+     * <pre>
+     *  Pattern     Equivalent builder methods
+     *   Z           appendOffset("+HHMM","+0000")
+     *   ZZ          appendOffset("+HHMM","+0000")
+     *   ZZZ         appendOffset("+HHMM","+0000")
+     * </pre>
      * <p>
      * <b>Optional section</b>: The optional section markers work exactly like calling {@link #optionalStart()}
      * and {@link #optionalEnd()}.
@@ -1026,14 +1070,15 @@ public final class DateTimeFormatterBuilder {
      * Despite this, it is recommended to use single quotes around all characters that you want to
      * output directly to ensure that future changes do not break your application.
      * <p>
-     * The pattern string is similar, but not identical, to {@link java.text.SimpleDateFormat SimpleDateFormat}.
+     * Note that the pattern string is similar, but not identical, to
+     * {@link java.text.SimpleDateFormat SimpleDateFormat}.
+     * The pattern string is also similar, but not identical, to that defined by the
+     * Unicode Common Locale Data Repository (CLDR/LDML).
      * Pattern letters 'E' and 'u' are merged, which changes the meaning of "E" and "EE" to be numeric.
-     * Pattern letters 'Z' and 'X' are extended.
+     * Pattern letters 'X' is aligned with Unicode CLDR/LDML, which affects pattern 'X'.
      * Pattern letter 'y' and 'Y' parse years of two digits and more than 4 digits differently.
      * Pattern letters 'n', 'A', 'N', 'I' and 'p' are added.
      * Number types will reject large numbers.
-     * The pattern string is also similar, but not identical, to that defined by the
-     * Unicode Common Locale Data Repository (CLDR).
      *
      * @param pattern  the pattern to add, not null
      * @return this, for chaining, not null
@@ -1075,27 +1120,34 @@ public final class DateTimeFormatterBuilder {
                 if (field != null) {
                     parseField(cur, count, field);
                 } else if (cur == 'z') {
-                    if (count < 4) {
-                        appendZoneText(TextStyle.SHORT);
-                    } else {
+                    if (count > 4) {
+                        throw new IllegalArgumentException("Too many pattern letters: " + cur);
+                    } else if (count == 4) {
                         appendZoneText(TextStyle.FULL);
+                    } else {
+                        appendZoneText(TextStyle.SHORT);
                     }
-                } else if (cur == 'I') {
+                } else if (cur == 'V') {
+                    if (count != 2) {
+                        throw new IllegalArgumentException("Pattern letter count must be 2: " + cur);
+                    }
                     appendZoneId();
                 } else if (cur == 'Z') {
                     if (count > 3) {
                         throw new IllegalArgumentException("Too many pattern letters: " + cur);
                     }
-                    if (count < 3) {
-                        appendOffset("+HHMM", "+0000");
-                    } else {
-                        appendOffset("+HH:MM", "+00:00");
-                    }
+                    appendOffset("+HHMM", "+0000");
                 } else if (cur == 'X') {
                     if (count > 5) {
                         throw new IllegalArgumentException("Too many pattern letters: " + cur);
                     }
-                    appendOffset(OffsetIdPrinterParser.PATTERNS[count - 1], "Z");
+                    appendOffset(OffsetIdPrinterParser.PATTERNS[count + (count == 1 ? 0 : 1)], "Z");
+                } else if (cur == 'x') {
+                    if (count > 5) {
+                        throw new IllegalArgumentException("Too many pattern letters: " + cur);
+                    }
+                    String zero = (count == 1 ? "+00" : (count % 2 == 0 ? "+0000" : "+00:00"));
+                    appendOffset(OffsetIdPrinterParser.PATTERNS[count + (count == 1 ? 0 : 1)], zero);
                 } else {
                     throw new IllegalArgumentException("Unknown pattern letter: " + cur);
                 }
@@ -2472,7 +2524,7 @@ public final class DateTimeFormatterBuilder {
      */
     static final class OffsetIdPrinterParser implements DateTimePrinterParser {
         static final String[] PATTERNS = new String[] {
-            "+HH", "+HHMM", "+HH:MM", "+HHMMss", "+HH:MM:ss", "+HHMMSS", "+HH:MM:SS",
+            "+HH", "+HHmm", "+HH:mm", "+HHMM", "+HH:MM", "+HHMMss", "+HH:MM:ss", "+HHMMSS", "+HH:MM:SS",
         };  // order used in pattern builder
         static final OffsetIdPrinterParser INSTANCE_ID = new OffsetIdPrinterParser("Z", "+HH:MM:ss");
 
@@ -2514,15 +2566,23 @@ public final class DateTimeFormatterBuilder {
                 int absHours = Math.abs((totalSecs / 3600) % 100);  // anything larger than 99 silently dropped
                 int absMinutes = Math.abs((totalSecs / 60) % 60);
                 int absSeconds = Math.abs(totalSecs % 60);
+                int bufPos = buf.length();
+                int output = absHours;
                 buf.append(totalSecs < 0 ? "-" : "+")
                     .append((char) (absHours / 10 + '0')).append((char) (absHours % 10 + '0'));
-                if (type >= 1) {
+                if (type >= 3 || (type >= 1 && absMinutes > 0)) {
                     buf.append((type % 2) == 0 ? ":" : "")
                         .append((char) (absMinutes / 10 + '0')).append((char) (absMinutes % 10 + '0'));
-                    if (type >= 5 || (type >= 3 && absSeconds > 0)) {
+                    output += absMinutes;
+                    if (type >= 7 || (type >= 5 && absSeconds > 0)) {
                         buf.append((type % 2) == 0 ? ":" : "")
                             .append((char) (absSeconds / 10 + '0')).append((char) (absSeconds % 10 + '0'));
+                        output += absSeconds;
                     }
+                }
+                if (output == 0) {
+                    buf.setLength(bufPos);
+                    buf.append(noOffsetText);
                 }
             }
             return true;
@@ -2552,20 +2612,19 @@ public final class DateTimeFormatterBuilder {
                 int negative = (sign == '-' ? -1 : 1);
                 int[] array = new int[4];
                 array[0] = position + 1;
-                if (parseNumber(array, 1, text, true) ||
-                        parseNumber(array, 2, text, type > 0) ||
-                        parseNumber(array, 3, text, false)) {
-                    return ~position;
+                if ((parseNumber(array, 1, text, true) ||
+                        parseNumber(array, 2, text, type >=3) ||
+                        parseNumber(array, 3, text, false)) == false) {
+                    // success
+                    long offsetSecs = negative * (array[1] * 3600L + array[2] * 60L + array[3]);
+                    return context.setParsedField(OFFSET_SECONDS, offsetSecs, position, array[0]);
                 }
-                long offsetSecs = negative * (array[1] * 3600L + array[2] * 60L + array[3]);
-                return context.setParsedField(OFFSET_SECONDS, offsetSecs, position, array[0]);
-            } else {
-                // handle special case of empty no offset text
-                if (noOffsetLen == 0) {
-                    return context.setParsedField(OFFSET_SECONDS, 0, position, position + noOffsetLen);
-                }
-                return ~position;
             }
+            // handle special case of empty no offset text
+            if (noOffsetLen == 0) {
+                return context.setParsedField(OFFSET_SECONDS, 0, position, position + noOffsetLen);
+            }
+            return ~position;
         }
 
         /**

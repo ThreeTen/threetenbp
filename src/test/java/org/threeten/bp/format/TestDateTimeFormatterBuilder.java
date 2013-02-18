@@ -655,23 +655,24 @@ public class TestDateTimeFormatterBuilder {
             {"zz", "ZoneText(SHORT)"},
             {"zzz", "ZoneText(SHORT)"},
             {"zzzz", "ZoneText(FULL)"},
-            {"zzzzz", "ZoneText(FULL)"},
 
-            {"I", "ZoneId()"},
-            {"II", "ZoneId()"},
-            {"III", "ZoneId()"},
-            {"IIII", "ZoneId()"},
-            {"IIIII", "ZoneId()"},
+            {"VV", "ZoneId()"},
 
             {"Z", "Offset('+0000',+HHMM)"},  // SimpleDateFormat compatible
             {"ZZ", "Offset('+0000',+HHMM)"},
-            {"ZZZ", "Offset('+00:00',+HH:MM)"},
+            {"ZZZ", "Offset('+0000',+HHMM)"},
 
-            {"X", "Offset('Z',+HH)"},
+            {"X", "Offset('Z',+HHmm)"},
             {"XX", "Offset('Z',+HHMM)"},
             {"XXX", "Offset('Z',+HH:MM)"},
             {"XXXX", "Offset('Z',+HHMMss)"},
             {"XXXXX", "Offset('Z',+HH:MM:ss)"},
+
+            {"x", "Offset('+00',+HHmm)"},
+            {"xx", "Offset('+0000',+HHMM)"},
+            {"xxx", "Offset('+00:00',+HH:MM)"},
+            {"xxxx", "Offset('+0000',+HHMMss)"},
+            {"xxxxx", "Offset('+00:00',+HH:MM:ss)"},
 
             {"ppH", "Pad(Value(HourOfDay),2)"},
             {"pppDD", "Pad(Value(DayOfYear,2),3)"},

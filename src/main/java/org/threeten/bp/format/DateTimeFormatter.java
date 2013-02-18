@@ -678,10 +678,11 @@ public final class DateTimeFormatter {
      *   n       nano-of-second              number            987654321
      *   N       nano-of-day                 number            1234000000
      *
-     *   I       time-zone ID                zoneId            America/Los_Angeles
-     *   z       time-zone name              text              Pacific Standard Time; PST
-     *   Z       zone-offset                 offset-Z          +0000; -0800; -08:00;
+     *   V       time-zone ID                zone-id           America/Los_Angeles; Z; -08:30
+     *   z       time-zone name              zone-name         Pacific Standard Time; PST
      *   X       zone-offset 'Z' for zero    offset-X          Z; -08; -0830; -08:30; -083015; -08:30:15;
+     *   x       zone-offset                 offset-x          +0000; -08; -0830; -08:30; -083015; -08:30:15;
+     *   Z       zone-offset                 offset-Z          +0000; -0800; -08:00;
      *
      *   p       pad next                    pad modifier      1
      *
@@ -724,20 +725,30 @@ public final class DateTimeFormatter {
      * years as per {@link SignStyle#NORMAL}.
      * Otherwise, the sign is output if the pad width is exceeded, as per {@link SignStyle#EXCEEDS_PAD}
      * <p>
-     * <b>ZoneId</b>: 'I' outputs the zone ID, such as 'Europe/Paris'.
+     * <b>ZoneId</b>: This outputs the time-zone ID, such as 'Europe/Paris'.
+     * If the count of letters is two, then the time-zone ID is output.
+     * Any other count of letters throws {@code IllegalArgumentException}.
      * <p>
-     * <b>Offset X</b>: This formats the offset using 'Z' when the offset is zero.
-     * One letter outputs just the hour', such as '+01'
+     * <b>Zone names</b>: This outputs the display name of the time-zone ID.
+     * If the count of letters is one, two or three, then the short name is output.
+     * If the count of letters is four, then the full name is output.
+     * Five or more letters throws {@code IllegalArgumentException}.
+     * <p>
+     * <b>Offset X and x</b>: This formats the offset based on the number of pattern letters.
+     * One letter outputs just the hour', such as '+01', unless the minute is non-zero
+     * in which case the minute is also output, such as '+0130'.
      * Two letters outputs the hour and minute, without a colon, such as '+0130'.
      * Three letters outputs the hour and minute, with a colon, such as '+01:30'.
      * Four letters outputs the hour and minute and optional second, without a colon, such as '+013015'.
      * Five letters outputs the hour and minute and optional second, with a colon, such as '+01:30:15'.
+     * Six or more letters throws {@code IllegalArgumentException}.
+     * Pattern letter 'X' (upper case) will output 'Z' when the offset to be output would be zero,
+     * whereas pattern letter 'x' (lower case) will output '+00', '+0000', or '+00:00'.
      * <p>
-     * <b>Offset Z</b>: This formats the offset using '+0000' or '+00:00' when the offset is zero.
-     * One or two letters outputs the hour and minute, without a colon, such as '+0130'.
-     * Three letters outputs the hour and minute, with a colon, such as '+01:30'.
-     * <p>
-     * <b>Zone names</b>: Time zone names ('z') cannot be parsed.
+     * <b>Offset Z</b>: This formats the offset based on the number of pattern letters.
+     * One, two or three letters outputs the hour and minute, without a colon, such as '+0130'.
+     * Four or more letters throws {@code IllegalArgumentException}.
+     * The output will be '+0000' when the offset is zero.
      * <p>
      * <b>Optional section</b>: The optional section markers work exactly like calling
      * {@link DateTimeFormatterBuilder#optionalStart()} and {@link DateTimeFormatterBuilder#optionalEnd()}.
@@ -752,15 +763,6 @@ public final class DateTimeFormatter {
      * Any non-letter character, other than '[', ']', '{', '}' and the single quote will be output directly.
      * Despite this, it is recommended to use single quotes around all characters that you want to
      * output directly to ensure that future changes do not break your application.
-     * <p>
-     * The pattern string is similar, but not identical, to {@link java.text.SimpleDateFormat SimpleDateFormat}.
-     * Pattern letters 'E' and 'u' are merged, which changes the meaning of "E" and "EE" to be numeric.
-     * Pattern letters 'Z' and 'X' are extended.
-     * Pattern letter 'y' and 'Y' parse years of two digits and more than 4 digits differently.
-     * Pattern letters 'n', 'A', 'N', 'I' and 'p' are added.
-     * Number types will reject large numbers.
-     * The pattern string is also similar, but not identical, to that defined by the
-     * Unicode Common Locale Data Repository (CLDR).
      *
      * @param pattern  the pattern to use, not null
      * @return the formatter based on the pattern, not null
