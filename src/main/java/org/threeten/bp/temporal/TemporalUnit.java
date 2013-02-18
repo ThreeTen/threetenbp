@@ -73,6 +73,7 @@ public interface TemporalUnit {
      * Gets the duration of this unit, which may be an estimate.
      * <p>
      * All units return a duration measured in standard nanoseconds from this method.
+     * The duration will be positive and non-zero.
      * For example, an hour has a duration of {@code 60 * 60 * 1,000,000,000ns}.
      * <p>
      * Some units may return an accurate duration while others return an estimate.
