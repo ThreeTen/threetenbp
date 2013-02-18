@@ -40,13 +40,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDate;
-import org.threeten.bp.format.DateTimeBuilder;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
@@ -431,8 +431,8 @@ public class TestChronoLocalDate {
         }
 
         @Override
-        public boolean resolve(DateTimeBuilder builder, long value) {
-            throw new UnsupportedOperationException("Not supported yet.");
+        public Map<TemporalField, Long> resolve(TemporalAccessor temporal, long value) {
+            return null;
         }
 
     }

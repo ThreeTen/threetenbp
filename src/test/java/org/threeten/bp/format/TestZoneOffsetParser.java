@@ -62,8 +62,8 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
             pp.parse(parseContext, text, pos);
         } catch (RuntimeException ex) {
             assertTrue(expected.isInstance(ex));
-            assertEquals(parseContext.toTemporalAccessor().query(TemporalQueries.chronology()), null);
-            assertEquals(parseContext.toTemporalAccessor().query(TemporalQueries.zoneId()), null);
+            assertEquals(parseContext.toParsed().query(TemporalQueries.chronology()), null);
+            assertEquals(parseContext.toParsed().query(TemporalQueries.zoneId()), null);
         }
     }
 
@@ -406,8 +406,8 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
     }
 
     private void assertParsed(ZoneOffset expectedOffset) {
-        assertEquals(parseContext.toTemporalAccessor().query(TemporalQueries.chronology()), null);
-        assertEquals(parseContext.toTemporalAccessor().query(TemporalQueries.zoneId()), null);
+        assertEquals(parseContext.toParsed().query(TemporalQueries.chronology()), null);
+        assertEquals(parseContext.toParsed().query(TemporalQueries.zoneId()), null);
         if (expectedOffset == null) {
             assertEquals(parseContext.getParsed(OFFSET_SECONDS), null);
         } else {

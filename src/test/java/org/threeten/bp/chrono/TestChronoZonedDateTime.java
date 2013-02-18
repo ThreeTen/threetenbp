@@ -40,6 +40,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -50,7 +51,6 @@ import org.threeten.bp.LocalTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.ZonedDateTime;
-import org.threeten.bp.format.DateTimeBuilder;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
@@ -446,8 +446,8 @@ public class TestChronoZonedDateTime {
         }
 
         @Override
-        public boolean resolve(DateTimeBuilder builder, long value) {
-            throw new UnsupportedOperationException("Not supported yet.");
+        public Map<TemporalField, Long> resolve(TemporalAccessor temporal, long value) {
+            return null;
         }
 
     }

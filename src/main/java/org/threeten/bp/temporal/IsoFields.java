@@ -44,12 +44,14 @@ import static org.threeten.bp.temporal.ChronoUnit.MONTHS;
 import static org.threeten.bp.temporal.ChronoUnit.WEEKS;
 import static org.threeten.bp.temporal.ChronoUnit.YEARS;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.IsoChronology;
-import org.threeten.bp.format.DateTimeBuilder;
 import org.threeten.bp.jdk8.Jdk8Methods;
 
 /**
@@ -225,7 +227,7 @@ public final class IsoFields {
             }
             @Override
             public ValueRange rangeRefinedBy(TemporalAccessor temporal) {
-                if (isSupportedBy(temporal) == false) {
+                if (temporal.isSupported(this) == false) {
                     throw new DateTimeException("Unsupported field: DayOfQuarter");
                 }
                 long qoy = temporal.getLong(QUARTER_OF_YEAR);
@@ -241,7 +243,7 @@ public final class IsoFields {
             }
             @Override
             public long getFrom(TemporalAccessor temporal) {
-                if (isSupportedBy(temporal) == false) {
+                if (temporal.isSupported(this) == false) {
                     throw new DateTimeException("Unsupported field: DayOfQuarter");
                 }
                 int doy = temporal.get(DAY_OF_YEAR);
@@ -254,6 +256,21 @@ public final class IsoFields {
                 long curValue = getFrom(temporal);
                 range().checkValidValue(newValue, this);
                 return (R) temporal.with(DAY_OF_YEAR, temporal.getLong(DAY_OF_YEAR) + (newValue - curValue));
+            }
+            @Override
+            public Map<TemporalField, Long> resolve(TemporalAccessor temporal, long value) {
+                if ((temporal.isSupported(YEAR) && temporal.isSupported(DAY_OF_QUARTER)) == false) {
+                    return null;
+                }
+                int y = temporal.get(YEAR);
+                int qoy = temporal.get(QUARTER_OF_YEAR);
+                range().checkValidValue(value, this);  // leniently check from 1 to 92 TODO: check
+                LocalDate date = LocalDate.of(y, ((qoy - 1) * 3) + 1, 1).plusDays(value - 1);
+                Map<TemporalField, Long> result = new HashMap<>(4, 1.0f);
+                result.put(EPOCH_DAY, date.toEpochDay());
+                result.put(YEAR, null);
+                result.put(QUARTER_OF_YEAR, null);
+                return result;
             }
         },
         QUARTER_OF_YEAR {
@@ -283,7 +300,7 @@ public final class IsoFields {
             }
             @Override
             public long getFrom(TemporalAccessor temporal) {
-                if (isSupportedBy(temporal) == false) {
+                if (temporal.isSupported(this) == false) {
                     throw new DateTimeException("Unsupported field: QuarterOfYear");
                 }
                 long moy = temporal.getLong(MONTH_OF_YEAR);
@@ -294,19 +311,6 @@ public final class IsoFields {
                 long curValue = getFrom(temporal);
                 range().checkValidValue(newValue, this);
                 return (R) temporal.with(MONTH_OF_YEAR, temporal.getLong(MONTH_OF_YEAR) + (newValue - curValue) * 3);
-            }
-            @Override
-            public boolean resolve(DateTimeBuilder builder, long value) {
-                Long[] values = builder.queryFieldValues(YEAR, QUARTER_OF_YEAR, DAY_OF_QUARTER);
-                if (values[0] != null && values[1] != null && values[2] != null) {
-                    int y = YEAR.range().checkValidIntValue(values[0], YEAR);
-                    int qoy = QUARTER_OF_YEAR.range().checkValidIntValue(values[1], QUARTER_OF_YEAR);
-                    int doq = DAY_OF_QUARTER.range().checkValidIntValue(values[2], DAY_OF_QUARTER);
-                    LocalDate date = LocalDate.of(y, ((qoy - 1) * 3) + 1, 1).plusDays(doq - 1);
-                    builder.addFieldValue(EPOCH_DAY, date.toEpochDay());
-                    builder.removeFieldValues(QUARTER_OF_YEAR, DAY_OF_QUARTER);
-                }
-                return false;
             }
         },
         WEEK_OF_WEEK_BASED_YEAR {
@@ -332,14 +336,14 @@ public final class IsoFields {
             }
             @Override
             public ValueRange rangeRefinedBy(TemporalAccessor temporal) {
-                if (isSupportedBy(temporal) == false) {
+                if (temporal.isSupported(this) == false) {
                     throw new DateTimeException("Unsupported field: WeekOfWeekBasedYear");
                 }
                 return getWeekRange(LocalDate.from(temporal));
             }
             @Override
             public long getFrom(TemporalAccessor temporal) {
-                if (isSupportedBy(temporal) == false) {
+                if (temporal.isSupported(this) == false) {
                     throw new DateTimeException("Unsupported field: WeekOfWeekBasedYear");
                 }
                 return getWeek(LocalDate.from(temporal));
@@ -348,6 +352,21 @@ public final class IsoFields {
             public <R extends Temporal> R adjustInto(R temporal, long newValue) {
                 range().checkValidValue(newValue, this);
                 return (R) temporal.plus(Jdk8Methods.safeSubtract(newValue, getFrom(temporal)), WEEKS);
+            }
+            @Override
+            public Map<TemporalField, Long> resolve(TemporalAccessor temporal, long value) {
+                if ((temporal.isSupported(WEEK_BASED_YEAR) && temporal.isSupported(DAY_OF_WEEK)) == false) {
+                    return null;
+                }
+                int wby = temporal.get(WEEK_BASED_YEAR);
+                int dow = temporal.get(DAY_OF_WEEK);
+                range().checkValidValue(value, this);  // lenient range
+                LocalDate date = LocalDate.of(wby, 1, 4).plusWeeks(value - 1).with(DAY_OF_WEEK, dow);
+                Map<TemporalField, Long> result = new HashMap<>(2, 1.0f);
+                result.put(EPOCH_DAY, date.toEpochDay());
+                result.put(WEEK_BASED_YEAR, null);
+                result.put(DAY_OF_WEEK, null);
+                return result;
             }
         },
         WEEK_BASED_YEAR {
@@ -377,7 +396,7 @@ public final class IsoFields {
             }
             @Override
             public long getFrom(TemporalAccessor temporal) {
-                if (isSupportedBy(temporal) == false) {
+                if (temporal.isSupported(this) == false) {
                     throw new DateTimeException("Unsupported field: WeekBasedYear");
                 }
                 return getWeekBasedYear(LocalDate.from(temporal));
@@ -393,19 +412,6 @@ public final class IsoFields {
                 date = date.withDayOfYear(180).withYear(newVal).with(WEEK_OF_WEEK_BASED_YEAR, week);
                 return (R) date.with(date);
             }
-            @Override
-            public boolean resolve(DateTimeBuilder builder, long value) {
-                Long[] values = builder.queryFieldValues(WEEK_BASED_YEAR, WEEK_OF_WEEK_BASED_YEAR, DAY_OF_WEEK);
-                if (values[0] != null && values[1] != null && values[2] != null) {
-                    int wby = WEEK_BASED_YEAR.range().checkValidIntValue(values[0], WEEK_BASED_YEAR);
-                    int week = WEEK_OF_WEEK_BASED_YEAR.range().checkValidIntValue(values[1], WEEK_OF_WEEK_BASED_YEAR);
-                    int dow = DAY_OF_WEEK.range().checkValidIntValue(values[2], DAY_OF_WEEK);
-                    LocalDate date = LocalDate.of(wby, 2, 1).with(WEEK_OF_WEEK_BASED_YEAR, week).with(DAY_OF_WEEK, dow);
-                    builder.addFieldValue(EPOCH_DAY, date.toEpochDay());
-                    builder.removeFieldValues(WEEK_BASED_YEAR, WEEK_OF_WEEK_BASED_YEAR, DAY_OF_WEEK);
-                }
-                return false;
-            }
         };
 
         @Override
@@ -414,8 +420,8 @@ public final class IsoFields {
         }
 
         @Override
-        public boolean resolve(DateTimeBuilder builder, long value) {
-            return false;
+        public Map<TemporalField, Long> resolve(TemporalAccessor temporal, long value) {
+            return null;
         }
 
         @Override

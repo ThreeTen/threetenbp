@@ -73,8 +73,8 @@ public class TestCharLiteralParser extends AbstractTestPrinterParser {
         parseContext.setCaseSensitive(caseSensitive);
         int result = pp.parse(parseContext, text, pos);
         assertEquals(result, expectedPos);
-        assertEquals(parseContext.toTemporalAccessor().query(TemporalQueries.chronology()), null);
-        assertEquals(parseContext.toTemporalAccessor().query(TemporalQueries.zoneId()), null);
+        assertEquals(parseContext.toParsed().query(TemporalQueries.chronology()), null);
+        assertEquals(parseContext.toParsed().query(TemporalQueries.zoneId()), null);
     }
 
     //-----------------------------------------------------------------------
@@ -92,8 +92,8 @@ public class TestCharLiteralParser extends AbstractTestPrinterParser {
             pp.parse(parseContext, text, pos);
         } catch (RuntimeException ex) {
             assertTrue(expected.isInstance(ex));
-            assertEquals(parseContext.toTemporalAccessor().query(TemporalQueries.chronology()), null);
-            assertEquals(parseContext.toTemporalAccessor().query(TemporalQueries.zoneId()), null);
+            assertEquals(parseContext.toParsed().query(TemporalQueries.chronology()), null);
+            assertEquals(parseContext.toParsed().query(TemporalQueries.zoneId()), null);
         }
     }
 

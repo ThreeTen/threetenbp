@@ -44,6 +44,7 @@ import org.threeten.bp.DateTimeException;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.format.DateTimeFormatterBuilder.CompositePrinterParser;
+import org.threeten.bp.format.DateTimeParseContext.Parsed;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.TemporalAccessor;
 
@@ -314,6 +315,75 @@ public final class DateTimeFormatter {
 
     //-----------------------------------------------------------------------
     /**
+     * Fully parses the text producing a temporal object.
+     * <p>
+     * This parses the entire text producing a temporal object.
+     * It is typically more useful to use {@link #parse(CharSequence, TemporalQuery)}.
+     * The result of this method is {@code TemporalAccessor} which has been resolved,
+     * applying basic validation checks to help ensure a valid date-time.
+     * <p>
+     * If the parse completes without reading the entire length of the text,
+     * or a problem occurs during parsing or merging, then an exception is thrown.
+     *
+     * @param text  the text to parse, not null
+     * @return the parsed temporal object, not null
+     * @throws DateTimeParseException if unable to parse the requested result
+     */
+    public TemporalAccessor parse(CharSequence text) {
+        Objects.requireNonNull(text, "text");
+        try {
+            return parseToBuilder(text, null).resolve();
+        } catch (DateTimeParseException ex) {
+            throw ex;
+        } catch (RuntimeException ex) {
+            throw createError(text, ex);
+        }
+    }
+
+    /**
+     * Parses the text using this formatter, providing control over the text position.
+     * <p>
+     * This parses the text without requiring the parse to start from the beginning
+     * of the string or finish at the end.
+     * The result of this method is {@code TemporalAccessor} which has been resolved,
+     * applying basic validation checks to help ensure a valid date-time.
+     * <p>
+     * The text will be parsed from the specified start {@code ParsePosition}.
+     * The entire length of the text does not have to be parsed, the {@code ParsePosition}
+     * will be updated with the index at the end of parsing.
+     * <p>
+     * The operation of this method is slightly different to similar methods using
+     * {@code ParsePosition} on {@code java.text.Format}. That class will return
+     * errors using the error index on the {@code ParsePosition}. By contrast, this
+     * method will throw a {@link DateTimeParseException} if an error occurs, with
+     * the exception containing the error index.
+     * This change in behavior is necessary due to the increased complexity of
+     * parsing and resolving dates/times in this API.
+     * <p>
+     * If the formatter parses the same field more than once with different values,
+     * the result will be an error.
+     *
+     * @param text  the text to parse, not null
+     * @param position  the position to parse from, updated with length parsed
+     *  and the index of any error, not null
+     * @return the parsed temporal object, not null
+     * @throws DateTimeParseException if unable to parse the requested result
+     * @throws IndexOutOfBoundsException if the position is invalid
+     */
+    public TemporalAccessor parse(CharSequence text, ParsePosition position) {
+        Objects.requireNonNull(text, "text");
+        Objects.requireNonNull(position, "position");
+        try {
+            return parseToBuilder(text, position).resolve();
+        } catch (DateTimeParseException | IndexOutOfBoundsException ex) {
+            throw ex;
+        } catch (RuntimeException ex) {
+            throw createError(text, ex);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Fully parses the text producing an object of the specified type.
      * <p>
      * Most applications should use this method for parsing.
@@ -329,19 +399,18 @@ public final class DateTimeFormatter {
      * @param text  the text to parse, not null
      * @param type  the type to extract, not null
      * @return the parsed date-time, not null
-     * @throws DateTimeParseException if the parse fails
+     * @throws DateTimeParseException if unable to parse the requested result
      */
     public <T> T parse(CharSequence text, Class<T> type) {
         Objects.requireNonNull(text, "text");
         Objects.requireNonNull(type, "type");
-        String str = text.toString();  // parsing whole String, so this makes sense
         try {
-            DateTimeBuilder builder = parseToBuilder(str).resolve();
+            DateTimeBuilder builder = parseToBuilder(text, null).resolve();
             return builder.build(type);
         } catch (DateTimeParseException ex) {
             throw ex;
         } catch (RuntimeException ex) {
-            throw createError(str, ex);
+            throw createError(text, ex);
         }
     }
 
@@ -372,7 +441,7 @@ public final class DateTimeFormatter {
      * @param types  the types to attempt to parse to, which must implement {@code TemporalAccessor}, not null
      * @return the parsed date-time, not null
      * @throws IllegalArgumentException if less than 2 types are specified
-     * @throws DateTimeParseException if the parse fails
+     * @throws DateTimeParseException if unable to parse the requested result
      */
     public TemporalAccessor parseBest(CharSequence text, Class<?>... types) {
         Objects.requireNonNull(text, "text");
@@ -380,9 +449,8 @@ public final class DateTimeFormatter {
         if (types.length < 2) {
             throw new IllegalArgumentException("At least two types must be specified");
         }
-        String str = text.toString();  // parsing whole String, so this makes sense
         try {
-            DateTimeBuilder builder = parseToBuilder(str).resolve();
+            DateTimeBuilder builder = parseToBuilder(text, null).resolve();
             for (Class<?> type : types) {
                 try {
                     return (TemporalAccessor) builder.build(type);
@@ -394,16 +462,18 @@ public final class DateTimeFormatter {
         } catch (DateTimeParseException ex) {
             throw ex;
         } catch (RuntimeException ex) {
-            throw createError(str, ex);
+            throw createError(text, ex);
         }
     }
 
-    private DateTimeParseException createError(String str, RuntimeException ex) {
-        String abbr = str;
-        if (abbr.length() > 64) {
-            abbr = abbr.substring(0, 64) + "...";
+    private DateTimeParseException createError(CharSequence text, RuntimeException ex) {
+        String abbr = "";
+        if (text.length() > 64) {
+            abbr = text.subSequence(0, 64).toString() + "...";
+        } else {
+            abbr = text.toString();
         }
-        return new DateTimeParseException("Text '" + abbr + "' could not be parsed: " + ex.getMessage(), str, 0, ex);
+        return new DateTimeParseException("Text '" + abbr + "' could not be parsed: " + ex.getMessage(), text, 0, ex);
     }
 
     //-----------------------------------------------------------------------
@@ -415,59 +485,87 @@ public final class DateTimeFormatter {
      * some other {@code DateTimeException} if another date/time problem occurs.
      *
      * @param text  the text to parse, not null
+     * @param position  the position to parse from, updated with length parsed
+     *  and the index of any error, null if parsing whole string
      * @return the engine representing the result of the parse, not null
      * @throws DateTimeParseException if the parse fails
      */
-    public DateTimeBuilder parseToBuilder(CharSequence text) {
-        Objects.requireNonNull(text, "text");
-        String str = text.toString();  // parsing whole String, so this makes sense
-        ParsePosition pos = new ParsePosition(0);
-        DateTimeBuilder result = parseToBuilder(str, pos);
-        if (result == null || pos.getErrorIndex() >= 0 || pos.getIndex() < str.length()) {
-            String abbr = str;
-            if (abbr.length() > 64) {
-                abbr = abbr.substring(0, 64) + "...";
+    private DateTimeBuilder parseToBuilder(final CharSequence text, final ParsePosition position) {
+        ParsePosition pos = (position != null ? position : new ParsePosition(0));
+        Parsed result = parseUnresolved0(text, pos);
+        if (result == null || pos.getErrorIndex() >= 0 || (position == null && pos.getIndex() < text.length())) {
+            String abbr = "";
+            if (text.length() > 64) {
+                abbr = text.subSequence(0, 64).toString() + "...";
+            } else {
+                abbr = text.toString();
             }
             if (pos.getErrorIndex() >= 0) {
                 throw new DateTimeParseException("Text '" + abbr + "' could not be parsed at index " +
-                        pos.getErrorIndex(), str, pos.getErrorIndex());
+                        pos.getErrorIndex(), text, pos.getErrorIndex());
             } else {
                 throw new DateTimeParseException("Text '" + abbr + "' could not be parsed, unparsed text found at index " +
-                        pos.getIndex(), str, pos.getIndex());
+                        pos.getIndex(), text, pos.getIndex());
             }
         }
-        return result;
+        return result.resolveFields().toBuilder();
     }
 
     /**
-     * Parses the text to a builder.
+     * Parses the text using this formatter, without resolving the result, intended
+     * for advanced use cases.
      * <p>
-     * This parses to a {@code DateTimeBuilder} but does not require the input to be fully parsed.
+     * Parsing is implemented as a two-phase operation.
+     * First, the text is parsed using the layout defined by the formatter, producing
+     * a {@code Map} of field to value, a {@code ZoneId} and a {@code Chronology}.
+     * Second, the parsed data is <em>resolved</em>, by validating, combining and
+     * simplifying the various fields into more useful ones.
+     * This method performs the parsing stage but not the resolving stage.
      * <p>
-     * This method does not throw {@link DateTimeParseException}.
-     * Instead, errors are returned within the state of the specified parse position.
+     * The result of this method is {@code TemporalAccessor} which represents the
+     * data as seen in the input. Values are not validated, thus parsing a date string
+     * of '2012-00-65' would result in a temporal with three fields - year of '2012',
+     * month of '0' and day-of-month of '65'.
+     * <p>
+     * The text will be parsed from the specified start {@code ParsePosition}.
+     * The entire length of the text does not have to be parsed, the {@code ParsePosition}
+     * will be updated with the index at the end of parsing.
+     * <p>
+     * Errors are returned using the error index field of the {@code ParsePosition}
+     * instead of {@code DateTimeParseException}.
+     * The returned error index will be set to an index indicative of the error.
      * Callers must check for errors before using the context.
      * <p>
-     * This method may throw some other {@code DateTimeException} if a date/time problem occurs.
+     * If the formatter parses the same field more than once with different values,
+     * the result will be an error.
+     * <p>
+     * This method is intended for advanced use cases that need access to the
+     * internal state during parsing. Typical application code should use
+     * {@link #parse(CharSequence, TemporalQuery)} or the parse method on the target type.
      *
      * @param text  the text to parse, not null
      * @param position  the position to parse from, updated with length parsed
      *  and the index of any error, not null
-     * @return the parsed text, null only if the parse results in an error
+     * @return the parsed text, null if the parse results in an error
+     * @throws DateTimeException if some problem occurs during parsing
      * @throws IndexOutOfBoundsException if the position is invalid
      */
-    public DateTimeBuilder parseToBuilder(CharSequence text, ParsePosition position) {
+    public TemporalAccessor parseUnresolved(CharSequence text, ParsePosition position) {
+        return parseUnresolved0(text, position);
+    }
+
+    private Parsed parseUnresolved0(CharSequence text, ParsePosition position) {
         Objects.requireNonNull(text, "text");
         Objects.requireNonNull(position, "position");
         DateTimeParseContext context = new DateTimeParseContext(this);
         int pos = position.getIndex();
         pos = printerParser.parse(context, text, pos);
         if (pos < 0) {
-            position.setErrorIndex(~pos);
+            position.setErrorIndex(~pos);  // index not updated from input
             return null;
         }
-        position.setIndex(pos);
-        return context.toBuilder();
+        position.setIndex(pos);  // errorIndex not updated from input
+        return context.toParsed();
     }
 
     //-----------------------------------------------------------------------
@@ -569,10 +667,10 @@ public final class DateTimeFormatter {
         public Object parseObject(String text) throws ParseException {
             Objects.requireNonNull(text, "text");
             try {
-                if (parseType != null) {
-                    return formatter.parse(text, parseType);
+                if (parseType == null) {
+                    return formatter.parseToBuilder(text, null).resolve();
                 }
-                return formatter.parseToBuilder(text);
+                return formatter.parse(text, parseType);
             } catch (DateTimeParseException ex) {
                 throw new ParseException(ex.getMessage(), ex.getErrorIndex());
             } catch (RuntimeException ex) {
@@ -582,26 +680,27 @@ public final class DateTimeFormatter {
         @Override
         public Object parseObject(String text, ParsePosition pos) {
             Objects.requireNonNull(text, "text");
-            DateTimeBuilder builder;
+            Parsed unresolved;
             try {
-                builder = formatter.parseToBuilder(text, pos);
+                unresolved = formatter.parseUnresolved0(text, pos);
             } catch (IndexOutOfBoundsException ex) {
                 if (pos.getErrorIndex() < 0) {
                     pos.setErrorIndex(0);
                 }
                 return null;
             }
-            if (builder == null) {
+            if (unresolved == null) {
                 if (pos.getErrorIndex() < 0) {
                     pos.setErrorIndex(0);
                 }
                 return null;
             }
-            if (parseType == null) {
-                return builder;
-            }
             try {
-                return builder.resolve().build(parseType);
+                DateTimeBuilder builder = unresolved.resolveFields().toBuilder().resolve();
+                if (parseType == null) {
+                    return builder;
+                }
+                return builder.build(parseType);
             } catch (RuntimeException ex) {
                 pos.setErrorIndex(0);
                 return null;

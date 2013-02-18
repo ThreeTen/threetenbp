@@ -46,7 +46,8 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.LocalDate;
-import org.threeten.bp.format.DateTimeBuilder;
+import org.threeten.bp.format.DateTimeFormatter;
+import org.threeten.bp.format.DateTimeFormatterBuilder;
 
 /**
  * Test.
@@ -99,16 +100,16 @@ public class TestIsoFields {
     }
 
     //-----------------------------------------------------------------------
-    // builder
+    // parse weeks
     //-----------------------------------------------------------------------
     @Test(dataProvider="week")
-    public void test_builder(LocalDate date, DayOfWeek dow, int week, int wby) {
-        DateTimeBuilder builder = new DateTimeBuilder();
-        builder.addFieldValue(IsoFields.WEEK_BASED_YEAR, wby);
-        builder.addFieldValue(IsoFields.WEEK_OF_WEEK_BASED_YEAR, week);
-        builder.addFieldValue(DAY_OF_WEEK, dow.getValue());
-        builder.resolve();
-        assertEquals(builder.build(LocalDate.class), date);
+    public void test_parse_weeks(LocalDate date, DayOfWeek dow, int week, int wby) {
+        DateTimeFormatter f = new DateTimeFormatterBuilder()
+                .appendValue(IsoFields.WEEK_BASED_YEAR).appendLiteral('-')
+                .appendValue(IsoFields.WEEK_OF_WEEK_BASED_YEAR).appendLiteral('-')
+                .appendValue(DAY_OF_WEEK).toFormatter();
+        LocalDate parsed = LocalDate.parse(wby + "-" + week + "-" + dow.getValue(), f);
+        assertEquals(parsed, date);
     }
 
     //-----------------------------------------------------------------------

@@ -65,13 +65,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Set;
 
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.DayOfWeek;
@@ -105,7 +102,7 @@ import org.threeten.bp.temporal.TemporalQuery;
  * This class is mutable and not thread-safe.
  * It should only be used from a single thread.
  */
-public final class DateTimeBuilder
+final class DateTimeBuilder
         extends DefaultInterfaceTemporalAccessor
         implements TemporalAccessor, Cloneable {
 
@@ -386,19 +383,6 @@ public final class DateTimeBuilder
      */
     public DateTimeBuilder resolve() {
         splitObjects();
-        // handle unusual fields
-        if (otherFields != null) {
-            outer:
-            while (true) {
-                Set<Entry<TemporalField, Long>> entrySet = new HashSet<>(otherFields.entrySet());
-                for (Entry<TemporalField, Long> entry : entrySet) {
-                    if (entry.getKey().resolve(this, entry.getValue())) {
-                        continue outer;
-                    }
-                }
-                break;
-            }
-        }
         // handle standard fields
         mergeDate();
         mergeTime();
@@ -728,7 +712,13 @@ public final class DateTimeBuilder
     //-----------------------------------------------------------------------
     @Override
     public boolean isSupported(TemporalField field) {
-        return field != null && containsFieldValue(field);
+        if (field == null) {
+            return false;
+        }
+        return standardFields.containsKey(field) ||
+                (otherFields != null && otherFields.containsKey(field));
+//                (date != null && date.isSupported(field)) ||
+//                (time != null && time.isSupported(field));
     }
 
     @Override

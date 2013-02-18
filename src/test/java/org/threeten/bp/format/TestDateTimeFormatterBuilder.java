@@ -45,6 +45,7 @@ import java.util.Map;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import org.threeten.bp.temporal.TemporalAccessor;
 
 /**
  * Test DateTimeFormatterBuilder.
@@ -181,9 +182,9 @@ public class TestDateTimeFormatterBuilder {
         builder.appendValue(MONTH_OF_YEAR, 1, 2, SignStyle.NORMAL).appendValue(DAY_OF_MONTH, 2);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(MonthOfYear,1,2,NORMAL)Value(DayOfMonth,2)");
-        DateTimeBuilder cal = f.parseToBuilder("123", new ParsePosition(0));
-        assertEquals(cal.getFieldValueMap().get(MONTH_OF_YEAR), Long.valueOf(1));
-        assertEquals(cal.getFieldValueMap().get(DAY_OF_MONTH), Long.valueOf(23));
+        TemporalAccessor cal = f.parseUnresolved("123", new ParsePosition(0));
+        assertEquals(cal.get(MONTH_OF_YEAR), 1);
+        assertEquals(cal.get(DAY_OF_MONTH), 23);
     }
 
     @Test
@@ -191,9 +192,9 @@ public class TestDateTimeFormatterBuilder {
         builder.appendValue(MONTH_OF_YEAR, 1, 2, SignStyle.NORMAL).appendValue(DAY_OF_MONTH, 2);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(MonthOfYear,1,2,NORMAL)Value(DayOfMonth,2)");
-        DateTimeBuilder cal = f.parseToBuilder("0123", new ParsePosition(0));
-        assertEquals(cal.getFieldValueMap().get(MONTH_OF_YEAR), Long.valueOf(1));
-        assertEquals(cal.getFieldValueMap().get(DAY_OF_MONTH), Long.valueOf(23));
+        TemporalAccessor cal = f.parseUnresolved("0123", new ParsePosition(0));
+        assertEquals(cal.get(MONTH_OF_YEAR), 1);
+        assertEquals(cal.get(DAY_OF_MONTH), 23);
     }
 
     @Test
@@ -201,9 +202,9 @@ public class TestDateTimeFormatterBuilder {
         builder.appendValue(MONTH_OF_YEAR, 1, 2, SignStyle.NORMAL).appendValue(DAY_OF_MONTH, 2).appendLiteral('4');
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(MonthOfYear,1,2,NORMAL)Value(DayOfMonth,2)'4'");
-        DateTimeBuilder cal = f.parseToBuilder("01234", new ParsePosition(0));
-        assertEquals(cal.getFieldValueMap().get(MONTH_OF_YEAR), Long.valueOf(1));
-        assertEquals(cal.getFieldValueMap().get(DAY_OF_MONTH), Long.valueOf(23));
+        TemporalAccessor cal = f.parseUnresolved("01234", new ParsePosition(0));
+        assertEquals(cal.get(MONTH_OF_YEAR), 1);
+        assertEquals(cal.get(DAY_OF_MONTH), 23);
     }
 
     @Test
@@ -214,10 +215,10 @@ public class TestDateTimeFormatterBuilder {
             .appendValue(DAY_OF_MONTH, 2);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(Year,4,10,EXCEEDS_PAD)Value(MonthOfYear,2)Value(DayOfMonth,2)");
-        DateTimeBuilder cal = f.parseToBuilder("20090630", new ParsePosition(0));
-        assertEquals(cal.getFieldValueMap().get(YEAR), Long.valueOf(2009));
-        assertEquals(cal.getFieldValueMap().get(MONTH_OF_YEAR), Long.valueOf(6));
-        assertEquals(cal.getFieldValueMap().get(DAY_OF_MONTH), Long.valueOf(30));
+        TemporalAccessor cal = f.parseUnresolved("20090630", new ParsePosition(0));
+        assertEquals(cal.get(YEAR), 2009);
+        assertEquals(cal.get(MONTH_OF_YEAR), 6);
+        assertEquals(cal.get(DAY_OF_MONTH), 30);
     }
 
     //-----------------------------------------------------------------------
@@ -231,8 +232,8 @@ public class TestDateTimeFormatterBuilder {
         builder.appendValueReduced(YEAR, 2, 2000);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "ReducedValue(Year,2,2000)");
-        DateTimeBuilder cal = f.parseToBuilder("12", new ParsePosition(0));
-        assertEquals(cal.getFieldValueMap().get(YEAR), Long.valueOf(2012));
+        TemporalAccessor cal = f.parseUnresolved("12", new ParsePosition(0));
+        assertEquals(cal.get(YEAR), 2012);
     }
 
     @Test
@@ -240,9 +241,9 @@ public class TestDateTimeFormatterBuilder {
         builder.appendValue(MONTH_OF_YEAR, 1, 2, SignStyle.NORMAL).appendValueReduced(YEAR, 2, 2000);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(MonthOfYear,1,2,NORMAL)ReducedValue(Year,2,2000)");
-        DateTimeBuilder cal = f.parseToBuilder("123", new ParsePosition(0));
-        assertEquals(cal.getFieldValueMap().get(MONTH_OF_YEAR), Long.valueOf(1));
-        assertEquals(cal.getFieldValueMap().get(YEAR), Long.valueOf(2023));
+        TemporalAccessor cal = f.parseUnresolved("123", new ParsePosition(0));
+        assertEquals(cal.get(MONTH_OF_YEAR), 1);
+        assertEquals(cal.get(YEAR), 2023);
     }
 
     //-----------------------------------------------------------------------

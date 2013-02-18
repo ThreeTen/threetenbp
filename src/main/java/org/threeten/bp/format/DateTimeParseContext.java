@@ -42,7 +42,7 @@ import org.threeten.bp.ZoneId;
 import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
-import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
@@ -355,42 +355,12 @@ final class DateTimeParseContext {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a {@code DateTimeBuilder} that can be used to interpret
-     * the results of the parse.
-     * <p>
-     * This method is typically used once parsing is complete to obtain the parsed data.
-     * Parsing will typically result in separate fields, such as year, month and day.
-     * The returned builder can be used to combine the parsed data into meaningful
-     * objects such as {@code LocalDate}, potentially applying complex processing
-     * to handle invalid parsed data.
-     *
-     * @return a new builder with the results of the parse, not null
-     */
-    DateTimeBuilder toBuilder() {
-        Parsed parsed = currentParsed();
-        DateTimeBuilder builder = new DateTimeBuilder();
-        for (Map.Entry<TemporalField, Long> fv : parsed.fieldValues.entrySet()) {
-            builder.addFieldValue(fv.getKey(), fv.getValue());
-        }
-        if (parsed.chrono != null) {
-            builder.addCalendrical(parsed.chrono);
-        } else if (chronology != null) {
-            builder.addCalendrical(chronology);
-        }
-//        builder.addCalendrical(getEffectiveChronology());
-        if (parsed.zone != null) {
-            builder.addCalendrical(parsed.zone);
-        }
-        return builder;
-    }
-
-    /**
      * Returns a {@code TemporalAccessor} that can be used to interpret
      * the results of the parse.
      *
      * @return an accessor with the results of the parse, not null
      */
-    TemporalAccessor toTemporalAccessor() {
+    Parsed toParsed() {
         return currentParsed();
     }
 
@@ -409,7 +379,7 @@ final class DateTimeParseContext {
     /**
      * Temporary store of parsed data.
      */
-    private static final class Parsed extends DefaultInterfaceTemporalAccessor {
+    final class Parsed extends DefaultInterfaceTemporalAccessor {
         Chronology chrono = null;
         ZoneId zone = null;
         final Map<TemporalField, Long> fieldValues = new HashMap<>();
@@ -431,6 +401,14 @@ final class DateTimeParseContext {
             return fieldValues.containsKey(field);
         }
         @Override
+        public int get(TemporalField field) {
+            if (fieldValues.containsKey(field) == false) {
+                throw new DateTimeException("Unsupported field: " + field);
+            }
+            long value = fieldValues.get(field);
+            return Jdk8Methods.safeToInt(value);
+        }
+        @Override
         public long getLong(TemporalField field) {
             if (fieldValues.containsKey(field) == false) {
                 throw new DateTimeException("Unsupported field: " + field);
@@ -447,6 +425,77 @@ final class DateTimeParseContext {
                 return (R) zone;
             }
             return super.query(query);
+        }
+
+        /**
+         * Resolves the fields in this context.
+         *
+         * @return this, for method chaining
+         * @throws DateTimeException if resolving one field results in a value for
+         *  another field that is in conflict
+         */
+        Parsed resolveFields() {
+            outer:
+            while (true) {
+                for (Map.Entry<TemporalField, Long> entry : fieldValues.entrySet()) {
+                    TemporalField targetField = entry.getKey();
+                    Map<TemporalField, Long> changes = targetField.resolve(this, entry.getValue());
+                    if (changes != null) {
+                        resolveMakeChanges(targetField, changes);
+                        fieldValues.remove(targetField);  // helps avoid infinite loops
+                        continue outer;  // have to restart to avoid concurrent modification
+                    }
+                }
+                break;
+            }
+            return this;
+        }
+
+        private void resolveMakeChanges(TemporalField targetField, Map<TemporalField, Long> changes) {
+            for (Map.Entry<TemporalField, Long> change : changes.entrySet()) {
+                TemporalField changeField = change.getKey();
+                Long changeValue = change.getValue();
+                Objects.requireNonNull(changeField, "changeField");
+                if (changeValue != null) {
+                    Long old = fieldValues.put(changeField, changeValue);
+                    if (old != null && old.longValue() != changeValue.longValue()) {
+                        throw new DateTimeException("Conflict found: " + changeField + " " + old +
+                                " differs from " + changeField + " " + changeValue +
+                                " while resolving  " + targetField);
+                    }
+                } else {
+                    fieldValues.remove(changeField);
+                }
+            }
+        }
+
+        /**
+         * Returns a {@code DateTimeBuilder} that can be used to interpret
+         * the results of the parse.
+         * <p>
+         * This method is typically used once parsing is complete to obtain the parsed data.
+         * Parsing will typically result in separate fields, such as year, month and day.
+         * The returned builder can be used to combine the parsed data into meaningful
+         * objects such as {@code LocalDate}, potentially applying complex processing
+         * to handle invalid parsed data.
+         *
+         * @return a new builder with the results of the parse, not null
+         */
+        DateTimeBuilder toBuilder() {
+            DateTimeBuilder builder = new DateTimeBuilder();
+            for (Map.Entry<TemporalField, Long> fv : fieldValues.entrySet()) {
+                builder.addFieldValue(fv.getKey(), fv.getValue());
+            }
+            if (chrono != null) {
+                builder.addCalendrical(chrono);
+            } else if (chronology != null) {
+                builder.addCalendrical(chronology);
+            }
+//            builder.addCalendrical(getEffectiveChronology());
+            if (zone != null) {
+                builder.addCalendrical(zone);
+            }
+            return builder;
         }
     }
 

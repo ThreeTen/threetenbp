@@ -45,11 +45,14 @@ import static org.threeten.bp.temporal.ChronoUnit.SECONDS;
 import static org.threeten.bp.temporal.ChronoUnit.WEEKS;
 import static org.threeten.bp.temporal.ChronoUnit.YEARS;
 
+import java.util.Map;
+
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.Instant;
 import org.threeten.bp.Year;
 import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.format.DateTimeBuilder;
+import org.threeten.bp.chrono.ChronoLocalDate;
+import org.threeten.bp.chrono.Chronology;
 
 /**
  * A standard set of fields.
@@ -603,8 +606,8 @@ public enum ChronoField implements TemporalField {
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean resolve(DateTimeBuilder builder, long value) {
-        return false;  // resolve implemented in builder
+    public Map<TemporalField, Long> resolve(TemporalAccessor temporal, long value) {
+        return null;  // resolve implemented in builder
     }
 
     //-----------------------------------------------------------------------

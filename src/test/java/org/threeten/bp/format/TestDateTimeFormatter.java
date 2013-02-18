@@ -292,85 +292,20 @@ public class TestDateTimeFormatter {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_parseToBuilder_String() throws Exception {
-        DateTimeFormatter test = fmt.withLocale(Locale.ENGLISH).withSymbols(DateTimeFormatSymbols.STANDARD);
-        DateTimeBuilder result = test.parseToBuilder("ONE30");
-        assertEquals(result.getFieldValueMap().size(), 1);
-        assertEquals(result.getFieldValue(DAY_OF_MONTH), 30L);
-        assertEquals(result.getCalendricalList().size(), 0);
-    }
-
-    @Test
-    public void test_parseToBuilder_CharSequence() throws Exception {
-        DateTimeFormatter test = fmt.withLocale(Locale.ENGLISH).withSymbols(DateTimeFormatSymbols.STANDARD);
-        DateTimeBuilder result = test.parseToBuilder(new StringBuilder("ONE30"));
-        assertEquals(result.getFieldValueMap().size(), 1);
-        assertEquals(result.getFieldValue(DAY_OF_MONTH), 30L);
-        assertEquals(result.getCalendricalList().size(), 0);
-    }
-
-    @Test(expectedExceptions=DateTimeParseException.class)
-    public void test_parseToBuilder_String_parseError() throws Exception {
-        DateTimeFormatter test = fmt.withLocale(Locale.ENGLISH).withSymbols(DateTimeFormatSymbols.STANDARD);
-        try {
-            test.parseToBuilder("ONEXXX");
-        } catch (DateTimeParseException ex) {
-            assertEquals(ex.getMessage().contains("ONEXXX"), true);
-            assertEquals(ex.getParsedString(), "ONEXXX");
-            assertEquals(ex.getErrorIndex(), 3);
-            throw ex;
-        }
-    }
-
-    @Test(expectedExceptions=DateTimeParseException.class)
-    public void test_parseToBuilder_String_parseErrorLongText() throws Exception {
-        DateTimeFormatter test = fmt.withLocale(Locale.ENGLISH).withSymbols(DateTimeFormatSymbols.STANDARD);
-        try {
-            test.parseToBuilder("ONEXXX67890123456789012345678901234567890123456789012345678901234567890123456789");
-        } catch (DateTimeParseException ex) {
-            assertEquals(ex.getMessage().contains("ONEXXX6789012345678901234567890123456789012345678901234567890123..."), true);
-            assertEquals(ex.getParsedString(), "ONEXXX67890123456789012345678901234567890123456789012345678901234567890123456789");
-            assertEquals(ex.getErrorIndex(), 3);
-            throw ex;
-        }
-    }
-
-    @Test(expectedExceptions=DateTimeParseException.class)
-    public void test_parseToBuilder_String_parseIncomplete() throws Exception {
-        DateTimeFormatter test = fmt.withLocale(Locale.ENGLISH).withSymbols(DateTimeFormatSymbols.STANDARD);
-        try {
-            test.parseToBuilder("ONE30SomethingElse");
-        } catch (DateTimeParseException ex) {
-            assertEquals(ex.getMessage().contains("ONE30SomethingElse"), true);
-            assertEquals(ex.getParsedString(), "ONE30SomethingElse");
-            assertEquals(ex.getErrorIndex(), 5);
-            throw ex;
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_parseToBuilder_String_null() throws Exception {
-        DateTimeFormatter test = fmt.withLocale(Locale.ENGLISH).withSymbols(DateTimeFormatSymbols.STANDARD);
-        test.parseToBuilder((String) null);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test
     public void test_parseToBuilder_StringParsePosition() throws Exception {
         DateTimeFormatter test = fmt.withLocale(Locale.ENGLISH).withSymbols(DateTimeFormatSymbols.STANDARD);
         ParsePosition pos = new ParsePosition(0);
-        DateTimeBuilder result = test.parseToBuilder("ONE30XXX", pos);
+        TemporalAccessor result = test.parseUnresolved("ONE30XXX", pos);
         assertEquals(pos.getIndex(), 5);
         assertEquals(pos.getErrorIndex(), -1);
-        assertEquals(result.getFieldValueMap().size(), 1);
-        assertEquals(result.getFieldValueMap().get(DAY_OF_MONTH), Long.valueOf(30));
+        assertEquals(result.getLong(DAY_OF_MONTH), 30L);
     }
 
     @Test
     public void test_parseToBuilder_StringParsePosition_parseError() throws Exception {
         DateTimeFormatter test = fmt.withLocale(Locale.ENGLISH).withSymbols(DateTimeFormatSymbols.STANDARD);
         ParsePosition pos = new ParsePosition(0);
-        DateTimeBuilder result = test.parseToBuilder("ONEXXX", pos);
+        TemporalAccessor result = test.parseUnresolved("ONEXXX", pos);
         assertEquals(pos.getIndex(), 0);  // TODO: is this right?
         assertEquals(pos.getErrorIndex(), 3);
         assertEquals(result, null);
@@ -380,20 +315,20 @@ public class TestDateTimeFormatter {
     public void test_parseToBuilder_StringParsePosition_nullString() throws Exception {
         DateTimeFormatter test = fmt.withLocale(Locale.ENGLISH).withSymbols(DateTimeFormatSymbols.STANDARD);
         ParsePosition pos = new ParsePosition(0);
-        test.parseToBuilder((String) null, pos);
+        test.parseUnresolved((String) null, pos);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_parseToBuilder_StringParsePosition_nullParsePosition() throws Exception {
         DateTimeFormatter test = fmt.withLocale(Locale.ENGLISH).withSymbols(DateTimeFormatSymbols.STANDARD);
-        test.parseToBuilder("ONE30", (ParsePosition) null);
+        test.parseUnresolved("ONE30", (ParsePosition) null);
     }
 
     @Test(expectedExceptions=IndexOutOfBoundsException.class)
     public void test_parseToBuilder_StringParsePosition_invalidPosition() throws Exception {
         DateTimeFormatter test = fmt.withLocale(Locale.ENGLISH).withSymbols(DateTimeFormatSymbols.STANDARD);
         ParsePosition pos = new ParsePosition(6);
-        test.parseToBuilder("ONE30", pos);
+        test.parseUnresolved("ONE30", pos);
     }
 
     //-----------------------------------------------------------------------

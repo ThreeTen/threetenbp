@@ -99,8 +99,8 @@ public class TestPadParserDecorator extends AbstractTestPrinterParser {
         PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new StringLiteralPrinterParser("-HELLO-"), 8, '-');
         int result = pp.parse(parseContext, "--HELLO-", 0);
         assertEquals(result, 8);
-        assertEquals(parseContext.toTemporalAccessor().query(TemporalQueries.chronology()), null);
-        assertEquals(parseContext.toTemporalAccessor().query(TemporalQueries.zoneId()), null);
+        assertEquals(parseContext.toParsed().query(TemporalQueries.chronology()), null);
+        assertEquals(parseContext.toParsed().query(TemporalQueries.zoneId()), null);
     }
 
     private void assertParsed(TemporalField field, Long value) {

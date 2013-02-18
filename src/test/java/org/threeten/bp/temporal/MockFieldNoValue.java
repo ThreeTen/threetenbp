@@ -34,8 +34,9 @@ package org.threeten.bp.temporal;
 import static org.threeten.bp.temporal.ChronoUnit.MONTHS;
 import static org.threeten.bp.temporal.ChronoUnit.WEEKS;
 
+import java.util.Map;
+
 import org.threeten.bp.DateTimeException;
-import org.threeten.bp.format.DateTimeBuilder;
 
 /**
  * Mock DateTimeField that returns null.
@@ -92,8 +93,8 @@ public enum MockFieldNoValue implements TemporalField {
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean resolve(DateTimeBuilder dateTimeBuilder, long value) {
-        return false;
+    public Map<TemporalField, Long> resolve(TemporalAccessor temporal, long value) {
+        return null;
     }
 
 }

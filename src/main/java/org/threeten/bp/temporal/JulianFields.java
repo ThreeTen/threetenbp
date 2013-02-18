@@ -35,9 +35,10 @@ import static org.threeten.bp.temporal.ChronoField.EPOCH_DAY;
 import static org.threeten.bp.temporal.ChronoUnit.DAYS;
 import static org.threeten.bp.temporal.ChronoUnit.FOREVER;
 
+import java.util.Collections;
+import java.util.Map;
+
 import org.threeten.bp.DateTimeException;
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.format.DateTimeBuilder;
 import org.threeten.bp.jdk8.Jdk8Methods;
 
 /**
@@ -232,21 +233,8 @@ public final class JulianFields {
 
         //-----------------------------------------------------------------------
         @Override
-        public boolean resolve(DateTimeBuilder builder, long value) {
-            boolean changed = false;
-            changed = resolve0(JULIAN_DAY, builder, changed);
-            changed = resolve0(MODIFIED_JULIAN_DAY, builder, changed);
-            changed = resolve0(RATA_DIE, builder, changed);
-            return changed;
-        }
-
-        private boolean resolve0(Field field, DateTimeBuilder builder, boolean changed) {
-            if (builder.containsFieldValue(field)) {
-                builder.addCalendrical(LocalDate.ofEpochDay(Jdk8Methods.safeSubtract(builder.getFieldValue(JULIAN_DAY), JULIAN_DAY.offset)));
-                builder.removeFieldValue(JULIAN_DAY);
-                changed = true;
-            }
-            return changed;
+        public Map<TemporalField, Long> resolve(TemporalAccessor temporal, long value) {
+            return Collections.<TemporalField, Long>singletonMap(EPOCH_DAY, Jdk8Methods.safeSubtract(value, offset));
         }
 
         //-----------------------------------------------------------------------

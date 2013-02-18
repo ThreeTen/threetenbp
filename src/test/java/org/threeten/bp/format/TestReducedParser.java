@@ -63,8 +63,8 @@ public class TestReducedParser extends AbstractTestPrinterParser {
             pp.parse(parseContext, text, pos);
         } catch (RuntimeException ex) {
             assertTrue(expected.isInstance(ex));
-            assertEquals(parseContext.toTemporalAccessor().query(TemporalQueries.chronology()), null);
-            assertEquals(parseContext.toTemporalAccessor().query(TemporalQueries.zoneId()), null);
+            assertEquals(parseContext.toParsed().query(TemporalQueries.chronology()), null);
+            assertEquals(parseContext.toParsed().query(TemporalQueries.zoneId()), null);
         }
     }
 

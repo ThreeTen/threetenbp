@@ -63,8 +63,8 @@ public class TestNumberParser extends AbstractTestPrinterParser {
             pp.parse(parseContext, text, pos);
         } catch (RuntimeException ex) {
             assertTrue(expected.isInstance(ex));
-            assertEquals(parseContext.toTemporalAccessor().query(TemporalQueries.chronology()), null);
-            assertEquals(parseContext.toTemporalAccessor().query(TemporalQueries.zoneId()), null);
+            assertEquals(parseContext.toParsed().query(TemporalQueries.chronology()), null);
+            assertEquals(parseContext.toParsed().query(TemporalQueries.zoneId()), null);
         }
     }
 
@@ -140,8 +140,8 @@ public class TestNumberParser extends AbstractTestPrinterParser {
         if (expectedPos > 0) {
             assertParsed(parseContext, DAY_OF_MONTH, expectedValue);
         } else {
-            assertEquals(parseContext.toTemporalAccessor().query(TemporalQueries.chronology()), null);
-            assertEquals(parseContext.toTemporalAccessor().query(TemporalQueries.zoneId()), null);
+            assertEquals(parseContext.toParsed().query(TemporalQueries.chronology()), null);
+            assertEquals(parseContext.toParsed().query(TemporalQueries.zoneId()), null);
         }
     }
 
