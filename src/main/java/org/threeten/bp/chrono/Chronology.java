@@ -181,14 +181,40 @@ public abstract class Chronology implements Comparable<Chronology> {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Chrono} from a locale.
+     * Obtains an instance of {@code Chronology} from a locale.
      * <p>
-     * The locale can be used to identify a calendar.
-     * This uses {@link Locale#getUnicodeLocaleType(String)} to obtain the "ca" key
-     * to identify the calendar system.
+     * This returns a {@code Chronology} based on the specified locale,
+     * typically returning {@code IsoChronology}. Other calendar systems
+     * are only returned if they are explicitly selected within the locale.
      * <p>
-     * If the locale does not contain calendar system information, the standard
-     * ISO calendar system is used.
+     * The {@link Locale} class provide access to a range of information useful
+     * for localizing an application. This includes the language and region,
+     * such as "en-GB" for English as used in Great Britain.
+     * <p>
+     * The {@code Locale} class also supports an extension mechanism that
+     * can be used to identify a calendar system. The mechanism is a form
+     * of key-value pairs, where the calendar system has the key "ca".
+     * For example, the locale "en-JP-u-ca-japanese" represents the English
+     * language as used in Japan with the Japanese calendar system.
+     * <p>
+     * This method finds the desired calendar system by in a manner equivalent
+     * to passing "ca" to {@link Locale#getUnicodeLocaleType(String)}.
+     * If the "ca" key is not present, then {@code IsoChronology} is returned.
+     * <p>
+     * Note that the behavior of this method differs from the older
+     * {@link java.util.Calendar#getInstance(Locale)} method.
+     * If that method receives a locale of "th_TH" it will return {@code BuddhistCalendar}.
+     * By contrast, this method will return {@code IsoChronology}.
+     * Passing the locale "th-TH-u-ca-buddhist" into either method will
+     * result in the Thai Buddhist calendar system and is therefore the
+     * recommended approach going forward for Thai calendar system localization.
+     * <p>
+     * A similar, but simpler, situation occurs for the Japanese calendar system.
+     * The locale "jp_JP_JP" has previously been used to access the calendar.
+     * However, unlike the Thai locale, "ja_JP_JP" is automatically converted by
+     * {@code Locale} to the modern and recommended form of "ja-JP-u-ca-japanese".
+     * Thus, there is no difference in behavior between this method and
+     * {@code Calendar#getInstance(Locale)}.
      *
      * @param locale  the locale to use to obtain the calendar system, not null
      * @return the calendar system associated with the locale, not null
@@ -197,9 +223,7 @@ public abstract class Chronology implements Comparable<Chronology> {
     public static Chronology ofLocale(Locale locale) {
         Objects.requireNonNull(locale, "locale");
         String type = locale.getUnicodeLocaleType("ca");
-        if (type == null) {
-            return IsoChronology.INSTANCE;
-        } else if ("iso".equals(type) || "iso8601".equals(type)) {
+        if (type == null || "iso".equals(type) || "iso8601".equals(type)) {
             return IsoChronology.INSTANCE;
         } else {
             Chronology chrono = CHRONOS_BY_TYPE.get(type);
