@@ -52,8 +52,15 @@ import static org.threeten.bp.temporal.ChronoField.SECOND_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.SECOND_OF_MINUTE;
 import static org.threeten.bp.temporal.ChronoUnit.DAYS;
 import static org.threeten.bp.temporal.ChronoUnit.FOREVER;
+import static org.threeten.bp.temporal.ChronoUnit.HOURS;
+import static org.threeten.bp.temporal.ChronoUnit.MICROS;
+import static org.threeten.bp.temporal.ChronoUnit.MILLIS;
+import static org.threeten.bp.temporal.ChronoUnit.MINUTES;
+import static org.threeten.bp.temporal.ChronoUnit.MONTHS;
 import static org.threeten.bp.temporal.ChronoUnit.NANOS;
+import static org.threeten.bp.temporal.ChronoUnit.SECONDS;
 import static org.threeten.bp.temporal.ChronoUnit.WEEKS;
+import static org.threeten.bp.temporal.ChronoUnit.YEARS;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -847,6 +854,105 @@ public class TestLocalTime extends AbstractDateTimeTest {
     @Test(expectedExceptions=DateTimeException.class)
     public void test_withNanoOfSecond_nanoTooHigh() {
         TEST_12_30_40_987654321.withNano(1000000000);
+    }
+
+    //-----------------------------------------------------------------------
+    // truncated(TemporalUnit)
+    //-----------------------------------------------------------------------
+    TemporalUnit NINETY_MINS = new TemporalUnit() {
+        @Override
+        public String getName() {
+            return "NinetyMins";
+        }
+        @Override
+        public Duration getDuration() {
+            return Duration.ofMinutes(90);
+        }
+        @Override
+        public boolean isDurationEstimated() {
+            return false;
+        }
+        @Override
+        public boolean isSupportedBy(Temporal temporal) {
+            return false;
+        }
+        @Override
+        public <R extends Temporal> R addTo(R r, long l) {
+            throw new UnsupportedOperationException();
+        }
+        @Override
+        public long between(Temporal r, Temporal r2) {
+            throw new UnsupportedOperationException();
+        }
+    };
+
+    TemporalUnit NINETY_FIVE_MINS = new TemporalUnit() {
+        @Override
+        public String getName() {
+            return "NinetyFiveMins";
+        }
+        @Override
+        public Duration getDuration() {
+            return Duration.ofMinutes(95);
+        }
+        @Override
+        public boolean isDurationEstimated() {
+            return false;
+        }
+        @Override
+        public boolean isSupportedBy(Temporal temporal) {
+            return false;
+        }
+        @Override
+        public <R extends Temporal> R addTo(R r, long l) {
+            throw new UnsupportedOperationException();
+        }
+        @Override
+        public long between(Temporal r, Temporal r2) {
+            throw new UnsupportedOperationException();
+        }
+    };
+
+    @DataProvider(name="truncatedToValid")
+    Object[][] data_truncatedToValid() {
+        return new Object[][] {
+            {LocalTime.of(1, 2, 3, 123_456_789), NANOS, LocalTime.of(1, 2, 3, 123_456_789)},
+            {LocalTime.of(1, 2, 3, 123_456_789), MICROS, LocalTime.of(1, 2, 3, 123_456_000)},
+            {LocalTime.of(1, 2, 3, 123_456_789), MILLIS, LocalTime.of(1, 2, 3, 1230_00_000)},
+            {LocalTime.of(1, 2, 3, 123_456_789), SECONDS, LocalTime.of(1, 2, 3)},
+            {LocalTime.of(1, 2, 3, 123_456_789), MINUTES, LocalTime.of(1, 2)},
+            {LocalTime.of(1, 2, 3, 123_456_789), HOURS, LocalTime.of(1, 0)},
+            {LocalTime.of(1, 2, 3, 123_456_789), DAYS, LocalTime.MIDNIGHT},
+
+            {LocalTime.of(1, 1, 1, 123_456_789), NINETY_MINS, LocalTime.of(0, 0)},
+            {LocalTime.of(2, 1, 1, 123_456_789), NINETY_MINS, LocalTime.of(1, 30)},
+            {LocalTime.of(3, 1, 1, 123_456_789), NINETY_MINS, LocalTime.of(3, 0)},
+        };
+    }
+
+    @Test(groups={"tck"}, dataProvider="truncatedToValid")
+    public void test_truncatedTo_valid(LocalTime input, TemporalUnit unit, LocalTime expected) {
+        assertEquals(input.truncatedTo(unit), expected);
+    }
+
+    @DataProvider(name="truncatedToInvalid")
+    Object[][] data_truncatedToInvalid() {
+        return new Object[][] {
+            {LocalTime.of(1, 2, 3, 123_456_789), NINETY_FIVE_MINS},
+            {LocalTime.of(1, 2, 3, 123_456_789), WEEKS},
+            {LocalTime.of(1, 2, 3, 123_456_789), MONTHS},
+            {LocalTime.of(1, 2, 3, 123_456_789), YEARS},
+        };
+    }
+
+    @Test(groups={"tck"}, dataProvider="truncatedToInvalid", expectedExceptions=DateTimeException.class)
+    public void test_truncatedTo_invalid(LocalTime input, TemporalUnit unit) {
+        input.truncatedTo(unit);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_truncatedTo_null() {
+        TEST_12_30_40_987654321.truncatedTo(null);
     }
 
     //-----------------------------------------------------------------------

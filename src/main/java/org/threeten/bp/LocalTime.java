@@ -893,8 +893,10 @@ public final class LocalTime
      * For example, truncating with the {@link ChronoUnit#MINUTES minutes} unit
      * will set the second-of-minute and nano-of-second field to zero.
      * <p>
-     * Not all units are accepted. The {@link ChronoUnit#DAYS days} unit and time
-     * units with an exact duration can be used, other units throw an exception.
+     * The unit must have a {@linkplain TemporalUnit#getDuration() duration}
+     * that divides into the length of a standard day without remainder.
+     * This includes all supplied time units on {@link ChronoUnit} and
+     * {@link ChronoUnit#DAYS DAYS}. Other units throw an exception.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -905,18 +907,17 @@ public final class LocalTime
     public LocalTime truncatedTo(TemporalUnit unit) {
         if (unit == ChronoUnit.NANOS) {
             return this;
-        } else if (unit == ChronoUnit.DAYS) {
-            return MIDNIGHT;
-        } else if (unit.isDurationEstimated()) {
-            throw new DateTimeException("Unit must not have an estimated duration");
+        }
+        Duration unitDur = unit.getDuration();
+        if (unitDur.getSeconds() > SECONDS_PER_DAY) {
+            throw new DateTimeException("Unit is too large to be used for truncation");
+        }
+        long dur = unitDur.toNanos();
+        if ((NANOS_PER_DAY % dur) != 0) {
+            throw new DateTimeException("Unit must divide into a standard day without remainder");
         }
         long nod = toNanoOfDay();
-        long dur = unit.getDuration().toNanos();
-        if (dur >= NANOS_PER_DAY) {
-            throw new DateTimeException("Unit must not be a date unit");
-        }
-        nod = (nod / dur) * dur;
-        return ofNanoOfDay(nod);
+        return ofNanoOfDay((nod / dur) * dur);
     }
 
     //-----------------------------------------------------------------------
