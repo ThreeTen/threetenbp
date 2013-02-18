@@ -584,24 +584,26 @@ public class TestYear extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // atMonthDay(Month)
+    // atMonthDay(MonthDay)
     //-----------------------------------------------------------------------
-    @Test
-    public void test_atMonthDay() {
-        Year test = Year.of(2008);
-        assertEquals(test.atMonthDay(MonthDay.of(6, 30)), LocalDate.of(2008, 6, 30));
+    @DataProvider(name="atMonthDay")
+    Object[][] data_atMonthDay() {
+        return new Object[][] {
+                {Year.of(2008), MonthDay.of(6, 30), LocalDate.of(2008, 6, 30)},
+                {Year.of(2008), MonthDay.of(2, 29), LocalDate.of(2008, 2, 29)},
+                {Year.of(2009), MonthDay.of(2, 29), LocalDate.of(2009, 2, 28)},
+        };
+    }
+
+    @Test(dataProvider="atMonthDay")
+    public void test_atMonthDay(Year year, MonthDay monthDay, LocalDate expected) {
+        assertEquals(year.atMonthDay(monthDay), expected);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_atMonthDay_nullMonthDay() {
         Year test = Year.of(2008);
         test.atMonthDay((MonthDay) null);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class)
-    public void test_atMonthDay_invalidMonthDay() {
-        Year test = Year.of(2008);
-        test.atMonthDay(MonthDay.of(6, 31));
     }
 
     //-----------------------------------------------------------------------

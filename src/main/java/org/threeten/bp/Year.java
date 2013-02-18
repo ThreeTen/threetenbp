@@ -837,14 +837,14 @@ public final class Year
      * <p>
      * This returns a {@code LocalDate} formed from this year and the specified month-day.
      * <p>
-     * The month-day value of February 29th is only valid in a leap year.
+     * A month-day of February 29th will be adjusted to February 28th in the resulting
+     * date if the year is not a leap year.
      *
      * @param monthDay  the month-day to use, not null
      * @return the local date formed from this year and the specified month-day, not null
-     * @throws DateTimeException if the month-day is February 29th and this is not a leap year
      */
     public LocalDate atMonthDay(MonthDay monthDay) {
-        return LocalDate.of(year, monthDay.getMonth(), monthDay.getDayOfMonth());
+        return monthDay.atYear(year);
     }
 
     //-----------------------------------------------------------------------
