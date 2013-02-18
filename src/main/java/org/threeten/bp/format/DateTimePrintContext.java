@@ -101,7 +101,7 @@ final class DateTimePrintContext {
 
     private static TemporalAccessor adjust(final TemporalAccessor temporal, DateTimeFormatter formatter) {
         // normal case first
-        Chronology overrideChrono = formatter.getChrono();
+        Chronology overrideChrono = formatter.getChronology();
         ZoneId overrideZone = formatter.getZone();
         if (overrideChrono == null && overrideZone == null) {
             return temporal;

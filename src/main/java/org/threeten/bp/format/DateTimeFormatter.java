@@ -177,11 +177,11 @@ public final class DateTimeFormatter {
      * <p>
      * This returns the override chronology, used to convert dates.
      * By default, a formatter has no override chronology, returning null.
-     * See {@link #withChrono(Chronology)} for more details on overriding.
+     * See {@link #withChronology(Chronology)} for more details on overriding.
      *
      * @return the chronology of this formatter, null if no override
      */
-    public Chronology getChrono() {
+    public Chronology getChronology() {
         return chrono;
     }
 
@@ -209,7 +209,7 @@ public final class DateTimeFormatter {
      * @param chrono  the new chronology, not null
      * @return a formatter based on this formatter with the requested override chronology, not null
      */
-    public DateTimeFormatter withChrono(Chronology chrono) {
+    public DateTimeFormatter withChronology(Chronology chrono) {
         if (Objects.equals(this.chrono, chrono)) {
             return this;
         }
