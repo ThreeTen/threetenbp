@@ -181,7 +181,7 @@ public final class Instant
      */
     public static final Instant MIN = Instant.ofEpochSecond(MIN_SECOND, 0);
     /**
-     * The maximum supported {@code Instant}, '-1000000000-01-01T00:00Z'.
+     * The maximum supported {@code Instant}, '1000000000-12-31T23:59:59.999999999Z'.
      * This could be used by an application as a "far future" instant.
      * <p>
      * This is one year later than the maximum {@code LocalDateTime}.
