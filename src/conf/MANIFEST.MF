@@ -2,16 +2,16 @@ Package: org.threeten.bp
 Extension-Name: org.threeten.bp
 Specification-Title: ThreeTen backport
 Specification-Vendor: ThreeTen.org
-Specification-Version: 0.7
+Specification-Version: 0.8
 Implementation-Vendor: Joda.org
 Implementation-Title: org.threeten.bp
-Implementation-Version: 0.7.1
+Implementation-Version: 0.8
 Implementation-Vendor-Id: org.threeten
 Bundle-ManifestVersion: 2
 Bundle-Vendor: ThreeTen.org
 Bundle-Name: ThreeTen-backport
 Bundle-SymbolicName: org.threeten.bp
-Bundle-Version: 0.7.1
+Bundle-Version: 0.8
 Export-Package: org.threeten.bp,
  org.threeten.bp.chrono,
  org.threeten.bp.format,
