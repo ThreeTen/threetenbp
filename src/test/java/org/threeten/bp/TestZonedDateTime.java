@@ -64,7 +64,6 @@ import static org.threeten.bp.temporal.ChronoField.SECOND_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.SECOND_OF_MINUTE;
 import static org.threeten.bp.temporal.ChronoField.YEAR;
 import static org.threeten.bp.temporal.ChronoField.YEAR_OF_ERA;
-import static org.threeten.bp.temporal.ChronoUnit.DAYS;
 import static org.threeten.bp.temporal.ChronoUnit.HOURS;
 import static org.threeten.bp.temporal.ChronoUnit.MINUTES;
 import static org.threeten.bp.temporal.ChronoUnit.NANOS;
@@ -80,22 +79,19 @@ import java.util.List;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
-import org.threeten.bp.temporal.ISOChrono;
 import org.threeten.bp.temporal.JulianFields;
 import org.threeten.bp.temporal.MockFieldNoValue;
 import org.threeten.bp.temporal.TemporalAccessor;
-import org.threeten.bp.temporal.TemporalAdder;
 import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
-import org.threeten.bp.temporal.TemporalSubtractor;
 
 /**
  * Test ZonedDateTime.
@@ -215,12 +211,12 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     public void now() {
         ZonedDateTime expected = ZonedDateTime.now(Clock.systemDefaultZone());
         ZonedDateTime test = ZonedDateTime.now();
-        long diff = Math.abs(test.getTime().toNanoOfDay() - expected.getTime().toNanoOfDay());
+        long diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
         if (diff >= 100000000) {
             // may be date change
             expected = ZonedDateTime.now(Clock.systemDefaultZone());
             test = ZonedDateTime.now();
-            diff = Math.abs(test.getTime().toNanoOfDay() - expected.getTime().toNanoOfDay());
+            diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
         }
         assertTrue(diff < 100000000);  // less than 0.1 secs
     }
@@ -297,7 +293,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
             assertEquals(test.getMonth(), Month.DECEMBER);
             assertEquals(test.getDayOfMonth(), 31);
             expected = expected.minusSeconds(1);
-            assertEquals(test.getTime(), expected);
+            assertEquals(test.toLocalTime(), expected);
             assertEquals(test.getOffset(), ZoneOffset.UTC);
             assertEquals(test.getZone(), ZoneOffset.UTC);
         }
@@ -605,11 +601,11 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
         assertEquals(ZonedDateTime.from(new DefaultInterfaceTemporalAccessor() {
             @Override
             public boolean isSupported(TemporalField field) {
-                return TEST_DATE_TIME_PARIS.getDateTime().isSupported(field);
+                return TEST_DATE_TIME_PARIS.toLocalDateTime().isSupported(field);
             }
             @Override
             public long getLong(TemporalField field) {
-                return TEST_DATE_TIME_PARIS.getDateTime().getLong(field);
+                return TEST_DATE_TIME_PARIS.toLocalDateTime().getLong(field);
             }
             @Override
             public <R> R query(TemporalQuery<R> query) {
@@ -719,14 +715,14 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void factory_parse_formatter() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("y M d H m s I");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("y M d H m s VV");
         ZonedDateTime test = ZonedDateTime.parse("2010 12 3 11 30 0 Europe/London", f);
         assertEquals(test, ZonedDateTime.of(LocalDateTime.of(2010, 12, 3, 11, 30), ZoneId.of("Europe/London")));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_formatter_nullText() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("y M d H m s");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("y M d H m s");
         ZonedDateTime.parse((String) null, f);
     }
 
@@ -769,9 +765,9 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
         assertEquals(a.getSecond(), localTime.getSecond());
         assertEquals(a.getNano(), localTime.getNano());
 
-        assertEquals(a.getDate(), localDate);
-        assertEquals(a.getTime(), localTime);
-        assertEquals(a.getDateTime(), localDateTime);
+        assertEquals(a.toLocalDate(), localDate);
+        assertEquals(a.toLocalTime(), localTime);
+        assertEquals(a.toLocalDateTime(), localDateTime);
         if (zone instanceof ZoneOffset) {
             assertEquals(a.toString(), localDateTime.toString() + offset.toString());
         } else {
@@ -854,7 +850,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_query_chrono() {
-        assertEquals(TEST_DATE_TIME.query(TemporalQueries.chrono()), ISOChrono.INSTANCE);
+        assertEquals(TEST_DATE_TIME.query(TemporalQueries.chronology()), IsoChronology.INSTANCE);
     }
 
     @Test
@@ -892,7 +888,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
         ZonedDateTime base = ZonedDateTime.ofStrict(TEST_PARIS_OVERLAP_2008_10_26_02_30, OFFSET_0100, ZONE_PARIS);
         ZonedDateTime test = base.withEarlierOffsetAtOverlap();
         assertEquals(test.getOffset(), OFFSET_0200);  // offset changed to earlier
-        assertEquals(test.getDateTime(), base.getDateTime());  // date-time not changed
+        assertEquals(test.toLocalDateTime(), base.toLocalDateTime());  // date-time not changed
     }
 
     @Test
@@ -917,7 +913,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
         ZonedDateTime base = ZonedDateTime.ofStrict(TEST_PARIS_OVERLAP_2008_10_26_02_30, OFFSET_0200, ZONE_PARIS);
         ZonedDateTime test = base.withLaterOffsetAtOverlap();
         assertEquals(test.getOffset(), OFFSET_0100);  // offset changed to later
-        assertEquals(test.getDateTime(), base.getDateTime());  // date-time not changed
+        assertEquals(test.toLocalDateTime(), base.toLocalDateTime());  // date-time not changed
     }
 
     @Test
@@ -935,7 +931,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withZoneSameLocal(ZONE_0200);
-        assertEquals(test.getDateTime(), base.getDateTime());
+        assertEquals(test.toLocalDateTime(), base.toLocalDateTime());
     }
 
     @Test
@@ -1334,12 +1330,12 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(dataProvider="plusDays")
     public void test_plus_adjuster_Period_days(ZonedDateTime base, long amount, ZonedDateTime expected) {
-        assertEquals(base.plus(Period.of(amount, DAYS)), expected);
+        assertEquals(base.plus(Period.ofDays((int) amount)), expected);
     }
 
     @Test(dataProvider="plusTime")
     public void test_plus_adjuster_Period_hours(ZonedDateTime base, long amount, ZonedDateTime expected) {
-        assertEquals(base.plus(Period.of(amount, HOURS)), expected);
+        assertEquals(base.plus(Duration.ofHours(amount)), expected);
     }
 
     @Test(dataProvider="plusTime")
@@ -1377,7 +1373,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_plus_adjuster_null() {
-        TEST_DATE_TIME.plus((TemporalAdder) null);
+        TEST_DATE_TIME.plus(null);
     }
 
     //-----------------------------------------------------------------------
@@ -1534,12 +1530,12 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(dataProvider="plusDays")
     public void test_minus_adjuster_Period_days(ZonedDateTime base, long amount, ZonedDateTime expected) {
-        assertEquals(base.minus(Period.of(-amount, DAYS)), expected);
+        assertEquals(base.minus(Period.ofDays((int) -amount)), expected);
     }
 
     @Test(dataProvider="plusTime")
     public void test_minus_adjuster_Period_hours(ZonedDateTime base, long amount, ZonedDateTime expected) {
-        assertEquals(base.minus(Period.of(-amount, HOURS)), expected);
+        assertEquals(base.minus(Duration.ofHours(-amount)), expected);
     }
 
     @Test(dataProvider="plusTime")
@@ -1577,7 +1573,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_minus_adjuster_null() {
-        TEST_DATE_TIME.minus((TemporalSubtractor) null);
+        TEST_DATE_TIME.minus(null);
     }
 
     //-----------------------------------------------------------------------
@@ -2014,7 +2010,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_toString_formatter() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("y M d H m s");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("y M d H m s");
         String t = ZonedDateTime.of(dateTime(2010, 12, 3, 11, 30), ZONE_PARIS).toString(f);
         assertEquals(t, "2010 12 3 11 30 0");
     }

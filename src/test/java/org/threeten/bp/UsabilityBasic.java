@@ -38,7 +38,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.threeten.bp.format.DateTimeBuilder;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.temporal.ChronoField;
@@ -57,14 +56,6 @@ public final class UsabilityBasic {
         lookup();
         System.out.println("------");
         period();
-        System.out.println("------");
-        resolve1();
-        System.out.println("------");
-        resolve2();
-        System.out.println("------");
-        resolve3();
-        System.out.println("------");
-        resolve4();
         System.out.println("------");
         print1();
         System.out.println("------");
@@ -156,65 +147,19 @@ public final class UsabilityBasic {
         System.out.println("3 days later " + date3);
     }
 
-    private static void resolve1() {
-        DateTimeBuilder builder = new DateTimeBuilder();
-        builder.addFieldValue(ChronoField.YEAR, 2012);
-        builder.addFieldValue(ChronoField.MONTH_OF_YEAR, 4);
-        builder.addFieldValue(ChronoField.DAY_OF_MONTH, 18);
-        System.out.println("Setup: " + builder);
-        System.out.println("Resolved: " + builder.resolve());
-        System.out.println("Date: " + LocalDate.from(builder));
-    }
-
-    private static void resolve2() {
-        DateTimeBuilder builder = new DateTimeBuilder();
-        builder.addFieldValue(ChronoField.YEAR, 2012);
-        builder.addFieldValue(ChronoField.MONTH_OF_YEAR, 4);
-        builder.addFieldValue(ChronoField.DAY_OF_MONTH, 18);
-        builder.addFieldValue(ChronoField.DAY_OF_WEEK, 1);
-        System.out.println("Setup: " + builder);
-        try {
-            builder.resolve();
-        } catch (RuntimeException ex) {
-            System.err.println(ex.toString());
-        }
-    }
-
-    private static void resolve3() {
-        DateTimeBuilder builder = new DateTimeBuilder();
-        builder.addCalendrical(LocalDate.of(2012, 1, 2));
-        builder.addCalendrical(ZonedDateTime.of(LocalDateTime.of(2012, 4, 3, 12, 30), ZoneOffset.ofHours(2)));
-        System.out.println("Setup: " + builder);
-        try {
-            builder.resolve();
-        } catch (RuntimeException ex) {
-            System.err.println(ex.toString());
-        }
-    }
-
-    private static void resolve4() {
-        DateTimeBuilder builder = new DateTimeBuilder();
-        builder.addFieldValue(ChronoField.YEAR, 2012);
-        builder.addFieldValue(ChronoField.MONTH_OF_YEAR, 5);
-        builder.addFieldValue(ChronoField.DAY_OF_MONTH, 3);
-        System.out.println("Setup: " + builder);
-        System.out.println("Resolved: " + builder.resolve());
-        System.out.println("Date: " + LocalDate.from(builder));
-    }
-
     private static void print1() {
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendText(ChronoField.AMPM_OF_DAY)
                 .appendLiteral(' ').appendValue(ChronoField.AMPM_OF_DAY).toFormatter();
-        System.out.println(f.print(LocalTime.of(12, 30)));
-        System.out.println(f.print(ZonedDateTime.now()));
+        System.out.println(f.format(LocalTime.of(12, 30)));
+        System.out.println(f.format(ZonedDateTime.now()));
     }
 
     private static void print2() {
         DateTimeFormatter f = new DateTimeFormatterBuilder().appendText(ChronoField.MONTH_OF_YEAR)
                 .appendLiteral(' ').appendValue(ChronoField.YEAR).toFormatter();
-        System.out.println(f.print(LocalDate.now()));
-        System.out.println(f.print(YearMonth.now()));
-        System.out.println(f.print(ZonedDateTime.now()));
+        System.out.println(f.format(LocalDate.now()));
+        System.out.println(f.format(YearMonth.now()));
+        System.out.println(f.format(ZonedDateTime.now()));
     }
 
     private static void sort() {

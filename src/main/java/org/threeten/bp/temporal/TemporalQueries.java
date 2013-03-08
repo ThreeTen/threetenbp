@@ -31,10 +31,15 @@
  */
 package org.threeten.bp.temporal;
 
+import static org.threeten.bp.temporal.ChronoField.EPOCH_DAY;
+import static org.threeten.bp.temporal.ChronoField.NANO_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.OFFSET_SECONDS;
 
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.LocalTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
+import org.threeten.bp.chrono.Chronology;
 
 /**
  * Common implementations of {@code TemporalQuery}.
@@ -94,7 +99,6 @@ public final class TemporalQueries {
      * {@code LocalTime} returns null<br>
      * {@code LocalDateTime} returns null<br>
      * {@code ZonedDateTime} returns the associated zone<br>
-     * {@code OffsetDate} returns null<br>
      * {@code OffsetTime} returns null<br>
      * {@code OffsetDateTime} returns null<br>
      * {@code ChronoLocalDate} returns null<br>
@@ -108,7 +112,8 @@ public final class TemporalQueries {
      * {@code MonthDay} returns null<br>
      * {@code ZoneOffset} returns null<br>
      * {@code Instant} returns null<br>
-     * @return a ZoneId, may be null
+     *
+     * @return a query that can obtain the zone ID of a temporal, not null
      */
     public static final TemporalQuery<ZoneId> zoneId() {
         return ZONE_ID;
@@ -130,37 +135,37 @@ public final class TemporalQueries {
      * {@code LocalTime}, will return null.
      * <p>
      * The result from JDK classes implementing {@code TemporalAccessor} is as follows:<br>
-     * {@code LocalDate} returns {@code ISOChrono.INSTANCE}<br>
+     * {@code LocalDate} returns {@code IsoChronology.INSTANCE}<br>
      * {@code LocalTime} returns null (does not represent a date)<br>
-     * {@code LocalDateTime} returns {@code ISOChrono.INSTANCE}<br>
-     * {@code ZonedDateTime} returns {@code ISOChrono.INSTANCE}<br>
-     * {@code OffsetDate} returns {@code ISOChrono.INSTANCE}<br>
+     * {@code LocalDateTime} returns {@code IsoChronology.INSTANCE}<br>
+     * {@code ZonedDateTime} returns {@code IsoChronology.INSTANCE}<br>
      * {@code OffsetTime} returns null (does not represent a date)<br>
-     * {@code OffsetDateTime} returns {@code ISOChrono.INSTANCE}<br>
+     * {@code OffsetDateTime} returns {@code IsoChronology.INSTANCE}<br>
      * {@code ChronoLocalDate} returns the associated chronology<br>
      * {@code ChronoLocalDateTime} returns the associated chronology<br>
      * {@code ChronoZonedDateTime} returns the associated chronology<br>
      * {@code Era} returns the associated chronology<br>
      * {@code DayOfWeek} returns null (shared across chronologies)<br>
-     * {@code Month} returns {@code ISOChrono.INSTANCE}<br>
-     * {@code Year} returns {@code ISOChrono.INSTANCE}<br>
-     * {@code YearMonth} returns {@code ISOChrono.INSTANCE}<br>
-     * {@code MonthDay} returns null {@code ISOChrono.INSTANCE}<br>
+     * {@code Month} returns {@code IsoChronology.INSTANCE}<br>
+     * {@code Year} returns {@code IsoChronology.INSTANCE}<br>
+     * {@code YearMonth} returns {@code IsoChronology.INSTANCE}<br>
+     * {@code MonthDay} returns null {@code IsoChronology.INSTANCE}<br>
      * {@code ZoneOffset} returns null (does not represent a date)<br>
      * {@code Instant} returns null (does not represent a date)<br>
      * <p>
-     * The method {@link Chrono#from(TemporalAccessor)} can be used as a
+     * The method {@link Chronology#from(TemporalAccessor)} can be used as a
      * {@code TemporalQuery} via a method reference, {@code Chrono::from}.
      * That method is equivalent to this query, except that it throws an
      * exception if a chronology cannot be obtained.
-     * @return a Chrono, may be null
+     *
+     * @return a query that can obtain the chronology of a temporal, not null
      */
-    public static final TemporalQuery<Chrono<?>> chrono() {
+    public static final TemporalQuery<Chronology> chronology() {
         return CHRONO;
     }
-    static final TemporalQuery<Chrono<?>> CHRONO = new TemporalQuery<Chrono<?>>() {
+    static final TemporalQuery<Chronology> CHRONO = new TemporalQuery<Chronology>() {
         @Override
-        public Chrono<?> queryFrom(TemporalAccessor temporal) {
+        public Chronology queryFrom(TemporalAccessor temporal) {
             return temporal.query(this);
         }
     };
@@ -182,7 +187,6 @@ public final class TemporalQueries {
      * {@code LocalTime} returns {@code NANOS}<br>
      * {@code LocalDateTime} returns {@code NANOS}<br>
      * {@code ZonedDateTime} returns {@code NANOS}<br>
-     * {@code OffsetDate} returns {@code DAYS}<br>
      * {@code OffsetTime} returns {@code NANOS}<br>
      * {@code OffsetDateTime} returns {@code NANOS}<br>
      * {@code ChronoLocalDate} returns {@code DAYS}<br>
@@ -196,14 +200,15 @@ public final class TemporalQueries {
      * {@code MonthDay} returns null (does not represent a complete date or time)<br>
      * {@code ZoneOffset} returns null (does not represent a date or time)<br>
      * {@code Instant} returns {@code NANOS}<br>
-     * @return a ChronoUnit, may be null
+     *
+     * @return a query that can obtain the precision of a temporal, not null
      */
-    public static final TemporalQuery<ChronoUnit> precision() {
+    public static final TemporalQuery<TemporalUnit> precision() {
         return PRECISION;
     }
-    static final TemporalQuery<ChronoUnit> PRECISION = new TemporalQuery<ChronoUnit>() {
+    static final TemporalQuery<TemporalUnit> PRECISION = new TemporalQuery<TemporalUnit>() {
         @Override
-        public ChronoUnit queryFrom(TemporalAccessor temporal) {
+        public TemporalUnit queryFrom(TemporalAccessor temporal) {
             return temporal.query(this);
         }
     };
@@ -226,7 +231,8 @@ public final class TemporalQueries {
      * {@code TemporalQuery} via a method reference, {@code ZoneId::from}.
      * That method is equivalent to this query, except that it throws an
      * exception if a zone cannot be obtained.
-     * @return a ZoneId, may be null
+     *
+     * @return a query that can obtain the zone ID or offset of a temporal, not null
      */
     public static final TemporalQuery<ZoneId> zone() {
         return ZONE;
@@ -240,18 +246,16 @@ public final class TemporalQueries {
     };
 
     /**
-     * A query for the {@code ZoneOffset}.
+     * A query for {@code ZoneOffset} returning null if not found.
      * <p>
-     * This queries a {@code TemporalAccessor} for the offset.
+     * This returns a {@code TemporalQuery} that can be used to query a temporal
+     * object for the offset. The query will return null if the temporal
+     * object cannot supply an offset.
      * <p>
-     * This query examines the {@link ChronoField#OFFSET_SECONDS offset-seconds}
+     * The query implementation examines the {@link ChronoField#OFFSET_SECONDS OFFSET_SECONDS}
      * field and uses it to create a {@code ZoneOffset}.
-     * <p>
-     * The method {@link ZoneOffset#from(TemporalAccessor)} can be used as a
-     * {@code TemporalQuery} via a method reference, {@code ZoneOffset::from}.
-     * That method is equivalent to this query, except that it throws an
-     * exception if an offset cannot be obtained.
-     * @return a ZoneOffset, may be null
+     *
+     * @return a query that can obtain the offset of a temporal, not null
      */
     public static final TemporalQuery<ZoneOffset> offset() {
         return OFFSET;
@@ -261,6 +265,56 @@ public final class TemporalQueries {
         public ZoneOffset queryFrom(TemporalAccessor temporal) {
             if (temporal.isSupported(OFFSET_SECONDS)) {
                 return ZoneOffset.ofTotalSeconds(temporal.get(OFFSET_SECONDS));
+            }
+            return null;
+        }
+    };
+
+    /**
+     * A query for {@code LocalDate} returning null if not found.
+     * <p>
+     * This returns a {@code TemporalQuery} that can be used to query a temporal
+     * object for the local date. The query will return null if the temporal
+     * object cannot supply a local date.
+     * <p>
+     * The query implementation examines the {@link ChronoField#EPOCH_DAY EPOCH_DAY}
+     * field and uses it to create a {@code LocalDate}.
+     *
+     * @return a query that can obtain the date of a temporal, not null
+     */
+    public static final TemporalQuery<LocalDate> localDate() {
+        return LOCAL_DATE;
+    }
+    static final TemporalQuery<LocalDate> LOCAL_DATE = new TemporalQuery<LocalDate>() {
+        @Override
+        public LocalDate queryFrom(TemporalAccessor temporal) {
+            if (temporal.isSupported(EPOCH_DAY)) {
+                return LocalDate.ofEpochDay(temporal.getLong(EPOCH_DAY));
+            }
+            return null;
+        }
+    };
+
+    /**
+     * A query for {@code LocalTime} returning null if not found.
+     * <p>
+     * This returns a {@code TemporalQuery} that can be used to query a temporal
+     * object for the local time. The query will return null if the temporal
+     * object cannot supply a local time.
+     * <p>
+     * The query implementation examines the {@link ChronoField#NANO_OF_DAY NANO_OF_DAY}
+     * field and uses it to create a {@code LocalTime}.
+     *
+     * @return a query that can obtain the date of a temporal, not null
+     */
+    public static final TemporalQuery<LocalTime> localTime() {
+        return LOCAL_TIME;
+    }
+    static final TemporalQuery<LocalTime> LOCAL_TIME = new TemporalQuery<LocalTime>() {
+        @Override
+        public LocalTime queryFrom(TemporalAccessor temporal) {
+            if (temporal.isSupported(NANO_OF_DAY)) {
+                return LocalTime.ofNanoOfDay(temporal.getLong(NANO_OF_DAY));
             }
             return null;
         }

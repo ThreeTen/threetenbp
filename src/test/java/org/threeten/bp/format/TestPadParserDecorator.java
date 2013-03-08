@@ -40,6 +40,7 @@ import org.threeten.bp.format.DateTimeFormatterBuilder.NumberPrinterParser;
 import org.threeten.bp.format.DateTimeFormatterBuilder.PadPrinterParserDecorator;
 import org.threeten.bp.format.DateTimeFormatterBuilder.StringLiteralPrinterParser;
 import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalQueries;
 
 /**
  * Test PadPrinterParserDecorator.
@@ -65,7 +66,6 @@ public class TestPadParserDecorator extends AbstractTestPrinterParser {
         PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new NumberPrinterParser(MONTH_OF_YEAR, 1, 3, SignStyle.NEVER), 3, '-');
         int result = pp.parse(parseContext, "--2", 0);
         assertEquals(result, 3);
-        assertEquals(parseContext.getParsed().size(), 1);
         assertParsed(MONTH_OF_YEAR, 2L);
     }
 
@@ -73,7 +73,6 @@ public class TestPadParserDecorator extends AbstractTestPrinterParser {
         PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new NumberPrinterParser(MONTH_OF_YEAR, 1, 3, SignStyle.NEVER), 3, '-');
         int result = pp.parse(parseContext, "--22", 0);
         assertEquals(result, 3);
-        assertEquals(parseContext.getParsed().size(), 1);
         assertParsed(MONTH_OF_YEAR, 2L);
     }
 
@@ -81,30 +80,21 @@ public class TestPadParserDecorator extends AbstractTestPrinterParser {
         PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new NumberPrinterParser(MONTH_OF_YEAR, 1, 3, SignStyle.NEVER), 3, '-');
         int result = pp.parse(parseContext, "-1", 0);
         assertEquals(result, ~0);
-        assertEquals(parseContext.getParsed().size(), 0);
     }
 
     public void test_parse_decoratedErrorPassedBack() throws Exception {
         PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new NumberPrinterParser(MONTH_OF_YEAR, 1, 3, SignStyle.NEVER), 3, '-');
         int result = pp.parse(parseContext, "--A", 0);
         assertEquals(result, ~2);
-        assertEquals(parseContext.getParsed().size(), 0);
     }
 
     public void test_parse_decoratedDidNotParseToPadWidth() throws Exception {
         PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new NumberPrinterParser(MONTH_OF_YEAR, 1, 3, SignStyle.NEVER), 3, '-');
         int result = pp.parse(parseContext, "-1X", 0);
-        assertEquals(result, ~0);
+        assertEquals(result, ~1);
     }
 
     //-----------------------------------------------------------------------
-    public void test_parse_decoratedStartsWithPad() throws Exception {
-        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new StringLiteralPrinterParser("-HELLO-"), 8, '-');
-        int result = pp.parse(parseContext, "--HELLO-", 0);
-        assertEquals(result, 8);
-        assertEquals(parseContext.getParsed().size(), 0);
-    }
-
     private void assertParsed(TemporalField field, Long value) {
         if (value == null) {
             assertEquals(parseContext.getParsed(field), null);

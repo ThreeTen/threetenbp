@@ -41,39 +41,38 @@ import static org.threeten.bp.temporal.ChronoField.YEAR_OF_ERA;
 import java.util.Objects;
 
 import org.threeten.bp.LocalTime;
+import org.threeten.bp.chrono.ChronoLocalDate;
+import org.threeten.bp.chrono.ChronoLocalDateTime;
+import org.threeten.bp.chrono.Chronology;
+import org.threeten.bp.chrono.Era;
 import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoField;
-import org.threeten.bp.temporal.ChronoLocalDate;
-import org.threeten.bp.temporal.ChronoLocalDateTime;
-import org.threeten.bp.temporal.Era;
 import org.threeten.bp.temporal.Temporal;
-import org.threeten.bp.temporal.TemporalAdder;
 import org.threeten.bp.temporal.TemporalAdjuster;
+import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
-import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
 
 /**
  * A temporary class providing implementations that will become default interface
  * methods once integrated into JDK 8.
  *
- * @param <C> the chronology of this date-time
+ * @param <D> the chronology of this date-time
  */
-public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
+public abstract class DefaultInterfaceChronoLocalDate<D extends ChronoLocalDate<D>>
         extends DefaultInterfaceTemporal
-        implements ChronoLocalDate<C> {
+        implements ChronoLocalDate<D> {
 
     @Override
-    public Era<C> getEra() {
-        return getChrono().eraOf(get(ERA));
+    public Era getEra() {
+        return getChronology().eraOf(get(ERA));
     }
 
     @Override
     public boolean isLeapYear() {
-        return getChrono().isLeapYear(getLong(YEAR));
+        return getChronology().isLeapYear(getLong(YEAR));
     }
 
     @Override
@@ -86,28 +85,28 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
         if (field instanceof ChronoField) {
             return ((ChronoField) field).isDateField();
         }
-        return field != null && field.doIsSupported(this);
+        return field != null && field.isSupportedBy(this);
     }
 
     //-------------------------------------------------------------------------
     @Override
-    public ChronoLocalDate<C> with(TemporalAdjuster adjuster) {
-        return getChrono().ensureChronoLocalDate(super.with(adjuster));
+    public ChronoLocalDate<D> with(TemporalAdjuster adjuster) {
+        return getChronology().ensureChronoLocalDate(super.with(adjuster));
     }
 
     @Override
-    public ChronoLocalDate<C> plus(TemporalAdder adjuster) {
-        return getChrono().ensureChronoLocalDate(super.plus(adjuster));
+    public ChronoLocalDate<D> plus(TemporalAmount amount) {
+        return getChronology().ensureChronoLocalDate(super.plus(amount));
     }
 
     @Override
-    public ChronoLocalDate<C> minus(TemporalSubtractor adjuster) {
-        return getChrono().ensureChronoLocalDate(super.minus(adjuster));
+    public ChronoLocalDate<D> minus(TemporalAmount amount) {
+        return getChronology().ensureChronoLocalDate(super.minus(amount));
     }
 
     @Override
-    public ChronoLocalDate<C> minus(long amountToSubtract, TemporalUnit unit) {
-        return getChrono().ensureChronoLocalDate(super.minus(amountToSubtract, unit));
+    public ChronoLocalDate<D> minus(long amountToSubtract, TemporalUnit unit) {
+        return getChronology().ensureChronoLocalDate(super.minus(amountToSubtract, unit));
     }
 
     //-------------------------------------------------------------------------
@@ -117,14 +116,14 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
     }
 
     @Override
-    public ChronoLocalDateTime<C> atTime(LocalTime localTime) {
-        return Chrono.dateTime(this, localTime);
+    public ChronoLocalDateTime<D> atTime(LocalTime localTime) {
+        return Chronology.dateTime(this, localTime);
     }
 
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.chrono()) {
-            return (R) getChrono();
+        if (query == TemporalQueries.chronology()) {
+            return (R) getChronology();
         }
         return super.query(query);
     }
@@ -139,7 +138,7 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
     public int compareTo(ChronoLocalDate<?> other) {
         int cmp = Long.compare(toEpochDay(), other.toEpochDay());
         if (cmp == 0) {
-            cmp = getChrono().compareTo(other.getChrono());
+            cmp = getChronology().compareTo(other.getChronology());
         }
         return cmp;
     }
@@ -174,7 +173,7 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
     @Override
     public int hashCode() {
         long epDay = toEpochDay();
-        return getChrono().hashCode() ^ ((int) (epDay ^ (epDay >>> 32)));
+        return getChronology().hashCode() ^ ((int) (epDay ^ (epDay >>> 32)));
     }
 
     //-------------------------------------------------------------------------
@@ -185,7 +184,7 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
         long moy = getLong(MONTH_OF_YEAR);
         long dom = getLong(DAY_OF_MONTH);
         StringBuilder buf = new StringBuilder(30);
-        buf.append(getChrono().toString())
+        buf.append(getChronology().toString())
                 .append(" ")
                 .append(getEra())
                 .append(" ")
@@ -198,7 +197,7 @@ public abstract class DefaultInterfaceChronoLocalDate<C extends Chrono<C>>
     @Override
     public String toString(DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
-        return formatter.print(this);
+        return formatter.format(this);
     }
 
 }

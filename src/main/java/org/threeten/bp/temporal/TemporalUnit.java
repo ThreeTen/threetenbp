@@ -45,7 +45,7 @@ import org.threeten.bp.Period;
  * See {@link Period} for a class that represents an amount in terms of the common units.
  * <p>
  * The most commonly used units are defined in {@link ChronoUnit}.
- * Further units are supplied in {@link ISOFields}.
+ * Further units are supplied in {@link IsoFields}.
  * Units can also be written by application code by implementing this interface.
  * <p>
  * The unit works using double dispatch. Client code calls methods on a date-time like
@@ -73,6 +73,7 @@ public interface TemporalUnit {
      * Gets the duration of this unit, which may be an estimate.
      * <p>
      * All units return a duration measured in standard nanoseconds from this method.
+     * The duration will be positive and non-zero.
      * For example, an hour has a duration of {@code 60 * 60 * 1,000,000,000ns}.
      * <p>
      * Some units may return an accurate duration while others return an estimate.
@@ -107,7 +108,7 @@ public interface TemporalUnit {
      * @param temporal  the temporal object to check, not null
      * @return true if the unit is supported
      */
-    boolean isSupported(Temporal temporal);
+    boolean isSupportedBy(Temporal temporal);
 
     /**
      * Returns a copy of the specified temporal object with the specified period added.
@@ -142,30 +143,51 @@ public interface TemporalUnit {
      * @return the adjusted temporal object, not null
      * @throws DateTimeException if the period cannot be added
      */
-    <R extends Temporal> R doPlus(R dateTime, long periodToAdd);
+    <R extends Temporal> R addTo(R dateTime, long periodToAdd);
 
     //-----------------------------------------------------------------------
     /**
      * Calculates the period in terms of this unit between two temporal objects of the same type.
      * <p>
-     * The period will be positive if the second date-time is after the first, and
-     * negative if the second date-time is before the first.
-     * Call {@link SimplePeriod#abs() abs()} on the result to ensure that the result
-     * is always positive.
+     * This calculates the period between two temporals in terms of this unit.
+     * The start and end points are supplied as temporal objects and must be of the same type.
+     * The result will be negative if the end is before the start.
+     * For example, the period in hours between two temporal objects can be calculated
+     * using {@code HOURS.between(startTime, endTime)}.
      * <p>
-     * The result can be queried for the {@link SimplePeriod#getAmount() amount}, the
-     * {@link SimplePeriod#getUnit() unit} and used directly in addition/subtraction:
+     * The calculation returns a whole number, representing the number of complete units between the two temporals.
+     * For example, the period in hours between the times 11:30 and 13:29 will only b
+     * one hour as it is one minute short of two hours.
+     * <p>
+     * There are two equivalent ways of using this method.
+     * The first is to invoke this method directly.
+     * The second is to use {@link Temporal#periodUntil(Temporal, TemporalUnit)}:
      * <pre>
-     *  date = date.minus(MONTHS.between(start, end));
+     *   // these two lines are equivalent
+     *   between = thisUnit.between(start, end);
+     *   between = start.periodUntil(end, thisUnit);
      * </pre>
+     * The choice should be made based on which makes the code more readable. 
+     * <p>
+     * For example, this method allows the number of days between two dates to be calculated:
+     * <pre>
+     *   long daysBetween = DAYS.between(start, end);
+     *   // or alternatively
+     *   long daysBetween = start.periodUntil(end, DAYS);
+     * </pre>
+     * Implementations should perform any queries or calculations using the units available in
+     * {@link ChronoUnit} or the fields available in {@link ChronoField}.
+     * If the unit is not supported a DateTimeException must be thrown.
+     * Implementations must not alter the specified temporal objects.
      *
-     * @param <R>  the type of the Temporal object; the two date-times must be of the same type
-     * @param dateTime1  the base temporal object, not null
-     * @param dateTime2  the other temporal object, not null
-     * @return the period between datetime1 and datetime2 in terms of this unit;
-     *      positive if datetime2 is later than datetime1, not null
+     * @param temporal1  the base temporal object, not null
+     * @param temporal2  the other temporal object, not null
+     * @return the period between temporal1 and temporal2 in terms of this unit;
+     *  positive if temporal2 is later than temporal1, negative if earlier
+     * @throws DateTimeException if the period cannot be calculated
+     * @throws ArithmeticException if numeric overflow occurs
      */
-    <R extends Temporal> SimplePeriod between(R dateTime1, R dateTime2);
+    long between(Temporal temporal1, Temporal temporal2);
 
     //-----------------------------------------------------------------------
     /**

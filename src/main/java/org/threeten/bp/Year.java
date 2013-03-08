@@ -44,24 +44,23 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Objects;
 
+import org.threeten.bp.chrono.Chronology;
+import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.format.SignStyle;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
 import org.threeten.bp.jdk8.Jdk8Methods;
-import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
-import org.threeten.bp.temporal.ISOChrono;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
-import org.threeten.bp.temporal.TemporalAdder;
 import org.threeten.bp.temporal.TemporalAdjuster;
+import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
-import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.temporal.ValueRange;
 
@@ -84,9 +83,10 @@ import org.threeten.bp.temporal.ValueRange;
  * <p>
  * The ISO-8601 calendar system is the modern civil calendar system used today
  * in most of the world. It is equivalent to the proleptic Gregorian calendar
- * system, in which todays's rules for leap years are applied for all time.
+ * system, in which today's rules for leap years are applied for all time.
  * For most applications written today, the ISO-8601 rules are entirely suitable.
- * Any application that uses historical dates should consider using {@code HistoricDate}.
+ * However, any application that makes use of historical dates, and requires them
+ * to be accurate will find the ISO-8601 approach unsuitable.
  *
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
@@ -210,7 +210,7 @@ public final class Year
             return (Year) temporal;
         }
         try {
-            if (ISOChrono.INSTANCE.equals(Chrono.from(temporal)) == false) {
+            if (IsoChronology.INSTANCE.equals(Chronology.from(temporal)) == false) {
                 temporal = LocalDate.from(temporal);
             }
             return of(temporal.get(YEAR));
@@ -315,7 +315,7 @@ public final class Year
      * All other {@code ChronoField} instances will return false.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doIsSupported(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.isSupportedBy(TemporalAccessor)}
      * passing {@code this} as the argument.
      * Whether the field is supported is determined by the field.
      *
@@ -327,7 +327,7 @@ public final class Year
         if (field instanceof ChronoField) {
             return field == YEAR || field == YEAR_OF_ERA || field == ERA;
         }
-        return field != null && field.doIsSupported(this);
+        return field != null && field.isSupportedBy(this);
     }
 
     /**
@@ -344,7 +344,7 @@ public final class Year
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doRange(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.rangeRefinedBy(TemporalAccessor)}
      * passing {@code this} as the argument.
      * Whether the range can be obtained is determined by the field.
      *
@@ -374,7 +374,7 @@ public final class Year
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
@@ -401,7 +401,7 @@ public final class Year
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
@@ -420,7 +420,7 @@ public final class Year
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return field.doGet(this);
+        return field.getFrom(this);
     }
 
     //-----------------------------------------------------------------------
@@ -520,7 +520,7 @@ public final class Year
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doWith(Temporal, long)}
+     * is obtained by invoking {@code TemporalField.adjustInto(Temporal, long)}
      * passing {@code this} as the argument. In this case, the field determines
      * whether and how to adjust the instant.
      * <p>
@@ -544,7 +544,7 @@ public final class Year
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return field.doWith(this, newValue);
+        return field.adjustInto(this, newValue);
     }
 
     //-----------------------------------------------------------------------
@@ -553,20 +553,20 @@ public final class Year
      * <p>
      * This method returns a new year based on this year with the specified period added.
      * The adder is typically {@link Period} but may be any other type implementing
-     * the {@link TemporalAdder} interface.
+     * the {@link TemporalAmount} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #plus(long, TemporalUnit)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param adder  the adder to use, not null
+     * @param amount  the amount to add, not null
      * @return a {@code Year} based on this year with the addition made, not null
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public Year plus(TemporalAdder adder) {
-        return (Year) adder.addTo(this);
+    public Year plus(TemporalAmount amount) {
+        return (Year) amount.addTo(this);
     }
 
     /**
@@ -586,7 +586,7 @@ public final class Year
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
-        return unit.doPlus(this, amountToAdd);
+        return unit.addTo(this, amountToAdd);
     }
 
     /**
@@ -611,20 +611,20 @@ public final class Year
      * <p>
      * This method returns a new year based on this year with the specified period subtracted.
      * The subtractor is typically {@link Period} but may be any other type implementing
-     * the {@link TemporalSubtractor} interface.
+     * the {@link TemporalAmount} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #minus(long, TemporalUnit)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param subtractor  the subtractor to use, not null
+     * @param amount  the amount to subtract, not null
      * @return a {@code Year} based on this year with the subtraction made, not null
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public Year minus(TemporalSubtractor subtractor) {
-        return (Year) subtractor.subtractFrom(this);
+    public Year minus(TemporalAmount amount) {
+        return (Year) amount.subtractFrom(this);
     }
 
     /**
@@ -672,8 +672,8 @@ public final class Year
     @SuppressWarnings("unchecked")
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.chrono()) {
-            return (R) ISOChrono.INSTANCE;
+        if (query == TemporalQueries.chronology()) {
+            return (R) IsoChronology.INSTANCE;
         } else if (query == TemporalQueries.precision()) {
             return (R) YEARS;
         }
@@ -708,7 +708,7 @@ public final class Year
      */
     @Override
     public Temporal adjustInto(Temporal temporal) {
-        if (Chrono.from(temporal).equals(ISOChrono.INSTANCE) == false) {
+        if (Chronology.from(temporal).equals(IsoChronology.INSTANCE) == false) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }
         return temporal.with(YEAR, year);
@@ -775,38 +775,36 @@ public final class Year
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
-        return unit.between(this, endYear).getAmount();
+        return unit.between(this, endYear);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a date formed from this year at the specified day-of-year.
+     * Combines this year with a day-of-year to create a {@code LocalDate}.
      * <p>
-     * This combines this year and the specified day-of-year to form a {@code LocalDate}.
+     * This returns a {@code LocalDate} formed from this year and the specified day-of-year.
+     * <p>
      * The day-of-year value 366 is only valid in a leap year.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfYear  the day-of-year to use, not null
      * @return the local date formed from this year and the specified date of year, not null
-     * @throws DateTimeException if the day of year is 366 and this is not a leap year
+     * @throws DateTimeException if the day of year is zero or less, 366 or greater or equal
+     *  to 366 and this is not a leap year
      */
     public LocalDate atDay(int dayOfYear) {
         return LocalDate.ofYearDay(year, dayOfYear);
     }
 
     /**
-     * Returns a year-month formed from this year at the specified month.
+     * Combines this year with a month to create a {@code YearMonth}.
      * <p>
-     * This combines this year and the specified month to form a {@code YearMonth}.
+     * This returns a {@code YearMonth} formed from this year and the specified month.
      * All possible combinations of year and month are valid.
      * <p>
      * This method can be used as part of a chain to produce a date:
      * <pre>
      *  LocalDate date = year.atMonth(month).atDay(day);
      * </pre>
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param month  the month-of-year to use, not null
      * @return the year-month formed from this year and the specified month, not null
@@ -816,39 +814,37 @@ public final class Year
     }
 
     /**
-     * Returns a year-month formed from this year at the specified month.
+     * Combines this year with a month to create a {@code YearMonth}.
      * <p>
-     * This combines this year and the specified month to form a {@code YearMonth}.
+     * This returns a {@code YearMonth} formed from this year and the specified month.
      * All possible combinations of year and month are valid.
      * <p>
      * This method can be used as part of a chain to produce a date:
      * <pre>
      *  LocalDate date = year.atMonth(month).atDay(day);
      * </pre>
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param month  the month-of-year to use, from 1 (January) to 12 (December)
      * @return the year-month formed from this year and the specified month, not null
+     * @throws DateTimeException if the month is invalid
      */
     public YearMonth atMonth(int month) {
         return YearMonth.of(year, month);
     }
 
     /**
-     * Returns a date formed from this year at the specified month-day.
+     * Combines this year with a month-day to create a {@code LocalDate}.
      * <p>
-     * This combines this year and the specified month-day to form a {@code LocalDate}.
-     * The month-day value of February 29th is only valid in a leap year.
+     * This returns a {@code LocalDate} formed from this year and the specified month-day.
      * <p>
-     * This instance is immutable and unaffected by this method call.
+     * A month-day of February 29th will be adjusted to February 28th in the resulting
+     * date if the year is not a leap year.
      *
      * @param monthDay  the month-day to use, not null
      * @return the local date formed from this year and the specified month-day, not null
-     * @throws DateTimeException if the month-day is February 29th and this is not a leap year
      */
     public LocalDate atMonthDay(MonthDay monthDay) {
-        return LocalDate.of(year, monthDay.getMonth(), monthDay.getDayOfMonth());
+        return monthDay.atYear(year);
     }
 
     //-----------------------------------------------------------------------
@@ -930,7 +926,7 @@ public final class Year
      * Outputs this year as a {@code String} using the formatter.
      * <p>
      * This year will be passed to the formatter
-     * {@link DateTimeFormatter#print(TemporalAccessor) print method}.
+     * {@link DateTimeFormatter#format(TemporalAccessor) print method}.
      *
      * @param formatter  the formatter to use, not null
      * @return the formatted year string, not null
@@ -938,7 +934,7 @@ public final class Year
      */
     public String toString(DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
-        return formatter.print(this);
+        return formatter.format(this);
     }
 
     //-----------------------------------------------------------------------

@@ -35,6 +35,8 @@ import org.threeten.bp.DateTimeException;
 import org.threeten.bp.Duration;
 import org.threeten.bp.Period;
 import org.threeten.bp.ZoneId;
+import org.threeten.bp.chrono.Chronology;
+import org.threeten.bp.chrono.ChronoLocalDate;
 
 /**
  * Framework-level interface defining read-write access to a temporal object,
@@ -53,7 +55,7 @@ import org.threeten.bp.ZoneId;
  * See {@link ChronoField} for the standard set of fields.
  * <p>
  * Two pieces of date/time information cannot be represented by numbers,
- * the {@link Chrono chronology} and the {@link ZoneId time-zone}.
+ * the {@link Chronology chronology} and the {@link ZoneId time-zone}.
  * These can be accessed via {@link #query(TemporalQuery) queries} using
  * the static methods defined on {@link TemporalQueries}.
  * <p>
@@ -146,7 +148,7 @@ public interface Temporal extends TemporalAccessor {
      * If unsupported, then a {@code DateTimeException} must be thrown.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doWith(Temporal, long)}
+     * is obtained by invoking {@code TemporalField.adjustInto(Temporal, long)}
      * passing {@code this} as the first argument.
      * <p>
      * Implementations must not alter either this object or the specified temporal object.
@@ -165,16 +167,15 @@ public interface Temporal extends TemporalAccessor {
     /**
      * Returns an object of the same type as this object with an amount added.
      * <p>
-     * This adjusts this temporal, adding according to the rules of the specified adder.
-     * The adder is typically a {@link Period} but may be any other type implementing
+     * This adjusts this temporal, adding according to the rules of the specified amount.
+     * The amount is typically a {@link Period} but may be any other type implementing
      * the {@link TemporalAdder} interface, such as {@link Duration}.
      * <p>
      * Some example code indicating how and why this method is used:
      * <pre>
-     *  date = date.plus(period);                      // add a Period instance
-     *  date = date.plus(duration);                    // add a Duration instance
-     *  date = date.plus(MONTHS.between(start, end));  // static import of MONTHS field
-     *  date = date.plus(workingDays(6));              // example user-written workingDays method
+     *  date = date.plus(period);                  // add a Period instance
+     *  date = date.plus(duration);                // add a Duration instance
+     *  date = date.plus(workingDays(6));          // example user-written workingDays method
      * </pre>
      * <p>
      * Note that calling {@code plus} followed by {@code minus} is not guaranteed to
@@ -185,12 +186,12 @@ public interface Temporal extends TemporalAccessor {
      * Instead, an adjusted copy of the original must be returned.
      * This provides equivalent, safe behavior for immutable and mutable implementations.
      *
-     * @param adder  the adder to use, not null
+     * @param amount  the amount to add, not null
      * @return an object of the same type with the specified adjustment made, not null
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    Temporal plus(TemporalAdder adder);
+    Temporal plus(TemporalAmount amount);
 
     /**
      * Returns an object of the same type as this object with the specified period added.
@@ -214,7 +215,7 @@ public interface Temporal extends TemporalAccessor {
      * If unsupported, then a {@code DateTimeException} must be thrown.
      * <p>
      * If the unit is not a {@code ChronoUnit}, then the result of this method
-     * is obtained by invoking {@code TemporalUnit.doPlus(Temporal, long)}
+     * is obtained by invoking {@code TemporalUnit.addTo(Temporal, long)}
      * passing {@code this} as the first argument.
      * <p>
      * Implementations must not alter either this object or the specified temporal object.
@@ -233,16 +234,15 @@ public interface Temporal extends TemporalAccessor {
     /**
      * Returns an object of the same type as this object with an amount subtracted.
      * <p>
-     * This adjusts this temporal, subtracting according to the rules of the specified subtractor.
-     * The subtractor is typically a {@link Period} but may be any other type implementing
-     * the {@link TemporalSubtractor} interface, such as {@link Duration}.
+     * This adjusts this temporal, subtracting according to the rules of the specified amount.
+     * The amount is typically a {@link Period} but may be any other type implementing
+     * the {@link TemporalAmount} interface, such as {@link Duration}.
      * <p>
      * Some example code indicating how and why this method is used:
      * <pre>
-     *  date = date.minus(period);                      // subtract a Period instance
-     *  date = date.minus(duration);                    // subtract a Duration instance
-     *  date = date.minus(MONTHS.between(start, end));  // static import of MONTHS field
-     *  date = date.minus(workingDays(6));              // example user-written workingDays method
+     *  date = date.minus(period);                  // subtract a Period instance
+     *  date = date.minus(duration);                // subtract a Duration instance
+     *  date = date.minus(workingDays(6));          // example user-written workingDays method
      * </pre>
      * <p>
      * Note that calling {@code plus} followed by {@code minus} is not guaranteed to
@@ -253,12 +253,12 @@ public interface Temporal extends TemporalAccessor {
      * Instead, an adjusted copy of the original must be returned.
      * This provides equivalent, safe behavior for immutable and mutable implementations.
      *
-     * @param subtractor  the subtractor to use, not null
+     * @param amount  the amount to subtract, not null
      * @return an object of the same type with the specified adjustment made, not null
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
-    Temporal minus(TemporalSubtractor subtractor);
+    Temporal minus(TemporalAmount amount);
 
     /**
      * Returns an object of the same type as this object with the specified period subtracted.
@@ -307,13 +307,21 @@ public interface Temporal extends TemporalAccessor {
      * For example, the period in hours between the times 11:30 and 13:29
      * will only be one hour as it is one minute short of two hours.
      * <p>
-     * This method operates in association with {@link TemporalUnit#between}.
-     * The result of this method is a {@code long} representing the amount of
-     * the specified unit. By contrast, the result of {@code between} is an
-     * object that can be used directly in addition/subtraction:
+     * There are two equivalent ways of using this method.
+     * The first is to invoke this method directly.
+     * The second is to use {@link TemporalUnit#between(Temporal, Temporal)}: 
      * <pre>
-     *   long period = start.periodUntil(end, HOURS);   // this method
-     *   dateTime.plus(HOURS.between(start, end));      // use in plus/minus
+     *   // these two lines are equivalent
+     *   between = thisUnit.between(start, end);
+     *   between = start.periodUntil(end, thisUnit);
+     * </pre>
+     * The choice should be made based on which makes the code more readable. 
+     * <p>
+     * For example, this method allows the number of days between two dates to be calculated:
+     * <pre>
+     *   long daysBetween = DAYS.between(start, end);
+     *   // or alternatively
+     *   long daysBetween = start.periodUntil(end, DAYS);
      * </pre>
      *
      * <h3>Specification for implementors</h3>
@@ -335,7 +343,7 @@ public interface Temporal extends TemporalAccessor {
      *    // if unit is supported, then calculate and return result
      *    // else throw DateTimeException for unsupported units
      *  }
-     *  return unit.between(this, endTime).getAmount();
+     *  return unit.between(this, endTemporal);
      * </pre>
      * <p>
      * The target object must not be altered by this method.

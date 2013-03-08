@@ -78,12 +78,11 @@ import java.util.List;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
-import org.threeten.bp.temporal.ISOChrono;
 import org.threeten.bp.temporal.JulianFields;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
@@ -187,12 +186,12 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
     public void now() {
         OffsetDateTime expected = OffsetDateTime.now(Clock.systemDefaultZone());
         OffsetDateTime test = OffsetDateTime.now();
-        long diff = Math.abs(test.getTime().toNanoOfDay() - expected.getTime().toNanoOfDay());
+        long diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
         if (diff >= 100000000) {
             // may be date change
             expected = OffsetDateTime.now(Clock.systemDefaultZone());
             test = OffsetDateTime.now();
-            diff = Math.abs(test.getTime().toNanoOfDay() - expected.getTime().toNanoOfDay());
+            diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
         }
         assertTrue(diff < 100000000);  // less than 0.1 secs
     }
@@ -245,7 +244,7 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
             assertEquals(test.getMonth(), Month.DECEMBER);
             assertEquals(test.getDayOfMonth(), 31);
             expected = expected.minusSeconds(1);
-            assertEquals(test.getTime(), expected);
+            assertEquals(test.toLocalTime(), expected);
             assertEquals(test.getOffset(), ZoneOffset.UTC);
         }
     }
@@ -440,14 +439,14 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void factory_parse_formatter() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("y M d H m s XXX");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("y M d H m s XXX");
         OffsetDateTime test = OffsetDateTime.parse("2010 12 3 11 30 0 +01:00", f);
         assertEquals(test, OffsetDateTime.of(LocalDate.of(2010, 12, 3), LocalTime.of(11, 30), ZoneOffset.ofHours(1)));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_formatter_nullText() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("y M d H m s");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("y M d H m s");
         OffsetDateTime.parse((String) null, f);
     }
 
@@ -510,7 +509,6 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
         assertEquals(a.getSecond(), localDateTime.getSecond());
         assertEquals(a.getNano(), localDateTime.getNano());
 
-        assertEquals(a.toOffsetDate(), OffsetDate.of(localDate, offset));
         assertEquals(a.toOffsetTime(), OffsetTime.of(localTime, offset));
         assertEquals(a.toString(), localDateTime.toString() + offset.toString());
     }
@@ -562,8 +560,8 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_query_chrono() {
-        assertEquals(TEST_2008_6_30_11_30_59_000000500.query(TemporalQueries.chrono()), ISOChrono.INSTANCE);
-        assertEquals(TemporalQueries.chrono().queryFrom(TEST_2008_6_30_11_30_59_000000500), ISOChrono.INSTANCE);
+        assertEquals(TEST_2008_6_30_11_30_59_000000500.query(TemporalQueries.chronology()), IsoChronology.INSTANCE);
+        assertEquals(TemporalQueries.chronology().queryFrom(TEST_2008_6_30_11_30_59_000000500), IsoChronology.INSTANCE);
     }
 
     @Test
@@ -626,12 +624,6 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
     public void test_with_adjustment_LocalDateTime() {
         OffsetDateTime test = TEST_2008_6_30_11_30_59_000000500.with(LocalDateTime.of(LocalDate.of(2012, 9, 3), LocalTime.of(19, 15)));
         assertEquals(test, OffsetDateTime.of(LocalDate.of(2012, 9, 3), LocalTime.of(19, 15), OFFSET_PONE));
-    }
-
-    @Test
-    public void test_with_adjustment_OffsetDate() {
-        OffsetDateTime test = TEST_2008_6_30_11_30_59_000000500.with(OffsetDate.of(LocalDate.of(2012, 9, 3), OFFSET_PTWO));
-        assertEquals(test, OffsetDateTime.of(LocalDate.of(2012, 9, 3), LocalTime.of(11, 30, 59, 500), OFFSET_PTWO));
     }
 
     @Test
@@ -1048,7 +1040,7 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
     @Test
     public void test_atZone_dstOverlapSummer() {
         OffsetDateTime t = OffsetDateTime.of(LocalDate.of(2007, 10, 28), LocalTime.of(2, 30), OFFSET_PTWO);
-        assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).getDateTime(), t.getDateTime());
+        assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).toLocalDateTime(), t.toLocalDateTime());
         assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).getOffset(), OFFSET_PTWO);
         assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).getZone(), ZONE_PARIS);
     }
@@ -1056,7 +1048,7 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
     @Test
     public void test_atZone_dstOverlapWinter() {
         OffsetDateTime t = OffsetDateTime.of(LocalDate.of(2007, 10, 28), LocalTime.of(2, 30), OFFSET_PONE);
-        assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).getDateTime(), t.getDateTime());
+        assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).toLocalDateTime(), t.toLocalDateTime());
         assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).getOffset(), OFFSET_PONE);
         assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).getZone(), ZONE_PARIS);
     }
@@ -1392,7 +1384,7 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_toString_formatter() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("y M d H m s");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("y M d H m s");
         String t = OffsetDateTime.of(LocalDate.of(2010, 12, 3), LocalTime.of(11, 30), OFFSET_PONE).toString(f);
         assertEquals(t, "2010 12 3 11 30 0");
     }

@@ -347,27 +347,26 @@ public abstract class Clock {
      * an instant on the time-line rather than a raw millisecond value.
      * This method is provided to allow the use of the clock in high performance use cases
      * where the creation of an object would be unacceptable.
+     * The default implementation currently calls {@link #instant()}.
+     * <p>
      *
      * @return the current millisecond instant from this clock, measured from
      *  the Java epoch of 1970-01-01T00:00 UTC, not null
      * @throws DateTimeException if the instant cannot be obtained, not thrown by most implementations
      */
-    public abstract long millis();
+    public long millis() {
+        return instant().toEpochMilli();
+    }
 
-    //-----------------------------------------------------------------------
     /**
      * Gets the current instant of the clock.
      * <p>
      * This returns an instant representing the current instant as defined by the clock.
-     * <p>
-     * The default implementation currently calls {@link #millis}.
      *
      * @return the current instant from this clock, not null
      * @throws DateTimeException if the instant cannot be obtained, not thrown by most implementations
      */
-    public Instant instant() {
-        return Instant.ofEpochMilli(millis());
-    }
+    public abstract Instant instant();
 
     //-----------------------------------------------------------------------
     /**
@@ -379,7 +378,9 @@ public abstract class Clock {
      * @return true if this is equal to the other clock
      */
     @Override
-    public abstract boolean equals(Object obj);
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
 
     /**
      * A hash code for this clock.
@@ -387,20 +388,9 @@ public abstract class Clock {
      * @return a suitable hash code
      */
     @Override
-    public abstract int hashCode();
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a string describing this clock.
-     * <p>
-     * Clocks must have a string representation based on their state and behavior.
-     * For example, 'System[Europe/Paris]' could be used to represent the System
-     * clock in the 'Europe/Paris' time-zone.
-     *
-     * @return a string representation of this clock, not null
-     */
-    @Override
-    public abstract String toString();
+    public int hashCode() {
+        return super.hashCode();
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -428,6 +418,10 @@ public abstract class Clock {
         @Override
         public long millis() {
             return System.currentTimeMillis();
+        }
+        @Override
+        public Instant instant() {
+            return Instant.ofEpochMilli(millis());
         }
         @Override
         public boolean equals(Object obj) {

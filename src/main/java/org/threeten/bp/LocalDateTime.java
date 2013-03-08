@@ -49,23 +49,20 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Objects;
 
+import org.threeten.bp.chrono.ChronoLocalDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.DefaultInterfaceChronoLocalDateTime;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
-import org.threeten.bp.temporal.ChronoLocalDateTime;
 import org.threeten.bp.temporal.ChronoUnit;
-import org.threeten.bp.temporal.ISOChrono;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
-import org.threeten.bp.temporal.TemporalAdder;
 import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalAdjusters;
+import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQuery;
-import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.temporal.ValueRange;
 import org.threeten.bp.zone.ZoneRules;
@@ -98,8 +95,8 @@ import org.threeten.bp.zone.ZoneRules;
  * This class is immutable and thread-safe.
  */
 public final class LocalDateTime
-        extends DefaultInterfaceChronoLocalDateTime<ISOChrono>
-        implements Temporal, TemporalAdjuster, ChronoLocalDateTime<ISOChrono>, Serializable {
+        extends DefaultInterfaceChronoLocalDateTime<LocalDate>
+        implements Temporal, TemporalAdjuster, ChronoLocalDateTime<LocalDate>, Serializable {
 
     /**
      * The minimum supported {@code LocalDateTime}, '-999999999-01-01T00:00:00'.
@@ -396,7 +393,7 @@ public final class LocalDateTime
         if (temporal instanceof LocalDateTime) {
             return (LocalDateTime) temporal;
         } else if (temporal instanceof ZonedDateTime) {
-            return ((ZonedDateTime) temporal).getDateTime();
+            return ((ZonedDateTime) temporal).toLocalDateTime();
         }
         try {
             LocalDate date = LocalDate.from(temporal);
@@ -419,7 +416,7 @@ public final class LocalDateTime
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static LocalDateTime parse(CharSequence text) {
-        return parse(text, DateTimeFormatters.isoLocalDateTime());
+        return parse(text, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 
     /**
@@ -507,7 +504,7 @@ public final class LocalDateTime
      * All other {@code ChronoField} instances will return false.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doIsSupported(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.isSupportedBy(TemporalAccessor)}
      * passing {@code this} as the argument.
      * Whether the field is supported is determined by the field.
      *
@@ -520,7 +517,7 @@ public final class LocalDateTime
             ChronoField f = (ChronoField) field;
             return f.isDateField() || f.isTimeField();
         }
-        return field != null && field.doIsSupported(this);
+        return field != null && field.isSupportedBy(this);
     }
 
     /**
@@ -537,7 +534,7 @@ public final class LocalDateTime
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doRange(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.rangeRefinedBy(TemporalAccessor)}
      * passing {@code this} as the argument.
      * Whether the range can be obtained is determined by the field.
      *
@@ -551,7 +548,7 @@ public final class LocalDateTime
             ChronoField f = (ChronoField) field;
             return (f.isTimeField() ? time.range(field) : date.range(field));
         }
-        return field.doRange(this);
+        return field.rangeRefinedBy(this);
     }
 
     /**
@@ -570,7 +567,7 @@ public final class LocalDateTime
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
@@ -601,7 +598,7 @@ public final class LocalDateTime
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
@@ -616,23 +613,10 @@ public final class LocalDateTime
             ChronoField f = (ChronoField) field;
             return (f.isTimeField() ? time.getLong(field) : date.getLong(field));
         }
-        return field.doGet(this);
+        return field.getFrom(this);
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the {@code LocalDate} part of this date-time.
-     * <p>
-     * This returns a {@code LocalDate} with the same year, month and day
-     * as this date-time.
-     *
-     * @return the date part of this date-time, not null
-     */
-    @Override
-    public LocalDate getDate() {
-        return date;
-    }
-
     /**
      * Gets the year field.
      * <p>
@@ -716,19 +700,6 @@ public final class LocalDateTime
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the {@code LocalTime} part of this date-time.
-     * <p>
-     * This returns a {@code LocalTime} with the same hour, minute, second and
-     * nanosecond as this date-time.
-     *
-     * @return the time part of this date-time, not null
-     */
-    @Override
-    public LocalTime getTime() {
-        return time;
-    }
-
     /**
      * Gets the hour-of-day field.
      *
@@ -842,7 +813,7 @@ public final class LocalDateTime
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doWith(Temporal, long)}
+     * is obtained by invoking {@code TemporalField.adjustInto(Temporal, long)}
      * passing {@code this} as the argument. In this case, the field determines
      * whether and how to adjust the instant.
      * <p>
@@ -864,7 +835,7 @@ public final class LocalDateTime
                 return with(date.with(field, newValue), time);
             }
         }
-        return field.doWith(this, newValue);
+        return field.adjustInto(this, newValue);
     }
 
     //-----------------------------------------------------------------------
@@ -995,8 +966,10 @@ public final class LocalDateTime
      * For example, truncating with the {@link ChronoUnit#MINUTES minutes} unit
      * will set the second-of-minute and nano-of-second field to zero.
      * <p>
-     * Not all units are accepted. The {@link ChronoUnit#DAYS days} unit and time
-     * units with an exact duration can be used, other units throw an exception.
+     * The unit must have a {@linkplain TemporalUnit#getDuration() duration}
+     * that divides into the length of a standard day without remainder.
+     * This includes all supplied time units on {@link ChronoUnit} and
+     * {@link ChronoUnit#DAYS DAYS}. Other units throw an exception.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1013,21 +986,21 @@ public final class LocalDateTime
      * Returns a copy of this date-time with the specified period added.
      * <p>
      * This method returns a new date-time based on this time with the specified period added.
-     * The adder is typically {@link Period} but may be any other type implementing
-     * the {@link TemporalAdder} interface.
+     * The amount is typically {@link Period} but may be any other type implementing
+     * the {@link TemporalAmount} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #plus(long, TemporalUnit)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param adder  the adder to use, not null
+     * @param amount  the amount to add, not null
      * @return a {@code LocalDateTime} based on this date-time with the addition made, not null
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public LocalDateTime plus(TemporalAdder adder) {
-        return (LocalDateTime) adder.addTo(this);
+    public LocalDateTime plus(TemporalAmount amount) {
+        return (LocalDateTime) amount.addTo(this);
     }
 
     /**
@@ -1060,7 +1033,7 @@ public final class LocalDateTime
             }
             return with(date.plus(amountToAdd, unit), time);
         }
-        return unit.doPlus(this, amountToAdd);
+        return unit.addTo(this, amountToAdd);
     }
 
     //-----------------------------------------------------------------------
@@ -1212,21 +1185,21 @@ public final class LocalDateTime
      * Returns a copy of this date-time with the specified period subtracted.
      * <p>
      * This method returns a new date-time based on this time with the specified period subtracted.
-     * The subtractor is typically {@link Period} but may be any other type implementing
-     * the {@link TemporalSubtractor} interface.
+     * The amount is typically {@link Period} but may be any other type implementing
+     * the {@link TemporalAmount} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #minus(long, TemporalUnit)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param subtractor  the subtractor to use, not null
+     * @param amount  the amount to subtract, not null
      * @return a {@code LocalDateTime} based on this date-time with the subtraction made, not null
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public LocalDateTime minus(TemporalSubtractor subtractor) {
-        return (LocalDateTime) subtractor.subtractFrom(this);
+    public LocalDateTime minus(TemporalAmount amount) {
+        return (LocalDateTime) amount.subtractFrom(this);
     }
 
     /**
@@ -1552,17 +1525,15 @@ public final class LocalDateTime
             }
             return date.periodUntil(endDate, unit);
         }
-        return unit.between(this, endDateTime).getAmount();
+        return unit.between(this, endDateTime);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns an offset date-time formed from this date-time and the specified offset.
+     * Combines this date-time with an offset to create an {@code OffsetDateTime}.
      * <p>
-     * This combines this date-time with the specified offset to form an {@code OffsetDateTime}.
+     * This returns an {@code OffsetDateTime} formed from this date-time at the specified offset.
      * All possible combinations of date-time and offset are valid.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param offset  the offset to combine with, not null
      * @return the offset date-time formed from this date-time and the specified offset, not null
@@ -1572,9 +1543,10 @@ public final class LocalDateTime
     }
 
     /**
-     * Returns a zoned date-time formed from this date-time and the specified time-zone.
+     * Combines this date-time with a time-zone to create a {@code ZonedDateTime}.
      * <p>
-     * This creates a zoned date-time matching the input date-time as closely as possible.
+     * This returns a {@code ZonedDateTime} formed from this date-time at the
+     * specified time-zone. The result will match this date-time as closely as possible.
      * Time-zone rules, such as daylight savings, mean that not every local date-time
      * is valid for the specified zone, thus the local date-time may be adjusted.
      * <p>
@@ -1595,8 +1567,6 @@ public final class LocalDateTime
      * {@link ZonedDateTime#withLaterOffsetAtOverlap()} on the result of this method.
      * To throw an exception when there is a gap or overlap, use
      * {@link ZonedDateTime#ofStrict(LocalDateTime, ZoneOffset, ZoneId)}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param zone  the time-zone to use, not null
      * @return the zoned date-time formed from this date-time, not null
@@ -1604,6 +1574,33 @@ public final class LocalDateTime
     @Override
     public ZonedDateTime atZone(ZoneId zone) {
         return ZonedDateTime.of(this, zone);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the {@code LocalDate} part of this date-time.
+     * <p>
+     * This returns a {@code LocalDate} with the same year, month and day
+     * as this date-time.
+     *
+     * @return the date part of this date-time, not null
+     */
+    @Override
+    public LocalDate toLocalDate() {
+        return date;
+    }
+
+    /**
+     * Gets the {@code LocalTime} part of this date-time.
+     * <p>
+     * This returns a {@code LocalTime} with the same hour, minute, second and
+     * nanosecond as this date-time.
+     *
+     * @return the time part of this date-time, not null
+     */
+    @Override
+    public LocalTime toLocalTime() {
+        return time;
     }
 
     //-----------------------------------------------------------------------
@@ -1630,9 +1627,9 @@ public final class LocalDateTime
     }
 
     private int compareTo0(LocalDateTime other) {
-        int cmp = date.compareTo0(other.getDate());
+        int cmp = date.compareTo0(other.toLocalDate());
         if (cmp == 0) {
-            cmp = time.compareTo(other.getTime());
+            cmp = time.compareTo(other.toLocalTime());
         }
         return cmp;
     }
@@ -1782,7 +1779,7 @@ public final class LocalDateTime
      * Outputs this date-time as a {@code String} using the formatter.
      * <p>
      * This date-time will be passed to the formatter
-     * {@link DateTimeFormatter#print(TemporalAccessor) print method}.
+     * {@link DateTimeFormatter#format(TemporalAccessor) print method}.
      *
      * @param formatter  the formatter to use, not null
      * @return the formatted date-time string, not null

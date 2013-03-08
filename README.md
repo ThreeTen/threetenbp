@@ -7,6 +7,7 @@ The backport is NOT an implementation of JSR-310, as that would require
 jumping through lots of unecessary hoops.
 Instead, this is a simple backport intended to allow users to quickly
 use the JSR-310 API on JDK 1.7.
+The backport should be referred to using the "ThreeTen" name.
 
 Active development on JSR-310 is at [OpenJDK](http://openjdk.java.net/projects/threeten/):
 
@@ -30,9 +31,7 @@ Pull requests with later versions of the dat file will be accepted.
 #### FAQs
 
 1. What version of JDK 1.8 does this project map to?
-This project currently maps to the M6 milestone, with some minor differences.
-Most notably, the classes `Year`, `YearMonth`, `MonthDay`, and the three `Offset` classes are
-in a different package to M6.
+This project currently maps to the M7 milestone.
 
 2. Will the backport be kept up to date?
 There will be a release matching the final JDK 1.8 version.

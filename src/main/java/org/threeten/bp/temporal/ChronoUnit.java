@@ -32,6 +32,9 @@
 package org.threeten.bp.temporal;
 
 import org.threeten.bp.Duration;
+import org.threeten.bp.chrono.ChronoLocalDate;
+import org.threeten.bp.chrono.ChronoLocalDateTime;
+import org.threeten.bp.chrono.ChronoZonedDateTime;
 
 /**
  * A standard set of date periods units.
@@ -227,7 +230,7 @@ public enum ChronoUnit implements TemporalUnit {
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean isSupported(Temporal temporal) {
+    public boolean isSupportedBy(Temporal temporal) {
         if (this == FOREVER) {
             return false;
         }
@@ -251,14 +254,14 @@ public enum ChronoUnit implements TemporalUnit {
     }
 
     @Override
-    public <R extends Temporal> R doPlus(R dateTime, long periodToAdd) {
+    public <R extends Temporal> R addTo(R dateTime, long periodToAdd) {
         return (R) dateTime.plus(periodToAdd, this);
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public <R extends Temporal> SimplePeriod between(R dateTime1, R dateTime2) {
-        return new SimplePeriod(dateTime1.periodUntil(dateTime2, this), this);
+    public long between(Temporal temporal1, Temporal temporal2) {
+        return temporal1.periodUntil(temporal2, this);
     }
 
     //-----------------------------------------------------------------------

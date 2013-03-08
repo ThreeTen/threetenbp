@@ -39,6 +39,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.format.DateTimeFormatterBuilder.OffsetIdPrinterParser;
+import org.threeten.bp.temporal.TemporalQueries;
 
 /**
  * Test OffsetIdPrinterParser.
@@ -61,7 +62,8 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
             pp.parse(parseContext, text, pos);
         } catch (RuntimeException ex) {
             assertTrue(expected.isInstance(ex));
-            assertEquals(parseContext.getParsed().size(), 0);
+            assertEquals(parseContext.toParsed().query(TemporalQueries.chronology()), null);
+            assertEquals(parseContext.toParsed().query(TemporalQueries.zoneId()), null);
         }
     }
 
@@ -404,11 +406,11 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
     }
 
     private void assertParsed(ZoneOffset expectedOffset) {
+        assertEquals(parseContext.toParsed().query(TemporalQueries.chronology()), null);
+        assertEquals(parseContext.toParsed().query(TemporalQueries.zoneId()), null);
         if (expectedOffset == null) {
-            assertEquals(parseContext.getParsed().size(), 0);
             assertEquals(parseContext.getParsed(OFFSET_SECONDS), null);
         } else {
-            assertEquals(parseContext.getParsed().size(), 1);
             assertEquals(parseContext.getParsed(OFFSET_SECONDS), (Long) (long) expectedOffset.getTotalSeconds());
         }
     }

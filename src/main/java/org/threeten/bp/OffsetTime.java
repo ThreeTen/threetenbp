@@ -48,19 +48,17 @@ import java.io.Serializable;
 import java.util.Objects;
 
 import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
-import org.threeten.bp.temporal.TemporalAdder;
 import org.threeten.bp.temporal.TemporalAdjuster;
+import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
-import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.temporal.ValueRange;
 import org.threeten.bp.zone.ZoneRules;
@@ -178,6 +176,29 @@ public final class OffsetTime
         return new OffsetTime(time, offset);
     }
 
+    /**
+     * Obtains an instance of {@code OffsetTime} from an hour, minute, second and nanosecond.
+     * <p>
+     * This creates an offset time with the four specified fields.
+     * <p>
+     * This method exists primarily for writing test cases.
+     * Non test-code will typically use other methods to create an offset time.
+     * {@code LocalTime} has two additional convenience variants of the
+     * equivalent factory method taking fewer arguments.
+     * They are not provided here to reduce the footprint of the API.
+     *
+     * @param hour  the hour-of-day to represent, from 0 to 23
+     * @param minute  the minute-of-hour to represent, from 0 to 59
+     * @param second  the second-of-minute to represent, from 0 to 59
+     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
+     * @param offset  the zone offset, not null
+     * @return the offset time, not null
+     * @throws DateTimeException if the value of any field is out of range
+     */
+    public static OffsetTime of(int hour, int minute, int second, int nanoOfSecond, ZoneOffset offset) {
+        return new OffsetTime(LocalTime.of(hour, minute, second, nanoOfSecond), offset);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code OffsetTime} from an {@code Instant} and zone ID.
@@ -249,7 +270,7 @@ public final class OffsetTime
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static OffsetTime parse(CharSequence text) {
-        return parse(text, DateTimeFormatters.isoOffsetTime());
+        return parse(text, DateTimeFormatter.ISO_OFFSET_TIME);
     }
 
     /**
@@ -323,7 +344,7 @@ public final class OffsetTime
      * All other {@code ChronoField} instances will return false.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doIsSupported(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.isSupportedBy(TemporalAccessor)}
      * passing {@code this} as the argument.
      * Whether the field is supported is determined by the field.
      *
@@ -335,7 +356,7 @@ public final class OffsetTime
         if (field instanceof ChronoField) {
             return ((ChronoField) field).isTimeField() || field == OFFSET_SECONDS;
         }
-        return field != null && field.doIsSupported(this);
+        return field != null && field.isSupportedBy(this);
     }
 
     /**
@@ -352,7 +373,7 @@ public final class OffsetTime
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doRange(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.rangeRefinedBy(TemporalAccessor)}
      * passing {@code this} as the argument.
      * Whether the range can be obtained is determined by the field.
      *
@@ -368,7 +389,7 @@ public final class OffsetTime
             }
             return time.range(field);
         }
-        return field.doRange(this);
+        return field.rangeRefinedBy(this);
     }
 
     /**
@@ -386,7 +407,7 @@ public final class OffsetTime
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
@@ -413,7 +434,7 @@ public final class OffsetTime
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
@@ -430,7 +451,7 @@ public final class OffsetTime
             }
             return time.getLong(field);
         }
-        return field.doGet(this);
+        return field.getFrom(this);
     }
 
     //-----------------------------------------------------------------------
@@ -491,19 +512,6 @@ public final class OffsetTime
         int difference = offset.getTotalSeconds() - this.offset.getTotalSeconds();
         LocalTime adjusted = time.plusSeconds(difference);
         return new OffsetTime(adjusted, offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the {@code LocalTime} part of this date-time.
-     * <p>
-     * This returns a {@code LocalTime} with the same hour, minute, second and
-     * nanosecond as this date-time.
-     *
-     * @return the time part of this date-time, not null
-     */
-    public LocalTime getTime() {
-        return time;
     }
 
     //-----------------------------------------------------------------------
@@ -607,7 +615,7 @@ public final class OffsetTime
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doWith(Temporal, long)}
+     * is obtained by invoking {@code TemporalField.adjustInto(Temporal, long)}
      * passing {@code this} as the argument. In this case, the field determines
      * whether and how to adjust the instant.
      * <p>
@@ -628,7 +636,7 @@ public final class OffsetTime
             }
             return with(time.with(field, newValue), offset);
         }
-        return field.doWith(this, newValue);
+        return field.adjustInto(this, newValue);
     }
 
     //-----------------------------------------------------------------------
@@ -701,8 +709,10 @@ public final class OffsetTime
      * For example, truncating with the {@link ChronoUnit#MINUTES minutes} unit
      * will set the second-of-minute and nano-of-second field to zero.
      * <p>
-     * Not all units are accepted. The {@link ChronoUnit#DAYS days} unit and time
-     * units with an exact duration can be used, other units throw an exception.
+     * The unit must have a {@linkplain TemporalUnit#getDuration() duration}
+     * that divides into the length of a standard day without remainder.
+     * This includes all supplied time units on {@link ChronoUnit} and
+     * {@link ChronoUnit#DAYS DAYS}. Other units throw an exception.
      * <p>
      * The offset does not affect the calculation and will be the same in the result.
      * <p>
@@ -721,22 +731,22 @@ public final class OffsetTime
      * Returns a copy of this date with the specified period added.
      * <p>
      * This method returns a new time based on this time with the specified period added.
-     * The adder is typically {@link Period} but may be any other type implementing
-     * the {@link TemporalAdder} interface.
+     * The amount is typically {@link Period} but may be any other type implementing
+     * the {@link TemporalAmount} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #plus(long, TemporalUnit)}.
      * The offset is not part of the calculation and will be unchanged in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param adder  the adder to use, not null
+     * @param amount  the amount to add, not null
      * @return an {@code OffsetTime} based on this time with the addition made, not null
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public OffsetTime plus(TemporalAdder adder) {
-        return (OffsetTime) adder.addTo(this);
+    public OffsetTime plus(TemporalAmount amount) {
+        return (OffsetTime) amount.addTo(this);
     }
 
     /**
@@ -760,7 +770,7 @@ public final class OffsetTime
         if (unit instanceof ChronoUnit) {
             return with(time.plus(amountToAdd, unit), offset);
         }
-        return unit.doPlus(this, amountToAdd);
+        return unit.addTo(this, amountToAdd);
     }
 
     //-----------------------------------------------------------------------
@@ -829,22 +839,22 @@ public final class OffsetTime
      * Returns a copy of this time with the specified period subtracted.
      * <p>
      * This method returns a new time based on this time with the specified period subtracted.
-     * The subtractor is typically {@link Period} but may be any other type implementing
-     * the {@link TemporalSubtractor} interface.
+     * The amount is typically {@link Period} but may be any other type implementing
+     * the {@link TemporalAmount} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #minus(long, TemporalUnit)}.
      * The offset is not part of the calculation and will be unchanged in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param subtractor  the subtractor to use, not null
+     * @param amount  the amount to subtract, not null
      * @return an {@code OffsetTime} based on this time with the subtraction made, not null
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public OffsetTime minus(TemporalSubtractor subtractor) {
-        return (OffsetTime) subtractor.subtractFrom(this);
+    public OffsetTime minus(TemporalAmount amount) {
+        return (OffsetTime) amount.subtractFrom(this);
     }
 
     /**
@@ -1058,23 +1068,34 @@ public final class OffsetTime
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
-        return unit.between(this, endTime).getAmount();
+        return unit.between(this, endTime);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns an offset date-time formed from this time at the specified date.
+     * Combines this time with a date to create an {@code OffsetDateTime}.
      * <p>
-     * This combines this time with the specified date to form an {@code OffsetDateTime}.
+     * This returns an {@code OffsetDateTime} formed from this time and the specified date.
      * All possible combinations of date and time are valid.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param date  the date to combine with, not null
      * @return the offset date-time formed from this time and the specified date, not null
      */
     public OffsetDateTime atDate(LocalDate date) {
         return OffsetDateTime.of(date, time, offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the {@code LocalTime} part of this date-time.
+     * <p>
+     * This returns a {@code LocalTime} with the same hour, minute, second and
+     * nanosecond as this date-time.
+     *
+     * @return the time part of this date-time, not null
+     */
+    public LocalTime toLocalTime() {
+        return time;
     }
 
     //-----------------------------------------------------------------------
@@ -1237,7 +1258,7 @@ public final class OffsetTime
      * Outputs this time as a {@code String} using the formatter.
      * <p>
      * This time will be passed to the formatter
-     * {@link DateTimeFormatter#print(TemporalAccessor) print method}.
+     * {@link DateTimeFormatter#format(TemporalAccessor) print method}.
      *
      * @param formatter  the formatter to use, not null
      * @return the formatted time string, not null
@@ -1245,7 +1266,7 @@ public final class OffsetTime
      */
     public String toString(DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
-        return formatter.print(this);
+        return formatter.format(this);
     }
 
     // -----------------------------------------------------------------------

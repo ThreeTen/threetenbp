@@ -52,25 +52,23 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Objects;
 
-import org.threeten.bp.format.DateTimeBuilder;
+import org.threeten.bp.chrono.ChronoLocalDate;
+import org.threeten.bp.chrono.Era;
+import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.DefaultInterfaceChronoLocalDate;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
-import org.threeten.bp.temporal.ChronoLocalDate;
 import org.threeten.bp.temporal.ChronoUnit;
-import org.threeten.bp.temporal.Era;
-import org.threeten.bp.temporal.ISOChrono;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
-import org.threeten.bp.temporal.TemporalAdder;
 import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalAdjusters;
+import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
-import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.temporal.ValueRange;
 import org.threeten.bp.zone.ZoneOffsetTransition;
@@ -101,8 +99,8 @@ import org.threeten.bp.zone.ZoneRules;
  * This class is immutable and thread-safe.
  */
 public final class LocalDate
-        extends DefaultInterfaceChronoLocalDate<ISOChrono>
-        implements Temporal, TemporalAdjuster, ChronoLocalDate<ISOChrono>, Serializable {
+        extends DefaultInterfaceChronoLocalDate<LocalDate>
+        implements Temporal, TemporalAdjuster, ChronoLocalDate<LocalDate>, Serializable {
 
     /**
      * The minimum supported {@code LocalDate}, '-999999999-01-01'.
@@ -187,7 +185,6 @@ public final class LocalDate
      */
     public static LocalDate now(Clock clock) {
         Objects.requireNonNull(clock, "clock");
-        // inline OffsetDate factory to avoid creating object and InstantProvider checks
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
         long epochSec = now.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
@@ -249,7 +246,7 @@ public final class LocalDate
     public static LocalDate ofYearDay(int year, int dayOfYear) {
         YEAR.checkValidValue(year);
         DAY_OF_YEAR.checkValidValue(dayOfYear);
-        boolean leap = ISOChrono.INSTANCE.isLeapYear(year);
+        boolean leap = IsoChronology.INSTANCE.isLeapYear(year);
         if (dayOfYear == 366 && leap == false) {
             throw new DateTimeException("Invalid date 'DayOfYear 366' as '" + year + "' is not a leap year");
         }
@@ -312,7 +309,8 @@ public final class LocalDate
      * A {@code TemporalAccessor} represents some form of date and time information.
      * This factory converts the arbitrary temporal object to an instance of {@code LocalDate}.
      * <p>
-     * The conversion extracts the {@link ChronoField#EPOCH_DAY EPOCH_DAY} field.
+     * The conversion uses the {@link TemporalQueries#localDate()} query, which relies
+     * on extracting the {@link ChronoField#EPOCH_DAY EPOCH_DAY} field.
      * <p>
      * This method matches the signature of the functional interface {@link TemporalQuery}
      * allowing it to be used as a query via method reference, {@code LocalDate::from}.
@@ -322,26 +320,11 @@ public final class LocalDate
      * @throws DateTimeException if unable to convert to a {@code LocalDate}
      */
     public static LocalDate from(TemporalAccessor temporal) {
-        if (temporal instanceof LocalDate) {
-            return (LocalDate) temporal;
-        } else if (temporal instanceof LocalDateTime) {
-            return ((LocalDateTime) temporal).getDate();
-        } else if (temporal instanceof ZonedDateTime) {
-            return ((ZonedDateTime) temporal).getDate();
+        LocalDate date = temporal.query(TemporalQueries.localDate());
+        if (date == null) {
+            throw new DateTimeException("Unable to obtain LocalDate from TemporalAccessor: " + temporal.getClass());
         }
-        // handle builder as a special case
-        if (temporal instanceof DateTimeBuilder) {
-            DateTimeBuilder builder = (DateTimeBuilder) temporal;
-            LocalDate date = builder.extract(LocalDate.class);
-            if (date != null) {
-                return date;
-            }
-        }
-        try {
-            return ofEpochDay(temporal.getLong(EPOCH_DAY));
-        } catch (DateTimeException ex) {
-            throw new DateTimeException("Unable to obtain LocalDate from TemporalAccessor: " + temporal.getClass(), ex);
-        }
+        return date;
     }
 
     //-----------------------------------------------------------------------
@@ -356,7 +339,7 @@ public final class LocalDate
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static LocalDate parse(CharSequence text) {
-        return parse(text, DateTimeFormatters.isoLocalDate());
+        return parse(text, DateTimeFormatter.ISO_LOCAL_DATE);
     }
 
     /**
@@ -385,7 +368,7 @@ public final class LocalDate
      * @throws DateTimeException if the day-of-month is invalid for the month-year
      */
     private static LocalDate create(int year, Month month, int dayOfMonth) {
-        if (dayOfMonth > 28 && dayOfMonth > month.length(ISOChrono.INSTANCE.isLeapYear(year))) {
+        if (dayOfMonth > 28 && dayOfMonth > month.length(IsoChronology.INSTANCE.isLeapYear(year))) {
             if (dayOfMonth == 29) {
                 throw new DateTimeException("Invalid date 'February 29' as '" + year + "' is not a leap year");
             } else {
@@ -406,7 +389,7 @@ public final class LocalDate
     private static LocalDate resolvePreviousValid(int year, int month, int day) {
         switch (month) {
             case 2:
-                day = Math.min(day, ISOChrono.INSTANCE.isLeapYear(year) ? 29 : 28);
+                day = Math.min(day, IsoChronology.INSTANCE.isLeapYear(year) ? 29 : 28);
                 break;
             case 4:
             case 6:
@@ -461,7 +444,7 @@ public final class LocalDate
      * All other {@code ChronoField} instances will return false.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doIsSupported(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.isSupportedBy(TemporalAccessor)}
      * passing {@code this} as the argument.
      * Whether the field is supported is determined by the field.
      *
@@ -487,7 +470,7 @@ public final class LocalDate
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doRange(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.rangeRefinedBy(TemporalAccessor)}
      * passing {@code this} as the argument.
      * Whether the range can be obtained is determined by the field.
      *
@@ -511,7 +494,7 @@ public final class LocalDate
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return field.doRange(this);
+        return field.rangeRefinedBy(this);
     }
 
     /**
@@ -529,7 +512,7 @@ public final class LocalDate
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
@@ -559,7 +542,7 @@ public final class LocalDate
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
@@ -579,7 +562,7 @@ public final class LocalDate
             }
             return get0(field);
         }
-        return field.doGet(this);
+        return field.getFrom(this);
     }
 
     private int get0(TemporalField field) {
@@ -617,14 +600,14 @@ public final class LocalDate
      * @return the ISO chronology, not null
      */
     @Override
-    public ISOChrono getChrono() {
-        return ISOChrono.INSTANCE;
+    public IsoChronology getChronology() {
+        return IsoChronology.INSTANCE;
     }
 
     /**
      * Gets the era applicable at this date.
      * <p>
-     * The official ISO-8601 standard does not define eras, however {@code ISOChrono} does.
+     * The official ISO-8601 standard does not define eras, however {@code IsoChronology} does.
      * It defines two eras, 'CE' from year one onwards and 'BCE' from year zero backwards.
      * Since dates before the Julian-Gregorian cutover are not in line with history,
      * the cutover between 'BCE' and 'CE' is also not aligned with the commonly used
@@ -635,12 +618,12 @@ public final class LocalDate
      * the Japanese calendar system.
      * <p>
      * The returned era will be a singleton capable of being compared with the constants
-     * in {@link ISOChrono} using the {@code ==} operator.
+     * in {@link IsoChronology} using the {@code ==} operator.
      *
-     * @return the {@code ISOChrono} era constant applicable at this date, not null
+     * @return the {@code IsoChronology} era constant applicable at this date, not null
      */
     @Override // override for Javadoc
-    public Era<ISOChrono> getEra() {
+    public Era getEra() {
         return super.getEra();
     }
 
@@ -748,7 +731,7 @@ public final class LocalDate
      */
     @Override // override for Javadoc and performance
     public boolean isLeapYear() {
-        return ISOChrono.INSTANCE.isLeapYear(year);
+        return IsoChronology.INSTANCE.isLeapYear(year);
     }
 
     /**
@@ -922,7 +905,7 @@ public final class LocalDate
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doWith(Temporal, long)}
+     * is obtained by invoking {@code TemporalField.adjustInto(Temporal, long)}
      * passing {@code this} as the argument. In this case, the field determines
      * whether and how to adjust the instant.
      * <p>
@@ -956,7 +939,7 @@ public final class LocalDate
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return field.doWith(this, newValue);
+        return field.adjustInto(this, newValue);
     }
 
     //-----------------------------------------------------------------------
@@ -1037,21 +1020,21 @@ public final class LocalDate
      * Returns a copy of this date with the specified period added.
      * <p>
      * This method returns a new date based on this date with the specified period added.
-     * The adder is typically {@link Period} but may be any other type implementing
-     * the {@link TemporalAdder} interface.
+     * The amount is typically {@link Period} but may be any other type implementing
+     * the {@link TemporalAmount} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #plus(long, TemporalUnit)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param adder  the adder to use, not null
+     * @param amount  the amount to add, not null
      * @return a {@code LocalDate} based on this date with the addition made, not null
      * @throws DateTimeException if the addition cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public LocalDate plus(TemporalAdder adder) {
-        return (LocalDate) adder.addTo(this);
+    public LocalDate plus(TemporalAmount amount) {
+        return (LocalDate) amount.addTo(this);
     }
 
     /**
@@ -1085,7 +1068,7 @@ public final class LocalDate
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
-        return unit.doPlus(this, amountToAdd);
+        return unit.addTo(this, amountToAdd);
     }
 
     //-----------------------------------------------------------------------
@@ -1195,21 +1178,21 @@ public final class LocalDate
      * Returns a copy of this date with the specified period subtracted.
      * <p>
      * This method returns a new date based on this date with the specified period subtracted.
-     * The subtractor is typically {@link Period} but may be any other type implementing
-     * the {@link TemporalSubtractor} interface.
+     * The amount is typically {@link Period} but may be any other type implementing
+     * the {@link TemporalAmount} interface.
      * The calculation is delegated to the specified adjuster, which typically calls
      * back to {@link #minus(long, TemporalUnit)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param subtractor  the subtractor to use, not null
+     * @param amount  the amount to subtract, not null
      * @return a {@code LocalDate} based on this date with the subtraction made, not null
      * @throws DateTimeException if the subtraction cannot be made
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public LocalDate minus(TemporalSubtractor subtractor) {
-        return (LocalDate) subtractor.subtractFrom(this);
+    public LocalDate minus(TemporalAmount amount) {
+        return (LocalDate) amount.subtractFrom(this);
     }
 
     /**
@@ -1338,8 +1321,12 @@ public final class LocalDate
      * @throws DateTimeException if unable to query (defined by the query)
      * @throws ArithmeticException if numeric overflow occurs (defined by the query)
      */
-    @Override  // override for Javadoc
+    @SuppressWarnings("unchecked")
+    @Override
     public <R> R query(TemporalQuery<R> query) {
+        if (query == TemporalQueries.localDate()) {
+            return (R) this;
+        }
         return super.query(query);
     }
 
@@ -1435,7 +1422,7 @@ public final class LocalDate
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
-        return unit.between(this, endDate).getAmount();
+        return unit.between(this, endDate);
     }
 
     long daysUntil(LocalDate end) {
@@ -1448,14 +1435,64 @@ public final class LocalDate
         return (packed2 - packed1) / 32;
     }
 
+    /**
+     * Calculates the period between this date and another date as a {@code Period}.
+     * <p>
+     * This calculates the period between two dates in terms of years, months and days.
+     * The start and end points are {@code this} and the specified date.
+     * The result will be negative if the end is before the start.
+     * <p>
+     * The calculation is performed using the ISO calendar system.
+     * If necessary, the input date will be converted to ISO.
+     * <p>
+     * The start date is included, but the end date is not.
+     * The period is calculated by removing complete months, then calculating
+     * the remaining number of days, adjusting to ensure that both have the same sign.
+     * The number of months is then normalized into years and months based on a 12 month year.
+     * A month is considered to be complete if the end day-of-month is greater
+     * than or equal to the start day-of-month.
+     * For example, from {@code 2010-01-15} to {@code 2011-03-18} is "1 year, 2 months and 3 days".
+     * <p>
+     * The result of this method can be a negative period if the end is before the start.
+     * The negative sign will be the same in each of year, month and day.
+     * <p>
+     * There are two equivalent ways of using this method.
+     * The first is to invoke this method.
+     * The second is to use {@link Period#between(LocalDate, LocalDate)}:
+     * <pre>
+     *   // these two lines are equivalent
+     *   period = start.periodUntil(end);
+     *   period = Period.between(start, end);
+     * </pre>
+     * The choice should be made based on which makes the code more readable.
+     *
+     * @param endDate  the end date, exclusive, which may be in any chronology, not null
+     * @return the period between this date and the end date, not null
+     */
+    @Override
+    public Period periodUntil(ChronoLocalDate<?> endDate) {
+        LocalDate end = LocalDate.from(endDate);
+        long totalMonths = end.getEpochMonth() - this.getEpochMonth();  // safe
+        int days = end.day - this.day;
+        if (totalMonths > 0 && days < 0) {
+            totalMonths--;
+            LocalDate calcDate = this.plusMonths(totalMonths);
+            days = (int) (end.toEpochDay() - calcDate.toEpochDay());  // safe
+        } else if (totalMonths < 0 && days > 0) {
+            totalMonths++;
+            days -= end.lengthOfMonth();
+        }
+        long years = totalMonths / 12;  // safe
+        int months = (int) (totalMonths % 12);  // safe
+        return Period.of(Jdk8Methods.safeToInt(years), months, days);
+    }
+
     //-----------------------------------------------------------------------
     /**
-     * Returns a local date-time formed from this date at the specified time.
+     * Combines this date with a time to create a {@code LocalDateTime}.
      * <p>
-     * This combines this date with the specified time to form a {@code LocalDateTime}.
+     * This returns a {@code LocalDateTime} formed from this date at the specified time.
      * All possible combinations of date and time are valid.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param time  the time to combine with, not null
      * @return the local date-time formed from this date and the specified time, not null
@@ -1466,13 +1503,13 @@ public final class LocalDate
     }
 
     /**
-     * Returns a local date-time formed from this date at the specified time.
+     * Combines this date with a time to create a {@code LocalDateTime}.
      * <p>
-     * This combines this date with the specified time to form a {@code LocalDateTime}.
+     * This returns a {@code LocalDateTime} formed from this date at the
+     * specified hour and minute.
+     * The seconds and nanosecond fields will be set to zero.
      * The individual time fields must be within their valid range.
      * All possible combinations of date and time are valid.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param hour  the hour-of-day to use, from 0 to 23
      * @param minute  the minute-of-hour to use, from 0 to 59
@@ -1484,13 +1521,13 @@ public final class LocalDate
     }
 
     /**
-     * Returns a local date-time formed from this date at the specified time.
+     * Combines this date with a time to create a {@code LocalDateTime}.
      * <p>
-     * This combines this date with the specified time to form a {@code LocalDateTime}.
+     * This returns a {@code LocalDateTime} formed from this date at the
+     * specified hour, minute and second.
+     * The nanosecond field will be set to zero.
      * The individual time fields must be within their valid range.
      * All possible combinations of date and time are valid.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param hour  the hour-of-day to use, from 0 to 23
      * @param minute  the minute-of-hour to use, from 0 to 59
@@ -1503,13 +1540,12 @@ public final class LocalDate
     }
 
     /**
-     * Returns a local date-time formed from this date at the specified time.
+     * Combines this date with a time to create a {@code LocalDateTime}.
      * <p>
-     * This combines this date with the specified time to form a {@code LocalDateTime}.
+     * This returns a {@code LocalDateTime} formed from this date at the
+     * specified hour, minute, second and nanosecond.
      * The individual time fields must be within their valid range.
      * All possible combinations of date and time are valid.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param hour  the hour-of-day to use, from 0 to 23
      * @param minute  the minute-of-hour to use, from 0 to 59
@@ -1523,22 +1559,37 @@ public final class LocalDate
     }
 
     /**
-     * Returns an offset date formed from this date and the specified offset.
+     * Combines this date with an offset time to create an {@code OffsetDateTime}.
      * <p>
-     * This combines this date with the specified offset to form an {@code OffsetDate}.
-     * All possible combinations of date and offset are valid.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
+     * This returns an {@code OffsetDateTime} formed from this date at the specified time.
+     * All possible combinations of date and time are valid.
      *
-     * @param offset  the offset to combine with, not null
-     * @return the offset date formed from this date and the specified offset, not null
+     * @param time  the time to combine with, not null
+     * @return the offset date-time formed from this date and the specified time, not null
      */
-    public OffsetDate atOffset(ZoneOffset offset) {
-        return OffsetDate.of(this, offset);
+    public OffsetDateTime atTime(OffsetTime time) {
+        return OffsetDateTime.of(LocalDateTime.of(this, time.toLocalTime()), time.getOffset());
     }
 
     /**
-     * Returns a zoned date-time from this date at the earliest valid time according
+     * Combines this date with the time of midnight to create a {@code LocalDateTime}
+     * at the start of this date.
+     * <p>
+     * This returns a {@code LocalDateTime} formed from this date at the time of
+     * midnight, 00:00, at the start of this date.
+     *
+     * @return the local date-time of midnight at the start of this date, not null
+     */
+    public LocalDateTime atStartOfDay() {
+        return LocalDateTime.of(this, LocalTime.MIDNIGHT);
+    }
+
+    /**
+     * Combines this date with a time-zone to create a {@code ZonedDateTime}
+     * at the start of the day
+     * <p>
+     * This returns a {@code ZonedDateTime} formed from this date at the
+     * specified zone, with the time set to be the earliest valid time according
      * to the rules in the time-zone.
      * <p>
      * Time-zone rules, such as daylight savings, mean that not every local date-time
@@ -1553,8 +1604,6 @@ public final class LocalDate
      * <p>
      * To convert to a specific time in a given time-zone call {@link #atTime(LocalTime)}
      * followed by {@link LocalDateTime#atZone(ZoneId)}.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param zone  the zone ID to use, not null
      * @return the zoned date-time formed from this date and the earliest valid time for the zone, not null
@@ -1793,7 +1842,7 @@ public final class LocalDate
      * Outputs this date as a {@code String} using the formatter.
      * <p>
      * This date will be passed to the formatter
-     * {@link DateTimeFormatter#print(TemporalAccessor) print method}.
+     * {@link DateTimeFormatter#format(TemporalAccessor) print method}.
      *
      * @param formatter  the formatter to use, not null
      * @return the formatted date string, not null

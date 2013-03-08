@@ -35,18 +35,19 @@ import static org.threeten.bp.temporal.ChronoUnit.DAYS;
 import static org.threeten.bp.temporal.ChronoUnit.FOREVER;
 import static org.threeten.bp.temporal.ChronoUnit.SECONDS;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import org.threeten.bp.temporal.Temporal;
-import org.threeten.bp.temporal.TemporalAdder;
-import org.threeten.bp.temporal.TemporalSubtractor;
+import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalUnit;
 
 /**
  * Mock period of time measured using a single unit, such as {@code 3 Days}.
  */
 public final class MockSimplePeriod
-        implements TemporalAdder, TemporalSubtractor, Comparable<MockSimplePeriod> {
+        implements TemporalAmount, Comparable<MockSimplePeriod> {
 
     /**
      * A constant for a period of zero, measured in days.
@@ -87,6 +88,20 @@ public final class MockSimplePeriod
         }
         this.amount = amount;
         this.unit = unit;
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public List<TemporalUnit> getUnits() {
+        return Collections.singletonList(unit);
+    }
+
+    @Override
+    public long get(TemporalUnit unit) {
+        if (this.unit.equals(unit)) {
+            return amount;
+        }
+        throw new DateTimeException("Unsupported unit: " + unit);
     }
 
     //-----------------------------------------------------------------------

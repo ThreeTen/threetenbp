@@ -122,8 +122,8 @@ public abstract class ZoneId implements Serializable {
      * <p>
      * This maps as follows:
      * <p><ul>
-     * <li>EST - America/Indianapolis</li>
-     * <li>MST - America/Phoenix</li>
+     * <li>EST - America/New_York</li>
+     * <li>MST - America/Denver</li>
      * <li>HST - Pacific/Honolulu</li>
      * <li>ACT - Australia/Darwin</li>
      * <li>AET - Australia/Sydney</li>
@@ -219,8 +219,8 @@ public abstract class ZoneId implements Serializable {
         base.put("SST", "Pacific/Guadalcanal");
         base.put("VST", "Asia/Ho_Chi_Minh");
         Map<String, String> pre = new HashMap<>(base);
-        pre.put("EST", "America/Indianapolis");
-        pre.put("MST", "America/Phoenix");
+        pre.put("EST", "America/New_York");
+        pre.put("MST", "America/Denver");
         pre.put("HST", "Pacific/Honolulu");
         OLD_IDS_PRE_2005 = Collections.unmodifiableMap(pre);
         Map<String, String> post = new HashMap<>(base);
@@ -405,8 +405,8 @@ public abstract class ZoneId implements Serializable {
      * @param locale  the locale to use, not null
      * @return the text value of the zone, not null
      */
-    public String getText(TextStyle style, Locale locale) {
-        return new DateTimeFormatterBuilder().appendZoneText(style).toFormatter(locale).print(new DefaultInterfaceTemporalAccessor() {
+    public String getDisplayName(TextStyle style, Locale locale) {
+        return new DateTimeFormatterBuilder().appendZoneText(style).toFormatter(locale).format(new DefaultInterfaceTemporalAccessor() {
             @Override
             public boolean isSupported(TemporalField field) {
                 return false;

@@ -37,6 +37,7 @@ import static org.testng.Assert.assertTrue;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.format.DateTimeFormatterBuilder.StringLiteralPrinterParser;
+import org.threeten.bp.temporal.TemporalQueries;
 
 /**
  * Test StringLiteralPrinterParser.
@@ -76,7 +77,8 @@ public class TestStringLiteralParser extends AbstractTestPrinterParser {
         parseContext.setCaseSensitive(caseSensitive);
         int result = pp.parse(parseContext, text, pos);
         assertEquals(result, expectedPos);
-        assertEquals(parseContext.getParsed().size(), 0);
+        assertEquals(parseContext.toParsed().query(TemporalQueries.chronology()), null);
+        assertEquals(parseContext.toParsed().query(TemporalQueries.zoneId()), null);
     }
 
     //-----------------------------------------------------------------------
@@ -94,7 +96,8 @@ public class TestStringLiteralParser extends AbstractTestPrinterParser {
             pp.parse(parseContext, text, pos);
         } catch (RuntimeException ex) {
             assertTrue(expected.isInstance(ex));
-            assertEquals(parseContext.getParsed().size(), 0);
+            assertEquals(parseContext.toParsed().query(TemporalQueries.chronology()), null);
+            assertEquals(parseContext.toParsed().query(TemporalQueries.zoneId()), null);
         }
     }
 

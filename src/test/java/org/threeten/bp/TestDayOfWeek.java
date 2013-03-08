@@ -144,8 +144,8 @@ public class TestDayOfWeek extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_query_chrono() {
-        assertEquals(DayOfWeek.FRIDAY.query(TemporalQueries.chrono()), null);
-        assertEquals(TemporalQueries.chrono().queryFrom(DayOfWeek.FRIDAY), null);
+        assertEquals(DayOfWeek.FRIDAY.query(TemporalQueries.chronology()), null);
+        assertEquals(TemporalQueries.chronology().queryFrom(DayOfWeek.FRIDAY), null);
     }
 
     @Test
@@ -178,21 +178,21 @@ public class TestDayOfWeek extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // getText()
+    // getDisplayName()
     //-----------------------------------------------------------------------
     @Test
-    public void test_getText() {
-        assertEquals(DayOfWeek.MONDAY.getText(TextStyle.SHORT, Locale.US), "Mon");
+    public void test_getDisplayName() {
+        assertEquals(DayOfWeek.MONDAY.getDisplayName(TextStyle.SHORT, Locale.US), "Mon");
     }
 
     @Test(expectedExceptions = NullPointerException.class)
-    public void test_getText_nullStyle() {
-        DayOfWeek.MONDAY.getText(null, Locale.US);
+    public void test_getDisplayName_nullStyle() {
+        DayOfWeek.MONDAY.getDisplayName(null, Locale.US);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
-    public void test_getText_nullLocale() {
-        DayOfWeek.MONDAY.getText(TextStyle.FULL, null);
+    public void test_getDisplayName_nullLocale() {
+        DayOfWeek.MONDAY.getDisplayName(TextStyle.FULL, null);
     }
 
     //-----------------------------------------------------------------------

@@ -63,12 +63,11 @@ import org.threeten.bp.LocalTime;
 import org.threeten.bp.Month;
 import org.threeten.bp.Year;
 import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.format.DateTimeBuilder;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.temporal.JulianFields;
+import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalAdjusters;
-import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 /**
@@ -260,7 +259,7 @@ final class TzdbZoneRulesCompiler {
                 SortedMap<LocalDate, Byte> parsedLeapSeconds = compiler.getLeapSeconds();
 
                 // output version-specific file
-                File dstFile = new File(dstDir, "jsr-310-TZDB-" + loopVersion + ".jar");
+                File dstFile = new File(dstDir, "threeten-TZDB-" + loopVersion + ".jar");
                 if (verbose) {
                     System.out.println("Outputting file: " + dstFile);
                 }
@@ -287,7 +286,7 @@ final class TzdbZoneRulesCompiler {
         }
 
         // output merged file
-        File dstFile = new File(dstDir, "jsr-310-TZDB-all.jar");
+        File dstFile = new File(dstDir, "threeten-TZDB-all.jar");
         if (verbose) {
             System.out.println("Outputting combined file: " + dstFile);
         }
@@ -402,7 +401,7 @@ final class TzdbZoneRulesCompiler {
 
             // now treat all the transitions
             for (Map.Entry<LocalDate, Byte> rule : leapSeconds.entrySet()) {
-                out.writeLong(JulianFields.MODIFIED_JULIAN_DAY.doGet(rule.getKey()));
+                out.writeLong(JulianFields.MODIFIED_JULIAN_DAY.getFrom(rule.getKey()));
                 offset += rule.getValue();
                 out.writeInt(offset);
             }
@@ -825,14 +824,13 @@ final class TzdbZoneRulesCompiler {
             pos = 1;
         }
         ParsePosition pp = new ParsePosition(pos);
-        DateTimeBuilder bld = TIME_PARSER.parseToBuilder(str, pp);
-        if (bld == null || pp.getErrorIndex() >= 0) {
+        TemporalAccessor parsed = TIME_PARSER.parseUnresolved(str, pp);
+        if (parsed == null || pp.getErrorIndex() >= 0) {
             throw new IllegalArgumentException(str);
         }
-        Map<TemporalField, Long> parsed = bld.getFieldValueMap();
-        long hour = parsed.get(HOUR_OF_DAY);
-        Long min = parsed.get(MINUTE_OF_HOUR);
-        Long sec = parsed.get(SECOND_OF_MINUTE);
+        long hour = parsed.getLong(HOUR_OF_DAY);
+        Long min = (parsed.isSupported(MINUTE_OF_HOUR) ? parsed.getLong(MINUTE_OF_HOUR) : null);
+        Long sec = (parsed.isSupported(SECOND_OF_MINUTE) ? parsed.getLong(SECOND_OF_MINUTE) : null);
         int secs = (int) (hour * 60 * 60 + (min != null ? min : 0) * 60 + (sec != null ? sec : 0));
         if (pos == 1) {
             secs = -secs;

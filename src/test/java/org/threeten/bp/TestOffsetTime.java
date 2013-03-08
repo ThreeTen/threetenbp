@@ -64,18 +64,15 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.JulianFields;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
-import org.threeten.bp.temporal.TemporalAdder;
 import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
-import org.threeten.bp.temporal.TemporalSubtractor;
 
 /**
  * Test OffsetTime.
@@ -168,7 +165,7 @@ public class TestOffsetTime extends AbstractDateTimeTest {
 
         OffsetTime expected = OffsetTime.now(Clock.systemDefaultZone());
         OffsetTime test = OffsetTime.now();
-        long diff = Math.abs(test.getTime().toNanoOfDay() - expected.getTime().toNanoOfDay());
+        long diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
         assertTrue(diff < 100000000);  // less than 0.1 secs
         assertEquals(test.getOffset(), nowDT.getOffset());
     }
@@ -233,7 +230,7 @@ public class TestOffsetTime extends AbstractDateTimeTest {
     // factories
     //-----------------------------------------------------------------------
     private void check(OffsetTime test, int h, int m, int s, int n, ZoneOffset offset) {
-        assertEquals(test.getTime(), LocalTime.of(h, m, s, n));
+        assertEquals(test.toLocalTime(), LocalTime.of(h, m, s, n));
         assertEquals(test.getOffset(), offset);
 
         assertEquals(test.getHour(), h);
@@ -418,14 +415,14 @@ public class TestOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void factory_parse_formatter() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("H m s XXX");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("H m s XXX");
         OffsetTime test = OffsetTime.parse("11 30 0 +01:00", f);
         assertEquals(test, OffsetTime.of(LocalTime.of(11, 30), ZoneOffset.ofHours(1)));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_formatter_nullText() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("y M d H m s");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("y M d H m s");
         OffsetTime.parse((String) null, f);
     }
 
@@ -476,7 +473,7 @@ public class TestOffsetTime extends AbstractDateTimeTest {
         LocalTime localTime = LocalTime.of(h, m, s, n);
         OffsetTime a = OffsetTime.of(localTime, offset);
 
-        assertEquals(a.getTime(), localTime);
+        assertEquals(a.toLocalTime(), localTime);
         assertEquals(a.getOffset(), offset);
         assertEquals(a.toString(), localTime.toString() + offset.toString());
         assertEquals(a.getHour(), localTime.getHour());
@@ -519,8 +516,8 @@ public class TestOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_query_chrono() {
-        assertEquals(TEST_11_30_59_500_PONE.query(TemporalQueries.chrono()), null);
-        assertEquals(TemporalQueries.chrono().queryFrom(TEST_11_30_59_500_PONE), null);
+        assertEquals(TEST_11_30_59_500_PONE.query(TemporalQueries.chronology()), null);
+        assertEquals(TemporalQueries.chronology().queryFrom(TEST_11_30_59_500_PONE), null);
     }
 
     @Test
@@ -559,7 +556,7 @@ public class TestOffsetTime extends AbstractDateTimeTest {
     public void test_withOffsetSameLocal() {
         OffsetTime base = OffsetTime.of(LocalTime.of(11, 30, 59), OFFSET_PONE);
         OffsetTime test = base.withOffsetSameLocal(OFFSET_PTWO);
-        assertEquals(test.getTime(), base.getTime());
+        assertEquals(test.toLocalTime(), base.toLocalTime());
         assertEquals(test.getOffset(), OFFSET_PTWO);
     }
 
@@ -782,7 +779,7 @@ public class TestOffsetTime extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_plus_PlusAdjuster_null() {
-        TEST_11_30_59_500_PONE.plus((TemporalAdder) null);
+        TEST_11_30_59_500_PONE.plus(null);
     }
 
     //-----------------------------------------------------------------------
@@ -877,7 +874,7 @@ public class TestOffsetTime extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_minus_MinusAdjuster_null() {
-        TEST_11_30_59_500_PONE.minus((TemporalSubtractor) null);
+        TEST_11_30_59_500_PONE.minus(null);
     }
 
     //-----------------------------------------------------------------------
@@ -1020,7 +1017,7 @@ public class TestOffsetTime extends AbstractDateTimeTest {
     }
 
     private Instant convertInstant(OffsetTime ot) {
-        return DATE.atTime(ot.getTime()).toInstant(ot.getOffset());
+        return DATE.atTime(ot.toLocalTime()).toInstant(ot.getOffset());
     }
 
     //-----------------------------------------------------------------------
@@ -1243,7 +1240,7 @@ public class TestOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_toString_formatter() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("H m s");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("H m s");
         String t = OffsetTime.of(LocalTime.of(11, 30), OFFSET_PONE).toString(f);
         assertEquals(t, "11 30 0");
     }

@@ -31,16 +31,31 @@
  */
 package org.threeten.bp.temporal;
 
+import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
+import static org.threeten.bp.temporal.ChronoField.DAY_OF_WEEK;
+import static org.threeten.bp.temporal.ChronoField.DAY_OF_YEAR;
+import static org.threeten.bp.temporal.ChronoField.EPOCH_DAY;
+import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
+import static org.threeten.bp.temporal.ChronoField.YEAR;
+import static org.threeten.bp.temporal.ChronoUnit.DAYS;
+import static org.threeten.bp.temporal.ChronoUnit.MONTHS;
+import static org.threeten.bp.temporal.ChronoUnit.WEEKS;
+import static org.threeten.bp.temporal.ChronoUnit.YEARS;
+
 import java.io.InvalidObjectException;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.threeten.bp.DayOfWeek;
-import org.threeten.bp.format.DateTimeBuilder;
+import org.threeten.bp.chrono.ChronoLocalDate;
+import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.jdk8.Jdk8Methods;
 
 /**
@@ -445,7 +460,7 @@ public final class WeekFields implements Serializable {
         private static final ValueRange WEEK_OF_YEAR_RANGE = ValueRange.of(0, 1, 52, 53);
 
         @Override
-        public long doGet(TemporalAccessor temporal) {
+        public long getFrom(TemporalAccessor temporal) {
             // Offset the ISO DOW by the start of this week
             int sow = weekDef.getFirstDayOfWeek().getValue();
             int isoDow = temporal.get(ChronoField.DAY_OF_WEEK);
@@ -464,6 +479,23 @@ public final class WeekFields implements Serializable {
             } else {
                 throw new IllegalStateException("unreachable");
             }
+        }
+
+        private int localizedDayOfWeek(TemporalAccessor temporal, int sow) {
+            int isoDow = temporal.get(DAY_OF_WEEK);
+            return Jdk8Methods.floorMod(isoDow - sow, 7) + 1;
+        }
+
+        private long localizedWeekOfMonth(TemporalAccessor temporal, int dow) {
+            int dom = temporal.get(DAY_OF_MONTH);
+            int offset = startOfWeekOffset(dom, dow);
+            return computeWeek(offset, dom);
+        }
+
+        private long localizedWeekOfYear(TemporalAccessor temporal, int dow) {
+            int doy = temporal.get(DAY_OF_YEAR);
+            int offset = startOfWeekOffset(doy, dow);
+            return computeWeek(offset, doy);
         }
 
         /**
@@ -497,7 +529,7 @@ public final class WeekFields implements Serializable {
         }
 
         @Override
-        public <R extends Temporal> R doWith(R temporal, long newValue) {
+        public <R extends Temporal> R adjustInto(R temporal, long newValue) {
             // Check the new value and get the old value of the field
             int newVal = range.checkValidIntValue(newValue, this);
             int currentVal = temporal.get(this);
@@ -511,45 +543,48 @@ public final class WeekFields implements Serializable {
 
         @SuppressWarnings("rawtypes")
         @Override
-        public boolean resolve(DateTimeBuilder builder, long value) {
+        public Map<TemporalField, Long> resolve(TemporalAccessor temporal, long value) {
             int newValue = range.checkValidIntValue(value, this);
-            // DOW and YEAR are necessary for all fields; Chrono defaults to ISO if not present
             int sow = weekDef.getFirstDayOfWeek().getValue();
-            int dow = builder.get(weekDef.dayOfWeek());
-            int year = builder.get(ChronoField.YEAR);
-            Chrono chrono = Chrono.from(builder);
-
-            // The WOM and WOY fields are the critical values
-            if (rangeUnit == ChronoUnit.MONTHS) {
-                // Process WOM value by combining with DOW and MONTH, YEAR
-                int month = builder.get(ChronoField.MONTH_OF_YEAR);
-                ChronoLocalDate cd = chrono.date(year, month, 1);
-                int offset = startOfWeekOffset(1, cd.get(weekDef.dayOfWeek()));
-                offset += dow - 1;    // offset to desired day of week
-                offset += 7 * (newValue - 1);    // offset by week number
-                ChronoLocalDate result = cd.plus(offset, ChronoUnit.DAYS);
-                builder.addFieldValue(ChronoField.DAY_OF_MONTH, result.get(ChronoField.DAY_OF_MONTH));
-                builder.removeFieldValue(this);
-                builder.removeFieldValue(weekDef.dayOfWeek());
-                return true;
-            } else if (rangeUnit == ChronoUnit.YEARS) {
-                // Process WOY
-                ChronoLocalDate cd = chrono.date(year, 1, 1);
-                int offset = startOfWeekOffset(1, cd.get(weekDef.dayOfWeek()));
-                offset += dow - 1;    // offset to desired day of week
-                offset += 7 * (newValue - 1);    // offset by week number
-                ChronoLocalDate result = cd.plus(offset, ChronoUnit.DAYS);
-                builder.addFieldValue(ChronoField.DAY_OF_MONTH, result.get(ChronoField.DAY_OF_MONTH));
-                builder.addFieldValue(ChronoField.MONTH_OF_YEAR, result.get(ChronoField.MONTH_OF_YEAR));
-                builder.removeFieldValue(this);
-                builder.removeFieldValue(weekDef.dayOfWeek());
-                return true;
+            if (rangeUnit == WEEKS) {  // day-of-week
+                int isoDow = Jdk8Methods.floorMod((sow - 1) + (newValue - 1), 7) + 1;
+                return Collections.<TemporalField, Long>singletonMap(DAY_OF_WEEK, (long) isoDow);
+            }
+            if ((temporal.isSupported(YEAR) && temporal.isSupported(DAY_OF_WEEK)) == false) {
+                return null;
+            }
+            int dow = localizedDayOfWeek(temporal, sow);
+            int year = temporal.get(YEAR);
+            Chronology chrono = Chronology.from(temporal);  // defaults to ISO
+            if (rangeUnit == MONTHS) {  // week-of-month
+                if (temporal.isSupported(MONTH_OF_YEAR) == false) {
+                    return null;
+                }
+                int month = temporal.get(ChronoField.MONTH_OF_YEAR);
+                ChronoLocalDate date = chrono.date(year, month, 1);
+                int dateDow = localizedDayOfWeek(date, sow);
+                long weeks = newValue - localizedWeekOfMonth(date, dateDow);
+                int days = dow - dateDow;
+                date = date.plus(weeks * 7 + days, DAYS);
+                Map<TemporalField, Long> result = new HashMap<>(4, 1.0f);
+                result.put(EPOCH_DAY, date.toEpochDay());
+                result.put(YEAR, null);
+                result.put(MONTH_OF_YEAR, null);
+                result.put(DAY_OF_WEEK, null);
+                return result;
+            } else if (rangeUnit == YEARS) {  // week-of-year
+                ChronoLocalDate date = chrono.date(year, 1, 1);
+                int dateDow = localizedDayOfWeek(date, sow);
+                long weeks = newValue - localizedWeekOfYear(date, dateDow);
+                int days = dow - dateDow;
+                date = date.plus(weeks * 7 + days, DAYS);
+                Map<TemporalField, Long> result = new HashMap<>(4, 1.0f);
+                result.put(EPOCH_DAY, date.toEpochDay());
+                result.put(YEAR, null);
+                result.put(DAY_OF_WEEK, null);
+                return result;
             } else {
-                // ignore DOW of WEEK field; the value will be processed by WOM or WOY
-                int isoDow = Jdk8Methods.floorMod((sow - 1) + (dow - 1), 7) + 1;
-                builder.addFieldValue(ChronoField.DAY_OF_WEEK, isoDow);
-                // Not removed, the week-of-xxx fields need this value
-                return true;
+                throw new IllegalStateException("unreachable");
             }
         }
 
@@ -582,7 +617,7 @@ public final class WeekFields implements Serializable {
 
         //-----------------------------------------------------------------------
         @Override
-        public boolean doIsSupported(TemporalAccessor temporal) {
+        public boolean isSupportedBy(TemporalAccessor temporal) {
             if (temporal.isSupported(ChronoField.DAY_OF_WEEK)) {
                 if (rangeUnit == ChronoUnit.WEEKS) {
                     return true;
@@ -596,7 +631,7 @@ public final class WeekFields implements Serializable {
         }
 
         @Override
-        public ValueRange doRange(TemporalAccessor temporal) {
+        public ValueRange rangeRefinedBy(TemporalAccessor temporal) {
             if (rangeUnit == ChronoUnit.WEEKS) {
                 return range;
             }

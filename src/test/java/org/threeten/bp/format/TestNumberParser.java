@@ -40,6 +40,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.format.DateTimeFormatterBuilder.NumberPrinterParser;
 import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalQueries;
 
 /**
  * Test NumberPrinterParser.
@@ -62,7 +63,8 @@ public class TestNumberParser extends AbstractTestPrinterParser {
             pp.parse(parseContext, text, pos);
         } catch (RuntimeException ex) {
             assertTrue(expected.isInstance(ex));
-            assertEquals(parseContext.getParsed().size(), 0);
+            assertEquals(parseContext.toParsed().query(TemporalQueries.chronology()), null);
+            assertEquals(parseContext.toParsed().query(TemporalQueries.zoneId()), null);
         }
     }
 
@@ -138,7 +140,8 @@ public class TestNumberParser extends AbstractTestPrinterParser {
         if (expectedPos > 0) {
             assertParsed(parseContext, DAY_OF_MONTH, expectedValue);
         } else {
-            assertEquals(parseContext.getParsed().size(), 0);
+            assertEquals(parseContext.toParsed().query(TemporalQueries.chronology()), null);
+            assertEquals(parseContext.toParsed().query(TemporalQueries.zoneId()), null);
         }
     }
 

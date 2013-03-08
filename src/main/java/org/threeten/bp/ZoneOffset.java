@@ -207,11 +207,11 @@ public final class ZoneOffset
                 seconds = parseNumber(offsetId, 7, true);
                 break;
             default:
-                throw new DateTimeException("Zone offset ID '" + offsetId + "' is invalid");
+                throw new DateTimeException("Invalid ID for ZoneOffset, invalid format: " + offsetId);
         }
         char first = offsetId.charAt(0);
         if (first != '+' && first != '-') {
-            throw new DateTimeException("Zone offset ID '" + offsetId + "' is invalid: Plus/minus not found when expected");
+            throw new DateTimeException("Invalid ID for ZoneOffset, plus/minus not found when expected: " + offsetId);
         }
         if (first == '-') {
             return ofHoursMinutesSeconds(-hours, -minutes, -seconds);
@@ -230,12 +230,12 @@ public final class ZoneOffset
      */
     private static int parseNumber(CharSequence offsetId, int pos, boolean precededByColon) {
         if (precededByColon && offsetId.charAt(pos - 1) != ':') {
-            throw new DateTimeException("Zone offset ID '" + offsetId + "' is invalid: Colon not found when expected");
+            throw new DateTimeException("Invalid ID for ZoneOffset, colon not found when expected: " + offsetId);
         }
         char ch1 = offsetId.charAt(pos);
         char ch2 = offsetId.charAt(pos + 1);
         if (ch1 < '0' || ch1 > '9' || ch2 < '0' || ch2 > '9') {
-            throw new DateTimeException("Zone offset ID '" + offsetId + "' is invalid: Non numeric characters found");
+            throw new DateTimeException("Invalid ID for ZoneOffset, non numeric characters found: " + offsetId);
         }
         return (ch1 - 48) * 10 + (ch2 - 48);
     }
@@ -295,7 +295,8 @@ public final class ZoneOffset
      * A {@code TemporalAccessor} represents some form of date and time information.
      * This factory converts the arbitrary temporal object to an instance of {@code ZoneOffset}.
      * <p>
-     * The conversion extracts the {@link ChronoField#OFFSET_SECONDS offset-seconds} field.
+     * The conversion uses the {@link TemporalQueries#offset()} query, which relies
+     * on extracting the {@link ChronoField#OFFSET_SECONDS OFFSET_SECONDS} field.
      * <p>
      * This method matches the signature of the functional interface {@link TemporalQuery}
      * allowing it to be used in queries via method reference, {@code ZoneOffset::from}.
@@ -305,14 +306,11 @@ public final class ZoneOffset
      * @throws DateTimeException if unable to convert to an {@code ZoneOffset}
      */
     public static ZoneOffset from(TemporalAccessor temporal) {
-        if (temporal instanceof ZoneOffset) {
-            return (ZoneOffset) temporal;
+        ZoneOffset offset = temporal.query(TemporalQueries.offset());
+        if (offset == null) {
+            throw new DateTimeException("Unable to obtain ZoneOffset from TemporalAccessor: " + temporal.getClass());
         }
-        try {
-            return ofTotalSeconds(temporal.get(OFFSET_SECONDS));
-        } catch (DateTimeException ex) {
-            throw new DateTimeException("Unable to obtain ZoneOffset from TemporalAccessor: " + temporal.getClass(), ex);
-        }
+        return offset;
     }
 
     //-----------------------------------------------------------------------
@@ -483,7 +481,7 @@ public final class ZoneOffset
      * All other {@code ChronoField} instances will return false.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doIsSupported(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.isSupportedBy(TemporalAccessor)}
      * passing {@code this} as the argument.
      * Whether the field is supported is determined by the field.
      *
@@ -495,7 +493,7 @@ public final class ZoneOffset
         if (field instanceof ChronoField) {
             return field == OFFSET_SECONDS;
         }
-        return field != null && field.doIsSupported(this);
+        return field != null && field.isSupportedBy(this);
     }
 
     /**
@@ -512,7 +510,7 @@ public final class ZoneOffset
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doRange(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.rangeRefinedBy(TemporalAccessor)}
      * passing {@code this} as the argument.
      * Whether the range can be obtained is determined by the field.
      *
@@ -527,7 +525,7 @@ public final class ZoneOffset
         } else if (field instanceof ChronoField) {
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return field.doRange(this);
+        return field.rangeRefinedBy(this);
     }
 
     /**
@@ -543,7 +541,7 @@ public final class ZoneOffset
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
@@ -574,7 +572,7 @@ public final class ZoneOffset
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
@@ -590,7 +588,7 @@ public final class ZoneOffset
         } else if (field instanceof ChronoField) {
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return field.doGet(this);
+        return field.getFrom(this);
     }
 
     //-----------------------------------------------------------------------
@@ -617,7 +615,7 @@ public final class ZoneOffset
     public <R> R query(TemporalQuery<R> query) {
         if (query == TemporalQueries.offset() || query == TemporalQueries.zone()) {
             return (R) this;
-        } else if (query == TemporalQueries.precision() || query == TemporalQueries.chrono() || query == TemporalQueries.zoneId()) {
+        } else if (query == TemporalQueries.precision() || query == TemporalQueries.chronology() || query == TemporalQueries.zoneId()) {
             return null;
         }
         return query.queryFrom(this);

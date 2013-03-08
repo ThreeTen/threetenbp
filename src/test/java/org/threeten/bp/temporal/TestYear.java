@@ -59,7 +59,6 @@ import org.threeten.bp.YearMonth;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
 
 /**
@@ -278,14 +277,14 @@ public class TestYear extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void factory_parse_formatter() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("y");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("y");
         Year test = Year.parse("2010", f);
         assertEquals(test, Year.of(2010));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_formatter_nullText() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("y");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("y");
         Year.parse((String) null, f);
     }
 
@@ -584,24 +583,26 @@ public class TestYear extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // atMonthDay(Month)
+    // atMonthDay(MonthDay)
     //-----------------------------------------------------------------------
-    @Test
-    public void test_atMonthDay() {
-        Year test = Year.of(2008);
-        assertEquals(test.atMonthDay(MonthDay.of(6, 30)), LocalDate.of(2008, 6, 30));
+    @DataProvider(name="atMonthDay")
+    Object[][] data_atMonthDay() {
+        return new Object[][] {
+                {Year.of(2008), MonthDay.of(6, 30), LocalDate.of(2008, 6, 30)},
+                {Year.of(2008), MonthDay.of(2, 29), LocalDate.of(2008, 2, 29)},
+                {Year.of(2009), MonthDay.of(2, 29), LocalDate.of(2009, 2, 28)},
+        };
+    }
+
+    @Test(dataProvider="atMonthDay")
+    public void test_atMonthDay(Year year, MonthDay monthDay, LocalDate expected) {
+        assertEquals(year.atMonthDay(monthDay), expected);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_atMonthDay_nullMonthDay() {
         Year test = Year.of(2008);
         test.atMonthDay((MonthDay) null);
-    }
-
-    @Test(expectedExceptions=DateTimeException.class)
-    public void test_atMonthDay_invalidMonthDay() {
-        Year test = Year.of(2008);
-        test.atMonthDay(MonthDay.of(6, 31));
     }
 
     //-----------------------------------------------------------------------
@@ -737,7 +738,7 @@ public class TestYear extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_toString_formatter() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("y");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("y");
         String t = Year.of(2010).toString(f);
         assertEquals(t, "2010");
     }

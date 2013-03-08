@@ -44,10 +44,10 @@ import java.util.Locale;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.format.TextStyle;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
-import org.threeten.bp.temporal.ISOChrono;
 import org.threeten.bp.temporal.JulianFields;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalField;
@@ -139,8 +139,8 @@ public class TestMonth extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_query_chrono() {
-        assertEquals(Month.JUNE.query(TemporalQueries.chrono()), ISOChrono.INSTANCE);
-        assertEquals(TemporalQueries.chrono().queryFrom(Month.JUNE), ISOChrono.INSTANCE);
+        assertEquals(Month.JUNE.query(TemporalQueries.chronology()), IsoChronology.INSTANCE);
+        assertEquals(TemporalQueries.chronology().queryFrom(Month.JUNE), IsoChronology.INSTANCE);
     }
 
     @Test
@@ -173,21 +173,21 @@ public class TestMonth extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // getText()
+    // getDisplayName()
     //-----------------------------------------------------------------------
     @Test
-    public void test_getText() {
-        assertEquals(Month.JANUARY.getText(TextStyle.SHORT, Locale.US), "Jan");
+    public void test_getDisplayName() {
+        assertEquals(Month.JANUARY.getDisplayName(TextStyle.SHORT, Locale.US), "Jan");
     }
 
     @Test(expectedExceptions = NullPointerException.class)
-    public void test_getText_nullStyle() {
-        Month.JANUARY.getText(null, Locale.US);
+    public void test_getDisplayName_nullStyle() {
+        Month.JANUARY.getDisplayName(null, Locale.US);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
-    public void test_getText_nullLocale() {
-        Month.JANUARY.getText(TextStyle.FULL, null);
+    public void test_getDisplayName_nullLocale() {
+        Month.JANUARY.getDisplayName(TextStyle.FULL, null);
     }
 
     //-----------------------------------------------------------------------

@@ -45,7 +45,6 @@ import static org.threeten.bp.temporal.ChronoField.EPOCH_DAY;
 import static org.threeten.bp.temporal.ChronoField.EPOCH_MONTH;
 import static org.threeten.bp.temporal.ChronoField.HOUR_OF_AMPM;
 import static org.threeten.bp.temporal.ChronoField.HOUR_OF_DAY;
-import static org.threeten.bp.temporal.ChronoField.INSTANT_SECONDS;
 import static org.threeten.bp.temporal.ChronoField.MICRO_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.MICRO_OF_SECOND;
 import static org.threeten.bp.temporal.ChronoField.MILLI_OF_DAY;
@@ -55,34 +54,26 @@ import static org.threeten.bp.temporal.ChronoField.MINUTE_OF_HOUR;
 import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.NANO_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.NANO_OF_SECOND;
-import static org.threeten.bp.temporal.ChronoField.OFFSET_SECONDS;
 import static org.threeten.bp.temporal.ChronoField.SECOND_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.SECOND_OF_MINUTE;
 import static org.threeten.bp.temporal.ChronoField.YEAR;
 import static org.threeten.bp.temporal.TemporalAdjusters.nextOrSame;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Set;
 
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.DayOfWeek;
-import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.ZoneId;
-import org.threeten.bp.ZoneOffset;
+import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
 import org.threeten.bp.jdk8.Jdk8Methods;
-import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalField;
@@ -105,7 +96,7 @@ import org.threeten.bp.temporal.TemporalQuery;
  * This class is mutable and not thread-safe.
  * It should only be used from a single thread.
  */
-public final class DateTimeBuilder
+final class DateTimeBuilder
         extends DefaultInterfaceTemporalAccessor
         implements TemporalAccessor, Cloneable {
 
@@ -118,9 +109,21 @@ public final class DateTimeBuilder
      */
     private final EnumMap<ChronoField, Long> standardFields = new EnumMap<ChronoField, Long>(ChronoField.class);
     /**
-     * The list of complete date-time objects.
+     * The chronology.
      */
-    private final List<Object> objects = new ArrayList<>(2);
+    private Chronology chrono;
+    /**
+     * The zone.
+     */
+    private ZoneId zone;
+    /**
+     * The date.
+     */
+    private LocalDate date;
+    /**
+     * The time.
+     */
+    private LocalTime time;
 
     //-----------------------------------------------------------------------
     /**
@@ -141,62 +144,7 @@ public final class DateTimeBuilder
         addFieldValue(field, value);
     }
 
-    /**
-     * Creates a new instance of the builder.
-     *
-     * @param zone  the zone, may be null
-     * @param chrono  the chronology, may be null
-     */
-    public DateTimeBuilder(ZoneId zone, Chrono<?> chrono) {
-        if (zone != null) {
-            objects.add(zone);
-        }
-        if (chrono != null) {
-            objects.add(chrono);
-        }
-    }
-
     //-----------------------------------------------------------------------
-    /**
-     * Gets the map of field-value pairs in the builder.
-     *
-     * @return a modifiable copy of the field-value map, not null
-     */
-    public Map<TemporalField, Long> getFieldValueMap() {
-        Map<TemporalField, Long> map = new HashMap<TemporalField, Long>(standardFields);
-        if (otherFields != null) {
-            map.putAll(otherFields);
-        }
-        return map;
-    }
-
-    /**
-     * Checks whether the specified field is present in the builder.
-     *
-     * @param field  the field to find in the field-value map, not null
-     * @return true if the field is present
-     */
-    public boolean containsFieldValue(TemporalField field) {
-        Objects.requireNonNull(field, "field");
-        return standardFields.containsKey(field) || (otherFields != null && otherFields.containsKey(field));
-    }
-
-    /**
-     * Gets the value of the specified field from the builder.
-     *
-     * @param field  the field to query in the field-value map, not null
-     * @return the value of the field, may be out of range
-     * @throws DateTimeException if the field is not present
-     */
-    public long getFieldValue(TemporalField field) {
-        Objects.requireNonNull(field, "field");
-        Long value = getFieldValue0(field);
-        if (value == null) {
-            throw new DateTimeException("Field not found: " + field);
-        }
-        return value;
-    }
-
     private Long getFieldValue0(TemporalField field) {
         if (field instanceof ChronoField) {
             return standardFields.get(field);
@@ -204,18 +152,6 @@ public final class DateTimeBuilder
             return otherFields.get(field);
         }
         return null;
-    }
-
-    /**
-     * Gets the value of the specified field from the builder ensuring it is valid.
-     *
-     * @param field  the field to query in the field-value map, not null
-     * @return the value of the field, may be out of range
-     * @throws DateTimeException if the field is not present
-     */
-    public long getValidFieldValue(TemporalField field) {
-        long value = getFieldValue(field);
-        return field.range().checkValidValue(value, field);
     }
 
     /**
@@ -232,7 +168,7 @@ public final class DateTimeBuilder
      * @return {@code this}, for method chaining
      * @throws DateTimeException if the field is already present with a different value
      */
-    public DateTimeBuilder addFieldValue(TemporalField field, long value) {
+    DateTimeBuilder addFieldValue(TemporalField field, long value) {
         Objects.requireNonNull(field, "field");
         Long old = getFieldValue0(field);  // check first for better error message
         if (old != null && old.longValue() != value) {
@@ -253,125 +189,21 @@ public final class DateTimeBuilder
         return this;
     }
 
-    /**
-     * Removes a field-value pair from the builder.
-     * <p>
-     * This removes a field, which must exist, from the builder.
-     * See {@link #removeFieldValues(TemporalField...)} for a version which does not throw an exception
-     *
-     * @param field  the field to remove, not null
-     * @return the previous value of the field
-     * @throws DateTimeException if the field is not found
-     */
-    public long removeFieldValue(TemporalField field) {
-        Objects.requireNonNull(field, "field");
-        Long value = null;
-        if (field instanceof ChronoField) {
-            value = standardFields.remove(field);
-        } else if (otherFields != null) {
-            value = otherFields.remove(field);
-        }
-        if (value == null) {
-            throw new DateTimeException("Field not found: " + field);
-        }
-        return value;
-    }
-
     //-----------------------------------------------------------------------
-    /**
-     * Removes a list of fields from the builder.
-     * <p>
-     * This removes the specified fields from the builder.
-     * No exception is thrown if the fields are not present.
-     *
-     * @param fields  the fields to remove, not null
-     */
-    public void removeFieldValues(TemporalField... fields) {
-        for (TemporalField field : fields) {
-            if (field instanceof ChronoField) {
-                standardFields.remove(field);
-            } else if (otherFields != null) {
-                otherFields.remove(field);
-            }
-        }
+    void addObject(Chronology chrono) {
+        this.chrono = chrono;
     }
 
-    /**
-     * Queries a list of fields from the builder.
-     * <p>
-     * This gets the value of the specified fields from the builder into
-     * an array where the positions match the order of the fields.
-     * If a field is not present, the array will contain null in that position.
-     *
-     * @param fields  the fields to query, not null
-     * @return the array of field values, not null
-     */
-    public Long[] queryFieldValues(TemporalField... fields) {
-        Long[] values = new Long[fields.length];
-        int i = 0;
-        for (TemporalField field : fields) {
-            values[i++] = getFieldValue0(field);
-        }
-        return values;
+    void addObject(ZoneId zone) {
+        this.zone = zone;
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the list of date-time objects in the builder.
-     * <p>
-     * This map is intended for use with {@link ZoneOffset} and {@link ZoneId}.
-     * The returned map is live and may be edited.
-     *
-     * @return the editable list of date-time objects, not null
-     */
-    public List<Object> getCalendricalList() {
-        return objects;
+    void addObject(LocalDate date) {
+        this.date = date;
     }
 
-    /**
-     * Adds a date-time object to the builder.
-     * <p>
-     * This adds a date-time object to the builder.
-     * If the object is a {@code DateTimeBuilder}, each field is added using {@link #addFieldValue}.
-     * If the object is not already present, then the object is added.
-     * If the object is already present and it is equal to that specified, no action occurs.
-     * If the object is already present and it is not equal to that specified, then an exception is thrown.
-     *
-     * @param object  the object to add, not null
-     * @return {@code this}, for method chaining
-     * @throws DateTimeException if the field is already present with a different value
-     */
-    public DateTimeBuilder addCalendrical(Object object) {
-        Objects.requireNonNull(object, "object");
-        // special case
-        if (object instanceof DateTimeBuilder) {
-            DateTimeBuilder dtb = (DateTimeBuilder) object;
-            for (TemporalField field : dtb.getFieldValueMap().keySet()) {
-                addFieldValue(field, dtb.getFieldValue(field));
-            }
-            return this;
-        }
-        if (object instanceof Instant) {
-            addFieldValue(INSTANT_SECONDS, ((Instant) object).getEpochSecond());
-            addFieldValue(NANO_OF_SECOND, ((Instant) object).getNano());
-        } else {
-            objects.add(object);
-        }
-//      TODO
-//        // preserve state of builder until validated
-//        Class<?> cls = dateTime.extract(Class.class);
-//        if (cls == null) {
-//            throw new DateTimeException("Invalid dateTime, unable to extract Class");
-//        }
-//        Object obj = objects.get(cls);
-//        if (obj != null) {
-//            if (obj.equals(dateTime) == false) {
-//                throw new DateTimeException("Conflict found: " + dateTime.getClass().getSimpleName() + " " + obj + " differs from " + dateTime + ": " + this);
-//            }
-//        } else {
-//            objects.put(cls, dateTime);
-//        }
-        return this;
+    void addObject(LocalTime time) {
+        this.time = time;
     }
 
     //-----------------------------------------------------------------------
@@ -385,20 +217,6 @@ public final class DateTimeBuilder
      * @return {@code this}, for method chaining
      */
     public DateTimeBuilder resolve() {
-        splitObjects();
-        // handle unusual fields
-        if (otherFields != null) {
-            outer:
-            while (true) {
-                Set<Entry<TemporalField, Long>> entrySet = new HashSet<>(otherFields.entrySet());
-                for (Entry<TemporalField, Long> entry : entrySet) {
-                    if (entry.getKey().resolve(this, entry.getValue())) {
-                        continue outer;
-                    }
-                }
-                break;
-            }
-        }
         // handle standard fields
         mergeDate();
         mergeTime();
@@ -476,7 +294,7 @@ public final class DateTimeBuilder
     private void checkDate(LocalDate date) {
         // TODO: this doesn't handle aligned weeks over into next month which would otherwise be valid
 
-        addCalendrical(date);
+        addObject(date);
         for (ChronoField field : standardFields.keySet()) {
             long val1;
             try {
@@ -565,77 +383,17 @@ public final class DateTimeBuilder
                     int somVal = Jdk8Methods.safeToInt(som);
                     if (nos != null) {
                         int nosVal = Jdk8Methods.safeToInt(nos);
-                        addCalendrical(LocalTime.of(hodVal, mohVal, somVal, nosVal));
+                        addObject(LocalTime.of(hodVal, mohVal, somVal, nosVal));
                     } else {
-                        addCalendrical(LocalTime.of(hodVal, mohVal, somVal));
+                        addObject(LocalTime.of(hodVal, mohVal, somVal));
                     }
                 } else {
-                    addCalendrical(LocalTime.of(hodVal, mohVal));
+                    addObject(LocalTime.of(hodVal, mohVal));
                 }
             } else {
-                addCalendrical(LocalTime.of(hodVal, 0));
+                addObject(LocalTime.of(hodVal, 0));
             }
         }
-    }
-
-    private void splitObjects() {
-        List<Object> objectsToAdd = new ArrayList<>();
-        for (Object object : objects) {
-            if (object instanceof LocalDate || object instanceof LocalTime ||
-                            object instanceof ZoneId || object instanceof Chrono) {
-                continue;
-            }
-            if (object instanceof ZoneOffset || object instanceof Instant) {
-                objectsToAdd.add(object);
-
-            } else if (object instanceof TemporalAccessor) {
-                // TODO
-//                DateTimeAccessor dt = (DateTimeAccessor) object;
-//                objectsToAdd.add(dt.extract(LocalDate.class));
-//                objectsToAdd.add(dt.extract(LocalTime.class));
-//                objectsToAdd.add(dt.extract(ZoneId.class));
-//                objectsToAdd.add(dt.extract(Chrono.class));
-            }
-        }
-        for (Object object : objectsToAdd) {
-            if (object != null) {
-                addCalendrical(object);
-            }
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.zoneId()) {
-            R zone = extract(ZoneId.class);
-            if (zone == null) {
-                zone = extract(ZoneOffset.class);
-                if (zone == null && standardFields.containsKey(OFFSET_SECONDS)) {
-                    zone = (R) ZoneOffset.from(this);
-                }
-            }
-            return zone;
-        }
-        if (query == TemporalQueries.chrono()) {
-            return extract(Chrono.class);
-        }
-        // incomplete, so no need to handle TIME_PRECISION
-        return super.query(query);
-    }
-
-    @SuppressWarnings("unchecked")
-    public <R> R extract(Class<?> type) {
-        R result = null;
-        for (Object obj : objects) {
-            if (type.isInstance(obj)) {
-                if (result != null && result.equals(obj) == false) {
-                    throw new DateTimeException("Conflict found: " + type.getSimpleName() + " differs " + result + " vs " + obj + ": " + this);
-                }
-                result = (R) obj;
-            }
-        }
-        return result;
     }
 
     //-----------------------------------------------------------------------
@@ -679,22 +437,52 @@ public final class DateTimeBuilder
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Clones this builder, creating a new independent copy referring to the
-     * same map of fields and objects.
-     *
-     * @return the cloned builder, not null
-     */
     @Override
-    public DateTimeBuilder clone() {
-        DateTimeBuilder dtb = new DateTimeBuilder();
-        dtb.objects.addAll(this.objects);
-        dtb.standardFields.putAll(this.standardFields);
-        dtb.standardFields.putAll(this.standardFields);
-        if (this.otherFields != null) {
-            dtb.otherFields.putAll(this.otherFields);
+    public boolean isSupported(TemporalField field) {
+        if (field == null) {
+            return false;
         }
-        return dtb;
+        return standardFields.containsKey(field) ||
+                (otherFields != null && otherFields.containsKey(field)) ||
+                (date != null && date.isSupported(field)) ||
+                (time != null && time.isSupported(field));
+    }
+
+    @Override
+    public long getLong(TemporalField field) {
+        Objects.requireNonNull(field, "field");
+        Long value = getFieldValue0(field);
+        if (value == null) {
+            if (date != null && date.isSupported(field)) {
+                return date.getLong(field);
+            }
+            if (time != null && time.isSupported(field)) {
+                return time.getLong(field);
+            }
+            throw new DateTimeException("Field not found: " + field);
+        }
+        return value;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R query(TemporalQuery<R> query) {
+        if (query == TemporalQueries.zoneId()) {
+            return (R) zone;
+        } else if (query == TemporalQueries.chronology()) {
+            return (R) chrono;
+        } else if (query == TemporalQueries.localDate()) {
+            return (R) date;
+        } else if (query == TemporalQueries.localTime()) {
+            return (R) time;
+        } else if (query == TemporalQueries.zone() || query == TemporalQueries.offset()) {
+            return query.queryFrom(this);
+        } else if (query == TemporalQueries.precision()) {
+            return null;  // not a complete date/time
+        }
+        // inline TemporalAccessor.super.query(query) as an optimization
+        // non-JDK classes are not permitted to make this optimization
+        return query.queryFrom(this);
     }
 
     //-----------------------------------------------------------------------
@@ -702,29 +490,20 @@ public final class DateTimeBuilder
     public String toString() {
         StringBuilder buf = new StringBuilder(128);
         buf.append("DateTimeBuilder[");
-        Map<TemporalField, Long> fields = getFieldValueMap();
+        Map<TemporalField, Long> fields = new HashMap<>();
+        fields.putAll(standardFields);
+        if (otherFields != null) {
+            fields.putAll(otherFields);
+        }
         if (fields.size() > 0) {
             buf.append("fields=").append(fields);
         }
-        if (objects.size() > 0) {
-            if (fields.size() > 0) {
-                buf.append(", ");
-            }
-            buf.append("objects=").append(objects);
-        }
+        buf.append(", ").append(chrono);
+        buf.append(", ").append(zone);
+        buf.append(", ").append(date);
+        buf.append(", ").append(time);
         buf.append(']');
         return buf.toString();
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public boolean isSupported(TemporalField field) {
-        return field != null && containsFieldValue(field);
-    }
-
-    @Override
-    public long getLong(TemporalField field) {
-        return getFieldValue(field);
     }
 
 }

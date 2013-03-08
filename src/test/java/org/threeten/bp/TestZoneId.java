@@ -113,7 +113,7 @@ public class TestZoneId extends AbstractTest {
     public void test_constant_UTC() {
         ZoneId test = ZoneOffset.UTC;
         assertEquals(test.getId(), "Z");
-        assertEquals(test.getText(TextStyle.FULL, Locale.UK), "Z");
+        assertEquals(test.getDisplayName(TextStyle.FULL, Locale.UK), "Z");
         assertEquals(test.getRules().isFixedOffset(), true);
         assertEquals(test.getRules().getOffset(Instant.ofEpochSecond(0L)), ZoneOffset.UTC);
         checkOffset(test.getRules(), createLDT(2008, 6, 30), ZoneOffset.UTC, 1);
@@ -125,8 +125,8 @@ public class TestZoneId extends AbstractTest {
     //-----------------------------------------------------------------------
     public void test_constant_OLD_IDS_PRE_2005() {
         Map<String, String> ids = ZoneId.OLD_IDS_PRE_2005;
-        assertEquals(ids.get("EST"), "America/Indianapolis");
-        assertEquals(ids.get("MST"), "America/Phoenix");
+        assertEquals(ids.get("EST"), "America/New_York");
+        assertEquals(ids.get("MST"), "America/Denver");
         assertEquals(ids.get("HST"), "Pacific/Honolulu");
         assertEquals(ids.get("ACT"), "Australia/Darwin");
         assertEquals(ids.get("AET"), "Australia/Sydney");
@@ -317,7 +317,7 @@ public class TestZoneId extends AbstractTest {
     public void test_of_string_offset(String input, String id) {
         ZoneId test = ZoneId.of(input);
         assertEquals(test.getId(), id);
-        assertEquals(test.getText(TextStyle.FULL, Locale.UK), id);
+        assertEquals(test.getDisplayName(TextStyle.FULL, Locale.UK), id);
         assertEquals(test.getRules().isFixedOffset(), true);
         ZoneOffset offset = ZoneOffset.of(id);
         assertEquals(test.getRules().getOffset(Instant.ofEpochSecond(0L)), offset);
@@ -328,7 +328,7 @@ public class TestZoneId extends AbstractTest {
     public void test_of_string_FixedUTC(String input, String id) {
         ZoneId test = ZoneId.of("UTC" + input);
         assertEquals(test.getId(), id);
-        assertEquals(test.getText(TextStyle.FULL, Locale.UK), id);
+        assertEquals(test.getDisplayName(TextStyle.FULL, Locale.UK), id);
         assertEquals(test.getRules().isFixedOffset(), true);
         ZoneOffset offset = ZoneOffset.of(id);
         assertEquals(test.getRules().getOffset(Instant.ofEpochSecond(0L)), offset);
@@ -339,7 +339,7 @@ public class TestZoneId extends AbstractTest {
     public void test_of_string_FixedGMT(String input, String id) {
         ZoneId test = ZoneId.of("GMT" + input);
         assertEquals(test.getId(), id);
-        assertEquals(test.getText(TextStyle.FULL, Locale.UK), id);
+        assertEquals(test.getDisplayName(TextStyle.FULL, Locale.UK), id);
         assertEquals(test.getRules().isFixedOffset(), true);
         ZoneOffset offset = ZoneOffset.of(id);
         assertEquals(test.getRules().getOffset(Instant.ofEpochSecond(0L)), offset);

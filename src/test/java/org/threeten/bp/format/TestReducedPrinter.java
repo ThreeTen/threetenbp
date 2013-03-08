@@ -134,7 +134,7 @@ public class TestReducedPrinter extends AbstractTestPrinterParser {
                 fail("Expected exception");
             }
             assertEquals(buf.toString(), result);
-        } catch (DateTimePrintException ex) {
+        } catch (DateTimeException ex) {
             if (result == null || value < 0) {
                 assertEquals(ex.getMessage().contains(YEAR.getName()), true);
             } else {

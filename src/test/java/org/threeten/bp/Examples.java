@@ -42,7 +42,6 @@ import java.util.Locale;
 
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
-import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.SignStyle;
 
 /**
@@ -105,7 +104,7 @@ public class Examples {
         ZonedDateTime resolved = ZonedDateTime.of(dt, ZoneId.of("Europe/London"));
         System.out.println("...resolved to valid date-time in Europe/London: " + resolved);
 
-        String formattedRFC = DateTimeFormatters.rfc1123().print(resolved);
+        String formattedRFC = DateTimeFormatter.RFC_1123_DATE_TIME.format(resolved);
         System.out.println("...printed as RFC1123: " + formattedRFC);
 
         DateTimeFormatter f = new DateTimeFormatterBuilder()
@@ -118,7 +117,7 @@ public class Examples {
             .appendLiteral(' ')
             .appendValue(DAY_OF_MONTH, 2)
             .toFormatter(Locale.ENGLISH);
-        String formatted = f.print(resolved);
+        String formatted = f.format(resolved);
         System.out.println("...printed using complex format: " + formatted);
 
         MonthDay bday = MonthDay.of(DECEMBER, 3);

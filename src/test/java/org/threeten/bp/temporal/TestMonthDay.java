@@ -60,7 +60,6 @@ import org.threeten.bp.YearMonth;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
 
 /**
@@ -335,14 +334,14 @@ public class TestMonthDay extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void factory_parse_formatter() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("M d");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("M d");
         MonthDay test = MonthDay.parse("12 3", f);
         assertEquals(test, MonthDay.of(12, 3));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_formatter_nullText() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("M d");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("M d");
         MonthDay.parse((String) null, f);
     }
 
@@ -715,7 +714,7 @@ public class TestMonthDay extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_toString_formatter() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("M d");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("M d");
         String t = MonthDay.of(12, 3).toString(f);
         assertEquals(t, "12 3");
     }

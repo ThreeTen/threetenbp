@@ -52,8 +52,15 @@ import static org.threeten.bp.temporal.ChronoField.SECOND_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.SECOND_OF_MINUTE;
 import static org.threeten.bp.temporal.ChronoUnit.DAYS;
 import static org.threeten.bp.temporal.ChronoUnit.FOREVER;
+import static org.threeten.bp.temporal.ChronoUnit.HOURS;
+import static org.threeten.bp.temporal.ChronoUnit.MICROS;
+import static org.threeten.bp.temporal.ChronoUnit.MILLIS;
+import static org.threeten.bp.temporal.ChronoUnit.MINUTES;
+import static org.threeten.bp.temporal.ChronoUnit.MONTHS;
 import static org.threeten.bp.temporal.ChronoUnit.NANOS;
+import static org.threeten.bp.temporal.ChronoUnit.SECONDS;
 import static org.threeten.bp.temporal.ChronoUnit.WEEKS;
+import static org.threeten.bp.temporal.ChronoUnit.YEARS;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -66,7 +73,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
@@ -74,11 +80,10 @@ import org.threeten.bp.temporal.JulianFields;
 import org.threeten.bp.temporal.MockFieldNoValue;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
-import org.threeten.bp.temporal.TemporalAdder;
 import org.threeten.bp.temporal.TemporalAdjuster;
+import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
-import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
 
 /**
@@ -553,14 +558,14 @@ public class TestLocalTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void factory_parse_formatter() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("H m s");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("H m s");
         LocalTime test = LocalTime.parse("14 30 40", f);
         assertEquals(test, LocalTime.of(14, 30, 40));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_formatter_nullText() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("H m s");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("H m s");
         LocalTime.parse((String) null, f);
     }
 
@@ -608,7 +613,7 @@ public class TestLocalTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_query_chrono() {
-        assertEquals(TEST_12_30_40_987654321.query(TemporalQueries.chrono()), null);
+        assertEquals(TEST_12_30_40_987654321.query(TemporalQueries.chronology()), null);
     }
 
     @Test
@@ -851,45 +856,144 @@ public class TestLocalTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
+    // truncated(TemporalUnit)
+    //-----------------------------------------------------------------------
+    TemporalUnit NINETY_MINS = new TemporalUnit() {
+        @Override
+        public String getName() {
+            return "NinetyMins";
+        }
+        @Override
+        public Duration getDuration() {
+            return Duration.ofMinutes(90);
+        }
+        @Override
+        public boolean isDurationEstimated() {
+            return false;
+        }
+        @Override
+        public boolean isSupportedBy(Temporal temporal) {
+            return false;
+        }
+        @Override
+        public <R extends Temporal> R addTo(R r, long l) {
+            throw new UnsupportedOperationException();
+        }
+        @Override
+        public long between(Temporal r, Temporal r2) {
+            throw new UnsupportedOperationException();
+        }
+    };
+
+    TemporalUnit NINETY_FIVE_MINS = new TemporalUnit() {
+        @Override
+        public String getName() {
+            return "NinetyFiveMins";
+        }
+        @Override
+        public Duration getDuration() {
+            return Duration.ofMinutes(95);
+        }
+        @Override
+        public boolean isDurationEstimated() {
+            return false;
+        }
+        @Override
+        public boolean isSupportedBy(Temporal temporal) {
+            return false;
+        }
+        @Override
+        public <R extends Temporal> R addTo(R r, long l) {
+            throw new UnsupportedOperationException();
+        }
+        @Override
+        public long between(Temporal r, Temporal r2) {
+            throw new UnsupportedOperationException();
+        }
+    };
+
+    @DataProvider(name="truncatedToValid")
+    Object[][] data_truncatedToValid() {
+        return new Object[][] {
+            {LocalTime.of(1, 2, 3, 123_456_789), NANOS, LocalTime.of(1, 2, 3, 123_456_789)},
+            {LocalTime.of(1, 2, 3, 123_456_789), MICROS, LocalTime.of(1, 2, 3, 123_456_000)},
+            {LocalTime.of(1, 2, 3, 123_456_789), MILLIS, LocalTime.of(1, 2, 3, 1230_00_000)},
+            {LocalTime.of(1, 2, 3, 123_456_789), SECONDS, LocalTime.of(1, 2, 3)},
+            {LocalTime.of(1, 2, 3, 123_456_789), MINUTES, LocalTime.of(1, 2)},
+            {LocalTime.of(1, 2, 3, 123_456_789), HOURS, LocalTime.of(1, 0)},
+            {LocalTime.of(1, 2, 3, 123_456_789), DAYS, LocalTime.MIDNIGHT},
+
+            {LocalTime.of(1, 1, 1, 123_456_789), NINETY_MINS, LocalTime.of(0, 0)},
+            {LocalTime.of(2, 1, 1, 123_456_789), NINETY_MINS, LocalTime.of(1, 30)},
+            {LocalTime.of(3, 1, 1, 123_456_789), NINETY_MINS, LocalTime.of(3, 0)},
+        };
+    }
+
+    @Test(groups={"tck"}, dataProvider="truncatedToValid")
+    public void test_truncatedTo_valid(LocalTime input, TemporalUnit unit, LocalTime expected) {
+        assertEquals(input.truncatedTo(unit), expected);
+    }
+
+    @DataProvider(name="truncatedToInvalid")
+    Object[][] data_truncatedToInvalid() {
+        return new Object[][] {
+            {LocalTime.of(1, 2, 3, 123_456_789), NINETY_FIVE_MINS},
+            {LocalTime.of(1, 2, 3, 123_456_789), WEEKS},
+            {LocalTime.of(1, 2, 3, 123_456_789), MONTHS},
+            {LocalTime.of(1, 2, 3, 123_456_789), YEARS},
+        };
+    }
+
+    @Test(groups={"tck"}, dataProvider="truncatedToInvalid", expectedExceptions=DateTimeException.class)
+    public void test_truncatedTo_invalid(LocalTime input, TemporalUnit unit) {
+        input.truncatedTo(unit);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_truncatedTo_null() {
+        TEST_12_30_40_987654321.truncatedTo(null);
+    }
+
+    //-----------------------------------------------------------------------
     // plus(PlusAdjuster)
     //-----------------------------------------------------------------------
     @Test
     public void test_plus_Adjuster_positiveHours() {
-        TemporalAdder period = MockSimplePeriod.of(7, ChronoUnit.HOURS);
+        TemporalAmount period = MockSimplePeriod.of(7, ChronoUnit.HOURS);
         LocalTime t = TEST_12_30_40_987654321.plus(period);
         assertEquals(t, LocalTime.of(19, 30, 40, 987654321));
     }
 
     @Test
     public void test_plus_Adjuster_negativeMinutes() {
-        TemporalAdder period = MockSimplePeriod.of(-25, ChronoUnit.MINUTES);
+        TemporalAmount period = MockSimplePeriod.of(-25, ChronoUnit.MINUTES);
         LocalTime t = TEST_12_30_40_987654321.plus(period);
         assertEquals(t, LocalTime.of(12, 5, 40, 987654321));
     }
 
     @Test
     public void test_plus_Adjuster_zero() {
-        TemporalAdder period = Period.ZERO;
+        TemporalAmount period = Period.ZERO;
         LocalTime t = TEST_12_30_40_987654321.plus(period);
         assertEquals(t, TEST_12_30_40_987654321);
     }
 
     @Test
     public void test_plus_Adjuster_wrap() {
-        TemporalAdder p = Period.ofTime(1, 0, 0);
+        TemporalAmount p = Duration.ofHours(1);
         LocalTime t = LocalTime.of(23, 30).plus(p);
         assertEquals(t, LocalTime.of(0, 30));
     }
 
     @Test(expectedExceptions=DateTimeException.class)
     public void test_plus_Adjuster_dateNotAllowed() {
-        TemporalAdder period = MockSimplePeriod.of(7, ChronoUnit.MONTHS);
+        TemporalAmount period = MockSimplePeriod.of(7, ChronoUnit.MONTHS);
         TEST_12_30_40_987654321.plus(period);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_plus_Adjuster_null() {
-        TEST_12_30_40_987654321.plus((TemporalAdder) null);
+        TEST_12_30_40_987654321.plus((TemporalAmount) null);
     }
 
     //-----------------------------------------------------------------------
@@ -943,14 +1047,14 @@ public class TestLocalTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_plus_adjuster() {
-        Period p = Period.ofTime(0, 0, 62, 3);
+        Duration p = Duration.ofSeconds(62, 3);
         LocalTime t = TEST_12_30_40_987654321.plus(p);
         assertEquals(t, LocalTime.of(12, 31, 42, 987654324));
     }
 
     @Test
     public void test_plus_adjuster_big() {
-        Period p = Period.ofTime(0, 0, 0, Long.MAX_VALUE);
+        Duration p = Duration.ofNanos(Long.MAX_VALUE);
         LocalTime t = TEST_12_30_40_987654321.plus(p);
         assertEquals(t, TEST_12_30_40_987654321.plusNanos(Long.MAX_VALUE));
     }
@@ -963,14 +1067,14 @@ public class TestLocalTime extends AbstractDateTimeTest {
 
     @Test
     public void test_plus_adjuster_wrap() {
-        Period p = Period.ofTime(1, 0, 0);
+        Duration p = Duration.ofHours(1);
         LocalTime t = LocalTime.of(23, 30).plus(p);
         assertEquals(t, LocalTime.of(0, 30));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_plus_adjuster_null() {
-        TEST_12_30_40_987654321.plus((TemporalAdder) null);
+        TEST_12_30_40_987654321.plus((TemporalAmount) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1324,55 +1428,55 @@ public class TestLocalTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_minus_Adjuster() {
-        TemporalSubtractor p = Period.ofTime(0, 0, 62, 3);
+        TemporalAmount p = Duration.ofSeconds(62, 3);
         LocalTime t = TEST_12_30_40_987654321.minus(p);
         assertEquals(t, LocalTime.of(12, 29, 38, 987654318));
     }
 
     @Test
     public void test_minus_Adjuster_positiveHours() {
-        TemporalSubtractor period = MockSimplePeriod.of(7, ChronoUnit.HOURS);
+        TemporalAmount period = MockSimplePeriod.of(7, ChronoUnit.HOURS);
         LocalTime t = TEST_12_30_40_987654321.minus(period);
         assertEquals(t, LocalTime.of(5, 30, 40, 987654321));
     }
 
     @Test
     public void test_minus_Adjuster_negativeMinutes() {
-        TemporalSubtractor period = MockSimplePeriod.of(-25, ChronoUnit.MINUTES);
+        TemporalAmount period = MockSimplePeriod.of(-25, ChronoUnit.MINUTES);
         LocalTime t = TEST_12_30_40_987654321.minus(period);
         assertEquals(t, LocalTime.of(12, 55, 40, 987654321));
     }
 
     @Test
     public void test_minus_Adjuster_big1() {
-        TemporalSubtractor p = Period.ofTime(0, 0, 0, Long.MAX_VALUE);
+        TemporalAmount p = Duration.ofNanos(Long.MAX_VALUE);
         LocalTime t = TEST_12_30_40_987654321.minus(p);
         assertEquals(t, TEST_12_30_40_987654321.minusNanos(Long.MAX_VALUE));
     }
 
     @Test
     public void test_minus_Adjuster_zero() {
-        TemporalSubtractor p = Period.ZERO;
+        TemporalAmount p = Period.ZERO;
         LocalTime t = TEST_12_30_40_987654321.minus(p);
         assertEquals(t, TEST_12_30_40_987654321);
     }
 
     @Test
     public void test_minus_Adjuster_wrap() {
-        TemporalSubtractor p = Period.ofTime(1, 0, 0);
+        TemporalAmount p = Duration.ofHours(1);
         LocalTime t = LocalTime.of(0, 30).minus(p);
         assertEquals(t, LocalTime.of(23, 30));
     }
 
     @Test(expectedExceptions=DateTimeException.class)
     public void test_minus_Adjuster_dateNotAllowed() {
-        TemporalSubtractor period = MockSimplePeriod.of(7, ChronoUnit.MONTHS);
+        TemporalAmount period = MockSimplePeriod.of(7, ChronoUnit.MONTHS);
         TEST_12_30_40_987654321.minus(period);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_minus_Adjuster_null() {
-        TEST_12_30_40_987654321.minus((TemporalSubtractor) null);
+        TEST_12_30_40_987654321.minus((TemporalAmount) null);
     }
 
     //-----------------------------------------------------------------------
@@ -2069,7 +2173,7 @@ public class TestLocalTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_toString_formatter() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("H m s");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("H m s");
         String t = LocalTime.of(11, 30, 45).toString(f);
         assertEquals(t, "11 30 45");
     }

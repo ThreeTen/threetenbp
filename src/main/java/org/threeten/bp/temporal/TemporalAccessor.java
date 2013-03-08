@@ -33,6 +33,8 @@ package org.threeten.bp.temporal;
 
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.ZoneId;
+import org.threeten.bp.chrono.Chronology;
+import org.threeten.bp.chrono.ChronoLocalDate;
 
 /**
  * Framework-level interface defining read-only access to a temporal object,
@@ -49,7 +51,7 @@ import org.threeten.bp.ZoneId;
  * See {@link ChronoField} for the standard set of fields.
  * <p>
  * Two pieces of date/time information cannot be represented by numbers,
- * the {@link Chrono chronology} and the {@link ZoneId time-zone}.
+ * the {@link Chronology chronology} and the {@link ZoneId time-zone}.
  * These can be accessed via {@link #query(TemporalQuery) queries} using
  * the static methods defined on {@link TemporalQueries}.
  * <p>
@@ -81,7 +83,7 @@ public interface TemporalAccessor {
      * If the field is supported, then true is returned, otherwise false
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doIsSupported(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.isSupportedBy(TemporalAccessor)}
      * passing {@code this} as the argument.
      * <p>
      * Implementations must not alter either this object.
@@ -110,7 +112,7 @@ public interface TemporalAccessor {
      * If unsupported, then a {@code DateTimeException} must be thrown.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doRange(TemporalAccessorl)}
+     * is obtained by invoking {@code TemporalField.rangeRefinedBy(TemporalAccessorl)}
      * passing {@code this} as the argument.
      * <p>
      * Implementations must not alter either this object.
@@ -136,7 +138,7 @@ public interface TemporalAccessor {
      * If unsupported, then a {@code DateTimeException} must be thrown.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
      * passing {@code this} as the argument.
      * <p>
      * Implementations must not alter either this object.
@@ -164,7 +166,7 @@ public interface TemporalAccessor {
      * If unsupported, then a {@code DateTimeException} must be thrown.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
      * passing {@code this} as the argument.
      * <p>
      * Implementations must not alter either this object.
@@ -198,7 +200,7 @@ public interface TemporalAccessor {
      *   public &lt;R&gt; R query(TemporalQuery&lt;R&gt; type) {
      *     // only include an if statement if the implementation can return it
      *     if (query == TemporalQueries.zoneId())  return // the ZoneId
-     *     if (query == TemporalQueries.chrono())  return // the Chrono
+     *     if (query == TemporalQueries.chronology())  return // the Chrono
      *     if (query == TemporalQueries.precision())  return // the precision
      *     // call default method
      *     return super.query(query);

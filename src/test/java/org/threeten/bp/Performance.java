@@ -55,7 +55,6 @@ import java.util.Random;
 import java.util.TreeMap;
 
 import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.DateTimeFormatters;
 
 /**
  * Test Performance.
@@ -186,11 +185,11 @@ public class Performance {
 
     private static void formatListDateTime(List<LocalDateTime> list) {
         StringBuilder buf = new StringBuilder();
-        DateTimeFormatter format = DateTimeFormatters.isoDate().withLocale(Locale.ENGLISH);
+        DateTimeFormatter format = DateTimeFormatter.ISO_DATE.withLocale(Locale.ENGLISH);
         long start = System.nanoTime();
         for (LocalDateTime dt : list) {
             buf.setLength(0);
-            buf.append(format.print(dt));
+            buf.append(format.format(dt));
         }
         long end = System.nanoTime();
         System.out.println("LocalDT:   Format: " + NF.format(end - start) + " ns" + " " + buf);
@@ -250,11 +249,11 @@ public class Performance {
 
     private static void formatListLocalDate(List<LocalDate> list) {
         StringBuilder buf = new StringBuilder();
-        DateTimeFormatter format = DateTimeFormatters.isoDate().withLocale(Locale.ENGLISH);
+        DateTimeFormatter format = DateTimeFormatter.ISO_DATE.withLocale(Locale.ENGLISH);
         long start = System.nanoTime();
         for (LocalDate dt : list) {
             buf.setLength(0);
-            buf.append(format.print(dt));
+            buf.append(format.format(dt));
         }
         long end = System.nanoTime();
         System.out.println("LocalD:    Format: " + NF.format(end - start) + " ns" + " " + buf);
@@ -300,11 +299,11 @@ public class Performance {
 
     private static void formatListTime(List<LocalTime> list) {
         StringBuilder buf = new StringBuilder();
-        DateTimeFormatter format = DateTimeFormatters.isoTime().withLocale(Locale.ENGLISH);
+        DateTimeFormatter format = DateTimeFormatter.ISO_TIME.withLocale(Locale.ENGLISH);
         long start = System.nanoTime();
         for (LocalTime dt : list) {
             buf.setLength(0);
-            buf.append(format.print(dt));
+            buf.append(format.format(dt));
         }
         long end = System.nanoTime();
         System.out.println("LocalT:    Format: " + NF.format(end - start) + " ns" + " " + buf);
@@ -369,11 +368,11 @@ public class Performance {
 
     private static void formatListZonedDateTime(List<ZonedDateTime> list) {
         StringBuilder buf = new StringBuilder();
-        DateTimeFormatter format = DateTimeFormatters.isoDate().withLocale(Locale.ENGLISH);
+        DateTimeFormatter format = DateTimeFormatter.ISO_DATE.withLocale(Locale.ENGLISH);
         long start = System.nanoTime();
         for (ZonedDateTime dt : list) {
             buf.setLength(0);
-            buf.append(format.print(dt));
+            buf.append(format.format(dt));
         }
         long end = System.nanoTime();
         System.out.println("ZonedDT:   Format: " + NF.format(end - start) + " ns" + " " + buf);

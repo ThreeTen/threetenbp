@@ -64,12 +64,11 @@ import java.util.List;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.DateTimeFormatters;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
-import org.threeten.bp.temporal.ISOChrono;
 import org.threeten.bp.temporal.JulianFields;
 import org.threeten.bp.temporal.MockFieldNoValue;
 import org.threeten.bp.temporal.Temporal;
@@ -547,14 +546,14 @@ public class TestLocalDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void factory_parse_formatter() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("y M d");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("y M d");
         LocalDate test = LocalDate.parse("2010 12 3", f);
         assertEquals(test, LocalDate.of(2010, 12, 3));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_formatter_nullText() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("y M d");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("y M d");
         LocalDate.parse((String) null, f);
     }
 
@@ -596,7 +595,7 @@ public class TestLocalDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_query_chrono() {
-        assertEquals(TEST_2007_07_15.query(TemporalQueries.chrono()), ISOChrono.INSTANCE);
+        assertEquals(TEST_2007_07_15.query(TemporalQueries.chronology()), IsoChronology.INSTANCE);
     }
 
     @Test
@@ -1937,7 +1936,7 @@ public class TestLocalDate extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void test_toString_formatter() {
-        DateTimeFormatter f = DateTimeFormatters.pattern("y M d");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("y M d");
         String t = LocalDate.of(2010, 12, 3).toString(f);
         assertEquals(t, "2010 12 3");
     }

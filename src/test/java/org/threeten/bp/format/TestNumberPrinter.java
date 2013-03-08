@@ -165,7 +165,7 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
                 fail("Expected exception");
             }
             assertEquals(buf.toString(), result);
-        } catch (DateTimePrintException ex) {
+        } catch (DateTimeException ex) {
             if (result == null || value < 0) {
                 assertEquals(ex.getMessage().contains(DAY_OF_MONTH.getName()), true);
             } else {
@@ -184,7 +184,7 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
                 fail("Expected exception");
             }
             assertEquals(buf.toString(), result);
-        } catch (DateTimePrintException ex) {
+        } catch (DateTimeException ex) {
             if (result != null) {
                 throw ex;
             }
@@ -202,7 +202,7 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
                 fail("Expected exception");
             }
             assertEquals(buf.toString(), (value < 0 ? "-" + result : result));
-        } catch (DateTimePrintException ex) {
+        } catch (DateTimeException ex) {
             if (result != null) {
                 throw ex;
             }
@@ -220,7 +220,7 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
                 fail("Expected exception");
             }
             assertEquals(buf.toString(), (value < 0 ? "-" + result : "+" + result));
-        } catch (DateTimePrintException ex) {
+        } catch (DateTimeException ex) {
             if (result != null) {
                 throw ex;
             }
@@ -242,7 +242,7 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
                 result = (value < 0 ? "-" + result : "+" + result);
             }
             assertEquals(buf.toString(), result);
-        } catch (DateTimePrintException ex) {
+        } catch (DateTimeException ex) {
             if (result != null) {
                 throw ex;
             }

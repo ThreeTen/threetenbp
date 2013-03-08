@@ -42,13 +42,13 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Objects;
 
+import org.threeten.bp.chrono.Chronology;
+import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
-import org.threeten.bp.temporal.Chrono;
 import org.threeten.bp.temporal.ChronoField;
-import org.threeten.bp.temporal.ISOChrono;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalAdjuster;
@@ -78,9 +78,10 @@ import org.threeten.bp.temporal.ValueRange;
  * <p>
  * The ISO-8601 calendar system is the modern civil calendar system used today
  * in most of the world. It is equivalent to the proleptic Gregorian calendar
- * system, in which todays's rules for leap years are applied for all time.
+ * system, in which today's rules for leap years are applied for all time.
  * For most applications written today, the ISO-8601 rules are entirely suitable.
- * Any application that uses historical dates should consider using {@code HistoricDate}.
+ * However, any application that makes use of historical dates, and requires them
+ * to be accurate will find the ISO-8601 approach unsuitable.
  *
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
@@ -229,7 +230,7 @@ public final class MonthDay
             return (MonthDay) temporal;
         }
         try {
-            if (ISOChrono.INSTANCE.equals(Chrono.from(temporal)) == false) {
+            if (IsoChronology.INSTANCE.equals(Chronology.from(temporal)) == false) {
                 temporal = LocalDate.from(temporal);
             }
             return of(temporal.get(MONTH_OF_YEAR), temporal.get(DAY_OF_MONTH));
@@ -299,7 +300,7 @@ public final class MonthDay
      * All other {@code ChronoField} instances will return false.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doIsSupported(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.isSupportedBy(TemporalAccessor)}
      * passing {@code this} as the argument.
      * Whether the field is supported is determined by the field.
      *
@@ -311,7 +312,7 @@ public final class MonthDay
         if (field instanceof ChronoField) {
             return field == MONTH_OF_YEAR || field == DAY_OF_MONTH;
         }
-        return field != null && field.doIsSupported(this);
+        return field != null && field.isSupportedBy(this);
     }
 
     /**
@@ -328,7 +329,7 @@ public final class MonthDay
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doRange(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.rangeRefinedBy(TemporalAccessor)}
      * passing {@code this} as the argument.
      * Whether the range can be obtained is determined by the field.
      *
@@ -360,7 +361,7 @@ public final class MonthDay
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
@@ -387,7 +388,7 @@ public final class MonthDay
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
@@ -406,10 +407,24 @@ public final class MonthDay
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return field.doGet(this);
+        return field.getFrom(this);
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the month-of-year field from 1 to 12.
+     * <p>
+     * This method returns the month as an {@code int} from 1 to 12.
+     * Application code is frequently clearer if the enum {@link Month}
+     * is used by calling {@link #getMonth()}.
+     *
+     * @return the month-of-year, from 1 to 12
+     * @see #getMonth()
+     */
+    public int getMonthValue() {
+        return month;
+    }
+
     /**
      * Gets the month-of-year field using the {@code Month} enum.
      * <p>
@@ -419,6 +434,7 @@ public final class MonthDay
      * provides the {@link Month#getValue() int value}.
      *
      * @return the month-of-year, not null
+     * @see #getMonthValue()
      */
     public Month getMonth() {
         return Month.of(month);
@@ -531,8 +547,8 @@ public final class MonthDay
     @SuppressWarnings("unchecked")
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.chrono()) {
-            return (R) ISOChrono.INSTANCE;
+        if (query == TemporalQueries.chronology()) {
+            return (R) IsoChronology.INSTANCE;
         }
         return super.query(query);
     }
@@ -566,7 +582,7 @@ public final class MonthDay
      */
     @Override
     public Temporal adjustInto(Temporal temporal) {
-        if (Chrono.from(temporal).equals(ISOChrono.INSTANCE) == false) {
+        if (Chronology.from(temporal).equals(IsoChronology.INSTANCE) == false) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }
         temporal = temporal.with(MONTH_OF_YEAR, month);
@@ -575,9 +591,10 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a date formed from this month-day at the specified year.
+     * Combines this month-day with a year to create a {@code LocalDate}.
      * <p>
-     * This combines this month-day and the specified year to form a {@code LocalDate}.
+     * This returns a {@code LocalDate} formed from this month-day and the specified year.
+     * <p>
      * A month-day of February 29th will be adjusted to February 28th in the resulting
      * date if the year is not a leap year.
      * <p>
@@ -585,7 +602,7 @@ public final class MonthDay
      *
      * @param year  the year to use, from MIN_YEAR to MAX_YEAR
      * @return the local date formed from this month-day and the specified year, not null
-     * @see Year#atMonthDay(MonthDay)
+     * @throws DateTimeException if the year is outside the valid range of years
      */
     public LocalDate atYear(int year) {
         return LocalDate.of(year, month, isValidYear(year) ? day : 28);
@@ -680,7 +697,7 @@ public final class MonthDay
      * Outputs this month-day as a {@code String} using the formatter.
      * <p>
      * This month-day will be passed to the formatter
-     * {@link DateTimeFormatter#print(TemporalAccessor) print method}.
+     * {@link DateTimeFormatter#format(TemporalAccessor) print method}.
      *
      * @param formatter  the formatter to use, not null
      * @return the formatted month-day string, not null
@@ -688,7 +705,7 @@ public final class MonthDay
      */
     public String toString(DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
-        return formatter.print(this);
+        return formatter.format(this);
     }
 
     //-----------------------------------------------------------------------

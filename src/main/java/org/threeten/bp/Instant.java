@@ -48,7 +48,7 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Objects;
 
-import org.threeten.bp.format.DateTimeFormatters;
+import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
 import org.threeten.bp.jdk8.Jdk8Methods;
@@ -56,12 +56,11 @@ import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
-import org.threeten.bp.temporal.TemporalAdder;
 import org.threeten.bp.temporal.TemporalAdjuster;
+import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
-import org.threeten.bp.temporal.TemporalSubtractor;
 import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.temporal.ValueRange;
 
@@ -147,7 +146,7 @@ import org.threeten.bp.temporal.ValueRange;
  * It is intended that instants before 1972 be interpreted based on the solar day divided
  * into 86400 subdivisions.
  * <p>
- * The Java time-scale is used for all date-time classes supplied by JSR-310.
+ * The Java time-scale is used by all date-time classes.
  * This includes {@code Instant}, {@code LocalDate}, {@code LocalTime}, {@code OffsetDateTime},
  * {@code ZonedDateTime} and {@code Duration}.
  *
@@ -182,7 +181,7 @@ public final class Instant
      */
     public static final Instant MIN = Instant.ofEpochSecond(MIN_SECOND, 0);
     /**
-     * The minimum supported {@code Instant}, '-1000000000-01-01T00:00Z'.
+     * The maximum supported {@code Instant}, '1000000000-12-31T23:59:59.999999999Z'.
      * This could be used by an application as a "far future" instant.
      * <p>
      * This is one year later than the maximum {@code LocalDateTime}.
@@ -337,7 +336,7 @@ public final class Instant
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static Instant parse(final CharSequence text) {
-        return DateTimeFormatters.isoInstant().parse(text, Instant.class);
+        return DateTimeFormatter.ISO_INSTANT.parse(text, Instant.class);
     }
 
     //-----------------------------------------------------------------------
@@ -390,7 +389,7 @@ public final class Instant
      * All other {@code ChronoField} instances will return false.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doIsSupported(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.isSupportedBy(TemporalAccessor)}
      * passing {@code this} as the argument.
      * Whether the field is supported is determined by the field.
      *
@@ -402,7 +401,7 @@ public final class Instant
         if (field instanceof ChronoField) {
             return field == INSTANT_SECONDS || field == NANO_OF_SECOND || field == MICRO_OF_SECOND || field == MILLI_OF_SECOND;
         }
-        return field != null && field.doIsSupported(this);
+        return field != null && field.isSupportedBy(this);
     }
 
     /**
@@ -419,7 +418,7 @@ public final class Instant
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doRange(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.rangeRefinedBy(TemporalAccessor)}
      * passing {@code this} as the argument.
      * Whether the range can be obtained is determined by the field.
      *
@@ -447,7 +446,7 @@ public final class Instant
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
@@ -467,7 +466,7 @@ public final class Instant
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return range(field).checkValidIntValue(field.doGet(this), field);
+        return range(field).checkValidIntValue(field.getFrom(this), field);
     }
 
     /**
@@ -483,7 +482,7 @@ public final class Instant
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doGet(TemporalAccessor)}
+     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
@@ -503,7 +502,7 @@ public final class Instant
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return field.doGet(this);
+        return field.getFrom(this);
     }
 
     //-----------------------------------------------------------------------
@@ -588,7 +587,7 @@ public final class Instant
      * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.doWith(Temporal, long)}
+     * is obtained by invoking {@code TemporalField.adjustInto(Temporal, long)}
      * passing {@code this} as the argument. In this case, the field determines
      * whether and how to adjust the instant.
      * <p>
@@ -619,7 +618,46 @@ public final class Instant
             }
             throw new DateTimeException("Unsupported field: " + field.getName());
         }
-        return field.doWith(this, newValue);
+        return field.adjustInto(this, newValue);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this {@code Instant} truncated to the specified unit.
+     * <p>
+     * Truncating the instant returns a copy of the original with fields
+     * smaller than the specified unit set to zero.
+     * The fields are calculated on the basis of using a UTC offset as seen
+     * in {@code toString}.
+     * For example, truncating with the {@link ChronoUnit#MINUTES MINUTES} unit will
+     * round down to the nearest minute, setting the seconds and nanoseconds to zero.
+     * <p>
+     * The unit must have a {@linkplain TemporalUnit#getDuration() duration}
+     * that divides into the length of a standard day without remainder.
+     * This includes all supplied time units on {@link ChronoUnit} and
+     * {@link ChronoUnit#DAYS DAYS}. Other units throw an exception.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param unit  the unit to truncate to, not null
+     * @return an {@code Instant} based on this instant with the time truncated, not null
+     * @throws DateTimeException if the unit is invalid for truncation
+     */
+    public Instant truncatedTo(TemporalUnit unit) {
+        if (unit == ChronoUnit.NANOS) {
+            return this;
+        }
+        Duration unitDur = unit.getDuration();
+        if (unitDur.getSeconds() > LocalTime.SECONDS_PER_DAY) {
+            throw new DateTimeException("Unit is too large to be used for truncation");
+        }
+        long dur = unitDur.toNanos();
+        if ((LocalTime.NANOS_PER_DAY % dur) != 0) {
+            throw new DateTimeException("Unit must divide into a standard day without remainder");
+        }
+        long nod = (seconds % LocalTime.SECONDS_PER_DAY) * LocalTime.NANOS_PER_SECOND + nanos;
+        long result = (nod / dur) * dur;
+        return plusNanos(result - nod);
     }
 
     //-----------------------------------------------------------------------
@@ -629,8 +667,8 @@ public final class Instant
      * @throws ArithmeticException {@inheritDoc}
      */
     @Override
-    public Instant plus(TemporalAdder adder) {
-        return (Instant) adder.addTo(this);
+    public Instant plus(TemporalAmount amount) {
+        return (Instant) amount.addTo(this);
     }
 
     /**
@@ -653,7 +691,7 @@ public final class Instant
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
-        return unit.doPlus(this, amountToAdd);
+        return unit.addTo(this, amountToAdd);
     }
 
     //-----------------------------------------------------------------------
@@ -728,8 +766,8 @@ public final class Instant
      * @throws ArithmeticException {@inheritDoc}
      */
     @Override
-    public Instant minus(TemporalSubtractor subtractor) {
-        return (Instant) subtractor.subtractFrom(this);
+    public Instant minus(TemporalAmount amount) {
+        return (Instant) amount.subtractFrom(this);
     }
 
     /**
@@ -820,7 +858,7 @@ public final class Instant
             return (R) NANOS;
         }
         // inline TemporalAccessor.super.query(query) as an optimization
-        if (query == TemporalQueries.chrono() || query == TemporalQueries.zoneId() ||
+        if (query == TemporalQueries.chronology() || query == TemporalQueries.zoneId() ||
                 query == TemporalQueries.zone() || query == TemporalQueries.offset()) {
             return null;
         }
@@ -918,7 +956,7 @@ public final class Instant
             }
             throw new DateTimeException("Unsupported unit: " + unit.getName());
         }
-        return unit.between(this, endInstant).getAmount();
+        return unit.between(this, endInstant);
     }
 
     private long nanosUntil(Instant end) {
@@ -928,6 +966,43 @@ public final class Instant
 
     private long secondsUntil(Instant end) {
         return Jdk8Methods.safeSubtract(end.seconds, seconds);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Combines this instant with an offset to create an {@code OffsetDateTime}.
+     * <p>
+     * This returns an {@code OffsetDateTime} formed from this instant at the
+     * specified offset from UTC/Greenwich. An exception will be thrown if the
+     * instant is too large to fit into an offset date-time.
+     * <p>
+     * This method is equivalent to
+     * {@link OffsetDateTime#ofInstant(Instant, ZoneId) OffsetDateTime.ofInstant(this, offset)}.
+     *
+     * @param offset  the offset to combine with, not null
+     * @return the offset date-time formed from this instant and the specified offset, not null
+     * @throws DateTimeException if the result exceeds the supported range
+     */
+    public OffsetDateTime atOffset(ZoneOffset offset) {
+        return OffsetDateTime.ofInstant(this, offset);
+    }
+
+    /**
+     * Combines this instant with a time-zone to create a {@code ZonedDateTime}.
+     * <p>
+     * This returns an {@code ZonedDateTime} formed from this instant at the
+     * specified time-zone. An exception will be thrown if the instant is too
+     * large to fit into a zoned date-time.
+     * <p>
+     * This method is equivalent to
+     * {@link ZonedDateTime#ofInstant(Instant, ZoneId) ZonedDateTime.ofInstant(this, zone)}.
+     *
+     * @param zone  the zone to combine with, not null
+     * @return the zoned date-time formed from this instant and the specified zone, not null
+     * @throws DateTimeException if the result exceeds the supported range
+     */
+    public ZonedDateTime atZone(ZoneId zone) {
+        return ZonedDateTime.ofInstant(this, zone);
     }
 
     //-----------------------------------------------------------------------
@@ -1038,7 +1113,7 @@ public final class Instant
      */
     @Override
     public String toString() {
-        return DateTimeFormatters.isoInstant().print(this);
+        return DateTimeFormatter.ISO_INSTANT.format(this);
     }
 
     //-----------------------------------------------------------------------

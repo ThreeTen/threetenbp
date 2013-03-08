@@ -34,6 +34,7 @@ package org.threeten.bp.format;
 import static org.testng.Assert.assertEquals;
 
 import org.testng.annotations.Test;
+import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.format.DateTimeFormatterBuilder.CharLiteralPrinterParser;
 import org.threeten.bp.format.DateTimeFormatterBuilder.PadPrinterParserDecorator;
@@ -91,7 +92,7 @@ public class TestPadPrinterDecorator extends AbstractTestPrinterParser {
         assertEquals(buf.toString(), "-WXYZ");
     }
 
-    @Test(expectedExceptions=DateTimePrintException.class)
+    @Test(expectedExceptions=DateTimeException.class)
     public void test_print_overPad() throws Exception {
         PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new StringLiteralPrinterParser("WXYZ"), 3, '-');
         pp.print(printEmptyContext, buf);

@@ -50,7 +50,7 @@ import org.threeten.bp.LocalTime;
 import org.threeten.bp.Month;
 import org.threeten.bp.Year;
 import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.temporal.ISOChrono;
+import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 /**
@@ -196,7 +196,7 @@ class ZoneRulesBuilder {
         return addRuleToWindow(
                 transitionDateTime.getYear(), transitionDateTime.getYear(),
                 transitionDateTime.getMonth(), transitionDateTime.getDayOfMonth(),
-                null, transitionDateTime.getTime(), false, timeDefinition, savingAmountSecs);
+                null, transitionDateTime.toLocalTime(), false, timeDefinition, savingAmountSecs);
     }
 
     /**
@@ -727,7 +727,7 @@ class ZoneRulesBuilder {
         private LocalDate toLocalDate() {
             LocalDate date;
             if (dayOfMonthIndicator < 0) {
-                int monthLen = month.length(ISOChrono.INSTANCE.isLeapYear(year));
+                int monthLen = month.length(IsoChronology.INSTANCE.isLeapYear(year));
                 date = LocalDate.of(year, month, monthLen + 1 + dayOfMonthIndicator);
                 if (dayOfWeek != null) {
                     date = date.with(previousOrSame(dayOfWeek));

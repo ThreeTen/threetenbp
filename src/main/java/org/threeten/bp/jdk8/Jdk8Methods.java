@@ -35,8 +35,7 @@ package org.threeten.bp.jdk8;
  * A set of utility methods that provide additional functionality for working
  * with dates and times.
  * <p>
- * The contents of this class are likely to be replaced by other methods if and
- * when JSR-310 is integrated into the JDK.
+ * The contents of this class replace functionality available in JDK 1.8.
  *
  * <h3>Specification for implementors</h3>
  * This is a thread-safe utility class.

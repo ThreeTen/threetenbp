@@ -79,7 +79,6 @@ final class Ser implements Externalizable {
     static final byte ZONE_OFFSET_TYPE = 8;
 
     static final byte MONTH_DAY_TYPE = 64;
-    static final byte OFFSET_DATE_TYPE = 65;
     static final byte OFFSET_TIME_TYPE = 66;
     static final byte YEAR_TYPE = 67;
     static final byte YEAR_MONTH_TYPE = 68;
@@ -138,9 +137,6 @@ final class Ser implements Externalizable {
             case MONTH_DAY_TYPE:
                 ((MonthDay) object).writeExternal(out);
                 break;
-            case OFFSET_DATE_TYPE:
-                ((OffsetDate) object).writeExternal(out);
-                break;
             case OFFSET_DATE_TIME_TYPE:
                 ((OffsetDateTime) object).writeExternal(out);
                 break;
@@ -191,7 +187,6 @@ final class Ser implements Externalizable {
             case LOCAL_DATE_TIME_TYPE: return LocalDateTime.readExternal(in);
             case LOCAL_TIME_TYPE: return LocalTime.readExternal(in);
             case MONTH_DAY_TYPE: return MonthDay.readExternal(in);
-            case OFFSET_DATE_TYPE: return OffsetDate.readExternal(in);
             case OFFSET_DATE_TIME_TYPE: return OffsetDateTime.readExternal(in);
             case OFFSET_TIME_TYPE: return OffsetTime.readExternal(in);
             case YEAR_TYPE: return Year.readExternal(in);

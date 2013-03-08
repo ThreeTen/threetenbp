@@ -39,6 +39,7 @@ import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
+import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalField;
@@ -59,7 +60,7 @@ public class AbstractTestPrinterParser {
         printEmptyContext = new DateTimePrintContext(EMPTY, Locale.ENGLISH, DateTimeFormatSymbols.STANDARD);
         ZonedDateTime zdt = LocalDateTime.of(2011, 6, 30, 12, 30, 40, 0).atZone(ZoneId.of("Europe/Paris"));
         printContext = new DateTimePrintContext(zdt, Locale.ENGLISH, DateTimeFormatSymbols.STANDARD);
-        parseContext = new DateTimeParseContext(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD);
+        parseContext = new DateTimeParseContext(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, IsoChronology.INSTANCE);
         buf = new StringBuilder();
     }
 

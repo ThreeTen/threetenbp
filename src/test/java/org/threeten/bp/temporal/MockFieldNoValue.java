@@ -34,8 +34,9 @@ package org.threeten.bp.temporal;
 import static org.threeten.bp.temporal.ChronoUnit.MONTHS;
 import static org.threeten.bp.temporal.ChronoUnit.WEEKS;
 
+import java.util.Map;
+
 import org.threeten.bp.DateTimeException;
-import org.threeten.bp.format.DateTimeBuilder;
 
 /**
  * Mock DateTimeField that returns null.
@@ -66,34 +67,34 @@ public enum MockFieldNoValue implements TemporalField {
 
     @Override
     public int compare(TemporalAccessor dateTime1, TemporalAccessor dateTime2) {
-        return Long.compare(doGet(dateTime1), doGet(dateTime2));
+        return Long.compare(getFrom(dateTime1), getFrom(dateTime2));
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean doIsSupported(TemporalAccessor dateTime) {
+    public boolean isSupportedBy(TemporalAccessor dateTime) {
         return true;
     }
 
     @Override
-    public ValueRange doRange(TemporalAccessor dateTime) {
+    public ValueRange rangeRefinedBy(TemporalAccessor dateTime) {
         return ValueRange.of(1, 20);
     }
 
     @Override
-    public long doGet(TemporalAccessor dateTime) {
+    public long getFrom(TemporalAccessor dateTime) {
         throw new DateTimeException("Mock");
     }
 
     @Override
-    public <R extends Temporal> R doWith(R dateTime, long newValue) {
+    public <R extends Temporal> R adjustInto(R dateTime, long newValue) {
         throw new DateTimeException("Mock");
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public boolean resolve(DateTimeBuilder dateTimeBuilder, long value) {
-        return false;
+    public Map<TemporalField, Long> resolve(TemporalAccessor temporal, long value) {
+        return null;
     }
 
 }

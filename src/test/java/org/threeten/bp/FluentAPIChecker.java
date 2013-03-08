@@ -86,7 +86,7 @@ public class FluentAPIChecker {
 //            System.out.println("Spooky");
 //        }
 
-        Period d2 = Period.of(3, HOURS);
+        Period d2 = Period.ofDays(3);
         System.out.println(d2);
 
         tod.withHour(12).withMinute(30);
