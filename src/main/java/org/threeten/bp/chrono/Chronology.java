@@ -545,6 +545,7 @@ public abstract class Chronology implements Comparable<Chronology> {
      * @return the zoned date-time in this chronology, not null
      * @throws DateTimeException if unable to create the date-time
      */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public ChronoZonedDateTime<?> zonedDateTime(TemporalAccessor temporal) {
         try {
             ZoneId zone = ZoneId.from(temporal);
@@ -553,8 +554,9 @@ public abstract class Chronology implements Comparable<Chronology> {
                 return zonedDateTime(instant, zone);
 
             } catch (DateTimeException ex1) {
-                ChronoLocalDateTimeImpl<?> cldt = ensureChronoLocalDateTime(localDateTime(temporal));
-                return ChronoZonedDateTimeImpl.ofBest(cldt, zone, null);
+                ChronoLocalDateTime cldt = localDateTime(temporal);
+                ChronoLocalDateTimeImpl cldtImpl = ensureChronoLocalDateTime(cldt);
+                return ChronoZonedDateTimeImpl.ofBest(cldtImpl, zone, null);
             }
         } catch (DateTimeException ex) {
             throw new DateTimeException("Unable to obtain ChronoZonedDateTime from TemporalAccessor: " + temporal.getClass(), ex);
@@ -572,7 +574,8 @@ public abstract class Chronology implements Comparable<Chronology> {
      * @throws DateTimeException if the result exceeds the supported range
      */
     public ChronoZonedDateTime<?> zonedDateTime(Instant instant, ZoneId zone) {
-        return ChronoZonedDateTimeImpl.ofInstant(this, instant, zone);
+        ChronoZonedDateTime<? extends ChronoLocalDate<?>> result = ChronoZonedDateTimeImpl.ofInstant(this, instant, zone);
+        return result;
     }
 
     //-----------------------------------------------------------------------
