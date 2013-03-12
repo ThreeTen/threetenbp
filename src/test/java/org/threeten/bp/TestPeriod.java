@@ -342,6 +342,32 @@ public class TestPeriod extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
+    // plus(Period)
+    //-----------------------------------------------------------------------
+    @DataProvider(name="plus")
+    Object[][] data_plus() {
+        return new Object[][] {
+            {pymd(0, 0, 0), pymd(0, 0, 0), pymd(0, 0, 0)},
+            {pymd(0, 0, 0), pymd(5, 0, 0), pymd(5, 0, 0)},
+            {pymd(0, 0, 0), pymd(-5, 0, 0), pymd(-5, 0, 0)},
+            {pymd(0, 0, 0), pymd(0, 5, 0), pymd(0, 5, 0)},
+            {pymd(0, 0, 0), pymd(0, -5, 0), pymd(0, -5, 0)},
+            {pymd(0, 0, 0), pymd(0, 0, 5), pymd(0, 0, 5)},
+            {pymd(0, 0, 0), pymd(0, 0, -5), pymd(0, 0, -5)},
+            {pymd(0, 0, 0), pymd(2, 3, 4), pymd(2, 3, 4)},
+            {pymd(0, 0, 0), pymd(-2, -3, -4), pymd(-2, -3, -4)},
+
+            {pymd(4, 5, 6), pymd(2, 3, 4), pymd(6, 8, 10)},
+            {pymd(4, 5, 6), pymd(-2, -3, -4), pymd(2, 2, 2)},
+        };
+    }
+
+    @Test(dataProvider="plus")
+    public void test_plus(Period base, Period add, Period expected) {
+        assertEquals(base.plus(add), expected);
+    }
+
+    //-----------------------------------------------------------------------
     // plusYears()
     //-----------------------------------------------------------------------
     public void test_plusYears() {
@@ -435,6 +461,32 @@ public class TestPeriod extends AbstractTest {
     public void test_plusDays_overflowTooSmall() {
         Period test = Period.ofDays(Integer.MIN_VALUE);
         test.plusDays(-1);
+    }
+
+    //-----------------------------------------------------------------------
+    // minus(Period)
+    //-----------------------------------------------------------------------
+    @DataProvider(name="minus")
+    Object[][] data_minus() {
+        return new Object[][] {
+            {pymd(0, 0, 0), pymd(0, 0, 0), pymd(0, 0, 0)},
+            {pymd(0, 0, 0), pymd(5, 0, 0), pymd(-5, 0, 0)},
+            {pymd(0, 0, 0), pymd(-5, 0, 0), pymd(5, 0, 0)},
+            {pymd(0, 0, 0), pymd(0, 5, 0), pymd(0, -5, 0)},
+            {pymd(0, 0, 0), pymd(0, -5, 0), pymd(0, 5, 0)},
+            {pymd(0, 0, 0), pymd(0, 0, 5), pymd(0, 0, -5)},
+            {pymd(0, 0, 0), pymd(0, 0, -5), pymd(0, 0, 5)},
+            {pymd(0, 0, 0), pymd(2, 3, 4), pymd(-2, -3, -4)},
+            {pymd(0, 0, 0), pymd(-2, -3, -4), pymd(2, 3, 4)},
+
+            {pymd(4, 5, 6), pymd(2, 3, 4), pymd(2, 2, 2)},
+            {pymd(4, 5, 6), pymd(-2, -3, -4), pymd(6, 8, 10)},
+        };
+    }
+
+    @Test(dataProvider="minus")
+    public void test_minus(Period base, Period subtract, Period expected) {
+        assertEquals(base.minus(subtract), expected);
     }
 
     //-----------------------------------------------------------------------
