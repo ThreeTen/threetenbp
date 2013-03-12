@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="0.8.1" date="2013-03-12" description="v0.8.1">
+      <action dev="jodastephen" type="fix">
+        Fix Period.minus(Period)
+      </action>
+    </release>
     <release version="0.8" date="2013-03-08" description="v0.8">
       <action dev="jodastephen" type="update">
         Update to JDK 1.8 milestone 7

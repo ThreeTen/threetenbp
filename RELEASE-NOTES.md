@@ -1,4 +1,4 @@
 ThreeTen backport project release notes
 =======================================
 
-The backport project has not yet released any code.
+This release corresponds to the OpenJDK M7 milestone
