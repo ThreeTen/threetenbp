@@ -9,3 +9,5 @@
 /target/
 /*.launch
 /*.dic
+/.idea
+/*.iml
