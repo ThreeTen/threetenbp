@@ -3,9 +3,11 @@ package org.threeten.bp.chrono;
 import org.testng.*;
 import org.testng.annotations.*;
 import org.threeten.bp.*;
-import org.threeten.bp.temporal.TemporalAdjusters;
+import org.threeten.bp.temporal.*;
 
 import static org.testng.Assert.*;
+import static org.threeten.bp.chrono.DiscordianChronology.DAYS_PER_SEASON;
+import static org.threeten.bp.chrono.DiscordianChronology.DAYS_PER_WEEK;
 import static org.threeten.bp.chrono.DiscordianDate.ST_TIBS_DAY;
 
 @Test
@@ -20,7 +22,7 @@ public class TestDiscordianChronology {
         Chronology test = Chronology.of("Discordian");
         Assert.assertNotNull(test, "The Discordian calendar could not be found byName");
         Assert.assertEquals(test.getId(), "Discordian", "ID mismatch");
-        Assert.assertEquals(test.getCalendarType(), "discordian", "Type mismatch");
+        Assert.assertEquals(test.getCalendarType(), null, "Type mismatch");
         Assert.assertEquals(test, c);
     }
 
@@ -180,22 +182,35 @@ public class TestDiscordianChronology {
     }
 
     //-----------------------------------------------------------------------
-    // isLeapYear()
+    // isLeapYear(), field ranges in leap and non-leap years
     //-----------------------------------------------------------------------
 
     @DataProvider(name = "leapYears")
     Object[][] data_leapYears() {
         return new Object[][]{
-                {3179, false},
-                {3178, true},
-                {3066, false},
-                {3166, true},
+                {DiscordianChronology.INSTANCE.date(3179, 1, 1), false},
+                {DiscordianChronology.INSTANCE.date(3178, 1, 1), true},
+                {DiscordianChronology.INSTANCE.date(3066, 1, 1), false},
+                {DiscordianChronology.INSTANCE.date(3166, 1, 1), true},
         };
     }
 
     @Test(dataProvider = "leapYears")
-    public void test_isLeapYear(int prolepticYear, boolean isLeapYear) {
-        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(prolepticYear), isLeapYear);
+    public void test_isLeapYear(DiscordianDate ddate, boolean isLeapYear) {
+        assertEquals(ddate.isLeapYear(), isLeapYear);
+        assertEquals(DiscordianChronology.INSTANCE.isLeapYear(ddate.getYear()), isLeapYear);
+    }
+
+    @Test(dataProvider = "leapYears")
+    public void test_dayOfWeekRange(DiscordianDate ddate, boolean isLeapYear) {
+        assertEquals(ddate.range(ChronoField.DAY_OF_WEEK).getMinimum(), isLeapYear ? 0 : 1);
+        assertEquals(ddate.range(ChronoField.DAY_OF_WEEK).getMaximum(), DAYS_PER_WEEK);
+    }
+
+    @Test(dataProvider = "leapYears")
+    public void test_dayOfMonthRange(DiscordianDate ddate, boolean isLeapYear) {
+        assertEquals(ddate.range(ChronoField.DAY_OF_MONTH).getMinimum(), isLeapYear ? 0 : 1);
+        assertEquals(ddate.range(ChronoField.DAY_OF_MONTH).getMaximum(), DAYS_PER_SEASON);
     }
 
 }

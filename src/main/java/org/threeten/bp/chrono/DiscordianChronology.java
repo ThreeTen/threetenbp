@@ -47,7 +47,7 @@ public final class DiscordianChronology extends Chronology implements Serializab
 
     @Override
     public String getCalendarType() {
-        return "discordian";
+        return null;
     }
 
     @Override
@@ -132,9 +132,9 @@ public final class DiscordianChronology extends Chronology implements Serializab
     public ValueRange range(ChronoField field) {
         switch (field) {
             case DAY_OF_MONTH:
-                return ValueRange.of(1, DAYS_PER_SEASON);
-            case ALIGNED_WEEK_OF_MONTH:
-                return ValueRange.of(1, DAYS_PER_WEEK);
+                return ValueRange.of(0, DAYS_PER_SEASON);
+            case DAY_OF_WEEK:
+                return ValueRange.of(0, DAYS_PER_WEEK);
         }
         return IsoChronology.INSTANCE.range(field);
     }
