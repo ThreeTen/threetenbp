@@ -9,7 +9,7 @@ import org.threeten.bp.temporal.*;
  * The Discordian calendar system.
  * <p/>
  * This chronology defines the rules of the Discordian calendar system.
- * The Discordian calendar system uses years of the same length as the ISO calendar system. Each year has 6
+ * The Discordian calendar system uses years of the same length as the ISO calendar system. Each year has 5
  * <em>seasons</em> of 73 days. The year is further divided into 73 5-day weeks.
  * <p/>
  * Leap years occur on the same cycle as the ISO calendar system. The leap day itself occurs on the same day
