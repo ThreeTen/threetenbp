@@ -8,6 +8,7 @@ import org.threeten.bp.temporal.*;
 import static org.testng.Assert.*;
 import static org.threeten.bp.chrono.DiscordianChronology.DAYS_PER_SEASON;
 import static org.threeten.bp.chrono.DiscordianChronology.DAYS_PER_WEEK;
+import static org.threeten.bp.chrono.DiscordianChronology.SEASONS_PER_YEAR;
 import static org.threeten.bp.chrono.DiscordianDate.ST_TIBS_DAY;
 
 @Test
@@ -211,6 +212,39 @@ public class TestDiscordianChronology {
     public void test_dayOfMonthRange(DiscordianDate ddate, boolean isLeapYear) {
         assertEquals(ddate.range(ChronoField.DAY_OF_MONTH).getMinimum(), isLeapYear ? 0 : 1);
         assertEquals(ddate.range(ChronoField.DAY_OF_MONTH).getMaximum(), DAYS_PER_SEASON);
+    }
+
+    @Test(dataProvider = "leapYears")
+    public void test_monthOfYearRange(DiscordianDate ddate, boolean isLeapYear) {
+        assertEquals(ddate.range(ChronoField.MONTH_OF_YEAR).getMinimum(), isLeapYear ? 0 : 1);
+        assertEquals(ddate.range(ChronoField.MONTH_OF_YEAR).getMaximum(), SEASONS_PER_YEAR);
+    }
+
+    @Test
+    public void test_dayOfWeekRangeOnChronology() {
+        ValueRange range = DiscordianChronology.INSTANCE.range(ChronoField.DAY_OF_WEEK);
+        assertEquals(range.getMinimum(), 0);
+        assertEquals(range.getLargestMinimum(), 1);
+        assertEquals(range.getSmallestMaximum(), DAYS_PER_WEEK);
+        assertEquals(range.getMaximum(), DAYS_PER_WEEK);
+    }
+
+    @Test
+    public void test_dayOfMonthRangeOnChronology() {
+        ValueRange range = DiscordianChronology.INSTANCE.range(ChronoField.DAY_OF_MONTH);
+        assertEquals(range.getMinimum(), 0);
+        assertEquals(range.getLargestMinimum(), 1);
+        assertEquals(range.getSmallestMaximum(), DAYS_PER_SEASON);
+        assertEquals(range.getMaximum(), DAYS_PER_SEASON);
+    }
+
+    @Test
+    public void test_monthOfYearRangeOnChronology() {
+        ValueRange range = DiscordianChronology.INSTANCE.range(ChronoField.MONTH_OF_YEAR);
+        assertEquals(range.getMinimum(), 0);
+        assertEquals(range.getLargestMinimum(), 1);
+        assertEquals(range.getSmallestMaximum(), 5);
+        assertEquals(range.getMaximum(), 5);
     }
 
 }
