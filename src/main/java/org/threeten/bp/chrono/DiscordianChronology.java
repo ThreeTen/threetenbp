@@ -27,6 +27,11 @@ public final class DiscordianChronology extends Chronology implements Serializab
     public static final int SEASONS_PER_YEAR = 5;
     public static final int DAYS_PER_SEASON = 73;
     public static final int DAYS_PER_WEEK = 5;
+
+    public static final ValueRange MONTH_OF_YEAR_RANGE = ValueRange.of(0, 1, SEASONS_PER_YEAR, SEASONS_PER_YEAR);
+    public static final ValueRange DAY_OF_MONTH_RANGE = ValueRange.of(0, 1, DAYS_PER_SEASON, DAYS_PER_SEASON);
+    public static final ValueRange DAY_OF_WEEK_RANGE = ValueRange.of(0, 1, DAYS_PER_WEEK, DAYS_PER_WEEK);
+
     public static final int ISO_YEAR_OFFSET = 1166;
 
     private static final List<String> SEASON_NAMES = Arrays.asList("Chaos", "Discord", "Confusion", "Bureaucracy", "The Aftermath");
@@ -133,11 +138,11 @@ public final class DiscordianChronology extends Chronology implements Serializab
     public ValueRange range(ChronoField field) {
         switch (field) {
             case MONTH_OF_YEAR:
-                return ValueRange.of(0, 1, SEASONS_PER_YEAR, SEASONS_PER_YEAR);
+                return MONTH_OF_YEAR_RANGE;
             case DAY_OF_MONTH:
-                return ValueRange.of(0, 1, DAYS_PER_SEASON, DAYS_PER_SEASON);
+                return DAY_OF_MONTH_RANGE;
             case DAY_OF_WEEK:
-                return ValueRange.of(0, 1, DAYS_PER_WEEK, DAYS_PER_WEEK);
+                return DAY_OF_WEEK_RANGE;
         }
         return IsoChronology.INSTANCE.range(field);
     }
