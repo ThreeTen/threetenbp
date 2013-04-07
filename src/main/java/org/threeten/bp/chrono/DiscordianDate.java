@@ -209,11 +209,11 @@ public final class DiscordianDate extends ChronoDateImpl<DiscordianDate> impleme
         if (field instanceof ChronoField) {
             switch ((ChronoField) field) {
                 case MONTH_OF_YEAR:
-                    return isLeapYear() ? ValueRange.of(0, DiscordianChronology.SEASONS_PER_YEAR) : ValueRange.of(1, DiscordianChronology.SEASONS_PER_YEAR);
+                    return ValueRange.of(isLeapYear() ? 0 : 1, DiscordianChronology.SEASONS_PER_YEAR);
                 case DAY_OF_MONTH:
-                    return isLeapYear() ? ValueRange.of(0, DiscordianChronology.DAYS_PER_SEASON) : ValueRange.of(1, DiscordianChronology.DAYS_PER_SEASON);
+                    return ValueRange.of(isLeapYear() ? 0 : 1, DiscordianChronology.DAYS_PER_SEASON);
                 case DAY_OF_WEEK:
-                    return isLeapYear() ? ValueRange.of(0, DiscordianChronology.DAYS_PER_WEEK) : ValueRange.of(1, DiscordianChronology.DAYS_PER_WEEK);
+                    return ValueRange.of(isLeapYear() ? 0 : 1, DiscordianChronology.DAYS_PER_WEEK);
                 default:
                     return getChronology().range((ChronoField) field);
             }
