@@ -3,6 +3,7 @@
     xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.threeten</groupId>
   <artifactId>threetenbp</artifactId>
@@ -11,6 +12,8 @@
   <version>0.8.1</version>
   <description>Backport of JSR-310 to JDK 1.7. NOT an implementation of the JSR.</description>
   <url>https://github.com/ThreeTen/threetenbp</url>
+
+  <!-- ==================================================================== -->
   <issueManagement>
     <system>GitHub</system>
     <url>https://github.com/ThreeTen/threetenbp/issues</url>
@@ -24,17 +27,22 @@
       <archive>http://sourceforge.net/mailarchive/forum.php?forum_name=threeten-develop</archive>
     </mailingList>
   </mailingLists>
+
+  <!-- ==================================================================== -->
   <developers>
     <developer>
       <id>scolebourne</id>
       <name>Stephen Colebourne</name>
       <email></email>
       <roles>
-        <role>Lead developer</role>
+        <role>Project Lead</role>
       </roles>
       <timezone>0</timezone>
+      <url>https://github.com/jodastephen</url>
     </developer>
   </developers>
+
+  <!-- ==================================================================== -->
   <licenses>
     <license>
       <name>BSD 3-clause</name>
@@ -51,11 +59,13 @@
     <name>ThreeTen.org</name>
     <url>http://www.threeten.org</url>
   </organization>
+
+  <!-- ==================================================================== -->
   <build>
     <resources>
       <resource>
         <targetPath>META-INF</targetPath>
-        <directory>${basedir}</directory>
+        <directory>${project.basedir}</directory>
         <includes>
           <include>LICENSE.txt</include>
         </includes>
@@ -64,6 +74,7 @@
         <directory>${basedir}/src/main/resources</directory>
       </resource>
     </resources>
+    <!-- define build -->
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -178,6 +189,11 @@
       </plugin>
     </plugins>
   </build>
+
+  <!-- ==================================================================== -->
+  <prerequisites>
+    <maven>3.0.4</maven>
+  </prerequisites>
   <dependencies>
     <dependency>
       <groupId>org.testng</groupId>
@@ -186,6 +202,8 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <!-- ==================================================================== -->
   <reporting>
     <plugins>
       <plugin>
@@ -197,10 +215,10 @@
             <reports>
               <report>index</report>
               <report>dependencies</report>
-              <report>project-team</report>
-              <report>mailing-list</report>
               <report>issue-tracking</report>
               <report>license</report>
+              <report>mailing-list</report>
+              <report>project-team</report>
               <report>scm</report>
               <report>summary</report>
             </reports>
@@ -262,6 +280,13 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jxr-plugin</artifactId>
         <version>2.3</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>jxr</report>
+            </reports>
+          </reportSet>
+        </reportSets>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -276,6 +301,8 @@
       </plugin>
     </plugins>
   </reporting>
+
+  <!-- ==================================================================== -->
   <distributionManagement>
     <repository>
       <id>sonatype-threeten-staging</id>
@@ -292,6 +319,8 @@
     </snapshotRepository>
     <downloadUrl>http://oss.sonatype.org/content/repositories/threeten-releases</downloadUrl>
   </distributionManagement>
+
+  <!-- ==================================================================== -->
   <profiles>
     <profile>
       <id>repo-sign-artifacts</id>
@@ -342,7 +371,10 @@
       </build>
     </profile>
   </profiles>
+
+  <!-- ==================================================================== -->
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
 </project>
