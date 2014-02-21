@@ -14,10 +14,6 @@
 ThreeTen-Backport provides a backport of the JDK 8 date-time classes to JDK 7.
 </p>
 <p>
-JSR-310 provides a new date and time library for JDK 8.
-This project is the backport to JDK 7.
-</p>
-<p>
 The backport is NOT an implementation of JSR-310, as that would require
 jumping through lots of unnecessary hoops.
 Instead, this is a simple backport intended to allow users to quickly
