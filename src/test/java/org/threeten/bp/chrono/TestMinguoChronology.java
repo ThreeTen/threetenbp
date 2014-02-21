@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2013, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
