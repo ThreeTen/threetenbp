@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="0.9" date="xxx" description="v0.9">
+      <action dev="jodastephen" type="update">
+        Move to Eclipse m2e and update pom.
+      </action>
+    </release>
     <release version="0.8.1" date="2013-03-12" description="v0.8.1">
       <action dev="jodastephen" type="fix">
         Fix Period.minus(Period)
@@ -15,7 +20,7 @@
     </release>
     <release version="0.8" date="2013-03-08" description="v0.8">
       <action dev="jodastephen" type="update">
-        Update to JDK 1.8 milestone 7
+        Update to JDK 8 milestone 7
       </action>
     </release>
     <release version="0.7.2" date="2013-02-06" description="v0.7.2">
@@ -33,7 +38,7 @@
     </release>
     <release version="0.7" date="2013-01-18" description="v0.7">
       <action dev="jodastephen" type="add">
-        Create backport of ThreeTen/JSR-310 match JDK 1.8 milestone 6
+        Create backport of ThreeTen/JSR-310 match JDK 8 milestone 6
       </action>
     </release>
 

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="ThreeTen-Backport">
+  <publishDate position="navigation-bottom" format="yyyy-MM-dd"/>
+  <bannerLeft>
+    <name>ThreeTen.org</name>
+    <href>http://www.threeten.org/</href>
+  </bannerLeft>
+  <bannerRight>
+    <name>ThreeTen-Backport</name>
+    <href>http://www.threeten.org/threetenbp/</href>
+  </bannerRight>
+
+  <body>
+    <menu name="ThreeTen Backport">
+      <item name="Overview" href="index.html"/>
+      <item name="Javadoc" href="apidocs/index.html"/>
+      <item name="License" href="license.html"/>
+      <item name="Release notes" href="changes-report.html"/>
+      <item name="Download" href="http://search.maven.org/#search|gav|1|g%3A%22org.threeten%22%20AND%20a%3A%22threetenbp%22"/>
+    </menu>
+
+    <menu name="Development">
+      <item name="GitHub" href="https://github.com/ThreeTen/threetenbp"/>
+      <item name="Bugs/Issues" href="https://github.com/ThreeTen/threetenbp/issues"/>
+      <item name="Test results" href="surefire-report.html"/>
+    </menu>
+
+    <menu name="ThreeTen">
+      <item name="ThreeTen home" href="http://www.threeten.org"/>
+    </menu>
+
+    <menu ref="reports"/>
+  </body>
+
+  <poweredBy>
+    <logo name="Maven" href="http://maven.apache.org/"
+          img="http://maven.apache.org/images/logos/maven-feather.png"/>
+    <logo name="GitHub" href="https://github.com/ThreeTen/threetenbp"
+          img="http://www.threeten.org/images/github.png"/>
+  </poweredBy>
+</project>

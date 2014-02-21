@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+
+<document>
+
+ <properties>
+  <title>ThreeTen Backport</title>
+  <author>Stephen Colebourne</author>
+ </properties>
+
+ <body>
+
+<section name="ThreeTen Backport">
+<p>
+ThreeTen-Backport provides a backport of the JDK 8 date-time classes to JDK 7.
+</p>
+<p>
+JSR-310 provides a new date and time library for JDK 8.
+This project is the backport to JDK 7.
+</p>
+<p>
+The backport is NOT an implementation of JSR-310, as that would require
+jumping through lots of unnecessary hoops.
+Instead, this is a simple backport intended to allow users to quickly
+use the JSR-310 API on JDK 7.
+The backport should be referred to using the "ThreeTen" name.
+</p>
+<p>
+ThreeTen-Backport is licensed under the business-friendly <a href="license.html">BSD 3-clause license</a>.
+</p>
+</section>
+
+
+<section name="Documentation">
+<p>
+Various documentation is available:
+<ul>
+<li>The <a href="apidocs/index.html">Javadoc</a></li>
+<li>The <a href="https://github.com/ThreeTen/threetenbp">GitHub</a> source repository</li>
+</ul>
+</p>
+</section>
+
+
+<section name="Releases">
+<p>
+There are no full releases yet!
+Release 0.8.1 is the current development release intended for feedback.
+The code is fully tested, but there may yet be bugs and the API may yet change.
+There should be no great reason why it cannot be used in production if you can cope with future API change.
+</p>
+<p>
+The project runs on JDK 8 and has no dependencies.
+</p>
+<p>
+Available in <a href="http://search.maven.org/#artifactdetails|org.threeten|threetenbp|0.8.1|jar">Maven Central</a>.
+</p>
+</section>
+
+
+<section name="Support">
+<p>
+Support on bugs, library usage or enhancement requests is available on a best efforts basis.
+</p>
+<p>
+To suggest enhancements or contribute, please <a href="https://github.com/ThreeTen/threetenbp">fork the source code</a> on GitHub.
+Alternatively, use GitHub <a href="https://github.com/ThreeTen/threetenbp/issues">issues</a>.
+</p>
+<p>
+Note that pull requests and issues will only be considered so far as matching the behaviour of JDK 8.
+Additional requested features will be rejected.
+</p>
+<p>
+<br />
+</p>
+<p>
+<br />
+</p>
+<p>
+<br />
+</p>
+</section>
+</body>
+</document>
