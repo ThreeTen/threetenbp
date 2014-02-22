@@ -125,43 +125,6 @@ public abstract class ZoneId implements Serializable {
      * <p>
      * This maps as follows:
      * <p><ul>
-     * <li>EST - America/New_York</li>
-     * <li>MST - America/Denver</li>
-     * <li>HST - Pacific/Honolulu</li>
-     * <li>ACT - Australia/Darwin</li>
-     * <li>AET - Australia/Sydney</li>
-     * <li>AGT - America/Argentina/Buenos_Aires</li>
-     * <li>ART - Africa/Cairo</li>
-     * <li>AST - America/Anchorage</li>
-     * <li>BET - America/Sao_Paulo</li>
-     * <li>BST - Asia/Dhaka</li>
-     * <li>CAT - Africa/Harare</li>
-     * <li>CNT - America/St_Johns</li>
-     * <li>CST - America/Chicago</li>
-     * <li>CTT - Asia/Shanghai</li>
-     * <li>EAT - Africa/Addis_Ababa</li>
-     * <li>ECT - Europe/Paris</li>
-     * <li>IET - America/Indiana/Indianapolis</li>
-     * <li>IST - Asia/Kolkata</li>
-     * <li>JST - Asia/Tokyo</li>
-     * <li>MIT - Pacific/Apia</li>
-     * <li>NET - Asia/Yerevan</li>
-     * <li>NST - Pacific/Auckland</li>
-     * <li>PLT - Asia/Karachi</li>
-     * <li>PNT - America/Phoenix</li>
-     * <li>PRT - America/Puerto_Rico</li>
-     * <li>PST - America/Los_Angeles</li>
-     * <li>SST - Pacific/Guadalcanal</li>
-     * <li>VST - Asia/Ho_Chi_Minh</li>
-     * </ul><p>
-     * The map is unmodifiable.
-     */
-    public static final Map<String, String> OLD_IDS_PRE_2005;
-    /**
-     * A map of zone overrides to enable the older US time-zone names to be used.
-     * <p>
-     * This maps as follows:
-     * <p><ul>
      * <li>EST - -05:00</li>
      * <li>HST - -10:00</li>
      * <li>MST - -07:00</li>
@@ -193,7 +156,7 @@ public abstract class ZoneId implements Serializable {
      * </ul><p>
      * The map is unmodifiable.
      */
-    public static final Map<String, String> OLD_IDS_POST_2005;
+    public static final Map<String, String> SHORT_IDS;
     static {
         Map<String, String> base = new HashMap<>();
         base.put("ACT", "Australia/Darwin");
@@ -221,16 +184,10 @@ public abstract class ZoneId implements Serializable {
         base.put("PST", "America/Los_Angeles");
         base.put("SST", "Pacific/Guadalcanal");
         base.put("VST", "Asia/Ho_Chi_Minh");
-        Map<String, String> pre = new HashMap<>(base);
-        pre.put("EST", "America/New_York");
-        pre.put("MST", "America/Denver");
-        pre.put("HST", "Pacific/Honolulu");
-        OLD_IDS_PRE_2005 = Collections.unmodifiableMap(pre);
-        Map<String, String> post = new HashMap<>(base);
-        post.put("EST", "-05:00");
-        post.put("MST", "-07:00");
-        post.put("HST", "-10:00");
-        OLD_IDS_POST_2005 = Collections.unmodifiableMap(post);
+        base.put("EST", "-05:00");
+        base.put("MST", "-07:00");
+        base.put("HST", "-10:00");
+        SHORT_IDS = Collections.unmodifiableMap(base);
     }
     /**
      * Serialization version.
@@ -250,7 +207,7 @@ public abstract class ZoneId implements Serializable {
      * @throws ZoneRulesException if the converted zone region ID cannot be found
      */
     public static ZoneId systemDefault() {
-        return ZoneId.of(TimeZone.getDefault().getID(), OLD_IDS_POST_2005);
+        return ZoneId.of(TimeZone.getDefault().getID(), SHORT_IDS);
     }
 
     /**

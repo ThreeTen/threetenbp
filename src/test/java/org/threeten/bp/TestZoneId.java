@@ -121,51 +121,10 @@ public class TestZoneId extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // OLD_IDS_PRE_2005
+    // SHORT_IDS
     //-----------------------------------------------------------------------
-    public void test_constant_OLD_IDS_PRE_2005() {
-        Map<String, String> ids = ZoneId.OLD_IDS_PRE_2005;
-        assertEquals(ids.get("EST"), "America/New_York");
-        assertEquals(ids.get("MST"), "America/Denver");
-        assertEquals(ids.get("HST"), "Pacific/Honolulu");
-        assertEquals(ids.get("ACT"), "Australia/Darwin");
-        assertEquals(ids.get("AET"), "Australia/Sydney");
-        assertEquals(ids.get("AGT"), "America/Argentina/Buenos_Aires");
-        assertEquals(ids.get("ART"), "Africa/Cairo");
-        assertEquals(ids.get("AST"), "America/Anchorage");
-        assertEquals(ids.get("BET"), "America/Sao_Paulo");
-        assertEquals(ids.get("BST"), "Asia/Dhaka");
-        assertEquals(ids.get("CAT"), "Africa/Harare");
-        assertEquals(ids.get("CNT"), "America/St_Johns");
-        assertEquals(ids.get("CST"), "America/Chicago");
-        assertEquals(ids.get("CTT"), "Asia/Shanghai");
-        assertEquals(ids.get("EAT"), "Africa/Addis_Ababa");
-        assertEquals(ids.get("ECT"), "Europe/Paris");
-        assertEquals(ids.get("IET"), "America/Indiana/Indianapolis");
-        assertEquals(ids.get("IST"), "Asia/Kolkata");
-        assertEquals(ids.get("JST"), "Asia/Tokyo");
-        assertEquals(ids.get("MIT"), "Pacific/Apia");
-        assertEquals(ids.get("NET"), "Asia/Yerevan");
-        assertEquals(ids.get("NST"), "Pacific/Auckland");
-        assertEquals(ids.get("PLT"), "Asia/Karachi");
-        assertEquals(ids.get("PNT"), "America/Phoenix");
-        assertEquals(ids.get("PRT"), "America/Puerto_Rico");
-        assertEquals(ids.get("PST"), "America/Los_Angeles");
-        assertEquals(ids.get("SST"), "Pacific/Guadalcanal");
-        assertEquals(ids.get("VST"), "Asia/Ho_Chi_Minh");
-    }
-
-    @Test(expectedExceptions=UnsupportedOperationException.class)
-    public void test_constant_OLD_IDS_PRE_2005_immutable() {
-        Map<String, String> ids = ZoneId.OLD_IDS_PRE_2005;
-        ids.clear();
-    }
-
-    //-----------------------------------------------------------------------
-    // OLD_IDS_POST_2005
-    //-----------------------------------------------------------------------
-    public void test_constant_OLD_IDS_POST_2005() {
-        Map<String, String> ids = ZoneId.OLD_IDS_POST_2005;
+    public void test_constant_SHORT_IDS() {
+        Map<String, String> ids = ZoneId.SHORT_IDS;
         assertEquals(ids.get("EST"), "-05:00");
         assertEquals(ids.get("MST"), "-07:00");
         assertEquals(ids.get("HST"), "-10:00");
@@ -197,8 +156,8 @@ public class TestZoneId extends AbstractTest {
     }
 
     @Test(expectedExceptions=UnsupportedOperationException.class)
-    public void test_constant_OLD_IDS_POST_2005_immutable() {
-        Map<String, String> ids = ZoneId.OLD_IDS_POST_2005;
+    public void test_constant_SHORT_IDS_immutable() {
+        Map<String, String> ids = ZoneId.SHORT_IDS;
         ids.clear();
     }
 
