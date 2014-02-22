@@ -60,17 +60,6 @@ import org.threeten.bp.DateTimeException;
 public interface TemporalField extends Comparator<TemporalAccessor> {
 
     /**
-     * Gets a descriptive name for the field.
-     * <p>
-     * The should be of the format 'BaseOfRange', such as 'MonthOfYear',
-     * unless the field has a range of {@code FOREVER}, when only
-     * the base unit is mentioned, such as 'Year' or 'Era'.
-     *
-     * @return the name, not null
-     */
-    String getName();
-
-    /**
      * Gets the unit that the field is measured in.
      * <p>
      * The unit of the field is the period that varies within the range.

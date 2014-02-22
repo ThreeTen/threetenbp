@@ -61,15 +61,6 @@ import org.threeten.bp.Period;
 public interface TemporalUnit {
 
     /**
-     * Gets a descriptive name for the unit.
-     * <p>
-     * This should be in the plural and upper-first camel case, such as 'Days' or 'Minutes'.
-     *
-     * @return the name, not null
-     */
-    String getName();
-
-    /**
      * Gets the duration of this unit, which may be an estimate.
      * <p>
      * All units return a duration measured in standard nanoseconds from this method.

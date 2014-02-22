@@ -353,7 +353,7 @@ public class TestChronoLocalDateTime {
         }
 
         @Override
-        public String getName() {
+        public String toString() {
             return "FixedPeriodUnit";
         }
 
@@ -405,7 +405,7 @@ public class TestChronoLocalDateTime {
         }
 
         @Override
-        public String getName() {
+        public String toString() {
             return "FixedDateTimeField";
         }
 

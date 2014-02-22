@@ -180,11 +180,6 @@ public final class JulianFields {
 
         //-----------------------------------------------------------------------
         @Override
-        public String getName() {
-            return name;
-        }
-
-        @Override
         public TemporalUnit getBaseUnit() {
             return baseUnit;
         }
@@ -250,7 +245,7 @@ public final class JulianFields {
         //-----------------------------------------------------------------------
         @Override
         public String toString() {
-            return getName();
+            return name;
         }
 
     }

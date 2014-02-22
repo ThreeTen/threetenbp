@@ -358,7 +358,7 @@ public class TestChronoZonedDateTime {
         }
 
         @Override
-        public String getName() {
+        public String toString() {
             return "FixedPeriodUnit";
         }
 
@@ -410,7 +410,7 @@ public class TestChronoZonedDateTime {
         }
 
         @Override
-        public String getName() {
+        public String toString() {
             return "FixedDateTimeField";
         }
 

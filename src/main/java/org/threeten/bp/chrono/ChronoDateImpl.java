@@ -141,7 +141,7 @@ abstract class ChronoDateImpl<D extends ChronoLocalDate<D>>
 //                case ERAS: throw new DateTimeException("Unable to add era, standard calendar system only has one era");
 //                case FOREVER: return (period == 0 ? this : (period > 0 ? LocalDate.MAX_DATE : LocalDate.MIN_DATE));
             }
-            throw new DateTimeException(unit.getName() + " not valid for chronology " + getChronology().getId());
+            throw new DateTimeException(unit + " not valid for chronology " + getChronology().getId());
         }
         return (ChronoDateImpl<D>) getChronology().ensureChronoLocalDate(unit.addTo(this, amountToAdd));
     }

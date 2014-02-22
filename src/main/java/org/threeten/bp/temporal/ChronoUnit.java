@@ -174,12 +174,6 @@ public enum ChronoUnit implements TemporalUnit {
     }
 
     //-----------------------------------------------------------------------
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    //-----------------------------------------------------------------------
     /**
      * Gets the estimated duration of this unit in the ISO calendar system.
      * <p>
@@ -267,7 +261,7 @@ public enum ChronoUnit implements TemporalUnit {
     //-----------------------------------------------------------------------
     @Override
     public String toString() {
-        return getName();
+        return name;
     }
 
 }

@@ -52,7 +52,7 @@ public abstract class DefaultInterfaceTemporalAccessor implements TemporalAccess
             if (isSupported(field)) {
                 return field.range();
             }
-            throw new UnsupportedTemporalTypeException("Unsupported field: " + field.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
         }
         return field.rangeRefinedBy(this);
     }

@@ -860,7 +860,7 @@ public class TestLocalTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     TemporalUnit NINETY_MINS = new TemporalUnit() {
         @Override
-        public String getName() {
+        public String toString() {
             return "NinetyMins";
         }
         @Override
@@ -895,7 +895,7 @@ public class TestLocalTime extends AbstractDateTimeTest {
 
     TemporalUnit NINETY_FIVE_MINS = new TemporalUnit() {
         @Override
-        public String getName() {
+        public String toString() {
             return "NinetyFiveMins";
         }
         @Override

@@ -485,11 +485,6 @@ public enum ChronoField implements TemporalField {
 
     //-----------------------------------------------------------------------
     @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
     public TemporalUnit getBaseUnit() {
         return baseUnit;
     }
@@ -614,7 +609,7 @@ public enum ChronoField implements TemporalField {
     //-----------------------------------------------------------------------
     @Override
     public String toString() {
-        return getName();
+        return name;
     }
 
 }

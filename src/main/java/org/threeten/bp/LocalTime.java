@@ -627,7 +627,7 @@ public final class LocalTime
             case CLOCK_HOUR_OF_DAY: return (hour == 0 ? 24 : hour);
             case AMPM_OF_DAY: return hour / 12;
         }
-        throw new UnsupportedTemporalTypeException("Unsupported field: " + field.getName());
+        throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
     }
 
     //-----------------------------------------------------------------------
@@ -801,7 +801,7 @@ public final class LocalTime
                 case CLOCK_HOUR_OF_DAY: return withHour((int) (newValue == 24 ? 0 : newValue));
                 case AMPM_OF_DAY: return plusHours((newValue - (hour / 12)) * 12);
             }
-            throw new UnsupportedTemporalTypeException("Unsupported field: " + field.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
         }
         return field.adjustInto(this, newValue);
     }
@@ -962,7 +962,7 @@ public final class LocalTime
                 case HALF_DAYS: return plusHours((amountToAdd % 2) * 12);
                 case DAYS: return this;
             }
-            throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
         }
         return unit.addTo(this, amountToAdd);
     }
@@ -1294,7 +1294,7 @@ public final class LocalTime
                 case HOURS: return nanosUntil / NANOS_PER_HOUR;
                 case HALF_DAYS: return nanosUntil / (12 * NANOS_PER_HOUR);
             }
-            throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
         }
         return unit.between(this, endTime);
     }

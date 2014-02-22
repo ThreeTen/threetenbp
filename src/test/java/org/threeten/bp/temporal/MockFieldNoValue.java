@@ -46,7 +46,7 @@ public enum MockFieldNoValue implements TemporalField {
     INSTANCE;
 
     @Override
-    public String getName() {
+    public String toString() {
         return null;
     }
 

@@ -549,7 +549,7 @@ public final class HijrahDate
                 }
                 return getChronology().range(f);
             }
-            throw new UnsupportedTemporalTypeException("Unsupported field: " + field.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
         }
         return field.rangeRefinedBy(this);
     }
@@ -571,7 +571,7 @@ public final class HijrahDate
                 case YEAR: return yearOfEra;
                 case ERA: return era.getValue();
             }
-            throw new UnsupportedTemporalTypeException("Unsupported field: " + field.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
         }
         return field.getFrom(this);
     }
@@ -596,7 +596,7 @@ public final class HijrahDate
                 case YEAR: return resolvePreviousValid(nvalue, monthOfYear, dayOfMonth);
                 case ERA: return resolvePreviousValid(1 - yearOfEra, monthOfYear, dayOfMonth);
             }
-            throw new UnsupportedTemporalTypeException("Unsupported field: " + field.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
         }
         return field.adjustInto(this, newValue);
     }

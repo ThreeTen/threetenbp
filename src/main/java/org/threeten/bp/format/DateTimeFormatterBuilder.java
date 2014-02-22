@@ -1924,7 +1924,7 @@ public final class DateTimeFormatterBuilder {
             DateTimeFormatSymbols symbols = context.getSymbols();
             String str = (value == Long.MIN_VALUE ? "9223372036854775808" : Long.toString(Math.abs(value)));
             if (str.length() > maxWidth) {
-                throw new DateTimeException("Field " + field.getName() +
+                throw new DateTimeException("Field " + field +
                     " cannot be printed as the value " + value +
                     " exceeds the maximum print width of " + maxWidth);
             }
@@ -1949,7 +1949,7 @@ public final class DateTimeFormatterBuilder {
                         buf.append(symbols.getNegativeSign());
                         break;
                     case NOT_NEGATIVE:
-                        throw new DateTimeException("Field " + field.getName() +
+                        throw new DateTimeException("Field " + field +
                             " cannot be printed as the value " + value +
                             " cannot be negative according to the SignStyle");
                 }
@@ -2093,12 +2093,12 @@ public final class DateTimeFormatterBuilder {
         @Override
         public String toString() {
             if (minWidth == 1 && maxWidth == 19 && signStyle == SignStyle.NORMAL) {
-                return "Value(" + field.getName() + ")";
+                return "Value(" + field + ")";
             }
             if (minWidth == maxWidth && signStyle == SignStyle.NOT_NEGATIVE) {
-                return "Value(" + field.getName() + "," + minWidth + ")";
+                return "Value(" + field + "," + minWidth + ")";
             }
-            return "Value(" + field.getName() + "," + minWidth + "," + maxWidth + "," + signStyle + ")";
+            return "Value(" + field + "," + minWidth + "," + maxWidth + "," + signStyle + ")";
         }
     }
 
@@ -2163,7 +2163,7 @@ public final class DateTimeFormatterBuilder {
 
         @Override
         public String toString() {
-            return "ReducedValue(" + field.getName() + "," + minWidth + "," + baseValue + ")";
+            return "ReducedValue(" + field + "," + minWidth + "," + baseValue + ")";
         }
     }
 
@@ -2188,7 +2188,7 @@ public final class DateTimeFormatterBuilder {
         FractionPrinterParser(TemporalField field, int minWidth, int maxWidth, boolean decimalPoint) {
             Objects.requireNonNull(field, "field");
             if (field.range().isFixed() == false) {
-                throw new IllegalArgumentException("Field must have a fixed set of values: " + field.getName());
+                throw new IllegalArgumentException("Field must have a fixed set of values: " + field);
             }
             if (minWidth < 0 || minWidth > 9) {
                 throw new IllegalArgumentException("Minimum width must be from 0 to 9 inclusive but was " + minWidth);
@@ -2330,7 +2330,7 @@ public final class DateTimeFormatterBuilder {
         @Override
         public String toString() {
             String decimal = (decimalPoint ? ",DecimalPoint" : "");
-            return "Fraction(" + field.getName() + "," + minWidth + "," + maxWidth + decimal + ")";
+            return "Fraction(" + field + "," + minWidth + "," + maxWidth + decimal + ")";
         }
     }
 
@@ -2413,9 +2413,9 @@ public final class DateTimeFormatterBuilder {
         @Override
         public String toString() {
             if (textStyle == TextStyle.FULL) {
-                return "Text(" + field.getName() + ")";
+                return "Text(" + field + ")";
             }
-            return "Text(" + field.getName() + "," + textStyle + ")";
+            return "Text(" + field + "," + textStyle + ")";
         }
     }
 

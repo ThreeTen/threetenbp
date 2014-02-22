@@ -205,7 +205,7 @@ public final class IsoFields {
     private static enum Field implements TemporalField {
         DAY_OF_QUARTER {
             @Override
-            public String getName() {
+            public String toString() {
                 return "DayOfQuarter";
             }
             @Override
@@ -275,7 +275,7 @@ public final class IsoFields {
         },
         QUARTER_OF_YEAR {
             @Override
-            public String getName() {
+            public String toString() {
                 return "QuarterOfYear";
             }
             @Override
@@ -315,7 +315,7 @@ public final class IsoFields {
         },
         WEEK_OF_WEEK_BASED_YEAR {
             @Override
-            public String getName() {
+            public String toString() {
                 return "WeekOfWeekBasedYear";
             }
             @Override
@@ -371,7 +371,7 @@ public final class IsoFields {
         },
         WEEK_BASED_YEAR {
             @Override
-            public String getName() {
+            public String toString() {
                 return "WeekBasedYear";
             }
             @Override
@@ -422,11 +422,6 @@ public final class IsoFields {
         @Override
         public Map<TemporalField, Long> resolve(TemporalAccessor temporal, long value) {
             return null;
-        }
-
-        @Override
-        public String toString() {
-            return getName();
         }
 
         //-------------------------------------------------------------------------
@@ -513,11 +508,6 @@ public final class IsoFields {
         }
 
         @Override
-        public String getName() {
-            return name;
-        }
-
-        @Override
         public Duration getDuration() {
             return duration;
         }
@@ -570,8 +560,7 @@ public final class IsoFields {
 
         @Override
         public String toString() {
-            return getName();
-
+            return name;
         }
     }
 }

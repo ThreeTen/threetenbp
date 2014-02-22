@@ -1075,7 +1075,7 @@ public final class OffsetTime
                 case HOURS: return nanosUntil / NANOS_PER_HOUR;
                 case HALF_DAYS: return nanosUntil / (12 * NANOS_PER_HOUR);
             }
-            throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
         }
         return unit.between(this, endTime);
     }

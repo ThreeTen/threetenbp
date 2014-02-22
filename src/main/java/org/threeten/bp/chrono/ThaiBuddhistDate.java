@@ -112,7 +112,7 @@ public final class ThaiBuddhistDate
                 }
                 return getChronology().range(f);
             }
-            throw new UnsupportedTemporalTypeException("Unsupported field: " + field.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
         }
         return field.rangeRefinedBy(this);
     }

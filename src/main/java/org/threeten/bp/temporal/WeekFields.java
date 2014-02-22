@@ -590,11 +590,6 @@ public final class WeekFields implements Serializable {
 
         //-----------------------------------------------------------------------
         @Override
-        public String getName() {
-            return name;
-        }
-
-        @Override
         public TemporalUnit getBaseUnit() {
             return baseUnit;
         }
@@ -669,7 +664,7 @@ public final class WeekFields implements Serializable {
         //-----------------------------------------------------------------------
         @Override
         public String toString() {
-            return getName() + "[" + weekDef.toString() + "]";
+            return name + "[" + weekDef.toString() + "]";
         }
     }
 }
