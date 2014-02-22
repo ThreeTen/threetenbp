@@ -52,6 +52,7 @@ import static org.threeten.bp.temporal.ChronoField.SECOND_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.SECOND_OF_MINUTE;
 import static org.threeten.bp.temporal.ChronoUnit.DAYS;
 import static org.threeten.bp.temporal.ChronoUnit.FOREVER;
+import static org.threeten.bp.temporal.ChronoUnit.HALF_DAYS;
 import static org.threeten.bp.temporal.ChronoUnit.HOURS;
 import static org.threeten.bp.temporal.ChronoUnit.MICROS;
 import static org.threeten.bp.temporal.ChronoUnit.MILLIS;
@@ -1907,6 +1908,46 @@ public class TestLocalTime extends AbstractDateTimeTest {
     public void test_minusNanos_toMidday_equal() {
         LocalTime t = LocalTime.of(12, 0, 0, 1).minusNanos(1);
         assertEquals(t, LocalTime.NOON);
+    }
+
+    //-----------------------------------------------------------------------
+    // until()
+    //-----------------------------------------------------------------------
+    @DataProvider(name="until")
+    Object[][] provider_until() {
+        return new Object[][]{
+                {"00:00", "00:00", NANOS, 0},
+                {"00:00", "00:00", MICROS, 0},
+                {"00:00", "00:00", MILLIS, 0},
+                {"00:00", "00:00", SECONDS, 0},
+                {"00:00", "00:00", MINUTES, 0},
+                {"00:00", "00:00", HOURS, 0},
+                {"00:00", "00:00", HALF_DAYS, 0},
+                
+                {"00:00", "00:00:01", NANOS, 1000000000},
+                {"00:00", "00:00:01", MICROS, 1000000},
+                {"00:00", "00:00:01", MILLIS, 1000},
+                {"00:00", "00:00:01", SECONDS, 1},
+                {"00:00", "00:00:01", MINUTES, 0},
+                {"00:00", "00:00:01", HOURS, 0},
+                {"00:00", "00:00:01", HALF_DAYS, 0},
+                
+                {"00:00", "00:01", NANOS, 60000000000L},
+                {"00:00", "00:01", MICROS, 60000000},
+                {"00:00", "00:01", MILLIS, 60000},
+                {"00:00", "00:01", SECONDS, 60},
+                {"00:00", "00:01", MINUTES, 1},
+                {"00:00", "00:01", HOURS, 0},
+                {"00:00", "00:01", HALF_DAYS, 0},
+        };
+    }
+
+    @Test(dataProvider = "until")
+    public void test_until(String startStr, String endStr, TemporalUnit unit, long expected) {
+        LocalTime start = LocalTime.parse(startStr);
+        LocalTime end = LocalTime.parse(endStr);
+        assertEquals(start.until(end, unit), expected);
+        assertEquals(end.until(start, unit), -expected);
     }
 
     //-----------------------------------------------------------------------

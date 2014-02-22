@@ -63,7 +63,13 @@ import static org.threeten.bp.temporal.ChronoField.SECOND_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.SECOND_OF_MINUTE;
 import static org.threeten.bp.temporal.ChronoField.YEAR;
 import static org.threeten.bp.temporal.ChronoField.YEAR_OF_ERA;
+import static org.threeten.bp.temporal.ChronoUnit.HALF_DAYS;
+import static org.threeten.bp.temporal.ChronoUnit.HOURS;
+import static org.threeten.bp.temporal.ChronoUnit.MICROS;
+import static org.threeten.bp.temporal.ChronoUnit.MILLIS;
+import static org.threeten.bp.temporal.ChronoUnit.MINUTES;
 import static org.threeten.bp.temporal.ChronoUnit.NANOS;
+import static org.threeten.bp.temporal.ChronoUnit.SECONDS;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -2617,6 +2623,72 @@ public class TestLocalDateTime extends AbstractDateTimeTest {
         assertEquals(min, t.getMinute());
         assertEquals(sec, t.getSecond());
         assertEquals(nanos, t.getNano());
+    }
+
+    //-----------------------------------------------------------------------
+    // until()
+    //-----------------------------------------------------------------------
+    @DataProvider(name="until")
+    Object[][] provider_until() {
+        return new Object[][]{
+                {"2012-06-15T00:00", "2012-06-15T00:00", NANOS, 0},
+                {"2012-06-15T00:00", "2012-06-15T00:00", MICROS, 0},
+                {"2012-06-15T00:00", "2012-06-15T00:00", MILLIS, 0},
+                {"2012-06-15T00:00", "2012-06-15T00:00", SECONDS, 0},
+                {"2012-06-15T00:00", "2012-06-15T00:00", MINUTES, 0},
+                {"2012-06-15T00:00", "2012-06-15T00:00", HOURS, 0},
+                {"2012-06-15T00:00", "2012-06-15T00:00", HALF_DAYS, 0},
+                
+                {"2012-06-15T00:00", "2012-06-15T00:00:01", NANOS, 1000000000},
+                {"2012-06-15T00:00", "2012-06-15T00:00:01", MICROS, 1000000},
+                {"2012-06-15T00:00", "2012-06-15T00:00:01", MILLIS, 1000},
+                {"2012-06-15T00:00", "2012-06-15T00:00:01", SECONDS, 1},
+                {"2012-06-15T00:00", "2012-06-15T00:00:01", MINUTES, 0},
+                {"2012-06-15T00:00", "2012-06-15T00:00:01", HOURS, 0},
+                {"2012-06-15T00:00", "2012-06-15T00:00:01", HALF_DAYS, 0},
+                
+                {"2012-06-15T00:00", "2012-06-15T00:01", NANOS, 60000000000L},
+                {"2012-06-15T00:00", "2012-06-15T00:01", MICROS, 60000000},
+                {"2012-06-15T00:00", "2012-06-15T00:01", MILLIS, 60000},
+                {"2012-06-15T00:00", "2012-06-15T00:01", SECONDS, 60},
+                {"2012-06-15T00:00", "2012-06-15T00:01", MINUTES, 1},
+                {"2012-06-15T00:00", "2012-06-15T00:01", HOURS, 0},
+                {"2012-06-15T00:00", "2012-06-15T00:01", HALF_DAYS, 0},
+                
+                {"2012-06-15T12:30:40.500", "2012-06-15T12:30:39.499", SECONDS, -1},
+                {"2012-06-15T12:30:40.500", "2012-06-15T12:30:39.500", SECONDS, -1},
+                {"2012-06-15T12:30:40.500", "2012-06-15T12:30:39.501", SECONDS, 0},
+                {"2012-06-15T12:30:40.500", "2012-06-15T12:30:40.499", SECONDS, 0},
+                {"2012-06-15T12:30:40.500", "2012-06-15T12:30:40.500", SECONDS, 0},
+                {"2012-06-15T12:30:40.500", "2012-06-15T12:30:40.501", SECONDS, 0},
+                {"2012-06-15T12:30:40.500", "2012-06-15T12:30:41.499", SECONDS, 0},
+                {"2012-06-15T12:30:40.500", "2012-06-15T12:30:41.500", SECONDS, 1},
+                {"2012-06-15T12:30:40.500", "2012-06-15T12:30:41.501", SECONDS, 1},
+                
+                {"2012-06-15T12:30:40.500", "2012-06-16T12:30:39.499", SECONDS, 86400 - 2},
+                {"2012-06-15T12:30:40.500", "2012-06-16T12:30:39.500", SECONDS, 86400 - 1},
+                {"2012-06-15T12:30:40.500", "2012-06-16T12:30:39.501", SECONDS, 86400 - 1},
+                {"2012-06-15T12:30:40.500", "2012-06-16T12:30:40.499", SECONDS, 86400 - 1},
+                {"2012-06-15T12:30:40.500", "2012-06-16T12:30:40.500", SECONDS, 86400 + 0},
+                {"2012-06-15T12:30:40.500", "2012-06-16T12:30:40.501", SECONDS, 86400 + 0},
+                {"2012-06-15T12:30:40.500", "2012-06-16T12:30:41.499", SECONDS, 86400 + 0},
+                {"2012-06-15T12:30:40.500", "2012-06-16T12:30:41.500", SECONDS, 86400 + 1},
+                {"2012-06-15T12:30:40.500", "2012-06-16T12:30:41.501", SECONDS, 86400 + 1},
+        };
+    }
+
+    @Test(dataProvider = "until")
+    public void test_until(String startStr, String endStr, TemporalUnit unit, long expected) {
+        LocalDateTime start = LocalDateTime.parse(startStr);
+        LocalDateTime end = LocalDateTime.parse(endStr);
+        assertEquals(start.until(end, unit), expected);
+    }
+
+    @Test(dataProvider = "until")
+    public void test_until_reveresed(String startStr, String endStr, TemporalUnit unit, long expected) {
+        LocalDateTime start = LocalDateTime.parse(startStr);
+        LocalDateTime end = LocalDateTime.parse(endStr);
+        assertEquals(end.until(start, unit), -expected);
     }
 
     //-----------------------------------------------------------------------

@@ -64,6 +64,7 @@ import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.TemporalUnit;
+import org.threeten.bp.temporal.UnsupportedTemporalTypeException;
 import org.threeten.bp.temporal.ValueRange;
 import org.threeten.bp.zone.ZoneRules;
 
@@ -1506,21 +1507,46 @@ public final class LocalDateTime
         if (unit instanceof ChronoUnit) {
             ChronoUnit f = (ChronoUnit) unit;
             if (f.isTimeBased()) {
-                long amount = date.daysUntil(end.date);
-                switch (f) {
-                    case NANOS: amount = Jdk8Methods.safeMultiply(amount, NANOS_PER_DAY); break;
-                    case MICROS: amount = Jdk8Methods.safeMultiply(amount, MICROS_PER_DAY); break;
-                    case MILLIS: amount = Jdk8Methods.safeMultiply(amount, MILLIS_PER_DAY); break;
-                    case SECONDS: amount = Jdk8Methods.safeMultiply(amount, SECONDS_PER_DAY); break;
-                    case MINUTES: amount = Jdk8Methods.safeMultiply(amount, MINUTES_PER_DAY); break;
-                    case HOURS: amount = Jdk8Methods.safeMultiply(amount, HOURS_PER_DAY); break;
-                    case HALF_DAYS: amount = Jdk8Methods.safeMultiply(amount, 2); break;
+                long daysUntil = date.daysUntil(end.date);
+                long timeUntil = end.time.toNanoOfDay() - time.toNanoOfDay();
+                if (daysUntil > 0 && timeUntil < 0) {
+                    daysUntil--;
+                    timeUntil += NANOS_PER_DAY;
+                } else if (daysUntil < 0 && timeUntil > 0) {
+                    daysUntil++;
+                    timeUntil -= NANOS_PER_DAY;
                 }
-                return Jdk8Methods.safeAdd(amount, time.until(end.time, unit));
+                long amount = daysUntil;
+                switch (f) {
+                    case NANOS:
+                        amount = Jdk8Methods.safeMultiply(amount, NANOS_PER_DAY);
+                        return Jdk8Methods.safeAdd(amount, timeUntil);
+                    case MICROS:
+                        amount = Jdk8Methods.safeMultiply(amount, MICROS_PER_DAY);
+                        return Jdk8Methods.safeAdd(amount, timeUntil / 1000);
+                    case MILLIS:
+                        amount = Jdk8Methods.safeMultiply(amount, MILLIS_PER_DAY);
+                        return Jdk8Methods.safeAdd(amount, timeUntil / 1000000);
+                    case SECONDS:
+                        amount = Jdk8Methods.safeMultiply(amount, SECONDS_PER_DAY);
+                        return Jdk8Methods.safeAdd(amount, timeUntil / NANOS_PER_SECOND);
+                    case MINUTES:
+                        amount = Jdk8Methods.safeMultiply(amount, MINUTES_PER_DAY);
+                        return Jdk8Methods.safeAdd(amount, timeUntil / NANOS_PER_MINUTE);
+                    case HOURS:
+                        amount = Jdk8Methods.safeMultiply(amount, HOURS_PER_DAY);
+                        return Jdk8Methods.safeAdd(amount, timeUntil / NANOS_PER_HOUR);
+                    case HALF_DAYS:
+                        amount = Jdk8Methods.safeMultiply(amount, 2);
+                        return Jdk8Methods.safeAdd(amount, timeUntil / (NANOS_PER_HOUR * 12));
+                }
+                throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
             }
             LocalDate endDate = end.date;
-            if (end.time.isBefore(time)) {
+            if (endDate.isAfter(date) && end.time.isBefore(time)) {
                 endDate = endDate.minusDays(1);
+            } else if (endDate.isBefore(date) && end.time.isAfter(time)) {
+                endDate = endDate.plusDays(1);
             }
             return date.until(endDate, unit);
         }

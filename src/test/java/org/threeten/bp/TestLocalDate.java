@@ -44,11 +44,25 @@ import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
 import static org.threeten.bp.temporal.ChronoField.DAY_OF_WEEK;
 import static org.threeten.bp.temporal.ChronoField.DAY_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.EPOCH_DAY;
-import static org.threeten.bp.temporal.ChronoField.PROLEPTIC_MONTH;
 import static org.threeten.bp.temporal.ChronoField.ERA;
 import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
+import static org.threeten.bp.temporal.ChronoField.PROLEPTIC_MONTH;
 import static org.threeten.bp.temporal.ChronoField.YEAR;
 import static org.threeten.bp.temporal.ChronoField.YEAR_OF_ERA;
+import static org.threeten.bp.temporal.ChronoUnit.CENTURIES;
+import static org.threeten.bp.temporal.ChronoUnit.DAYS;
+import static org.threeten.bp.temporal.ChronoUnit.DECADES;
+import static org.threeten.bp.temporal.ChronoUnit.HALF_DAYS;
+import static org.threeten.bp.temporal.ChronoUnit.HOURS;
+import static org.threeten.bp.temporal.ChronoUnit.MICROS;
+import static org.threeten.bp.temporal.ChronoUnit.MILLENNIA;
+import static org.threeten.bp.temporal.ChronoUnit.MILLIS;
+import static org.threeten.bp.temporal.ChronoUnit.MINUTES;
+import static org.threeten.bp.temporal.ChronoUnit.MONTHS;
+import static org.threeten.bp.temporal.ChronoUnit.NANOS;
+import static org.threeten.bp.temporal.ChronoUnit.SECONDS;
+import static org.threeten.bp.temporal.ChronoUnit.WEEKS;
+import static org.threeten.bp.temporal.ChronoUnit.YEARS;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -1572,6 +1586,50 @@ public class TestLocalDate extends AbstractDateTimeTest {
     @Test(expectedExceptions=ArithmeticException.class)
     public void test_minusDays_overflowTooSmall() {
         LocalDate.of(Year.MIN_VALUE, 1, 1).minusDays(Long.MAX_VALUE);
+    }
+
+    //-----------------------------------------------------------------------
+    // until()
+    //-----------------------------------------------------------------------
+    @DataProvider(name="until")
+    Object[][] provider_until() {
+        return new Object[][]{
+                {"2012-06-30", "2012-06-30", DAYS, 0},
+                {"2012-06-30", "2012-06-30", WEEKS, 0},
+                {"2012-06-30", "2012-06-30", MONTHS, 0},
+                {"2012-06-30", "2012-06-30", YEARS, 0},
+                {"2012-06-30", "2012-06-30", DECADES, 0},
+                {"2012-06-30", "2012-06-30", CENTURIES, 0},
+                {"2012-06-30", "2012-06-30", MILLENNIA, 0},
+                
+                {"2012-06-30", "2012-07-01", DAYS, 1},
+                {"2012-06-30", "2012-07-01", WEEKS, 0},
+                {"2012-06-30", "2012-07-01", MONTHS, 0},
+                {"2012-06-30", "2012-07-01", YEARS, 0},
+                {"2012-06-30", "2012-07-01", DECADES, 0},
+                {"2012-06-30", "2012-07-01", CENTURIES, 0},
+                {"2012-06-30", "2012-07-01", MILLENNIA, 0},
+                
+                {"2012-06-30", "2012-07-07", DAYS, 7},
+                {"2012-06-30", "2012-07-07", WEEKS, 1},
+                {"2012-06-30", "2012-07-07", MONTHS, 0},
+                {"2012-06-30", "2012-07-07", YEARS, 0},
+                {"2012-06-30", "2012-07-07", DECADES, 0},
+                {"2012-06-30", "2012-07-07", CENTURIES, 0},
+                {"2012-06-30", "2012-07-07", MILLENNIA, 0},
+                
+                {"2012-06-30", "2012-07-29", MONTHS, 0},
+                {"2012-06-30", "2012-07-30", MONTHS, 1},
+                {"2012-06-30", "2012-07-31", MONTHS, 1},
+        };
+    }
+
+    @Test(dataProvider = "until")
+    public void test_until(String startStr, String endStr, TemporalUnit unit, long expected) {
+        LocalDate start = LocalDate.parse(startStr);
+        LocalDate end = LocalDate.parse(endStr);
+        assertEquals(start.until(end, unit), expected);
+        assertEquals(end.until(start, unit), -expected);
     }
 
     //-----------------------------------------------------------------------
