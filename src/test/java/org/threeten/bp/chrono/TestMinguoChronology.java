@@ -121,7 +121,7 @@ public class TestMinguoChronology {
 
     @Test()
     public void test_MinguoChrono() {
-        ChronoLocalDate<?> h1 = MinguoChronology.ERA_ROC.date(1, 2, 3);
+        ChronoLocalDate<?> h1 = MinguoChronology.INSTANCE.date(MinguoChronology.ERA_ROC, 1, 2, 3);
         ChronoLocalDate<?> h2 = h1;
         ChronoLocalDateTime<?> h3 = h2.atTime(LocalTime.NOON);
         @SuppressWarnings("unused")

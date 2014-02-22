@@ -79,47 +79,6 @@ public interface Era extends TemporalAccessor, TemporalAdjuster {
     int getValue();
 
     /**
-     * Gets the chronology of this era.
-     * <p>
-     * The {@code Chronology} represents the calendar system in use.
-     * This always returns the standard form of the chronology.
-     *
-     * @return the chronology, not null
-     */
-    Chronology getChronology();
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains a date in this era given the year-of-era, month, and day.
-     * <p>
-     * This era is combined with the given date fields to form a date.
-     * The year specified must be the year-of-era.
-     * Methods to create a date from the proleptic-year are on {@code Chrono}.
-     * This always uses the standard form of the chronology.
-     *
-     * @param yearOfEra  the calendar system year-of-era
-     * @param month  the calendar system month-of-year
-     * @param day  the calendar system day-of-month
-     * @return a local date based on this era and the specified year-of-era, month and day
-     */
-    ChronoLocalDate<?> date(int yearOfEra, int month, int day);
-
-    /**
-     * Obtains a date in this era given year-of-era and day-of-year fields.
-     * <p>
-     * This era is combined with the given date fields to form a date.
-     * The year specified must be the year-of-era.
-     * Methods to create a date from the proleptic-year are on {@code Chrono}.
-     * This always uses the standard form of the chronology.
-     *
-     * @param yearOfEra  the calendar system year-of-era
-     * @param dayOfYear  the calendar system day-of-year
-     * @return a local date based on this era and the specified year-of-era and day-of-year
-     */
-    ChronoLocalDate<?> dateYearDay(int yearOfEra, int dayOfYear);
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the textual representation of this era.
      * <p>
      * This returns the textual name used to identify the era.
@@ -133,5 +92,4 @@ public interface Era extends TemporalAccessor, TemporalAdjuster {
      */
     String getDisplayName(TextStyle style, Locale locale);
 
-    // NOTE: methods to convert year-of-era/proleptic-year cannot be here as they may depend on month/day (Japanese)
 }

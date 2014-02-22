@@ -42,6 +42,7 @@ import org.threeten.bp.DateTimeException;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.TextStyle;
 import org.threeten.bp.temporal.ChronoField;
+import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
@@ -59,7 +60,7 @@ import org.threeten.bp.temporal.ValueRange;
  * <h3>Specification for implementors</h3>
  * This is an immutable and thread-safe enum.
  */
-enum ThaiBuddhistEra implements Era {
+public enum ThaiBuddhistEra implements Era {
 
     /**
      * The singleton instance for the era before the current one, 'Before Buddhist Era',
@@ -105,23 +106,6 @@ enum ThaiBuddhistEra implements Era {
     @Override
     public int getValue() {
         return ordinal();
-    }
-
-    @Override
-    public ThaiBuddhistChronology getChronology() {
-        return ThaiBuddhistChronology.INSTANCE;
-    }
-
-    // JDK8 default methods:
-    //-----------------------------------------------------------------------
-    @Override
-    public ThaiBuddhistDate date(int year, int month, int day) {
-        return (ThaiBuddhistDate) getChronology().date(this, year, month, day);
-    }
-
-    @Override
-    public ThaiBuddhistDate dateYearDay(int year, int dayOfYear) {
-        return (ThaiBuddhistDate) getChronology().dateYearDay(this, year, dayOfYear);
     }
 
     //-----------------------------------------------------------------------
@@ -170,8 +154,13 @@ enum ThaiBuddhistEra implements Era {
     @SuppressWarnings("unchecked")
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.chronology()) {
-            return (R) getChronology();
+        if (query == TemporalQueries.precision()) {
+            return (R) ChronoUnit.ERAS;
+        }
+        if (query == TemporalQueries.chronology() || query == TemporalQueries.zone() ||
+                query == TemporalQueries.zoneId() || query == TemporalQueries.offset() ||
+                query == TemporalQueries.localDate() || query == TemporalQueries.localTime()) {
+            return null;
         }
         return query.queryFrom(this);
     }

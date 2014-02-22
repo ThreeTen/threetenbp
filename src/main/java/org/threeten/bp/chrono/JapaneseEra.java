@@ -266,11 +266,6 @@ final class JapaneseEra
         return eraValue;
     }
 
-    @Override
-    public JapaneseChronology getChronology() {
-        return JapaneseChronology.INSTANCE;
-    }
-
     //-----------------------------------------------------------------------
     String getAbbreviation() {
         int index = ordinal(getValue());
