@@ -1051,20 +1051,16 @@ public final class OffsetTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param endTime  the end time, which must be an {@code OffsetTime}, not null
+     * @param endExclusive  the end time, which is converted to an {@code OffsetTime}, not null
      * @param unit  the unit to measure the period in, not null
      * @return the amount of the period between this time and the end time
      * @throws DateTimeException if the period cannot be calculated
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public long until(Temporal endTime, TemporalUnit unit) {
-        if (endTime instanceof OffsetTime == false) {
-            Objects.requireNonNull(endTime, "endTime");
-            throw new DateTimeException("Unable to calculate period between objects of two different types");
-        }
+    public long until(Temporal endExclusive, TemporalUnit unit) {
+        OffsetTime end = OffsetTime.from(endExclusive);
         if (unit instanceof ChronoUnit) {
-            OffsetTime end = (OffsetTime) endTime;
             long nanosUntil = end.toEpochNano() - toEpochNano();  // no overflow
             switch ((ChronoUnit) unit) {
                 case NANOS: return nanosUntil;
@@ -1077,7 +1073,7 @@ public final class OffsetTime
             }
             throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
         }
-        return unit.between(this, endTime);
+        return unit.between(this, end);
     }
 
     //-----------------------------------------------------------------------

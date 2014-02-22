@@ -324,15 +324,9 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate<D>>
 
     //-----------------------------------------------------------------------
     @Override
-    public long until(Temporal endDateTime, TemporalUnit unit) {
-        if (endDateTime instanceof ChronoLocalDateTime == false) {
-            throw new DateTimeException("Unable to calculate period between objects of two different types");
-        }
+    public long until(Temporal endExclusive, TemporalUnit unit) {
         @SuppressWarnings("unchecked")
-        ChronoLocalDateTime<D> end = (ChronoLocalDateTime<D>) endDateTime;
-        if (toLocalDate().getChronology().equals(end.toLocalDate().getChronology()) == false) {
-            throw new DateTimeException("Unable to calculate period between two different chronologies");
-        }
+        ChronoLocalDateTime<D> end = (ChronoLocalDateTime<D>) toLocalDate().getChronology().localDateTime(endExclusive);
         if (unit instanceof ChronoUnit) {
             ChronoUnit f = (ChronoUnit) unit;
             if (f.isTimeBased()) {
@@ -354,7 +348,7 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate<D>>
             }
             return date.until(endDate, unit);
         }
-        return unit.between(this, endDateTime);
+        return unit.between(this, end);
     }
 
     //-----------------------------------------------------------------------

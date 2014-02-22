@@ -939,19 +939,15 @@ public final class Instant
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param endInstant  the end date, which must be a {@code LocalDate}, not null
+     * @param endExclusive  the end date, which is converted to an {@code Instant}, not null
      * @param unit  the unit to measure the period in, not null
      * @return the amount of the period between this date and the end date
      * @throws DateTimeException if the period cannot be calculated
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public long until(Temporal endInstant, TemporalUnit unit) {
-        if (endInstant instanceof Instant == false) {
-            Objects.requireNonNull(endInstant, "endInstant");
-            throw new DateTimeException("Unable to calculate period between objects of two different types");
-        }
-        Instant end = (Instant) endInstant;
+    public long until(Temporal endExclusive, TemporalUnit unit) {
+        Instant end = Instant.from(endExclusive);
         if (unit instanceof ChronoUnit) {
             ChronoUnit f = (ChronoUnit) unit;
             switch (f) {
@@ -966,7 +962,7 @@ public final class Instant
             }
             throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
         }
-        return unit.between(this, endInstant);
+        return unit.between(this, end);
     }
 
     private long nanosUntil(Instant end) {

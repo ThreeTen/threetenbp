@@ -1270,19 +1270,15 @@ public final class LocalTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param endTime  the end time, which must be a {@code LocalTime}, not null
+     * @param endExclusive  the end time, which is converted to a {@code LocalTime}, not null
      * @param unit  the unit to measure the period in, not null
      * @return the amount of the period between this time and the end time
      * @throws DateTimeException if the period cannot be calculated
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public long until(Temporal endTime, TemporalUnit unit) {
-        if (endTime instanceof LocalTime == false) {
-            Objects.requireNonNull(endTime, "endTime");
-            throw new DateTimeException("Unable to calculate period between objects of two different types");
-        }
-        LocalTime end = (LocalTime) endTime;
+    public long until(Temporal endExclusive, TemporalUnit unit) {
+        LocalTime end = LocalTime.from(endExclusive);
         if (unit instanceof ChronoUnit) {
             long nanosUntil = end.toNanoOfDay() - toNanoOfDay();  // no overflow
             switch ((ChronoUnit) unit) {
@@ -1296,7 +1292,7 @@ public final class LocalTime
             }
             throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
         }
-        return unit.between(this, endTime);
+        return unit.between(this, end);
     }
 
     //-----------------------------------------------------------------------

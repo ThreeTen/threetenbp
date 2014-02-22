@@ -295,18 +295,12 @@ abstract class ChronoDateImpl<D extends ChronoLocalDate<D>>
 
     //-----------------------------------------------------------------------
     @Override
-    public long until(Temporal endDateTime, TemporalUnit unit) {
-        if (endDateTime instanceof ChronoLocalDate == false) {
-            throw new DateTimeException("Unable to calculate period between objects of two different types");
-        }
-        ChronoLocalDate<?> end = (ChronoLocalDate<?>) endDateTime;
-        if (getChronology().equals(end.getChronology()) == false) {
-            throw new DateTimeException("Unable to calculate period between two different chronologies");
-        }
+    public long until(Temporal endExclusive, TemporalUnit unit) {
+        ChronoLocalDate<?> end = getChronology().date(endExclusive);
         if (unit instanceof ChronoUnit) {
             return LocalDate.from(this).until(end, unit);  // TODO: this is wrong
         }
-        return unit.between(this, endDateTime);
+        return unit.between(this, end);
     }
 
     @Override

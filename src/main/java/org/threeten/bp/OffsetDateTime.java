@@ -1465,24 +1465,20 @@ public final class OffsetDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param endDateTime  the end date-time, which must be an {@code OffsetDateTime}, not null
+     * @param endExclusive  the end date-time, which is converted to an {@code OffsetDateTime}, not null
      * @param unit  the unit to measure the period in, not null
      * @return the amount of the period between this date-time and the end date-time
      * @throws DateTimeException if the period cannot be calculated
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public long until(Temporal endDateTime, TemporalUnit unit) {
-        if (endDateTime instanceof OffsetDateTime == false) {
-            Objects.requireNonNull(endDateTime, "endDateTime");
-            throw new DateTimeException("Unable to calculate period between objects of two different types");
-        }
+    public long until(Temporal endExclusive, TemporalUnit unit) {
+        OffsetDateTime end = OffsetDateTime.from(endExclusive);
         if (unit instanceof ChronoUnit) {
-            OffsetDateTime end = (OffsetDateTime) endDateTime;
             end = end.withOffsetSameInstant(offset);
             return dateTime.until(end.dateTime, unit);
         }
-        return unit.between(this, endDateTime);
+        return unit.between(this, end);
     }
 
     //-----------------------------------------------------------------------

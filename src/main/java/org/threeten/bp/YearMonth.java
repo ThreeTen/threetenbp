@@ -892,19 +892,15 @@ public final class YearMonth
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param endYearMonth  the end year-month, which must be a {@code YearMonth}, not null
+     * @param endExclusive  the end year-month, which is converted to a {@code YearMonth}, not null
      * @param unit  the unit to measure the period in, not null
      * @return the amount of the period between this year-month and the end year-month
      * @throws DateTimeException if the period cannot be calculated
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public long until(Temporal endYearMonth, TemporalUnit unit) {
-        if (endYearMonth instanceof YearMonth == false) {
-            Objects.requireNonNull(endYearMonth, "endYearMonth");
-            throw new DateTimeException("Unable to calculate period between objects of two different types");
-        }
-        YearMonth end = (YearMonth) endYearMonth;
+    public long until(Temporal endExclusive, TemporalUnit unit) {
+        YearMonth end = YearMonth.from(endExclusive);
         if (unit instanceof ChronoUnit) {
             long monthsUntil = end.getProlepticMonth() - getProlepticMonth();  // no overflow
             switch ((ChronoUnit) unit) {
@@ -917,7 +913,7 @@ public final class YearMonth
             }
             throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
         }
-        return unit.between(this, endYearMonth);
+        return unit.between(this, end);
     }
 
     //-----------------------------------------------------------------------
