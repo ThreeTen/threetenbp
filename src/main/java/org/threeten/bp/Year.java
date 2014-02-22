@@ -62,6 +62,7 @@ import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.TemporalUnit;
+import org.threeten.bp.temporal.UnsupportedTemporalTypeException;
 import org.threeten.bp.temporal.ValueRange;
 
 /**
@@ -418,7 +419,7 @@ public final class Year
                 case YEAR: return year;
                 case ERA: return (year < 1 ? 0 : 1);
             }
-            throw new DateTimeException("Unsupported field: " + field.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field.getName());
         }
         return field.getFrom(this);
     }
@@ -542,7 +543,7 @@ public final class Year
                 case YEAR: return Year.of((int) newValue);
                 case ERA: return (getLong(ERA) == newValue ? this : Year.of(1 - year));
             }
-            throw new DateTimeException("Unsupported field: " + field.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field.getName());
         }
         return field.adjustInto(this, newValue);
     }
@@ -584,7 +585,7 @@ public final class Year
                 case MILLENNIA: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 1000));
                 case ERAS: return with(ERA, Jdk8Methods.safeAdd(getLong(ERA), amountToAdd));
             }
-            throw new DateTimeException("Unsupported unit: " + unit.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit.getName());
         }
         return unit.addTo(this, amountToAdd);
     }
@@ -773,7 +774,7 @@ public final class Year
                 case MILLENNIA: return yearsUntil / 1000;
                 case ERAS: return end.getLong(ERA) - getLong(ERA);
             }
-            throw new DateTimeException("Unsupported unit: " + unit.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit.getName());
         }
         return unit.between(this, endYear);
     }

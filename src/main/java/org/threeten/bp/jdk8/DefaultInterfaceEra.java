@@ -45,6 +45,7 @@ import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
+import org.threeten.bp.temporal.UnsupportedTemporalTypeException;
 
 /**
  * A temporary class providing implementations that will become default interface
@@ -78,7 +79,7 @@ public abstract class DefaultInterfaceEra
         if (field == ERA) {
             return getValue();
         } else if (field instanceof ChronoField) {
-            throw new DateTimeException("Unsupported field: " + field.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field.getName());
         }
         return field.getFrom(this);
     }

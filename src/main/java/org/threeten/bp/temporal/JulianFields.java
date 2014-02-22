@@ -223,7 +223,7 @@ public final class JulianFields {
         @Override
         public ValueRange rangeRefinedBy(TemporalAccessor temporal) {
             if (isSupportedBy(temporal) == false) {
-                throw new DateTimeException("Unsupported field: " + this);
+                throw new UnsupportedTemporalTypeException("Unsupported field: " + this);
             }
             return range();
         }

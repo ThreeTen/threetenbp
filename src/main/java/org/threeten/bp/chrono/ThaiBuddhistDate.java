@@ -46,6 +46,7 @@ import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.UnsupportedTemporalTypeException;
 import org.threeten.bp.temporal.ValueRange;
 
 /**
@@ -111,7 +112,7 @@ public final class ThaiBuddhistDate
                 }
                 return getChronology().range(f);
             }
-            throw new DateTimeException("Unsupported field: " + field.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field.getName());
         }
         return field.rangeRefinedBy(this);
     }

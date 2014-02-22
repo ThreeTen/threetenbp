@@ -55,6 +55,7 @@ import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
+import org.threeten.bp.temporal.UnsupportedTemporalTypeException;
 import org.threeten.bp.temporal.ValueRange;
 
 /**
@@ -405,7 +406,7 @@ public final class MonthDay
                 case DAY_OF_MONTH: return day;
                 case MONTH_OF_YEAR: return month;
             }
-            throw new DateTimeException("Unsupported field: " + field.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field.getName());
         }
         return field.getFrom(this);
     }

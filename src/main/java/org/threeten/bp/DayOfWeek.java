@@ -45,6 +45,7 @@ import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
+import org.threeten.bp.temporal.UnsupportedTemporalTypeException;
 import org.threeten.bp.temporal.ValueRange;
 import org.threeten.bp.temporal.WeekFields;
 
@@ -242,7 +243,7 @@ public enum DayOfWeek implements TemporalAccessor, TemporalAdjuster {
         if (field == DAY_OF_WEEK) {
             return field.range();
         } else if (field instanceof ChronoField) {
-            throw new DateTimeException("Unsupported field: " + field.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field.getName());
         }
         return field.rangeRefinedBy(this);
     }
@@ -305,7 +306,7 @@ public enum DayOfWeek implements TemporalAccessor, TemporalAdjuster {
         if (field == DAY_OF_WEEK) {
             return getValue();
         } else if (field instanceof ChronoField) {
-            throw new DateTimeException("Unsupported field: " + field.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field.getName());
         }
         return field.getFrom(this);
     }

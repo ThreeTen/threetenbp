@@ -61,6 +61,7 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.UnsupportedTemporalTypeException;
 import org.threeten.bp.temporal.ValueRange;
 
 /**
@@ -548,7 +549,7 @@ public final class HijrahDate
                 }
                 return getChronology().range(f);
             }
-            throw new DateTimeException("Unsupported field: " + field.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field.getName());
         }
         return field.rangeRefinedBy(this);
     }
@@ -570,7 +571,7 @@ public final class HijrahDate
                 case YEAR: return yearOfEra;
                 case ERA: return era.getValue();
             }
-            throw new DateTimeException("Unsupported field: " + field.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field.getName());
         }
         return field.getFrom(this);
     }
@@ -595,7 +596,7 @@ public final class HijrahDate
                 case YEAR: return resolvePreviousValid(nvalue, monthOfYear, dayOfMonth);
                 case ERA: return resolvePreviousValid(1 - yearOfEra, monthOfYear, dayOfMonth);
             }
-            throw new DateTimeException("Unsupported field: " + field.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field.getName());
         }
         return field.adjustInto(this, newValue);
     }

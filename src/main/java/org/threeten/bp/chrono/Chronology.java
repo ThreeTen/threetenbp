@@ -59,6 +59,7 @@ import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
+import org.threeten.bp.temporal.UnsupportedTemporalTypeException;
 import org.threeten.bp.temporal.ValueRange;
 
 /**
@@ -676,7 +677,7 @@ public abstract class Chronology implements Comparable<Chronology> {
             }
             @Override
             public long getLong(TemporalField field) {
-                throw new DateTimeException("Unsupported field: " + field);
+                throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
             }
             @SuppressWarnings("unchecked")
             @Override

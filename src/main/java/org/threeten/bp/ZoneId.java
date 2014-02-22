@@ -48,6 +48,7 @@ import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
+import org.threeten.bp.temporal.UnsupportedTemporalTypeException;
 import org.threeten.bp.zone.ZoneRules;
 import org.threeten.bp.zone.ZoneRulesException;
 import org.threeten.bp.zone.ZoneRulesProvider;
@@ -413,7 +414,7 @@ public abstract class ZoneId implements Serializable {
             }
             @Override
             public long getLong(TemporalField field) {
-                throw new DateTimeException("Unsupported field: " + field);
+                throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
             }
             @SuppressWarnings("unchecked")
             @Override

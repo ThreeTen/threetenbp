@@ -228,7 +228,7 @@ public final class IsoFields {
             @Override
             public ValueRange rangeRefinedBy(TemporalAccessor temporal) {
                 if (temporal.isSupported(this) == false) {
-                    throw new DateTimeException("Unsupported field: DayOfQuarter");
+                    throw new UnsupportedTemporalTypeException("Unsupported field: DayOfQuarter");
                 }
                 long qoy = temporal.getLong(QUARTER_OF_YEAR);
                 if (qoy == 1) {
@@ -244,7 +244,7 @@ public final class IsoFields {
             @Override
             public long getFrom(TemporalAccessor temporal) {
                 if (temporal.isSupported(this) == false) {
-                    throw new DateTimeException("Unsupported field: DayOfQuarter");
+                    throw new UnsupportedTemporalTypeException("Unsupported field: DayOfQuarter");
                 }
                 int doy = temporal.get(DAY_OF_YEAR);
                 int moy = temporal.get(MONTH_OF_YEAR);
@@ -301,7 +301,7 @@ public final class IsoFields {
             @Override
             public long getFrom(TemporalAccessor temporal) {
                 if (temporal.isSupported(this) == false) {
-                    throw new DateTimeException("Unsupported field: QuarterOfYear");
+                    throw new UnsupportedTemporalTypeException("Unsupported field: QuarterOfYear");
                 }
                 long moy = temporal.getLong(MONTH_OF_YEAR);
                 return ((moy + 2) / 3);
@@ -337,14 +337,14 @@ public final class IsoFields {
             @Override
             public ValueRange rangeRefinedBy(TemporalAccessor temporal) {
                 if (temporal.isSupported(this) == false) {
-                    throw new DateTimeException("Unsupported field: WeekOfWeekBasedYear");
+                    throw new UnsupportedTemporalTypeException("Unsupported field: WeekOfWeekBasedYear");
                 }
                 return getWeekRange(LocalDate.from(temporal));
             }
             @Override
             public long getFrom(TemporalAccessor temporal) {
                 if (temporal.isSupported(this) == false) {
-                    throw new DateTimeException("Unsupported field: WeekOfWeekBasedYear");
+                    throw new UnsupportedTemporalTypeException("Unsupported field: WeekOfWeekBasedYear");
                 }
                 return getWeek(LocalDate.from(temporal));
             }
@@ -397,14 +397,14 @@ public final class IsoFields {
             @Override
             public long getFrom(TemporalAccessor temporal) {
                 if (temporal.isSupported(this) == false) {
-                    throw new DateTimeException("Unsupported field: WeekBasedYear");
+                    throw new UnsupportedTemporalTypeException("Unsupported field: WeekBasedYear");
                 }
                 return getWeekBasedYear(LocalDate.from(temporal));
             }
             @Override
             public <R extends Temporal> R adjustInto(R temporal, long newValue) {
                 if (isSupportedBy(temporal) == false) {
-                    throw new DateTimeException("Unsupported field: WeekBasedYear");
+                    throw new UnsupportedTemporalTypeException("Unsupported field: WeekBasedYear");
                 }
                 int newVal = range().checkValidIntValue(newValue, WEEK_BASED_YEAR);
                 LocalDate date = LocalDate.from(temporal);

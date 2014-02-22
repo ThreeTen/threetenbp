@@ -70,6 +70,7 @@ import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.TemporalUnit;
+import org.threeten.bp.temporal.UnsupportedTemporalTypeException;
 import org.threeten.bp.temporal.ValueRange;
 import org.threeten.bp.zone.ZoneOffsetTransition;
 import org.threeten.bp.zone.ZoneRules;
@@ -492,7 +493,7 @@ public final class LocalDate
                 }
                 return field.range();
             }
-            throw new DateTimeException("Unsupported field: " + field.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field.getName());
         }
         return field.rangeRefinedBy(this);
     }
@@ -581,7 +582,7 @@ public final class LocalDate
             case YEAR: return year;
             case ERA: return (year >= 1 ? 1 : 0);
         }
-        throw new DateTimeException("Unsupported field: " + field.getName());
+        throw new UnsupportedTemporalTypeException("Unsupported field: " + field.getName());
     }
 
     private long getProlepticMonth() {
@@ -937,7 +938,7 @@ public final class LocalDate
                 case YEAR: return withYear((int) newValue);
                 case ERA: return (getLong(ERA) == newValue ? this : withYear(1 - year));
             }
-            throw new DateTimeException("Unsupported field: " + field.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field.getName());
         }
         return field.adjustInto(this, newValue);
     }
@@ -1066,7 +1067,7 @@ public final class LocalDate
                 case MILLENNIA: return plusYears(Jdk8Methods.safeMultiply(amountToAdd, 1000));
                 case ERAS: return with(ERA, Jdk8Methods.safeAdd(getLong(ERA), amountToAdd));
             }
-            throw new DateTimeException("Unsupported unit: " + unit.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit.getName());
         }
         return unit.addTo(this, amountToAdd);
     }
@@ -1420,7 +1421,7 @@ public final class LocalDate
                 case MILLENNIA: return monthsUntil(end) / 12000;
                 case ERAS: return end.getLong(ERA) - getLong(ERA);
             }
-            throw new DateTimeException("Unsupported unit: " + unit.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit.getName());
         }
         return unit.between(this, endDate);
     }

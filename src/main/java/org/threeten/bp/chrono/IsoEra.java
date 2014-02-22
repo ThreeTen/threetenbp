@@ -44,6 +44,7 @@ import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
+import org.threeten.bp.temporal.UnsupportedTemporalTypeException;
 import org.threeten.bp.temporal.ValueRange;
 
 /**
@@ -125,7 +126,7 @@ public enum IsoEra implements Era {
         if (field == ERA) {
             return field.range();
         } else if (field instanceof ChronoField) {
-            throw new DateTimeException("Unsupported field: " + field.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field.getName());
         }
         return field.rangeRefinedBy(this);
     }
@@ -143,7 +144,7 @@ public enum IsoEra implements Era {
         if (field == ERA) {
             return getValue();
         } else if (field instanceof ChronoField) {
-            throw new DateTimeException("Unsupported field: " + field.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field.getName());
         }
         return field.getFrom(this);
     }

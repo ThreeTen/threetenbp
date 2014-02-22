@@ -46,6 +46,7 @@ import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
+import org.threeten.bp.temporal.UnsupportedTemporalTypeException;
 
 /**
  * Context object used during date and time parsing.
@@ -403,7 +404,7 @@ final class DateTimeParseContext {
         @Override
         public int get(TemporalField field) {
             if (fieldValues.containsKey(field) == false) {
-                throw new DateTimeException("Unsupported field: " + field);
+                throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
             }
             long value = fieldValues.get(field);
             return Jdk8Methods.safeToInt(value);
@@ -411,7 +412,7 @@ final class DateTimeParseContext {
         @Override
         public long getLong(TemporalField field) {
             if (fieldValues.containsKey(field) == false) {
-                throw new DateTimeException("Unsupported field: " + field);
+                throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
             }
             return fieldValues.get(field);
         }

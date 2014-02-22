@@ -62,6 +62,7 @@ import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.TemporalUnit;
+import org.threeten.bp.temporal.UnsupportedTemporalTypeException;
 import org.threeten.bp.temporal.ValueRange;
 
 /**
@@ -464,7 +465,7 @@ public final class Instant
                 case MILLI_OF_SECOND: return nanos / 1000_000;
                 case INSTANT_SECONDS: INSTANT_SECONDS.checkValidIntValue(seconds);
             }
-            throw new DateTimeException("Unsupported field: " + field.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field.getName());
         }
         return range(field).checkValidIntValue(field.getFrom(this), field);
     }
@@ -500,7 +501,7 @@ public final class Instant
                 case MILLI_OF_SECOND: return nanos / 1000_000;
                 case INSTANT_SECONDS: return seconds;
             }
-            throw new DateTimeException("Unsupported field: " + field.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field.getName());
         }
         return field.getFrom(this);
     }
@@ -616,7 +617,7 @@ public final class Instant
                 case NANO_OF_SECOND: return (newValue != nanos ? create(seconds, (int) newValue) : this);
                 case INSTANT_SECONDS: return (newValue != seconds ? create(newValue, nanos) : this);
             }
-            throw new DateTimeException("Unsupported field: " + field.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field.getName());
         }
         return field.adjustInto(this, newValue);
     }
@@ -689,7 +690,7 @@ public final class Instant
                 case HALF_DAYS: return plusSeconds(Jdk8Methods.safeMultiply(amountToAdd, SECONDS_PER_DAY / 2));
                 case DAYS: return plusSeconds(Jdk8Methods.safeMultiply(amountToAdd, SECONDS_PER_DAY));
             }
-            throw new DateTimeException("Unsupported unit: " + unit.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit.getName());
         }
         return unit.addTo(this, amountToAdd);
     }
@@ -954,7 +955,7 @@ public final class Instant
                 case HALF_DAYS: return secondsUntil(end) / (12 * SECONDS_PER_HOUR);
                 case DAYS: return secondsUntil(end) / (SECONDS_PER_DAY);
             }
-            throw new DateTimeException("Unsupported unit: " + unit.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit.getName());
         }
         return unit.between(this, endInstant);
     }

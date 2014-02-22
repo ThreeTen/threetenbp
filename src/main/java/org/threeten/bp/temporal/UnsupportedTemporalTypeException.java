@@ -29,45 +29,40 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.threeten.bp.jdk8;
+package org.threeten.bp.temporal;
 
 import org.threeten.bp.DateTimeException;
-import org.threeten.bp.temporal.ChronoField;
-import org.threeten.bp.temporal.TemporalAccessor;
-import org.threeten.bp.temporal.TemporalField;
-import org.threeten.bp.temporal.TemporalQueries;
-import org.threeten.bp.temporal.TemporalQuery;
-import org.threeten.bp.temporal.UnsupportedTemporalTypeException;
-import org.threeten.bp.temporal.ValueRange;
 
 /**
- * A temporary class providing implementations that will become default interface
- * methods once integrated into JDK 8.
+ * An exception that indicates a type is unsupported.
+ *
+ * <h3>Specification for implementors</h3>
+ * This class is intended for use in a single thread.
  */
-public abstract class DefaultInterfaceTemporalAccessor implements TemporalAccessor {
+public class UnsupportedTemporalTypeException extends DateTimeException {
 
-    @Override
-    public ValueRange range(TemporalField field) {
-        if (field instanceof ChronoField) {
-            if (isSupported(field)) {
-                return field.range();
-            }
-            throw new UnsupportedTemporalTypeException("Unsupported field: " + field.getName());
-        }
-        return field.rangeRefinedBy(this);
+    /**
+     * Serialization version.
+     */
+    private static final long serialVersionUID = -189676278478L;
+
+    /**
+     * Constructs a new date-time exception with the specified message.
+     *
+     * @param message  the message to use for this exception, may be null
+     */
+    public UnsupportedTemporalTypeException(String message) {
+        super(message);
     }
 
-    @Override
-    public int get(TemporalField field) {
-        return range(field).checkValidIntValue(getLong(field), field);
-    }
-
-    @Override
-    public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.zoneId() || query == TemporalQueries.chronology() || query == TemporalQueries.precision()) {
-            return null;
-        }
-        return query.queryFrom(this);
+    /**
+     * Constructs a new date-time exception with the specified message and cause.
+     *
+     * @param message  the message to use for this exception, may be null
+     * @param cause  the cause of the exception, may be null
+     */
+    public UnsupportedTemporalTypeException(String message, Throwable cause) {
+        super(message, cause);
     }
 
 }

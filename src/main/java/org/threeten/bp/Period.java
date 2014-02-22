@@ -52,6 +52,7 @@ import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalUnit;
+import org.threeten.bp.temporal.UnsupportedTemporalTypeException;
 import org.threeten.bp.temporal.ValueRange;
 
 /**
@@ -313,7 +314,7 @@ public final class Period
         if (unit == DAYS) {
             return days;
         }
-        throw new DateTimeException("Unsupported unit: " + unit);
+        throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
     }
 
     //-----------------------------------------------------------------------

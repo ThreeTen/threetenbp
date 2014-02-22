@@ -60,6 +60,7 @@ import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.TemporalUnit;
+import org.threeten.bp.temporal.UnsupportedTemporalTypeException;
 import org.threeten.bp.temporal.ValueRange;
 import org.threeten.bp.zone.ZoneRules;
 
@@ -1066,7 +1067,7 @@ public final class OffsetTime
                 case HOURS: return nanosUntil / NANOS_PER_HOUR;
                 case HALF_DAYS: return nanosUntil / (12 * NANOS_PER_HOUR);
             }
-            throw new DateTimeException("Unsupported unit: " + unit.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit.getName());
         }
         return unit.between(this, endTime);
     }

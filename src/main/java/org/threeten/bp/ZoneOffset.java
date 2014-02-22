@@ -50,6 +50,7 @@ import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
+import org.threeten.bp.temporal.UnsupportedTemporalTypeException;
 import org.threeten.bp.temporal.ValueRange;
 import org.threeten.bp.zone.ZoneRules;
 
@@ -523,7 +524,7 @@ public final class ZoneOffset
         if (field == OFFSET_SECONDS) {
             return field.range();
         } else if (field instanceof ChronoField) {
-            throw new DateTimeException("Unsupported field: " + field.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field.getName());
         }
         return field.rangeRefinedBy(this);
     }
@@ -555,7 +556,7 @@ public final class ZoneOffset
         if (field == OFFSET_SECONDS) {
             return totalSeconds;
         } else if (field instanceof ChronoField) {
-            throw new DateTimeException("Unsupported field: " + field.getName());
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field.getName());
         }
         return range(field).checkValidIntValue(getLong(field), field);
     }
