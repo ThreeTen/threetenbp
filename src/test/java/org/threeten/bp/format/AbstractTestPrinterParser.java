@@ -57,10 +57,10 @@ public class AbstractTestPrinterParser {
 
     @BeforeMethod
     public void setUp() {
-        printEmptyContext = new DateTimePrintContext(EMPTY, Locale.ENGLISH, DateTimeFormatSymbols.STANDARD);
+        printEmptyContext = new DateTimePrintContext(EMPTY, Locale.ENGLISH, DecimalStyle.STANDARD);
         ZonedDateTime zdt = LocalDateTime.of(2011, 6, 30, 12, 30, 40, 0).atZone(ZoneId.of("Europe/Paris"));
-        printContext = new DateTimePrintContext(zdt, Locale.ENGLISH, DateTimeFormatSymbols.STANDARD);
-        parseContext = new DateTimeParseContext(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, IsoChronology.INSTANCE);
+        printContext = new DateTimePrintContext(zdt, Locale.ENGLISH, DecimalStyle.STANDARD);
+        parseContext = new DateTimeParseContext(Locale.ENGLISH, DecimalStyle.STANDARD, IsoChronology.INSTANCE);
         buf = new StringBuilder();
     }
 

@@ -901,7 +901,7 @@ public final class DateTimeFormatter {
     /**
      * The symbols to use for formatting, not null.
      */
-    private final DateTimeFormatSymbols symbols;
+    private final DecimalStyle decimalStyle;
     /**
      * The chronology to use for formatting, null for no override.
      */
@@ -917,15 +917,15 @@ public final class DateTimeFormatter {
      *
      * @param printerParser  the printer/parser to use, not null
      * @param locale  the locale to use, not null
-     * @param symbols  the symbols to use, not null
+     * @param decimalStyle  the decimal style to use, not null
      * @param chrono  the chronology to use, null for no override
      * @param zone  the zone to use, null for no override
      */
     DateTimeFormatter(CompositePrinterParser printerParser, Locale locale,
-                      DateTimeFormatSymbols symbols, Chronology chrono, ZoneId zone) {
+                      DecimalStyle decimalStyle, Chronology chrono, ZoneId zone) {
         this.printerParser = Objects.requireNonNull(printerParser, "printerParser");
         this.locale = Objects.requireNonNull(locale, "locale");
-        this.symbols = Objects.requireNonNull(symbols, "symbols");
+        this.decimalStyle = Objects.requireNonNull(decimalStyle, "decimalStyle");
         this.chrono = chrono;
         this.zone = zone;
     }
@@ -958,32 +958,32 @@ public final class DateTimeFormatter {
         if (this.locale.equals(locale)) {
             return this;
         }
-        return new DateTimeFormatter(printerParser, locale, symbols, chrono, zone);
+        return new DateTimeFormatter(printerParser, locale, decimalStyle, chrono, zone);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the set of symbols to be used during formatting.
+     * Gets the decimal style to be used during formatting.
      *
-     * @return the locale of this formatter, not null
+     * @return the decimal style of this formatter, not null
      */
-    public DateTimeFormatSymbols getSymbols() {
-        return symbols;
+    public DecimalStyle getDecimalStyle() {
+        return decimalStyle;
     }
 
     /**
-     * Returns a copy of this formatter with a new set of symbols.
+     * Returns a copy of this formatter with a new decimal style.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param symbols  the new symbols, not null
+     * @param decimalStyle  the new decimal style, not null
      * @return a formatter based on this formatter with the requested symbols, not null
      */
-    public DateTimeFormatter withSymbols(DateTimeFormatSymbols symbols) {
-        if (this.symbols.equals(symbols)) {
+    public DateTimeFormatter withDecimalStyle(DecimalStyle decimalStyle) {
+        if (this.decimalStyle.equals(decimalStyle)) {
             return this;
         }
-        return new DateTimeFormatter(printerParser, locale, symbols, chrono, zone);
+        return new DateTimeFormatter(printerParser, locale, decimalStyle, chrono, zone);
     }
 
     //-----------------------------------------------------------------------
@@ -1028,7 +1028,7 @@ public final class DateTimeFormatter {
         if (Objects.equals(this.chrono, chrono)) {
             return this;
         }
-        return new DateTimeFormatter(printerParser, locale, symbols, chrono, zone);
+        return new DateTimeFormatter(printerParser, locale, decimalStyle, chrono, zone);
     }
 
     //-----------------------------------------------------------------------
@@ -1075,7 +1075,7 @@ public final class DateTimeFormatter {
         if (Objects.equals(this.zone, zone)) {
             return this;
         }
-        return new DateTimeFormatter(printerParser, locale, symbols, chrono, zone);
+        return new DateTimeFormatter(printerParser, locale, decimalStyle, chrono, zone);
     }
 
     //-----------------------------------------------------------------------

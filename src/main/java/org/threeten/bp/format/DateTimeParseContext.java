@@ -72,7 +72,7 @@ final class DateTimeParseContext {
     /**
      * The symbols, not null.
      */
-    private DateTimeFormatSymbols symbols;
+    private DecimalStyle symbols;
     /**
      * The chronology, not null.
      */
@@ -98,13 +98,13 @@ final class DateTimeParseContext {
     DateTimeParseContext(DateTimeFormatter formatter) {
         super();
         this.locale = formatter.getLocale();
-        this.symbols = formatter.getSymbols();
+        this.symbols = formatter.getDecimalStyle();
         this.chronology = formatter.getChronology();
         parsed.add(new Parsed());
     }
 
     // for testing
-    DateTimeParseContext(Locale locale, DateTimeFormatSymbols symbols, Chronology chronology) {
+    DateTimeParseContext(Locale locale, DecimalStyle symbols, Chronology chronology) {
         super();
         this.locale = locale;
         this.symbols = symbols;
@@ -139,7 +139,7 @@ final class DateTimeParseContext {
      *
      * @return the formatting symbols, not null
      */
-    DateTimeFormatSymbols getSymbols() {
+    DecimalStyle getSymbols() {
         return symbols;
     }
 

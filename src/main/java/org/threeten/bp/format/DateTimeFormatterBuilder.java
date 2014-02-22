@@ -1483,7 +1483,7 @@ public final class DateTimeFormatterBuilder {
             optionalEnd();
         }
         CompositePrinterParser pp = new CompositePrinterParser(printerParsers, false);
-        return new DateTimeFormatter(pp, locale, DateTimeFormatSymbols.STANDARD, null, null);
+        return new DateTimeFormatter(pp, locale, DecimalStyle.STANDARD, null, null);
     }
 
     //-----------------------------------------------------------------------
@@ -1921,7 +1921,7 @@ public final class DateTimeFormatterBuilder {
                 return false;
             }
             long value = getValue(valueLong);
-            DateTimeFormatSymbols symbols = context.getSymbols();
+            DecimalStyle symbols = context.getSymbols();
             String str = (value == Long.MIN_VALUE ? "9223372036854775808" : Long.toString(Math.abs(value)));
             if (str.length() > maxWidth) {
                 throw new DateTimeException("Field " + field +
@@ -2212,7 +2212,7 @@ public final class DateTimeFormatterBuilder {
             if (value == null) {
                 return false;
             }
-            DateTimeFormatSymbols symbols = context.getSymbols();
+            DecimalStyle symbols = context.getSymbols();
             BigDecimal fraction = convertToFraction(value);
             if (fraction.scale() == 0) {  // scale is zero if value is zero
                 if (minWidth > 0) {

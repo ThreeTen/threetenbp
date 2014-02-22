@@ -73,7 +73,7 @@ final class DateTimePrintContext {
     /**
      * The symbols, not null.
      */
-    private DateTimeFormatSymbols symbols;
+    private DecimalStyle symbols;
     /**
      * Whether the current formatter is optional.
      */
@@ -89,11 +89,11 @@ final class DateTimePrintContext {
         super();
         this.temporal = adjust(temporal, formatter);
         this.locale = formatter.getLocale();
-        this.symbols = formatter.getSymbols();
+        this.symbols = formatter.getDecimalStyle();
     }
 
     // for testing
-    DateTimePrintContext(TemporalAccessor temporal, Locale locale, DateTimeFormatSymbols symbols) {
+    DateTimePrintContext(TemporalAccessor temporal, Locale locale, DecimalStyle symbols) {
         this.temporal = temporal;
         this.locale = locale;
         this.symbols = symbols;
@@ -198,7 +198,7 @@ final class DateTimePrintContext {
      *
      * @return the formatting symbols, not null
      */
-    DateTimeFormatSymbols getSymbols() {
+    DecimalStyle getSymbols() {
         return symbols;
     }
 
