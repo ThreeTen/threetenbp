@@ -52,15 +52,8 @@ import static org.threeten.bp.temporal.ChronoField.YEAR_OF_ERA;
 import static org.threeten.bp.temporal.ChronoUnit.CENTURIES;
 import static org.threeten.bp.temporal.ChronoUnit.DAYS;
 import static org.threeten.bp.temporal.ChronoUnit.DECADES;
-import static org.threeten.bp.temporal.ChronoUnit.HALF_DAYS;
-import static org.threeten.bp.temporal.ChronoUnit.HOURS;
-import static org.threeten.bp.temporal.ChronoUnit.MICROS;
 import static org.threeten.bp.temporal.ChronoUnit.MILLENNIA;
-import static org.threeten.bp.temporal.ChronoUnit.MILLIS;
-import static org.threeten.bp.temporal.ChronoUnit.MINUTES;
 import static org.threeten.bp.temporal.ChronoUnit.MONTHS;
-import static org.threeten.bp.temporal.ChronoUnit.NANOS;
-import static org.threeten.bp.temporal.ChronoUnit.SECONDS;
 import static org.threeten.bp.temporal.ChronoUnit.WEEKS;
 import static org.threeten.bp.temporal.ChronoUnit.YEARS;
 
@@ -577,30 +570,68 @@ public class TestLocalDate extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // get(DateTimeField)
+    // get(TemporalField)
     //-----------------------------------------------------------------------
     @Test
-    public void test_get_DateTimeField() {
+    public void test_get_TemporalField() {
         LocalDate test = LocalDate.of(2008, 6, 30);
-        assertEquals(test.getLong(ChronoField.YEAR), 2008);
-        assertEquals(test.getLong(ChronoField.MONTH_OF_YEAR), 6);
-        assertEquals(test.getLong(ChronoField.DAY_OF_MONTH), 30);
-        assertEquals(test.getLong(ChronoField.DAY_OF_WEEK), 1);
-        assertEquals(test.getLong(ChronoField.DAY_OF_YEAR), 182);
+        assertEquals(test.get(YEAR), 2008);
+        assertEquals(test.get(MONTH_OF_YEAR), 6);
+        assertEquals(test.get(DAY_OF_MONTH), 30);
+        assertEquals(test.get(DAY_OF_WEEK), 1);
+        assertEquals(test.get(DAY_OF_YEAR), 182);
+        assertEquals(test.get(YEAR_OF_ERA), 2008);
+        assertEquals(test.get(ERA), 1);
+    }
+
+    @Test(expectedExceptions=DateTimeException.class)
+    public void test_get_TemporalField_tooBig() {
+        TEST_2007_07_15.get(EPOCH_DAY);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_get_DateTimeField_null() {
+    public void test_get_TemporalField_null() {
+        TEST_2007_07_15.get((TemporalField) null);
+    }
+
+    @Test(expectedExceptions=DateTimeException.class)
+    public void test_get_TemporalField_invalidField() {
+        TEST_2007_07_15.get(MockFieldNoValue.INSTANCE);
+    }
+
+    @Test(expectedExceptions=DateTimeException.class)
+    public void test_get_TemporalField_timeField() {
+        TEST_2007_07_15.get(ChronoField.AMPM_OF_DAY);
+    }
+
+    //-----------------------------------------------------------------------
+    // getLong(TemporalField)
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_getLong_TemporalField() {
+        LocalDate test = LocalDate.of(2008, 6, 30);
+        assertEquals(test.getLong(YEAR), 2008);
+        assertEquals(test.getLong(MONTH_OF_YEAR), 6);
+        assertEquals(test.getLong(DAY_OF_MONTH), 30);
+        assertEquals(test.getLong(DAY_OF_WEEK), 1);
+        assertEquals(test.getLong(DAY_OF_YEAR), 182);
+        assertEquals(test.getLong(YEAR_OF_ERA), 2008);
+        assertEquals(test.getLong(ERA), 1);
+        assertEquals(test.getLong(PROLEPTIC_MONTH), 2008 * 12 + 6 - 1);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_getLong_TemporalField_null() {
         TEST_2007_07_15.getLong((TemporalField) null);
     }
 
     @Test(expectedExceptions=DateTimeException.class)
-    public void test_get_DateTimeField_invalidField() {
+    public void test_getLong_TemporalField_invalidField() {
         TEST_2007_07_15.getLong(MockFieldNoValue.INSTANCE);
     }
 
     @Test(expectedExceptions=DateTimeException.class)
-    public void test_get_DateTimeField_timeField() {
+    public void test_getLong_TemporalField_timeField() {
         TEST_2007_07_15.getLong(ChronoField.AMPM_OF_DAY);
     }
 

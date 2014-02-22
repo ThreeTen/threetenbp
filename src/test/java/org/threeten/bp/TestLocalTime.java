@@ -576,16 +576,56 @@ public class TestLocalTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // get(DateTimeField)
+    // get(TemporalField)
     //-----------------------------------------------------------------------
     @Test
-    public void test_get_DateTimeField() {
+    public void test_get_TemporalField() {
+        LocalTime test = TEST_12_30_40_987654321;
+        assertEquals(test.get(ChronoField.HOUR_OF_DAY), 12);
+        assertEquals(test.get(ChronoField.MINUTE_OF_HOUR), 30);
+        assertEquals(test.get(ChronoField.SECOND_OF_MINUTE), 40);
+        assertEquals(test.get(ChronoField.NANO_OF_SECOND), 987654321);
+
+        assertEquals(test.get(ChronoField.SECOND_OF_DAY), 12 * 3600 + 30 * 60 + 40);
+        assertEquals(test.get(ChronoField.MINUTE_OF_DAY), 12 * 60 + 30);
+        assertEquals(test.get(ChronoField.HOUR_OF_AMPM), 0);
+        assertEquals(test.get(ChronoField.CLOCK_HOUR_OF_AMPM), 12);
+        assertEquals(test.get(ChronoField.CLOCK_HOUR_OF_DAY), 12);
+        assertEquals(test.get(ChronoField.AMPM_OF_DAY), 1);
+    }
+
+    @Test(expectedExceptions=DateTimeException.class)
+    public void test_get_TemporalField_tooBig() {
+        TEST_12_30_40_987654321.get(NANO_OF_DAY);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_get_TemporalField_null() {
+        TEST_12_30_40_987654321.get((TemporalField) null);
+    }
+
+    @Test(expectedExceptions=DateTimeException.class)
+    public void test_get_TemporalField_invalidField() {
+        TEST_12_30_40_987654321.get(MockFieldNoValue.INSTANCE);
+    }
+
+    @Test(expectedExceptions=DateTimeException.class)
+    public void test_get_TemporalField_dateField() {
+        TEST_12_30_40_987654321.get(ChronoField.DAY_OF_MONTH);
+    }
+
+    //-----------------------------------------------------------------------
+    // getLong(TemporalField)
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_getLong_TemporalField() {
         LocalTime test = TEST_12_30_40_987654321;
         assertEquals(test.getLong(ChronoField.HOUR_OF_DAY), 12);
         assertEquals(test.getLong(ChronoField.MINUTE_OF_HOUR), 30);
         assertEquals(test.getLong(ChronoField.SECOND_OF_MINUTE), 40);
         assertEquals(test.getLong(ChronoField.NANO_OF_SECOND), 987654321);
 
+        assertEquals(test.getLong(ChronoField.NANO_OF_DAY), ((12 * 3600 + 30 * 60 + 40) * 1000000000L) + 987654321);
         assertEquals(test.getLong(ChronoField.SECOND_OF_DAY), 12 * 3600 + 30 * 60 + 40);
         assertEquals(test.getLong(ChronoField.MINUTE_OF_DAY), 12 * 60 + 30);
         assertEquals(test.getLong(ChronoField.HOUR_OF_AMPM), 0);
@@ -595,17 +635,17 @@ public class TestLocalTime extends AbstractDateTimeTest {
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_get_DateTimeField_null() {
+    public void test_getLong_TemporalField_null() {
         TEST_12_30_40_987654321.getLong((TemporalField) null);
     }
 
     @Test(expectedExceptions=DateTimeException.class)
-    public void test_get_DateTimeField_invalidField() {
+    public void test_getLong_TemporalField_invalidField() {
         TEST_12_30_40_987654321.getLong(MockFieldNoValue.INSTANCE);
     }
 
     @Test(expectedExceptions=DateTimeException.class)
-    public void test_get_DateTimeField_dateField() {
+    public void test_getLong_TemporalField_dateField() {
         TEST_12_30_40_987654321.getLong(ChronoField.DAY_OF_MONTH);
     }
 

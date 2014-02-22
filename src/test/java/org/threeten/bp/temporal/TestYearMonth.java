@@ -34,9 +34,9 @@ package org.threeten.bp.temporal;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
-import static org.threeten.bp.temporal.ChronoField.PROLEPTIC_MONTH;
 import static org.threeten.bp.temporal.ChronoField.ERA;
 import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
+import static org.threeten.bp.temporal.ChronoField.PROLEPTIC_MONTH;
 import static org.threeten.bp.temporal.ChronoField.YEAR;
 import static org.threeten.bp.temporal.ChronoField.YEAR_OF_ERA;
 
@@ -357,29 +357,60 @@ public class TestYearMonth extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // get(DateTimeField)
+    // get(TemporalField)
     //-----------------------------------------------------------------------
     @Test
-    public void test_get_DateTimeField() {
-        assertEquals(TEST_2008_06.getLong(ChronoField.YEAR), 2008);
-        assertEquals(TEST_2008_06.getLong(ChronoField.MONTH_OF_YEAR), 6);
-        assertEquals(TEST_2008_06.getLong(ChronoField.YEAR_OF_ERA), 2008);
-        assertEquals(TEST_2008_06.getLong(ChronoField.ERA), 1);
-        assertEquals(TEST_2008_06.getLong(ChronoField.PROLEPTIC_MONTH), (2008 - 1970) * 12 + 6 - 1);
+    public void test_get_TemporalField() {
+        assertEquals(TEST_2008_06.get(YEAR), 2008);
+        assertEquals(TEST_2008_06.get(MONTH_OF_YEAR), 6);
+        assertEquals(TEST_2008_06.get(YEAR_OF_ERA), 2008);
+        assertEquals(TEST_2008_06.get(ERA), 1);
+    }
+
+    @Test(expectedExceptions=DateTimeException.class)
+    public void test_get_TemporalField_tooBig() {
+        TEST_2008_06.get(PROLEPTIC_MONTH);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_get_DateTimeField_null() {
+    public void test_get_TemporalField_null() {
+        TEST_2008_06.get((TemporalField) null);
+    }
+
+    @Test(expectedExceptions=DateTimeException.class)
+    public void test_get_TemporalField_invalidField() {
+        TEST_2008_06.get(MockFieldNoValue.INSTANCE);
+    }
+
+    @Test(expectedExceptions=DateTimeException.class)
+    public void test_get_TemporalField_timeField() {
+        TEST_2008_06.get(ChronoField.AMPM_OF_DAY);
+    }
+
+    //-----------------------------------------------------------------------
+    // getLong(TemporalField)
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_getLong_TemporalField() {
+        assertEquals(TEST_2008_06.getLong(YEAR), 2008);
+        assertEquals(TEST_2008_06.getLong(MONTH_OF_YEAR), 6);
+        assertEquals(TEST_2008_06.getLong(YEAR_OF_ERA), 2008);
+        assertEquals(TEST_2008_06.getLong(ERA), 1);
+        assertEquals(TEST_2008_06.getLong(PROLEPTIC_MONTH), 2008 * 12 + 6 - 1);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_getLong_TemporalField_null() {
         TEST_2008_06.getLong((TemporalField) null);
     }
 
     @Test(expectedExceptions=DateTimeException.class)
-    public void test_get_DateTimeField_invalidField() {
+    public void test_getLong_TemporalField_invalidField() {
         TEST_2008_06.getLong(MockFieldNoValue.INSTANCE);
     }
 
     @Test(expectedExceptions=DateTimeException.class)
-    public void test_get_DateTimeField_timeField() {
+    public void test_getLong_TemporalField_timeField() {
         TEST_2008_06.getLong(ChronoField.AMPM_OF_DAY);
     }
 

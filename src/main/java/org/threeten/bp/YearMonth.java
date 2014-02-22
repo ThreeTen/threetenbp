@@ -428,7 +428,7 @@ public final class YearMonth
     }
 
     private long getProlepticMonth() {
-        return ((year - 1970) * 12L) + (month - 1);
+        return (year * 12L) + (month - 1);
     }
 
     //-----------------------------------------------------------------------
