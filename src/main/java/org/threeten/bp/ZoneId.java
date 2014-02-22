@@ -36,7 +36,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -294,6 +293,33 @@ public abstract class ZoneId implements Serializable {
         return ZoneRegion.ofId(zoneId, true);
     }
 
+    /**
+     * Obtains an instance of {@code ZoneId} wrapping an offset.
+     * <p>
+     * If the prefix is "GMT", "UTC", or "UT" a {@code ZoneId}
+     * with the prefix and the non-zero offset is returned.
+     * If the prefix is empty {@code ""} the {@code ZoneOffset} is returned.
+     *
+     * @param prefix  the time-zone ID, not null
+     * @param offset  the offset, not null
+     * @return the zone ID, not null
+     * @throws IllegalArgumentException if the prefix is not one of "GMT", "UTC", or "UT", or ""
+     */
+    public static ZoneId ofOffset(String prefix, ZoneOffset offset) {
+        Objects.requireNonNull(prefix, "prefix");
+        Objects.requireNonNull(offset, "offset");
+        if (prefix.length() == 0) {
+            return offset;
+        }
+        if (prefix.equals("GMT") || prefix.equals("UTC") || prefix.equals("UT")) {
+            if (offset.getTotalSeconds() != 0) {
+                return new ZoneRegion(prefix, offset.getRules());
+            }
+            return new ZoneRegion(prefix + offset.getId(), offset.getRules());
+        }
+        throw new IllegalArgumentException("Invalid prefix, must be GMT, UTC or UT: " + prefix);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code ZoneId} from a temporal object.
@@ -395,6 +421,31 @@ public abstract class ZoneId implements Serializable {
                 return super.query(query);
             }
         });
+    }
+
+    /**
+     * Normalizes the time-zone ID, returning a {@code ZoneOffset} where possible.
+     * <p>
+     * The returns a normalized {@code ZoneId} that can be used in place of this ID.
+     * The result will have {@code ZoneRules} equivalent to those returned by this object,
+     * however the ID returned by {@code getId()} may be different.
+     * <p>
+     * The normalization checks if the rules of this {@code ZoneId} have a fixed offset.
+     * If they do, then the {@code ZoneOffset} equal to that offset is returned.
+     * Otherwise {@code this} is returned.
+     *
+     * @return the time-zone unique ID, not null
+     */
+    public ZoneId normalized() {
+        try {
+            ZoneRules rules = getRules();
+            if (rules.isFixedOffset()) {
+                return rules.getOffset(Instant.EPOCH);
+            }
+        } catch (ZoneRulesException ex) {
+            // ignore invalid objects
+        }
+        return this;
     }
 
     //-----------------------------------------------------------------------
