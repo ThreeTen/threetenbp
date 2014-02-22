@@ -40,7 +40,7 @@ import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
 import static org.threeten.bp.temporal.ChronoField.DAY_OF_WEEK;
 import static org.threeten.bp.temporal.ChronoField.DAY_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.EPOCH_DAY;
-import static org.threeten.bp.temporal.ChronoField.EPOCH_MONTH;
+import static org.threeten.bp.temporal.ChronoField.PROLEPTIC_MONTH;
 import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.YEAR;
 
@@ -58,7 +58,7 @@ public class TestDateTimeBuilderCombinations {
     Object[][] data_combine() {
         return new Object[][] {
             {YEAR, 2012, MONTH_OF_YEAR, 6, DAY_OF_MONTH, 3, null, null, LocalDate.class, LocalDate.of(2012, 6, 3)},
-            {EPOCH_MONTH, (2012 - 1970) * 12 + 6 - 1, DAY_OF_MONTH, 3, null, null, null, null, LocalDate.class, LocalDate.of(2012, 6, 3)},
+            {PROLEPTIC_MONTH, (2012 - 1970) * 12 + 6 - 1, DAY_OF_MONTH, 3, null, null, null, null, LocalDate.class, LocalDate.of(2012, 6, 3)},
             {YEAR, 2012, ALIGNED_WEEK_OF_YEAR, 6, DAY_OF_WEEK, 3, null, null, LocalDate.class, LocalDate.of(2012, 2, 8)},
             {YEAR, 2012, DAY_OF_YEAR, 155, null, null, null, null, LocalDate.class, LocalDate.of(2012, 6, 3)},
 //            {ERA, 1, YEAR_OF_ERA, 2012, DAY_OF_YEAR, 155, null, null, LocalDate.class, LocalDate.of(2012, 6, 3)},
@@ -97,9 +97,9 @@ public class TestDateTimeBuilderCombinations {
             {ALIGNED_DAY_OF_WEEK_IN_YEAR, 4, null, null, null, null, ALIGNED_DAY_OF_WEEK_IN_YEAR, 4L},
             {ALIGNED_WEEK_OF_MONTH, 4, null, null, null, null, ALIGNED_WEEK_OF_MONTH, 4},
             {ALIGNED_DAY_OF_WEEK_IN_MONTH, 3, null, null, null, null, ALIGNED_DAY_OF_WEEK_IN_MONTH, 3},
-            {EPOCH_MONTH, 15, null, null, null, null, EPOCH_MONTH, null},
-            {EPOCH_MONTH, 15, null, null, null, null, YEAR, 1971},
-            {EPOCH_MONTH, 15, null, null, null, null, MONTH_OF_YEAR, 4},
+            {PROLEPTIC_MONTH, 15, null, null, null, null, PROLEPTIC_MONTH, null},
+            {PROLEPTIC_MONTH, 15, null, null, null, null, YEAR, 1971},
+            {PROLEPTIC_MONTH, 15, null, null, null, null, MONTH_OF_YEAR, 4},
         };
     }
 

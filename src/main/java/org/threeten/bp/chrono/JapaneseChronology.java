@@ -338,7 +338,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
             case CLOCK_HOUR_OF_DAY:
             case CLOCK_HOUR_OF_AMPM:
             case EPOCH_DAY:
-            case EPOCH_MONTH:
+            case PROLEPTIC_MONTH:
                 return field.range();
         }
         Calendar jcal = Calendar.getInstance(LOCALE);

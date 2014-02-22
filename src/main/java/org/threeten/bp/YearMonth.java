@@ -31,7 +31,7 @@
  */
 package org.threeten.bp;
 
-import static org.threeten.bp.temporal.ChronoField.EPOCH_MONTH;
+import static org.threeten.bp.temporal.ChronoField.PROLEPTIC_MONTH;
 import static org.threeten.bp.temporal.ChronoField.ERA;
 import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.YEAR;
@@ -312,7 +312,7 @@ public final class YearMonth
     public boolean isSupported(TemporalField field) {
         if (field instanceof ChronoField) {
             return field == YEAR || field == MONTH_OF_YEAR ||
-                    field == EPOCH_MONTH || field == YEAR_OF_ERA || field == ERA;
+                    field == PROLEPTIC_MONTH || field == YEAR_OF_ERA || field == ERA;
         }
         return field != null && field.isSupportedBy(this);
     }
@@ -403,7 +403,7 @@ public final class YearMonth
         if (field instanceof ChronoField) {
             switch ((ChronoField) field) {
                 case MONTH_OF_YEAR: return month;
-                case EPOCH_MONTH: return getEpochMonth();
+                case PROLEPTIC_MONTH: return getProlepticMonth();
                 case YEAR_OF_ERA: return (year < 1 ? 1 - year : year);
                 case YEAR: return year;
                 case ERA: return (year < 1 ? 0 : 1);
@@ -413,7 +413,7 @@ public final class YearMonth
         return field.getFrom(this);
     }
 
-    private long getEpochMonth() {
+    private long getProlepticMonth() {
         return ((year - 1970) * 12L) + (month - 1);
     }
 
@@ -561,8 +561,8 @@ public final class YearMonth
      * <li>{@code MONTH_OF_YEAR} -
      *  Returns a {@code YearMonth} with the specified month-of-year.
      *  The year will be unchanged.
-     * <li>{@code EPOCH_MONTH} -
-     *  Returns a {@code YearMonth} with the specified epoch-month.
+     * <li>{@code PROLEPTIC_MONTH} -
+     *  Returns a {@code YearMonth} with the specified proleptic-month.
      *  This completely replaces the year and month of this object.
      * <li>{@code YEAR_OF_ERA} -
      *  Returns a {@code YearMonth} with the specified year-of-era
@@ -600,7 +600,7 @@ public final class YearMonth
             f.checkValidValue(newValue);
             switch (f) {
                 case MONTH_OF_YEAR: return withMonth((int) newValue);
-                case EPOCH_MONTH: return plusMonths(newValue - getLong(EPOCH_MONTH));
+                case PROLEPTIC_MONTH: return plusMonths(newValue - getLong(PROLEPTIC_MONTH));
                 case YEAR_OF_ERA: return withYear((int) (year < 1 ? 1 - newValue : newValue));
                 case YEAR: return withYear((int) newValue);
                 case ERA: return (getLong(ERA) == newValue ? this : withYear(1 - year));
@@ -814,7 +814,7 @@ public final class YearMonth
      * with the year and month changed to be the same as this.
      * <p>
      * The adjustment is equivalent to using {@link Temporal#with(TemporalField, long)}
-     * passing {@link ChronoField#EPOCH_MONTH} as the field.
+     * passing {@link ChronoField#PROLEPTIC_MONTH} as the field.
      * If the specified temporal object does not use the ISO calendar system then
      * a {@code DateTimeException} is thrown.
      * <p>
@@ -838,7 +838,7 @@ public final class YearMonth
         if (Chronology.from(temporal).equals(IsoChronology.INSTANCE) == false) {
             throw new DateTimeException("Adjustment only supported on ISO date-time");
         }
-        return temporal.with(EPOCH_MONTH, getEpochMonth());
+        return temporal.with(PROLEPTIC_MONTH, getProlepticMonth());
     }
 
     /**
@@ -892,7 +892,7 @@ public final class YearMonth
         }
         YearMonth end = (YearMonth) endYearMonth;
         if (unit instanceof ChronoUnit) {
-            long monthsUntil = end.getEpochMonth() - getEpochMonth();  // no overflow
+            long monthsUntil = end.getProlepticMonth() - getProlepticMonth();  // no overflow
             switch ((ChronoUnit) unit) {
                 case MONTHS: return monthsUntil;
                 case YEARS: return monthsUntil / 12;

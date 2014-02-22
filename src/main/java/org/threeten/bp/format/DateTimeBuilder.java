@@ -42,7 +42,7 @@ import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
 import static org.threeten.bp.temporal.ChronoField.DAY_OF_WEEK;
 import static org.threeten.bp.temporal.ChronoField.DAY_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.EPOCH_DAY;
-import static org.threeten.bp.temporal.ChronoField.EPOCH_MONTH;
+import static org.threeten.bp.temporal.ChronoField.PROLEPTIC_MONTH;
 import static org.threeten.bp.temporal.ChronoField.HOUR_OF_AMPM;
 import static org.threeten.bp.temporal.ChronoField.HOUR_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.MICRO_OF_DAY;
@@ -231,8 +231,8 @@ final class DateTimeBuilder
         }
 
         // normalize fields
-        if (standardFields.containsKey(EPOCH_MONTH)) {
-            long em = standardFields.remove(EPOCH_MONTH);
+        if (standardFields.containsKey(PROLEPTIC_MONTH)) {
+            long em = standardFields.remove(PROLEPTIC_MONTH);
             addFieldValue(MONTH_OF_YEAR, (em % 12) + 1);
             addFieldValue(YEAR, (em / 12) + 1970);
         }

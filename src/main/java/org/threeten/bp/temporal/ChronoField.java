@@ -354,15 +354,16 @@ public enum ChronoField implements TemporalField {
      */
     MONTH_OF_YEAR("MonthOfYear", MONTHS, YEARS, ValueRange.of(1, 12)),
     /**
-     * The epoch-month based on the Java epoch of 1970-01-01.
+     * The proleptic-month, which counts months sequentially from year 0.
      * <p>
-     * This field is the sequential count of months where January 1970 (ISO) is zero.
+     * The first month in year zero has the value zero.
+     * The value increase for later months and decrease for earlier ones.
      * Note that this uses the <i>local</i> time-line, ignoring offset and time-zone.
      * <p>
-     * Non-ISO calendar systems should also implement this field to represent a sequential
-     * count of months. It is recommended to define zero as the month of 1970-01-01 (ISO).
+     * This field is defined to have the same meaning in all calendar systems.
+     * It is simply a count of months from whatever the calendar defines as year 0.
      */
-    EPOCH_MONTH("EpochMonth", MONTHS, FOREVER, ValueRange.of((Year.MIN_VALUE - 1970L) * 12, (Year.MAX_VALUE - 1970L) * 12L - 1L)),
+    PROLEPTIC_MONTH("ProlepticMonth", MONTHS, FOREVER, ValueRange.of(Year.MIN_VALUE * 12L, Year.MAX_VALUE * 12L + 11)),
     /**
      * The year within the era.
      * <p>

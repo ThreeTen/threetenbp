@@ -44,7 +44,7 @@ import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
 import static org.threeten.bp.temporal.ChronoField.DAY_OF_WEEK;
 import static org.threeten.bp.temporal.ChronoField.DAY_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.EPOCH_DAY;
-import static org.threeten.bp.temporal.ChronoField.EPOCH_MONTH;
+import static org.threeten.bp.temporal.ChronoField.PROLEPTIC_MONTH;
 import static org.threeten.bp.temporal.ChronoField.ERA;
 import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.YEAR;
@@ -129,7 +129,7 @@ public class TestLocalDate extends AbstractDateTimeTest {
             ALIGNED_WEEK_OF_MONTH,
             ALIGNED_WEEK_OF_YEAR,
             MONTH_OF_YEAR,
-            EPOCH_MONTH,
+            PROLEPTIC_MONTH,
             YEAR_OF_ERA,
             YEAR,
             ERA,

@@ -34,7 +34,7 @@ package org.threeten.bp.temporal;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
-import static org.threeten.bp.temporal.ChronoField.EPOCH_MONTH;
+import static org.threeten.bp.temporal.ChronoField.PROLEPTIC_MONTH;
 import static org.threeten.bp.temporal.ChronoField.ERA;
 import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.YEAR;
@@ -89,7 +89,7 @@ public class TestYearMonth extends AbstractDateTimeTest {
     protected List<TemporalField> validFields() {
         TemporalField[] array = {
             MONTH_OF_YEAR,
-            EPOCH_MONTH,
+            PROLEPTIC_MONTH,
             YEAR_OF_ERA,
             YEAR,
             ERA,
@@ -365,7 +365,7 @@ public class TestYearMonth extends AbstractDateTimeTest {
         assertEquals(TEST_2008_06.getLong(ChronoField.MONTH_OF_YEAR), 6);
         assertEquals(TEST_2008_06.getLong(ChronoField.YEAR_OF_ERA), 2008);
         assertEquals(TEST_2008_06.getLong(ChronoField.ERA), 1);
-        assertEquals(TEST_2008_06.getLong(ChronoField.EPOCH_MONTH), (2008 - 1970) * 12 + 6 - 1);
+        assertEquals(TEST_2008_06.getLong(ChronoField.PROLEPTIC_MONTH), (2008 - 1970) * 12 + 6 - 1);
     }
 
     @Test(expectedExceptions=NullPointerException.class)

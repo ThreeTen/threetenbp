@@ -39,7 +39,7 @@ import static org.threeten.bp.temporal.ChronoField.ALIGNED_WEEK_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
 import static org.threeten.bp.temporal.ChronoField.DAY_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.EPOCH_DAY;
-import static org.threeten.bp.temporal.ChronoField.EPOCH_MONTH;
+import static org.threeten.bp.temporal.ChronoField.PROLEPTIC_MONTH;
 import static org.threeten.bp.temporal.ChronoField.ERA;
 import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.YEAR;
@@ -557,8 +557,8 @@ public final class LocalDate
             if (field == EPOCH_DAY) {
                 return toEpochDay();
             }
-            if (field == EPOCH_MONTH) {
-                return getEpochMonth();
+            if (field == PROLEPTIC_MONTH) {
+                return getProlepticMonth();
             }
             return get0(field);
         }
@@ -576,7 +576,7 @@ public final class LocalDate
             case ALIGNED_WEEK_OF_MONTH: return ((day - 1) / 7) + 1;
             case ALIGNED_WEEK_OF_YEAR: return ((getDayOfYear() - 1) / 7) + 1;
             case MONTH_OF_YEAR: return month;
-            case EPOCH_MONTH: throw new DateTimeException("Field too large for an int: " + field);
+            case PROLEPTIC_MONTH: throw new DateTimeException("Field too large for an int: " + field);
             case YEAR_OF_ERA: return (year >= 1 ? year : 1 - year);
             case YEAR: return year;
             case ERA: return (year >= 1 ? 1 : 0);
@@ -584,7 +584,7 @@ public final class LocalDate
         throw new DateTimeException("Unsupported field: " + field.getName());
     }
 
-    private long getEpochMonth() {
+    private long getProlepticMonth() {
         return ((year - 1970) * 12L) + (month - 1);
     }
 
@@ -877,8 +877,8 @@ public final class LocalDate
      *  The year will be unchanged. The day-of-month will also be unchanged,
      *  unless it would be invalid for the new month and year. In that case, the
      *  day-of-month is adjusted to the maximum valid value for the new month and year.
-     * <li>{@code EPOCH_MONTH} -
-     *  Returns a {@code LocalDate} with the specified epoch-month.
+     * <li>{@code PROLEPTIC_MONTH} -
+     *  Returns a {@code LocalDate} with the specified proleptic-month.
      *  The day-of-month will be unchanged, unless it would be invalid for the new month
      *  and year. In that case, the day-of-month is adjusted to the maximum valid value
      *  for the new month and year.
@@ -932,7 +932,7 @@ public final class LocalDate
                 case ALIGNED_WEEK_OF_MONTH: return plusWeeks(newValue - getLong(ALIGNED_WEEK_OF_MONTH));
                 case ALIGNED_WEEK_OF_YEAR: return plusWeeks(newValue - getLong(ALIGNED_WEEK_OF_YEAR));
                 case MONTH_OF_YEAR: return withMonth((int) newValue);
-                case EPOCH_MONTH: return plusMonths(newValue - getLong(EPOCH_MONTH));
+                case PROLEPTIC_MONTH: return plusMonths(newValue - getLong(PROLEPTIC_MONTH));
                 case YEAR_OF_ERA: return withYear((int) (year >= 1 ? newValue : 1 - newValue));
                 case YEAR: return withYear((int) newValue);
                 case ERA: return (getLong(ERA) == newValue ? this : withYear(1 - year));
@@ -1430,8 +1430,8 @@ public final class LocalDate
     }
 
     private long monthsUntil(LocalDate end) {
-        long packed1 = getEpochMonth() * 32L + getDayOfMonth();  // no overflow
-        long packed2 = end.getEpochMonth() * 32L + end.getDayOfMonth();  // no overflow
+        long packed1 = getProlepticMonth() * 32L + getDayOfMonth();  // no overflow
+        long packed2 = end.getProlepticMonth() * 32L + end.getDayOfMonth();  // no overflow
         return (packed2 - packed1) / 32;
     }
 
@@ -1472,7 +1472,7 @@ public final class LocalDate
     @Override
     public Period periodUntil(ChronoLocalDate<?> endDate) {
         LocalDate end = LocalDate.from(endDate);
-        long totalMonths = end.getEpochMonth() - this.getEpochMonth();  // safe
+        long totalMonths = end.getProlepticMonth() - this.getProlepticMonth();  // safe
         int days = end.day - this.day;
         if (totalMonths > 0 && days < 0) {
             totalMonths--;
