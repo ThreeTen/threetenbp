@@ -86,6 +86,7 @@ import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalUnit;
+import org.threeten.bp.temporal.UnsupportedTemporalTypeException;
 
 /**
  * Test LocalTime.
@@ -1077,12 +1078,9 @@ public class TestLocalTime extends AbstractDateTimeTest {
         }
     }
 
-    @Test
+    @Test(expectedExceptions=UnsupportedTemporalTypeException.class)
     public void test_plus_long_multiples() {
-        assertEquals(TEST_12_30_40_987654321.plus(0, DAYS), TEST_12_30_40_987654321);
-        assertEquals(TEST_12_30_40_987654321.plus(1, DAYS), TEST_12_30_40_987654321);
-        assertEquals(TEST_12_30_40_987654321.plus(2, DAYS), TEST_12_30_40_987654321);
-        assertEquals(TEST_12_30_40_987654321.plus(-3, DAYS), TEST_12_30_40_987654321);
+        TEST_12_30_40_987654321.plus(0, DAYS);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -1560,12 +1558,9 @@ public class TestLocalTime extends AbstractDateTimeTest {
         }
     }
 
-    @Test
+    @Test(expectedExceptions=UnsupportedTemporalTypeException.class)
     public void test_minus_long_multiples() {
-        assertEquals(TEST_12_30_40_987654321.minus(0, DAYS), TEST_12_30_40_987654321);
-        assertEquals(TEST_12_30_40_987654321.minus(1, DAYS), TEST_12_30_40_987654321);
-        assertEquals(TEST_12_30_40_987654321.minus(2, DAYS), TEST_12_30_40_987654321);
-        assertEquals(TEST_12_30_40_987654321.minus(-3, DAYS), TEST_12_30_40_987654321);
+        TEST_12_30_40_987654321.minus(0, DAYS);
     }
 
     @Test(expectedExceptions=NullPointerException.class)

@@ -960,7 +960,6 @@ public final class LocalTime
                 case MINUTES: return plusMinutes(amountToAdd);
                 case HOURS: return plusHours(amountToAdd);
                 case HALF_DAYS: return plusHours((amountToAdd % 2) * 12);
-                case DAYS: return this;
             }
             throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
         }
