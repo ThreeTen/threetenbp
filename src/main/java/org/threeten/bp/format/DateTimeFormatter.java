@@ -47,10 +47,13 @@ import java.text.Format;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.ZoneId;
@@ -907,6 +910,10 @@ public final class DateTimeFormatter {
      */
     private final ResolverStyle resolverStyle;
     /**
+     * The fields to use in resolving, null for all fields.
+     */
+    private final Set<TemporalField> resolverFields;
+    /**
      * The chronology to use for formatting, null for no override.
      */
     private final Chronology chrono;
@@ -923,16 +930,18 @@ public final class DateTimeFormatter {
      * @param locale  the locale to use, not null
      * @param decimalStyle  the decimal style to use, not null
      * @param resolverStyle  the resolver style to use, not null
+     * @param resolverFields  the fields to use during resolving, null for all fields
      * @param chrono  the chronology to use, null for no override
      * @param zone  the zone to use, null for no override
      */
     DateTimeFormatter(CompositePrinterParser printerParser, Locale locale,
                       DecimalStyle decimalStyle, ResolverStyle resolverStyle,
-                      Chronology chrono, ZoneId zone) {
+                      Set<TemporalField> resolverFields, Chronology chrono, ZoneId zone) {
         this.printerParser = Objects.requireNonNull(printerParser, "printerParser");
         this.locale = Objects.requireNonNull(locale, "locale");
         this.decimalStyle = Objects.requireNonNull(decimalStyle, "decimalStyle");
         this.resolverStyle = Objects.requireNonNull(resolverStyle, "resolverStyle");
+        this.resolverFields = resolverFields;
         this.chrono = chrono;
         this.zone = zone;
     }
@@ -965,7 +974,7 @@ public final class DateTimeFormatter {
         if (this.locale.equals(locale)) {
             return this;
         }
-        return new DateTimeFormatter(printerParser, locale, decimalStyle, resolverStyle, chrono, zone);
+        return new DateTimeFormatter(printerParser, locale, decimalStyle, resolverStyle, resolverFields, chrono, zone);
     }
 
     //-----------------------------------------------------------------------
@@ -990,7 +999,7 @@ public final class DateTimeFormatter {
         if (this.decimalStyle.equals(decimalStyle)) {
             return this;
         }
-        return new DateTimeFormatter(printerParser, locale, decimalStyle, resolverStyle, chrono, zone);
+        return new DateTimeFormatter(printerParser, locale, decimalStyle, resolverStyle, resolverFields, chrono, zone);
     }
 
     //-----------------------------------------------------------------------
@@ -1035,7 +1044,7 @@ public final class DateTimeFormatter {
         if (Objects.equals(this.chrono, chrono)) {
             return this;
         }
-        return new DateTimeFormatter(printerParser, locale, decimalStyle, resolverStyle, chrono, zone);
+        return new DateTimeFormatter(printerParser, locale, decimalStyle, resolverStyle, resolverFields, chrono, zone);
     }
 
     //-----------------------------------------------------------------------
@@ -1082,7 +1091,7 @@ public final class DateTimeFormatter {
         if (Objects.equals(this.zone, zone)) {
             return this;
         }
-        return new DateTimeFormatter(printerParser, locale, decimalStyle, resolverStyle, chrono, zone);
+        return new DateTimeFormatter(printerParser, locale, decimalStyle, resolverStyle, resolverFields, chrono, zone);
     }
 
     //-----------------------------------------------------------------------
@@ -1124,7 +1133,119 @@ public final class DateTimeFormatter {
         if (Objects.equals(this.resolverStyle, resolverStyle)) {
             return this;
         }
-        return new DateTimeFormatter(printerParser, locale, decimalStyle, resolverStyle, chrono, zone);
+        return new DateTimeFormatter(printerParser, locale, decimalStyle, resolverStyle, resolverFields, chrono, zone);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the resolver fields to use during parsing.
+     * <p>
+     * This returns the resolver fields, used during the second phase of parsing
+     * when fields are resolved into dates and times.
+     * By default, a formatter has no resolver fields, and thus returns null.
+     * See {@link #withResolverFields(Set)} for more details.
+     *
+     * @return the immutable set of resolver fields of this formatter, null if no fields
+     */
+    public Set<TemporalField> getResolverFields() {
+        return resolverFields;
+    }
+
+    /**
+     * Returns a copy of this formatter with a new set of resolver fields.
+     * <p>
+     * This returns a formatter with similar state to this formatter but with
+     * the resolver fields set. By default, a formatter has no resolver fields.
+     * <p>
+     * Changing the resolver fields only has an effect during parsing.
+     * Parsing a text string occurs in two phases.
+     * Phase 1 is a basic text parse according to the fields added to the builder.
+     * Phase 2 resolves the parsed field-value pairs into date and/or time objects.
+     * The resolver fields are used to filter the field-value pairs between phase 1 and 2.
+     * <p>
+     * This can be used to select between two or more ways that a date or time might
+     * be resolved. For example, if the formatter consists of year, month, day-of-month
+     * and day-of-year, then there are two ways to resolve a date.
+     * Calling this method with the arguments {@link ChronoField#YEAR YEAR} and
+     * {@link ChronoField#DAY_OF_YEAR DAY_OF_YEAR} will ensure that the date is
+     * resolved using the year and day-of-year, effectively meaning that the month
+     * and day-of-month are ignored during the resolving phase.
+     * <p>
+     * In a similar manner, this method can be used to ignore secondary fields that
+     * would otherwise be cross-checked. For example, if the formatter consists of year,
+     * month, day-of-month and day-of-week, then there is only one way to resolve a
+     * date, but the parsed value for day-of-week will be cross-checked against the
+     * resolved date. Calling this method with the arguments {@link ChronoField#YEAR YEAR},
+     * {@link ChronoField#MONTH_OF_YEAR MONTH_OF_YEAR} and
+     * {@link ChronoField#DAY_OF_MONTH DAY_OF_MONTH} will ensure that the date is
+     * resolved correctly, but without any cross-check for the day-of-week.
+     * <p>
+     * In implementation terms, this method behaves as follows. The result of the
+     * parsing phase can be considered to be a map of field to value. The behavior
+     * of this method is to cause that map to be filtered between phase 1 and 2,
+     * removing all fields other than those specified as arguments to this method.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param resolverFields  the new set of resolver fields, null if no fields
+     * @return a formatter based on this formatter with the requested resolver style, not null
+     */
+    public DateTimeFormatter withResolverFields(TemporalField... resolverFields) {
+        Objects.requireNonNull(resolverFields, "resolverFields");
+        Set<TemporalField> fields = new HashSet<>(Arrays.asList(resolverFields));
+        if (Objects.equals(this.resolverFields, fields)) {
+            return this;
+        }
+        fields = Collections.unmodifiableSet(fields);
+        return new DateTimeFormatter(printerParser, locale, decimalStyle, resolverStyle, fields, chrono, zone);
+    }
+
+    /**
+     * Returns a copy of this formatter with a new set of resolver fields.
+     * <p>
+     * This returns a formatter with similar state to this formatter but with
+     * the resolver fields set. By default, a formatter has no resolver fields.
+     * <p>
+     * Changing the resolver fields only has an effect during parsing.
+     * Parsing a text string occurs in two phases.
+     * Phase 1 is a basic text parse according to the fields added to the builder.
+     * Phase 2 resolves the parsed field-value pairs into date and/or time objects.
+     * The resolver fields are used to filter the field-value pairs between phase 1 and 2.
+     * <p>
+     * This can be used to select between two or more ways that a date or time might
+     * be resolved. For example, if the formatter consists of year, month, day-of-month
+     * and day-of-year, then there are two ways to resolve a date.
+     * Calling this method with the arguments {@link ChronoField#YEAR YEAR} and
+     * {@link ChronoField#DAY_OF_YEAR DAY_OF_YEAR} will ensure that the date is
+     * resolved using the year and day-of-year, effectively meaning that the month
+     * and day-of-month are ignored during the resolving phase.
+     * <p>
+     * In a similar manner, this method can be used to ignore secondary fields that
+     * would otherwise be cross-checked. For example, if the formatter consists of year,
+     * month, day-of-month and day-of-week, then there is only one way to resolve a
+     * date, but the parsed value for day-of-week will be cross-checked against the
+     * resolved date. Calling this method with the arguments {@link ChronoField#YEAR YEAR},
+     * {@link ChronoField#MONTH_OF_YEAR MONTH_OF_YEAR} and
+     * {@link ChronoField#DAY_OF_MONTH DAY_OF_MONTH} will ensure that the date is
+     * resolved correctly, but without any cross-check for the day-of-week.
+     * <p>
+     * In implementation terms, this method behaves as follows. The result of the
+     * parsing phase can be considered to be a map of field to value. The behavior
+     * of this method is to cause that map to be filtered between phase 1 and 2,
+     * removing all fields other than those specified as arguments to this method.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param resolverFields  the new set of resolver fields, null if no fields
+     * @return a formatter based on this formatter with the requested resolver style, not null
+     */
+    public DateTimeFormatter withResolverFields(Set<TemporalField> resolverFields) {
+        Objects.requireNonNull(resolverFields, "resolverFields");
+        if (Objects.equals(this.resolverFields, resolverFields)) {
+            return this;
+        }
+        resolverFields = Collections.unmodifiableSet(new HashSet<>(resolverFields));
+        return new DateTimeFormatter(printerParser, locale, decimalStyle, resolverStyle, resolverFields, chrono, zone);
     }
 
     //-----------------------------------------------------------------------
