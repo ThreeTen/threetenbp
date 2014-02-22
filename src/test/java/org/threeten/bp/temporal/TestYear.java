@@ -734,18 +734,18 @@ public class TestYear extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // toString(DateTimeFormatter)
+    // format(DateTimeFormatter)
     //-----------------------------------------------------------------------
     @Test
-    public void test_toString_formatter() {
+    public void test_format_formatter() {
         DateTimeFormatter f = DateTimeFormatter.ofPattern("y");
-        String t = Year.of(2010).toString(f);
+        String t = Year.of(2010).format(f);
         assertEquals(t, "2010");
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_toString_formatter_null() {
-        Year.of(2010).toString(null);
+    public void format_formatter_null() {
+        Year.of(2010).format(null);
     }
 
 }

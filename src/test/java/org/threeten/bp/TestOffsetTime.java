@@ -1236,18 +1236,18 @@ public class TestOffsetTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // toString(DateTimeFormatter)
+    // format(DateTimeFormatter)
     //-----------------------------------------------------------------------
     @Test
-    public void test_toString_formatter() {
+    public void test_format_formatter() {
         DateTimeFormatter f = DateTimeFormatter.ofPattern("H m s");
-        String t = OffsetTime.of(LocalTime.of(11, 30), OFFSET_PONE).toString(f);
+        String t = OffsetTime.of(LocalTime.of(11, 30), OFFSET_PONE).format(f);
         assertEquals(t, "11 30 0");
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_toString_formatter_null() {
-        OffsetTime.of(LocalTime.of(11, 30), OFFSET_PONE).toString(null);
+    public void test_format_formatter_null() {
+        OffsetTime.of(LocalTime.of(11, 30), OFFSET_PONE).format(null);
     }
 
 }

@@ -178,7 +178,7 @@ public abstract class DefaultInterfaceChronoLocalDateTime<D extends ChronoLocalD
     }
 
     @Override
-    public String toString(DateTimeFormatter formatter) {
+    public String format(DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
         return formatter.format(this);
     }

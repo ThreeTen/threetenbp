@@ -470,6 +470,6 @@ public interface ChronoLocalDate<D extends ChronoLocalDate<D>>
      * @return the formatted date-time string, not null
      * @throws DateTimeException if an error occurs during printing
      */
-    String toString(DateTimeFormatter formatter);
+    String format(DateTimeFormatter formatter);
 
 }

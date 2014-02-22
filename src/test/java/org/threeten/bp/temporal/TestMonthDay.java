@@ -710,18 +710,18 @@ public class TestMonthDay extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // toString(DateTimeFormatter)
+    // format(DateTimeFormatter)
     //-----------------------------------------------------------------------
     @Test
-    public void test_toString_formatter() {
+    public void test_format_formatter() {
         DateTimeFormatter f = DateTimeFormatter.ofPattern("M d");
-        String t = MonthDay.of(12, 3).toString(f);
+        String t = MonthDay.of(12, 3).format(f);
         assertEquals(t, "12 3");
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_toString_formatter_null() {
-        MonthDay.of(12, 3).toString(null);
+    public void test_format_formatter_null() {
+        MonthDay.of(12, 3).format(null);
     }
 
 }

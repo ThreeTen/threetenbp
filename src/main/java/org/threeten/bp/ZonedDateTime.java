@@ -2071,8 +2071,8 @@ public final class ZonedDateTime
      * @throws DateTimeException if an error occurs during printing
      */
     @Override  // override for Javadoc
-    public String toString(DateTimeFormatter formatter) {
-        return super.toString(formatter);
+    public String format(DateTimeFormatter formatter) {
+        return super.format(formatter);
     }
 
     //-----------------------------------------------------------------------

@@ -1932,18 +1932,18 @@ public class TestLocalDate extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // toString(DateTimeFormatter)
+    // format(DateTimeFormatter)
     //-----------------------------------------------------------------------
     @Test
-    public void test_toString_formatter() {
+    public void test_format_formatter() {
         DateTimeFormatter f = DateTimeFormatter.ofPattern("y M d");
-        String t = LocalDate.of(2010, 12, 3).toString(f);
+        String t = LocalDate.of(2010, 12, 3).format(f);
         assertEquals(t, "2010 12 3");
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_toString_formatter_null() {
-        LocalDate.of(2010, 12, 3).toString(null);
+    public void test_format_formatter_null() {
+        LocalDate.of(2010, 12, 3).format(null);
     }
 
 }

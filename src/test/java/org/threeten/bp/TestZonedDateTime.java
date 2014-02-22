@@ -2006,18 +2006,18 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // toString(DateTimeFormatter)
+    // format(DateTimeFormatter)
     //-----------------------------------------------------------------------
     @Test
-    public void test_toString_formatter() {
+    public void test_format_formatter() {
         DateTimeFormatter f = DateTimeFormatter.ofPattern("y M d H m s");
-        String t = ZonedDateTime.of(dateTime(2010, 12, 3, 11, 30), ZONE_PARIS).toString(f);
+        String t = ZonedDateTime.of(dateTime(2010, 12, 3, 11, 30), ZONE_PARIS).format(f);
         assertEquals(t, "2010 12 3 11 30 0");
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_toString_formatter_null() {
-        ZonedDateTime.of(dateTime(2010, 12, 3, 11, 30), ZONE_PARIS).toString(null);
+    public void test_format_formatter_null() {
+        ZonedDateTime.of(dateTime(2010, 12, 3, 11, 30), ZONE_PARIS).format(null);
     }
 
     //-------------------------------------------------------------------------

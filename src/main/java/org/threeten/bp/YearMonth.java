@@ -1052,7 +1052,7 @@ public final class YearMonth
      * @return the formatted year-month string, not null
      * @throws DateTimeException if an error occurs during printing
      */
-    public String toString(DateTimeFormatter formatter) {
+    public String format(DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
         return formatter.format(this);
     }
