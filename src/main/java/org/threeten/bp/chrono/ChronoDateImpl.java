@@ -295,7 +295,7 @@ abstract class ChronoDateImpl<D extends ChronoLocalDate<D>>
 
     //-----------------------------------------------------------------------
     @Override
-    public long periodUntil(Temporal endDateTime, TemporalUnit unit) {
+    public long until(Temporal endDateTime, TemporalUnit unit) {
         if (endDateTime instanceof ChronoLocalDate == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
@@ -304,13 +304,13 @@ abstract class ChronoDateImpl<D extends ChronoLocalDate<D>>
             throw new DateTimeException("Unable to calculate period between two different chronologies");
         }
         if (unit instanceof ChronoUnit) {
-            return LocalDate.from(this).periodUntil(end, unit);  // TODO: this is wrong
+            return LocalDate.from(this).until(end, unit);  // TODO: this is wrong
         }
         return unit.between(this, endDateTime);
     }
 
     @Override
-    public Period periodUntil(ChronoLocalDate<?> endDate) {
+    public Period until(ChronoLocalDate<?> endDate) {
         throw new UnsupportedOperationException("Not supported in ThreeTen backport");
     }
 

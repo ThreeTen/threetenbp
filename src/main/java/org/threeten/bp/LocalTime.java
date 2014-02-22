@@ -1233,7 +1233,7 @@ public final class LocalTime
      * The result will be negative if the end is before the start.
      * The {@code Temporal} passed to this method must be a {@code LocalTime}.
      * For example, the period in hours between two times can be calculated
-     * using {@code startTime.periodUntil(endTime, HOURS)}.
+     * using {@code startTime.until(endTime, HOURS)}.
      * <p>
      * The calculation returns a whole number, representing the number of
      * complete units between the two times.
@@ -1245,7 +1245,7 @@ public final class LocalTime
      * the specified unit. By contrast, the result of {@code between} is an
      * object that can be used directly in addition/subtraction:
      * <pre>
-     *   long period = start.periodUntil(end, HOURS);   // this method
+     *   long period = start.until(end, HOURS);   // this method
      *   dateTime.plus(HOURS.between(start, end));      // use in plus/minus
      * </pre>
      * <p>
@@ -1268,7 +1268,7 @@ public final class LocalTime
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public long periodUntil(Temporal endTime, TemporalUnit unit) {
+    public long until(Temporal endTime, TemporalUnit unit) {
         if (endTime instanceof LocalTime == false) {
             Objects.requireNonNull(endTime, "endTime");
             throw new DateTimeException("Unable to calculate period between objects of two different types");

@@ -256,7 +256,7 @@ final class ChronoZonedDateTimeImpl<D extends ChronoLocalDate<D>>
 
     //-----------------------------------------------------------------------
     @Override
-    public long periodUntil(Temporal endDateTime, TemporalUnit unit) {
+    public long until(Temporal endDateTime, TemporalUnit unit) {
         if (endDateTime instanceof ChronoZonedDateTime == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
@@ -267,7 +267,7 @@ final class ChronoZonedDateTimeImpl<D extends ChronoLocalDate<D>>
         }
         if (unit instanceof ChronoUnit) {
             end = end.withZoneSameInstant(offset);
-            return dateTime.periodUntil(end.toLocalDateTime(), unit);
+            return dateTime.until(end.toLocalDateTime(), unit);
         }
         return unit.between(this, endDateTime);
     }

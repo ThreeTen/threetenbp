@@ -191,10 +191,10 @@ public final class Period
      * @param startDate  the start date, inclusive, not null
      * @param endDate  the end date, exclusive, not null
      * @return the period between this date and the end date, not null
-     * @see ChronoLocalDate#periodUntil(ChronoLocalDate)
+     * @see ChronoLocalDate#until(ChronoLocalDate)
      */
     public static Period between(LocalDate startDate, LocalDate endDate) {
-        return startDate.periodUntil(endDate);
+        return startDate.until(endDate);
     }
 
     //-----------------------------------------------------------------------

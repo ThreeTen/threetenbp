@@ -276,7 +276,7 @@ public final class Duration
      * <p>
      * Obtains a {@code Duration} representing the duration between two instants.
      * This calculates the duration between two temporal objects of the same type.
-     * The difference in seconds is calculated using {@link Temporal#periodUntil(Temporal, TemporalUnit)}.
+     * The difference in seconds is calculated using {@link Temporal#until(Temporal, TemporalUnit)}.
      * The difference in nanoseconds is calculated using by querying the
      * {@link ChronoUnit#NANO_OF_SECOND NANO_OF_SECOND} field.
      * <p>
@@ -290,7 +290,7 @@ public final class Duration
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public static Duration between(Temporal startInclusive, Temporal endExclusive) {
-        long secs = startInclusive.periodUntil(endExclusive, SECONDS);
+        long secs = startInclusive.until(endExclusive, SECONDS);
         long nanos = 0;
         if (startInclusive.isSupported(NANO_OF_SECOND) && endExclusive.isSupported(NANO_OF_SECOND)) {
             nanos = endExclusive.getLong(NANO_OF_SECOND) - startInclusive.getLong(NANO_OF_SECOND);

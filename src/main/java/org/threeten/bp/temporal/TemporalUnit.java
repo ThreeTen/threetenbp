@@ -161,11 +161,11 @@ public interface TemporalUnit {
      * <p>
      * There are two equivalent ways of using this method.
      * The first is to invoke this method directly.
-     * The second is to use {@link Temporal#periodUntil(Temporal, TemporalUnit)}:
+     * The second is to use {@link Temporal#until(Temporal, TemporalUnit)}:
      * <pre>
      *   // these two lines are equivalent
      *   between = thisUnit.between(start, end);
-     *   between = start.periodUntil(end, thisUnit);
+     *   between = start.until(end, thisUnit);
      * </pre>
      * The choice should be made based on which makes the code more readable. 
      * <p>
@@ -173,7 +173,7 @@ public interface TemporalUnit {
      * <pre>
      *   long daysBetween = DAYS.between(start, end);
      *   // or alternatively
-     *   long daysBetween = start.periodUntil(end, DAYS);
+     *   long daysBetween = start.until(end, DAYS);
      * </pre>
      * Implementations should perform any queries or calculations using the units available in
      * {@link ChronoUnit} or the fields available in {@link ChronoField}.

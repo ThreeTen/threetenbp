@@ -1881,7 +1881,7 @@ public final class ZonedDateTime
      * The start and end points are {@code this} and the specified date-time.
      * The result will be negative if the end is before the start.
      * For example, the period in days between two date-times can be calculated
-     * using {@code startDateTime.periodUntil(endDateTime, DAYS)}.
+     * using {@code startDateTime.until(endDateTime, DAYS)}.
      * <p>
      * The {@code Temporal} passed to this method must be a {@code ZonedDateTime}.
      * If the time-zone differs between the two zoned date-times, the specified
@@ -1897,7 +1897,7 @@ public final class ZonedDateTime
      * the specified unit. By contrast, the result of {@code between} is an
      * object that can be used directly in addition/subtraction:
      * <pre>
-     *   long period = start.periodUntil(end, MONTHS);   // this method
+     *   long period = start.until(end, MONTHS);   // this method
      *   dateTime.plus(MONTHS.between(start, end));      // use in plus/minus
      * </pre>
      * <p>
@@ -1936,7 +1936,7 @@ public final class ZonedDateTime
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public long periodUntil(Temporal endDateTime, TemporalUnit unit) {
+    public long until(Temporal endDateTime, TemporalUnit unit) {
         if (endDateTime instanceof ZonedDateTime == false) {
             Objects.requireNonNull(endDateTime, "endDateTime");
             throw new DateTimeException("Unable to calculate period between objects of two different types");
@@ -1946,9 +1946,9 @@ public final class ZonedDateTime
             end = end.withZoneSameInstant(zone);
             ChronoUnit u = (ChronoUnit) unit;
             if (u.isDateUnit()) {
-                return dateTime.periodUntil(end.dateTime, unit);
+                return dateTime.until(end.dateTime, unit);
             } else {
-                return toOffsetDateTime().periodUntil(end.toOffsetDateTime(), unit);
+                return toOffsetDateTime().until(end.toOffsetDateTime(), unit);
             }
         }
         return unit.between(this, endDateTime);

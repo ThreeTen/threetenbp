@@ -850,7 +850,7 @@ public final class YearMonth
      * The result will be negative if the end is before the start.
      * The {@code Temporal} passed to this method must be a {@code YearMonth}.
      * For example, the period in years between two year-months can be calculated
-     * using {@code startYearMonth.periodUntil(endYearMonth, YEARS)}.
+     * using {@code startYearMonth.until(endYearMonth, YEARS)}.
      * <p>
      * The calculation returns a whole number, representing the number of
      * complete units between the two year-months.
@@ -862,7 +862,7 @@ public final class YearMonth
      * the specified unit. By contrast, the result of {@code between} is an
      * object that can be used directly in addition/subtraction:
      * <pre>
-     *   long period = start.periodUntil(end, YEARS);   // this method
+     *   long period = start.until(end, YEARS);   // this method
      *   dateTime.plus(YEARS.between(start, end));      // use in plus/minus
      * </pre>
      * <p>
@@ -885,7 +885,7 @@ public final class YearMonth
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public long periodUntil(Temporal endYearMonth, TemporalUnit unit) {
+    public long until(Temporal endYearMonth, TemporalUnit unit) {
         if (endYearMonth instanceof YearMonth == false) {
             Objects.requireNonNull(endYearMonth, "endYearMonth");
             throw new DateTimeException("Unable to calculate period between objects of two different types");

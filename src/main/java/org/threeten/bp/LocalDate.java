@@ -1368,7 +1368,7 @@ public final class LocalDate
      * The result will be negative if the end is before the start.
      * The {@code Temporal} passed to this method must be a {@code LocalDate}.
      * For example, the period in days between two dates can be calculated
-     * using {@code startDate.periodUntil(endDate, DAYS)}.
+     * using {@code startDate.until(endDate, DAYS)}.
      * <p>
      * The calculation returns a whole number, representing the number of
      * complete units between the two dates.
@@ -1380,7 +1380,7 @@ public final class LocalDate
      * the specified unit. By contrast, the result of {@code between} is an
      * object that can be used directly in addition/subtraction:
      * <pre>
-     *   long period = start.periodUntil(end, MONTHS);   // this method
+     *   long period = start.until(end, MONTHS);   // this method
      *   dateTime.plus(MONTHS.between(start, end));      // use in plus/minus
      * </pre>
      * <p>
@@ -1403,7 +1403,7 @@ public final class LocalDate
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public long periodUntil(Temporal endDate, TemporalUnit unit) {
+    public long until(Temporal endDate, TemporalUnit unit) {
         if (endDate instanceof LocalDate == false) {
             Objects.requireNonNull(endDate, "endDate");
             throw new DateTimeException("Unable to calculate period between objects of two different types");
@@ -1461,7 +1461,7 @@ public final class LocalDate
      * The second is to use {@link Period#between(LocalDate, LocalDate)}:
      * <pre>
      *   // these two lines are equivalent
-     *   period = start.periodUntil(end);
+     *   period = start.until(end);
      *   period = Period.between(start, end);
      * </pre>
      * The choice should be made based on which makes the code more readable.
@@ -1470,7 +1470,7 @@ public final class LocalDate
      * @return the period between this date and the end date, not null
      */
     @Override
-    public Period periodUntil(ChronoLocalDate<?> endDate) {
+    public Period until(ChronoLocalDate<?> endDate) {
         LocalDate end = LocalDate.from(endDate);
         long totalMonths = end.getProlepticMonth() - this.getProlepticMonth();  // safe
         int days = end.day - this.day;

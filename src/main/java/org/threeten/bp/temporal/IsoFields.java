@@ -543,7 +543,7 @@ public final class IsoFields {
                 case WEEK_BASED_YEARS:
                     return Jdk8Methods.safeSubtract(temporal2.getLong(WEEK_BASED_YEAR), temporal1.getLong(WEEK_BASED_YEAR));
                 case QUARTER_YEARS:
-                    return temporal1.periodUntil(temporal2, MONTHS) / 3;
+                    return temporal1.until(temporal2, MONTHS) / 3;
                 default:
                     throw new IllegalStateException("Unreachable");
             }

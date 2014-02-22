@@ -300,7 +300,7 @@ public interface Temporal extends TemporalAccessor {
      * The start and end points are {@code this} and the specified temporal.
      * The result will be negative if the end is before the start.
      * For example, the period in hours between two temporal objects can be
-     * calculated using {@code startTime.periodUntil(endTime, HOURS)}.
+     * calculated using {@code startTime.until(endTime, HOURS)}.
      * <p>
      * The calculation returns a whole number, representing the number of
      * complete units between the two temporals.
@@ -313,7 +313,7 @@ public interface Temporal extends TemporalAccessor {
      * <pre>
      *   // these two lines are equivalent
      *   between = thisUnit.between(start, end);
-     *   between = start.periodUntil(end, thisUnit);
+     *   between = start.until(end, thisUnit);
      * </pre>
      * The choice should be made based on which makes the code more readable. 
      * <p>
@@ -321,7 +321,7 @@ public interface Temporal extends TemporalAccessor {
      * <pre>
      *   long daysBetween = DAYS.between(start, end);
      *   // or alternatively
-     *   long daysBetween = start.periodUntil(end, DAYS);
+     *   long daysBetween = start.until(end, DAYS);
      * </pre>
      *
      * <h3>Specification for implementors</h3>
@@ -354,6 +354,6 @@ public interface Temporal extends TemporalAccessor {
      * @throws DateTimeException if the period cannot be calculated
      * @throws ArithmeticException if numeric overflow occurs
      */
-    long periodUntil(Temporal endTemporal, TemporalUnit unit);
+    long until(Temporal endTemporal, TemporalUnit unit);
 
 }

@@ -723,7 +723,7 @@ public final class Year
      * The result will be negative if the end is before the start.
      * The {@code Temporal} passed to this method must be a {@code Year}.
      * For example, the period in decades between two year can be calculated
-     * using {@code startYear.periodUntil(endYear, DECADES)}.
+     * using {@code startYear.until(endYear, DECADES)}.
      * <p>
      * The calculation returns a whole number, representing the number of
      * complete units between the two years.
@@ -735,7 +735,7 @@ public final class Year
      * the specified unit. By contrast, the result of {@code between} is an
      * object that can be used directly in addition/subtraction:
      * <pre>
-     *   long period = start.periodUntil(end, YEARS);   // this method
+     *   long period = start.until(end, YEARS);   // this method
      *   dateTime.plus(YEARS.between(start, end));      // use in plus/minus
      * </pre>
      * <p>
@@ -758,7 +758,7 @@ public final class Year
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public long periodUntil(Temporal endYear, TemporalUnit unit) {
+    public long until(Temporal endYear, TemporalUnit unit) {
         if (endYear instanceof Year == false) {
             Objects.requireNonNull(endYear, "endYear");
             throw new DateTimeException("Unable to calculate period between objects of two different types");

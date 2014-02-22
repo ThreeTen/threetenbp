@@ -1461,7 +1461,7 @@ public final class LocalDateTime
      * The result will be negative if the end is before the start.
      * The {@code Temporal} passed to this method must be a {@code LocalDateTime}.
      * For example, the period in days between two date-times can be calculated
-     * using {@code startDateTime.periodUntil(endDateTime, DAYS)}.
+     * using {@code startDateTime.until(endDateTime, DAYS)}.
      * <p>
      * The calculation returns a whole number, representing the number of
      * complete units between the two date-times.
@@ -1473,7 +1473,7 @@ public final class LocalDateTime
      * the specified unit. By contrast, the result of {@code between} is an
      * object that can be used directly in addition/subtraction:
      * <pre>
-     *   long period = start.periodUntil(end, MONTHS);   // this method
+     *   long period = start.until(end, MONTHS);   // this method
      *   dateTime.plus(MONTHS.between(start, end));      // use in plus/minus
      * </pre>
      * <p>
@@ -1498,7 +1498,7 @@ public final class LocalDateTime
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public long periodUntil(Temporal endDateTime, TemporalUnit unit) {
+    public long until(Temporal endDateTime, TemporalUnit unit) {
         if (endDateTime instanceof LocalDateTime == false) {
             Objects.requireNonNull(endDateTime, "endDateTime");
             throw new DateTimeException("Unable to calculate period between objects of two different types");
@@ -1517,13 +1517,13 @@ public final class LocalDateTime
                     case HOURS: amount = Jdk8Methods.safeMultiply(amount, HOURS_PER_DAY); break;
                     case HALF_DAYS: amount = Jdk8Methods.safeMultiply(amount, 2); break;
                 }
-                return Jdk8Methods.safeAdd(amount, time.periodUntil(end.time, unit));
+                return Jdk8Methods.safeAdd(amount, time.until(end.time, unit));
             }
             LocalDate endDate = end.date;
             if (end.time.isBefore(time)) {
                 endDate = endDate.minusDays(1);
             }
-            return date.periodUntil(endDate, unit);
+            return date.until(endDate, unit);
         }
         return unit.between(this, endDateTime);
     }

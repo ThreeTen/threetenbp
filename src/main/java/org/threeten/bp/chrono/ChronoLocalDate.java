@@ -330,7 +330,7 @@ public interface ChronoLocalDate<D extends ChronoLocalDate<D>>
      * @throws DateTimeException if the period cannot be calculated
      * @throws ArithmeticException if numeric overflow occurs
      */
-    Period periodUntil(ChronoLocalDate<?> endDate);
+    Period until(ChronoLocalDate<?> endDate);
 
     //-----------------------------------------------------------------------
     /**

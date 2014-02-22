@@ -906,14 +906,14 @@ public final class Instant
      * complete units between the two instants.
      * The {@code Temporal} passed to this method must be an {@code Instant}.
      * For example, the period in days between two dates can be calculated
-     * using {@code startInstant.periodUntil(endInstant, SECONDS)}.
+     * using {@code startInstant.until(endInstant, SECONDS)}.
      * <p>
      * This method operates in association with {@link TemporalUnit#between}.
      * The result of this method is a {@code long} representing the amount of
      * the specified unit. By contrast, the result of {@code between} is an
      * object that can be used directly in addition/subtraction:
      * <pre>
-     *   long period = start.periodUntil(end, SECONDS);   // this method
+     *   long period = start.until(end, SECONDS);   // this method
      *   dateTime.plus(SECONDS.between(start, end));      // use in plus/minus
      * </pre>
      * <p>
@@ -936,7 +936,7 @@ public final class Instant
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public long periodUntil(Temporal endInstant, TemporalUnit unit) {
+    public long until(Temporal endInstant, TemporalUnit unit) {
         if (endInstant instanceof Instant == false) {
             Objects.requireNonNull(endInstant, "endInstant");
             throw new DateTimeException("Unable to calculate period between objects of two different types");

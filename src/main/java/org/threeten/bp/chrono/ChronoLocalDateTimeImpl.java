@@ -321,7 +321,7 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate<D>>
 
     //-----------------------------------------------------------------------
     @Override
-    public long periodUntil(Temporal endDateTime, TemporalUnit unit) {
+    public long until(Temporal endDateTime, TemporalUnit unit) {
         if (endDateTime instanceof ChronoLocalDateTime == false) {
             throw new DateTimeException("Unable to calculate period between objects of two different types");
         }
@@ -343,13 +343,13 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate<D>>
                     case HOURS: amount = Jdk8Methods.safeMultiply(amount, HOURS_PER_DAY); break;
                     case HALF_DAYS: amount = Jdk8Methods.safeMultiply(amount, 2); break;
                 }
-                return Jdk8Methods.safeAdd(amount, time.periodUntil(end.toLocalTime(), unit));
+                return Jdk8Methods.safeAdd(amount, time.until(end.toLocalTime(), unit));
             }
             ChronoLocalDate<D> endDate = end.toLocalDate();
             if (end.toLocalTime().isBefore(time)) {
                 endDate = endDate.minus(1, ChronoUnit.DAYS);
             }
-            return date.periodUntil(endDate, unit);
+            return date.until(endDate, unit);
         }
         return unit.between(this, endDateTime);
     }

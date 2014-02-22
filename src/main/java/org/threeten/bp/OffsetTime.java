@@ -1010,7 +1010,7 @@ public final class OffsetTime
      * The start and end points are {@code this} and the specified time.
      * The result will be negative if the end is before the start.
      * For example, the period in hours between two times can be calculated
-     * using {@code startTime.periodUntil(endTime, HOURS)}.
+     * using {@code startTime.until(endTime, HOURS)}.
      * <p>
      * The {@code Temporal} passed to this method must be an {@code OffsetTime}.
      * If the offset differs between the two times, then the specified
@@ -1026,7 +1026,7 @@ public final class OffsetTime
      * the specified unit. By contrast, the result of {@code between} is an
      * object that can be used directly in addition/subtraction:
      * <pre>
-     *   long period = start.periodUntil(end, HOURS);   // this method
+     *   long period = start.until(end, HOURS);   // this method
      *   dateTime.plus(HOURS.between(start, end));      // use in plus/minus
      * </pre>
      * <p>
@@ -1049,7 +1049,7 @@ public final class OffsetTime
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override
-    public long periodUntil(Temporal endTime, TemporalUnit unit) {
+    public long until(Temporal endTime, TemporalUnit unit) {
         if (endTime instanceof OffsetTime == false) {
             Objects.requireNonNull(endTime, "endTime");
             throw new DateTimeException("Unable to calculate period between objects of two different types");
