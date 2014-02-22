@@ -246,8 +246,62 @@ public class TestPeriod extends AbstractTest {
     //-----------------------------------------------------------------------
     // parse()
     //-----------------------------------------------------------------------
+    @DataProvider(name="parse")
+    Object[][] data_parse() {
+        return new Object[][] {
+            {"P0D", Period.ZERO},
+            {"P0W", Period.ZERO},
+            {"P0M", Period.ZERO},
+            {"P0Y", Period.ZERO},
+            
+            {"P0Y0D", Period.ZERO},
+            {"P0Y0W", Period.ZERO},
+            {"P0Y0M", Period.ZERO},
+            {"P0M0D", Period.ZERO},
+            {"P0M0W", Period.ZERO},
+            {"P0W0D", Period.ZERO},
+            
+            {"P1D", Period.ofDays(1)},
+            {"P2D", Period.ofDays(2)},
+            {"P-2D", Period.ofDays(-2)},
+            {"-P2D", Period.ofDays(-2)},
+            {"-P-2D", Period.ofDays(2)},
+            {"P" + Integer.MAX_VALUE + "D", Period.ofDays(Integer.MAX_VALUE)},
+            {"P" + Integer.MIN_VALUE + "D", Period.ofDays(Integer.MIN_VALUE)},
+            
+            {"P1W", Period.ofDays(7)},
+            {"P2W", Period.ofDays(14)},
+            {"P-2W", Period.ofDays(-14)},
+            {"-P2W", Period.ofDays(-14)},
+            {"-P-2W", Period.ofDays(14)},
+            
+            {"P1M", Period.ofMonths(1)},
+            {"P2M", Period.ofMonths(2)},
+            {"P-2M", Period.ofMonths(-2)},
+            {"-P2M", Period.ofMonths(-2)},
+            {"-P-2M", Period.ofMonths(2)},
+            {"P" + Integer.MAX_VALUE + "M", Period.ofMonths(Integer.MAX_VALUE)},
+            {"P" + Integer.MIN_VALUE + "M", Period.ofMonths(Integer.MIN_VALUE)},
+            
+            {"P1Y", Period.ofYears(1)},
+            {"P2Y", Period.ofYears(2)},
+            {"P-2Y", Period.ofYears(-2)},
+            {"-P2Y", Period.ofYears(-2)},
+            {"-P-2Y", Period.ofYears(2)},
+            {"P" + Integer.MAX_VALUE + "Y", Period.ofYears(Integer.MAX_VALUE)},
+            {"P" + Integer.MIN_VALUE + "Y", Period.ofYears(Integer.MIN_VALUE)},
+            
+            {"P1Y2M3W4D", Period.of(1, 2, 3 * 7 + 4)},
+        };
+    }
+
+    @Test(dataProvider="parse")
+    public void test_parse(String text, Period expected) {
+        assertEquals(Period.parse(text), expected);
+    }
+
     @Test(dataProvider="toStringAndParse")
-    public void test_parse(Period test, String expected) {
+    public void test_parse_toString(Period test, String expected) {
         assertEquals(test, Period.parse(expected));
     }
 
