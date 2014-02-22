@@ -36,9 +36,11 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.TimeZone;
 
 import org.threeten.bp.format.DateTimeFormatterBuilder;
@@ -249,6 +251,17 @@ public abstract class ZoneId implements Serializable {
      */
     public static ZoneId systemDefault() {
         return ZoneId.of(TimeZone.getDefault().getID(), OLD_IDS_POST_2005);
+    }
+
+    /**
+     * Gets the set of available zone IDs.
+     * <p>
+     * These zone IDs are loaded and available for use by {@code ZoneId}.
+     *
+     * @return a modifiable copy of the set of zone IDs, not null
+     */
+    public static Set<String> getAvailableZoneIds() {
+        return ZoneRulesProvider.getAvailableZoneIds();
     }
 
     //-----------------------------------------------------------------------
