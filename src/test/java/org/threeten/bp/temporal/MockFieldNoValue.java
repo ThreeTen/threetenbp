@@ -72,6 +72,16 @@ public enum MockFieldNoValue implements TemporalField {
 
     //-----------------------------------------------------------------------
     @Override
+    public boolean isDateBased() {
+        return true;
+    }
+
+    @Override
+    public boolean isTimeBased() {
+        return false;
+    }
+
+    @Override
     public boolean isSupportedBy(TemporalAccessor dateTime) {
         return true;
     }

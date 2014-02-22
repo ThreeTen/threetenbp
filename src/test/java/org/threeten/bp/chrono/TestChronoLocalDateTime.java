@@ -420,6 +420,16 @@ public class TestChronoLocalDateTime {
         }
 
         @Override
+        public boolean isDateBased() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public boolean isTimeBased() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
         public boolean isSupportedBy(TemporalAccessor dateTime) {
             throw new UnsupportedOperationException("Not supported yet.");
         }

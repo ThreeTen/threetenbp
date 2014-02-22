@@ -354,7 +354,7 @@ public final class OffsetTime
     @Override
     public boolean isSupported(TemporalField field) {
         if (field instanceof ChronoField) {
-            return ((ChronoField) field).isTimeField() || field == OFFSET_SECONDS;
+            return field.isTimeBased() || field == OFFSET_SECONDS;
         }
         return field != null && field.isSupportedBy(this);
     }

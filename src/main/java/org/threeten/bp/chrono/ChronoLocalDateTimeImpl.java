@@ -191,8 +191,7 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate<D>>
     @Override
     public boolean isSupported(TemporalField field) {
         if (field instanceof ChronoField) {
-            ChronoField f = (ChronoField) field;
-            return f.isDateField() || f.isTimeField();
+            return field.isDateBased() || field.isTimeBased();
         }
         return field != null && field.isSupportedBy(this);
     }
@@ -200,8 +199,7 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate<D>>
     @Override
     public ValueRange range(TemporalField field) {
         if (field instanceof ChronoField) {
-            ChronoField f = (ChronoField) field;
-            return (f.isTimeField() ? time.range(field) : date.range(field));
+            return (field.isTimeBased() ? time.range(field) : date.range(field));
         }
         return field.rangeRefinedBy(this);
     }
@@ -209,8 +207,7 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate<D>>
     @Override
     public int get(TemporalField field) {
         if (field instanceof ChronoField) {
-            ChronoField f = (ChronoField) field;
-            return (f.isTimeField() ? time.get(field) : date.get(field));
+            return (field.isTimeBased() ? time.get(field) : date.get(field));
         }
         return range(field).checkValidIntValue(getLong(field), field);
     }
@@ -218,8 +215,7 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate<D>>
     @Override
     public long getLong(TemporalField field) {
         if (field instanceof ChronoField) {
-            ChronoField f = (ChronoField) field;
-            return (f.isTimeField() ? time.getLong(field) : date.getLong(field));
+            return (field.isTimeBased() ? time.getLong(field) : date.getLong(field));
         }
         return field.getFrom(this);
     }
@@ -242,8 +238,7 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate<D>>
     @Override
     public ChronoLocalDateTimeImpl<D> with(TemporalField field, long newValue) {
         if (field instanceof ChronoField) {
-            ChronoField f = (ChronoField) field;
-            if (f.isTimeField()) {
+            if (field.isTimeBased()) {
                 return with(date, time.with(field, newValue));
             } else {
                 return with(date.with(field, newValue), time);

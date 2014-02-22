@@ -500,7 +500,7 @@ public final class LocalTime
     @Override
     public boolean isSupported(TemporalField field) {
         if (field instanceof ChronoField) {
-            return ((ChronoField) field).isTimeField();
+            return field.isTimeBased();
         }
         return field != null && field.isSupportedBy(this);
     }

@@ -204,6 +204,16 @@ public final class JulianFields {
             return Long.compare(temporal1.getLong(this), temporal2.getLong(this));
         }
 
+        @Override
+        public boolean isDateBased() {
+            return true;
+        }
+
+        @Override
+        public boolean isTimeBased() {
+            return false;
+        }
+
         //-----------------------------------------------------------------------
         @Override
         public boolean isSupportedBy(TemporalAccessor temporal) {

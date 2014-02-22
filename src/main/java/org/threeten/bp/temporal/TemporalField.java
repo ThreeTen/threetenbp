@@ -127,6 +127,25 @@ public interface TemporalField extends Comparator<TemporalAccessor> {
 
     //-----------------------------------------------------------------------
     /**
+     * Checks if this field is date-based.
+     * <p>
+     * A date-based field can be derived from epoch-day
+     * 
+     * @return true if date-based
+     */
+    boolean isDateBased();
+
+    /**
+     * Checks if this field is time-based.
+     * <p>
+     * A time-based field can be derived from nano-of-day
+     * 
+     * @return true if time-based
+     */
+    boolean isTimeBased();
+
+    //-----------------------------------------------------------------------
+    /**
      * Checks if this field is supported by the temporal object.
      * <p>
      * This determines whether the temporal accessor supports this field.

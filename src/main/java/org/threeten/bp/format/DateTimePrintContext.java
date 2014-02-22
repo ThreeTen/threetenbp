@@ -136,7 +136,7 @@ final class DateTimePrintContext {
                 @Override
                 public ValueRange range(TemporalField field) {
                     if (field instanceof ChronoField) {
-                        if (((ChronoField) field).isDateField()) {
+                        if (((ChronoField) field).isDateBased()) {
                             return date.range(field);
                         } else {
                             return temporal.range(field);
@@ -147,7 +147,7 @@ final class DateTimePrintContext {
                 @Override
                 public long getLong(TemporalField field) {
                     if (field instanceof ChronoField) {
-                        if (((ChronoField) field).isDateField()) {
+                        if (((ChronoField) field).isDateBased()) {
                             return date.getLong(field);
                         } else {
                             return temporal.getLong(field);

@@ -83,7 +83,7 @@ public abstract class DefaultInterfaceChronoLocalDate<D extends ChronoLocalDate<
     @Override
     public boolean isSupported(TemporalField field) {
         if (field instanceof ChronoField) {
-            return ((ChronoField) field).isDateField();
+            return ((ChronoField) field).isDateBased();
         }
         return field != null && field.isSupportedBy(this);
     }

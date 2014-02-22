@@ -482,7 +482,7 @@ public final class LocalDate
     public ValueRange range(TemporalField field) {
         if (field instanceof ChronoField) {
             ChronoField f = (ChronoField) field;
-            if (f.isDateField()) {
+            if (f.isDateBased()) {
                 switch (f) {
                     case DAY_OF_MONTH: return ValueRange.of(1, lengthOfMonth());
                     case DAY_OF_YEAR: return ValueRange.of(1, lengthOfYear());

@@ -617,6 +617,16 @@ public final class WeekFields implements Serializable {
 
         //-----------------------------------------------------------------------
         @Override
+        public boolean isDateBased() {
+            return true;
+        }
+
+        @Override
+        public boolean isTimeBased() {
+            return false;
+        }
+
+        @Override
         public boolean isSupportedBy(TemporalAccessor temporal) {
             if (temporal.isSupported(ChronoField.DAY_OF_WEEK)) {
                 if (rangeUnit == ChronoUnit.WEEKS) {

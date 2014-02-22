@@ -432,6 +432,15 @@ public final class IsoFields {
         //-------------------------------------------------------------------------
         private static final int[] QUARTER_DAYS = {0, 90, 181, 273, 0, 91, 182, 274};
 
+        @Override
+        public boolean isDateBased() {
+            return true;
+        }
+        @Override
+        public boolean isTimeBased() {
+            return false;
+        }
+
         private static boolean isIso(TemporalAccessor temporal) {
             return Chronology.from(temporal).equals(IsoChronology.INSTANCE);
         }

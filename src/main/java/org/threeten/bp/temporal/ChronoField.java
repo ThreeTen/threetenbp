@@ -527,7 +527,7 @@ public enum ChronoField implements TemporalField {
      *
      * @return true if it is a component of a date
      */
-    public boolean isDateField() {
+    public boolean isDateBased() {
         return ordinal() >= DAY_OF_WEEK.ordinal() && ordinal() <= ERA.ordinal();
     }
 
@@ -536,7 +536,7 @@ public enum ChronoField implements TemporalField {
      *
      * @return true if it is a component of a time
      */
-    public boolean isTimeField() {
+    public boolean isTimeBased() {
         return ordinal() < DAY_OF_WEEK.ordinal();
     }
 
