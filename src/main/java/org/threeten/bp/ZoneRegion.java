@@ -120,7 +120,7 @@ final class ZoneRegion extends ZoneId implements Serializable {
         ZoneRules rules = null;
         try {
             // always attempt load for better behavior after deserialization
-            rules = ZoneRulesProvider.getRules(zoneId);
+            rules = ZoneRulesProvider.getRules(zoneId, true);
         } catch (ZoneRulesException ex) {
             if (checkAvailable) {
                 throw ex;
@@ -151,7 +151,7 @@ final class ZoneRegion extends ZoneId implements Serializable {
     public ZoneRules getRules() {
         // additional query for group provider when null allows for possibility
         // that the provider was added after the ZoneId was created
-        return (rules != null ? rules : ZoneRulesProvider.getRules(id));
+        return (rules != null ? rules : ZoneRulesProvider.getRules(id, false));
     }
 
     //-----------------------------------------------------------------------

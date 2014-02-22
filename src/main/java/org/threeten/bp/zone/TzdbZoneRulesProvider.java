@@ -95,7 +95,7 @@ public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
     }
 
     @Override
-    protected ZoneRules provideRules(String zoneId) {
+    protected ZoneRules provideRules(String zoneId, boolean forCaching) {
         Objects.requireNonNull(zoneId, "zoneId");
         ZoneRules rules = versions.lastEntry().getValue().getRules(zoneId);
         if (rules == null) {

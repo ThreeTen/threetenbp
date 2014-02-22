@@ -32,7 +32,6 @@
 package org.threeten.bp.zone;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -123,14 +122,25 @@ public abstract class ZoneRulesProvider {
      * <p>
      * This method relies on time-zone data provider files that are configured.
      * These are loaded using a {@code ServiceLoader}.
+     * <p>
+     * The caching flag is designed to allow provider implementations to
+     * prevent the rules being cached in {@code ZoneId}.
+     * Under normal circumstances, the caching of zone rules is highly desirable
+     * as it will provide greater performance. However, there is a use case where
+     * the caching would not be desirable, see {@link #provideRules}.
      *
-     * @param zoneId  the zone region ID as used by {@code ZoneId}, not null
-     * @return the rules for the ID, not null
-     * @throws ZoneRulesException if the zone ID is unknown
+     * @param zoneId the zone ID as defined by {@code ZoneId}, not null
+     * @param forCaching whether the rules are being queried for caching,
+     * true if the returned rules will be cached by {@code ZoneId},
+     * false if they will be returned to the user without being cached in {@code ZoneId}
+     * @return the rules, null if {@code forCaching} is true and this
+     * is a dynamic provider that wants to prevent caching in {@code ZoneId},
+     * otherwise not null
+     * @throws ZoneRulesException if rules cannot be obtained for the zone ID
      */
-    public static ZoneRules getRules(String zoneId) {
+    public static ZoneRules getRules(String zoneId, boolean forCaching) {
         Objects.requireNonNull(zoneId, "zoneId");
-        return getProvider(zoneId).provideRules(zoneId);
+        return getProvider(zoneId).provideRules(zoneId, forCaching);
     }
 
     /**
@@ -155,7 +165,7 @@ public abstract class ZoneRulesProvider {
      * @param zoneId  the zone region ID as used by {@code ZoneId}, not null
      * @return a modifiable copy of the history of the rules for the ID, sorted
      *  from oldest to newest, not null
-     * @throws ZoneRulesException if the zone ID is unknown
+     * @throws ZoneRulesException if history cannot be obtained for the zone ID
      */
     public static NavigableMap<String, ZoneRules> getVersions(String zoneId) {
         Objects.requireNonNull(zoneId, "zoneId");
@@ -211,7 +221,7 @@ public abstract class ZoneRulesProvider {
     private static void registerProvider0(ZoneRulesProvider provider) {
         for (String zoneId : provider.provideZoneIds()) {
             Objects.requireNonNull(zoneId, "zoneId");
-            ZoneRulesProvider old = ZONES.putIfAbsent(zoneId, provider.provideBind(zoneId));
+            ZoneRulesProvider old = ZONES.putIfAbsent(zoneId, provider);
             if (old != null) {
                 throw new ZoneRulesException(
                     "Unable to register zone as one already registered with that ID: " + zoneId +
@@ -261,31 +271,9 @@ public abstract class ZoneRulesProvider {
      * A dynamic provider may increase the set of regions as more data becomes available.
      *
      * @return the unmodifiable set of region IDs being provided, not null
+     * @throws ZoneRulesException if a problem occurs while providing the IDs
      */
     protected abstract Set<String> provideZoneIds();
-
-    /**
-     * SPI method to bind to the specified zone ID.
-     * <p>
-     * {@code ZoneRulesProvider} has a lookup from zone ID to provider.
-     * This method is used when building that lookup, allowing providers
-     * to insert a derived provider that is precisely tuned to the zone ID.
-     * This replaces two hash map lookups by one, enhancing performance.
-     * <p>
-     * This optimization is optional. Returning {@code this} is acceptable.
-     * <p>
-     * This implementation creates a bound provider that caches the
-     * rules from the underlying provider. The request to version history
-     * is forward on to the underlying. This is suitable for providers that
-     * cannot change their contents during the lifetime of the JVM.
-     *
-     * @param zoneId  the zone region ID as used by {@code ZoneId}, not null
-     * @return the resolved provider for the ID, not null
-     * @throws DateTimeException if there is no provider for the specified group
-     */
-    protected ZoneRulesProvider provideBind(String zoneId) {
-        return new BoundProvider(this, zoneId);
-    }
 
     /**
      * SPI method to get the rules for the zone ID.
@@ -297,7 +285,7 @@ public abstract class ZoneRulesProvider {
      * @return the rules, not null
      * @throws DateTimeException if rules cannot be obtained
      */
-    protected abstract ZoneRules provideRules(String regionId);
+    protected abstract ZoneRules provideRules(String regionId, boolean forCaching);
 
     /**
      * SPI method to get the history of rules for the zone ID.
@@ -320,7 +308,7 @@ public abstract class ZoneRulesProvider {
      * @param zoneId  the zone region ID as used by {@code ZoneId}, not null
      * @return a modifiable copy of the history of the rules for the ID, sorted
      *  from oldest to newest, not null
-     * @throws ZoneRulesException if the zone ID is unknown
+     * @throws ZoneRulesException if history cannot be obtained for the zone ID
      */
     protected abstract NavigableMap<String, ZoneRules> provideVersions(String zoneId);
 
@@ -339,42 +327,6 @@ public abstract class ZoneRulesProvider {
      */
     protected boolean provideRefresh() {
         return false;
-    }
-
-    //-------------------------------------------------------------------------
-    /**
-     * A provider bound to a single zone ID.
-     */
-    private static class BoundProvider extends ZoneRulesProvider {
-        private final ZoneRulesProvider provider;
-        private final String zoneId;
-        private final ZoneRules rules;
-
-        private BoundProvider(ZoneRulesProvider provider, String zoneId) {
-            this.provider = provider;
-            this.zoneId = zoneId;
-            this.rules = provider.provideRules(zoneId);
-        }
-
-        @Override
-        protected Set<String> provideZoneIds() {
-            return new HashSet<>(Collections.singleton(zoneId));
-        }
-
-        @Override
-        protected ZoneRules provideRules(String regionId) {
-            return rules;
-        }
-
-        @Override
-        protected NavigableMap<String, ZoneRules> provideVersions(String zoneId) {
-            return provider.provideVersions(zoneId);
-        }
-
-        @Override
-        public String toString() {
-            return zoneId;
-        }
     }
 
 }

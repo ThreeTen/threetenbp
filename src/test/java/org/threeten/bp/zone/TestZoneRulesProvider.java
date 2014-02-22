@@ -68,20 +68,20 @@ public class TestZoneRulesProvider {
     //-----------------------------------------------------------------------
     @Test
     public void test_getRules_String() {
-        ZoneRules rules = ZoneRulesProvider.getRules("Europe/London");
+        ZoneRules rules = ZoneRulesProvider.getRules("Europe/London", false);
         assertNotNull(rules);
-        ZoneRules rules2 = ZoneRulesProvider.getRules("Europe/London");
+        ZoneRules rules2 = ZoneRulesProvider.getRules("Europe/London", false);
         assertEquals(rules2, rules);
     }
 
     @Test(expectedExceptions=ZoneRulesException.class)
     public void test_getRules_String_unknownId() {
-        ZoneRulesProvider.getRules("Europe/Lon");
+        ZoneRulesProvider.getRules("Europe/Lon", false);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_getRules_String_null() {
-        ZoneRulesProvider.getRules(null);
+        ZoneRulesProvider.getRules(null, false);
     }
 
     //-----------------------------------------------------------------------
@@ -91,7 +91,7 @@ public class TestZoneRulesProvider {
     public void test_getVersions_String() {
         NavigableMap<String, ZoneRules> versions = ZoneRulesProvider.getVersions("Europe/London");
         assertTrue(versions.size() >= 1);
-        ZoneRules rules = ZoneRulesProvider.getRules("Europe/London");
+        ZoneRules rules = ZoneRulesProvider.getRules("Europe/London", false);
         assertEquals(versions.lastEntry().getValue(), rules);
 
         NavigableMap<String, ZoneRules> copy = new TreeMap<>(versions);
@@ -131,7 +131,7 @@ public class TestZoneRulesProvider {
         Set<String> post = ZoneRulesProvider.getAvailableZoneIds();
         assertEquals(post.contains("FooLocation"), true);
 
-        assertEquals(ZoneRulesProvider.getRules("FooLocation"), ZoneOffset.of("+01:45").getRules());
+        assertEquals(ZoneRulesProvider.getRules("FooLocation", false), ZoneOffset.of("+01:45").getRules());
     }
 
     static class MockTempProvider extends ZoneRulesProvider {
@@ -141,17 +141,13 @@ public class TestZoneRulesProvider {
             return new HashSet<String>(Collections.singleton("FooLocation"));
         }
         @Override
-        protected ZoneRulesProvider provideBind(String zoneId) {
-            return this;
-        }
-        @Override
         protected NavigableMap<String, ZoneRules> provideVersions(String zoneId) {
             NavigableMap<String, ZoneRules> result = new TreeMap<>();
             result.put("BarVersion", rules);
             return result;
         }
         @Override
-        protected ZoneRules provideRules(String zoneId) {
+        protected ZoneRules provideRules(String zoneId, boolean forCaching) {
             if (zoneId.equals("FooLocation")) {
                 return rules;
             }
