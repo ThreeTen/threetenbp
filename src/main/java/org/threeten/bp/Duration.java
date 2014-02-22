@@ -273,6 +273,34 @@ public final class Duration
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains an instance of {@code Duration} from an amount.
+     * <p>
+     * This obtains a duration based on the specified amount.
+     * A TemporalAmount represents an amount of time, which may be date-based
+     * or time-based, which this factory extracts to a duration.
+     * <p>
+     * The conversion loops around the set of units from the amount and uses
+     * the duration of the unit to calculate the total Duration.
+     * Only a subset of units are accepted by this method.
+     * The unit must either have an exact duration or be ChronoUnit.DAYS which
+     * is treated as 24 hours. If any other units are found then an exception is thrown.
+     *
+     * @param amount  the amount to convert, not null
+     * @return a {@code Duration}, not null
+     * @throws DateTimeException if the amount cannot be converted
+     * @throws ArithmeticException if a numeric overflow occurs
+     */
+    public static Duration from(TemporalAmount amount) {
+        Objects.requireNonNull(amount, "amount");
+        Duration duration = ZERO;
+        for (TemporalUnit unit : amount.getUnits()) {
+            duration = duration.plus(amount.get(unit), unit);
+        }
+        return duration;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains an instance of {@code Duration} representing the duration between two instants.
      * <p>
      * Obtains a {@code Duration} representing the duration between two instants.

@@ -45,7 +45,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.threeten.bp.chrono.ChronoLocalDate;
+import org.threeten.bp.chrono.ChronoPeriod;
 import org.threeten.bp.chrono.Chronology;
+import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoUnit;
@@ -90,7 +92,8 @@ import org.threeten.bp.temporal.ValueRange;
  * This class is immutable and thread-safe.
  */
 public final class Period
-        implements TemporalAmount, Serializable {
+        extends ChronoPeriod
+        implements Serializable {
 
     /**
      * A constant for a period of zero.
@@ -184,6 +187,54 @@ public final class Period
      * @return the period of years, months and days, not null
      */
     public static Period of(int years, int months, int days) {
+        return create(years, months, days);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of {@code Period} from a temporal amount.
+     * <p>
+     * This obtains a period based on the specified amount.
+     * A {@code TemporalAmount} represents an  amount of time, which may be
+     * date-based or time-based, which this factory extracts to a {@code Period}.
+     * <p>
+     * The conversion loops around the set of units from the amount and uses
+     * the {@link ChronoUnit#YEARS YEARS}, {@link ChronoUnit#MONTHS MONTHS}
+     * and {@link ChronoUnit#DAYS DAYS} units to create a period.
+     * If any other units are found then an exception is thrown.
+     * <p>
+     * If the amount is a {@code ChronoPeriod} then it must use the ISO chronology.
+     *
+     * @param amount  the temporal amount to convert, not null
+     * @return the equivalent period, not null
+     * @throws DateTimeException if unable to convert to a {@code Period}
+     * @throws ArithmeticException if the amount of years, months or days exceeds an int
+     */
+    public static Period from(TemporalAmount amount) {
+        if (amount instanceof Period) {
+            return (Period) amount;
+        }
+        if (amount instanceof ChronoPeriod) {
+            if (IsoChronology.INSTANCE.equals(((ChronoPeriod) amount).getChronology()) == false) {
+                throw new DateTimeException("Period requires ISO chronology: " + amount);
+            }
+        }
+        Objects.requireNonNull(amount, "amount");
+        int years = 0;
+        int months = 0;
+        int days = 0;
+        for (TemporalUnit unit : amount.getUnits()) {
+            long unitAmount = amount.get(unit);
+            if (unit == ChronoUnit.YEARS) {
+                years = Jdk8Methods.safeToInt(unitAmount);
+            } else if (unit == ChronoUnit.MONTHS) {
+                months = Jdk8Methods.safeToInt(unitAmount);
+            } else if (unit == ChronoUnit.DAYS) {
+                days = Jdk8Methods.safeToInt(unitAmount);
+            } else {
+                throw new DateTimeException("Unit must be Years, Months or Days, but was " + unit);
+            }
+        }
         return create(years, months, days);
     }
 
@@ -314,6 +365,11 @@ public final class Period
     @Override
     public List<TemporalUnit> getUnits() {
         return Collections.<TemporalUnit>unmodifiableList(Arrays.asList(YEARS, MONTHS, DAYS));
+    }
+
+    @Override
+    public Chronology getChronology() {
+        return IsoChronology.INSTANCE;
     }
 
     @Override
@@ -460,8 +516,9 @@ public final class Period
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this period with the specified period added.
+     * Returns a copy of this period with the specified amount added.
      * <p>
+     * This input amount is converted to a {@code Period} using {@code from(TemporalAmount)}.
      * This operates separately on the years, months and days.
      * <p>
      * For example, "1 year, 6 months and 3 days" plus "2 years, 2 months and 2 days"
@@ -473,11 +530,12 @@ public final class Period
      * @return a {@code Period} based on this period with the requested period added, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public Period plus(Period amountToAdd) {
+    public Period plus(TemporalAmount amountToAdd) {
+        Period amount = Period.from(amountToAdd);
         return create(
-                Jdk8Methods.safeAdd(years, amountToAdd.years),
-                Jdk8Methods.safeAdd(months, amountToAdd.months),
-                Jdk8Methods.safeAdd(days, amountToAdd.days));
+                Jdk8Methods.safeAdd(years, amount.years),
+                Jdk8Methods.safeAdd(months, amount.months),
+                Jdk8Methods.safeAdd(days, amount.days));
     }
 
     /**
@@ -542,8 +600,9 @@ public final class Period
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this period with the specified period subtracted.
+     * Returns a copy of this period with the specified amount subtracted.
      * <p>
+     * This input amount is converted to a {@code Period} using {@code from(TemporalAmount)}.
      * This operates separately on the years, months and days.
      * <p>
      * For example, "1 year, 6 months and 3 days" minus "2 years, 2 months and 2 days"
@@ -555,11 +614,12 @@ public final class Period
      * @return a {@code Period} based on this period with the requested period subtracted, not null
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public Period minus(Period amountToSubtract) {
+    public Period minus(TemporalAmount amountToSubtract) {
+        Period amount = Period.from(amountToSubtract);
         return create(
-                Jdk8Methods.safeSubtract(years, amountToSubtract.years),
-                Jdk8Methods.safeSubtract(months, amountToSubtract.months),
-                Jdk8Methods.safeSubtract(days, amountToSubtract.days));
+                Jdk8Methods.safeSubtract(years, amount.years),
+                Jdk8Methods.safeSubtract(months, amount.months),
+                Jdk8Methods.safeSubtract(days, amount.days));
     }
 
     /**
