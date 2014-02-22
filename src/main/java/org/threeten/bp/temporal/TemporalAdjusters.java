@@ -70,6 +70,8 @@ import org.threeten.bp.DayOfWeek;
  * <h3>Specification for implementors</h3>
  * This is a thread-safe utility class.
  * All returned adjusters are immutable and thread-safe.
+ * <p>
+ * The JDK 8 ofDateAdjuster(UnaryOperator) method is not backported.
  */
 public final class TemporalAdjusters {
 
