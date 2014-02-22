@@ -113,6 +113,15 @@ public enum DayOfWeek implements TemporalAccessor, TemporalAdjuster {
      */
     SUNDAY;
     /**
+     * Simulate JDK 8 method reference DayOfWeek::from.
+     */
+    public static final TemporalQuery<DayOfWeek> FROM = new TemporalQuery<DayOfWeek>() {
+        @Override
+        public DayOfWeek queryFrom(TemporalAccessor temporal) {
+            return DayOfWeek.from(temporal);
+        }
+    };
+    /**
      * Private cache of all the constants.
      */
     private static final DayOfWeek[] ENUMS = DayOfWeek.values();

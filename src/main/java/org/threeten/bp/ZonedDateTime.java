@@ -124,6 +124,16 @@ public final class ZonedDateTime
         implements Temporal, ChronoZonedDateTime<LocalDate>, Serializable {
 
     /**
+     * Simulate JDK 8 method reference ZonedDateTime::from.
+     */
+    public static final TemporalQuery<ZonedDateTime> FROM = new TemporalQuery<ZonedDateTime>() {
+        @Override
+        public ZonedDateTime queryFrom(TemporalAccessor temporal) {
+            return ZonedDateTime.from(temporal);
+        }
+    };
+
+    /**
      * Serialization version.
      */
     private static final long serialVersionUID = -6260982410461394882L;
@@ -545,7 +555,7 @@ public final class ZonedDateTime
      */
     public static ZonedDateTime parse(CharSequence text, DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
-        return formatter.parse(text, ZonedDateTime.class);
+        return formatter.parse(text, ZonedDateTime.FROM);
     }
 
     //-----------------------------------------------------------------------

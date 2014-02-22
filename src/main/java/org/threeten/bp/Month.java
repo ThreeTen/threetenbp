@@ -135,6 +135,15 @@ public enum Month implements TemporalAccessor, TemporalAdjuster {
      */
     DECEMBER;
     /**
+     * Simulate JDK 8 method reference Month::from.
+     */
+    public static final TemporalQuery<Month> FROM = new TemporalQuery<Month>() {
+        @Override
+        public Month queryFrom(TemporalAccessor temporal) {
+            return Month.from(temporal);
+        }
+    };
+    /**
      * Private cache of all the constants.
      */
     private static final Month[] ENUMS = Month.values();

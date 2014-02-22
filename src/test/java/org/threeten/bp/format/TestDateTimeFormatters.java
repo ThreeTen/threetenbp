@@ -932,14 +932,14 @@ public class TestDateTimeFormatters {
     @Test
     public void test_parse_basicIsoDate() {
         LocalDate expected = LocalDate.of(2008, 6, 3);
-        assertEquals(DateTimeFormatter.BASIC_ISO_DATE.parse("20080603", LocalDate.class), expected);
+        assertEquals(DateTimeFormatter.BASIC_ISO_DATE.parse("20080603", LocalDate.FROM), expected);
     }
 
     @Test(expectedExceptions=DateTimeParseException.class)
     public void test_parse_basicIsoDate_largeYear() {
         try {
             LocalDate expected = LocalDate.of(123456, 6, 3);
-            assertEquals(DateTimeFormatter.BASIC_ISO_DATE.parse("+1234560603", LocalDate.class), expected);
+            assertEquals(DateTimeFormatter.BASIC_ISO_DATE.parse("+1234560603", LocalDate.FROM), expected);
         } catch (DateTimeParseException ex) {
             assertEquals(ex.getErrorIndex(), 0);
             assertEquals(ex.getParsedString(), "+1234560603");
@@ -1009,7 +1009,7 @@ public class TestDateTimeFormatters {
     @Test
     public void test_parse_weekDate() {
         LocalDate expected = LocalDate.of(2004, 1, 28);
-        assertEquals(DateTimeFormatter.ISO_WEEK_DATE.parse("2004-W05-3", LocalDate.class), expected);
+        assertEquals(DateTimeFormatter.ISO_WEEK_DATE.parse("2004-W05-3", LocalDate.FROM), expected);
     }
 
     @Test

@@ -92,6 +92,16 @@ public final class MonthDay
         implements TemporalAccessor, TemporalAdjuster, Comparable<MonthDay>, Serializable {
 
     /**
+     * Simulate JDK 8 method reference MonthDay::from.
+     */
+    public static final TemporalQuery<MonthDay> FROM = new TemporalQuery<MonthDay>() {
+        @Override
+        public MonthDay queryFrom(TemporalAccessor temporal) {
+            return MonthDay.from(temporal);
+        }
+    };
+
+    /**
      * Serialization version.
      */
     private static final long serialVersionUID = -939150713474957432L;
@@ -267,7 +277,7 @@ public final class MonthDay
      */
     public static MonthDay parse(CharSequence text, DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
-        return formatter.parse(text, MonthDay.class);
+        return formatter.parse(text, MonthDay.FROM);
     }
 
     //-----------------------------------------------------------------------

@@ -90,6 +90,16 @@ public final class ZoneOffset
         extends ZoneId
         implements TemporalAccessor, TemporalAdjuster, Comparable<ZoneOffset>, Serializable {
 
+    /**
+     * Simulate JDK 8 method reference ZoneOffset::from.
+     */
+    public static final TemporalQuery<ZoneOffset> FROM = new TemporalQuery<ZoneOffset>() {
+        @Override
+        public ZoneOffset queryFrom(TemporalAccessor temporal) {
+            return ZoneOffset.from(temporal);
+        }
+    };
+
     /** Cache of time-zone offset by offset in seconds. */
     private static final ConcurrentMap<Integer, ZoneOffset> SECONDS_CACHE = new ConcurrentHashMap<>(16, 0.75f, 4);
     /** Cache of time-zone offset by ID. */

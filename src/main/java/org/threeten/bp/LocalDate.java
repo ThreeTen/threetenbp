@@ -113,6 +113,15 @@ public final class LocalDate
      * This could be used by an application as a "far future" date.
      */
     public static final LocalDate MAX = LocalDate.of(Year.MAX_VALUE, 12, 31);
+    /**
+     * Simulate JDK 8 method reference LocalDate::from.
+     */
+    public static final TemporalQuery<LocalDate> FROM = new TemporalQuery<LocalDate>() {
+        @Override
+        public LocalDate queryFrom(TemporalAccessor temporal) {
+            return LocalDate.from(temporal);
+        }
+    };
 
     /**
      * Serialization version.
@@ -355,7 +364,7 @@ public final class LocalDate
      */
     public static LocalDate parse(CharSequence text, DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
-        return formatter.parse(text, LocalDate.class);
+        return formatter.parse(text, LocalDate.FROM);
     }
 
     //-----------------------------------------------------------------------

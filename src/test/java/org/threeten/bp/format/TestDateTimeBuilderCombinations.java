@@ -48,6 +48,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalQuery;
 
 /**
  * Test.
@@ -57,19 +58,19 @@ public class TestDateTimeBuilderCombinations {
     @DataProvider(name = "combine")
     Object[][] data_combine() {
         return new Object[][] {
-            {YEAR, 2012, MONTH_OF_YEAR, 6, DAY_OF_MONTH, 3, null, null, LocalDate.class, LocalDate.of(2012, 6, 3)},
-            {PROLEPTIC_MONTH, (2012 - 1970) * 12 + 6 - 1, DAY_OF_MONTH, 3, null, null, null, null, LocalDate.class, LocalDate.of(2012, 6, 3)},
-            {YEAR, 2012, ALIGNED_WEEK_OF_YEAR, 6, DAY_OF_WEEK, 3, null, null, LocalDate.class, LocalDate.of(2012, 2, 8)},
-            {YEAR, 2012, DAY_OF_YEAR, 155, null, null, null, null, LocalDate.class, LocalDate.of(2012, 6, 3)},
-//            {ERA, 1, YEAR_OF_ERA, 2012, DAY_OF_YEAR, 155, null, null, LocalDate.class, LocalDate.of(2012, 6, 3)},
-//            {YEAR, 2012, MONTH_OF_YEAR, 6, null, null, null, null, LocalDate.class, null},
-            {EPOCH_DAY, 12, null, null, null, null, null, null, LocalDate.class, LocalDate.of(1970, 1, 13)},
+            {YEAR, 2012, MONTH_OF_YEAR, 6, DAY_OF_MONTH, 3, null, null, LocalDate.FROM, LocalDate.of(2012, 6, 3)},
+            {PROLEPTIC_MONTH, (2012 - 1970) * 12 + 6 - 1, DAY_OF_MONTH, 3, null, null, null, null, LocalDate.FROM, LocalDate.of(2012, 6, 3)},
+            {YEAR, 2012, ALIGNED_WEEK_OF_YEAR, 6, DAY_OF_WEEK, 3, null, null, LocalDate.FROM, LocalDate.of(2012, 2, 8)},
+            {YEAR, 2012, DAY_OF_YEAR, 155, null, null, null, null, LocalDate.FROM, LocalDate.of(2012, 6, 3)},
+//            {ERA, 1, YEAR_OF_ERA, 2012, DAY_OF_YEAR, 155, null, null, LocalDate.FROM, LocalDate.of(2012, 6, 3)},
+//            {YEAR, 2012, MONTH_OF_YEAR, 6, null, null, null, null, LocalDate.FROM, null},
+            {EPOCH_DAY, 12, null, null, null, null, null, null, LocalDate.FROM, LocalDate.of(1970, 1, 13)},
         };
     }
 
     @Test(dataProvider = "combine")
     public void test_derive(TemporalField field1, Number value1, TemporalField field2, Number value2,
-            TemporalField field3, Number value3, TemporalField field4, Number value4, Class<?> query, Object expectedVal) {
+            TemporalField field3, Number value3, TemporalField field4, Number value4, TemporalQuery<?> query, Object expectedVal) {
         DateTimeBuilder builder = new DateTimeBuilder(field1, value1.longValue());
         if (field2 != null) {
             builder.addFieldValue(field2, value2.longValue());
@@ -81,7 +82,7 @@ public class TestDateTimeBuilderCombinations {
             builder.addFieldValue(field4, value4.longValue());
         }
         builder.resolve();
-        assertEquals(builder.build((Class<?>) query), expectedVal);
+        assertEquals(builder.build(query), expectedVal);
     }
 
     //-----------------------------------------------------------------------

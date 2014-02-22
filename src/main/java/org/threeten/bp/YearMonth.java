@@ -97,6 +97,16 @@ public final class YearMonth
         implements Temporal, TemporalAdjuster, Comparable<YearMonth>, Serializable {
 
     /**
+     * Simulate JDK 8 method reference YearMonth::from.
+     */
+    public static final TemporalQuery<YearMonth> FROM = new TemporalQuery<YearMonth>() {
+        @Override
+        public YearMonth queryFrom(TemporalAccessor temporal) {
+            return YearMonth.from(temporal);
+        }
+    };
+
+    /**
      * Serialization version.
      */
     private static final long serialVersionUID = 4183400860270640070L;
@@ -255,7 +265,7 @@ public final class YearMonth
      */
     public static YearMonth parse(CharSequence text, DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
-        return formatter.parse(text, YearMonth.class);
+        return formatter.parse(text, YearMonth.FROM);
     }
 
     //-----------------------------------------------------------------------

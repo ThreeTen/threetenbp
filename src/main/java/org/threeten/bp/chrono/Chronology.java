@@ -134,6 +134,16 @@ import org.threeten.bp.temporal.ValueRange;
 public abstract class Chronology implements Comparable<Chronology> {
 
     /**
+     * Simulate JDK 8 method reference Chronology::from.
+     */
+    public static final TemporalQuery<Chronology> FROM = new TemporalQuery<Chronology>() {
+        @Override
+        public Chronology queryFrom(TemporalAccessor temporal) {
+            return Chronology.from(temporal);
+        }
+    };
+
+    /**
      * Map of available calendars by ID.
      */
     private static final ConcurrentHashMap<String, Chronology> CHRONOS_BY_ID;

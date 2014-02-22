@@ -108,6 +108,15 @@ public final class LocalTime
      */
     public static final LocalTime NOON;
     /**
+     * Simulate JDK 8 method reference LocalTime::from.
+     */
+    public static final TemporalQuery<LocalTime> FROM = new TemporalQuery<LocalTime>() {
+        @Override
+        public LocalTime queryFrom(TemporalAccessor temporal) {
+            return LocalTime.from(temporal);
+        }
+    };
+    /**
      * Constants for the local time of each hour.
      */
     private static final LocalTime[] HOURS = new LocalTime[24];
@@ -424,7 +433,7 @@ public final class LocalTime
      */
     public static LocalTime parse(CharSequence text, DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
-        return formatter.parse(text, LocalTime.class);
+        return formatter.parse(text, LocalTime.FROM);
     }
 
     //-----------------------------------------------------------------------

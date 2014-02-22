@@ -408,32 +408,8 @@ final class DateTimeBuilder
      * @return the extracted value, not null
      * @throws DateTimeException if an error occurs
      */
-    public <R> R build(Class<R> type) {
-        return invokeFrom(type, this);
-    }
-
-    /**
-     * Invokes the {@code from(DateTime)} method of a class.
-     * <p>
-     * This calls the {@code from} method with the specified date-time object.
-     * The from method will extract an object of the specified type if it can,
-     *
-     * @param <R>  the type to return
-     * @param type  the type to invoke {@code from} on, not null
-     * @param temporal  the date-time to pass as the argument, not null
-     * @return the value returned from the {@code from} method, not null
-     * @throws DateTimeException if an error occurs
-     */
-    private static <R> R invokeFrom(Class<R> type, TemporalAccessor temporal) {
-        try {
-            Method m = type.getDeclaredMethod("from", TemporalAccessor.class);
-            return type.cast(m.invoke(null, temporal));
-        } catch (ReflectiveOperationException ex) {
-            if (ex.getCause() instanceof DateTimeException == false) {
-                throw new DateTimeException("Unable to invoke method from(DateTime)", ex);
-            }
-            throw (DateTimeException) ex.getCause();
-        }
+    public <R> R build(TemporalQuery<R> type) {
+        return type.queryFrom(this);
     }
 
     //-----------------------------------------------------------------------

@@ -178,20 +178,6 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
         return list;
     }
 
-    @Test
-    public void test_immutable() {
-        Class<ZonedDateTime> cls = ZonedDateTime.class;
-        assertTrue(Modifier.isPublic(cls.getModifiers()));
-        assertTrue(Modifier.isFinal(cls.getModifiers()));
-        Field[] fields = cls.getDeclaredFields();
-        for (Field field : fields) {
-            if (field.getName().contains("$") == false) {
-                assertTrue(Modifier.isPrivate(field.getModifiers()));
-                assertTrue(Modifier.isFinal(field.getModifiers()));
-            }
-        }
-    }
-
     //-----------------------------------------------------------------------
     @Test
     public void test_serialization() throws ClassNotFoundException, IOException {

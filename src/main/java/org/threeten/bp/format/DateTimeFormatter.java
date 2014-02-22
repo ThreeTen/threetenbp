@@ -65,6 +65,7 @@ import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.IsoFields;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalQuery;
 
 /**
  * Formatter for printing and parsing date-time objects.
@@ -1386,7 +1387,7 @@ public final class DateTimeFormatter {
      * @return the parsed date-time, not null
      * @throws DateTimeParseException if unable to parse the requested result
      */
-    public <T> T parse(CharSequence text, Class<T> type) {
+    public <T> T parse(CharSequence text, TemporalQuery<T> type) {
         Objects.requireNonNull(text, "text");
         Objects.requireNonNull(type, "type");
         try {
@@ -1428,7 +1429,7 @@ public final class DateTimeFormatter {
      * @throws IllegalArgumentException if less than 2 types are specified
      * @throws DateTimeParseException if unable to parse the requested result
      */
-    public TemporalAccessor parseBest(CharSequence text, Class<?>... types) {
+    public TemporalAccessor parseBest(CharSequence text, TemporalQuery<?>... types) {
         Objects.requireNonNull(text, "text");
         Objects.requireNonNull(types, "types");
         if (types.length < 2) {
@@ -1436,7 +1437,7 @@ public final class DateTimeFormatter {
         }
         try {
             DateTimeBuilder builder = parseToBuilder(text, null).resolve();
-            for (Class<?> type : types) {
+            for (TemporalQuery<?> type : types) {
                 try {
                     return (TemporalAccessor) builder.build(type);
                 } catch (RuntimeException ex) {
@@ -1594,12 +1595,12 @@ public final class DateTimeFormatter {
      * {@code ParseException} or null during parsing.
      * The format does not support attributing of the returned format string.
      *
-     * @param parseType  the type to parse to, not null
+     * @param query  the query to parse to, not null
      * @return this formatter as a classic format instance, not null
      */
-    public Format toFormat(Class<?> parseType) {
-        Objects.requireNonNull(parseType, "parseType");
-        return new ClassicFormat(this, parseType);
+    public Format toFormat(TemporalQuery<?> query) {
+        Objects.requireNonNull(query, "query");
+        return new ClassicFormat(this, query);
     }
 
     //-----------------------------------------------------------------------
@@ -1623,12 +1624,12 @@ public final class DateTimeFormatter {
     static class ClassicFormat extends Format {
         /** The formatter. */
         private final DateTimeFormatter formatter;
-        /** The type to be parsed. */
-        private final Class<?> parseType;
+        /** The query to be parsed. */
+        private final TemporalQuery<?> query;
         /** Constructor. */
-        public ClassicFormat(DateTimeFormatter formatter, Class<?> parseType) {
+        public ClassicFormat(DateTimeFormatter formatter, TemporalQuery<?> query) {
             this.formatter = formatter;
-            this.parseType = parseType;
+            this.query = query;
         }
 
         @Override
@@ -1652,10 +1653,10 @@ public final class DateTimeFormatter {
         public Object parseObject(String text) throws ParseException {
             Objects.requireNonNull(text, "text");
             try {
-                if (parseType == null) {
+                if (query == null) {
                     return formatter.parseToBuilder(text, null).resolve();
                 }
-                return formatter.parse(text, parseType);
+                return formatter.parse(text, query);
             } catch (DateTimeParseException ex) {
                 throw new ParseException(ex.getMessage(), ex.getErrorIndex());
             } catch (RuntimeException ex) {
@@ -1682,10 +1683,10 @@ public final class DateTimeFormatter {
             }
             try {
                 DateTimeBuilder builder = unresolved.resolveFields().toBuilder().resolve();
-                if (parseType == null) {
+                if (query == null) {
                     return builder;
                 }
-                return builder.build(parseType);
+                return builder.build(query);
             } catch (RuntimeException ex) {
                 pos.setErrorIndex(0);
                 return null;

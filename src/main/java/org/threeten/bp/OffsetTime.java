@@ -98,6 +98,15 @@ public final class OffsetTime
      * This could be used by an application as a "far future" date.
      */
     public static final OffsetTime MAX = LocalTime.MAX.atOffset(ZoneOffset.MIN);
+    /**
+     * Simulate JDK 8 method reference OffsetTime::from.
+     */
+    public static final TemporalQuery<OffsetTime> FROM = new TemporalQuery<OffsetTime>() {
+        @Override
+        public OffsetTime queryFrom(TemporalAccessor temporal) {
+            return OffsetTime.from(temporal);
+        }
+    };
 
     /**
      * Serialization version.
@@ -286,7 +295,7 @@ public final class OffsetTime
      */
     public static OffsetTime parse(CharSequence text, DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
-        return formatter.parse(text, OffsetTime.class);
+        return formatter.parse(text, OffsetTime.FROM);
     }
 
     //-----------------------------------------------------------------------

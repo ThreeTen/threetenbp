@@ -108,6 +108,15 @@ public final class Year
      * The maximum supported year, '+999,999,999'.
      */
     public static final int MAX_VALUE = 999_999_999;
+    /**
+     * Simulate JDK 8 method reference Year::from.
+     */
+    public static final TemporalQuery<Year> FROM = new TemporalQuery<Year>() {
+        @Override
+        public Year queryFrom(TemporalAccessor temporal) {
+            return Year.from(temporal);
+        }
+    };
 
     /**
      * Serialization version.
@@ -251,7 +260,7 @@ public final class Year
      */
     public static Year parse(CharSequence text, DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
-        return formatter.parse(text, Year.class);
+        return formatter.parse(text, Year.FROM);
     }
 
     //-------------------------------------------------------------------------

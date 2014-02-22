@@ -193,6 +193,15 @@ public final class Instant
      * an {@code int}.
      */
     public static final Instant MAX = Instant.ofEpochSecond(MAX_SECOND, 999_999_999);
+    /**
+     * Simulate JDK 8 method reference Instant::from.
+     */
+    public static final TemporalQuery<Instant> FROM = new TemporalQuery<Instant>() {
+        @Override
+        public Instant queryFrom(TemporalAccessor temporal) {
+            return Instant.from(temporal);
+        }
+    };
 
     /**
      * Serialization version.
@@ -338,7 +347,7 @@ public final class Instant
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static Instant parse(final CharSequence text) {
-        return DateTimeFormatter.ISO_INSTANT.parse(text, Instant.class);
+        return DateTimeFormatter.ISO_INSTANT.parse(text, Instant.FROM);
     }
 
     //-----------------------------------------------------------------------

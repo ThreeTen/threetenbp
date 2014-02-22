@@ -120,6 +120,15 @@ import org.threeten.bp.zone.ZoneRulesProvider;
 public abstract class ZoneId implements Serializable {
 
     /**
+     * Simulate JDK 8 method reference ZoneId::from.
+     */
+    public static final TemporalQuery<ZoneId> FROM = new TemporalQuery<ZoneId>() {
+        @Override
+        public ZoneId queryFrom(TemporalAccessor temporal) {
+            return ZoneId.from(temporal);
+        }
+    };
+    /**
      * A map of zone overrides to enable the older US time-zone names to be used.
      * <p>
      * This maps as follows:
