@@ -903,6 +903,10 @@ public final class DateTimeFormatter {
      */
     private final DecimalStyle decimalStyle;
     /**
+     * The resolver style to use, not null.
+     */
+    private final ResolverStyle resolverStyle;
+    /**
      * The chronology to use for formatting, null for no override.
      */
     private final Chronology chrono;
@@ -918,14 +922,17 @@ public final class DateTimeFormatter {
      * @param printerParser  the printer/parser to use, not null
      * @param locale  the locale to use, not null
      * @param decimalStyle  the decimal style to use, not null
+     * @param resolverStyle  the resolver style to use, not null
      * @param chrono  the chronology to use, null for no override
      * @param zone  the zone to use, null for no override
      */
     DateTimeFormatter(CompositePrinterParser printerParser, Locale locale,
-                      DecimalStyle decimalStyle, Chronology chrono, ZoneId zone) {
+                      DecimalStyle decimalStyle, ResolverStyle resolverStyle,
+                      Chronology chrono, ZoneId zone) {
         this.printerParser = Objects.requireNonNull(printerParser, "printerParser");
         this.locale = Objects.requireNonNull(locale, "locale");
         this.decimalStyle = Objects.requireNonNull(decimalStyle, "decimalStyle");
+        this.resolverStyle = Objects.requireNonNull(resolverStyle, "resolverStyle");
         this.chrono = chrono;
         this.zone = zone;
     }
@@ -958,7 +965,7 @@ public final class DateTimeFormatter {
         if (this.locale.equals(locale)) {
             return this;
         }
-        return new DateTimeFormatter(printerParser, locale, decimalStyle, chrono, zone);
+        return new DateTimeFormatter(printerParser, locale, decimalStyle, resolverStyle, chrono, zone);
     }
 
     //-----------------------------------------------------------------------
@@ -983,7 +990,7 @@ public final class DateTimeFormatter {
         if (this.decimalStyle.equals(decimalStyle)) {
             return this;
         }
-        return new DateTimeFormatter(printerParser, locale, decimalStyle, chrono, zone);
+        return new DateTimeFormatter(printerParser, locale, decimalStyle, resolverStyle, chrono, zone);
     }
 
     //-----------------------------------------------------------------------
@@ -1028,7 +1035,7 @@ public final class DateTimeFormatter {
         if (Objects.equals(this.chrono, chrono)) {
             return this;
         }
-        return new DateTimeFormatter(printerParser, locale, decimalStyle, chrono, zone);
+        return new DateTimeFormatter(printerParser, locale, decimalStyle, resolverStyle, chrono, zone);
     }
 
     //-----------------------------------------------------------------------
@@ -1075,7 +1082,49 @@ public final class DateTimeFormatter {
         if (Objects.equals(this.zone, zone)) {
             return this;
         }
-        return new DateTimeFormatter(printerParser, locale, decimalStyle, chrono, zone);
+        return new DateTimeFormatter(printerParser, locale, decimalStyle, resolverStyle, chrono, zone);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the resolver style to use during parsing.
+     * <p>
+     * This returns the resolver style, used during the second phase of parsing
+     * when fields are resolved into dates and times.
+     * By default, a formatter has the {@link ResolverStyle#SMART SMART} resolver style.
+     * See {@link #withResolverStyle(ResolverStyle)} for more details.
+     *
+     * @return the resolver style of this formatter, not null
+     */
+    public ResolverStyle getResolverStyle() {
+        return resolverStyle;
+    }
+
+    /**
+     * Returns a copy of this formatter with a new resolver style.
+     * <p>
+     * This returns a formatter with similar state to this formatter but
+     * with the resolver style set. By default, a formatter has the
+     * {@link ResolverStyle#SMART SMART} resolver style.
+     * <p>
+     * Changing the resolver style only has an effect during parsing.
+     * Parsing a text string occurs in two phases.
+     * Phase 1 is a basic text parse according to the fields added to the builder.
+     * Phase 2 resolves the parsed field-value pairs into date and/or time objects.
+     * The resolver style is used to control how phase 2, resolving, happens.
+     * See {@code ResolverStyle} for more information on the options available.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param resolverStyle  the new resolver style, not null
+     * @return a formatter based on this formatter with the requested resolver style, not null
+     */
+    public DateTimeFormatter withResolverStyle(ResolverStyle resolverStyle) {
+        Objects.requireNonNull(resolverStyle, "resolverStyle");
+        if (Objects.equals(this.resolverStyle, resolverStyle)) {
+            return this;
+        }
+        return new DateTimeFormatter(printerParser, locale, decimalStyle, resolverStyle, chrono, zone);
     }
 
     //-----------------------------------------------------------------------

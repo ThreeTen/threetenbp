@@ -1483,7 +1483,7 @@ public final class DateTimeFormatterBuilder {
             optionalEnd();
         }
         CompositePrinterParser pp = new CompositePrinterParser(printerParsers, false);
-        return new DateTimeFormatter(pp, locale, DecimalStyle.STANDARD, null, null);
+        return new DateTimeFormatter(pp, locale, DecimalStyle.STANDARD, ResolverStyle.SMART, null, null);
     }
 
     //-----------------------------------------------------------------------
