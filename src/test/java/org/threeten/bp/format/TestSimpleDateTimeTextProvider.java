@@ -51,6 +51,7 @@ public class TestSimpleDateTimeTextProvider {
 
     Locale enUS = new Locale("en", "US");
     Locale ptBR = new Locale("pt", "BR");
+    Locale frFR = new Locale("fr", "FR");
 
     @BeforeMethod
     public void setUp() {
@@ -105,18 +106,18 @@ public class TestSimpleDateTimeTextProvider {
             {MONTH_OF_YEAR, 11, TextStyle.SHORT, enUS, "Nov"},
             {MONTH_OF_YEAR, 12, TextStyle.SHORT, enUS, "Dec"},
 
-            {MONTH_OF_YEAR, 1, TextStyle.SHORT, ptBR, "Jan"},
-            {MONTH_OF_YEAR, 2, TextStyle.SHORT, ptBR, "Fev"},
-            {MONTH_OF_YEAR, 3, TextStyle.SHORT, ptBR, "Mar"},
-            {MONTH_OF_YEAR, 4, TextStyle.SHORT, ptBR, "Abr"},
-            {MONTH_OF_YEAR, 5, TextStyle.SHORT, ptBR, "Mai"},
-            {MONTH_OF_YEAR, 6, TextStyle.SHORT, ptBR, "Jun"},
-            {MONTH_OF_YEAR, 7, TextStyle.SHORT, ptBR, "Jul"},
-            {MONTH_OF_YEAR, 8, TextStyle.SHORT, ptBR, "Ago"},
-            {MONTH_OF_YEAR, 9, TextStyle.SHORT, ptBR, "Set"},
-            {MONTH_OF_YEAR, 10, TextStyle.SHORT, ptBR, "Out"},
-            {MONTH_OF_YEAR, 11, TextStyle.SHORT, ptBR, "Nov"},
-            {MONTH_OF_YEAR, 12, TextStyle.SHORT, ptBR, "Dez"},
+            {MONTH_OF_YEAR, 1, TextStyle.SHORT, frFR, "janv."},
+            {MONTH_OF_YEAR, 2, TextStyle.SHORT, frFR, "f\u00E9vr."},
+            {MONTH_OF_YEAR, 3, TextStyle.SHORT, frFR, "mars"},
+            {MONTH_OF_YEAR, 4, TextStyle.SHORT, frFR, "avr."},
+            {MONTH_OF_YEAR, 5, TextStyle.SHORT, frFR, "mai"},
+            {MONTH_OF_YEAR, 6, TextStyle.SHORT, frFR, "juin"},
+            {MONTH_OF_YEAR, 7, TextStyle.SHORT, frFR, "juil."},
+            {MONTH_OF_YEAR, 8, TextStyle.SHORT, frFR, "ao\u00FBt"},
+            {MONTH_OF_YEAR, 9, TextStyle.SHORT, frFR, "sept."},
+            {MONTH_OF_YEAR, 10, TextStyle.SHORT, frFR, "oct."},
+            {MONTH_OF_YEAR, 11, TextStyle.SHORT, frFR, "nov."},
+            {MONTH_OF_YEAR, 12, TextStyle.SHORT, frFR, "d\u00E9c."},
 
             {MONTH_OF_YEAR, 1, TextStyle.FULL, enUS, "January"},
             {MONTH_OF_YEAR, 2, TextStyle.FULL, enUS, "February"},
