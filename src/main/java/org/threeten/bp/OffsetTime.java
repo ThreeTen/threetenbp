@@ -360,6 +360,14 @@ public final class OffsetTime
         return field != null && field.isSupportedBy(this);
     }
 
+    @Override
+    public boolean isSupported(TemporalUnit unit) {
+        if (unit instanceof ChronoUnit) {
+            return unit.isTimeBased();
+        }
+        return unit != null && unit.isSupportedBy(this);
+    }
+
     /**
      * Gets the range of valid values for the specified field.
      * <p>

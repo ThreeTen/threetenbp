@@ -36,7 +36,12 @@ import static org.threeten.bp.temporal.ChronoField.ERA;
 import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.YEAR;
 import static org.threeten.bp.temporal.ChronoField.YEAR_OF_ERA;
+import static org.threeten.bp.temporal.ChronoUnit.CENTURIES;
+import static org.threeten.bp.temporal.ChronoUnit.DECADES;
+import static org.threeten.bp.temporal.ChronoUnit.ERAS;
+import static org.threeten.bp.temporal.ChronoUnit.MILLENNIA;
 import static org.threeten.bp.temporal.ChronoUnit.MONTHS;
+import static org.threeten.bp.temporal.ChronoUnit.YEARS;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -316,6 +321,14 @@ public final class YearMonth
                     field == PROLEPTIC_MONTH || field == YEAR_OF_ERA || field == ERA;
         }
         return field != null && field.isSupportedBy(this);
+    }
+
+    @Override
+    public boolean isSupported(TemporalUnit unit) {
+        if (unit instanceof ChronoUnit) {
+            return unit == MONTHS || unit == YEARS || unit == DECADES || unit == CENTURIES || unit == MILLENNIA || unit == ERAS;
+        }
+        return unit != null && unit.isSupportedBy(this);
     }
 
     /**

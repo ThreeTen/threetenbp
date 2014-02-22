@@ -197,6 +197,14 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate<D>>
     }
 
     @Override
+    public boolean isSupported(TemporalUnit unit) {
+        if (unit instanceof ChronoUnit) {
+            return unit.isDateBased() || unit.isTimeBased();
+        }
+        return unit != null && unit.isSupportedBy(this);
+    }
+
+    @Override
     public ValueRange range(TemporalField field) {
         if (field instanceof ChronoField) {
             return (field.isTimeBased() ? time.range(field) : date.range(field));

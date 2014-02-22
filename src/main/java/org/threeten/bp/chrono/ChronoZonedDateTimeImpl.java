@@ -174,6 +174,14 @@ final class ChronoZonedDateTimeImpl<D extends ChronoLocalDate<D>>
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    public boolean isSupported(TemporalUnit unit) {
+        if (unit instanceof ChronoUnit) {
+            return unit.isDateBased() || unit.isTimeBased();
+        }
+        return unit != null && unit.isSupportedBy(this);
+    }
+
     public ZoneOffset getOffset() {
         return offset;
     }

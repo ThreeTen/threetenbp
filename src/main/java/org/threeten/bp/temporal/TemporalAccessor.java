@@ -86,7 +86,7 @@ public interface TemporalAccessor {
      * is obtained by invoking {@code TemporalField.isSupportedBy(TemporalAccessor)}
      * passing {@code this} as the argument.
      * <p>
-     * Implementations must not alter either this object.
+     * Implementations must not alter this object.
      *
      * @param field  the field to check, null returns false
      * @return true if this date-time can be queried for the field, false if not

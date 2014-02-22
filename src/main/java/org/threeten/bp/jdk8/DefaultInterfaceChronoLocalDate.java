@@ -47,6 +47,7 @@ import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.Era;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.temporal.ChronoField;
+import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAdjuster;
 import org.threeten.bp.temporal.TemporalAmount;
@@ -83,9 +84,17 @@ public abstract class DefaultInterfaceChronoLocalDate<D extends ChronoLocalDate<
     @Override
     public boolean isSupported(TemporalField field) {
         if (field instanceof ChronoField) {
-            return ((ChronoField) field).isDateBased();
+            return field.isDateBased();
         }
         return field != null && field.isSupportedBy(this);
+    }
+
+    @Override
+    public boolean isSupported(TemporalUnit unit) {
+        if (unit instanceof ChronoUnit) {
+            return unit.isDateBased();
+        }
+        return unit != null && unit.isSupportedBy(this);
     }
 
     //-------------------------------------------------------------------------

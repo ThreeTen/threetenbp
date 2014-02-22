@@ -652,6 +652,14 @@ public final class ZonedDateTime
         return field instanceof ChronoField || (field != null && field.isSupportedBy(this));
     }
 
+    @Override
+    public boolean isSupported(TemporalUnit unit) {
+        if (unit instanceof ChronoUnit) {
+            return unit.isDateBased() || unit.isTimeBased();
+        }
+        return unit != null && unit.isSupportedBy(this);
+    }
+
     /**
      * Gets the range of valid values for the specified field.
      * <p>

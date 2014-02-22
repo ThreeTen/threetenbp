@@ -38,6 +38,7 @@ import static org.threeten.bp.temporal.ChronoField.INSTANT_SECONDS;
 import static org.threeten.bp.temporal.ChronoField.MICRO_OF_SECOND;
 import static org.threeten.bp.temporal.ChronoField.MILLI_OF_SECOND;
 import static org.threeten.bp.temporal.ChronoField.NANO_OF_SECOND;
+import static org.threeten.bp.temporal.ChronoUnit.DAYS;
 import static org.threeten.bp.temporal.ChronoUnit.NANOS;
 
 import java.io.DataInput;
@@ -403,6 +404,14 @@ public final class Instant
             return field == INSTANT_SECONDS || field == NANO_OF_SECOND || field == MICRO_OF_SECOND || field == MILLI_OF_SECOND;
         }
         return field != null && field.isSupportedBy(this);
+    }
+
+    @Override
+    public boolean isSupported(TemporalUnit unit) {
+        if (unit instanceof ChronoUnit) {
+            return unit.isTimeBased() || unit == DAYS;
+        }
+        return unit != null && unit.isSupportedBy(this);
     }
 
     /**

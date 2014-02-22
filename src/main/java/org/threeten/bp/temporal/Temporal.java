@@ -101,6 +101,28 @@ import org.threeten.bp.chrono.ChronoLocalDate;
 public interface Temporal extends TemporalAccessor {
 
     /**
+     * Checks if the specified unit is supported.
+     * <p>
+     * This checks if the date-time can be queried for the specified unit.
+     * If false, then calling the {@link #plus(TemporalAmount) plus} and {@link #minus(TemporalAmount) minus}
+     * methods will throw an exception.
+     *
+     * <h3>Specification for implementors</h3>
+     * Implementations must check and handle all fields defined in {@link ChronoUnit}.
+     * If the field is supported, then true is returned, otherwise false
+     * <p>
+     * If the field is not a {@code ChronoUnit}, then the result of this method
+     * is obtained by invoking {@code TemporalUnit.isSupportedBy(Temporal)}
+     * passing {@code this} as the argument.
+     * <p>
+     * Implementations must not alter this object.
+     *
+     * @param unit  the unit to check, null returns false
+     * @return true if this date-time can be queried for the unit, false if not
+     */
+    boolean isSupported(TemporalUnit unit);
+
+    /**
      * Returns an adjusted object of the same type as this object with the adjustment made.
      * <p>
      * This adjusts this date-time according to the rules of the specified adjuster.
