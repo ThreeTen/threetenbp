@@ -1439,8 +1439,7 @@ public final class ZonedDateTime
     @Override
     public ZonedDateTime plus(long amountToAdd, TemporalUnit unit) {
         if (unit instanceof ChronoUnit) {
-            ChronoUnit u = (ChronoUnit) unit;
-            if (u.isDateUnit()) {
+            if (unit.isDateBased()) {
                 return resolveLocal(dateTime.plus(amountToAdd, unit));
             } else {
                 return resolveInstant(dateTime.plus(amountToAdd, unit));
@@ -1944,8 +1943,7 @@ public final class ZonedDateTime
         if (unit instanceof ChronoUnit) {
             ZonedDateTime end = (ZonedDateTime) endDateTime;
             end = end.withZoneSameInstant(zone);
-            ChronoUnit u = (ChronoUnit) unit;
-            if (u.isDateUnit()) {
+            if (unit.isDateBased()) {
                 return dateTime.until(end.dateTime, unit);
             } else {
                 return toOffsetDateTime().until(end.toOffsetDateTime(), unit);

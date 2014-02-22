@@ -872,6 +872,14 @@ public class TestLocalTime extends AbstractDateTimeTest {
             return false;
         }
         @Override
+        public boolean isDateBased() {
+            return false;
+        }
+        @Override
+        public boolean isTimeBased() {
+            return true;
+        }
+        @Override
         public boolean isSupportedBy(Temporal temporal) {
             return false;
         }
@@ -897,6 +905,14 @@ public class TestLocalTime extends AbstractDateTimeTest {
         @Override
         public boolean isDurationEstimated() {
             return false;
+        }
+        @Override
+        public boolean isDateBased() {
+            return false;
+        }
+        @Override
+        public boolean isTimeBased() {
+            return true;
         }
         @Override
         public boolean isSupportedBy(Temporal temporal) {

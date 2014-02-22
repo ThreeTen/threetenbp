@@ -206,7 +206,7 @@ public enum ChronoUnit implements TemporalUnit {
      */
     @Override
     public boolean isDurationEstimated() {
-        return isDateUnit();
+        return isDateBased();
     }
 
     //-----------------------------------------------------------------------
@@ -215,7 +215,7 @@ public enum ChronoUnit implements TemporalUnit {
      *
      * @return true if a date unit, false if a time unit
      */
-    public boolean isDateUnit() {
+    public boolean isDateBased() {
         return this.compareTo(DAYS) >= 0;
     }
 
@@ -224,7 +224,7 @@ public enum ChronoUnit implements TemporalUnit {
      *
      * @return true if a time unit, false if a date unit
      */
-    public boolean isTimeUnit() {
+    public boolean isTimeBased() {
         return this.compareTo(DAYS) < 0;
     }
 
@@ -235,7 +235,7 @@ public enum ChronoUnit implements TemporalUnit {
             return false;
         }
         if (temporal instanceof ChronoLocalDate) {
-            return isDateUnit();
+            return isDateBased();
         }
         if (temporal instanceof ChronoLocalDateTime || temporal instanceof ChronoZonedDateTime) {
             return true;

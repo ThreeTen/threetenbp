@@ -528,6 +528,16 @@ public final class IsoFields {
         }
 
         @Override
+        public boolean isDateBased() {
+            return true;
+        }
+
+        @Override
+        public boolean isTimeBased() {
+            return false;
+        }
+
+        @Override
         public boolean isSupportedBy(Temporal temporal) {
             return temporal.isSupported(EPOCH_DAY);
         }

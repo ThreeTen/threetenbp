@@ -100,6 +100,21 @@ public interface TemporalUnit {
 
     //-----------------------------------------------------------------------
     /**
+     * Checks if this unit is date-based.
+     * 
+     * @return true if date-based
+     */
+    boolean isDateBased();
+
+    /**
+     * Checks if this unit is time-based.
+     * 
+     * @return true if time-based
+     */
+    boolean isTimeBased();
+
+    //-----------------------------------------------------------------------
+    /**
      * Checks if this unit is supported by the specified temporal object.
      * <p>
      * This checks that the implementing date-time can add/subtract this unit.

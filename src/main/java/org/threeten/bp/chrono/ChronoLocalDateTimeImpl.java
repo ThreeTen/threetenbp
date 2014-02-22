@@ -327,7 +327,7 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate<D>>
         }
         if (unit instanceof ChronoUnit) {
             ChronoUnit f = (ChronoUnit) unit;
-            if (f.isTimeUnit()) {
+            if (f.isTimeBased()) {
                 long amount = end.getLong(EPOCH_DAY) - date.getLong(EPOCH_DAY);
                 switch (f) {
                     case NANOS: amount = Jdk8Methods.safeMultiply(amount, NANOS_PER_DAY); break;

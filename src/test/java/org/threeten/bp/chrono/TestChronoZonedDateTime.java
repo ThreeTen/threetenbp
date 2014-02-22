@@ -373,6 +373,16 @@ public class TestChronoZonedDateTime {
         }
 
         @Override
+        public boolean isDateBased() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public boolean isTimeBased() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
         public boolean isSupportedBy(Temporal dateTime) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
