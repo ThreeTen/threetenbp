@@ -108,21 +108,27 @@ public final class OffsetDateTime
     public static final OffsetDateTime MAX = LocalDateTime.MAX.atOffset(ZoneOffset.MIN);
 
     /**
-     * Comparator for two {@code OffsetDateTime} instances based solely on the instant.
+     * Gets a comparator that compares two {@code OffsetDateTime} instances
+     * based solely on the instant.
      * <p>
      * This method differs from the comparison in {@link #compareTo} in that it
      * only compares the underlying instant.
+     *
+     * @return a comparator that compares in time-line order
      *
      * @see #isAfter
      * @see #isBefore
      * @see #isEqual
      */
-    public static final Comparator<OffsetDateTime> INSTANT_COMPARATOR = new Comparator<OffsetDateTime>() {
+    public static Comparator<OffsetDateTime> timeLineOrder() {
+        return INSTANT_COMPARATOR;
+    }
+    private static final Comparator<OffsetDateTime> INSTANT_COMPARATOR = new Comparator<OffsetDateTime>() {
         @Override
         public int compare(OffsetDateTime datetime1, OffsetDateTime datetime2) {
             int cmp = Long.compare(datetime1.toEpochSecond(), datetime2.toEpochSecond());
             if (cmp == 0) {
-                cmp = Long.compare(datetime1.toLocalTime().toNanoOfDay(), datetime2.toLocalTime().toNanoOfDay());
+                cmp = Long.compare(datetime1.getNano(), datetime2.getNano());
             }
             return cmp;
         }
