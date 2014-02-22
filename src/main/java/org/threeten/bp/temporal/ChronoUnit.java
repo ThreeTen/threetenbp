@@ -210,7 +210,7 @@ public enum ChronoUnit implements TemporalUnit {
      * @return true if a date unit, false if a time unit
      */
     public boolean isDateBased() {
-        return this.compareTo(DAYS) >= 0;
+        return this.compareTo(DAYS) >= 0 && this != FOREVER;
     }
 
     /**

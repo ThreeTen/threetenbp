@@ -40,6 +40,7 @@ import static org.threeten.bp.Month.MARCH;
 import static org.threeten.bp.Month.OCTOBER;
 import static org.threeten.bp.Month.SEPTEMBER;
 import static org.threeten.bp.temporal.ChronoUnit.DAYS;
+import static org.threeten.bp.temporal.ChronoUnit.FOREVER;
 import static org.threeten.bp.temporal.ChronoUnit.MONTHS;
 import static org.threeten.bp.temporal.ChronoUnit.WEEKS;
 import static org.threeten.bp.temporal.ChronoUnit.YEARS;
@@ -274,6 +275,33 @@ public class TestChronoUnit {
     public void test_daysBetween_ZonedDateLaterOffset(LocalDate start, LocalDate end, long expected) {
         // +01:00 is later than +02:00
         assertEquals(DAYS.between(start.atStartOfDay(ZoneOffset.ofHours(2)), end.atStartOfDay(ZoneOffset.ofHours(1))), expected);
+    }
+
+    //-------------------------------------------------------------------------
+    @Test
+    public void test_isDateBased() {
+        for (ChronoUnit unit : ChronoUnit.values()) {
+            if (unit.getDuration().getSeconds() < 86400) {
+                assertEquals(unit.isDateBased(), false);
+            } else if (unit == FOREVER) {
+                assertEquals(unit.isDateBased(), false);
+            } else {
+                assertEquals(unit.isDateBased(), true);
+            }
+        }
+    }
+
+    @Test
+    public void test_isTimeBased() {
+        for (ChronoUnit unit : ChronoUnit.values()) {
+            if (unit.getDuration().getSeconds() < 86400) {
+                assertEquals(unit.isTimeBased(), true);
+            } else if (unit == FOREVER) {
+                assertEquals(unit.isTimeBased(), false);
+            } else {
+                assertEquals(unit.isTimeBased(), false);
+            }
+        }
     }
 
     //-----------------------------------------------------------------------
