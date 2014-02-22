@@ -147,6 +147,19 @@ public final class Period
     }
 
     /**
+     * Obtains a {@code Period} representing a number of weeks.
+     * <p>
+     * The resulting period will have days equal to the weeks multiplied by seven.
+     * The years and months units will be zero.
+     *
+     * @param weeks  the number of weeks, positive or negative
+     * @return the period of days, not null
+     */
+    public static Period ofWeeks(int weeks) {
+        return create(0, 0, Jdk8Methods.safeMultiply(weeks, 7));
+    }
+
+    /**
      * Obtains a {@code Period} representing a number of days.
      * <p>
      * The resulting period will have the specified days.
