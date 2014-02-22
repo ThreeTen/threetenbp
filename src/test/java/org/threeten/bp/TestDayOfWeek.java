@@ -143,33 +143,14 @@ public class TestDayOfWeek extends AbstractDateTimeTest {
     // query(TemporalQuery)
     //-----------------------------------------------------------------------
     @Test
-    public void test_query_chrono() {
+    public void test_query() {
         assertEquals(DayOfWeek.FRIDAY.query(TemporalQueries.chronology()), null);
-        assertEquals(TemporalQueries.chronology().queryFrom(DayOfWeek.FRIDAY), null);
-    }
-
-    @Test
-    public void test_query_zoneId() {
-        assertEquals(DayOfWeek.FRIDAY.query(TemporalQueries.zoneId()), null);
-        assertEquals(TemporalQueries.zoneId().queryFrom(DayOfWeek.FRIDAY), null);
-    }
-
-    @Test
-    public void test_query_precision() {
-        assertEquals(DayOfWeek.FRIDAY.query(TemporalQueries.precision()), ChronoUnit.DAYS);
-        assertEquals(TemporalQueries.precision().queryFrom(DayOfWeek.FRIDAY), ChronoUnit.DAYS);
-    }
-
-    @Test
-    public void test_query_offset() {
+        assertEquals(DayOfWeek.FRIDAY.query(TemporalQueries.localDate()), null);
+        assertEquals(DayOfWeek.FRIDAY.query(TemporalQueries.localTime()), null);
         assertEquals(DayOfWeek.FRIDAY.query(TemporalQueries.offset()), null);
-        assertEquals(TemporalQueries.offset().queryFrom(DayOfWeek.FRIDAY), null);
-    }
-
-    @Test
-    public void test_query_zone() {
+        assertEquals(DayOfWeek.FRIDAY.query(TemporalQueries.precision()), ChronoUnit.DAYS);
         assertEquals(DayOfWeek.FRIDAY.query(TemporalQueries.zone()), null);
-        assertEquals(TemporalQueries.zone().queryFrom(DayOfWeek.FRIDAY), null);
+        assertEquals(DayOfWeek.FRIDAY.query(TemporalQueries.zoneId()), null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)

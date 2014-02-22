@@ -367,7 +367,8 @@ public enum DayOfWeek implements TemporalAccessor, TemporalAdjuster {
     public <R> R query(TemporalQuery<R> query) {
         if (query == TemporalQueries.precision()) {
             return (R) DAYS;
-        } else if (query == TemporalQueries.zoneId() || query == TemporalQueries.chronology()) {
+        } else if (query == TemporalQueries.localDate() || query == TemporalQueries.localTime() || query == TemporalQueries.chronology() ||
+                query == TemporalQueries.zone() || query == TemporalQueries.zoneId() || query == TemporalQueries.offset()) {
             return null;
         }
         return query.queryFrom(this);

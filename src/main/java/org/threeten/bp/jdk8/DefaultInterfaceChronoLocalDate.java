@@ -40,6 +40,7 @@ import static org.threeten.bp.temporal.ChronoField.YEAR_OF_ERA;
 
 import java.util.Objects;
 
+import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.ChronoLocalDateTime;
@@ -129,10 +130,18 @@ public abstract class DefaultInterfaceChronoLocalDate<D extends ChronoLocalDate<
         return Chronology.dateTime(this, localTime);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <R> R query(TemporalQuery<R> query) {
         if (query == TemporalQueries.chronology()) {
             return (R) getChronology();
+        } else if (query == TemporalQueries.precision()) {
+            return (R) ChronoUnit.DAYS;
+        } else if (query == TemporalQueries.localDate()) {
+            return (R) LocalDate.ofEpochDay(toEpochDay());
+        } else if (query == TemporalQueries.localTime() || query == TemporalQueries.zone() ||
+                query == TemporalQueries.zoneId() || query == TemporalQueries.offset()) {
+            return null;
         }
         return super.query(query);
     }

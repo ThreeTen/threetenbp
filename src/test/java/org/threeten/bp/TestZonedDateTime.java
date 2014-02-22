@@ -45,7 +45,6 @@ import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
 import static org.threeten.bp.temporal.ChronoField.DAY_OF_WEEK;
 import static org.threeten.bp.temporal.ChronoField.DAY_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.EPOCH_DAY;
-import static org.threeten.bp.temporal.ChronoField.PROLEPTIC_MONTH;
 import static org.threeten.bp.temporal.ChronoField.ERA;
 import static org.threeten.bp.temporal.ChronoField.HOUR_OF_AMPM;
 import static org.threeten.bp.temporal.ChronoField.HOUR_OF_DAY;
@@ -60,6 +59,7 @@ import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.NANO_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.NANO_OF_SECOND;
 import static org.threeten.bp.temporal.ChronoField.OFFSET_SECONDS;
+import static org.threeten.bp.temporal.ChronoField.PROLEPTIC_MONTH;
 import static org.threeten.bp.temporal.ChronoField.SECOND_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.SECOND_OF_MINUTE;
 import static org.threeten.bp.temporal.ChronoField.YEAR;
@@ -846,26 +846,17 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // query(Query)
+    // query(TemporalQuery)
     //-----------------------------------------------------------------------
     @Test
-    public void test_query_chrono() {
+    public void test_query() {
         assertEquals(TEST_DATE_TIME.query(TemporalQueries.chronology()), IsoChronology.INSTANCE);
-    }
-
-    @Test
-    public void test_query_zone() {
+        assertEquals(TEST_DATE_TIME.query(TemporalQueries.localDate()), TEST_DATE_TIME.toLocalDate());
+        assertEquals(TEST_DATE_TIME.query(TemporalQueries.localTime()), TEST_DATE_TIME.toLocalTime());
+        assertEquals(TEST_DATE_TIME.query(TemporalQueries.offset()), TEST_DATE_TIME.getOffset());
+        assertEquals(TEST_DATE_TIME.query(TemporalQueries.precision()), ChronoUnit.NANOS);
+        assertEquals(TEST_DATE_TIME.query(TemporalQueries.zone()), TEST_DATE_TIME.getZone());
         assertEquals(TEST_DATE_TIME.query(TemporalQueries.zoneId()), TEST_DATE_TIME.getZone());
-    }
-
-    @Test
-    public void test_query_timePrecision() {
-        assertEquals(TEST_DATE_TIME.query(TemporalQueries.precision()), NANOS);
-    }
-
-    @Test
-    public void test_query_offset() {
-        assertEquals(TEST_DATE_TIME.query(TemporalQueries.offset()), OFFSET_0100);
     }
 
     @Test(expectedExceptions=NullPointerException.class)

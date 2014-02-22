@@ -58,6 +58,7 @@ import org.threeten.bp.Year;
 import org.threeten.bp.YearMonth;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
+import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeParseException;
 
@@ -644,6 +645,25 @@ public class TestYear extends AbstractDateTimeTest {
     public void test_atDay_day367() {
         Year test = Year.of(2007);
         test.atDay(367);
+    }
+
+    //-----------------------------------------------------------------------
+    // query(TemporalQuery)
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_query() {
+        assertEquals(TEST_2008.query(TemporalQueries.chronology()), IsoChronology.INSTANCE);
+        assertEquals(TEST_2008.query(TemporalQueries.localDate()), null);
+        assertEquals(TEST_2008.query(TemporalQueries.localTime()), null);
+        assertEquals(TEST_2008.query(TemporalQueries.offset()), null);
+        assertEquals(TEST_2008.query(TemporalQueries.precision()), ChronoUnit.YEARS);
+        assertEquals(TEST_2008.query(TemporalQueries.zone()), null);
+        assertEquals(TEST_2008.query(TemporalQueries.zoneId()), null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_query_null() {
+        TEST_2008.query(null);
     }
 
     //-----------------------------------------------------------------------

@@ -616,7 +616,8 @@ public final class ZoneOffset
     public <R> R query(TemporalQuery<R> query) {
         if (query == TemporalQueries.offset() || query == TemporalQueries.zone()) {
             return (R) this;
-        } else if (query == TemporalQueries.precision() || query == TemporalQueries.chronology() || query == TemporalQueries.zoneId()) {
+        } else if (query == TemporalQueries.localDate() || query == TemporalQueries.localTime() ||
+                query == TemporalQueries.precision() || query == TemporalQueries.chronology() || query == TemporalQueries.zoneId()) {
             return null;
         }
         return query.queryFrom(this);

@@ -51,6 +51,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.temporal.ChronoField;
+import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.JulianFields;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalField;
@@ -353,33 +354,14 @@ public class TestInstant extends AbstractDateTimeTest {
     // query(TemporalQuery)
     //-----------------------------------------------------------------------
     @Test
-    public void test_query_chrono() {
+    public void test_query() {
         assertEquals(TEST_12345_123456789.query(TemporalQueries.chronology()), null);
-        assertEquals(TemporalQueries.chronology().queryFrom(TEST_12345_123456789), null);
-    }
-
-    @Test
-    public void test_query_zoneId() {
-        assertEquals(TEST_12345_123456789.query(TemporalQueries.zoneId()), null);
-        assertEquals(TemporalQueries.zoneId().queryFrom(TEST_12345_123456789), null);
-    }
-
-    @Test
-    public void test_query_precision() {
-        assertEquals(TEST_12345_123456789.query(TemporalQueries.precision()), NANOS);
-        assertEquals(TemporalQueries.precision().queryFrom(TEST_12345_123456789), NANOS);
-    }
-
-    @Test
-    public void test_query_offset() {
+        assertEquals(TEST_12345_123456789.query(TemporalQueries.localDate()), null);
+        assertEquals(TEST_12345_123456789.query(TemporalQueries.localTime()), null);
         assertEquals(TEST_12345_123456789.query(TemporalQueries.offset()), null);
-        assertEquals(TemporalQueries.offset().queryFrom(TEST_12345_123456789), null);
-    }
-
-    @Test
-    public void test_query_zone() {
+        assertEquals(TEST_12345_123456789.query(TemporalQueries.precision()), ChronoUnit.NANOS);
         assertEquals(TEST_12345_123456789.query(TemporalQueries.zone()), null);
-        assertEquals(TemporalQueries.zone().queryFrom(TEST_12345_123456789), null);
+        assertEquals(TEST_12345_123456789.query(TemporalQueries.zoneId()), null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)

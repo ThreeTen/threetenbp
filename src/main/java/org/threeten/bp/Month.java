@@ -530,7 +530,8 @@ public enum Month implements TemporalAccessor, TemporalAdjuster {
             return (R) IsoChronology.INSTANCE;
         } else if (query == TemporalQueries.precision()) {
             return (R) MONTHS;
-        } else if (query == TemporalQueries.zoneId()) {
+        } else if (query == TemporalQueries.localDate() || query == TemporalQueries.localTime() ||
+                query == TemporalQueries.zone() || query == TemporalQueries.zoneId() || query == TemporalQueries.offset()) {
             return null;
         }
         return query.queryFrom(this);

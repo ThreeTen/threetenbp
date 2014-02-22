@@ -31,7 +31,6 @@
  */
 package org.threeten.bp.jdk8;
 
-import org.threeten.bp.DateTimeException;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalField;

@@ -636,26 +636,17 @@ public class TestLocalDate extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // query(Query)
+    // query(TemporalQuery)
     //-----------------------------------------------------------------------
     @Test
-    public void test_query_chrono() {
+    public void test_query() {
         assertEquals(TEST_2007_07_15.query(TemporalQueries.chronology()), IsoChronology.INSTANCE);
-    }
-
-    @Test
-    public void test_query_zone() {
-        assertEquals(TEST_2007_07_15.query(TemporalQueries.zoneId()), null);
-    }
-
-    @Test
-    public void test_query_timePrecision() {
-        assertEquals(TEST_2007_07_15.query(TemporalQueries.precision()), null);
-    }
-
-    @Test
-    public void test_query_offset() {
+        assertEquals(TEST_2007_07_15.query(TemporalQueries.localDate()), TEST_2007_07_15);
+        assertEquals(TEST_2007_07_15.query(TemporalQueries.localTime()), null);
         assertEquals(TEST_2007_07_15.query(TemporalQueries.offset()), null);
+        assertEquals(TEST_2007_07_15.query(TemporalQueries.precision()), ChronoUnit.DAYS);
+        assertEquals(TEST_2007_07_15.query(TemporalQueries.zone()), null);
+        assertEquals(TEST_2007_07_15.query(TemporalQueries.zoneId()), null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)

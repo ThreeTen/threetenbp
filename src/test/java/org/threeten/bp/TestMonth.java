@@ -138,33 +138,14 @@ public class TestMonth extends AbstractDateTimeTest {
     // query(TemporalQuery)
     //-----------------------------------------------------------------------
     @Test
-    public void test_query_chrono() {
+    public void test_query() {
         assertEquals(Month.JUNE.query(TemporalQueries.chronology()), IsoChronology.INSTANCE);
-        assertEquals(TemporalQueries.chronology().queryFrom(Month.JUNE), IsoChronology.INSTANCE);
-    }
-
-    @Test
-    public void test_query_zoneId() {
-        assertEquals(Month.JUNE.query(TemporalQueries.zoneId()), null);
-        assertEquals(TemporalQueries.zoneId().queryFrom(Month.JUNE), null);
-    }
-
-    @Test
-    public void test_query_precision() {
-        assertEquals(Month.JUNE.query(TemporalQueries.precision()), ChronoUnit.MONTHS);
-        assertEquals(TemporalQueries.precision().queryFrom(Month.JUNE), ChronoUnit.MONTHS);
-    }
-
-    @Test
-    public void test_query_offset() {
+        assertEquals(Month.JUNE.query(TemporalQueries.localDate()), null);
+        assertEquals(Month.JUNE.query(TemporalQueries.localTime()), null);
         assertEquals(Month.JUNE.query(TemporalQueries.offset()), null);
-        assertEquals(TemporalQueries.offset().queryFrom(Month.JUNE), null);
-    }
-
-    @Test
-    public void test_query_zone() {
+        assertEquals(Month.JUNE.query(TemporalQueries.precision()), ChronoUnit.MONTHS);
         assertEquals(Month.JUNE.query(TemporalQueries.zone()), null);
-        assertEquals(TemporalQueries.zone().queryFrom(Month.JUNE), null);
+        assertEquals(Month.JUNE.query(TemporalQueries.zoneId()), null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)

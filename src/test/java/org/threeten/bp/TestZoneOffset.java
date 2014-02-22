@@ -494,43 +494,19 @@ public class TestZoneOffset extends AbstractDateTimeTest {
     // query(TemporalQuery)
     //-----------------------------------------------------------------------
     @Test
-    public void test_query_chrono() {
-        ZoneOffset test = ZoneOffset.ofHoursMinutes(1, 30);
-        assertEquals(test.query(TemporalQueries.chronology()), null);
-        assertEquals(TemporalQueries.chronology().queryFrom(test), null);
-    }
-
-    @Test
-    public void test_query_zoneId() {
-        ZoneOffset test = ZoneOffset.ofHoursMinutes(1, 30);
-        assertEquals(test.query(TemporalQueries.zoneId()), null);
-        assertEquals(TemporalQueries.zoneId().queryFrom(test), null);
-    }
-
-    @Test
-    public void test_query_precision() {
-        ZoneOffset test = ZoneOffset.ofHoursMinutes(1, 30);
-        assertEquals(test.query(TemporalQueries.precision()), null);
-        assertEquals(TemporalQueries.precision().queryFrom(test), null);
-    }
-
-    @Test
-    public void test_query_offset() {
-        ZoneOffset test = ZoneOffset.ofHoursMinutes(1, 30);
-        assertEquals(test.query(TemporalQueries.offset()), test);
-        assertEquals(TemporalQueries.offset().queryFrom(test), test);
-    }
-
-    @Test
-    public void test_query_zone() {
-        ZoneOffset test = ZoneOffset.ofHoursMinutes(1, 30);
-        assertEquals(test.query(TemporalQueries.zone()), test);
-        assertEquals(TemporalQueries.zone().queryFrom(test), test);
+    public void test_query() {
+        assertEquals(ZoneOffset.UTC.query(TemporalQueries.chronology()), null);
+        assertEquals(ZoneOffset.UTC.query(TemporalQueries.localDate()), null);
+        assertEquals(ZoneOffset.UTC.query(TemporalQueries.localTime()), null);
+        assertEquals(ZoneOffset.UTC.query(TemporalQueries.offset()), ZoneOffset.UTC);
+        assertEquals(ZoneOffset.UTC.query(TemporalQueries.precision()), null);
+        assertEquals(ZoneOffset.UTC.query(TemporalQueries.zone()), ZoneOffset.UTC);
+        assertEquals(ZoneOffset.UTC.query(TemporalQueries.zoneId()), null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_query_null() {
-        ZoneOffset.ofHoursMinutes(1, 30).query(null);
+        ZoneOffset.UTC.query(null);
     }
 
     //-----------------------------------------------------------------------

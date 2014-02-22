@@ -515,33 +515,14 @@ public class TestOffsetTime extends AbstractDateTimeTest {
     // query(TemporalQuery)
     //-----------------------------------------------------------------------
     @Test
-    public void test_query_chrono() {
+    public void test_query() {
         assertEquals(TEST_11_30_59_500_PONE.query(TemporalQueries.chronology()), null);
-        assertEquals(TemporalQueries.chronology().queryFrom(TEST_11_30_59_500_PONE), null);
-    }
-
-    @Test
-    public void test_query_zoneId() {
+        assertEquals(TEST_11_30_59_500_PONE.query(TemporalQueries.localDate()), null);
+        assertEquals(TEST_11_30_59_500_PONE.query(TemporalQueries.localTime()), TEST_11_30_59_500_PONE.toLocalTime());
+        assertEquals(TEST_11_30_59_500_PONE.query(TemporalQueries.offset()), TEST_11_30_59_500_PONE.getOffset());
+        assertEquals(TEST_11_30_59_500_PONE.query(TemporalQueries.precision()), ChronoUnit.NANOS);
+        assertEquals(TEST_11_30_59_500_PONE.query(TemporalQueries.zone()), TEST_11_30_59_500_PONE.getOffset());
         assertEquals(TEST_11_30_59_500_PONE.query(TemporalQueries.zoneId()), null);
-        assertEquals(TemporalQueries.zoneId().queryFrom(TEST_11_30_59_500_PONE), null);
-    }
-
-    @Test
-    public void test_query_precision() {
-        assertEquals(TEST_11_30_59_500_PONE.query(TemporalQueries.precision()), NANOS);
-        assertEquals(TemporalQueries.precision().queryFrom(TEST_11_30_59_500_PONE), NANOS);
-    }
-
-    @Test
-    public void test_query_offset() {
-        assertEquals(TEST_11_30_59_500_PONE.query(TemporalQueries.offset()), OFFSET_PONE);
-        assertEquals(TemporalQueries.offset().queryFrom(TEST_11_30_59_500_PONE), OFFSET_PONE);
-    }
-
-    @Test
-    public void test_query_zone() {
-        assertEquals(TEST_11_30_59_500_PONE.query(TemporalQueries.zone()), OFFSET_PONE);
-        assertEquals(TemporalQueries.zone().queryFrom(TEST_11_30_59_500_PONE), OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)

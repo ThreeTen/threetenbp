@@ -46,7 +46,6 @@ import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
 import static org.threeten.bp.temporal.ChronoField.DAY_OF_WEEK;
 import static org.threeten.bp.temporal.ChronoField.DAY_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.EPOCH_DAY;
-import static org.threeten.bp.temporal.ChronoField.PROLEPTIC_MONTH;
 import static org.threeten.bp.temporal.ChronoField.ERA;
 import static org.threeten.bp.temporal.ChronoField.HOUR_OF_AMPM;
 import static org.threeten.bp.temporal.ChronoField.HOUR_OF_DAY;
@@ -59,6 +58,7 @@ import static org.threeten.bp.temporal.ChronoField.MINUTE_OF_HOUR;
 import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.NANO_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.NANO_OF_SECOND;
+import static org.threeten.bp.temporal.ChronoField.PROLEPTIC_MONTH;
 import static org.threeten.bp.temporal.ChronoField.SECOND_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.SECOND_OF_MINUTE;
 import static org.threeten.bp.temporal.ChronoField.YEAR;
@@ -912,26 +912,17 @@ public class TestLocalDateTime extends AbstractDateTimeTest {
     }
 
     //-----------------------------------------------------------------------
-    // query(Query)
+    // query(TemporalQuery)
     //-----------------------------------------------------------------------
     @Test
-    public void test_query_chrono() {
+    public void test_query() {
         assertEquals(TEST_2007_07_15_12_30_40_987654321.query(TemporalQueries.chronology()), IsoChronology.INSTANCE);
-    }
-
-    @Test
-    public void test_query_zone() {
-        assertEquals(TEST_2007_07_15_12_30_40_987654321.query(TemporalQueries.zoneId()), null);
-    }
-
-    @Test
-    public void test_query_timePrecision() {
-        assertEquals(TEST_2007_07_15_12_30_40_987654321.query(TemporalQueries.precision()), NANOS);
-    }
-
-    @Test
-    public void test_query_offset() {
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.query(TemporalQueries.localDate()), TEST_2007_07_15_12_30_40_987654321.toLocalDate());
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.query(TemporalQueries.localTime()), TEST_2007_07_15_12_30_40_987654321.toLocalTime());
         assertEquals(TEST_2007_07_15_12_30_40_987654321.query(TemporalQueries.offset()), null);
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.query(TemporalQueries.precision()), ChronoUnit.NANOS);
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.query(TemporalQueries.zone()), null);
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.query(TemporalQueries.zoneId()), null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)

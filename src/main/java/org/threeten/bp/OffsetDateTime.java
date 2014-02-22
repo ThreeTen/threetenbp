@@ -46,6 +46,7 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
 
+import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporal;
@@ -1380,11 +1381,17 @@ public final class OffsetDateTime
     @Override
     public <R> R query(TemporalQuery<R> query) {
         if (query == TemporalQueries.chronology()) {
-            return (R) toLocalDate().getChronology();
+            return (R) IsoChronology.INSTANCE;
         } else if (query == TemporalQueries.precision()) {
             return (R) NANOS;
         } else if (query == TemporalQueries.offset() || query == TemporalQueries.zone()) {
             return (R) getOffset();
+        } else if (query == TemporalQueries.localDate()) {
+            return (R) toLocalDate();
+        } else if (query == TemporalQueries.localTime()) {
+            return (R) toLocalTime();
+        } else if (query == TemporalQueries.zoneId()) {
+            return null;
         }
         return super.query(query);
     }

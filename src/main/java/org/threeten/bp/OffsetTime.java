@@ -974,6 +974,10 @@ public final class OffsetTime
             return (R) NANOS;
         } else if (query == TemporalQueries.offset() || query == TemporalQueries.zone()) {
             return (R) getOffset();
+        } else if (query == TemporalQueries.localTime()) {
+            return (R) time;
+        } else if (query == TemporalQueries.chronology() || query == TemporalQueries.localDate() || query == TemporalQueries.zoneId()) {
+            return null;
         }
         return super.query(query);
     }

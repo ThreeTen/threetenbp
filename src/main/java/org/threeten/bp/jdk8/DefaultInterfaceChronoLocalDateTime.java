@@ -99,6 +99,8 @@ public abstract class DefaultInterfaceChronoLocalDateTime<D extends ChronoLocalD
             return (R) LocalDate.ofEpochDay(toLocalDate().toEpochDay());
         } else if (query == TemporalQueries.localTime()) {
             return (R) toLocalTime();
+        } else if (query == TemporalQueries.zone() || query == TemporalQueries.zoneId() || query == TemporalQueries.offset()) {
+            return null;
         }
         return super.query(query);
     }

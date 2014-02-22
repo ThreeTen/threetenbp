@@ -1198,7 +1198,8 @@ public final class LocalTime
         }
         // inline TemporalAccessor.super.query(query) as an optimization
         if (query == TemporalQueries.chronology() || query == TemporalQueries.zoneId() ||
-                query == TemporalQueries.zone() || query == TemporalQueries.offset()) {
+                query == TemporalQueries.zone() || query == TemporalQueries.offset() ||
+                query == TemporalQueries.localDate()) {
             return null;
         }
         return query.queryFrom(this);

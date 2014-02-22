@@ -134,7 +134,7 @@ public abstract class DefaultInterfaceChronoZonedDateTime<D extends ChronoLocalD
     @SuppressWarnings("unchecked")
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.zoneId()) {
+        if (query == TemporalQueries.zoneId() || query == TemporalQueries.zone()) {
             return (R) getZone();
         } else if (query == TemporalQueries.chronology()) {
             return (R) toLocalDate().getChronology();

@@ -559,33 +559,14 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
     // query(TemporalQuery)
     //-----------------------------------------------------------------------
     @Test
-    public void test_query_chrono() {
+    public void test_query() {
         assertEquals(TEST_2008_6_30_11_30_59_000000500.query(TemporalQueries.chronology()), IsoChronology.INSTANCE);
-        assertEquals(TemporalQueries.chronology().queryFrom(TEST_2008_6_30_11_30_59_000000500), IsoChronology.INSTANCE);
-    }
-
-    @Test
-    public void test_query_zoneId() {
+        assertEquals(TEST_2008_6_30_11_30_59_000000500.query(TemporalQueries.localDate()), TEST_2008_6_30_11_30_59_000000500.toLocalDate());
+        assertEquals(TEST_2008_6_30_11_30_59_000000500.query(TemporalQueries.localTime()), TEST_2008_6_30_11_30_59_000000500.toLocalTime());
+        assertEquals(TEST_2008_6_30_11_30_59_000000500.query(TemporalQueries.offset()), TEST_2008_6_30_11_30_59_000000500.getOffset());
+        assertEquals(TEST_2008_6_30_11_30_59_000000500.query(TemporalQueries.precision()), ChronoUnit.NANOS);
+        assertEquals(TEST_2008_6_30_11_30_59_000000500.query(TemporalQueries.zone()), TEST_2008_6_30_11_30_59_000000500.getOffset());
         assertEquals(TEST_2008_6_30_11_30_59_000000500.query(TemporalQueries.zoneId()), null);
-        assertEquals(TemporalQueries.zoneId().queryFrom(TEST_2008_6_30_11_30_59_000000500), null);
-    }
-
-    @Test
-    public void test_query_precision() {
-        assertEquals(TEST_2008_6_30_11_30_59_000000500.query(TemporalQueries.precision()), NANOS);
-        assertEquals(TemporalQueries.precision().queryFrom(TEST_2008_6_30_11_30_59_000000500), NANOS);
-    }
-
-    @Test
-    public void test_query_offset() {
-        assertEquals(TEST_2008_6_30_11_30_59_000000500.query(TemporalQueries.offset()), OFFSET_PONE);
-        assertEquals(TemporalQueries.offset().queryFrom(TEST_2008_6_30_11_30_59_000000500), OFFSET_PONE);
-    }
-
-    @Test
-    public void test_query_zone() {
-        assertEquals(TEST_2008_6_30_11_30_59_000000500.query(TemporalQueries.zone()), OFFSET_PONE);
-        assertEquals(TemporalQueries.zone().queryFrom(TEST_2008_6_30_11_30_59_000000500), OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
