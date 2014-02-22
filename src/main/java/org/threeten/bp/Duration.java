@@ -322,7 +322,21 @@ public final class Duration
         long secs = startInclusive.until(endExclusive, SECONDS);
         long nanos = 0;
         if (startInclusive.isSupported(NANO_OF_SECOND) && endExclusive.isSupported(NANO_OF_SECOND)) {
-            nanos = endExclusive.getLong(NANO_OF_SECOND) - startInclusive.getLong(NANO_OF_SECOND);
+            try {
+                long startNos = startInclusive.getLong(NANO_OF_SECOND);
+                nanos = endExclusive.getLong(NANO_OF_SECOND) - startNos;
+                if (secs > 0 && nanos < 0) {
+                    nanos += NANOS_PER_SECOND;
+                } else if (secs < 0 && nanos > 0) {
+                    nanos -= NANOS_PER_SECOND;
+                } else if (secs == 0 && nanos != 0) {
+                    // two possible meanings for result, so recalculate secs
+                    Temporal adjustedEnd = endExclusive.with(NANO_OF_SECOND, startNos);
+                    secs = startInclusive.until(adjustedEnd, SECONDS);;
+                }
+            } catch (DateTimeException | ArithmeticException ex2) {
+                // ignore and only use seconds
+            }
         }
         return ofSeconds(secs, nanos);
     }
@@ -777,7 +791,7 @@ public final class Duration
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Duration minusDays(long daysToSubtract) {
-        return (daysToSubtract == Long.MIN_VALUE ? plusSeconds(Long.MAX_VALUE).plusSeconds(1) : plusSeconds(-daysToSubtract));
+        return (daysToSubtract == Long.MIN_VALUE ? plusDays(Long.MAX_VALUE).plusDays(1) : plusDays(-daysToSubtract));
     }
 
     /**
@@ -790,7 +804,7 @@ public final class Duration
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Duration minusHours(long hoursToSubtract) {
-        return (hoursToSubtract == Long.MIN_VALUE ? plusSeconds(Long.MAX_VALUE).plusSeconds(1) : plusSeconds(-hoursToSubtract));
+        return (hoursToSubtract == Long.MIN_VALUE ? plusHours(Long.MAX_VALUE).plusHours(1) : plusHours(-hoursToSubtract));
     }
 
     /**
@@ -803,7 +817,7 @@ public final class Duration
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Duration minusMinutes(long minutesToSubtract) {
-        return (minutesToSubtract == Long.MIN_VALUE ? plusSeconds(Long.MAX_VALUE).plusSeconds(1) : plusSeconds(-minutesToSubtract));
+        return (minutesToSubtract == Long.MIN_VALUE ? plusMinutes(Long.MAX_VALUE).plusMinutes(1) : plusMinutes(-minutesToSubtract));
     }
 
     /**

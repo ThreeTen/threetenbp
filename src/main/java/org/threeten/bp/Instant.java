@@ -915,7 +915,8 @@ public final class Instant
      * The result will be negative if the end is before the start.
      * The calculation returns a whole number, representing the number of
      * complete units between the two instants.
-     * The {@code Temporal} passed to this method must be an {@code Instant}.
+     * The {@code Temporal} passed to this method is converted to a
+     * {@code Instant} using {@link #from(TemporalAccessor)}.
      * For example, the period in days between two dates can be calculated
      * using {@code startInstant.until(endInstant, SECONDS)}.
      * <p>
@@ -967,14 +968,21 @@ public final class Instant
     }
 
     private long nanosUntil(Instant end) {
-        long secs = Jdk8Methods.safeMultiply(secondsUntil(end), NANOS_PER_SECOND);
-        return Jdk8Methods.safeAdd(secs, end.nanos - nanos);
+        long secsDiff = Jdk8Methods.safeSubtract(end.seconds, seconds);
+        long totalNanos = Jdk8Methods.safeMultiply(secsDiff, NANOS_PER_SECOND);
+        return Jdk8Methods.safeAdd(totalNanos, end.nanos - nanos);
     }
 
     private long secondsUntil(Instant end) {
-        return Jdk8Methods.safeSubtract(end.seconds, seconds);
+        long secsDiff = Jdk8Methods.safeSubtract(end.seconds, seconds);
+        long nanosDiff = end.nanos - nanos;
+        if (secsDiff > 0 && nanosDiff < 0) {
+            secsDiff--;
+        } else if (secsDiff < 0 && nanosDiff > 0) {
+            secsDiff++;
+        }
+        return secsDiff;
     }
-
     //-----------------------------------------------------------------------
     /**
      * Combines this instant with an offset to create an {@code OffsetDateTime}.
