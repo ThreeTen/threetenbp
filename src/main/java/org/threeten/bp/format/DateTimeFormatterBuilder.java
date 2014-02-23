@@ -585,19 +585,75 @@ public final class DateTimeFormatterBuilder {
 
     //-----------------------------------------------------------------------
     /**
-     * Appends an instant using ISO-8601 to the formatter.
+     * Appends an instant using ISO-8601 to the formatter, formatting fractional
+     * digits in groups of three.
      * <p>
      * Instants have a fixed output format.
-     * They are converted to a date-time with a zone-offset of UTC and printed
+     * They are converted to a date-time with a zone-offset of UTC and formatted
      * using the standard ISO-8601 format.
+     * With this method, formatting nano-of-second outputs zero, three, six
+     * or nine digits digits as necessary.
+     * The localized decimal style is not used.
      * <p>
-     * An alternative to this method is to print/parse the instant as a single
+     * The instant is obtained using {@link ChronoField#INSTANT_SECONDS INSTANT_SECONDS}
+     * and optionally (@code NANO_OF_SECOND). The value of {@code INSTANT_SECONDS}
+     * may be outside the maximum range of {@code LocalDateTime}.
+     * <p>
+     * The {@linkplain ResolverStyle resolver style} has no effect on instant parsing.
+     * The end-of-day time of '24:00' is handled as midnight at the start of the following day.
+     * The leap-second time of '23:59:59' is handled to some degree, see
+     * {@link DateTimeFormatter#parsedLeapSecond()} for full details.
+     * <p>
+     * An alternative to this method is to format/parse the instant as a single
      * epoch-seconds value. That is achieved using {@code appendValue(INSTANT_SECONDS)}.
      *
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendInstant() {
-        appendInternal(new InstantPrinterParser());
+        appendInternal(new InstantPrinterParser(-2));
+        return this;
+    }
+
+    /**
+     * Appends an instant using ISO-8601 to the formatter with control over
+     * the number of fractional digits.
+     * <p>
+     * Instants have a fixed output format, although this method provides some
+     * control over the fractional digits. They are converted to a date-time
+     * with a zone-offset of UTC and printed using the standard ISO-8601 format.
+     * The localized decimal style is not used.
+     * <p>
+     * The {@code fractionalDigits} parameter allows the output of the fractional
+     * second to be controlled. Specifying zero will cause no fractional digits
+     * to be output. From 1 to 9 will output an increasing number of digits, using
+     * zero right-padding if necessary. The special value -1 is used to output as
+     * many digits as necessary to avoid any trailing zeroes.
+     * <p>
+     * When parsing in strict mode, the number of parsed digits must match the
+     * fractional digits. When parsing in lenient mode, any number of fractional
+     * digits from zero to nine are accepted.
+     * <p>
+     * The instant is obtained using {@link ChronoField#INSTANT_SECONDS INSTANT_SECONDS}
+     * and optionally (@code NANO_OF_SECOND). The value of {@code INSTANT_SECONDS}
+     * may be outside the maximum range of {@code LocalDateTime}.
+     * <p>
+     * The {@linkplain ResolverStyle resolver style} has no effect on instant parsing.
+     * The end-of-day time of '24:00' is handled as midnight at the start of the following day.
+     * The leap-second time of '23:59:59' is handled to some degree, see
+     * {@link DateTimeFormatter#parsedLeapSecond()} for full details.
+     * <p>
+     * An alternative to this method is to format/parse the instant as a single
+     * epoch-seconds value. That is achieved using {@code appendValue(INSTANT_SECONDS)}.
+     *
+     * @param fractionalDigits  the number of fractional second digits to format with,
+     *  from 0 to 9, or -1 to use as many digits as necessary
+     * @return this, for chaining, not null
+     */
+    public DateTimeFormatterBuilder appendInstant(int fractionalDigits) {
+        if (fractionalDigits < -1 || fractionalDigits > 9) {
+            throw new IllegalArgumentException("Invalid fractional digits: " + fractionalDigits);
+        }
+        appendInternal(new InstantPrinterParser(fractionalDigits));
         return this;
     }
 
@@ -2435,15 +2491,21 @@ public final class DateTimeFormatterBuilder {
                     .append(DateTimeFormatter.ISO_LOCAL_TIME).appendLiteral('Z')
                     .toFormatter().toPrinterParser(false);
 
-        InstantPrinterParser() {
+        private final int fractionalDigits;
+
+        InstantPrinterParser(int fractionalDigits) {
+            this.fractionalDigits = fractionalDigits;
         }
 
         @Override
         public boolean print(DateTimePrintContext context, StringBuilder buf) {
             // use INSTANT_SECONDS, thus this code is not bound by Instant.MAX
             Long inSecs = context.getValue(INSTANT_SECONDS);
-            Long inNanos = context.getValue(NANO_OF_SECOND);
-            if (inSecs == null || inNanos == null) {
+            Long inNanos = 0L;
+            if (context.getTemporal().isSupported(NANO_OF_SECOND)) {
+                inNanos = context.getTemporal().getLong(NANO_OF_SECOND);
+            }
+            if (inSecs == null) {
                 return false;
             }
             long inSec = inSecs;
@@ -2453,19 +2515,25 @@ public final class DateTimeFormatterBuilder {
                 long zeroSecs = inSec - SECONDS_PER_10000_YEARS + SECONDS_0000_TO_1970;
                 long hi = Jdk8Methods.floorDiv(zeroSecs, SECONDS_PER_10000_YEARS) + 1;
                 long lo = Jdk8Methods.floorMod(zeroSecs, SECONDS_PER_10000_YEARS);
-                LocalDateTime ldt = LocalDateTime.ofEpochSecond(lo - SECONDS_0000_TO_1970, inNano, ZoneOffset.UTC);
+                LocalDateTime ldt = LocalDateTime.ofEpochSecond(lo - SECONDS_0000_TO_1970, 0, ZoneOffset.UTC);
                 if (hi > 0) {
                     buf.append('+').append(hi);
                 }
-                buf.append(ldt).append('Z');
+                buf.append(ldt);
+                if (ldt.getSecond() == 0) {
+                    buf.append(":00");
+                }
             } else {
                 // before current era
                 long zeroSecs = inSec + SECONDS_0000_TO_1970;
                 long hi = zeroSecs / SECONDS_PER_10000_YEARS;
                 long lo = zeroSecs % SECONDS_PER_10000_YEARS;
-                LocalDateTime ldt = LocalDateTime.ofEpochSecond(lo - SECONDS_0000_TO_1970, inNano, ZoneOffset.UTC);
+                LocalDateTime ldt = LocalDateTime.ofEpochSecond(lo - SECONDS_0000_TO_1970, 0, ZoneOffset.UTC);
                 int pos = buf.length();
-                buf.append(ldt).append('Z');
+                buf.append(ldt);
+                if (ldt.getSecond() == 0) {
+                    buf.append(":00");
+                }
                 if (hi < 0) {
                     if (ldt.getYear() == -10_000) {
                         buf.replace(pos, pos + 2, Long.toString(hi - 1));
@@ -2476,6 +2544,28 @@ public final class DateTimeFormatterBuilder {
                     }
                 }
             }
+            //fraction
+            if (fractionalDigits == -2) {
+                if (inNano != 0) {
+                    buf.append('.');
+                    if (inNano % 1000_000 == 0) {
+                        buf.append(Integer.toString((inNano / 1000_000) + 1000).substring(1));
+                    } else if (inNano % 1000 == 0) {
+                        buf.append(Integer.toString((inNano / 1000) + 1000_000).substring(1));
+                    } else {
+                        buf.append(Integer.toString((inNano) + 1000_000_000).substring(1));
+                    }
+                }
+            } else if (fractionalDigits != 0 && inNano != 0) {
+                int div = 100_000_000;
+                for (int i = 0; ((fractionalDigits == -1 && inNano > 0) || i < fractionalDigits); i++) {
+                    int digit = inNano / div;
+                    buf.append((char) (digit + '0'));
+                    div = div / 10;
+                    inNano = inNano - (digit * div);
+                }
+            }
+            buf.append('Z');
             return true;
         }
 

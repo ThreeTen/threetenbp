@@ -1131,7 +1131,7 @@ public final class Instant
     /**
      * A string representation of this instant using ISO-8601 representation.
      * <p>
-     * The format used is the same as {@link DateTimeFormatters#isoInstant()}.
+     * The format used is the same as {@link DateTimeFormatters#ISO_INSTANT}.
      *
      * @return an ISO-8601 representation of this instant, not null
      */

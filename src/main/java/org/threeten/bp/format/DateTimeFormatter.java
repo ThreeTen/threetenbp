@@ -491,18 +491,34 @@ public final class DateTimeFormatter {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the ISO instant formatter that prints/parses an instant in UTC.
+     * The ISO instant formatter that formats or parses an instant in UTC,
+     * such as '2011-12-03T10:15:30Z'.
      * <p>
-     * This returns an immutable formatter capable of printing and parsing
+     * This returns an immutable formatter capable of formatting and parsing
      * the ISO-8601 instant format.
+     * When formatting, the second-of-minute is always output.
+     * The nano-of-second outputs zero, three, six or nine digits digits as necessary.
+     * When parsing, time to at least the seconds field is required.
+     * Fractional seconds from zero to nine are parsed.
+     * The localized decimal style is not used.
+     * <p>
+     * This is a special case formatter intended to allow a human readable form
+     * of an {@link java.time.Instant}. The {@code Instant} class is designed to
+     * only represent a point in time and internally stores a value in nanoseconds
+     * from a fixed epoch of 1970-01-01Z. As such, an {@code Instant} cannot be
+     * formatted as a date or time without providing some form of time-zone.
+     * This formatter allows the {@code Instant} to be formatted, by providing
+     * a suitable conversion using {@code ZoneOffset.UTC}.
+     * <p>
      * The format consists of:
-     * <p><ul>
-     * <li>The {@link #isoOffsetDateTime()} where the instant is converted from
+     * <ul>
+     * <li>The {@link #ISO_OFFSET_DATE_TIME} where the instant is converted from
      *  {@link ChronoField#INSTANT_SECONDS} and {@link ChronoField#NANO_OF_SECOND}
      *  using the {@code UTC} offset. Parsing is case insensitive.
-     * </ul><p>
-     *
-     * @return the ISO instant formatter, not null
+     * </ul>
+     * <p>
+     * The returned formatter has no override chronology or zone.
+     * It uses the {@link ResolverStyle#STRICT STRICT} resolver style.
      */
     public static final DateTimeFormatter ISO_INSTANT;
     static {
