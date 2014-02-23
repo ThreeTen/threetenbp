@@ -56,6 +56,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.Chronology;
+import org.threeten.bp.format.ResolverStyle;
 import org.threeten.bp.jdk8.Jdk8Methods;
 
 /**
@@ -294,23 +295,31 @@ public final class WeekFields implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a field to access the day of week,
-     * computed based on this WeekFields.
+     * Returns a field to access the day of week based on this {@code WeekFields}.
      * <p>
-     * The days of week are numbered from 1 to 7.
-     * Day number 1 is the {@link #getFirstDayOfWeek() first day-of-week}.
+     * This is similar to {@link ChronoField#DAY_OF_WEEK} but uses values for
+     * the day-of-week based on this {@code WeekFields}.
+     * The days are numbered from 1 to 7 where the
+     * {@link #getFirstDayOfWeek() first day-of-week} is assigned the value 1.
+     * <p>
+     * For example, if the first day-of-week is Sunday, then that will have the
+     * value 1, with other days ranging from Monday as 2 to Saturday as 7.
+     * <p>
+     * In the resolving phase of parsing, a localized day-of-week will be converted
+     * to a standardized {@code ChronoField} day-of-week.
+     * The day-of-week must be in the valid range 1 to 7.
+     * Other fields in this class build dates using the standardized day-of-week.
      *
-     * @return the field for day-of-week using this week definition, not null
+     * @return a field providing access to the day-of-week with localized numbering, not null
      */
     public TemporalField dayOfWeek() {
         return dayOfWeek;
     }
 
     /**
-     * Returns a field to access the week of month,
-     * computed based on this WeekFields.
+     * Returns a field to access the week of month based on this {@code WeekFields}.
      * <p>
-     * This represents concept of the count of weeks within the month where weeks
+     * This represents the concept of the count of weeks within the month where weeks
      * start on a fixed day-of-week, such as Monday.
      * This field is typically used with {@link WeekFields#dayOfWeek()}.
      * <p>
@@ -326,22 +335,42 @@ public final class WeekFields implements Serializable {
      * - if the 5th day of the month is a Monday, week two starts on the 5th and the 1st to 4th is in week one<br>
      * <p>
      * This field can be used with any calendar system.
-     * @return a TemporalField to access the WeekOfMonth, not null
+     * <p>
+     * In the resolving phase of parsing, a date can be created from a year,
+     * week-of-month, month-of-year and day-of-week.
+     * <p>
+     * In {@linkplain ResolverStyle#STRICT strict mode}, all four fields are
+     * validated against their range of valid values. The week-of-month field
+     * is validated to ensure that the resulting month is the month requested.
+     * <p>
+     * In {@linkplain ResolverStyle#SMART smart mode}, all four fields are
+     * validated against their range of valid values. The week-of-month field
+     * is validated from 0 to 6, meaning that the resulting date can be in a
+     * different month to that specified.
+     * <p>
+     * In {@linkplain ResolverStyle#LENIENT lenient mode}, the year and day-of-week
+     * are validated against the range of valid values. The resulting date is calculated
+     * equivalent to the following four stage approach.
+     * First, create a date on the first day of the first week of January in the requested year.
+     * Then take the month-of-year, subtract one, and add the amount in months to the date.
+     * Then take the week-of-month, subtract one, and add the amount in weeks to the date.
+     * Finally, adjust to the correct day-of-week within the localized week.
+     *
+     * @return a field providing access to the week-of-month, not null
      */
     public TemporalField weekOfMonth() {
         return weekOfMonth;
     }
 
     /**
-     * Returns a field to access the week of year,
-     * computed based on this WeekFields.
+     * Returns a field to access the week of year based on this {@code WeekFields}.
      * <p>
-     * This represents concept of the count of weeks within the year where weeks
+     * This represents the concept of the count of weeks within the year where weeks
      * start on a fixed day-of-week, such as Monday.
      * This field is typically used with {@link WeekFields#dayOfWeek()}.
      * <p>
      * Week one(1) is the week starting on the {@link WeekFields#getFirstDayOfWeek}
-     * where there are at least {@link WeekFields#getMinimalDaysInFirstWeek()} days in the month.
+     * where there are at least {@link WeekFields#getMinimalDaysInFirstWeek()} days in the year.
      * Thus, week one may start up to {@code minDays} days before the start of the year.
      * If the first week starts after the start of the year then the period before is week zero (0).
      * <p>
@@ -352,14 +381,127 @@ public final class WeekFields implements Serializable {
      * - if the 5th day of the year is a Monday, week two starts on the 5th and the 1st to 4th is in week one<br>
      * <p>
      * This field can be used with any calendar system.
-     * @return a TemporalField to access the WeekOfYear, not null
+     * <p>
+     * In the resolving phase of parsing, a date can be created from a year,
+     * week-of-year and day-of-week.
+     * <p>
+     * In {@linkplain ResolverStyle#STRICT strict mode}, all three fields are
+     * validated against their range of valid values. The week-of-year field
+     * is validated to ensure that the resulting year is the year requested.
+     * <p>
+     * In {@linkplain ResolverStyle#SMART smart mode}, all three fields are
+     * validated against their range of valid values. The week-of-year field
+     * is validated from 0 to 54, meaning that the resulting date can be in a
+     * different year to that specified.
+     * <p>
+     * In {@linkplain ResolverStyle#LENIENT lenient mode}, the year and day-of-week
+     * are validated against the range of valid values. The resulting date is calculated
+     * equivalent to the following three stage approach.
+     * First, create a date on the first day of the first week in the requested year.
+     * Then take the week-of-year, subtract one, and add the amount in weeks to the date.
+     * Finally, adjust to the correct day-of-week within the localized week.
+     *
+     * @return a field providing access to the week-of-year, not null
      */
     public TemporalField weekOfYear() {
         return weekOfYear;
     }
 
     /**
-     * Checks if these rules are equal to the specified rules.
+     * Returns a field to access the week of a week-based-year based on this {@code WeekFields}.
+     * <p>
+     * This represents the concept of the count of weeks within the year where weeks
+     * start on a fixed day-of-week, such as Monday and each week belongs to exactly one year.
+     * This field is typically used with {@link WeekFields#dayOfWeek()} and
+     * {@link WeekFields#weekBasedYear()}.
+     * <p>
+     * Week one(1) is the week starting on the {@link WeekFields#getFirstDayOfWeek}
+     * where there are at least {@link WeekFields#getMinimalDaysInFirstWeek()} days in the year.
+     * If the first week starts after the start of the year then the period before
+     * is in the last week of the previous year.
+     * <p>
+     * For example:<br>
+     * - if the 1st day of the year is a Monday, week one starts on the 1st<br>
+     * - if the 2nd day of the year is a Monday, week one starts on the 2nd and
+     *   the 1st is in the last week of the previous year<br>
+     * - if the 4th day of the year is a Monday, week one starts on the 4th and
+     *   the 1st to 3rd is in the last week of the previous year<br>
+     * - if the 5th day of the year is a Monday, week two starts on the 5th and
+     *   the 1st to 4th is in week one<br>
+     * <p>
+     * This field can be used with any calendar system.
+     * <p>
+     * In the resolving phase of parsing, a date can be created from a week-based-year,
+     * week-of-year and day-of-week.
+     * <p>
+     * In {@linkplain ResolverStyle#STRICT strict mode}, all three fields are
+     * validated against their range of valid values. The week-of-year field
+     * is validated to ensure that the resulting week-based-year is the
+     * week-based-year requested.
+     * <p>
+     * In {@linkplain ResolverStyle#SMART smart mode}, all three fields are
+     * validated against their range of valid values. The week-of-week-based-year field
+     * is validated from 1 to 53, meaning that the resulting date can be in the
+     * following week-based-year to that specified.
+     * <p>
+     * In {@linkplain ResolverStyle#LENIENT lenient mode}, the year and day-of-week
+     * are validated against the range of valid values. The resulting date is calculated
+     * equivalent to the following three stage approach.
+     * First, create a date on the first day of the first week in the requested week-based-year.
+     * Then take the week-of-week-based-year, subtract one, and add the amount in weeks to the date.
+     * Finally, adjust to the correct day-of-week within the localized week.
+     *
+     * @return a field providing access to the week-of-week-based-year, not null
+     */
+    public TemporalField weekOfWeekBasedYear() {
+        throw new UnsupportedOperationException();  // TODO
+    }
+
+    /**
+     * Returns a field to access the year of a week-based-year based on this {@code WeekFields}.
+     * <p>
+     * This represents the concept of the year where weeks start on a fixed day-of-week,
+     * such as Monday and each week belongs to exactly one year.
+     * This field is typically used with {@link WeekFields#dayOfWeek()} and
+     * {@link WeekFields#weekOfWeekBasedYear()}.
+     * <p>
+     * Week one(1) is the week starting on the {@link WeekFields#getFirstDayOfWeek}
+     * where there are at least {@link WeekFields#getMinimalDaysInFirstWeek()} days in the year.
+     * Thus, week one may start before the start of the year.
+     * If the first week starts after the start of the year then the period before
+     * is in the last week of the previous year.
+     * <p>
+     * This field can be used with any calendar system.
+     * <p>
+     * In the resolving phase of parsing, a date can be created from a week-based-year,
+     * week-of-year and day-of-week.
+     * <p>
+     * In {@linkplain ResolverStyle#STRICT strict mode}, all three fields are
+     * validated against their range of valid values. The week-of-year field
+     * is validated to ensure that the resulting week-based-year is the
+     * week-based-year requested.
+     * <p>
+     * In {@linkplain ResolverStyle#SMART smart mode}, all three fields are
+     * validated against their range of valid values. The week-of-week-based-year field
+     * is validated from 1 to 53, meaning that the resulting date can be in the
+     * following week-based-year to that specified.
+     * <p>
+     * In {@linkplain ResolverStyle#LENIENT lenient mode}, the year and day-of-week
+     * are validated against the range of valid values. The resulting date is calculated
+     * equivalent to the following three stage approach.
+     * First, create a date on the first day of the first week in the requested week-based-year.
+     * Then take the week-of-week-based-year, subtract one, and add the amount in weeks to the date.
+     * Finally, adjust to the correct day-of-week within the localized week.
+     *
+     * @return a field providing access to the week-based-year, not null
+     */
+    public TemporalField weekBasedYear() {
+        throw new UnsupportedOperationException();  // TODO
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if this {@code WeekFields} is equal to the specified object.
      * <p>
      * The comparison is based on the entire state of the rules, which is
      * the first day-of-week and minimal days.
@@ -379,7 +521,7 @@ public final class WeekFields implements Serializable {
     }
 
     /**
-     * A hash code for these rules.
+     * A hash code for this {@code WeekFields}.
      *
      * @return a suitable hash code
      */
@@ -390,7 +532,7 @@ public final class WeekFields implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * A string representation of this definition.
+     * A string representation of this {@code WeekFields} instance.
      *
      * @return the string representation, not null
      */
@@ -528,6 +670,7 @@ public final class WeekFields implements Serializable {
             return ((7 + offset + (day - 1)) / 7);
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public <R extends Temporal> R adjustInto(R temporal, long newValue) {
             // Check the new value and get the old value of the field
@@ -667,4 +810,5 @@ public final class WeekFields implements Serializable {
             return name + "[" + weekDef.toString() + "]";
         }
     }
+
 }
