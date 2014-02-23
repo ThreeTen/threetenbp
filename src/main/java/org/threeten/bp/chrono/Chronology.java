@@ -597,8 +597,7 @@ public abstract class Chronology implements Comparable<Chronology> {
      * years, months and days.  All supplied chronologies use periods
      * based on years, months and days, however the {@code ChronoPeriod} API
      * allows the period to be represented using other units.
-     *
-     * @implSpec
+     * <p>
      * The default implementation returns an implementation class suitable
      * for most calendar systems. It is based solely on the three units.
      * Normalization, addition and subtraction derive the number of months
