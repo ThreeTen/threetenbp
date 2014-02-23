@@ -43,10 +43,10 @@ This package provides support for alternate systems.
 The supported calendar systems includes:
 </p>
 <ul>
-    <li>{@link org.threeten.bp.chrono.HijrahChronology Hijrah calendar}</li>
-    <li>{@link org.threeten.bp.chrono.JapaneseChronology Japanese calendar}</li>
-    <li>{@link org.threeten.bp.chrono.MinguoChronology Minguo calendar}</li>
-    <li>{@link org.threeten.bp.chrono.ThaiBuddhistChronology Thai Buddhist calendar}</li>
+    <li>{@linkplain org.threeten.bp.chrono.HijrahChronology Hijrah calendar}</li>
+    <li>{@linkplain org.threeten.bp.chrono.JapaneseChronology Japanese calendar}</li>
+    <li>{@linkplain org.threeten.bp.chrono.MinguoChronology Minguo calendar}</li>
+    <li>{@linkplain org.threeten.bp.chrono.ThaiBuddhistChronology Thai Buddhist calendar}</li>
 </ul>
 <p>
 It is intended that applications use the main API whenever possible, including code to read and write
@@ -60,7 +60,7 @@ This example creates and uses a date in a non-ISO calendar system.
 </p>
 <pre>
         // Print the Thai Buddhist date
-        ChronoLocalDate&lt;ThaiBuddhistChronology&gt; now1 = ThaiBuddhistChronology.INSTANCE.now();
+        ChronoLocalDate now1 = ThaiBuddhistChronology.INSTANCE.now();
         int day = now1.get(ChronoField.DAY_OF_MONTH);
         int dow = now1.get(ChronoField.DAY_OF_WEEK);
         int month = now1.get(ChronoField.MONTH_OF_YEAR);
@@ -77,10 +77,10 @@ This example creates and uses a date in a non-ISO calendar system.
         }
 
         // Print today's date and the last day of the year for the Thai Buddhist Calendar.
-        ChronoLocalDate&lt;ThaiBuddhistChronology&gt; first = now1
+        ChronoLocalDate first = now1
                 .with(ChronoField.DAY_OF_MONTH, 1)
                 .with(ChronoField.MONTH_OF_YEAR, 1);
-        ChronoLocalDate&lt;ThaiBuddhistChronology&gt; last = first
+        ChronoLocalDate last = first
                 .plus(1, ChronoUnit.YEARS)
                 .minus(1, ChronoUnit.DAYS);
         System.out.printf("  %s: 1st of year: %s; end of year: %s%n", last.getChronology().getId(),

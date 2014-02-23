@@ -33,7 +33,7 @@
  -->
 <body>
 <p>
-Access to date and time using fields and units, plus additional value type classes.
+Access to date and time using fields and units.
 </p>
 <p>
 This package expands on the base package to provide additional functionality for
@@ -85,10 +85,10 @@ A key part of the date-time problem space is adjusting a date to a new, related 
 such as the "last day of the month", or "next Wednesday".
 These are modeled as functions that adjust a base date-time.
 The functions implement {@link org.threeten.bp.temporal.TemporalAdjuster} and operate
-on {@link org.threeten.bp.temporal.DateTime}.
-A set of common functions are provided in {@link org.threeten.bp.temporal.DateTimeAdjusters}.
+on {@link org.threeten.bp.temporal.Temporal}.
+A set of common functions are provided in {@link org.threeten.bp.temporal.TemporalAdjusters}.
 For example, to find the first occurrence of a day-of-week after a given date, use
-{@link org.threeten.bp.temporal.DateTimeAdjusters#next(DayOfWeek)}, such as
+{@link org.threeten.bp.temporal.TemporalAdjusters#next(DayOfWeek)}, such as
 {@code date.with(next(MONDAY))}.
 </p>
 
@@ -96,11 +96,11 @@ For example, to find the first occurrence of a day-of-week after a given date, u
 <p>
 Different locales have different definitions of the week.
 For example, in Europe the week typically starts on a Monday, while in the US it starts on a Sunday.
-The {@link org.threeten.bp.temporal.WeekDefinition} class models this distinction.
+The {@link org.threeten.bp.temporal.WeekFields} class models this distinction.
 </p>
 <p>
 The ISO calendar system defines an additional week-based division of years.
 This defines a year based on whole Monday to Monday weeks.
-This is modeled in {@link org.threeten.bp.temporal.ISOWeeks}.
+This is modeled in {@link org.threeten.bp.temporal.IsoFields}.
 </p>
 </body>
