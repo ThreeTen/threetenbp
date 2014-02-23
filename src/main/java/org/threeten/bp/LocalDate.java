@@ -57,7 +57,6 @@ import org.threeten.bp.chrono.Era;
 import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeParseException;
-import org.threeten.bp.jdk8.DefaultInterfaceChronoLocalDate;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
@@ -100,8 +99,8 @@ import org.threeten.bp.zone.ZoneRules;
  * This class is immutable and thread-safe.
  */
 public final class LocalDate
-        extends DefaultInterfaceChronoLocalDate
-        implements Temporal, TemporalAdjuster, ChronoLocalDate, Serializable {
+        extends ChronoLocalDate
+        implements Temporal, TemporalAdjuster, Serializable {
 
     /**
      * The minimum supported {@code LocalDate}, '-999999999-01-01'.

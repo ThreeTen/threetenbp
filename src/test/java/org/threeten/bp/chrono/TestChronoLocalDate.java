@@ -259,7 +259,7 @@ public class TestChronoLocalDate {
                 ChronoLocalDate a = dates.get(i);
                 for (int j = 0; j < otherDates.size(); j++) {
                     ChronoLocalDate b = otherDates.get(j);
-                    int cmp = ChronoLocalDate.DATE_COMPARATOR.compare(a, b);
+                    int cmp = ChronoLocalDate.timeLineOrder().compare(a, b);
                     if (i < j) {
                         assertTrue(cmp < 0, a + " compare " + b);
                         assertEquals(a.isBefore(b), true, a + " isBefore " + b);
