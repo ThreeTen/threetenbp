@@ -287,6 +287,40 @@ public final class DateTimeFormatterBuilder {
 
     //-----------------------------------------------------------------------
     /**
+     * Appends a default value for a field to the formatter for use in parsing.
+     * <p>
+     * This appends an instruction to the builder to inject a default value
+     * into the parsed result. This is especially useful in conjunction with
+     * optional parts of the formatter.
+     * <p>
+     * For example, consider a formatter that parses the year, followed by
+     * an optional month, with a further optional day-of-month. Using such a
+     * formatter would require the calling code to check whether a full date,
+     * year-month or just a year had been parsed. This method can be used to
+     * default the month and day-of-month to a sensible value, such as the
+     * first of the month, allowing the calling code to always get a date.
+     * <p>
+     * During formatting, this method has no effect.
+     * <p>
+     * During parsing, the current state of the parse is inspected.
+     * If the specified field has no associated value, because it has not been
+     * parsed successfully at that point, then the specified value is injected
+     * into the parse result. Injection is immediate, thus the field-value pair
+     * will be visible to any subsequent elements in the formatter.
+     * As such, this method is normally called at the end of the builder.
+     *
+     * @param field  the field to default the value of, not null
+     * @param value  the value to default the field to
+     * @return this, for chaining, not null
+     */
+    public DateTimeFormatterBuilder parseDefaulting(TemporalField field, long value) {
+        Objects.requireNonNull(field, "field");
+        appendInternal(new DefaultingParser(field, value));
+        return this;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Appends the value of a date-time field to the formatter using a normal
      * output style.
      * <p>
@@ -2011,6 +2045,31 @@ public final class DateTimeFormatterBuilder {
                 case 3: return "ParseStrict(false)";
             }
             throw new IllegalStateException("Unreachable");
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Used by parseDefaulting().
+     */
+    static class DefaultingParser implements DateTimePrinterParser {
+        private final TemporalField field;
+        private final long value;
+
+        DefaultingParser(TemporalField field, long value) {
+            this.field = field;
+            this.value = value;
+        }
+
+        public boolean print(DateTimePrintContext context, StringBuilder buf) {
+            return true;
+        }
+
+        public int parse(DateTimeParseContext context, CharSequence text, int position) {
+            if (context.getParsed(field) == null) {
+                context.setParsedField(field, value, position, position);
+            }
+            return position;
         }
     }
 
