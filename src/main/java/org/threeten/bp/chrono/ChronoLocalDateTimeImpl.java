@@ -41,7 +41,6 @@ import java.util.Objects;
 
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.ZoneId;
-import org.threeten.bp.jdk8.DefaultInterfaceChronoLocalDateTime;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
@@ -68,8 +67,8 @@ import org.threeten.bp.temporal.ValueRange;
  * @param <D> the date type
  */
 final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate>
-        extends DefaultInterfaceChronoLocalDateTime<D>
-        implements  ChronoLocalDateTime<D>, Temporal, TemporalAdjuster, Serializable {
+        extends ChronoLocalDateTime<D>
+        implements Temporal, TemporalAdjuster, Serializable {
 
     /**
      * Serialization version.
