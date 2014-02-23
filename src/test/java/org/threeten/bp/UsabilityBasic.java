@@ -34,10 +34,6 @@ package org.threeten.bp;
 import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
 import static org.threeten.bp.temporal.TemporalAdjusters.previousOrSame;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.temporal.ChronoField;
@@ -60,8 +56,6 @@ public final class UsabilityBasic {
         print1();
         System.out.println("------");
         print2();
-        System.out.println("------");
-        sort();
     }
 
     private UsabilityBasic() {
@@ -160,12 +154,6 @@ public final class UsabilityBasic {
         System.out.println(f.format(LocalDate.now()));
         System.out.println(f.format(YearMonth.now()));
         System.out.println(f.format(ZonedDateTime.now()));
-    }
-
-    private static void sort() {
-        List<TemporalAccessor> list = Arrays.<TemporalAccessor>asList(LocalDate.now().plusMonths(3), LocalDate.now().minusMonths(3), LocalDateTime.now());
-        Collections.sort(list, ChronoField.MONTH_OF_YEAR);
-        System.out.println(list);
     }
 
 }

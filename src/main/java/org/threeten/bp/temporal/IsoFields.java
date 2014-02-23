@@ -45,7 +45,9 @@ import static org.threeten.bp.temporal.ChronoUnit.WEEKS;
 import static org.threeten.bp.temporal.ChronoUnit.YEARS;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDate;
@@ -418,8 +420,9 @@ public final class IsoFields {
         };
 
         @Override
-        public int compare(TemporalAccessor temporal1, TemporalAccessor temporal2) {
-            return Long.compare(temporal1.getLong(this), temporal2.getLong(this));
+        public String getDisplayName(Locale locale) {
+            Objects.requireNonNull(locale, "locale");
+            return toString();
         }
 
         @Override

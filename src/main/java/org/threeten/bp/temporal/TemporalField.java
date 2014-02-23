@@ -31,7 +31,7 @@
  */
 package org.threeten.bp.temporal;
 
-import java.util.Comparator;
+import java.util.Locale;
 import java.util.Map;
 
 import org.threeten.bp.DateTimeException;
@@ -57,7 +57,7 @@ import org.threeten.bp.DateTimeException;
  * Implementations should be {@code Serializable} where possible.
  * An enum is as effective implementation choice.
  */
-public interface TemporalField extends Comparator<TemporalAccessor> {
+public interface TemporalField {
 
     /**
      * Gets the unit that the field is measured in.
@@ -85,20 +85,6 @@ public interface TemporalField extends Comparator<TemporalAccessor> {
     TemporalUnit getRangeUnit();
 
     //-----------------------------------------------------------------------
-    /**
-     * Compares the value of this field in two temporal objects.
-     * <p>
-     * All fields implement {@link Comparator} on {@link TemporalAccessor}.
-     * This allows a list of date-times to be compared using the value of a field.
-     * For example, you could sort a list of arbitrary temporal objects by the value of
-     * the month-of-year field - {@code Collections.sort(list, MONTH_OF_YEAR)}
-     *
-     * @param temporal1  the first temporal object to compare, not null
-     * @param temporal2  the second temporal object to compare, not null
-     * @throws DateTimeException if unable to obtain the value for this field
-     */
-    int compare(TemporalAccessor temporal1, TemporalAccessor temporal2);
-
     /**
      * Gets the range of valid values for the field.
      * <p>
@@ -217,6 +203,19 @@ public interface TemporalField extends Comparator<TemporalAccessor> {
      * @throws DateTimeException if a value for the field cannot be obtained
      */
     long getFrom(TemporalAccessor temporal);
+
+    /**
+     * Gets the display name for the field in the requested locale.
+     * <p>
+     * If there is no display name for the locale then a suitable default must be returned.
+     * <p>
+     * The default implementation must check the locale is not null
+     * and return {@code toString()}.
+     *
+     * @param locale  the locale to use, not null
+     * @return the display name for the locale or a suitable default, not null
+     */
+    String getDisplayName(Locale locale);
 
     /**
      * Returns a copy of the specified temporal object with the value of this field set.

@@ -40,6 +40,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.testng.Assert;
@@ -425,11 +426,6 @@ public class TestChronoLocalDateTime {
         }
 
         @Override
-        public int compare(TemporalAccessor dateTime1, TemporalAccessor dateTime2) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
         public ValueRange range() {
             throw new UnsupportedOperationException("Not supported yet.");
         }
@@ -463,6 +459,11 @@ public class TestChronoLocalDateTime {
         @Override
         public <R extends Temporal> R adjustInto(R dateTime, long newValue) {
             return (R) this.dateTime;
+        }
+
+        @Override
+        public String getDisplayName(Locale locale) {
+            throw new UnsupportedOperationException("Not supported yet.");
         }
 
         @Override

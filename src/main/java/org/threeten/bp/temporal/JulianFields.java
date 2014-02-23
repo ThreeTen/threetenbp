@@ -36,7 +36,9 @@ import static org.threeten.bp.temporal.ChronoUnit.DAYS;
 import static org.threeten.bp.temporal.ChronoUnit.FOREVER;
 
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.jdk8.Jdk8Methods;
@@ -195,11 +197,6 @@ public final class JulianFields {
         }
 
         @Override
-        public int compare(TemporalAccessor temporal1, TemporalAccessor temporal2) {
-            return Long.compare(temporal1.getLong(this), temporal2.getLong(this));
-        }
-
-        @Override
         public boolean isDateBased() {
             return true;
         }
@@ -235,6 +232,12 @@ public final class JulianFields {
                 throw new DateTimeException("Invalid value: " + name + " " + newValue);
             }
             return (R) dateTime.with(EPOCH_DAY, Jdk8Methods.safeSubtract(newValue, offset));
+        }
+
+        @Override
+        public String getDisplayName(Locale locale) {
+            Objects.requireNonNull(locale, "locale");
+            return toString();
         }
 
         //-----------------------------------------------------------------------

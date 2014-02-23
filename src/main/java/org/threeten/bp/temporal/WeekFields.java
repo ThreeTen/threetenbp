@@ -746,12 +746,6 @@ public final class WeekFields implements Serializable {
             return range;
         }
 
-        //-------------------------------------------------------------------------
-        @Override
-        public int compare(TemporalAccessor temporal1, TemporalAccessor temporal2) {
-            return Long.compare(temporal1.getLong(this), temporal2.getLong(this));
-        }
-
         //-----------------------------------------------------------------------
         @Override
         public boolean isDateBased() {
@@ -801,6 +795,12 @@ public final class WeekFields implements Serializable {
             ValueRange fieldRange = temporal.range(field);
             return ValueRange.of(computeWeek(offset, (int) fieldRange.getMinimum()),
                     computeWeek(offset, (int) fieldRange.getMaximum()));
+        }
+
+        @Override
+        public String getDisplayName(Locale locale) {
+            Objects.requireNonNull(locale, "locale");
+            return toString();
         }
 
         //-----------------------------------------------------------------------

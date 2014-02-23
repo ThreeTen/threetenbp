@@ -45,7 +45,9 @@ import static org.threeten.bp.temporal.ChronoUnit.SECONDS;
 import static org.threeten.bp.temporal.ChronoUnit.WEEKS;
 import static org.threeten.bp.temporal.ChronoUnit.YEARS;
 
+import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.Instant;
@@ -573,12 +575,6 @@ public enum ChronoField implements TemporalField {
         return range().checkValidIntValue(value, this);
     }
 
-    //-------------------------------------------------------------------------
-    @Override
-    public int compare(TemporalAccessor temporal1, TemporalAccessor temporal2) {
-        return Long.compare(temporal1.getLong(this), temporal2.getLong(this));
-    }
-
     //-----------------------------------------------------------------------
     @Override
     public boolean isSupportedBy(TemporalAccessor temporal) {
@@ -599,6 +595,12 @@ public enum ChronoField implements TemporalField {
     @Override
     public <R extends Temporal> R adjustInto(R temporal, long newValue) {
         return (R) temporal.with(this, newValue);
+    }
+
+    @Override
+    public String getDisplayName(Locale locale) {
+        Objects.requireNonNull(locale, "locale");
+        return toString();
     }
 
     //-----------------------------------------------------------------------

@@ -34,6 +34,7 @@ package org.threeten.bp.temporal;
 import static org.threeten.bp.temporal.ChronoUnit.MONTHS;
 import static org.threeten.bp.temporal.ChronoUnit.WEEKS;
 
+import java.util.Locale;
 import java.util.Map;
 
 import org.threeten.bp.DateTimeException;
@@ -65,11 +66,6 @@ public enum MockFieldNoValue implements TemporalField {
         return ValueRange.of(1, 20);
     }
 
-    @Override
-    public int compare(TemporalAccessor dateTime1, TemporalAccessor dateTime2) {
-        return Long.compare(getFrom(dateTime1), getFrom(dateTime2));
-    }
-
     //-----------------------------------------------------------------------
     @Override
     public boolean isDateBased() {
@@ -99,6 +95,11 @@ public enum MockFieldNoValue implements TemporalField {
     @Override
     public <R extends Temporal> R adjustInto(R dateTime, long newValue) {
         throw new DateTimeException("Mock");
+    }
+
+    @Override
+    public String getDisplayName(Locale locale) {
+        return "Mock";
     }
 
     //-----------------------------------------------------------------------
