@@ -63,6 +63,7 @@ import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
+import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.format.SimpleDateTimeTextProvider.LocaleStore;
 import org.threeten.bp.jdk8.Jdk8Methods;
@@ -388,36 +389,115 @@ public final class DateTimeFormatterBuilder {
     /**
      * Appends the reduced value of a date-time field to the formatter.
      * <p>
-     * This is typically used for printing and parsing a two digit year.
-     * The {@code width} is the printed and parsed width.
-     * The {@code baseValue} is used during parsing to determine the valid range.
+     * Since fields such as year vary by chronology, it is recommended to use the
+     * {@link #appendValueReduced(TemporalField, int, int, ChronoLocalDate)} date}
+     * variant of this method in most cases. This variant is suitable for
+     * simple fields or working with only the ISO chronology.
      * <p>
-     * For printing, the width is used to determine the number of characters to print.
+     * For formatting, the {@code width} and {@code maxWidth} are used to
+     * determine the number of characters to format.
+     * If they are equal then the format is fixed width.
+     * If the value of the field is within the range of the {@code baseValue} using
+     * {@code width} characters then the reduced value is formatted otherwise the value is
+     * truncated to fit {@code maxWidth}.
      * The rightmost characters are output to match the width, left padding with zero.
      * <p>
-     * For parsing, exactly the number of characters specified by the width are parsed.
-     * This is incomplete information however, so the base value is used to complete the parse.
-     * The base value is the first valid value in a range of ten to the power of width.
+     * For strict parsing, the number of characters allowed by {@code width} to {@code maxWidth} are parsed.
+     * For lenient parsing, the number of characters must be at least 1 and less than 10.
+     * If the number of digits parsed is equal to {@code width} and the value is positive,
+     * the value of the field is computed to be the first number greater than
+     * or equal to the {@code baseValue} with the same least significant characters,
+     * otherwise the value parsed is the field value.
+     * This allows a reduced value to be entered for values in range of the baseValue
+     * and width and absolute values can be entered for values outside the range.
      * <p>
      * For example, a base value of {@code 1980} and a width of {@code 2} will have
      * valid values from {@code 1980} to {@code 2079}.
      * During parsing, the text {@code "12"} will result in the value {@code 2012} as that
-     * is the value within the range where the last two digits are "12".
-     * <p>
-     * This is a fixed width parser operating using 'adjacent value parsing'.
-     * See {@link #appendValue(TemporalField, int)} for full details.
+     * is the value within the range where the last two characters are "12".
+     * By contrast, parsing the text {@code "1915"} will result in the value {@code 1915}.
      *
      * @param field  the field to append, not null
-     * @param width  the width of the printed and parsed field, from 1 to 18
+     * @param width  the field width of the printed and parsed field, from 1 to 10
+     * @param maxWidth  the maximum field width of the printed field, from 1 to 10
      * @param baseValue  the base value of the range of valid values
      * @return this, for chaining, not null
      * @throws IllegalArgumentException if the width or base value is invalid
      */
-    public DateTimeFormatterBuilder appendValueReduced(
-            TemporalField field, int width, int baseValue) {
+    public DateTimeFormatterBuilder appendValueReduced(TemporalField field,
+            int width, int maxWidth, int baseValue) {
         Objects.requireNonNull(field, "field");
-        ReducedPrinterParser pp = new ReducedPrinterParser(field, width, baseValue);
-        appendFixedWidth(width, pp);
+        ReducedPrinterParser pp = new ReducedPrinterParser(field, width, maxWidth, baseValue);
+        if (width == maxWidth) {
+            appendFixedWidth(width, pp);
+        } else {
+            appendInternal(pp);
+        }
+        return this;
+    }
+
+    /**
+     * Appends the reduced value of a date-time field to the formatter.
+     * <p>
+     * This is typically used for formatting and parsing a two digit year.
+     * <p>
+     * The base date is used to calculate the full value during parsing.
+     * For example, if the base date is 1950-01-01 then parsed values for
+     * a two digit year parse will be in the range 1950-01-01 to 2049-12-31.
+     * Only the year would be extracted from the date, thus a base date of
+     * 1950-08-25 would also parse to the range 1950-01-01 to 2049-12-31.
+     * This behavior is necessary to support fields such as week-based-year
+     * or other calendar systems where the parsed value does not align with
+     * standard ISO years.
+     * <p>
+     * The exact behavior is as follows. Parse the full set of fields and
+     * determine the effective chronology using the last chronology if
+     * it appears more than once. Then convert the base date to the
+     * effective chronology. Then extract the specified field from the
+     * chronology-specific base date and use it to determine the
+     * {@code baseValue} used below.
+     * <p>
+     * For formatting, the {@code width} and {@code maxWidth} are used to
+     * determine the number of characters to format.
+     * If they are equal then the format is fixed width.
+     * If the value of the field is within the range of the {@code baseValue} using
+     * {@code width} characters then the reduced value is formatted otherwise the value is
+     * truncated to fit {@code maxWidth}.
+     * The rightmost characters are output to match the width, left padding with zero.
+     * <p>
+     * For strict parsing, the number of characters allowed by {@code width} to {@code maxWidth} are parsed.
+     * For lenient parsing, the number of characters must be at least 1 and less than 10.
+     * If the number of digits parsed is equal to {@code width} and the value is positive,
+     * the value of the field is computed to be the first number greater than
+     * or equal to the {@code baseValue} with the same least significant characters,
+     * otherwise the value parsed is the field value.
+     * This allows a reduced value to be entered for values in range of the baseValue
+     * and width and absolute values can be entered for values outside the range.
+     * <p>
+     * For example, a base value of {@code 1980} and a width of {@code 2} will have
+     * valid values from {@code 1980} to {@code 2079}.
+     * During parsing, the text {@code "12"} will result in the value {@code 2012} as that
+     * is the value within the range where the last two characters are "12".
+     * By contrast, parsing the text {@code "1915"} will result in the value {@code 1915}.
+     *
+     * @param field  the field to append, not null
+     * @param width  the field width of the printed and parsed field, from 1 to 10
+     * @param maxWidth  the maximum field width of the printed field, from 1 to 10
+     * @param baseDate  the base date used to calculate the base value for the range
+     *  of valid values in the parsed chronology, not null
+     * @return this, for chaining, not null
+     * @throws IllegalArgumentException if the width or base value is invalid
+     */
+    public DateTimeFormatterBuilder appendValueReduced(
+            TemporalField field, int width, int maxWidth, ChronoLocalDate baseDate) {
+        Objects.requireNonNull(field, "field");
+        Objects.requireNonNull(baseDate, "baseDate");
+        ReducedPrinterParser pp = new ReducedPrinterParser(field, width, maxWidth, baseDate.get(ChronoField.YEAR));
+        if (width == maxWidth) {
+            appendFixedWidth(width, pp);
+        } else {
+            appendInternal(pp);
+        }
         return this;
     }
 
@@ -1294,7 +1374,7 @@ public final class DateTimeFormatterBuilder {
             case 'y':
             case 'Y':
                 if (count == 2) {
-                    appendValueReduced(field, 2, 2000);
+                    appendValueReduced(field, 2, 2, 2000);
                 } else if (count < 4) {
                     appendValue(field, count, 19, SignStyle.NORMAL);
                 } else {
@@ -2212,10 +2292,11 @@ public final class DateTimeFormatterBuilder {
          *
          * @param field  the field to print, validated not null
          * @param width  the field width, from 1 to 18
+         * @param maxWidth  the field max width, from 1 to 18
          * @param baseValue  the base value
          */
-        ReducedPrinterParser(TemporalField field, int width, int baseValue) {
-            super(field, width, width, SignStyle.NOT_NEGATIVE);
+        ReducedPrinterParser(TemporalField field, int width, int maxWidth, int baseValue) {
+            super(field, width, maxWidth, SignStyle.NOT_NEGATIVE);
             if (width < 1 || width > 18) {
                 throw new IllegalArgumentException("The width must be from 1 to 18 inclusive but was " + width);
             }

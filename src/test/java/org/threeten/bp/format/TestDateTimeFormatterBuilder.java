@@ -224,12 +224,12 @@ public class TestDateTimeFormatterBuilder {
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void test_appendValueReduced_null() throws Exception {
-        builder.appendValueReduced(null, 2, 2000);
+        builder.appendValueReduced(null, 2, 2, 2000);
     }
 
     @Test
     public void test_appendValueReduced() throws Exception {
-        builder.appendValueReduced(YEAR, 2, 2000);
+        builder.appendValueReduced(YEAR, 2, 2, 2000);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "ReducedValue(Year,2,2000)");
         TemporalAccessor cal = f.parseUnresolved("12", new ParsePosition(0));
@@ -238,7 +238,7 @@ public class TestDateTimeFormatterBuilder {
 
     @Test
     public void test_appendValueReduced_subsequent_parse() throws Exception {
-        builder.appendValue(MONTH_OF_YEAR, 1, 2, SignStyle.NORMAL).appendValueReduced(YEAR, 2, 2000);
+        builder.appendValue(MONTH_OF_YEAR, 1, 2, SignStyle.NORMAL).appendValueReduced(YEAR, 2, 2, 2000);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(MonthOfYear,1,2,NORMAL)ReducedValue(Year,2,2000)");
         TemporalAccessor cal = f.parseUnresolved("123", new ParsePosition(0));

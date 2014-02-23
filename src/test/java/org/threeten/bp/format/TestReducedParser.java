@@ -52,8 +52,8 @@ public class TestReducedParser extends AbstractTestPrinterParser {
     @DataProvider(name="error")
     Object[][] data_error() {
         return new Object[][] {
-            {new ReducedPrinterParser(YEAR, 2, 2010), "12", -1, IndexOutOfBoundsException.class},
-            {new ReducedPrinterParser(YEAR, 2, 2010), "12", 3, IndexOutOfBoundsException.class},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010), "12", -1, IndexOutOfBoundsException.class},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010), "12", 3, IndexOutOfBoundsException.class},
         };
     }
 
@@ -70,7 +70,7 @@ public class TestReducedParser extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
     public void test_parse_fieldRangeIgnored() throws Exception {
-        ReducedPrinterParser pp = new ReducedPrinterParser(DAY_OF_YEAR, 3, 10);
+        ReducedPrinterParser pp = new ReducedPrinterParser(DAY_OF_YEAR, 3, 3, 10);
         int newPos = pp.parse(parseContext, "456", 0);
         assertEquals(newPos, 3);
         assertParsed(DAY_OF_YEAR, 456L);  // parsed dayOfYear=456
@@ -81,51 +81,51 @@ public class TestReducedParser extends AbstractTestPrinterParser {
     Object[][] provider_parse() {
         return new Object[][] {
              // negative zero
-            {new ReducedPrinterParser(YEAR, 1, 2010), "-0", 0, ~0, null},
+            {new ReducedPrinterParser(YEAR, 1, 1, 2010), "-0", 0, ~0, null},
 
             // general
-            {new ReducedPrinterParser(YEAR, 2, 2010), "Xxx12Xxx", 3, 5, 2012},
-            {new ReducedPrinterParser(YEAR, 2, 2010), "12345", 0, 2, 2012},
-            {new ReducedPrinterParser(YEAR, 2, 2010), "12-45", 0, 2, 2012},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010), "Xxx12Xxx", 3, 5, 2012},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010), "12345", 0, 2, 2012},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010), "12-45", 0, 2, 2012},
 
             // insufficient digits
-            {new ReducedPrinterParser(YEAR, 2, 2010), "0", 0, ~0, null},
-            {new ReducedPrinterParser(YEAR, 2, 2010), "1", 0, ~0, null},
-            {new ReducedPrinterParser(YEAR, 2, 2010), "1", 1, ~1, null},
-            {new ReducedPrinterParser(YEAR, 2, 2010), "1-2", 0, ~0, null},
-            {new ReducedPrinterParser(YEAR, 2, 2010), "9", 0, ~0, null},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010), "0", 0, ~0, null},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010), "1", 0, ~0, null},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010), "1", 1, ~1, null},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010), "1-2", 0, ~0, null},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010), "9", 0, ~0, null},
 
             // other junk
-            {new ReducedPrinterParser(YEAR, 2, 2010), "A0", 0, ~0, null},
-            {new ReducedPrinterParser(YEAR, 2, 2010), "0A", 0, ~0, null},
-            {new ReducedPrinterParser(YEAR, 2, 2010), "  1", 0, ~0, null},
-            {new ReducedPrinterParser(YEAR, 2, 2010), "-1", 0, ~0, null},
-            {new ReducedPrinterParser(YEAR, 2, 2010), "-10", 0, ~0, null},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010), "A0", 0, ~0, null},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010), "0A", 0, ~0, null},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010), "  1", 0, ~0, null},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010), "-1", 0, ~0, null},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010), "-10", 0, ~0, null},
 
             // parse OK 1
-            {new ReducedPrinterParser(YEAR, 1, 2010), "0", 0, 1, 2010},
-            {new ReducedPrinterParser(YEAR, 1, 2010), "9", 0, 1, 2019},
-            {new ReducedPrinterParser(YEAR, 1, 2010), "10", 0, 1, 2011},
+            {new ReducedPrinterParser(YEAR, 1, 1, 2010), "0", 0, 1, 2010},
+            {new ReducedPrinterParser(YEAR, 1, 1, 2010), "9", 0, 1, 2019},
+            {new ReducedPrinterParser(YEAR, 1, 1, 2010), "10", 0, 1, 2011},
 
-            {new ReducedPrinterParser(YEAR, 1, 2005), "0", 0, 1, 2010},
-            {new ReducedPrinterParser(YEAR, 1, 2005), "4", 0, 1, 2014},
-            {new ReducedPrinterParser(YEAR, 1, 2005), "5", 0, 1, 2005},
-            {new ReducedPrinterParser(YEAR, 1, 2005), "9", 0, 1, 2009},
-            {new ReducedPrinterParser(YEAR, 1, 2005), "10", 0, 1, 2011},
-
-            // parse OK 2
-            {new ReducedPrinterParser(YEAR, 2, 2010), "00", 0, 2, 2100},
-            {new ReducedPrinterParser(YEAR, 2, 2010), "09", 0, 2, 2109},
-            {new ReducedPrinterParser(YEAR, 2, 2010), "10", 0, 2, 2010},
-            {new ReducedPrinterParser(YEAR, 2, 2010), "99", 0, 2, 2099},
-            {new ReducedPrinterParser(YEAR, 2, 2010), "100", 0, 2, 2010},
+            {new ReducedPrinterParser(YEAR, 1, 1, 2005), "0", 0, 1, 2010},
+            {new ReducedPrinterParser(YEAR, 1, 1, 2005), "4", 0, 1, 2014},
+            {new ReducedPrinterParser(YEAR, 1, 1, 2005), "5", 0, 1, 2005},
+            {new ReducedPrinterParser(YEAR, 1, 1, 2005), "9", 0, 1, 2009},
+            {new ReducedPrinterParser(YEAR, 1, 1, 2005), "10", 0, 1, 2011},
 
             // parse OK 2
-            {new ReducedPrinterParser(YEAR, 2, -2005), "05", 0, 2, -2005},
-            {new ReducedPrinterParser(YEAR, 2, -2005), "00", 0, 2, -2000},
-            {new ReducedPrinterParser(YEAR, 2, -2005), "99", 0, 2, -1999},
-            {new ReducedPrinterParser(YEAR, 2, -2005), "06", 0, 2, -1906},
-            {new ReducedPrinterParser(YEAR, 2, -2005), "100", 0, 2, -1910},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010), "00", 0, 2, 2100},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010), "09", 0, 2, 2109},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010), "10", 0, 2, 2010},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010), "99", 0, 2, 2099},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010), "100", 0, 2, 2010},
+
+            // parse OK 2
+            {new ReducedPrinterParser(YEAR, 2, 2, -2005), "05", 0, 2, -2005},
+            {new ReducedPrinterParser(YEAR, 2, 2, -2005), "00", 0, 2, -2000},
+            {new ReducedPrinterParser(YEAR, 2, 2, -2005), "99", 0, 2, -1999},
+            {new ReducedPrinterParser(YEAR, 2, 2, -2005), "06", 0, 2, -1906},
+            {new ReducedPrinterParser(YEAR, 2, 2, -2005), "100", 0, 2, -1910},
        };
     }
 
