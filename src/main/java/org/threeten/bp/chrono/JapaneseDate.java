@@ -333,14 +333,6 @@ public final class JapaneseDate
         return getChronology().getId().hashCode() ^ isoDate.hashCode();
     }
 
-    @Override
-    public String toString() {
-        if (era == JapaneseEra.SEIREKI) {
-            return getChronology().getId() + " " + isoDate.toString();
-        }
-        return super.toString();
-    }
-
     //-----------------------------------------------------------------------
     private Object writeReplace() {
         return new Ser(Ser.JAPANESE_DATE_TYPE, this);

@@ -82,11 +82,6 @@ public final class JapaneseChronology extends Chronology implements Serializable
     public static final JapaneseChronology INSTANCE = new JapaneseChronology();
 
     /**
-     * The singleton instance for the before Meiji era ( - 1868-09-07)
-     * which has the value -999.
-     */
-    public static final Era ERA_SEIREKI = JapaneseEra.SEIREKI;
-    /**
      * The singleton instance for the Meiji era (1868-09-08 - 1912-07-29)
      * which has the value -1.
      */
@@ -345,8 +340,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
         int fieldIndex;
         switch (field) {
             case ERA:
-                return ValueRange.of(jcal.getMinimum(Calendar.ERA) - JapaneseEra.ERA_OFFSET,
-                                             jcal.getMaximum(Calendar.ERA) - JapaneseEra.ERA_OFFSET);
+                return ValueRange.of(-1, jcal.getMaximum(Calendar.ERA) - JapaneseEra.ERA_OFFSET);
             case YEAR:
             case YEAR_OF_ERA:
                 return ValueRange.of(Year.MIN_VALUE, jcal.getGreatestMinimum(Calendar.YEAR),

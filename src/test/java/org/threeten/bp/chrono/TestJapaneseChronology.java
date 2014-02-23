@@ -72,20 +72,9 @@ public class TestJapaneseChronology {
     @DataProvider(name="samples")
     Object[][] data_samples() {
         return new Object[][] {
-            {JapaneseChronology.INSTANCE.date(1, 1, 1), LocalDate.of(1, 1, 1)},
-            {JapaneseChronology.INSTANCE.date(1, 1, 2), LocalDate.of(1, 1, 2)},
-            {JapaneseChronology.INSTANCE.date(1, 1, 3), LocalDate.of(1, 1, 3)},
-
-            {JapaneseChronology.INSTANCE.date(2, 1, 1), LocalDate.of(2, 1, 1)},
-            {JapaneseChronology.INSTANCE.date(3, 1, 1), LocalDate.of(3, 1, 1)},
-            {JapaneseChronology.INSTANCE.date(3, 12, 6), LocalDate.of(3, 12, 6)},
-            {JapaneseChronology.INSTANCE.date(4, 1, 1), LocalDate.of(4, 1, 1)},
-            {JapaneseChronology.INSTANCE.date(4, 7, 3), LocalDate.of(4, 7, 3)},
-            {JapaneseChronology.INSTANCE.date(4, 7, 4), LocalDate.of(4, 7, 4)},
-            {JapaneseChronology.INSTANCE.date(5, 1, 1), LocalDate.of(5, 1, 1)},
-            {JapaneseChronology.INSTANCE.date(1662, 3, 3), LocalDate.of(1662, 3, 3)},
-            {JapaneseChronology.INSTANCE.date(1728, 10, 28), LocalDate.of(1728, 10, 28)},
-            {JapaneseChronology.INSTANCE.date(1728, 10, 29), LocalDate.of(1728, 10, 29)},
+            {JapaneseChronology.INSTANCE.date(1890, 3, 3), LocalDate.of(1890, 3, 3)},
+            {JapaneseChronology.INSTANCE.date(1890, 10, 28), LocalDate.of(1890, 10, 28)},
+            {JapaneseChronology.INSTANCE.date(1890, 10, 29), LocalDate.of(1890, 10, 29)},
         };
     }
 
@@ -103,19 +92,20 @@ public class TestJapaneseChronology {
     Object[][] data_badDates() {
         return new Object[][] {
             {1728, 0, 0},
+            {1890, 0, 0},
 
-            {1728, -1, 1},
-            {1728, 0, 1},
-            {1728, 14, 1},
-            {1728, 15, 1},
+            {1890, -1, 1},
+            {1890, 0, 1},
+            {1890, 14, 1},
+            {1890, 15, 1},
 
-            {1728, 1, -1},
-            {1728, 1, 0},
-            {1728, 1, 32},
+            {1890, 1, -1},
+            {1890, 1, 0},
+            {1890, 1, 32},
 
-            {1728, 12, -1},
-            {1728, 12, 0},
-            {1728, 12, 32},
+            {1890, 12, -1},
+            {1890, 12, 0},
+            {1890, 12, 32},
         };
     }
 
@@ -129,16 +119,16 @@ public class TestJapaneseChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_adjust1() {
-        ChronoLocalDate<?> base = JapaneseChronology.INSTANCE.date(1728, 10, 29);
+        ChronoLocalDate<?> base = JapaneseChronology.INSTANCE.date(1890, 10, 29);
         ChronoLocalDate<?> test = base.with(TemporalAdjusters.lastDayOfMonth());
-        assertEquals(test, JapaneseChronology.INSTANCE.date(1728, 10, 31));
+        assertEquals(test, JapaneseChronology.INSTANCE.date(1890, 10, 31));
     }
 
     @Test
     public void test_adjust2() {
-        ChronoLocalDate<?> base = JapaneseChronology.INSTANCE.date(1728, 12, 2);
+        ChronoLocalDate<?> base = JapaneseChronology.INSTANCE.date(1890, 12, 2);
         ChronoLocalDate<?> test = base.with(TemporalAdjusters.lastDayOfMonth());
-        assertEquals(test, JapaneseChronology.INSTANCE.date(1728, 12, 31));
+        assertEquals(test, JapaneseChronology.INSTANCE.date(1890, 12, 31));
     }
 
     //-----------------------------------------------------------------------
@@ -146,14 +136,14 @@ public class TestJapaneseChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_adjust_toLocalDate() {
-        ChronoLocalDate<?> jdate = JapaneseChronology.INSTANCE.date(1726, 1, 4);
+        ChronoLocalDate<?> jdate = JapaneseChronology.INSTANCE.date(1890, 1, 4);
         ChronoLocalDate<?> test = jdate.with(LocalDate.of(2012, 7, 6));
         assertEquals(test, JapaneseChronology.INSTANCE.date(2012, 7, 6));
     }
 
     @Test(expectedExceptions=DateTimeException.class)
     public void test_adjust_toMonth() {
-        ChronoLocalDate<?> jdate = JapaneseChronology.INSTANCE.date(1726, 1, 4);
+        ChronoLocalDate<?> jdate = JapaneseChronology.INSTANCE.date(1890, 1, 4);
         jdate.with(Month.APRIL);
     }
 
@@ -162,16 +152,16 @@ public class TestJapaneseChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_LocalDate_adjustToJapaneseDate() {
-        ChronoLocalDate<?> jdate = JapaneseChronology.INSTANCE.date(1728, 10, 29);
+        ChronoLocalDate<?> jdate = JapaneseChronology.INSTANCE.date(1890, 10, 29);
         LocalDate test = LocalDate.MIN.with(jdate);
-        assertEquals(test, LocalDate.of(1728, 10, 29));
+        assertEquals(test, LocalDate.of(1890, 10, 29));
     }
 
     @Test
     public void test_LocalDateTime_adjustToJapaneseDate() {
-        ChronoLocalDate<?> jdate = JapaneseChronology.INSTANCE.date(1728, 10, 29);
+        ChronoLocalDate<?> jdate = JapaneseChronology.INSTANCE.date(1890, 10, 29);
         LocalDateTime test = LocalDateTime.MIN.with(jdate);
-        assertEquals(test, LocalDateTime.of(1728, 10, 29, 0, 0));
+        assertEquals(test, LocalDateTime.of(1890, 10, 29, 0, 0));
     }
 
     //-----------------------------------------------------------------------
@@ -180,7 +170,6 @@ public class TestJapaneseChronology {
     @DataProvider(name="japaneseEras")
     Object[][] data_japanseseEras() {
         return new Object[][] {
-            { JapaneseChronology.ERA_SEIREKI, -999, "Seireki"},
             { JapaneseChronology.ERA_MEIJI, -1, "Meiji"},
             { JapaneseChronology.ERA_TAISHO, 0, "Taisho"},
             { JapaneseChronology.ERA_SHOWA, 1, "Showa"},
@@ -216,11 +205,6 @@ public class TestJapaneseChronology {
     @DataProvider(name="toString")
     Object[][] data_toString() {
         return new Object[][] {
-            {JapaneseChronology.INSTANCE.date(0001,  1,  1), "Japanese 0001-01-01"},
-            {JapaneseChronology.INSTANCE.date(1728, 10, 28), "Japanese 1728-10-28"},
-            {JapaneseChronology.INSTANCE.date(1728, 10, 29), "Japanese 1728-10-29"},
-            {JapaneseChronology.INSTANCE.date(1727, 12,  5), "Japanese 1727-12-05"},
-            {JapaneseChronology.INSTANCE.date(1727, 12,  6), "Japanese 1727-12-06"},
             {JapaneseChronology.INSTANCE.date(1868,  9,  8), "Japanese Meiji 1-09-08"},
             {JapaneseChronology.INSTANCE.date(1912,  7, 29), "Japanese Meiji 45-07-29"},
             {JapaneseChronology.INSTANCE.date(1912,  7, 30), "Japanese Taisho 1-07-30"},
