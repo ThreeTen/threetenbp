@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 import org.threeten.bp.Clock;
@@ -46,8 +47,10 @@ import org.threeten.bp.DateTimeException;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.ZoneId;
+import org.threeten.bp.format.ResolverStyle;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.ValueRange;
 
 /**
@@ -341,6 +344,11 @@ public final class HijrahChronology extends Chronology implements Serializable {
     @Override
     public ValueRange range(ChronoField field) {
         return field.range();
+    }
+
+    @Override
+    public HijrahDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
+        throw new UnsupportedOperationException("ThreeTen Backport does not support resolveDate");
     }
 
 }

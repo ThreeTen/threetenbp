@@ -39,6 +39,7 @@ import java.io.ObjectStreamException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.Set;
@@ -51,6 +52,7 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
+import org.threeten.bp.format.ResolverStyle;
 import org.threeten.bp.format.TextStyle;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
 import org.threeten.bp.temporal.ChronoField;
@@ -729,6 +731,29 @@ public abstract class Chronology implements Comparable<Chronology> {
                 return super.query(query);
             }
         });
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Resolves parsed {@code ChronoField} values into a date during parsing.
+     * <p>
+     * Most {@code TemporalField} implementations are resolved using the
+     * resolve method on the field. By contrast, the {@code ChronoField} class
+     * defines fields that only have meaning relative to the chronology.
+     * As such, {@code ChronoField} date fields are resolved here in the
+     * context of a specific chronology.
+     * <p>
+     * The default implementation, which explains typical resolve behaviour,
+     * is provided in {@link AbstractChronology}.
+     *
+     * @param fieldValues  the map of fields to values, which can be updated, not null
+     * @param resolverStyle  the requested type of resolve, not null
+     * @return the resolved date, null if insufficient information to create a date
+     * @throws DateTimeException if the date cannot be resolved, typically
+     *  because of a conflict in the input data
+     */
+    public ChronoLocalDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
+        throw new UnsupportedOperationException("ThreeTen Backport does not support resolveDate");
     }
 
     //-----------------------------------------------------------------------

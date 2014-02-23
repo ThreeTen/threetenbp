@@ -38,14 +38,17 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 import org.threeten.bp.Clock;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.ZoneId;
+import org.threeten.bp.format.ResolverStyle;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.ValueRange;
 
 /**
@@ -259,6 +262,11 @@ public final class MinguoChronology extends Chronology implements Serializable {
             }
         }
         return field.range();
+    }
+
+    @Override
+    public MinguoDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
+        throw new UnsupportedOperationException("ThreeTen Backport does not support resolveDate");
     }
 
 }

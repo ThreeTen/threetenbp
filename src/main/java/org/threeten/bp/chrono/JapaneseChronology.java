@@ -46,8 +46,10 @@ import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.Year;
 import org.threeten.bp.ZoneId;
+import org.threeten.bp.format.ResolverStyle;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.ValueRange;
 
 import sun.util.calendar.CalendarSystem;
@@ -343,6 +345,11 @@ public final class JapaneseChronology extends Chronology implements Serializable
         }
         return ValueRange.of(jcal.getMinimum(fieldIndex), jcal.getGreatestMinimum(fieldIndex),
                                      jcal.getLeastMaximum(fieldIndex), jcal.getMaximum(fieldIndex));
+    }
+
+    @Override
+    public JapaneseDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
+        throw new UnsupportedOperationException("ThreeTen Backport does not support resolveDate");
     }
 
 }
