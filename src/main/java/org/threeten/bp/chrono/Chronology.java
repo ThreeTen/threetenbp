@@ -293,25 +293,6 @@ public abstract class Chronology implements Comparable<Chronology> {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains a local date-time from the a date and time.
-     * <p>
-     * This combines a {@link ChronoLocalDate}, which provides the {@code Chrono},
-     * with a {@link LocalTime} to produce a {@link ChronoLocalDateTime}.
-     * <p>
-     * This method is intended for chronology implementations.
-     * It uses a standard implementation that is shared for all chronologies.
-     *
-     * @param <D>  the date type
-     * @param date  the date, not null
-     * @param time  the time, not null
-     * @return the local date-time combining the input date and time, not null
-     */
-    public static <D extends ChronoLocalDate> ChronoLocalDateTime<D> dateTime(D date, LocalTime time) {
-        return ChronoLocalDateTimeImpl.of(date, time);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Creates an instance.
      */
     protected Chronology() {

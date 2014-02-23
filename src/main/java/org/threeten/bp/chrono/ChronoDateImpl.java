@@ -288,8 +288,8 @@ abstract class ChronoDateImpl<D extends ChronoLocalDate>
     }
 
     @Override
-    public final ChronoLocalDateTime<?> atTime(LocalTime localTime) {
-        return Chronology.dateTime(this, localTime);
+    public ChronoLocalDateTime<?> atTime(LocalTime localTime) {
+        return ChronoLocalDateTimeImpl.of(this, localTime);
     }
 
     //-----------------------------------------------------------------------
