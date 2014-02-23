@@ -263,7 +263,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
     @Override
     public int prolepticYear(Era era, int yearOfEra) {
         if (era instanceof ThaiBuddhistEra == false) {
-            throw new DateTimeException("Era must be BuddhistEra");
+            throw new ClassCastException("Era must be BuddhistEra");
         }
         return (era == ThaiBuddhistEra.BE ? yearOfEra : 1 - yearOfEra);
     }

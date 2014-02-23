@@ -315,7 +315,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
     @Override
     public int prolepticYear(Era era, int yearOfEra) {
         if (era instanceof HijrahEra == false) {
-            throw new DateTimeException("Era must be HijrahEra");
+            throw new ClassCastException("Era must be HijrahEra");
         }
         return (era == HijrahEra.AH ? yearOfEra : 1 - yearOfEra);
     }

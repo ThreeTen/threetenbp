@@ -279,7 +279,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
     @Override
     public int prolepticYear(Era era, int yearOfEra) {
         if (era instanceof JapaneseEra == false) {
-            throw new DateTimeException("Era must be JapaneseEra");
+            throw new ClassCastException("Era must be JapaneseEra");
         }
         JapaneseEra jera = (JapaneseEra) era;
         int gregorianYear = jera.getPrivateEra().getSinceDate().getYear() + yearOfEra - 1;

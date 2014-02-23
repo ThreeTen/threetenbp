@@ -166,7 +166,7 @@ public class TestIsoChronology {
         assertEquals(test.get(YEAR_OF_ERA), year);
     }
 
-    @Test(expectedExceptions=DateTimeException.class)
+    @Test(expectedExceptions=ClassCastException.class)
     public void test_date_withEra_withWrongEra() {
         IsoChronology.INSTANCE.date((Era) HijrahChronology.ERA_AH, 1, 1, 1);
     }

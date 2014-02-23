@@ -411,6 +411,7 @@ public abstract class Chronology implements Comparable<Chronology> {
      * @param dayOfMonth  the chronology day-of-month
      * @return the local date in this chronology, not null
      * @throws DateTimeException if unable to create the date
+     * @throws ClassCastException if the {@code era} is not of the correct type for the chronology
      */
     public ChronoLocalDate<?> date(Era era, int yearOfEra, int month, int dayOfMonth) {
         return date(prolepticYear(era, yearOfEra), month, dayOfMonth);
@@ -437,6 +438,7 @@ public abstract class Chronology implements Comparable<Chronology> {
      * @param dayOfYear  the chronology day-of-year
      * @return the local date in this chronology, not null
      * @throws DateTimeException if unable to create the date
+     * @throws ClassCastException if the {@code era} is not of the correct type for the chronology
      */
     public ChronoLocalDate<?> dateYearDay(Era era, int yearOfEra, int dayOfYear) {
         return dateYearDay(prolepticYear(era, yearOfEra), dayOfYear);
@@ -646,6 +648,7 @@ public abstract class Chronology implements Comparable<Chronology> {
      * @param yearOfEra  the chronology year-of-era
      * @return the proleptic-year
      * @throws DateTimeException if unable to convert
+     * @throws ClassCastException if the {@code era} is not of the correct type for the chronology
      */
     public abstract int prolepticYear(Era era, int yearOfEra);
 

@@ -228,7 +228,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
     @Override
     public int prolepticYear(Era era, int yearOfEra) {
         if (era instanceof MinguoEra == false) {
-            throw new DateTimeException("Era must be MinguoEra");
+            throw new ClassCastException("Era must be MinguoEra");
         }
         return (era == MinguoEra.ROC ? yearOfEra : 1 - yearOfEra);
     }
