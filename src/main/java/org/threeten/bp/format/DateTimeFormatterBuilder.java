@@ -948,6 +948,50 @@ public final class DateTimeFormatterBuilder {
         return this;
     }
 
+    /**
+     * Appends the time-zone name, such as 'British Summer Time', to the formatter.
+     * <p>
+     * This appends an instruction to format/parse the textual name of the zone to
+     * the builder.
+     * <p>
+     * During formatting, the zone is obtained using a mechanism equivalent
+     * to querying the temporal with {@link TemporalQueries#zoneId()}.
+     * If the zone is a {@code ZoneOffset} it will be printed using the
+     * result of {@link ZoneOffset#getId()}.
+     * If the zone is not an offset, the textual name will be looked up
+     * for the locale set in the {@link DateTimeFormatter}.
+     * If the temporal object being printed represents an instant, then the text
+     * will be the summer or winter time text as appropriate.
+     * If the lookup for text does not find any suitable result, then the
+     * {@link ZoneId#getId() ID} will be printed instead.
+     * If the zone cannot be obtained then an exception is thrown unless the
+     * section of the formatter is optional.
+     * <p>
+     * During parsing, either the textual zone name, the zone ID or the offset
+     * is accepted. Many textual zone names are not unique, such as CST can be
+     * for both "Central Standard Time" and "China Standard Time". In this
+     * situation, the zone id will be determined by the region information from
+     * formatter's  {@link DateTimeFormatter#getLocale() locale} and the standard
+     * zone id for that area, for example, America/New_York for the America Eastern
+     * zone. This method also allows a set of preferred {@link ZoneId} to be
+     * specified for parsing. The matched preferred zone id will be used if the
+     * textual zone name being parsed is not unique.
+     * <p>
+     * If the zone cannot be parsed then an exception is thrown unless the
+     * section of the formatter is optional.
+     *
+     * @param textStyle  the text style to use, not null
+     * @param preferredZones  the set of preferred zone ids, not null
+     * @return this, for chaining, not null
+     */
+    public DateTimeFormatterBuilder appendZoneText(TextStyle textStyle,
+                                                   Set<ZoneId> preferredZones) {
+        // TODO: preferred zones currently ignored
+        Objects.requireNonNull(preferredZones, "preferredZones");
+        appendInternal(new ZoneTextPrinterParser(textStyle));
+        return this;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Appends the chronology ID to the formatter.
