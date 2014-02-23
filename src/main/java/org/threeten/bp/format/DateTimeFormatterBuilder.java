@@ -45,6 +45,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -145,6 +146,42 @@ public final class DateTimeFormatterBuilder {
      */
     private int valueParserIndex = -1;
 
+    /**
+     * Gets the formatting pattern for date and time styles for a locale and chronology.
+     * The locale and chronology are used to lookup the locale specific format
+     * for the requested dateStyle and/or timeStyle.
+     *
+     * @param dateStyle  the FormatStyle for the date
+     * @param timeStyle  the FormatStyle for the time
+     * @param chrono  the Chronology, non-null
+     * @param locale  the locale, non-null
+     * @return the locale and Chronology specific formatting pattern
+     * @throws IllegalArgumentException if both dateStyle and timeStyle are null
+     */
+    public static String getLocalizedDateTimePattern(
+                    FormatStyle dateStyle, FormatStyle timeStyle, Chronology chrono, Locale locale) {
+        Objects.requireNonNull(locale, "locale");
+        Objects.requireNonNull(chrono, "chrono");
+        if (dateStyle == null && timeStyle == null) {
+            throw new IllegalArgumentException("Either dateStyle or timeStyle must be non-null");
+        }
+        DateFormat dateFormat;
+        if (dateStyle != null) {
+            if (timeStyle != null) {
+                dateFormat = DateFormat.getDateTimeInstance(dateStyle.ordinal(), timeStyle.ordinal(), locale);
+            } else {
+                dateFormat = DateFormat.getDateInstance(dateStyle.ordinal(), locale);
+            }
+        } else {
+            dateFormat = DateFormat.getTimeInstance(timeStyle.ordinal(), locale);
+        }
+        if (dateFormat instanceof SimpleDateFormat) {
+            return ((SimpleDateFormat) dateFormat).toPattern();
+        }
+        throw new IllegalArgumentException("Unable to determine pattern");
+    }
+
+    //-------------------------------------------------------------------------
     /**
      * Constructs a new instance of the builder.
      */
