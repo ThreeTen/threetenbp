@@ -40,7 +40,6 @@ import java.util.Locale;
 import java.util.Objects;
 
 import org.threeten.bp.Clock;
-import org.threeten.bp.DateTimeException;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.ZoneId;
@@ -177,16 +176,19 @@ public final class MinguoChronology extends Chronology implements Serializable {
         return new MinguoDate(LocalDate.from(temporal));
     }
 
+    @SuppressWarnings("unchecked")
     @Override  // override with covariant return type
     public ChronoLocalDateTime<MinguoDate> localDateTime(TemporalAccessor temporal) {
         return (ChronoLocalDateTime<MinguoDate>) super.localDateTime(temporal);
     }
 
+    @SuppressWarnings("unchecked")
     @Override  // override with covariant return type
     public ChronoZonedDateTime<MinguoDate> zonedDateTime(TemporalAccessor temporal) {
         return (ChronoZonedDateTime<MinguoDate>) super.zonedDateTime(temporal);
     }
 
+    @SuppressWarnings("unchecked")
     @Override  // override with covariant return type
     public ChronoZonedDateTime<MinguoDate> zonedDateTime(Instant instant, ZoneId zone) {
         return (ChronoZonedDateTime<MinguoDate>) super.zonedDateTime(instant, zone);

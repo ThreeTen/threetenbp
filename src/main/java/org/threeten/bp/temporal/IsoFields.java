@@ -47,7 +47,6 @@ import static org.threeten.bp.temporal.ChronoUnit.YEARS;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.threeten.bp.DateTimeException;
 import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.chrono.Chronology;
@@ -251,6 +250,7 @@ public final class IsoFields {
                 long year = temporal.getLong(YEAR);
                 return doy - QUARTER_DAYS[((moy - 1) / 3) + (IsoChronology.INSTANCE.isLeapYear(year) ? 4 : 0)];
             }
+            @SuppressWarnings("unchecked")
             @Override
             public <R extends Temporal> R adjustInto(R temporal, long newValue) {
                 long curValue = getFrom(temporal);
@@ -306,6 +306,7 @@ public final class IsoFields {
                 long moy = temporal.getLong(MONTH_OF_YEAR);
                 return ((moy + 2) / 3);
             }
+            @SuppressWarnings("unchecked")
             @Override
             public <R extends Temporal> R adjustInto(R temporal, long newValue) {
                 long curValue = getFrom(temporal);
@@ -348,6 +349,7 @@ public final class IsoFields {
                 }
                 return getWeek(LocalDate.from(temporal));
             }
+            @SuppressWarnings("unchecked")
             @Override
             public <R extends Temporal> R adjustInto(R temporal, long newValue) {
                 range().checkValidValue(newValue, this);
@@ -401,6 +403,7 @@ public final class IsoFields {
                 }
                 return getWeekBasedYear(LocalDate.from(temporal));
             }
+            @SuppressWarnings("unchecked")
             @Override
             public <R extends Temporal> R adjustInto(R temporal, long newValue) {
                 if (isSupportedBy(temporal) == false) {
@@ -532,6 +535,7 @@ public final class IsoFields {
             return temporal.isSupported(EPOCH_DAY);
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public <R extends Temporal> R addTo(R temporal, long periodToAdd) {
             switch(this) {

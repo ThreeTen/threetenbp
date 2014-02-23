@@ -61,6 +61,7 @@ import sun.util.calendar.LocalGregorianCalendar;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
+@SuppressWarnings("restriction")
 public final class JapaneseDate
         extends ChronoDateImpl<JapaneseDate>
         implements Serializable {

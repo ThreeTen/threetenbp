@@ -40,8 +40,8 @@ import java.util.Objects;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.Instant;
 import org.threeten.bp.ZoneId;
-import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.ChronoLocalDate;
+import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.TemporalAccessor;
@@ -155,6 +155,7 @@ final class DateTimePrintContext {
                     }
                     return field.getFrom(this);
                 }
+                @SuppressWarnings("unchecked")
                 @Override
                 public <R> R query(TemporalQuery<R> query) {
                     if (query == TemporalQueries.chronology()) {

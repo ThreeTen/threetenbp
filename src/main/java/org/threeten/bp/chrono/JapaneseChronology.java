@@ -67,6 +67,7 @@ import sun.util.calendar.LocalGregorianCalendar;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
+@SuppressWarnings("restriction")
 public final class JapaneseChronology extends Chronology implements Serializable {
     // TODO: definition for unknown era may break requirement that year-of-era >= 1
 
@@ -223,16 +224,19 @@ public final class JapaneseChronology extends Chronology implements Serializable
         return new JapaneseDate(LocalDate.from(temporal));
     }
 
+    @SuppressWarnings("unchecked")
     @Override  // override with covariant return type
     public ChronoLocalDateTime<JapaneseDate> localDateTime(TemporalAccessor temporal) {
         return (ChronoLocalDateTime<JapaneseDate>) super.localDateTime(temporal);
     }
 
+    @SuppressWarnings("unchecked")
     @Override  // override with covariant return type
     public ChronoZonedDateTime<JapaneseDate> zonedDateTime(TemporalAccessor temporal) {
         return (ChronoZonedDateTime<JapaneseDate>) super.zonedDateTime(temporal);
     }
 
+    @SuppressWarnings("unchecked")
     @Override  // override with covariant return type
     public ChronoZonedDateTime<JapaneseDate> zonedDateTime(Instant instant, ZoneId zone) {
         return (ChronoZonedDateTime<JapaneseDate>) super.zonedDateTime(instant, zone);

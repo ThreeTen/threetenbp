@@ -684,7 +684,6 @@ public final class WeekFields implements Serializable {
             return (R) temporal.plus(delta, baseUnit);
         }
 
-        @SuppressWarnings("rawtypes")
         @Override
         public Map<TemporalField, Long> resolve(TemporalAccessor temporal, long value) {
             int newValue = range.checkValidIntValue(value, this);

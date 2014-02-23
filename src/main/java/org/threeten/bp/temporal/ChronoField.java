@@ -595,6 +595,7 @@ public enum ChronoField implements TemporalField {
         return temporal.getLong(this);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <R extends Temporal> R adjustInto(R temporal, long newValue) {
         return (R) temporal.with(this, newValue);

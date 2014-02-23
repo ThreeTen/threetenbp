@@ -38,9 +38,7 @@ import org.testng.annotations.Test;
 import org.threeten.bp.format.DateTimeFormatterBuilder.CharLiteralPrinterParser;
 import org.threeten.bp.format.DateTimeFormatterBuilder.NumberPrinterParser;
 import org.threeten.bp.format.DateTimeFormatterBuilder.PadPrinterParserDecorator;
-import org.threeten.bp.format.DateTimeFormatterBuilder.StringLiteralPrinterParser;
 import org.threeten.bp.temporal.TemporalField;
-import org.threeten.bp.temporal.TemporalQueries;
 
 /**
  * Test PadPrinterParserDecorator.

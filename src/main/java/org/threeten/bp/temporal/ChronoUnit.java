@@ -247,6 +247,7 @@ public enum ChronoUnit implements TemporalUnit {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <R extends Temporal> R addTo(R dateTime, long periodToAdd) {
         return (R) dateTime.plus(periodToAdd, this);

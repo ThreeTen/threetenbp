@@ -60,6 +60,7 @@ import sun.util.calendar.CalendarDate;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
+@SuppressWarnings("restriction")
 public final class JapaneseEra
         extends DefaultInterfaceEra
         implements Serializable {

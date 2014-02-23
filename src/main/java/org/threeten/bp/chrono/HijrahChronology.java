@@ -274,16 +274,19 @@ public final class HijrahChronology extends Chronology implements Serializable {
         return HijrahDate.ofEpochDay(temporal.getLong(EPOCH_DAY));
     }
 
+    @SuppressWarnings("unchecked")
     @Override  // override with covariant return type
     public ChronoLocalDateTime<HijrahDate> localDateTime(TemporalAccessor temporal) {
         return (ChronoLocalDateTime<HijrahDate>) super.localDateTime(temporal);
     }
 
+    @SuppressWarnings("unchecked")
     @Override  // override with covariant return type
     public ChronoZonedDateTime<HijrahDate> zonedDateTime(TemporalAccessor temporal) {
         return (ChronoZonedDateTime<HijrahDate>) super.zonedDateTime(temporal);
     }
 
+    @SuppressWarnings("unchecked")
     @Override  // override with covariant return type
     public ChronoZonedDateTime<HijrahDate> zonedDateTime(Instant instant, ZoneId zone) {
         return (ChronoZonedDateTime<HijrahDate>) super.zonedDateTime(instant, zone);

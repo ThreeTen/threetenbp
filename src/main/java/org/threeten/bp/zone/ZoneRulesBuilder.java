@@ -409,6 +409,7 @@ class ZoneRulesBuilder {
      * @param object  the object to deduplicate
      * @return the deduplicated object
      */
+    @SuppressWarnings("unchecked")
     <T> T deduplicate(T object) {
         if (deduplicateMap.containsKey(object) == false) {
             deduplicateMap.put(object, object);

@@ -41,7 +41,6 @@ import java.util.Locale;
 import java.util.Objects;
 
 import org.threeten.bp.Clock;
-import org.threeten.bp.DateTimeException;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.ZoneId;
@@ -212,16 +211,19 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
         return new ThaiBuddhistDate(LocalDate.from(temporal));
     }
 
+    @SuppressWarnings("unchecked")
     @Override  // override with covariant return type
     public ChronoLocalDateTime<ThaiBuddhistDate> localDateTime(TemporalAccessor temporal) {
         return (ChronoLocalDateTime<ThaiBuddhistDate>) super.localDateTime(temporal);
     }
 
+    @SuppressWarnings("unchecked")
     @Override  // override with covariant return type
     public ChronoZonedDateTime<ThaiBuddhistDate> zonedDateTime(TemporalAccessor temporal) {
         return (ChronoZonedDateTime<ThaiBuddhistDate>) super.zonedDateTime(temporal);
     }
 
+    @SuppressWarnings("unchecked")
     @Override  // override with covariant return type
     public ChronoZonedDateTime<ThaiBuddhistDate> zonedDateTime(Instant instant, ZoneId zone) {
         return (ChronoZonedDateTime<ThaiBuddhistDate>) super.zonedDateTime(instant, zone);

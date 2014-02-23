@@ -35,8 +35,8 @@ import org.threeten.bp.DateTimeException;
 import org.threeten.bp.Duration;
 import org.threeten.bp.Period;
 import org.threeten.bp.ZoneId;
-import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.ChronoLocalDate;
+import org.threeten.bp.chrono.Chronology;
 
 /**
  * Framework-level interface defining read-write access to a temporal object,

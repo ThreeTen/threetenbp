@@ -228,6 +228,7 @@ public final class JulianFields {
             return temporal.getLong(EPOCH_DAY) + offset;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public <R extends Temporal> R adjustInto(R dateTime, long newValue) {
             if (range().isValidValue(newValue) == false) {

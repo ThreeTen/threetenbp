@@ -35,7 +35,6 @@ import static org.threeten.bp.temporal.ChronoField.ERA;
 
 import java.util.Locale;
 
-import org.threeten.bp.DateTimeException;
 import org.threeten.bp.chrono.Era;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.TextStyle;

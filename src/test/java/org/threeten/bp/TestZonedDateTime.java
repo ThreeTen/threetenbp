@@ -70,8 +70,6 @@ import static org.threeten.bp.temporal.ChronoUnit.NANOS;
 import static org.threeten.bp.temporal.ChronoUnit.SECONDS;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -593,6 +591,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
             public long getLong(TemporalField field) {
                 return TEST_DATE_TIME_PARIS.toLocalDateTime().getLong(field);
             }
+            @SuppressWarnings("unchecked")
             @Override
             public <R> R query(TemporalQuery<R> query) {
                 if (query == TemporalQueries.zoneId()) {
@@ -614,6 +613,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
             public long getLong(TemporalField field) {
                 return TEST_DATE_TIME_PARIS.toInstant().getLong(field);
             }
+            @SuppressWarnings("unchecked")
             @Override
             public <R> R query(TemporalQuery<R> query) {
                 if (query == TemporalQueries.zoneId()) {
