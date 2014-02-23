@@ -223,7 +223,7 @@ public final class MinguoDate
 
     }
 
-    static ChronoLocalDate<?> readExternal(DataInput in) throws IOException {
+    static ChronoLocalDate readExternal(DataInput in) throws IOException {
         int year = in.readInt();
         int month = in.readByte();
         int dayOfMonth = in.readByte();

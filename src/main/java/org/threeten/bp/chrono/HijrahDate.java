@@ -1646,7 +1646,7 @@ public final class HijrahDate
         out.writeByte(get(DAY_OF_MONTH));
     }
 
-    static ChronoLocalDate<HijrahDate> readExternal(DataInput in) throws IOException {
+    static ChronoLocalDate readExternal(DataInput in) throws IOException {
         int year = in.readInt();
         int month = in.readByte();
         int dayOfMonth = in.readByte();

@@ -100,8 +100,8 @@ import org.threeten.bp.zone.ZoneRules;
  * This class is immutable and thread-safe.
  */
 public final class LocalDate
-        extends DefaultInterfaceChronoLocalDate<LocalDate>
-        implements Temporal, TemporalAdjuster, ChronoLocalDate<LocalDate>, Serializable {
+        extends DefaultInterfaceChronoLocalDate
+        implements Temporal, TemporalAdjuster, ChronoLocalDate, Serializable {
 
     /**
      * The minimum supported {@code LocalDate}, '-999999999-01-01'.
@@ -1476,7 +1476,7 @@ public final class LocalDate
      * @return the period between this date and the end date, not null
      */
     @Override
-    public Period until(ChronoLocalDate<?> endDate) {
+    public Period until(ChronoLocalDate endDate) {
         LocalDate end = LocalDate.from(endDate);
         long totalMonths = end.getProlepticMonth() - this.getProlepticMonth();  // safe
         int days = end.day - this.day;
@@ -1668,7 +1668,7 @@ public final class LocalDate
      * @return the comparator value, negative if less, positive if greater
      */
     @Override  // override for Javadoc and performance
-    public int compareTo(ChronoLocalDate<?> other) {
+    public int compareTo(ChronoLocalDate other) {
         if (other instanceof LocalDate) {
             return compareTo0((LocalDate) other);
         }
@@ -1708,7 +1708,7 @@ public final class LocalDate
      * @return true if this date is after the specified date
      */
     @Override  // override for Javadoc and performance
-    public boolean isAfter(ChronoLocalDate<?> other) {
+    public boolean isAfter(ChronoLocalDate other) {
         if (other instanceof LocalDate) {
             return compareTo0((LocalDate) other) > 0;
         }
@@ -1737,7 +1737,7 @@ public final class LocalDate
      * @return true if this date is before the specified date
      */
     @Override  // override for Javadoc and performance
-    public boolean isBefore(ChronoLocalDate<?> other) {
+    public boolean isBefore(ChronoLocalDate other) {
         if (other instanceof LocalDate) {
             return compareTo0((LocalDate) other) < 0;
         }
@@ -1766,7 +1766,7 @@ public final class LocalDate
      * @return true if this date is equal to the specified date
      */
     @Override  // override for Javadoc and performance
-    public boolean isEqual(ChronoLocalDate<?> other) {
+    public boolean isEqual(ChronoLocalDate other) {
         if (other instanceof LocalDate) {
             return compareTo0((LocalDate) other) == 0;
         }

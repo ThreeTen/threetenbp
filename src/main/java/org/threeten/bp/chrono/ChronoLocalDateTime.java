@@ -77,7 +77,7 @@ import org.threeten.bp.zone.ZoneRules;
  *
  * @param <D> the date type
  */
-public interface ChronoLocalDateTime<D extends ChronoLocalDate<D>>
+public interface ChronoLocalDateTime<D extends ChronoLocalDate>
         extends  Temporal, TemporalAdjuster, Comparable<ChronoLocalDateTime<?>> {
 
    /**
@@ -112,7 +112,7 @@ public interface ChronoLocalDateTime<D extends ChronoLocalDate<D>>
      *
      * @return the date part of this date-time, not null
      */
-    ChronoLocalDate<D> toLocalDate() ;
+    D toLocalDate() ;
 
     /**
      * Gets the local time part of this date-time.

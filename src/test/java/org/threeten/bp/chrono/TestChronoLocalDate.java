@@ -59,7 +59,6 @@ import org.threeten.bp.temporal.ValueRange;
 /**
  * Test assertions that must be true for all built-in chronologies.
  */
-@SuppressWarnings("rawtypes")
 @Test
 public class TestChronoLocalDate {
     //-----------------------------------------------------------------------
@@ -81,7 +80,7 @@ public class TestChronoLocalDate {
         ChronoLocalDate date = chrono.date(refDate);
         for (Chronology[] clist : data_of_calendars()) {
             Chronology chrono2 = clist[0];
-            ChronoLocalDate<?> date2 = chrono2.date(refDate);
+            ChronoLocalDate date2 = chrono2.date(refDate);
             TemporalAdjuster adjuster = new FixedAdjuster(date2);
             if (chrono != chrono2) {
                 try {
@@ -92,7 +91,7 @@ public class TestChronoLocalDate {
                 }
             } else {
                 // Same chronology,
-                ChronoLocalDate<?> result = date.with(adjuster);
+                ChronoLocalDate result = date.with(adjuster);
                 assertEquals(result, date2, "WithAdjuster failed to replace date");
             }
         }
@@ -104,7 +103,7 @@ public class TestChronoLocalDate {
         ChronoLocalDate date = chrono.date(refDate);
         for (Chronology[] clist : data_of_calendars()) {
             Chronology chrono2 = clist[0];
-            ChronoLocalDate<?> date2 = chrono2.date(refDate);
+            ChronoLocalDate date2 = chrono2.date(refDate);
             TemporalAmount adjuster = new FixedAdjuster(date2);
             if (chrono != chrono2) {
                 try {
@@ -115,7 +114,7 @@ public class TestChronoLocalDate {
                 }
             } else {
                 // Same chronology,
-                ChronoLocalDate<?> result = date.plus(adjuster);
+                ChronoLocalDate result = date.plus(adjuster);
                 assertEquals(result, date2, "WithAdjuster failed to replace date");
             }
         }
@@ -127,7 +126,7 @@ public class TestChronoLocalDate {
         ChronoLocalDate date = chrono.date(refDate);
         for (Chronology[] clist : data_of_calendars()) {
             Chronology chrono2 = clist[0];
-            ChronoLocalDate<?> date2 = chrono2.date(refDate);
+            ChronoLocalDate date2 = chrono2.date(refDate);
             TemporalAmount adjuster = new FixedAdjuster(date2);
             if (chrono != chrono2) {
                 try {
@@ -138,7 +137,7 @@ public class TestChronoLocalDate {
                 }
             } else {
                 // Same chronology,
-                ChronoLocalDate<?> result = date.minus(adjuster);
+                ChronoLocalDate result = date.minus(adjuster);
                 assertEquals(result, date2, "WithAdjuster failed to replace date");
             }
         }
@@ -150,7 +149,7 @@ public class TestChronoLocalDate {
         ChronoLocalDate date = chrono.date(refDate);
         for (Chronology[] clist : data_of_calendars()) {
             Chronology chrono2 = clist[0];
-            ChronoLocalDate<?> date2 = chrono2.date(refDate);
+            ChronoLocalDate date2 = chrono2.date(refDate);
             TemporalUnit adjuster = new FixedPeriodUnit(date2);
             if (chrono != chrono2) {
                 try {
@@ -162,7 +161,7 @@ public class TestChronoLocalDate {
                 }
             } else {
                 // Same chronology,
-                ChronoLocalDate<?> result = date.plus(1, adjuster);
+                ChronoLocalDate result = date.plus(1, adjuster);
                 assertEquals(result, date2, "WithAdjuster failed to replace date");
             }
         }
@@ -174,7 +173,7 @@ public class TestChronoLocalDate {
         ChronoLocalDate date = chrono.date(refDate);
         for (Chronology[] clist : data_of_calendars()) {
             Chronology chrono2 = clist[0];
-            ChronoLocalDate<?> date2 = chrono2.date(refDate);
+            ChronoLocalDate date2 = chrono2.date(refDate);
             TemporalUnit adjuster = new FixedPeriodUnit(date2);
             if (chrono != chrono2) {
                 try {
@@ -186,7 +185,7 @@ public class TestChronoLocalDate {
                 }
             } else {
                 // Same chronology,
-                ChronoLocalDate<?> result = date.minus(1, adjuster);
+                ChronoLocalDate result = date.minus(1, adjuster);
                 assertEquals(result, date2, "WithAdjuster failed to replace date");
             }
         }
@@ -198,7 +197,7 @@ public class TestChronoLocalDate {
         ChronoLocalDate date = chrono.date(refDate);
         for (Chronology[] clist : data_of_calendars()) {
             Chronology chrono2 = clist[0];
-            ChronoLocalDate<?> date2 = chrono2.date(refDate);
+            ChronoLocalDate date2 = chrono2.date(refDate);
             TemporalField adjuster = new FixedDateTimeField(date2);
             if (chrono != chrono2) {
                 try {
@@ -210,7 +209,7 @@ public class TestChronoLocalDate {
                 }
             } else {
                 // Same chronology,
-                ChronoLocalDate<?> result = date.with(adjuster, 1);
+                ChronoLocalDate result = date.with(adjuster, 1);
                 assertEquals(result, date2, "DateTimeField doSet failed to replace date");
             }
         }
@@ -221,9 +220,9 @@ public class TestChronoLocalDate {
     //-----------------------------------------------------------------------
     @Test(dataProvider="calendars")
     public void test_date_comparisons(Chronology chrono) {
-        List<ChronoLocalDate<?>> dates = new ArrayList<>();
+        List<ChronoLocalDate> dates = new ArrayList<>();
 
-        ChronoLocalDate<?> date = chrono.date(LocalDate.of(1900, 1, 1));
+        ChronoLocalDate date = chrono.date(LocalDate.of(1900, 1, 1));
 
         // Insert dates in order, no duplicates
         if (chrono != JapaneseChronology.INSTANCE) {
@@ -246,20 +245,20 @@ public class TestChronoLocalDate {
 
         // Check these dates against the corresponding dates for every calendar
         for (Chronology[] clist : data_of_calendars()) {
-            List<ChronoLocalDate<?>> otherDates = new ArrayList<>();
+            List<ChronoLocalDate> otherDates = new ArrayList<>();
             Chronology chrono2 = clist[0];
             if (chrono2 == JapaneseChronology.INSTANCE) {
                 continue;
             }
-            for (ChronoLocalDate<?> d : dates) {
+            for (ChronoLocalDate d : dates) {
                 otherDates.add(chrono2.date(d));
             }
 
             // Now compare  the sequence of original dates with the sequence of converted dates
             for (int i = 0; i < dates.size(); i++) {
-                ChronoLocalDate<?> a = dates.get(i);
+                ChronoLocalDate a = dates.get(i);
                 for (int j = 0; j < otherDates.size(); j++) {
-                    ChronoLocalDate<?> b = otherDates.get(j);
+                    ChronoLocalDate b = otherDates.get(j);
                     int cmp = ChronoLocalDate.DATE_COMPARATOR.compare(a, b);
                     if (i < j) {
                         assertTrue(cmp < 0, a + " compare " + b);
@@ -288,14 +287,14 @@ public class TestChronoLocalDate {
     @Test( dataProvider="calendars")
     public void test_ChronoSerialization(Chronology chrono) throws Exception {
         LocalDate ref = LocalDate.of(1900, 1, 5);
-        ChronoLocalDate<?> orginal = chrono.date(ref);
+        ChronoLocalDate orginal = chrono.date(ref);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);
         out.writeObject(orginal);
         out.close();
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream in = new ObjectInputStream(bais);
-        ChronoLocalDate<?> ser = (ChronoLocalDate<?>) in.readObject();
+        ChronoLocalDate ser = (ChronoLocalDate) in.readObject();
         assertEquals(ser, orginal, "deserialized date is wrong");
     }
 

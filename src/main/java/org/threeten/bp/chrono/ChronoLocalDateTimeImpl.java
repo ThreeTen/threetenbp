@@ -39,7 +39,6 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Objects;
 
-import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.jdk8.DefaultInterfaceChronoLocalDateTime;
@@ -68,7 +67,7 @@ import org.threeten.bp.temporal.ValueRange;
  *
  * @param <D> the date type
  */
-final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate<D>>
+final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate>
         extends DefaultInterfaceChronoLocalDateTime<D>
         implements  ChronoLocalDateTime<D>, Temporal, TemporalAdjuster, Serializable {
 
@@ -128,7 +127,7 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate<D>>
     /**
      * The date part.
      */
-    private final ChronoLocalDate<D> date;
+    private final D date;
     /**
      * The time part.
      */
@@ -142,7 +141,7 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate<D>>
      * @param time  the local time, not null
      * @return the local date-time, not null
      */
-    static <R extends ChronoLocalDate<R>> ChronoLocalDateTimeImpl<R> of(ChronoLocalDate<R> date, LocalTime time) {
+    static <R extends ChronoLocalDate> ChronoLocalDateTimeImpl<R> of(R date, LocalTime time) {
         return new ChronoLocalDateTimeImpl<>(date, time);
     }
 
@@ -152,7 +151,7 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate<D>>
      * @param date  the date part of the date-time, not null
      * @param time  the time part of the date-time, not null
      */
-    private ChronoLocalDateTimeImpl(ChronoLocalDate<D> date, LocalTime time) {
+    private ChronoLocalDateTimeImpl(D date, LocalTime time) {
         Objects.requireNonNull(date, "date");
         Objects.requireNonNull(time, "time");
         this.date = date;
@@ -172,13 +171,13 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate<D>>
             return this;
         }
         // Validate that the new DateTime is a ChronoLocalDate (and not something else)
-        ChronoLocalDate<D> cd = date.getChronology().ensureChronoLocalDate(newDate);
+        D cd = date.getChronology().ensureChronoLocalDate(newDate);
         return new ChronoLocalDateTimeImpl<>(cd, newTime);
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDate<D> toLocalDate() {
+    public D toLocalDate() {
         return date;
     }
 
@@ -229,12 +228,11 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate<D>>
     }
 
     //-----------------------------------------------------------------------
-    @SuppressWarnings("unchecked")
     @Override
     public ChronoLocalDateTimeImpl<D> with(TemporalAdjuster adjuster) {
         if (adjuster instanceof ChronoLocalDate) {
             // The Chrono is checked in with(date,time)
-            return with((ChronoLocalDate<D>) adjuster, time);
+            return with((ChronoLocalDate) adjuster, time);
         } else if (adjuster instanceof LocalTime) {
             return with(date, (LocalTime) adjuster);
         } else if (adjuster instanceof ChronoLocalDateTimeImpl) {
@@ -295,7 +293,7 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate<D>>
     }
 
     //-----------------------------------------------------------------------
-    private ChronoLocalDateTimeImpl<D> plusWithOverflow(ChronoLocalDate<D> newDate, long hours, long minutes, long seconds, long nanos) {
+    private ChronoLocalDateTimeImpl<D> plusWithOverflow(D newDate, long hours, long minutes, long seconds, long nanos) {
         // 9223372036854775808 long, 2147483648 int
         if ((hours | minutes | seconds | nanos) == 0) {
             return with(newDate, time);
@@ -342,7 +340,7 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate<D>>
                 }
                 return Jdk8Methods.safeAdd(amount, time.until(end.toLocalTime(), unit));
             }
-            ChronoLocalDate<D> endDate = end.toLocalDate();
+            ChronoLocalDate endDate = end.toLocalDate();
             if (end.toLocalTime().isBefore(time)) {
                 endDate = endDate.minus(1, ChronoUnit.DAYS);
             }
@@ -362,7 +360,7 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate<D>>
     }
 
     static ChronoLocalDateTime<?> readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        ChronoLocalDate<?> date = (ChronoLocalDate<?>) in.readObject();
+        ChronoLocalDate date = (ChronoLocalDate) in.readObject();
         LocalTime time = (LocalTime) in.readObject();
         return date.atTime(time);
     }

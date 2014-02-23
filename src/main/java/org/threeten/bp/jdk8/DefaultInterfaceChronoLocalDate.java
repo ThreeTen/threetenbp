@@ -60,12 +60,10 @@ import org.threeten.bp.temporal.TemporalUnit;
 /**
  * A temporary class providing implementations that will become default interface
  * methods once integrated into JDK 8.
- *
- * @param <D> the chronology of this date-time
  */
-public abstract class DefaultInterfaceChronoLocalDate<D extends ChronoLocalDate<D>>
+public abstract class DefaultInterfaceChronoLocalDate
         extends DefaultInterfaceTemporal
-        implements ChronoLocalDate<D> {
+        implements ChronoLocalDate {
 
     @Override
     public Era getEra() {
@@ -100,22 +98,22 @@ public abstract class DefaultInterfaceChronoLocalDate<D extends ChronoLocalDate<
 
     //-------------------------------------------------------------------------
     @Override
-    public ChronoLocalDate<D> with(TemporalAdjuster adjuster) {
+    public ChronoLocalDate with(TemporalAdjuster adjuster) {
         return getChronology().ensureChronoLocalDate(super.with(adjuster));
     }
 
     @Override
-    public ChronoLocalDate<D> plus(TemporalAmount amount) {
+    public ChronoLocalDate plus(TemporalAmount amount) {
         return getChronology().ensureChronoLocalDate(super.plus(amount));
     }
 
     @Override
-    public ChronoLocalDate<D> minus(TemporalAmount amount) {
+    public ChronoLocalDate minus(TemporalAmount amount) {
         return getChronology().ensureChronoLocalDate(super.minus(amount));
     }
 
     @Override
-    public ChronoLocalDate<D> minus(long amountToSubtract, TemporalUnit unit) {
+    public ChronoLocalDate minus(long amountToSubtract, TemporalUnit unit) {
         return getChronology().ensureChronoLocalDate(super.minus(amountToSubtract, unit));
     }
 
@@ -126,7 +124,7 @@ public abstract class DefaultInterfaceChronoLocalDate<D extends ChronoLocalDate<
     }
 
     @Override
-    public ChronoLocalDateTime<D> atTime(LocalTime localTime) {
+    public ChronoLocalDateTime<?> atTime(LocalTime localTime) {
         return Chronology.dateTime(this, localTime);
     }
 
@@ -153,7 +151,7 @@ public abstract class DefaultInterfaceChronoLocalDate<D extends ChronoLocalDate<
 
     //-------------------------------------------------------------------------
     @Override
-    public int compareTo(ChronoLocalDate<?> other) {
+    public int compareTo(ChronoLocalDate other) {
         int cmp = Long.compare(toEpochDay(), other.toEpochDay());
         if (cmp == 0) {
             cmp = getChronology().compareTo(other.getChronology());
@@ -162,17 +160,17 @@ public abstract class DefaultInterfaceChronoLocalDate<D extends ChronoLocalDate<
     }
 
     @Override
-    public boolean isAfter(ChronoLocalDate<?> other) {
+    public boolean isAfter(ChronoLocalDate other) {
         return this.toEpochDay() > other.toEpochDay();
     }
 
     @Override
-    public boolean isBefore(ChronoLocalDate<?> other) {
+    public boolean isBefore(ChronoLocalDate other) {
         return this.toEpochDay() < other.toEpochDay();
     }
 
     @Override
-    public boolean isEqual(ChronoLocalDate<?> other) {
+    public boolean isEqual(ChronoLocalDate other) {
         return this.toEpochDay() == other.toEpochDay();
     }
 
@@ -183,7 +181,7 @@ public abstract class DefaultInterfaceChronoLocalDate<D extends ChronoLocalDate<
             return true;
         }
         if (obj instanceof ChronoLocalDate) {
-            return compareTo((ChronoLocalDate<?>) obj) == 0;
+            return compareTo((ChronoLocalDate) obj) == 0;
         }
         return false;
     }

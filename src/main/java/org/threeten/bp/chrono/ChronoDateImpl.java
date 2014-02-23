@@ -110,9 +110,9 @@ import org.threeten.bp.temporal.TemporalUnit;
  *
  * @param <D> the date type
  */
-abstract class ChronoDateImpl<D extends ChronoLocalDate<D>>
-        extends DefaultInterfaceChronoLocalDate<D>
-        implements ChronoLocalDate<D>, Temporal, TemporalAdjuster, Serializable {
+abstract class ChronoDateImpl<D extends ChronoLocalDate>
+        extends DefaultInterfaceChronoLocalDate
+        implements ChronoLocalDate, Temporal, TemporalAdjuster, Serializable {
 
     /**
      * Serialization version.
@@ -126,6 +126,7 @@ abstract class ChronoDateImpl<D extends ChronoLocalDate<D>>
     }
 
     //-----------------------------------------------------------------------
+    @SuppressWarnings("unchecked")
     @Override
     public ChronoDateImpl<D> plus(long amountToAdd, TemporalUnit unit) {
         if (unit instanceof ChronoUnit) {
@@ -289,14 +290,14 @@ abstract class ChronoDateImpl<D extends ChronoLocalDate<D>>
     }
 
     @Override
-    public final ChronoLocalDateTime<D> atTime(LocalTime localTime) {
+    public final ChronoLocalDateTime<?> atTime(LocalTime localTime) {
         return Chronology.dateTime(this, localTime);
     }
 
     //-----------------------------------------------------------------------
     @Override
     public long until(Temporal endExclusive, TemporalUnit unit) {
-        ChronoLocalDate<?> end = getChronology().date(endExclusive);
+        ChronoLocalDate end = getChronology().date(endExclusive);
         if (unit instanceof ChronoUnit) {
             return LocalDate.from(this).until(end, unit);  // TODO: this is wrong
         }
@@ -304,7 +305,7 @@ abstract class ChronoDateImpl<D extends ChronoLocalDate<D>>
     }
 
     @Override
-    public Period until(ChronoLocalDate<?> endDate) {
+    public Period until(ChronoLocalDate endDate) {
         throw new UnsupportedOperationException("Not supported in ThreeTen backport");
     }
 

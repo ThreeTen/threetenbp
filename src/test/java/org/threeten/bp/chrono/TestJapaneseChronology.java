@@ -79,12 +79,12 @@ public class TestJapaneseChronology {
     }
 
     @Test(dataProvider="samples")
-    public void test_toLocalDate(ChronoLocalDate<?> jdate, LocalDate iso) {
+    public void test_toLocalDate(ChronoLocalDate jdate, LocalDate iso) {
         assertEquals(LocalDate.from(jdate), iso);
     }
 
     @Test(dataProvider="samples")
-    public void test_fromCalendrical(ChronoLocalDate<?> jdate, LocalDate iso) {
+    public void test_fromCalendrical(ChronoLocalDate jdate, LocalDate iso) {
         assertEquals(JapaneseChronology.INSTANCE.date(iso), jdate);
     }
 
@@ -119,15 +119,15 @@ public class TestJapaneseChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_adjust1() {
-        ChronoLocalDate<?> base = JapaneseChronology.INSTANCE.date(1890, 10, 29);
-        ChronoLocalDate<?> test = base.with(TemporalAdjusters.lastDayOfMonth());
+        ChronoLocalDate base = JapaneseChronology.INSTANCE.date(1890, 10, 29);
+        ChronoLocalDate test = base.with(TemporalAdjusters.lastDayOfMonth());
         assertEquals(test, JapaneseChronology.INSTANCE.date(1890, 10, 31));
     }
 
     @Test
     public void test_adjust2() {
-        ChronoLocalDate<?> base = JapaneseChronology.INSTANCE.date(1890, 12, 2);
-        ChronoLocalDate<?> test = base.with(TemporalAdjusters.lastDayOfMonth());
+        ChronoLocalDate base = JapaneseChronology.INSTANCE.date(1890, 12, 2);
+        ChronoLocalDate test = base.with(TemporalAdjusters.lastDayOfMonth());
         assertEquals(test, JapaneseChronology.INSTANCE.date(1890, 12, 31));
     }
 
@@ -136,14 +136,14 @@ public class TestJapaneseChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_adjust_toLocalDate() {
-        ChronoLocalDate<?> jdate = JapaneseChronology.INSTANCE.date(1890, 1, 4);
-        ChronoLocalDate<?> test = jdate.with(LocalDate.of(2012, 7, 6));
+        ChronoLocalDate jdate = JapaneseChronology.INSTANCE.date(1890, 1, 4);
+        ChronoLocalDate test = jdate.with(LocalDate.of(2012, 7, 6));
         assertEquals(test, JapaneseChronology.INSTANCE.date(2012, 7, 6));
     }
 
     @Test(expectedExceptions=DateTimeException.class)
     public void test_adjust_toMonth() {
-        ChronoLocalDate<?> jdate = JapaneseChronology.INSTANCE.date(1890, 1, 4);
+        ChronoLocalDate jdate = JapaneseChronology.INSTANCE.date(1890, 1, 4);
         jdate.with(Month.APRIL);
     }
 
@@ -152,14 +152,14 @@ public class TestJapaneseChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_LocalDate_adjustToJapaneseDate() {
-        ChronoLocalDate<?> jdate = JapaneseChronology.INSTANCE.date(1890, 10, 29);
+        ChronoLocalDate jdate = JapaneseChronology.INSTANCE.date(1890, 10, 29);
         LocalDate test = LocalDate.MIN.with(jdate);
         assertEquals(test, LocalDate.of(1890, 10, 29));
     }
 
     @Test
     public void test_LocalDateTime_adjustToJapaneseDate() {
-        ChronoLocalDate<?> jdate = JapaneseChronology.INSTANCE.date(1890, 10, 29);
+        ChronoLocalDate jdate = JapaneseChronology.INSTANCE.date(1890, 10, 29);
         LocalDateTime test = LocalDateTime.MIN.with(jdate);
         assertEquals(test, LocalDateTime.of(1890, 10, 29, 0, 0));
     }
@@ -217,7 +217,7 @@ public class TestJapaneseChronology {
     }
 
     @Test(dataProvider="toString")
-    public void test_toString(ChronoLocalDate<?> jdate, String expected) {
+    public void test_toString(ChronoLocalDate jdate, String expected) {
         assertEquals(jdate.toString(), expected);
     }
 

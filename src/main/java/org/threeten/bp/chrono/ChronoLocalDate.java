@@ -203,11 +203,9 @@ import org.threeten.bp.temporal.TemporalUnit;
  * <p>
  * Additional calendar systems may be added to the system.
  * See {@link Chronology} for more details.
- *
- * @param <D> the date type
  */
-public interface ChronoLocalDate<D extends ChronoLocalDate<D>>
-        extends Temporal, TemporalAdjuster, Comparable<ChronoLocalDate<?>> {
+public interface ChronoLocalDate
+        extends Temporal, TemporalAdjuster, Comparable<ChronoLocalDate> {
 
     /**
      * Comparator for two {@code ChronoLocalDate}s ignoring the chronology.
@@ -222,10 +220,10 @@ public interface ChronoLocalDate<D extends ChronoLocalDate<D>>
      * @see #isBefore
      * @see #isEqual
      */
-    public static final Comparator<ChronoLocalDate<?>> DATE_COMPARATOR =
-            new Comparator<ChronoLocalDate<?>>() {
+    public static final Comparator<ChronoLocalDate> DATE_COMPARATOR =
+            new Comparator<ChronoLocalDate>() {
         @Override
-        public int compare(ChronoLocalDate<?> date1, ChronoLocalDate<?> date2) {
+        public int compare(ChronoLocalDate date1, ChronoLocalDate date2) {
             return Long.compare(date1.toEpochDay(), date2.toEpochDay());
         }
     };
@@ -292,22 +290,22 @@ public interface ChronoLocalDate<D extends ChronoLocalDate<D>>
     //-------------------------------------------------------------------------
     // override for covariant return type
     @Override
-    ChronoLocalDate<D> with(TemporalAdjuster adjuster);
+    ChronoLocalDate with(TemporalAdjuster adjuster);
 
     @Override
-    ChronoLocalDate<D> with(TemporalField field, long newValue);
+    ChronoLocalDate with(TemporalField field, long newValue);
 
     @Override
-    ChronoLocalDate<D> plus(TemporalAmount amount);
+    ChronoLocalDate plus(TemporalAmount amount);
 
     @Override
-    ChronoLocalDate<D> plus(long amountToAdd, TemporalUnit unit);
+    ChronoLocalDate plus(long amountToAdd, TemporalUnit unit);
 
     @Override
-    ChronoLocalDate<D> minus(TemporalAmount amount);
+    ChronoLocalDate minus(TemporalAmount amount);
 
     @Override
-    ChronoLocalDate<D> minus(long amountToSubtract, TemporalUnit unit);
+    ChronoLocalDate minus(long amountToSubtract, TemporalUnit unit);
 
     //-----------------------------------------------------------------------
     /**
@@ -330,7 +328,7 @@ public interface ChronoLocalDate<D extends ChronoLocalDate<D>>
      * @throws DateTimeException if the period cannot be calculated
      * @throws ArithmeticException if numeric overflow occurs
      */
-    Period until(ChronoLocalDate<?> endDate);
+    Period until(ChronoLocalDate endDate);
 
     //-----------------------------------------------------------------------
     /**
@@ -342,7 +340,7 @@ public interface ChronoLocalDate<D extends ChronoLocalDate<D>>
      * @param localTime  the local time to use, not null
      * @return the local date-time formed from this date and the specified time, not null
      */
-    ChronoLocalDateTime<D> atTime(LocalTime localTime);
+    ChronoLocalDateTime<?> atTime(LocalTime localTime);
 
     //-----------------------------------------------------------------------
     /**
@@ -384,7 +382,7 @@ public interface ChronoLocalDate<D extends ChronoLocalDate<D>>
      * @return the comparator value, negative if less, positive if greater
      */
     @Override
-    int compareTo(ChronoLocalDate<?> other);
+    int compareTo(ChronoLocalDate other);
 
     //-----------------------------------------------------------------------
     /**
@@ -399,7 +397,7 @@ public interface ChronoLocalDate<D extends ChronoLocalDate<D>>
      * @param other  the other date to compare to, not null
      * @return true if this is after the specified date
      */
-    boolean isAfter(ChronoLocalDate<?> other);
+    boolean isAfter(ChronoLocalDate other);
 
     /**
      * Checks if this date is before the specified date ignoring the chronology.
@@ -413,7 +411,7 @@ public interface ChronoLocalDate<D extends ChronoLocalDate<D>>
      * @param other  the other date to compare to, not null
      * @return true if this is before the specified date
      */
-    boolean isBefore(ChronoLocalDate<?> other);
+    boolean isBefore(ChronoLocalDate other);
 
     /**
      * Checks if this date is equal to the specified date ignoring the chronology.
@@ -427,7 +425,7 @@ public interface ChronoLocalDate<D extends ChronoLocalDate<D>>
      * @param other  the other date to compare to, not null
      * @return true if the underlying date is equal to the specified date
      */
-    boolean isEqual(ChronoLocalDate<?> other);
+    boolean isEqual(ChronoLocalDate other);
 
     //-----------------------------------------------------------------------
     /**

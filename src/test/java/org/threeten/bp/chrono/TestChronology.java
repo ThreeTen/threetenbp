@@ -122,9 +122,9 @@ public class TestChronology {
     @Test(dataProvider = "calendars")
     public void test_epoch(String name, String alias, String description) {
         Chronology chrono = Chronology.of(name); // a chronology. In practice this is rarely hardcoded
-        ChronoLocalDate<?> date1 = chrono.dateNow();
+        ChronoLocalDate date1 = chrono.dateNow();
         long epoch1 = date1.getLong(ChronoField.EPOCH_DAY);
-        ChronoLocalDate<?> date2 = date1.with(ChronoField.EPOCH_DAY, epoch1);
+        ChronoLocalDate date2 = date1.with(ChronoField.EPOCH_DAY, epoch1);
         assertEquals(date1, date2, "Date from epoch day is not same date: " + date1 + " != " + date2);
         long epoch2 = date1.getLong(ChronoField.EPOCH_DAY);
         assertEquals(epoch1, epoch2, "Epoch day not the same: " + epoch1 + " != " + epoch2);

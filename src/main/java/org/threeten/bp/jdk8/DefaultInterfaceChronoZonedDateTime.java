@@ -59,7 +59,7 @@ import org.threeten.bp.temporal.ValueRange;
  *
  * @param <D> the chronology of this date-time
  */
-public abstract class DefaultInterfaceChronoZonedDateTime<D extends ChronoLocalDate<D>>
+public abstract class DefaultInterfaceChronoZonedDateTime<D extends ChronoLocalDate>
         extends DefaultInterfaceTemporal
         implements ChronoZonedDateTime<D> {
 
@@ -100,7 +100,7 @@ public abstract class DefaultInterfaceChronoZonedDateTime<D extends ChronoLocalD
 
     //-----------------------------------------------------------------------
     @Override
-    public ChronoLocalDate<D> toLocalDate() {
+    public D toLocalDate() {
         return toLocalDateTime().toLocalDate();
     }
 

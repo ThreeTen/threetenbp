@@ -85,7 +85,7 @@ public abstract class ChronoPeriod
      * @return the period between this date and the end date, not null
      * @see ChronoLocalDate#until(ChronoLocalDate)
      */
-    public static ChronoPeriod between(ChronoLocalDate<?> startDateInclusive, ChronoLocalDate<?> endDateExclusive) {
+    public static ChronoPeriod between(ChronoLocalDate startDateInclusive, ChronoLocalDate endDateExclusive) {
         Objects.requireNonNull(startDateInclusive, "startDateInclusive");
         Objects.requireNonNull(endDateExclusive, "endDateExclusive");
         return startDateInclusive.until(endDateExclusive);

@@ -42,7 +42,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
-import org.threeten.bp.DateTimeException;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
@@ -72,7 +71,7 @@ import org.threeten.bp.zone.ZoneRules;
  *
  * @param <D> the date type
  */
-final class ChronoZonedDateTimeImpl<D extends ChronoLocalDate<D>>
+final class ChronoZonedDateTimeImpl<D extends ChronoLocalDate>
         extends DefaultInterfaceChronoZonedDateTime<D>
         implements ChronoZonedDateTime<D>, Serializable {
 
@@ -103,7 +102,7 @@ final class ChronoZonedDateTimeImpl<D extends ChronoLocalDate<D>>
      * @param preferredOffset  the zone offset, null if no preference
      * @return the zoned date-time, not null
      */
-    static <R extends ChronoLocalDate<R>> ChronoZonedDateTime<R> ofBest(
+    static <R extends ChronoLocalDate> ChronoZonedDateTime<R> ofBest(
             ChronoLocalDateTimeImpl<R> localDateTime, ZoneId zone, ZoneOffset preferredOffset) {
         Objects.requireNonNull(localDateTime, "localDateTime");
         Objects.requireNonNull(zone, "zone");
@@ -139,11 +138,12 @@ final class ChronoZonedDateTimeImpl<D extends ChronoLocalDate<D>>
      * @param zone  the zone identifier, not null
      * @return the zoned date-time, not null
      */
-    static <R extends ChronoLocalDate<R>> ChronoZonedDateTimeImpl<R> ofInstant(Chronology chrono, Instant instant, ZoneId zone) {
+    static <R extends ChronoLocalDate> ChronoZonedDateTimeImpl<R> ofInstant(Chronology chrono, Instant instant, ZoneId zone) {
         ZoneRules rules = zone.getRules();
         ZoneOffset offset = rules.getOffset(instant);
         Objects.requireNonNull(offset, "offset");  // protect against bad ZoneRules
         LocalDateTime ldt = LocalDateTime.ofEpochSecond(instant.getEpochSecond(), instant.getNano(), offset);
+        @SuppressWarnings("unchecked")
         ChronoLocalDateTimeImpl<R> cldt = (ChronoLocalDateTimeImpl<R>) chrono.localDateTime(ldt);
         return new ChronoZonedDateTimeImpl<R>(cldt, offset, zone);
     }

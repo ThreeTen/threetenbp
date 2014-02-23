@@ -127,7 +127,7 @@ final class DateTimePrintContext {
             return temporalChrono.zonedDateTime(Instant.from(temporal), overrideZone);
         } else {  // overrideChrono != null
             // need class here to handle non-standard cases like OffsetDate
-            final ChronoLocalDate<?> date = overrideChrono.date(temporal);
+            final ChronoLocalDate date = overrideChrono.date(temporal);
             return new DefaultInterfaceTemporalAccessor() {
                 @Override
                 public boolean isSupported(TemporalField field) {
