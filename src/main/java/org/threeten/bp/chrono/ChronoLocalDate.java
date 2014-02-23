@@ -44,7 +44,6 @@ import java.util.Objects;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
-import org.threeten.bp.Period;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporal;
 import org.threeten.bp.temporal.ChronoField;
@@ -437,7 +436,7 @@ public abstract class ChronoLocalDate
      * @throws DateTimeException if the period cannot be calculated
      * @throws ArithmeticException if numeric overflow occurs
      */
-    public abstract Period until(ChronoLocalDate endDateExclusive);
+    public abstract ChronoPeriod until(ChronoLocalDate endDateExclusive);
 
     /**
      * Formats this date using the specified formatter.

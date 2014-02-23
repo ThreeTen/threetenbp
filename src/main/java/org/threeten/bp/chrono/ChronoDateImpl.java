@@ -36,7 +36,6 @@ import java.io.Serializable;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
-import org.threeten.bp.Period;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
@@ -304,7 +303,7 @@ abstract class ChronoDateImpl<D extends ChronoLocalDate>
     }
 
     @Override
-    public Period until(ChronoLocalDate endDate) {
+    public ChronoPeriod until(ChronoLocalDate endDate) {
         throw new UnsupportedOperationException("Not supported in ThreeTen backport");
     }
 
