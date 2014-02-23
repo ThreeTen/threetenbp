@@ -327,13 +327,32 @@ public abstract class ZoneId implements Serializable {
      */
     public static ZoneId of(String zoneId) {
         Objects.requireNonNull(zoneId, "zoneId");
-        if (zoneId.length() <= 1 || zoneId.startsWith("+") || zoneId.startsWith("-")) {
+        if (zoneId.equals("Z")) {
+            return ZoneOffset.UTC;
+        }
+        if (zoneId.length() == 1) {
+            throw new DateTimeException("Invalid zone: " + zoneId);
+        }
+        if (zoneId.startsWith("+") || zoneId.startsWith("-")) {
             return ZoneOffset.of(zoneId);
-        } else if (zoneId.startsWith("UTC") || zoneId.startsWith("GMT")) {
-            if (zoneId.length() == 3 || (zoneId.length() == 4 && zoneId.charAt(3) == '0')) {
-                return ZoneOffset.UTC;
+        }
+        if (zoneId.equals("UTC") || zoneId.equals("GMT") || zoneId.equals("UT")) {
+            return new ZoneRegion(zoneId, ZoneOffset.UTC.getRules());
+        }
+        if (zoneId.startsWith("UTC+") || zoneId.startsWith("GMT+") ||
+                zoneId.startsWith("UTC-") || zoneId.startsWith("GMT-")) {
+            ZoneOffset offset = ZoneOffset.of(zoneId.substring(3));
+            if (offset.getTotalSeconds() == 0) {
+                return new ZoneRegion(zoneId.substring(0, 3), offset.getRules());
             }
-            return ZoneOffset.of(zoneId.substring(3));
+            return new ZoneRegion(zoneId.substring(0, 3) + offset.getId(), offset.getRules());
+        }
+        if (zoneId.startsWith("UT+") || zoneId.startsWith("UT-")) {
+            ZoneOffset offset = ZoneOffset.of(zoneId.substring(2));
+            if (offset.getTotalSeconds() == 0) {
+                return new ZoneRegion("UT", offset.getRules());
+            }
+            return new ZoneRegion("UT" + offset.getId(), offset.getRules());
         }
         return ZoneRegion.ofId(zoneId, true);
     }
@@ -358,7 +377,7 @@ public abstract class ZoneId implements Serializable {
             return offset;
         }
         if (prefix.equals("GMT") || prefix.equals("UTC") || prefix.equals("UT")) {
-            if (offset.getTotalSeconds() != 0) {
+            if (offset.getTotalSeconds() == 0) {
                 return new ZoneRegion(prefix, offset.getRules());
             }
             return new ZoneRegion(prefix + offset.getId(), offset.getRules());

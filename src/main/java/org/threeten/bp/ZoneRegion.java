@@ -99,6 +99,27 @@ final class ZoneRegion extends ZoneId implements Serializable {
      * @throws DateTimeException if the ID format is invalid
      */
     private static ZoneRegion ofLenient(String zoneId) {
+        if (zoneId.equals("Z") || zoneId.startsWith("+") || zoneId.startsWith("-")) {
+            throw new DateTimeException("Invalid ID for region-based ZoneId, invalid format: " + zoneId);
+        }
+        if (zoneId.equals("UTC") || zoneId.equals("GMT") || zoneId.equals("UT")) {
+            return new ZoneRegion(zoneId, ZoneOffset.UTC.getRules());
+        }
+        if (zoneId.startsWith("UTC+") || zoneId.startsWith("GMT+") ||
+                zoneId.startsWith("UTC-") || zoneId.startsWith("GMT-")) {
+            ZoneOffset offset = ZoneOffset.of(zoneId.substring(3));
+            if (offset.getTotalSeconds() == 0) {
+                return new ZoneRegion(zoneId.substring(0, 3), offset.getRules());
+            }
+            return new ZoneRegion(zoneId.substring(0, 3) + offset.getId(), offset.getRules());
+        }
+        if (zoneId.startsWith("UT+") || zoneId.startsWith("UT-")) {
+            ZoneOffset offset = ZoneOffset.of(zoneId.substring(2));
+            if (offset.getTotalSeconds() == 0) {
+                return new ZoneRegion("UT", offset.getRules());
+            }
+            return new ZoneRegion("UT" + offset.getId(), offset.getRules());
+        }
         return ofId(zoneId, false);
     }
 
@@ -113,8 +134,7 @@ final class ZoneRegion extends ZoneId implements Serializable {
      */
     static ZoneRegion ofId(String zoneId, boolean checkAvailable) {
         Objects.requireNonNull(zoneId, "zoneId");
-        if (zoneId.length() < 2 || zoneId.startsWith("UTC") ||
-                zoneId.startsWith("GMT") || (PATTERN.matcher(zoneId).matches() == false)) {
+        if (zoneId.length() < 2 || PATTERN.matcher(zoneId).matches() == false) {
             throw new DateTimeException("Invalid ID for region-based ZoneId, invalid format: " + zoneId);
         }
         ZoneRules rules = null;
@@ -122,7 +142,10 @@ final class ZoneRegion extends ZoneId implements Serializable {
             // always attempt load for better behavior after deserialization
             rules = ZoneRulesProvider.getRules(zoneId, true);
         } catch (ZoneRulesException ex) {
-            if (checkAvailable) {
+            // special case as removed from data file
+            if (zoneId.equals("GMT0")) {
+                rules = ZoneOffset.UTC.getRules();
+            } else if (checkAvailable) {
                 throw ex;
             }
         }
