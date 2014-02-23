@@ -31,6 +31,7 @@
  */
 package org.threeten.bp.chrono;
 
+import static org.threeten.bp.temporal.ChronoField.PROLEPTIC_MONTH;
 import static org.threeten.bp.temporal.ChronoField.YEAR;
 
 import java.io.Serializable;
@@ -56,7 +57,7 @@ import org.threeten.bp.temporal.ValueRange;
  * <p>
  * The fields are defined as follows:
  * <p><ul>
- * <li>era - There are two eras, the current 'Republic' (ERA_ROC) and the previous era (ERA_BEFORE_ROC).
+ * <li>era - There are two eras, the current 'Republic' (ROC) and the previous era (BEFORE_ROC).
  * <li>year-of-era - The year-of-era for the current era increases uniformly from the epoch at year one.
  *  For the previous era the year increases from one as time goes backwards.
  *  The value for the current era is equal to the ISO proleptic-year minus 1911.
@@ -79,16 +80,6 @@ public final class MinguoChronology extends Chronology implements Serializable {
      * Singleton instance for the Minguo chronology.
      */
     public static final MinguoChronology INSTANCE = new MinguoChronology();
-
-    /**
-     * The singleton instance for the era ROC.
-     */
-    public static final Era ERA_ROC = MinguoEra.ROC;
-
-    /**
-     * The singleton instance for the era BEFORE_ROC.
-     */
-    public static final Era ERA_BEFORE_ROC = MinguoEra.BEFORE_ROC;
 
     /**
      * Serialization version.
@@ -241,7 +232,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
     }
 
     @Override
-    public Era eraOf(int eraValue) {
+    public MinguoEra eraOf(int eraValue) {
         return MinguoEra.of(eraValue);
     }
 
@@ -254,6 +245,10 @@ public final class MinguoChronology extends Chronology implements Serializable {
     @Override
     public ValueRange range(ChronoField field) {
         switch (field) {
+            case PROLEPTIC_MONTH: {
+                ValueRange range = PROLEPTIC_MONTH.range();
+                return ValueRange.of(range.getMinimum() - YEARS_DIFFERENCE * 12L, range.getMaximum() - YEARS_DIFFERENCE * 12L);
+            }
             case YEAR_OF_ERA: {
                 ValueRange range = YEAR.range();
                 return ValueRange.of(1, range.getMaximum() - YEARS_DIFFERENCE, -range.getMinimum() + 1 + YEARS_DIFFERENCE);

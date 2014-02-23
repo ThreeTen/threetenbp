@@ -62,14 +62,12 @@ import sun.util.calendar.LocalGregorianCalendar;
  * apart from the era-based year numbering.
  * <p>
  * Only Meiji (1865-04-07 - 1868-09-07) and later eras are supported.
- * Older eras are handled as an unknown era where the year-of-era is the ISO year.
  *
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
 @SuppressWarnings("restriction")
 public final class JapaneseChronology extends Chronology implements Serializable {
-    // TODO: definition for unknown era may break requirement that year-of-era >= 1
 
     static final LocalGregorianCalendar JCAL =
         (LocalGregorianCalendar) CalendarSystem.forName("japanese");
@@ -82,26 +80,6 @@ public final class JapaneseChronology extends Chronology implements Serializable
      */
     public static final JapaneseChronology INSTANCE = new JapaneseChronology();
 
-    /**
-     * The singleton instance for the Meiji era (1868-09-08 - 1912-07-29)
-     * which has the value -1.
-     */
-    public static final Era ERA_MEIJI = JapaneseEra.MEIJI;
-    /**
-     * The singleton instance for the Taisho era (1912-07-30 - 1926-12-24)
-     * which has the value 0.
-     */
-    public static final Era ERA_TAISHO = JapaneseEra.TAISHO;
-    /**
-     * The singleton instance for the Showa era (1926-12-25 - 1989-01-07)
-     * which has the value 1.
-     */
-    public static final Era ERA_SHOWA = JapaneseEra.SHOWA;
-    /**
-     * The singleton instance for the Heisei era (1989-01-08 - current)
-     * which has the value 2.
-     */
-    public static final Era ERA_HEISEI = JapaneseEra.HEISEI;
     /**
      * Serialization version.
      */
@@ -194,7 +172,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
     @Override  // override with covariant return type
     public JapaneseDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
         if (era instanceof JapaneseEra == false) {
-            throw new DateTimeException("Era must be JapaneseEra");
+            throw new ClassCastException("Era must be JapaneseEra");
         }
         return JapaneseDate.of((JapaneseEra) era, yearOfEra, month, dayOfMonth);
     }
@@ -303,16 +281,15 @@ public final class JapaneseChronology extends Chronology implements Serializable
      * Returns the calendar system era object from the given numeric value.
      *
      * See the description of each Era for the numeric values of:
-     * {@link #ERA_HEISEI}, {@link #ERA_SHOWA},{@link #ERA_TAISHO},
-     * {@link #ERA_MEIJI}), only Meiji and later eras are supported.
-     * Prior to Meiji {@link #ERA_SEIREKI} is used.
+     * {@link JapaneseEra#HEISEI}, {@link JapaneseEra#SHOWA},{@link JapaneseEra#TAISHO},
+     * {@link JapaneseEra#MEIJI}), only Meiji and later eras are supported.
      *
      * @param eraValue  the era value
      * @return the Japanese {@code Era} for the given numeric era value
      * @throws DateTimeException if {@code eraValue} is invalid
      */
     @Override
-    public Era eraOf(int eraValue) {
+    public JapaneseEra eraOf(int eraValue) {
         return JapaneseEra.of(eraValue);
     }
 

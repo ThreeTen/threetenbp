@@ -171,21 +171,21 @@ public class TestThaiBuddhistChronology {
     @Test
     public void test_withEra_BE() {
         ChronoLocalDate base = ThaiBuddhistChronology.INSTANCE.date(2555, 8, 29);
-        ChronoLocalDate test = base.with(ChronoField.ERA, ThaiBuddhistChronology.ERA_BE.getValue());
+        ChronoLocalDate test = base.with(ChronoField.ERA, ThaiBuddhistEra.BE.getValue());
         assertEquals(test, ThaiBuddhistChronology.INSTANCE.date(2555, 8, 29));
     }
 
     @Test
     public void test_withEra_BBE() {
         ChronoLocalDate base = ThaiBuddhistChronology.INSTANCE.date(-2554, 8, 29);
-        ChronoLocalDate test = base.with(ChronoField.ERA, ThaiBuddhistChronology.ERA_BEFORE_BE.getValue());
+        ChronoLocalDate test = base.with(ChronoField.ERA, ThaiBuddhistEra.BEFORE_BE.getValue());
         assertEquals(test, ThaiBuddhistChronology.INSTANCE.date(-2554, 8, 29));
     }
 
     @Test
     public void test_withEra_swap() {
         ChronoLocalDate base = ThaiBuddhistChronology.INSTANCE.date(-2554, 8, 29);
-        ChronoLocalDate test = base.with(ChronoField.ERA, ThaiBuddhistChronology.ERA_BE.getValue());
+        ChronoLocalDate test = base.with(ChronoField.ERA, ThaiBuddhistEra.BE.getValue());
         assertEquals(test, ThaiBuddhistChronology.INSTANCE.date(2555, 8, 29));
     }
 

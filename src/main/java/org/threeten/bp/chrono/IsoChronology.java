@@ -80,20 +80,6 @@ public final class IsoChronology extends Chronology implements Serializable {
      * Singleton instance of the ISO chronology.
      */
     public static final IsoChronology INSTANCE = new IsoChronology();
-    /**
-     * The singleton instance for the era BCE - 'Before Current Era'.
-     * The 'ISO' part of the name emphasizes that this differs from the BCE
-     * era in the Gregorian calendar system.
-     * This has the numeric value of {@code 0}.
-     */
-    public static final Era ERA_BCE = IsoEra.BCE;
-    /**
-     * The singleton instance for the era CE - 'Current Era'.
-     * The 'ISO' part of the name emphasizes that this differs from the CE
-     * era in the Gregorian calendar system.
-     * This has the numeric value of {@code 1}.
-     */
-    public static final Era ERA_CE = IsoEra.CE;
 
     /**
      * Serialization version.
@@ -359,7 +345,7 @@ public final class IsoChronology extends Chronology implements Serializable {
     }
 
     @Override
-    public Era eraOf(int eraValue) {
+    public IsoEra eraOf(int eraValue) {
         return IsoEra.of(eraValue);
     }
 

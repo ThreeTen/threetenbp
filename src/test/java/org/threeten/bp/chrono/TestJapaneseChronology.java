@@ -170,10 +170,10 @@ public class TestJapaneseChronology {
     @DataProvider(name="japaneseEras")
     Object[][] data_japanseseEras() {
         return new Object[][] {
-            { JapaneseChronology.ERA_MEIJI, -1, "Meiji"},
-            { JapaneseChronology.ERA_TAISHO, 0, "Taisho"},
-            { JapaneseChronology.ERA_SHOWA, 1, "Showa"},
-            { JapaneseChronology.ERA_HEISEI, 2, "Heisei"},
+            { JapaneseEra.MEIJI, -1, "Meiji"},
+            { JapaneseEra.TAISHO, 0, "Taisho"},
+            { JapaneseEra.SHOWA, 1, "Showa"},
+            { JapaneseEra.HEISEI, 2, "Heisei"},
         };
     }
 

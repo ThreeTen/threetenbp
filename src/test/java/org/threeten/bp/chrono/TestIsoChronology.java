@@ -35,8 +35,6 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
-import static org.threeten.bp.chrono.IsoChronology.ERA_BCE;
-import static org.threeten.bp.chrono.IsoChronology.ERA_CE;
 import static org.threeten.bp.temporal.ChronoField.ERA;
 import static org.threeten.bp.temporal.ChronoField.YEAR;
 import static org.threeten.bp.temporal.ChronoField.YEAR_OF_ERA;
@@ -88,8 +86,8 @@ public class TestIsoChronology {
     //-----------------------------------------------------------------------
     @Test
     public void test_eraOf() {
-        assertEquals(IsoChronology.INSTANCE.eraOf(0), ERA_BCE);
-        assertEquals(IsoChronology.INSTANCE.eraOf(1), ERA_CE);
+        assertEquals(IsoChronology.INSTANCE.eraOf(0), IsoEra.BCE);
+        assertEquals(IsoChronology.INSTANCE.eraOf(1), IsoEra.CE);
     }
 
     //-----------------------------------------------------------------------
@@ -155,8 +153,8 @@ public class TestIsoChronology {
         int year = 5;
         int month = 5;
         int dayOfMonth = 5;
-        ChronoLocalDate test = IsoChronology.INSTANCE.date(ERA_BCE, year, month, dayOfMonth);
-        assertEquals(test.getEra(), ERA_BCE);
+        ChronoLocalDate test = IsoChronology.INSTANCE.date(IsoEra.BCE, year, month, dayOfMonth);
+        assertEquals(test.getEra(), IsoEra.BCE);
         assertEquals(test.get(ChronoField.YEAR_OF_ERA), year);
         assertEquals(test.get(ChronoField.MONTH_OF_YEAR), month);
         assertEquals(test.get(ChronoField.DAY_OF_MONTH), dayOfMonth);
@@ -168,7 +166,7 @@ public class TestIsoChronology {
 
     @Test(expectedExceptions=ClassCastException.class)
     public void test_date_withEra_withWrongEra() {
-        IsoChronology.INSTANCE.date((Era) HijrahChronology.ERA_AH, 1, 1, 1);
+        IsoChronology.INSTANCE.date((Era) HijrahEra.AH, 1, 1, 1);
     }
 
     //-----------------------------------------------------------------------

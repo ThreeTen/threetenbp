@@ -55,12 +55,20 @@ import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.threeten.bp.Clock;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.LocalDate;
+import org.threeten.bp.LocalTime;
+import org.threeten.bp.ZoneId;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
+import org.threeten.bp.temporal.TemporalAccessor;
+import org.threeten.bp.temporal.TemporalAdjuster;
+import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalField;
+import org.threeten.bp.temporal.TemporalQuery;
+import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.temporal.UnsupportedTemporalTypeException;
 import org.threeten.bp.temporal.ValueRange;
 
@@ -411,6 +419,56 @@ public final class HijrahDate
      */
     private final transient boolean isLeapYear;
 
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains the current {@code HijrahDate} of the Islamic Umm Al-Qura calendar
+     * in the default time-zone.
+     * <p>
+     * This will query the {@link Clock#systemDefaultZone() system clock} in the default
+     * time-zone to obtain the current date.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @return the current date using the system clock and default time-zone, not null
+     */
+    public static HijrahDate now() {
+        return now(Clock.systemDefaultZone());
+    }
+
+    /**
+     * Obtains the current {@code HijrahDate} of the Islamic Umm Al-Qura calendar
+     * in the specified time-zone.
+     * <p>
+     * This will query the {@link Clock#system(ZoneId) system clock} to obtain the current date.
+     * Specifying the time-zone avoids dependence on the default time-zone.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @param zone  the zone ID to use, not null
+     * @return the current date using the system clock, not null
+     */
+    public static HijrahDate now(ZoneId zone) {
+        return now(Clock.system(zone));
+    }
+
+    /**
+     * Obtains the current {@code HijrahDate} of the Islamic Umm Al-Qura calendar
+     * from the specified clock.
+     * <p>
+     * This will query the specified clock to obtain the current date - today.
+     * Using this method allows the use of an alternate clock for testing.
+     * The alternate clock may be introduced using {@linkplain Clock dependency injection}.
+     *
+     * @param clock  the clock to use, not null
+     * @return the current date, not null
+     * @throws DateTimeException if the current date cannot be obtained
+     */
+    public static HijrahDate now(Clock clock) {
+        return HijrahChronology.INSTANCE.dateNow(clock);
+    }
+
     //-------------------------------------------------------------------------
     /**
      * Obtains an instance of {@code HijrahDate} from the Hijrah era year,
@@ -423,7 +481,7 @@ public final class HijrahDate
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    static HijrahDate of(int prolepticYear, int monthOfYear, int dayOfMonth) {
+    public static HijrahDate of(int prolepticYear, int monthOfYear, int dayOfMonth) {
         return (prolepticYear >= 1) ?
             HijrahDate.of(HijrahEra.AH, prolepticYear, monthOfYear, dayOfMonth) :
             HijrahDate.of(HijrahEra.BEFORE_AH, 1 - prolepticYear, monthOfYear, dayOfMonth);
@@ -499,6 +557,28 @@ public final class HijrahDate
     }
 
     /**
+     * Obtains a {@code HijrahDate} of the Islamic Umm Al-Qura calendar from a temporal object.
+     * <p>
+     * This obtains a date in the Hijrah calendar system based on the specified temporal.
+     * A {@code TemporalAccessor} represents an arbitrary set of date and time information,
+     * which this factory converts to an instance of {@code HijrahDate}.
+     * <p>
+     * The conversion typically uses the {@link ChronoField#EPOCH_DAY EPOCH_DAY}
+     * field, which is standardized across calendar systems.
+     * <p>
+     * This method matches the signature of the functional interface {@link TemporalQuery}
+     * allowing it to be used as a query via method reference, {@code HijrahDate::from}.
+     *
+     * @param temporal  the temporal object to convert, not null
+     * @return the date in Hijrah calendar system, not null
+     * @throws DateTimeException if unable to convert to a {@code HijrahDate}
+     */
+    public static HijrahDate from(TemporalAccessor temporal) {
+        return HijrahChronology.INSTANCE.date(temporal);
+    }
+
+    //-------------------------------------------------------------------------
+    /**
      * Constructs an instance with the specified date.
      *
      * @param gregorianDay  the number of days from 0001/01/01 (Gregorian), caller calculated
@@ -534,6 +614,11 @@ public final class HijrahDate
     @Override
     public HijrahChronology getChronology() {
         return HijrahChronology.INSTANCE;
+    }
+
+    @Override
+    public HijrahEra getEra() {
+        return this.era;
     }
 
     @Override
@@ -576,6 +661,12 @@ public final class HijrahDate
         return field.getFrom(this);
     }
 
+    //-------------------------------------------------------------------------
+    @Override
+    public HijrahDate with(TemporalAdjuster adjuster) {
+        return (HijrahDate) super.with(adjuster);
+    }
+
     @Override
     public HijrahDate with(TemporalField field, long newValue) {
         if (field instanceof ChronoField) {
@@ -610,14 +701,35 @@ public final class HijrahDate
     }
 
     @Override
-    public long toEpochDay() {
-         return getGregorianEpochDay(yearOfEra, monthOfYear, dayOfMonth);
+    public HijrahDate plus(TemporalAmount amount) {
+        return (HijrahDate) super.plus(amount);
     }
 
-    //-----------------------------------------------------------------------
     @Override
-    public HijrahEra getEra() {
-        return this.era;
+    public HijrahDate plus(long amountToAdd, TemporalUnit unit) {
+        return (HijrahDate) super.plus(amountToAdd, unit);
+    }
+
+    @Override
+    public HijrahDate minus(TemporalAmount amount) {
+        return (HijrahDate) super.minus(amount);
+    }
+
+    @Override
+    public HijrahDate minus(long amountToAdd, TemporalUnit unit) {
+        return (HijrahDate) super.minus(amountToAdd, unit);
+    }
+
+    //-------------------------------------------------------------------------
+    @Override
+    @SuppressWarnings("unchecked")
+    public final ChronoLocalDateTime<HijrahDate> atTime(LocalTime localTime) {
+        return (ChronoLocalDateTime<HijrahDate>) super.atTime(localTime);
+    }
+
+    @Override
+    public long toEpochDay() {
+         return getGregorianEpochDay(yearOfEra, monthOfYear, dayOfMonth);
     }
 
     //-----------------------------------------------------------------------

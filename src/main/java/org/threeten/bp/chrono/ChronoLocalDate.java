@@ -302,7 +302,7 @@ public abstract class ChronoLocalDate
      * The exact meaning is determined by the {@code Chronology}.
      * <p>
      * All correctly implemented {@code Era} classes are singletons, thus it
-     * is valid code to write {@code date.getEra() == SomeChrono.ERA_NAME)}.
+     * is valid code to write {@code date.getEra() == SomeEra.NAME)}.
      *
      * @return the chronology specific era constant applicable at this date, not null
      */

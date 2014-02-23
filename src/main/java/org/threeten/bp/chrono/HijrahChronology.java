@@ -156,15 +156,6 @@ public final class HijrahChronology extends Chronology implements Serializable {
     public static final HijrahChronology INSTANCE = new HijrahChronology();
 
     /**
-     * The singleton instance for the era before the current one - Before Hijrah -
-     * which has the value 0.
-     */
-    public static final Era ERA_BEFORE_AH = HijrahEra.BEFORE_AH;
-    /**
-     * The singleton instance for the current era - Hijrah - which has the value 1.
-     */
-    public static final Era ERA_AH = HijrahEra.AH;
-    /**
      * Serialization version.
      */
     private static final long serialVersionUID = 3127340209035924785L;
@@ -330,7 +321,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
     }
 
     @Override
-    public Era eraOf(int eraValue) {
+    public HijrahEra eraOf(int eraValue) {
         switch (eraValue) {
             case 0:
                 return HijrahEra.BEFORE_AH;
