@@ -67,12 +67,12 @@ import org.threeten.bp.temporal.TemporalUnit;
  *        // Enumerate the list of available calendars and print today for each
  *        Set&lt;Chrono&gt; chronos = Chrono.getAvailableChronologies();
  *        for (Chrono chrono : chronos) {
- *            ChronoLocalDate<?> date = chrono.dateNow();
+ *            ChronoLocalDate date = chrono.dateNow();
  *            System.out.printf("   %20s: %s%n", chrono.getID(), date.toString());
  *        }
  *
  *        // Print the Hijrah date and calendar
- *        ChronoLocalDate<?> date = Chrono.of("Hijrah").dateNow();
+ *        ChronoLocalDate date = Chrono.of("Hijrah").dateNow();
  *        int day = date.get(ChronoField.DAY_OF_MONTH);
  *        int dow = date.get(ChronoField.DAY_OF_WEEK);
  *        int month = date.get(ChronoField.MONTH_OF_YEAR);
@@ -81,10 +81,10 @@ import org.threeten.bp.temporal.TemporalUnit;
  *                dow, day, month, year);
 
  *        // Print today's date and the last day of the year
- *        ChronoLocalDate<?> now1 = Chrono.of("Hijrah").dateNow();
- *        ChronoLocalDate<?> first = now1.with(ChronoField.DAY_OF_MONTH, 1)
+ *        ChronoLocalDate now1 = Chrono.of("Hijrah").dateNow();
+ *        ChronoLocalDate first = now1.with(ChronoField.DAY_OF_MONTH, 1)
  *                .with(ChronoField.MONTH_OF_YEAR, 1);
- *        ChronoLocalDate<?> last = first.plus(1, ChronoUnit.YEARS)
+ *        ChronoLocalDate last = first.plus(1, ChronoUnit.YEARS)
  *                .minus(1, ChronoUnit.DAYS);
  *        System.out.printf("  Today is %s: start: %s; end: %s%n", last.getChrono().getID(),
  *                first, last);
