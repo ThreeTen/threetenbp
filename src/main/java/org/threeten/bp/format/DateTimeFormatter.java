@@ -75,15 +75,14 @@ import org.threeten.bp.temporal.TemporalQuery;
  * <p><ul>
  * <li>Using pattern letters, such as {@code yyyy-MMM-dd}
  * <li>Using localized styles, such as {@code long} or {@code medium}
- * <li>Using predefined constants, such as {@code isoLocalDate()}
+ * <li>Using predefined constants, such as {@link #ISO_LOCAL_DATE}
  * </ul><p>
  * <p>
  * For more complex formatters, a {@link DateTimeFormatterBuilder builder} is provided.
  * <p>
  * In most cases, it is not necessary to use this class directly when formatting.
- * The main date-time classes provide two methods - one for printing,
- * {@code toString(DateTimeFormatter formatter)}, and one for parsing,
- * {@code parse(CharSequence text, DateTimeFormatter formatter)}.
+ * The main date-time classes provide two methods - one for formatting,
+ * {@code format(DateTimeFormatter formatter)}, and one for parsing,
  * For example:
  * <pre>
  *  String text = date.toString(formatter);
@@ -1585,7 +1584,7 @@ public final class DateTimeFormatter {
      * Returns this formatter as a {@code java.text.Format} instance.
      * <p>
      * The returned {@link Format} instance will print any {@link TemporalAccessor}
-     * and parses to a resolved {@link DateTimeBuilder}.
+     * and parses to a resolved {@link TemporalAccessor}.
      * <p>
      * Exceptions will follow the definitions of {@code Format}, see those methods
      * for details about {@code IllegalArgumentException} during formatting and
