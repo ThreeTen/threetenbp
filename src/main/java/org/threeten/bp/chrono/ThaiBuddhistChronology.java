@@ -202,6 +202,11 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
         return new ThaiBuddhistDate(LocalDate.ofYearDay(prolepticYear - YEARS_DIFFERENCE, dayOfYear));
     }
 
+    @Override
+    public ThaiBuddhistDate dateEpochDay(long epochDay) {
+        return new ThaiBuddhistDate(LocalDate.ofEpochDay(epochDay));
+    }
+
     //-----------------------------------------------------------------------
     @Override  // override with covariant return type
     public ThaiBuddhistDate date(TemporalAccessor temporal) {

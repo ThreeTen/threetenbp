@@ -215,6 +215,11 @@ public final class JapaneseChronology extends Chronology implements Serializable
         return date(prolepticYear, date.getMonthValue(), date.getDayOfMonth());
     }
 
+    @Override
+    public JapaneseDate dateEpochDay(long epochDay) {
+        return new JapaneseDate(LocalDate.ofEpochDay(epochDay));
+    }
+
     //-----------------------------------------------------------------------
     @Override  // override with covariant return type
     public JapaneseDate date(TemporalAccessor temporal) {

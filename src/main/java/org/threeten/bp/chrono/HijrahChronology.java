@@ -44,6 +44,7 @@ import java.util.Objects;
 import org.threeten.bp.Clock;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDate;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.TemporalAccessor;
@@ -263,6 +264,11 @@ public final class HijrahChronology extends Chronology implements Serializable {
     @Override  // override with covariant return type
     public HijrahDate dateYearDay(int prolepticYear, int dayOfYear) {
         return HijrahDate.of(prolepticYear, 1, 1).plusDays(dayOfYear - 1);  // TODO better
+    }
+
+    @Override
+    public HijrahDate dateEpochDay(long epochDay) {
+        return HijrahDate.of(LocalDate.ofEpochDay(epochDay));
     }
 
     //-----------------------------------------------------------------------

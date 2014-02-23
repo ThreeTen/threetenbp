@@ -130,6 +130,9 @@ import org.threeten.bp.temporal.ValueRange;
  * This class must be implemented with care to ensure other classes operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
  * Subclasses should be Serializable wherever possible.
+ * <p>
+ * In JDK 8, this is an interface with default methods.
+ * Since there are no default methods in JDK 7, an abstract class is used.
  */
 public abstract class Chronology implements Comparable<Chronology> {
 
@@ -454,6 +457,18 @@ public abstract class Chronology implements Comparable<Chronology> {
      * @throws DateTimeException if unable to create the date
      */
     public abstract ChronoLocalDate dateYearDay(int prolepticYear, int dayOfYear);
+
+    /**
+     * Obtains a local date in this chronology from the epoch-day.
+     * <p>
+     * The definition of {@link ChronoField#EPOCH_DAY EPOCH_DAY} is the same
+     * for all calendar systems, thus it can be used for conversion.
+     *
+     * @param epochDay  the epoch day
+     * @return the local date in this chronology, not null
+     * @throws DateTimeException if unable to create the date
+     */
+    public abstract ChronoLocalDate dateEpochDay(long epochDay);
 
     /**
      * Obtains a local date in this chronology from another temporal object.

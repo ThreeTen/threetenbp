@@ -167,6 +167,11 @@ public final class MinguoChronology extends Chronology implements Serializable {
         return new MinguoDate(LocalDate.ofYearDay(prolepticYear + YEARS_DIFFERENCE, dayOfYear));
     }
 
+    @Override
+    public MinguoDate dateEpochDay(long epochDay) {
+        return new MinguoDate(LocalDate.ofEpochDay(epochDay));
+    }
+
     //-----------------------------------------------------------------------
     @Override  // override with covariant return type
     public MinguoDate date(TemporalAccessor temporal) {

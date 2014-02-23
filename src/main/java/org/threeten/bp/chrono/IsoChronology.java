@@ -210,6 +210,11 @@ public final class IsoChronology extends Chronology implements Serializable {
         return LocalDate.ofYearDay(prolepticYear, dayOfYear);
     }
 
+    @Override
+    public LocalDate dateEpochDay(long epochDay) {
+        return LocalDate.ofEpochDay(epochDay);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Obtains an ISO local date from another date-time object.
