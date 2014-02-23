@@ -2589,9 +2589,17 @@ public final class DateTimeFormatterBuilder {
             int sec = (secVal != null ? secVal.intValue() : 0);
             int nano = (nanoVal != null ? nanoVal.intValue() : 0);
             int year = (int) yearParsed % 10_000;
+            int days = 0;
+            if (hour == 24 && min == 0 && sec == 0 && nano == 0) {
+                hour = 0;
+                days = 1;
+            } else if (hour == 23 && min == 59 && sec == 60) {
+                context.setParsedLeapSecond();
+                sec = 59;
+            }
             long instantSecs;
             try {
-                LocalDateTime ldt = LocalDateTime.of(year, month, day, hour, min, sec, 0);
+                LocalDateTime ldt = LocalDateTime.of(year, month, day, hour, min, sec, 0).plusDays(days);
                 instantSecs = ldt.toEpochSecond(ZoneOffset.UTC);
                 instantSecs += Jdk8Methods.safeMultiply(yearParsed / 10_000L, SECONDS_PER_10000_YEARS);
             } catch (RuntimeException ex) {

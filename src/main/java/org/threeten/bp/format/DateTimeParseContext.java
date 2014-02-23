@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.threeten.bp.DateTimeException;
+import org.threeten.bp.Period;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.IsoChronology;
@@ -354,6 +355,13 @@ final class DateTimeParseContext {
         currentParsed().zone = zone;
     }
 
+    /**
+     * Stores the leap second.
+     */
+    void setParsedLeapSecond() {
+        currentParsed().leapSecond = true;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Returns a {@code TemporalAccessor} that can be used to interpret
@@ -384,6 +392,9 @@ final class DateTimeParseContext {
         Chronology chrono = null;
         ZoneId zone = null;
         final Map<TemporalField, Long> fieldValues = new HashMap<>();
+        boolean leapSecond;
+        Period excessDays = Period.ZERO;
+
         private Parsed() {
         }
         protected Parsed copy() {
@@ -391,6 +402,7 @@ final class DateTimeParseContext {
             cloned.chrono = this.chrono;
             cloned.zone = this.zone;
             cloned.fieldValues.putAll(this.fieldValues);
+            cloned.leapSecond = this.leapSecond;
             return cloned;
         }
         @Override

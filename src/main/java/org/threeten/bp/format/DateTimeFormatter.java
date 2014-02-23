@@ -56,6 +56,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.threeten.bp.DateTimeException;
+import org.threeten.bp.Period;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.chrono.Chronology;
@@ -907,6 +908,103 @@ public final class DateTimeFormatter {
         Objects.requireNonNull(timeStyle, "timeStyle");
         return new DateTimeFormatterBuilder().appendLocalized(dateStyle, timeStyle).toFormatter();
     }
+
+    //-----------------------------------------------------------------------
+    /**
+     * A query that provides access to the excess days that were parsed.
+     * <p>
+     * This returns a singleton {@linkplain TemporalQuery query} that provides
+     * access to additional information from the parse. The query always returns
+     * a non-null period, with a zero period returned instead of null.
+     * <p>
+     * There are two situations where this query may return a non-zero period.
+     * <ul>
+     * <li>If the {@code ResolverStyle} is {@code LENIENT} and a time is parsed
+     *  without a date, then the complete result of the parse consists of a
+     *  {@code LocalTime} and an excess {@code Period} in days.
+     *
+     * <li>If the {@code ResolverStyle} is {@code SMART} and a time is parsed
+     *  without a date where the time is 24:00:00, then the complete result of
+     *  the parse consists of a {@code LocalTime} of 00:00:00 and an excess
+     *  {@code Period} of one day.
+     * </ul>
+     * <p>
+     * In both cases, if a complete {@code ChronoLocalDateTime} or {@code Instant}
+     * is parsed, then the excess days are added to the date part.
+     * As a result, this query will return a zero period.
+     * <p>
+     * The {@code SMART} behaviour handles the common "end of day" 24:00 value.
+     * Processing in {@code LENIENT} mode also produces the same result:
+     * <pre>
+     *  Text to parse        Parsed object                         Excess days
+     *  "2012-12-03T00:00"   LocalDateTime.of(2012, 12, 3, 0, 0)   ZERO
+     *  "2012-12-03T24:00"   LocalDateTime.of(2012, 12, 4, 0, 0)   ZERO
+     *  "00:00"              LocalTime.of(0, 0)                    ZERO
+     *  "24:00"              LocalTime.of(0, 0)                    Period.ofDays(1)
+     * </pre>
+     * The query can be used as follows:
+     * <pre>
+     *  TemporalAccessor parsed = formatter.parse(str);
+     *  LocalTime time = parsed.query(LocalTime.FROM);
+     *  Period extraDays = parsed.query(DateTimeFormatter.parsedExcessDays());
+     * </pre>
+     * @return a query that provides access to the excess days that were parsed
+     */
+    public static final TemporalQuery<Period> parsedExcessDays() {
+        return PARSED_EXCESS_DAYS;
+    }
+    private static final TemporalQuery<Period> PARSED_EXCESS_DAYS = new TemporalQuery<Period>() {
+        public Period queryFrom(TemporalAccessor temporal) {
+            if (temporal instanceof Parsed) {
+                return ((Parsed) temporal).excessDays;
+            } else {
+                return Period.ZERO;
+            }
+        }
+    };
+
+    /**
+     * A query that provides access to whether a leap-second was parsed.
+     * <p>
+     * This returns a singleton {@linkplain TemporalQuery query} that provides
+     * access to additional information from the parse. The query always returns
+     * a non-null boolean, true if parsing saw a leap-second, false if not.
+     * <p>
+     * Instant parsing handles the special "leap second" time of '23:59:60'.
+     * Leap seconds occur at '23:59:60' in the UTC time-zone, but at other
+     * local times in different time-zones. To avoid this potential ambiguity,
+     * the handling of leap-seconds is limited to
+     * {@link DateTimeFormatterBuilder#appendInstant()}, as that method
+     * always parses the instant with the UTC zone offset.
+     * <p>
+     * If the time '23:59:60' is received, then a simple conversion is applied,
+     * replacing the second-of-minute of 60 with 59. This query can be used
+     * on the parse result to determine if the leap-second adjustment was made.
+     * The query will return one second of excess if it did adjust to remove
+     * the leap-second, and zero if not. Note that applying a leap-second
+     * smoothing mechanism, such as UTC-SLS, is the responsibility of the
+     * application, as follows:
+     * <pre>
+     *  TemporalAccessor parsed = formatter.parse(str);
+     *  Instant instant = parsed.query(Instant::from);
+     *  if (parsed.query(DateTimeFormatter.parsedLeapSecond())) {
+     *    // validate leap-second is correct and apply correct smoothing
+     *  }
+     * </pre>
+     * @return a query that provides access to whether a leap-second was parsed
+     */
+    public static final TemporalQuery<Boolean> parsedLeapSecond() {
+        return PARSED_LEAP_SECOND;
+    }
+    private static final TemporalQuery<Boolean> PARSED_LEAP_SECOND = new TemporalQuery<Boolean>() {
+        public Boolean queryFrom(TemporalAccessor temporal) {
+            if (temporal instanceof Parsed) {
+                return ((Parsed) temporal).leapSecond;
+            } else {
+                return Boolean.FALSE;
+            }
+        }
+    };
 
     //-----------------------------------------------------------------------
     /**
