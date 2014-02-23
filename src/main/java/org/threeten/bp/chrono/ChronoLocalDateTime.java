@@ -56,7 +56,7 @@ import org.threeten.bp.zone.ZoneRules;
  * as {@link LocalDateTime}, not this interface.</b>
  * <p>
  * A {@code ChronoLocalDateTime} is the abstract representation of a local date-time
- * where the {@code Chrono chronology}, or calendar system, is pluggable.
+ * where the {@code Chronology chronology}, or calendar system, is pluggable.
  * The date-time is defined in terms of fields expressed by {@link TemporalField},
  * where most common implementations are defined in {@link ChronoField}.
  * The chronology defines how the calendar system operates and the meaning of

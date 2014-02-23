@@ -1321,7 +1321,7 @@ public final class DateTimeFormatterBuilder {
         FIELD_MAP.put('y', ChronoField.YEAR);                      // CLDR
         // FIELD_MAP.put('y', ChronoField.YEAR_OF_ERA);            // Java, CLDR  // TODO redefine from above
         // FIELD_MAP.put('u', ChronoField.YEAR);                   // CLDR  // TODO
-        // FIELD_MAP.put('Y', ISODateTimeField.WEEK_BASED_YEAR);          // Java7, CLDR (needs localized week number)  // TODO
+        // FIELD_MAP.put('Y', IsoFields.WEEK_BASED_YEAR);          // Java7, CLDR (needs localized week number)  // TODO
         FIELD_MAP.put('Q', IsoFields.QUARTER_OF_YEAR);             // CLDR
         FIELD_MAP.put('M', ChronoField.MONTH_OF_YEAR);             // Java, CLDR
         // FIELD_MAP.put('w', WeekFields.weekOfYear());            // Java, CLDR (needs localized week number)

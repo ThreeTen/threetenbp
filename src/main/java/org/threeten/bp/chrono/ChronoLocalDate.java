@@ -54,7 +54,7 @@ import org.threeten.bp.temporal.TemporalUnit;
  * as {@link LocalDate}, not this interface.</b>
  * <p>
  * A {@code ChronoLocalDate} is the abstract representation of a date where the
- * {@code Chrono chronology}, or calendar system, is pluggable.
+ * {@code Chronology chronology}, or calendar system, is pluggable.
  * The date is defined in terms of fields expressed by {@link TemporalField},
  * where most common implementations are defined in {@link ChronoField}.
  * The chronology defines how the calendar system operates and the meaning of
@@ -377,7 +377,7 @@ public interface ChronoLocalDate<D extends ChronoLocalDate<D>>
      * <p>
      * If all the date objects being compared are in the same chronology, then the
      * additional chronology stage is not required and only the local date is used.
-     * To compare the dates of two {@code DateTimeAccessor} instances, including dates
+     * To compare the dates of two {@code TemporalAccessor} instances, including dates
      * in two different chronologies, use {@link ChronoField#EPOCH_DAY} as a comparator.
      *
      * @param other  the other date to compare to, not null
@@ -435,7 +435,7 @@ public interface ChronoLocalDate<D extends ChronoLocalDate<D>>
      * <p>
      * Compares this date with another ensuring that the date and chronology are the same.
      * <p>
-     * To compare the dates of two {@code DateTimeAccessor} instances, including dates
+     * To compare the dates of two {@code TemporalAccessor} instances, including dates
      * in two different chronologies, use {@link ChronoField#EPOCH_DAY} as a comparator.
      *
      * @param obj  the object to check, null returns false

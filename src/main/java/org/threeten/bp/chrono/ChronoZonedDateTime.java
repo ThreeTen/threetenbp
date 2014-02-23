@@ -55,7 +55,7 @@ import org.threeten.bp.temporal.TemporalUnit;
  * as {@link ZonedDateTime}, not this interface.</b>
  * <p>
  * A {@code ChronoZonedDateTime} is the abstract representation of an offset date-time
- * where the {@code Chrono chronology}, or calendar system, is pluggable.
+ * where the {@code Chronology chronology}, or calendar system, is pluggable.
  * The date-time is defined in terms of fields expressed by {@link TemporalField},
  * where most common implementations are defined in {@link ChronoField}.
  * The chronology defines how the calendar system operates and the meaning of
