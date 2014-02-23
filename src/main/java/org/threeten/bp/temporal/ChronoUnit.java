@@ -200,7 +200,7 @@ public enum ChronoUnit implements TemporalUnit {
      */
     @Override
     public boolean isDurationEstimated() {
-        return isDateBased();
+        return isDateBased() || this == FOREVER;
     }
 
     //-----------------------------------------------------------------------
