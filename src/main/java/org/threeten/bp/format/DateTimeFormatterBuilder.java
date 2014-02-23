@@ -713,6 +713,47 @@ public final class DateTimeFormatterBuilder {
         return this;
     }
 
+    /**
+     * Appends the localized zone offset, such as 'GMT+01:00', to the formatter.
+     * <p>
+     * This appends a localized zone offset to the builder, the format of the
+     * localized offset is controlled by the specified {@link FormatStyle style}
+     * to this method:
+     * <ul>
+     * <li>{@link TextStyle#FULL full} - formats with localized offset text, such
+     * as 'GMT, 2-digit hour and minute field, optional second field if non-zero,
+     * and colon.
+     * <li>{@link TextStyle#SHORT short} - formats with localized offset text,
+     * such as 'GMT, hour without leading zero, optional 2-digit minute and
+     * second if non-zero, and colon.
+     * </ul>
+     * <p>
+     * During formatting, the offset is obtained using a mechanism equivalent
+     * to querying the temporal with {@link TemporalQueries#offset()}.
+     * If the offset cannot be obtained then an exception is thrown unless the
+     * section of the formatter is optional.
+     * <p>
+     * During parsing, the offset is parsed using the format defined above.
+     * If the offset cannot be parsed then an exception is thrown unless the
+     * section of the formatter is optional.
+     * <p>
+     * @param style  the format style to use, not null
+     * @return this, for chaining, not null
+     * @throws IllegalArgumentException if style is neither {@link TextStyle#FULL
+     * full} nor {@link TextStyle#SHORT short}
+     */
+    public DateTimeFormatterBuilder appendLocalizedOffset(TextStyle style) {
+        Objects.requireNonNull(style, "style");
+        if (style != TextStyle.FULL && style != TextStyle.SHORT) {
+            throw new IllegalArgumentException("Style must be either full or short");
+        }
+        if (style == TextStyle.FULL) {
+            return appendLiteral("GMT").appendOffset("HH:MM:ss", "");
+        } else {
+            return appendLiteral("GMT").appendOffset("HH:mm:ss", "");
+        }
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Appends the time-zone ID, such as 'Europe/Paris' or '+02:00', to the formatter.
