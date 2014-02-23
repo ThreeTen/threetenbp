@@ -329,7 +329,7 @@ public abstract class Chronology implements Comparable<Chronology> {
      * @throws ClassCastException if the date-time cannot be cast to ChronoLocalDate
      *  or the chronology is not equal this Chrono
      */
-    public <D extends ChronoLocalDate> /* should be package-scoped */ D ensureChronoLocalDate(Temporal temporal) {
+    <D extends ChronoLocalDate> D ensureChronoLocalDate(Temporal temporal) {
         @SuppressWarnings("unchecked")
         D other = (D) temporal;
         if (this.equals(other.getChronology()) == false) {
@@ -346,7 +346,7 @@ public abstract class Chronology implements Comparable<Chronology> {
      * @throws ClassCastException if the date-time cannot be cast to ChronoLocalDateTimeImpl
      *  or the chronology is not equal this Chrono
      */
-    public <D extends ChronoLocalDate> /* should be package-scoped */ ChronoLocalDateTimeImpl<D> ensureChronoLocalDateTime(Temporal temporal) {
+    <D extends ChronoLocalDate> ChronoLocalDateTimeImpl<D> ensureChronoLocalDateTime(Temporal temporal) {
         @SuppressWarnings("unchecked")
         ChronoLocalDateTimeImpl<D> other = (ChronoLocalDateTimeImpl<D>) temporal;
         if (this.equals(other.toLocalDate().getChronology()) == false) {
@@ -364,7 +364,7 @@ public abstract class Chronology implements Comparable<Chronology> {
      * @throws ClassCastException if the date-time cannot be cast to ChronoZonedDateTimeImpl
      *  or the chronology is not equal this Chrono
      */
-    public <D extends ChronoLocalDate> /* should be package-scoped */ ChronoZonedDateTimeImpl<D> ensureChronoZonedDateTime(Temporal temporal) {
+    <D extends ChronoLocalDate> ChronoZonedDateTimeImpl<D> ensureChronoZonedDateTime(Temporal temporal) {
         @SuppressWarnings("unchecked")
         ChronoZonedDateTimeImpl<D> other = (ChronoZonedDateTimeImpl<D>) temporal;
         if (this.equals(other.toLocalDate().getChronology()) == false) {

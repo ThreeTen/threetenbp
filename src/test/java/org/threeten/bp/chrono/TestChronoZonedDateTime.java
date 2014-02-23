@@ -271,7 +271,7 @@ public class TestChronoZonedDateTime {
                 ChronoZonedDateTime<?> a = dates.get(i);
                 for (int j = 0; j < otherDates.size(); j++) {
                     ChronoZonedDateTime<?> b = otherDates.get(j);
-                    int cmp = ChronoZonedDateTime.INSTANT_COMPARATOR.compare(a, b);
+                    int cmp = ChronoZonedDateTime.timeLineOrder().compare(a, b);
                     if (i < j) {
                         assertTrue(cmp < 0, a + " compare " + b);
                         assertEquals(a.isBefore(b), true, a + " isBefore " + b);

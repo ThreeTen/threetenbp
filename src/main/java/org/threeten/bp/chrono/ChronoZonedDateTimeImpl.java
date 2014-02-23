@@ -46,7 +46,6 @@ import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
-import org.threeten.bp.jdk8.DefaultInterfaceChronoZonedDateTime;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
@@ -72,8 +71,8 @@ import org.threeten.bp.zone.ZoneRules;
  * @param <D> the date type
  */
 final class ChronoZonedDateTimeImpl<D extends ChronoLocalDate>
-        extends DefaultInterfaceChronoZonedDateTime<D>
-        implements ChronoZonedDateTime<D>, Serializable {
+        extends ChronoZonedDateTime<D>
+        implements Serializable {
 
     /**
      * Serialization version.
