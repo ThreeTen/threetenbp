@@ -999,8 +999,8 @@ public final class OffsetTime
      * with the offset and time changed to be the same as this.
      * <p>
      * The adjustment is equivalent to using {@link Temporal#with(TemporalField, long)}
-     * twice, passing {@link ChronoField#OFFSET_SECONDS} and
-     * {@link ChronoField#NANO_OF_DAY} as the fields.
+     * twice, passing {@link ChronoField#NANO_OF_DAY} and
+     * {@link ChronoField#OFFSET_SECONDS} as the fields.
      * <p>
      * In most cases, it is clearer to reverse the calling pattern by using
      * {@link Temporal#with(TemporalAdjuster)}:
@@ -1020,8 +1020,8 @@ public final class OffsetTime
     @Override
     public Temporal adjustInto(Temporal temporal) {
         return temporal
-                .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
-                .with(NANO_OF_DAY, time.toNanoOfDay());
+                .with(NANO_OF_DAY, time.toNanoOfDay())
+                .with(OFFSET_SECONDS, getOffset().getTotalSeconds());
     }
 
     /**

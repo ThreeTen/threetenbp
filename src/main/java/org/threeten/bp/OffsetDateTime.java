@@ -1413,8 +1413,8 @@ public final class OffsetDateTime
      * with the offset, date and time changed to be the same as this.
      * <p>
      * The adjustment is equivalent to using {@link Temporal#with(TemporalField, long)}
-     * three times, passing {@link ChronoField#OFFSET_SECONDS},
-     * {@link ChronoField#EPOCH_DAY} and {@link ChronoField#NANO_OF_DAY} as the fields.
+     * three times, passing {@link ChronoField#EPOCH_DAY},
+     * {@link ChronoField#NANO_OF_DAY} and {@link ChronoField#OFFSET_SECONDS} as the fields.
      * <p>
      * In most cases, it is clearer to reverse the calling pattern by using
      * {@link Temporal#with(TemporalAdjuster)}:
@@ -1434,9 +1434,9 @@ public final class OffsetDateTime
     @Override
     public Temporal adjustInto(Temporal temporal) {
         return temporal
-                .with(OFFSET_SECONDS, getOffset().getTotalSeconds())
                 .with(EPOCH_DAY, toLocalDate().toEpochDay())
-                .with(NANO_OF_DAY, toLocalTime().toNanoOfDay());
+                .with(NANO_OF_DAY, toLocalTime().toNanoOfDay())
+                .with(OFFSET_SECONDS, getOffset().getTotalSeconds());
     }
 
     /**

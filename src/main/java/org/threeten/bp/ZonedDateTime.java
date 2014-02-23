@@ -59,6 +59,7 @@ import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.TemporalUnit;
+import org.threeten.bp.temporal.UnsupportedTemporalTypeException;
 import org.threeten.bp.temporal.ValueRange;
 import org.threeten.bp.zone.ZoneOffsetTransition;
 import org.threeten.bp.zone.ZoneRules;
@@ -595,15 +596,16 @@ public final class ZonedDateTime
     /**
      * Resolves the offset into this zoned date-time.
      * <p>
-     * This will use the new offset to find the instant, which is then looked up
-     * using the zone ID to find the actual offset to use.
+     * This ignores the offset, unless it can be used in an overlap.
      *
      * @param offset  the offset, not null
      * @return the zoned date-time, not null
      */
     private ZonedDateTime resolveOffset(ZoneOffset offset) {
-        long epSec = dateTime.toEpochSecond(offset);
-        return create(epSec, dateTime.getNano(), zone);
+        if (offset.equals(this.offset) == false && zone.getRules().isValidOffset(dateTime, offset)) {
+            return new ZonedDateTime(dateTime, offset, zone);
+        }
+        return this;
     }
 
     //-----------------------------------------------------------------------
@@ -1125,7 +1127,7 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this date-time with the specified field set to a new value.
      * <p>
-     * This returns a new {@code ZonedDateTime}, based on this one, with the value
+     * This returns a {@code ZonedDateTime}, based on this one, with the value
      * for the specified field changed.
      * This can be used to change any supported field, such as the year, month or day-of-month.
      * If it is not possible to set the value, because the field is not supported or for
@@ -1143,15 +1145,13 @@ public final class ZonedDateTime
      * The result will have an offset derived from the new instant and original zone.
      * If the new instant value is outside the valid range then a {@code DateTimeException} will be thrown.
      * <p>
-     * The {@code OFFSET_SECONDS} field will return a date-time calculated using the specified offset.
-     * The local date-time is combined with the new offset to form an {@code Instant}.
-     * The instant and original zone are then used to create the result.
-     * This algorithm means that it is quite likely that the output has a different offset
-     * to the specified offset. It will however work correctly when passing in the offset
-     * applicable for the instant of the zoned date-time, and will work correctly if passing
-     * one of the two valid offsets during a daylight savings overlap when the same local time
-     * occurs twice. If the new offset value is outside the valid range then a
-     * {@code DateTimeException} will be thrown.
+     * The {@code OFFSET_SECONDS} field will typically be ignored.
+     * The offset of a {@code ZonedDateTime} is controlled primarily by the time-zone.
+     * As such, changing the offset does not generally make sense, because there is only
+     * one valid offset for the local date-time and zone.
+     * If the zoned date-time is in a daylight savings overlap, then the offset is used
+     * to switch between the two valid offsets. In all other cases, the offset is ignored.
+     * If the new offset value is outside the valid range then a {@code DateTimeException} will be thrown.
      * <p>
      * The other {@link #isSupported(TemporalField) supported fields} will behave as per
      * the matching method on {@link LocalDateTime#with(TemporalField, long) LocalDateTime}.
@@ -1160,7 +1160,7 @@ public final class ZonedDateTime
      * then the offset will be retained if possible, otherwise the earlier offset will be used.
      * If in a gap, the local date-time will be adjusted forward by the length of the gap.
      * <p>
-     * All other {@code ChronoField} instances will throw a {@code DateTimeException}.
+     * All other {@code ChronoField} instances will throw an {@code UnsupportedTemporalTypeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
      * is obtained by invoking {@code TemporalField.adjustInto(Temporal, long)}
@@ -1173,6 +1173,7 @@ public final class ZonedDateTime
      * @param newValue  the new value of the field in the result
      * @return a {@code ZonedDateTime} based on {@code this} with the specified field set, not null
      * @throws DateTimeException if the field cannot be set
+     * @throws UnsupportedTemporalTypeException if the field is not supported
      * @throws ArithmeticException if numeric overflow occurs
      */
     @Override

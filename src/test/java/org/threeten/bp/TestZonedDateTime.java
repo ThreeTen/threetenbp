@@ -1033,10 +1033,10 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     }
 
     @Test
-    public void test_with_WithAdjuster_Offset_timeAdjust() {
+    public void test_with_WithAdjuster_Offset_ignored() {
         ZonedDateTime base = ZonedDateTime.of(LocalDateTime.of(2012, 7, 31, 0, 0), ZONE_PARIS);
         ZonedDateTime test = base.with(ZoneOffset.ofHours(1));
-        check(test, 2012, 7, 31, 1, 0, 0, 0, OFFSET_0200, ZONE_PARIS);  // time adjusted
+        check(test, 2012, 7, 31, 0, 0, 0, 0, OFFSET_0200, ZONE_PARIS);  // offset ignored
     }
 
     @Test
