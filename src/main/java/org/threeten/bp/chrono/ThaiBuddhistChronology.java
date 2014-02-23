@@ -148,8 +148,8 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
     /**
      * Gets the ID of the chronology - 'ThaiBuddhist'.
      * <p>
-     * The ID uniquely identifies the {@code Chrono}.
-     * It can be used to lookup the {@code Chrono} using {@link #of(String)}.
+     * The ID uniquely identifies the {@code Chronology}.
+     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
      *
      * @return the chronology ID - 'ThaiBuddhist'
      * @see #getCalendarType()
@@ -164,7 +164,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
      * <p>
      * The calendar type is an identifier defined by the
      * <em>Unicode Locale Data Markup Language (LDML)</em> specification.
-     * It can be used to lookup the {@code Chrono} using {@link #of(String)}.
+     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
      * It can also be used as part of a locale, accessible via
      * {@link Locale#getUnicodeLocaleType(String)} with the key 'ca'.
      *

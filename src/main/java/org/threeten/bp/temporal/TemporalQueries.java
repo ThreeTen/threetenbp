@@ -128,7 +128,7 @@ public final class TemporalQueries {
     };
 
     /**
-     * A query for the {@code Chrono}.
+     * A query for the {@code Chronology}.
      * <p>
      * This queries a {@code TemporalAccessor} for the chronology.
      * If the target {@code TemporalAccessor} represents a date, or part of a date,

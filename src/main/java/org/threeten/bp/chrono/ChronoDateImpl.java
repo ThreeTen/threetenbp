@@ -91,13 +91,13 @@ import org.threeten.bp.temporal.TemporalUnit;
  *
  * <h4>Adding Calendars</h4>
  * <p> The set of calendars is extensible by defining a subclass of {@link ChronoLocalDate}
- * to represent a date instance and an implementation of {@code Chrono}
+ * to represent a date instance and an implementation of {@code Chronology}
  * to be the factory for the ChronoLocalDate subclass.
  * </p>
  * <p> To permit the discovery of the additional calendar types the implementation of
- * {@code Chrono} must be registered as a Service implementing the {@code Chrono} interface
+ * {@code Chronology} must be registered as a Service implementing the {@code Chronology} interface
  * in the {@code META-INF/Services} file as per the specification of {@link java.util.ServiceLoader}.
- * The subclass must function according to the {@code Chrono} class description and must provide its
+ * The subclass must function according to the {@code Chronology} class description and must provide its
  * {@link Chronology#getID calendar name} and
  * {@link Chronology#getCalendarType() calendar type}. </p>
  *

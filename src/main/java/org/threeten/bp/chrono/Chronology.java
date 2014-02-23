@@ -74,7 +74,7 @@ import org.threeten.bp.temporal.ValueRange;
  * Most other calendar systems also operate on the shared concepts of year, month and day,
  * linked to the cycles of the Earth around the Sun, and the Moon around the Earth.
  * These shared concepts are defined by {@link ChronoField} and are availalbe
- * for use by any {@code Chrono} implementation:
+ * for use by any {@code Chronology} implementation:
  * <pre>
  *   LocalDate isoDate = ...
  *   ChronoLocalDate&lt;ThaiBuddhistChrono&gt; minguoDate = ...
@@ -82,21 +82,21 @@ import org.threeten.bp.temporal.ValueRange;
  *   int thaiYear = thaiDate.get(ChronoField.YEAR);
  * </pre>
  * As shown, although the date objects are in different calendar systems, represented by different
- * {@code Chrono} instances, both can be queried using the same constant on {@code ChronoField}.
+ * {@code Chronology} instances, both can be queried using the same constant on {@code ChronoField}.
  * For a full discussion of the implications of this, see {@link ChronoLocalDate}.
  * In general, the advice is to use the known ISO-based {@code LocalDate}, rather than
  * {@code ChronoLocalDate}.
  * <p>
- * While a {@code Chrono} object typically uses {@code ChronoField} and is based on
+ * While a {@code Chronology} object typically uses {@code ChronoField} and is based on
  * an era, year-of-era, month-of-year, day-of-month model of a date, this is not required.
- * A {@code Chrono} instance may represent a totally different kind of calendar system,
+ * A {@code Chronology} instance may represent a totally different kind of calendar system,
  * such as the Mayan.
  * <p>
- * In practical terms, the {@code Chrono} instance also acts as a factory.
+ * In practical terms, the {@code Chronology} instance also acts as a factory.
  * The {@link #of(String)} method allows an instance to be looked up by identifier,
  * while the {@link #ofLocale(Locale)} method allows lookup by locale.
  * <p>
- * The {@code Chrono} instance provides a set of methods to create {@code ChronoLocalDate} instances.
+ * The {@code Chronology} instance provides a set of methods to create {@code ChronoLocalDate} instances.
  * The date classes are used to manipulate specific dates.
  * <p><ul>
  * <li> {@link #dateNow() dateNow()}
@@ -112,9 +112,9 @@ import org.threeten.bp.temporal.ValueRange;
  * <p id="addcalendars">Adding New Calendars</p>
  * The set of available chronologies can be extended by applications.
  * Adding a new calendar system requires the writing of an implementation of
- * {@code Chrono}, {@code ChronoLocalDate} and {@code Era}.
+ * {@code Chronology}, {@code ChronoLocalDate} and {@code Era}.
  * The majority of the logic specific to the calendar system will be in
- * {@code ChronoLocalDate}. The {@code Chrono} subclass acts as a factory.
+ * {@code ChronoLocalDate}. The {@code Chronology} subclass acts as a factory.
  * <p>
  * To permit the discovery of additional chronologies, the {@link java.util.ServiceLoader ServiceLoader}
  * is used. A file must be added to the {@code META-INF/services} directory with the
@@ -174,10 +174,10 @@ public abstract class Chronology implements Comparable<Chronology> {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Chrono} from a temporal object.
+     * Obtains an instance of {@code Chronology} from a temporal object.
      * <p>
      * A {@code TemporalAccessor} represents some form of date and time information.
-     * This factory converts the arbitrary temporal object to an instance of {@code Chrono}.
+     * This factory converts the arbitrary temporal object to an instance of {@code Chronology}.
      * If the specified temporal object does not have a chronology, {@link IsoChronology} is returned.
      * <p>
      * The conversion will obtain the chronology using {@link TemporalQueries#chronology()}.
@@ -187,7 +187,7 @@ public abstract class Chronology implements Comparable<Chronology> {
      *
      * @param temporal  the temporal to convert, not null
      * @return the chronology, not null
-     * @throws DateTimeException if unable to convert to an {@code Chrono}
+     * @throws DateTimeException if unable to convert to an {@code Chronology}
      */
     public static Chronology from(TemporalAccessor temporal) {
         Objects.requireNonNull(temporal, "temporal");
@@ -252,7 +252,7 @@ public abstract class Chronology implements Comparable<Chronology> {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Chrono} from a chronology ID or
+     * Obtains an instance of {@code Chronology} from a chronology ID or
      * calendar system type.
      * <p>
      * This returns a chronology based on either the ID or the type.
@@ -285,7 +285,7 @@ public abstract class Chronology implements Comparable<Chronology> {
     /**
      * Returns the available chronologies.
      * <p>
-     * Each returned {@code Chrono} is available for use in the system.
+     * Each returned {@code Chronology} is available for use in the system.
      *
      * @return the independent, modifiable set of the available chronology IDs, not null
      */
@@ -364,8 +364,8 @@ public abstract class Chronology implements Comparable<Chronology> {
     /**
      * Gets the ID of the chronology.
      * <p>
-     * The ID uniquely identifies the {@code Chrono}.
-     * It can be used to lookup the {@code Chrono} using {@link #of(String)}.
+     * The ID uniquely identifies the {@code Chronology}.
+     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
      *
      * @return the chronology ID, not null
      * @see #getCalendarType()
@@ -377,7 +377,7 @@ public abstract class Chronology implements Comparable<Chronology> {
      * <p>
      * The calendar type is an identifier defined by the
      * <em>Unicode Locale Data Markup Language (LDML)</em> specification.
-     * It can be used to lookup the {@code Chrono} using {@link #of(String)}.
+     * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
      * It can also be used as part of a locale, accessible via
      * {@link Locale#getUnicodeLocaleType(String)} with the key 'ca'.
      *
