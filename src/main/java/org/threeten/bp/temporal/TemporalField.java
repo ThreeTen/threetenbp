@@ -35,6 +35,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.threeten.bp.DateTimeException;
+import org.threeten.bp.format.ResolverStyle;
 
 /**
  * A field of date-time, such as month-of-year or hour-of-minute.
@@ -265,14 +266,19 @@ public interface TemporalField {
      * Implementations should combine the associated field with others to form
      * objects like {@code LocalDate}, {@code LocalTime} and {@code LocalDateTime}
      *
-     * @param temporal  the temporal to resolve, not null
-     * @param value  the value of this field
-     * @return a map of fields to update in the temporal, with a mapping to null
-     *  indicating a deletion. The whole map must be null if no resolving occurred
+     * @param fieldValues  the map of fields to values, which can be updated, not null
+     * @param partialTemporal  the partially complete temporal to query for zone and
+     *  chronology; querying for other things is undefined and not recommended, not null
+     * @param resolverStyle  the requested type of resolve, not null
+     * @return the resolved temporal object; null if resolving only
+     *  changed the map, or no resolve occurred
+     * @throws ArithmeticException if numeric overflow occurs
      * @throws DateTimeException if resolving results in an error. This must not be thrown
      *  by querying a field on the temporal without first checking if it is supported
-     * @throws ArithmeticException if numeric overflow occurs
      */
-    Map<TemporalField, Long> resolve(TemporalAccessor temporal, long value);
+    TemporalAccessor resolve(
+                    Map<TemporalField, Long> fieldValues,
+                    TemporalAccessor partialTemporal,
+                    ResolverStyle resolverStyle);
 
 }

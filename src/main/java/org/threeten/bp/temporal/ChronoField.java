@@ -55,6 +55,7 @@ import org.threeten.bp.Year;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.Chronology;
+import org.threeten.bp.format.ResolverStyle;
 
 /**
  * A standard set of fields.
@@ -605,7 +606,8 @@ public enum ChronoField implements TemporalField {
 
     //-----------------------------------------------------------------------
     @Override
-    public Map<TemporalField, Long> resolve(TemporalAccessor temporal, long value) {
+    public TemporalAccessor resolve(Map<TemporalField, Long> fieldValues,
+                    TemporalAccessor partialTemporal, ResolverStyle resolverStyle) {
         return null;  // resolve implemented in builder
     }
 

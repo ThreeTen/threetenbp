@@ -34,7 +34,6 @@ package org.threeten.bp.temporal;
 import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
 import static org.threeten.bp.temporal.ChronoField.DAY_OF_WEEK;
 import static org.threeten.bp.temporal.ChronoField.DAY_OF_YEAR;
-import static org.threeten.bp.temporal.ChronoField.EPOCH_DAY;
 import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.YEAR;
 import static org.threeten.bp.temporal.ChronoUnit.DAYS;
@@ -44,9 +43,7 @@ import static org.threeten.bp.temporal.ChronoUnit.YEARS;
 
 import java.io.InvalidObjectException;
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -685,46 +682,48 @@ public final class WeekFields implements Serializable {
         }
 
         @Override
-        public Map<TemporalField, Long> resolve(TemporalAccessor temporal, long value) {
+        public TemporalAccessor resolve(Map<TemporalField, Long> fieldValues,
+                        TemporalAccessor partialTemporal, ResolverStyle resolverStyle) {
+            final long value = fieldValues.remove(this);
             int newValue = range.checkValidIntValue(value, this);
             int sow = weekDef.getFirstDayOfWeek().getValue();
             if (rangeUnit == WEEKS) {  // day-of-week
                 int isoDow = Jdk8Methods.floorMod((sow - 1) + (newValue - 1), 7) + 1;
-                return Collections.<TemporalField, Long>singletonMap(DAY_OF_WEEK, (long) isoDow);
-            }
-            if ((temporal.isSupported(YEAR) && temporal.isSupported(DAY_OF_WEEK)) == false) {
+                fieldValues.put(DAY_OF_WEEK, (long) isoDow);
                 return null;
             }
-            int dow = localizedDayOfWeek(temporal, sow);
-            int year = temporal.get(YEAR);
-            Chronology chrono = Chronology.from(temporal);  // defaults to ISO
+            if ((fieldValues.containsKey(YEAR) && fieldValues.containsKey(DAY_OF_WEEK)) == false) {
+                return null;
+            }
+            int isoDow = DAY_OF_WEEK.checkValidIntValue(fieldValues.get(DAY_OF_WEEK));
+            int dow = Jdk8Methods.floorMod(isoDow - sow, 7) + 1;
+            int year = YEAR.checkValidIntValue(fieldValues.get(YEAR));
+            Chronology chrono = Chronology.from(partialTemporal);  // defaults to ISO
             if (rangeUnit == MONTHS) {  // week-of-month
-                if (temporal.isSupported(MONTH_OF_YEAR) == false) {
+                if (fieldValues.containsKey(MONTH_OF_YEAR) == false) {
                     return null;
                 }
-                int month = temporal.get(ChronoField.MONTH_OF_YEAR);
+                int month = MONTH_OF_YEAR.checkValidIntValue(fieldValues.get(MONTH_OF_YEAR));
                 ChronoLocalDate date = chrono.date(year, month, 1);
                 int dateDow = localizedDayOfWeek(date, sow);
                 long weeks = newValue - localizedWeekOfMonth(date, dateDow);
                 int days = dow - dateDow;
                 date = date.plus(weeks * 7 + days, DAYS);
-                Map<TemporalField, Long> result = new HashMap<>(4, 1.0f);
-                result.put(EPOCH_DAY, date.toEpochDay());
-                result.put(YEAR, null);
-                result.put(MONTH_OF_YEAR, null);
-                result.put(DAY_OF_WEEK, null);
-                return result;
+                fieldValues.remove(this);
+                fieldValues.remove(YEAR);
+                fieldValues.remove(MONTH_OF_YEAR);
+                fieldValues.remove(DAY_OF_WEEK);
+                return date;
             } else if (rangeUnit == YEARS) {  // week-of-year
                 ChronoLocalDate date = chrono.date(year, 1, 1);
                 int dateDow = localizedDayOfWeek(date, sow);
                 long weeks = newValue - localizedWeekOfYear(date, dateDow);
                 int days = dow - dateDow;
                 date = date.plus(weeks * 7 + days, DAYS);
-                Map<TemporalField, Long> result = new HashMap<>(4, 1.0f);
-                result.put(EPOCH_DAY, date.toEpochDay());
-                result.put(YEAR, null);
-                result.put(DAY_OF_WEEK, null);
-                return result;
+                fieldValues.remove(this);
+                fieldValues.remove(YEAR);
+                fieldValues.remove(DAY_OF_WEEK);
+                return date;
             } else {
                 throw new IllegalStateException("unreachable");
             }

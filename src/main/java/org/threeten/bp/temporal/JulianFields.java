@@ -35,12 +35,13 @@ import static org.threeten.bp.temporal.ChronoField.EPOCH_DAY;
 import static org.threeten.bp.temporal.ChronoUnit.DAYS;
 import static org.threeten.bp.temporal.ChronoUnit.FOREVER;
 
-import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
 import org.threeten.bp.DateTimeException;
+import org.threeten.bp.chrono.Chronology;
+import org.threeten.bp.format.ResolverStyle;
 import org.threeten.bp.jdk8.Jdk8Methods;
 
 /**
@@ -242,8 +243,11 @@ public final class JulianFields {
 
         //-----------------------------------------------------------------------
         @Override
-        public Map<TemporalField, Long> resolve(TemporalAccessor temporal, long value) {
-            return Collections.<TemporalField, Long>singletonMap(EPOCH_DAY, Jdk8Methods.safeSubtract(value, offset));
+        public TemporalAccessor resolve(Map<TemporalField, Long> fieldValues,
+                        TemporalAccessor partialTemporal, ResolverStyle resolverStyle) {
+            long value = fieldValues.remove(this);
+            Chronology chrono = Chronology.from(partialTemporal);
+            return chrono.dateEpochDay(Jdk8Methods.safeSubtract(value, offset));
         }
 
         //-----------------------------------------------------------------------

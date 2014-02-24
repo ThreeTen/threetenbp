@@ -38,6 +38,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.threeten.bp.DateTimeException;
+import org.threeten.bp.format.ResolverStyle;
 
 /**
  * Mock DateTimeField that returns null.
@@ -104,7 +105,8 @@ public enum MockFieldNoValue implements TemporalField {
 
     //-----------------------------------------------------------------------
     @Override
-    public Map<TemporalField, Long> resolve(TemporalAccessor temporal, long value) {
+    public TemporalAccessor resolve(Map<TemporalField, Long> fieldValues,
+                    TemporalAccessor partialTemporal, ResolverStyle resolverStyle) {
         return null;
     }
 

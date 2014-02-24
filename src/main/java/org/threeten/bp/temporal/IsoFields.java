@@ -44,7 +44,6 @@ import static org.threeten.bp.temporal.ChronoUnit.MONTHS;
 import static org.threeten.bp.temporal.ChronoUnit.WEEKS;
 import static org.threeten.bp.temporal.ChronoUnit.YEARS;
 
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -53,6 +52,7 @@ import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.IsoChronology;
+import org.threeten.bp.format.ResolverStyle;
 import org.threeten.bp.jdk8.Jdk8Methods;
 
 /**
@@ -260,19 +260,22 @@ public final class IsoFields {
                 return (R) temporal.with(DAY_OF_YEAR, temporal.getLong(DAY_OF_YEAR) + (newValue - curValue));
             }
             @Override
-            public Map<TemporalField, Long> resolve(TemporalAccessor temporal, long value) {
-                if ((temporal.isSupported(YEAR) && temporal.isSupported(DAY_OF_QUARTER)) == false) {
+            public TemporalAccessor resolve(Map<TemporalField, Long> fieldValues,
+                            TemporalAccessor partialTemporal, ResolverStyle resolverStyle) {
+                Long yearLong = fieldValues.get(YEAR);
+                Long qoyLong = fieldValues.get(QUARTER_OF_YEAR);
+                if (yearLong == null || qoyLong == null) {
                     return null;
                 }
-                int y = temporal.get(YEAR);
-                int qoy = temporal.get(QUARTER_OF_YEAR);
-                range().checkValidValue(value, this);  // leniently check from 1 to 92 TODO: check
-                LocalDate date = LocalDate.of(y, ((qoy - 1) * 3) + 1, 1).plusDays(value - 1);
-                Map<TemporalField, Long> result = new HashMap<>(4, 1.0f);
-                result.put(EPOCH_DAY, date.toEpochDay());
-                result.put(YEAR, null);
-                result.put(QUARTER_OF_YEAR, null);
-                return result;
+                int y = YEAR.checkValidIntValue(yearLong);
+                int qoy = QUARTER_OF_YEAR.range().checkValidIntValue(qoyLong, QUARTER_OF_YEAR);
+                long doq = fieldValues.get(DAY_OF_QUARTER);
+                range().checkValidValue(doq, this);  // leniently check from 1 to 92 TODO: check
+                LocalDate date = LocalDate.of(y, ((qoy - 1) * 3) + 1, 1).plusDays(doq - 1);
+                fieldValues.remove(this);
+                fieldValues.remove(YEAR);
+                fieldValues.remove(QUARTER_OF_YEAR);
+                return date;
             }
         },
         QUARTER_OF_YEAR {
@@ -358,19 +361,22 @@ public final class IsoFields {
                 return (R) temporal.plus(Jdk8Methods.safeSubtract(newValue, getFrom(temporal)), WEEKS);
             }
             @Override
-            public Map<TemporalField, Long> resolve(TemporalAccessor temporal, long value) {
-                if ((temporal.isSupported(WEEK_BASED_YEAR) && temporal.isSupported(DAY_OF_WEEK)) == false) {
+            public TemporalAccessor resolve(Map<TemporalField, Long> fieldValues,
+                            TemporalAccessor partialTemporal, ResolverStyle resolverStyle) {
+                Long wbyLong = fieldValues.get(WEEK_BASED_YEAR);
+                Long dowLong = fieldValues.get(DAY_OF_WEEK);
+                if (wbyLong == null || dowLong == null) {
                     return null;
                 }
-                int wby = temporal.get(WEEK_BASED_YEAR);
-                int dow = temporal.get(DAY_OF_WEEK);
-                range().checkValidValue(value, this);  // lenient range
-                LocalDate date = LocalDate.of(wby, 1, 4).plusWeeks(value - 1).with(DAY_OF_WEEK, dow);
-                Map<TemporalField, Long> result = new HashMap<>(2, 1.0f);
-                result.put(EPOCH_DAY, date.toEpochDay());
-                result.put(WEEK_BASED_YEAR, null);
-                result.put(DAY_OF_WEEK, null);
-                return result;
+                int wby = WEEK_BASED_YEAR.range().checkValidIntValue(wbyLong, WEEK_BASED_YEAR);
+                int dow = DAY_OF_WEEK.checkValidIntValue(dowLong);
+                long wowby = fieldValues.get(WEEK_OF_WEEK_BASED_YEAR);
+                range().checkValidValue(wowby, this);  // lenient range
+                LocalDate date = LocalDate.of(wby, 1, 4).plusWeeks(wowby - 1).with(DAY_OF_WEEK, dow);
+                fieldValues.remove(this);
+                fieldValues.remove(WEEK_BASED_YEAR);
+                fieldValues.remove(DAY_OF_WEEK);
+                return date;
             }
         },
         WEEK_BASED_YEAR {
@@ -426,7 +432,8 @@ public final class IsoFields {
         }
 
         @Override
-        public Map<TemporalField, Long> resolve(TemporalAccessor temporal, long value) {
+        public TemporalAccessor resolve(Map<TemporalField, Long> fieldValues,
+                        TemporalAccessor partialTemporal, ResolverStyle resolverStyle) {
             return null;
         }
 

@@ -38,12 +38,18 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.threeten.bp.DateTimeException;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.LocalTime;
 import org.threeten.bp.Period;
 import org.threeten.bp.ZoneId;
+import org.threeten.bp.chrono.ChronoLocalDate;
+import org.threeten.bp.chrono.ChronoLocalDateTime;
 import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
 import org.threeten.bp.jdk8.Jdk8Methods;
+import org.threeten.bp.temporal.ChronoField;
+import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
@@ -447,38 +453,59 @@ final class DateTimeParseContext {
          * @throws DateTimeException if resolving one field results in a value for
          *  another field that is in conflict
          */
-        Parsed resolveFields() {
+        Parsed resolveFields(ResolverStyle resolverStyle) {
+            int max = 0;
             outer:
-            while (true) {
+            while (max < 100) {
+                max++;
                 for (Map.Entry<TemporalField, Long> entry : fieldValues.entrySet()) {
                     TemporalField targetField = entry.getKey();
-                    Map<TemporalField, Long> changes = targetField.resolve(this, entry.getValue());
-                    if (changes != null) {
-                        resolveMakeChanges(targetField, changes);
-                        fieldValues.remove(targetField);  // helps avoid infinite loops
+                    TemporalAccessor resolvedObject = targetField.resolve(fieldValues, this, resolverStyle);
+                    if (resolvedObject != null) {
+                        if (resolvedObject instanceof ChronoLocalDate) {
+                            resolveMakeChanges(targetField, (ChronoLocalDate) resolvedObject);
+                            continue outer;  // have to restart to avoid concurrent modification
+                        }
+                        if (resolvedObject instanceof LocalTime) {
+                            resolveMakeChanges(targetField, (LocalTime) resolvedObject);
+                            continue outer;  // have to restart to avoid concurrent modification
+                        }
+                        if (resolvedObject instanceof ChronoLocalDateTime<?>) {
+                            ChronoLocalDateTime<?> cldt = (ChronoLocalDateTime<?>) resolvedObject;
+                            resolveMakeChanges(targetField, cldt.toLocalDate());
+                            resolveMakeChanges(targetField, cldt.toLocalTime());
+                            continue outer;  // have to restart to avoid concurrent modification
+                        }
+                        throw new DateTimeException("Unknown type: " + resolvedObject.getClass().getName());
+                    } else if (fieldValues.containsKey(targetField) == false) {
                         continue outer;  // have to restart to avoid concurrent modification
                     }
                 }
                 break;
             }
+            if (max == 100) {
+                throw new DateTimeException("Badly written field");
+            }
             return this;
         }
 
-        private void resolveMakeChanges(TemporalField targetField, Map<TemporalField, Long> changes) {
-            for (Map.Entry<TemporalField, Long> change : changes.entrySet()) {
-                TemporalField changeField = change.getKey();
-                Long changeValue = change.getValue();
-                Objects.requireNonNull(changeField, "changeField");
-                if (changeValue != null) {
-                    Long old = fieldValues.put(changeField, changeValue);
-                    if (old != null && old.longValue() != changeValue.longValue()) {
-                        throw new DateTimeException("Conflict found: " + changeField + " " + old +
-                                " differs from " + changeField + " " + changeValue +
-                                " while resolving  " + targetField);
-                    }
-                } else {
-                    fieldValues.remove(changeField);
-                }
+        private void resolveMakeChanges(TemporalField targetField, ChronoLocalDate date) {
+            long epochDay = date.toEpochDay();
+            Long old = fieldValues.put(ChronoField.EPOCH_DAY, epochDay);
+            if (old != null && old.longValue() != epochDay) {
+                throw new DateTimeException("Conflict found: " + LocalDate.ofEpochDay(old) +
+                        " differs from " + LocalDate.ofEpochDay(epochDay) +
+                        " while resolving  " + targetField);
+            }
+        }
+
+        private void resolveMakeChanges(TemporalField targetField, LocalTime time) {
+            long nanOfDay = time.toNanoOfDay();
+            Long old = fieldValues.put(ChronoField.NANO_OF_DAY, nanOfDay);
+            if (old != null && old.longValue() != nanOfDay) {
+                throw new DateTimeException("Conflict found: " + LocalTime.ofNanoOfDay(old) +
+                        " differs from " + time +
+                        " while resolving  " + targetField);
             }
         }
 

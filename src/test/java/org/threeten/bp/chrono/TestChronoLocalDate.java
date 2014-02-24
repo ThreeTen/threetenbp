@@ -48,6 +48,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDate;
+import org.threeten.bp.format.ResolverStyle;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
@@ -456,9 +457,9 @@ public class TestChronoLocalDate {
         }
 
         @Override
-        public Map<TemporalField, Long> resolve(TemporalAccessor temporal, long value) {
+        public TemporalAccessor resolve(Map<TemporalField, Long> fieldValues,
+                        TemporalAccessor partialTemporal, ResolverStyle resolverStyle) {
             return null;
         }
-
     }
 }

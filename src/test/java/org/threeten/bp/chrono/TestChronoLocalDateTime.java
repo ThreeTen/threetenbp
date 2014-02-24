@@ -50,6 +50,7 @@ import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.LocalTime;
+import org.threeten.bp.format.ResolverStyle;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
@@ -467,9 +468,9 @@ public class TestChronoLocalDateTime {
         }
 
         @Override
-        public Map<TemporalField, Long> resolve(TemporalAccessor temporal, long value) {
+        public TemporalAccessor resolve(Map<TemporalField, Long> fieldValues,
+                        TemporalAccessor partialTemporal, ResolverStyle resolverStyle) {
             return null;
         }
-
     }
 }
