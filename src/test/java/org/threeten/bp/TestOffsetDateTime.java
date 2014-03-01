@@ -439,14 +439,14 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void factory_parse_formatter() {
-        DateTimeFormatter f = DateTimeFormatter.ofPattern("y M d H m s XXX");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("u M d H m s XXX");
         OffsetDateTime test = OffsetDateTime.parse("2010 12 3 11 30 0 +01:00", f);
         assertEquals(test, OffsetDateTime.of(LocalDate.of(2010, 12, 3), LocalTime.of(11, 30), ZoneOffset.ofHours(1)));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_formatter_nullText() {
-        DateTimeFormatter f = DateTimeFormatter.ofPattern("y M d H m s");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("u M d H m s");
         OffsetDateTime.parse((String) null, f);
     }
 

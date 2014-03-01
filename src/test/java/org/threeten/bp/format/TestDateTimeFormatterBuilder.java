@@ -558,17 +558,23 @@ public class TestDateTimeFormatterBuilder {
             {"''''", "''"},
             {"'o''clock'", "'o''clock'"},
 
-            {"G", "Value(Era)"},
-            {"GG", "Value(Era,2)"},
+            {"G", "Text(Era,SHORT)"},
+            {"GG", "Text(Era,SHORT)"},
             {"GGG", "Text(Era,SHORT)"},
             {"GGGG", "Text(Era)"},
             {"GGGGG", "Text(Era,NARROW)"},
 
-            {"y", "Value(Year)"},
-            {"yy", "ReducedValue(Year,2,2000)"},
-            {"yyy", "Value(Year,3,19,NORMAL)"},
-            {"yyyy", "Value(Year,4,19,EXCEEDS_PAD)"},
-            {"yyyyy", "Value(Year,5,19,EXCEEDS_PAD)"},
+            {"u", "Value(Year)"},
+            {"uu", "ReducedValue(Year,2,2000)"},
+            {"uuu", "Value(Year,3,19,NORMAL)"},
+            {"uuuu", "Value(Year,4,19,EXCEEDS_PAD)"},
+            {"uuuuu", "Value(Year,5,19,EXCEEDS_PAD)"},
+
+            {"y", "Value(YearOfEra)"},
+            {"yy", "ReducedValue(YearOfEra,2,2000)"},
+            {"yyy", "Value(YearOfEra,3,19,NORMAL)"},
+            {"yyyy", "Value(YearOfEra,4,19,EXCEEDS_PAD)"},
+            {"yyyyy", "Value(YearOfEra,5,19,EXCEEDS_PAD)"},
 
 //            {"Y", "Value(WeekBasedYear)"},
 //            {"YY", "ReducedValue(WeekBasedYear,2,2000)"},
@@ -592,47 +598,34 @@ public class TestDateTimeFormatterBuilder {
 
             {"d", "Value(DayOfMonth)"},
             {"dd", "Value(DayOfMonth,2)"},
-            {"ddd", "Value(DayOfMonth,3)"},
 
-            {"F", "Value(AlignedWeekOfMonth)"},
-            {"FF", "Value(AlignedWeekOfMonth,2)"},
-            {"FFF", "Value(AlignedWeekOfMonth,3)"},
+            {"F", "Value(AlignedDayOfWeekInMonth)"},
 
-            {"E", "Value(DayOfWeek)"},
-            {"EE", "Value(DayOfWeek,2)"},
+            {"E", "Text(DayOfWeek,SHORT)"},
+            {"EE", "Text(DayOfWeek,SHORT)"},
             {"EEE", "Text(DayOfWeek,SHORT)"},
             {"EEEE", "Text(DayOfWeek)"},
             {"EEEEE", "Text(DayOfWeek,NARROW)"},
 
             {"a", "Text(AmPmOfDay,SHORT)"},
-            {"aa", "Text(AmPmOfDay,SHORT)"},
-            {"aaa", "Text(AmPmOfDay,SHORT)"},
-            {"aaaa", "Text(AmPmOfDay)"},
-            {"aaaaa", "Text(AmPmOfDay,NARROW)"},
 
             {"H", "Value(HourOfDay)"},
             {"HH", "Value(HourOfDay,2)"},
-            {"HHH", "Value(HourOfDay,3)"},
 
             {"K", "Value(HourOfAmPm)"},
             {"KK", "Value(HourOfAmPm,2)"},
-            {"KKK", "Value(HourOfAmPm,3)"},
 
             {"k", "Value(ClockHourOfDay)"},
             {"kk", "Value(ClockHourOfDay,2)"},
-            {"kkk", "Value(ClockHourOfDay,3)"},
 
             {"h", "Value(ClockHourOfAmPm)"},
             {"hh", "Value(ClockHourOfAmPm,2)"},
-            {"hhh", "Value(ClockHourOfAmPm,3)"},
 
             {"m", "Value(MinuteOfHour)"},
             {"mm", "Value(MinuteOfHour,2)"},
-            {"mmm", "Value(MinuteOfHour,3)"},
 
             {"s", "Value(SecondOfMinute)"},
             {"ss", "Value(SecondOfMinute,2)"},
-            {"sss", "Value(SecondOfMinute,3)"},
 
             {"S", "Fraction(NanoOfSecond,1,1)"},
             {"SS", "Fraction(NanoOfSecond,2,2)"},
@@ -677,11 +670,11 @@ public class TestDateTimeFormatterBuilder {
             {"ppH", "Pad(Value(HourOfDay),2)"},
             {"pppDD", "Pad(Value(DayOfYear,2),3)"},
 
-            {"yyyy[-MM[-dd", "Value(Year,4,19,EXCEEDS_PAD)['-'Value(MonthOfYear,2)['-'Value(DayOfMonth,2)]]"},
-            {"yyyy[-MM[-dd]]", "Value(Year,4,19,EXCEEDS_PAD)['-'Value(MonthOfYear,2)['-'Value(DayOfMonth,2)]]"},
-            {"yyyy[-MM[]-dd]", "Value(Year,4,19,EXCEEDS_PAD)['-'Value(MonthOfYear,2)'-'Value(DayOfMonth,2)]"},
+            {"uuuu[-MM[-dd", "Value(Year,4,19,EXCEEDS_PAD)['-'Value(MonthOfYear,2)['-'Value(DayOfMonth,2)]]"},
+            {"uuuu[-MM[-dd]]", "Value(Year,4,19,EXCEEDS_PAD)['-'Value(MonthOfYear,2)['-'Value(DayOfMonth,2)]]"},
+            {"uuuu[-MM[]-dd]", "Value(Year,4,19,EXCEEDS_PAD)['-'Value(MonthOfYear,2)'-'Value(DayOfMonth,2)]"},
 
-            {"yyyy-MM-dd'T'HH:mm:ss.SSS", "Value(Year,4,19,EXCEEDS_PAD)'-'Value(MonthOfYear,2)'-'Value(DayOfMonth,2)" +
+            {"uuuu-MM-dd'T'HH:mm:ss.SSS", "Value(Year,4,19,EXCEEDS_PAD)'-'Value(MonthOfYear,2)'-'Value(DayOfMonth,2)" +
                 "'T'Value(HourOfDay,2)':'Value(MinuteOfHour,2)':'Value(SecondOfMinute,2)'.'Fraction(NanoOfSecond,3,3)"},
         };
     }
@@ -702,6 +695,10 @@ public class TestDateTimeFormatterBuilder {
             {"'hel''lo"},
             {"'hello''"},
             {"]"},
+            {"{"},
+            {"}"},
+            {"#"},
+
             {"yyyy]"},
             {"yyyy]MM"},
             {"yyyy[MM]]"},
@@ -710,7 +707,6 @@ public class TestDateTimeFormatterBuilder {
             {"QQQQQQ"},
             {"EEEEEE"},
             {"aaaaaa"},
-            {"ZZZZ"},
             {"XXXXXX"},
 
             {"RO"},
@@ -725,6 +721,20 @@ public class TestDateTimeFormatterBuilder {
             {"fy"},
             {"fa"},
             {"fM"},
+            
+            {"ddd"},
+            {"FF"},
+            {"FFF"},
+            {"aa"},
+            {"aaa"},
+            {"aaaa"},
+            {"aaaaa"},
+            {"HHH"},
+            {"KKK"},
+            {"kkk"},
+            {"hhh"},
+            {"mmm"},
+            {"sss"},
         };
     }
 

@@ -42,6 +42,7 @@ import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
 import static org.threeten.bp.temporal.ChronoField.DAY_OF_WEEK;
 import static org.threeten.bp.temporal.ChronoField.DAY_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.EPOCH_DAY;
+import static org.threeten.bp.temporal.ChronoField.ERA;
 import static org.threeten.bp.temporal.ChronoField.HOUR_OF_AMPM;
 import static org.threeten.bp.temporal.ChronoField.HOUR_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.MICRO_OF_DAY;
@@ -57,6 +58,7 @@ import static org.threeten.bp.temporal.ChronoField.PROLEPTIC_MONTH;
 import static org.threeten.bp.temporal.ChronoField.SECOND_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.SECOND_OF_MINUTE;
 import static org.threeten.bp.temporal.ChronoField.YEAR;
+import static org.threeten.bp.temporal.ChronoField.YEAR_OF_ERA;
 import static org.threeten.bp.temporal.TemporalAdjusters.nextOrSame;
 
 import java.util.EnumMap;
@@ -69,6 +71,9 @@ import org.threeten.bp.DateTimeException;
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
+import org.threeten.bp.Month;
+import org.threeten.bp.Period;
+import org.threeten.bp.Year;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
@@ -123,6 +128,14 @@ final class DateTimeBuilder
      * The time.
      */
     private LocalTime time;
+    /**
+     * The leap second flag.
+     */
+    boolean leapSecond;
+    /**
+     * The excess days.
+     */
+    Period excessDays;
 
     //-----------------------------------------------------------------------
     /**
@@ -213,17 +226,22 @@ final class DateTimeBuilder
      * available date and time, throwing an exception if a problem occurs.
      * Calling this method changes the state of the builder.
      *
+     * @param resolverStyle how to resolve
      * @return {@code this}, for method chaining
      */
-    public DateTimeBuilder resolve() {
+    public DateTimeBuilder resolve(ResolverStyle resolverStyle) {
         // handle standard fields
-        mergeDate();
-        mergeTime();
+        mergeDate(resolverStyle);
+        mergeTime(resolverStyle);
+        if (excessDays != null && date != null && time != null) {
+            date = date.plus(excessDays);
+            excessDays = Period.ZERO;
+        }
         // TODO: cross validate remaining fields?
         return this;
     }
 
-    private void mergeDate() {
+    private void mergeDate(ResolverStyle resolverStyle) {
         if (standardFields.containsKey(EPOCH_DAY)) {
             checkDate(LocalDate.ofEpochDay(standardFields.remove(EPOCH_DAY)));
             return;
@@ -233,17 +251,62 @@ final class DateTimeBuilder
         if (standardFields.containsKey(PROLEPTIC_MONTH)) {
             long em = standardFields.remove(PROLEPTIC_MONTH);
             addFieldValue(MONTH_OF_YEAR, (em % 12) + 1);
-            addFieldValue(YEAR, (em / 12) + 1970);
+            addFieldValue(YEAR, (em / 12));
+        }
+
+        // eras
+        Long yoeLong = standardFields.remove(YEAR_OF_ERA);
+        if (yoeLong != null) {
+            if (resolverStyle != ResolverStyle.LENIENT) {
+                YEAR_OF_ERA.checkValidValue(yoeLong);
+            }
+            Long era = standardFields.remove(ERA);
+            if (era == null) {
+                Long year = standardFields.get(YEAR);
+                if (resolverStyle == ResolverStyle.STRICT) {
+                    // do not invent era if strict, but do cross-check with year
+                    if (year != null) {
+                        addFieldValue(YEAR, (year > 0 ? yoeLong: Jdk8Methods.safeSubtract(1, yoeLong)));
+                    } else {
+                        // reinstate the field removed earlier, no cross-check issues
+                        standardFields.put(YEAR_OF_ERA, yoeLong);
+                    }
+                } else {
+                    // invent era
+                    addFieldValue(YEAR, (year == null || year > 0 ? yoeLong: Jdk8Methods.safeSubtract(1, yoeLong)));
+                }
+            } else if (era.longValue() == 1L) {
+                addFieldValue(YEAR, yoeLong);
+            } else if (era.longValue() == 0L) {
+                addFieldValue(YEAR, Jdk8Methods.safeSubtract(1, yoeLong));
+            } else {
+                throw new DateTimeException("Invalid value for era: " + era);
+            }
+        } else if (standardFields.containsKey(ERA)) {
+            ERA.checkValidValue(standardFields.get(ERA));  // always validated
         }
 
         // build date
         if (standardFields.containsKey(YEAR)) {
             if (standardFields.containsKey(MONTH_OF_YEAR)) {
                 if (standardFields.containsKey(DAY_OF_MONTH)) {
-                    int y = Jdk8Methods.safeToInt(standardFields.remove(YEAR));
+                    int y = YEAR.checkValidIntValue(standardFields.remove(YEAR));
                     int moy = Jdk8Methods.safeToInt(standardFields.remove(MONTH_OF_YEAR));
                     int dom = Jdk8Methods.safeToInt(standardFields.remove(DAY_OF_MONTH));
-                    checkDate(LocalDate.of(y, moy, dom));
+                    if (resolverStyle == ResolverStyle.LENIENT) {
+                        long months = Jdk8Methods.safeSubtract(moy, 1);
+                        long days = Jdk8Methods.safeSubtract(dom, 1);
+                        checkDate(LocalDate.of(y, 1, 1).plusMonths(months).plusDays(days));
+                    } else if (resolverStyle == ResolverStyle.SMART){
+                        if (moy == 4 || moy == 6 || moy == 9 || moy == 11) {
+                            dom = Math.min(dom, 30);
+                        } else if (moy == 2) {
+                            dom = Math.min(dom, Month.FEBRUARY.length(Year.isLeap(y)));
+                        }
+                        checkDate(LocalDate.of(y, moy, dom));
+                    } else {
+                        checkDate(LocalDate.of(y, moy, dom));
+                    }
                     return;
                 }
                 if (standardFields.containsKey(ALIGNED_WEEK_OF_MONTH)) {
@@ -308,14 +371,36 @@ final class DateTimeBuilder
         }
     }
 
-    private void mergeTime() {
+    private void mergeTime(ResolverStyle resolverStyle) {
         if (standardFields.containsKey(CLOCK_HOUR_OF_DAY)) {
             long ch = standardFields.remove(CLOCK_HOUR_OF_DAY);
+            if (resolverStyle != ResolverStyle.LENIENT) {
+                if (resolverStyle == ResolverStyle.SMART && ch == 0) {
+                    // ok
+                } else {
+                    CLOCK_HOUR_OF_DAY.checkValidValue(ch);
+                }
+            }
             addFieldValue(HOUR_OF_DAY, ch == 24 ? 0 : ch);
         }
         if (standardFields.containsKey(CLOCK_HOUR_OF_AMPM)) {
             long ch = standardFields.remove(CLOCK_HOUR_OF_AMPM);
+            if (resolverStyle != ResolverStyle.LENIENT) {
+                if (resolverStyle == ResolverStyle.SMART && ch == 0) {
+                    // ok
+                } else {
+                    CLOCK_HOUR_OF_AMPM.checkValidValue(ch);
+                }
+            }
             addFieldValue(HOUR_OF_AMPM, ch == 12 ? 0 : ch);
+        }
+        if (resolverStyle != ResolverStyle.LENIENT) {
+            if (standardFields.containsKey(AMPM_OF_DAY)) {
+                AMPM_OF_DAY.checkValidValue(standardFields.get(AMPM_OF_DAY));
+            }
+            if (standardFields.containsKey(HOUR_OF_AMPM)) {
+                HOUR_OF_AMPM.checkValidValue(standardFields.get(HOUR_OF_AMPM));
+            }
         }
         if (standardFields.containsKey(AMPM_OF_DAY) && standardFields.containsKey(HOUR_OF_AMPM)) {
             long ap = standardFields.remove(AMPM_OF_DAY);
@@ -334,27 +419,42 @@ final class DateTimeBuilder
 //        }
         if (standardFields.containsKey(NANO_OF_DAY)) {
             long nod = standardFields.remove(NANO_OF_DAY);
+            if (resolverStyle != ResolverStyle.LENIENT) {
+                NANO_OF_DAY.checkValidValue(nod);
+            }
             addFieldValue(SECOND_OF_DAY, nod / 1000_000_000L);
             addFieldValue(NANO_OF_SECOND, nod % 1000_000_000L);
         }
         if (standardFields.containsKey(MICRO_OF_DAY)) {
             long cod = standardFields.remove(MICRO_OF_DAY);
+            if (resolverStyle != ResolverStyle.LENIENT) {
+                MICRO_OF_DAY.checkValidValue(cod);
+            }
             addFieldValue(SECOND_OF_DAY, cod / 1000_000L);
             addFieldValue(MICRO_OF_SECOND, cod % 1000_000L);
         }
         if (standardFields.containsKey(MILLI_OF_DAY)) {
             long lod = standardFields.remove(MILLI_OF_DAY);
+            if (resolverStyle != ResolverStyle.LENIENT) {
+                MILLI_OF_DAY.checkValidValue(lod);
+            }
             addFieldValue(SECOND_OF_DAY, lod / 1000);
             addFieldValue(MILLI_OF_SECOND, lod % 1000);
         }
         if (standardFields.containsKey(SECOND_OF_DAY)) {
             long sod = standardFields.remove(SECOND_OF_DAY);
+            if (resolverStyle != ResolverStyle.LENIENT) {
+                SECOND_OF_DAY.checkValidValue(sod);
+            }
             addFieldValue(HOUR_OF_DAY, sod / 3600);
             addFieldValue(MINUTE_OF_HOUR, (sod / 60) % 60);
             addFieldValue(SECOND_OF_MINUTE, sod % 60);
         }
         if (standardFields.containsKey(MINUTE_OF_DAY)) {
             long mod = standardFields.remove(MINUTE_OF_DAY);
+            if (resolverStyle != ResolverStyle.LENIENT) {
+                MINUTE_OF_DAY.checkValidValue(mod);
+            }
             addFieldValue(HOUR_OF_DAY, mod / 60);
             addFieldValue(MINUTE_OF_HOUR, mod % 60);
         }
@@ -364,33 +464,103 @@ final class DateTimeBuilder
 //            addFieldValue(MINUTE_OF_HOUR, (sod / 60) % 60);
 //            addFieldValue(SECOND_OF_MINUTE, sod % 60);
 //            addFieldValue(NANO_OF_SECOND, nod % 1000_000_000L);
+        if (resolverStyle != ResolverStyle.LENIENT) {
+            if (standardFields.containsKey(MILLI_OF_SECOND)) {
+                MILLI_OF_SECOND.checkValidValue(standardFields.get(MILLI_OF_SECOND));
+            }
+            if (standardFields.containsKey(MICRO_OF_SECOND)) {
+                MICRO_OF_SECOND.checkValidValue(standardFields.get(MICRO_OF_SECOND));
+            }
+        }
         if (standardFields.containsKey(MILLI_OF_SECOND) && standardFields.containsKey(MICRO_OF_SECOND)) {
             long los = standardFields.remove(MILLI_OF_SECOND);
             long cos = standardFields.get(MICRO_OF_SECOND);
             addFieldValue(MICRO_OF_SECOND, los * 1000 + (cos % 1000));
+        }
+        if (standardFields.containsKey(MICRO_OF_SECOND) && standardFields.containsKey(NANO_OF_SECOND)) {
+            long nos = standardFields.get(NANO_OF_SECOND);
+            addFieldValue(MICRO_OF_SECOND, nos / 1000);
+            standardFields.remove(MICRO_OF_SECOND);
+        }
+        if (standardFields.containsKey(MILLI_OF_SECOND) && standardFields.containsKey(NANO_OF_SECOND)) {
+            long nos = standardFields.get(NANO_OF_SECOND);
+            addFieldValue(MILLI_OF_SECOND, nos / 1000000);
+            standardFields.remove(MILLI_OF_SECOND);
+        }
+        if (standardFields.containsKey(MICRO_OF_SECOND)) {
+            long cos = standardFields.remove(MICRO_OF_SECOND);
+            addFieldValue(NANO_OF_SECOND, cos * 1000);
+        } else if (standardFields.containsKey(MILLI_OF_SECOND)) {
+            long los = standardFields.remove(MILLI_OF_SECOND);
+            addFieldValue(NANO_OF_SECOND, los * 1000000);
         }
 
         Long hod = standardFields.get(HOUR_OF_DAY);
         Long moh = standardFields.get(MINUTE_OF_HOUR);
         Long som = standardFields.get(SECOND_OF_MINUTE);
         Long nos = standardFields.get(NANO_OF_SECOND);
-        if (hod != null) {
-            int hodVal = Jdk8Methods.safeToInt(hod);
-            if (moh != null) {
-                int mohVal = Jdk8Methods.safeToInt(moh);
-                if (som != null) {
-                    int somVal = Jdk8Methods.safeToInt(som);
-                    if (nos != null) {
-                        int nosVal = Jdk8Methods.safeToInt(nos);
-                        addObject(LocalTime.of(hodVal, mohVal, somVal, nosVal));
+        if (resolverStyle != ResolverStyle.LENIENT) {
+            if (hod != null) {
+                if (resolverStyle == ResolverStyle.SMART &&
+                                hod.longValue() == 24 && 
+                                (moh == null || moh.longValue() == 0) && 
+                                (som == null || som.longValue() == 0) && 
+                                (nos == null || nos.longValue() == 0)) {
+                    hod = 0L;
+                    excessDays = Period.ofDays(1);
+                }
+                int hodVal = HOUR_OF_DAY.checkValidIntValue(hod);
+                if (moh != null) {
+                    int mohVal = MINUTE_OF_HOUR.checkValidIntValue(moh);
+                    if (som != null) {
+                        int somVal = SECOND_OF_MINUTE.checkValidIntValue(som);
+                        if (nos != null) {
+                            int nosVal = NANO_OF_SECOND.checkValidIntValue(nos);
+                            addObject(LocalTime.of(hodVal, mohVal, somVal, nosVal));
+                        } else {
+                            addObject(LocalTime.of(hodVal, mohVal, somVal));
+                        }
                     } else {
-                        addObject(LocalTime.of(hodVal, mohVal, somVal));
+                        if (nos == null) {
+                            addObject(LocalTime.of(hodVal, mohVal));
+                        }
                     }
                 } else {
-                    addObject(LocalTime.of(hodVal, mohVal));
+                    if (som == null && nos == null) {
+                        addObject(LocalTime.of(hodVal, 0));
+                    }
                 }
-            } else {
-                addObject(LocalTime.of(hodVal, 0));
+            }
+        } else {
+            if (hod != null) {
+                long hodVal = hod;
+                if (moh != null) {
+                    if (som != null) {
+                        if (nos == null) {
+                            nos = 0L;
+                        }
+                        long totalNanos = Jdk8Methods.safeMultiply(hodVal, 3600_000_000_000L);
+                        totalNanos = Jdk8Methods.safeAdd(totalNanos, Jdk8Methods.safeMultiply(moh, 60_000_000_000L));
+                        totalNanos = Jdk8Methods.safeAdd(totalNanos, Jdk8Methods.safeMultiply(som, 1_000_000_000L));
+                        totalNanos = Jdk8Methods.safeAdd(totalNanos, nos);
+                        int excessDays = (int) Jdk8Methods.floorDiv(totalNanos, 86400_000_000_000L);  // safe int cast
+                        long nod = Jdk8Methods.floorMod(totalNanos, 86400_000_000_000L);
+                        addObject(LocalTime.ofNanoOfDay(nod));
+                        this.excessDays = Period.ofDays(excessDays);
+                    } else {
+                        long totalSecs = Jdk8Methods.safeMultiply(hodVal, 3600L);
+                        totalSecs = Jdk8Methods.safeAdd(totalSecs, Jdk8Methods.safeMultiply(moh, 60L));
+                        int excessDays = (int) Jdk8Methods.floorDiv(totalSecs, 86400L);  // safe int cast
+                        long sod = Jdk8Methods.floorMod(totalSecs, 86400L);
+                        addObject(LocalTime.ofSecondOfDay(sod));
+                        this.excessDays = Period.ofDays(excessDays);
+                    }
+                } else {
+                    int excessDays = Jdk8Methods.safeToInt(Jdk8Methods.floorDiv(hodVal, 24L));
+                    hodVal = Jdk8Methods.floorMod(hodVal, 24);
+                    addObject(LocalTime.of((int) hodVal, 0));
+                    this.excessDays = Period.ofDays(excessDays);
+                }
             }
         }
     }

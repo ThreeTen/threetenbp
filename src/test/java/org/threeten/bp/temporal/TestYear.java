@@ -278,14 +278,14 @@ public class TestYear extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void factory_parse_formatter() {
-        DateTimeFormatter f = DateTimeFormatter.ofPattern("y");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("u");
         Year test = Year.parse("2010", f);
         assertEquals(test, Year.of(2010));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_formatter_nullText() {
-        DateTimeFormatter f = DateTimeFormatter.ofPattern("y");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("u");
         Year.parse((String) null, f);
     }
 

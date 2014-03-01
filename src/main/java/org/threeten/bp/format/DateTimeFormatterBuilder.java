@@ -75,6 +75,7 @@ import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.ValueRange;
+import org.threeten.bp.temporal.WeekFields;
 import org.threeten.bp.zone.ZoneRulesProvider;
 
 /**
@@ -898,11 +899,8 @@ public final class DateTimeFormatterBuilder {
         if (style != TextStyle.FULL && style != TextStyle.SHORT) {
             throw new IllegalArgumentException("Style must be either full or short");
         }
-        if (style == TextStyle.FULL) {
-            return appendLiteral("GMT").appendOffset("HH:MM:ss", "");
-        } else {
-            return appendLiteral("GMT").appendOffset("HH:mm:ss", "");
-        }
+        appendInternal(new LocalizedOffsetPrinterParser(style));
+        return this;
     }
 
     //-----------------------------------------------------------------------
@@ -1425,10 +1423,23 @@ public final class DateTimeFormatterBuilder {
                     }
                     appendZoneId();
                 } else if (cur == 'Z') {
-                    if (count > 3) {
+                    if (count < 4) {
+                        appendOffset("+HHMM", "+0000");
+                    } else if (count == 4) {
+                        appendLocalizedOffset(TextStyle.FULL);
+                    } else if (count == 5) {
+                        appendOffset("+HH:MM:ss","Z");
+                    } else {
                         throw new IllegalArgumentException("Too many pattern letters: " + cur);
                     }
-                    appendOffset("+HHMM", "+0000");
+                } else if (cur == 'O') {
+                    if (count == 1) {
+                        appendLocalizedOffset(TextStyle.SHORT);
+                    } else if (count == 4) {
+                        appendLocalizedOffset(TextStyle.FULL);
+                    } else {
+                        throw new IllegalArgumentException("Pattern letter count must be 1 or 4: " + cur);
+                    }
                 } else if (cur == 'X') {
                     if (count > 5) {
                         throw new IllegalArgumentException("Too many pattern letters: " + cur);
@@ -1440,6 +1451,18 @@ public final class DateTimeFormatterBuilder {
                     }
                     String zero = (count == 1 ? "+00" : (count % 2 == 0 ? "+0000" : "+00:00"));
                     appendOffset(OffsetIdPrinterParser.PATTERNS[count + (count == 1 ? 0 : 1)], zero);
+                } else if (cur == 'W') {
+                    if (count > 1) {
+                        throw new IllegalArgumentException("Too many pattern letters: " + cur);
+                    }
+                    appendInternal(new WeekFieldsPrinterParser('W', count));
+                } else if (cur == 'w') {
+                    if (count > 2) {
+                        throw new IllegalArgumentException("Too many pattern letters: " + cur);
+                    }
+                    appendInternal(new WeekFieldsPrinterParser('w', count));
+                } else if (cur == 'Y') {
+                    appendInternal(new WeekFieldsPrinterParser('Y', count));
                 } else {
                     throw new IllegalArgumentException("Unknown pattern letter: " + cur);
                 }
@@ -1476,7 +1499,7 @@ public final class DateTimeFormatterBuilder {
                 }
                 optionalEnd();
 
-            } else if (cur == '{' || cur == '}') {
+            } else if (cur == '{' || cur == '}' || cur == '#') {
                 throw new IllegalArgumentException("Pattern includes reserved character: '" + cur + "'");
             } else {
                 appendLiteral(cur);
@@ -1486,8 +1509,8 @@ public final class DateTimeFormatterBuilder {
 
     private void parseField(char cur, int count, TemporalField field) {
         switch (cur) {
+            case 'u':
             case 'y':
-            case 'Y':
                 if (count == 2) {
                     appendValueReduced(field, 2, 2, 2000);
                 } else if (count < 4) {
@@ -1496,10 +1519,8 @@ public final class DateTimeFormatterBuilder {
                     appendValue(field, count, 19, SignStyle.EXCEEDS_PAD);
                 }
                 break;
-            case 'G':
             case 'M':
             case 'Q':
-            case 'E':
                 switch (count) {
                     case 1:
                         appendValue(field);
@@ -1520,7 +1541,76 @@ public final class DateTimeFormatterBuilder {
                         throw new IllegalArgumentException("Too many pattern letters: " + cur);
                 }
                 break;
+            case 'L':
+            case 'q':
+                switch (count) {
+                    case 1:
+                        appendValue(field);
+                        break;
+                    case 2:
+                        appendValue(field, 2);
+                        break;
+                    case 3:
+                        appendText(field, TextStyle.SHORT_STANDALONE);
+                        break;
+                    case 4:
+                        appendText(field, TextStyle.FULL_STANDALONE);
+                        break;
+                    case 5:
+                        appendText(field, TextStyle.NARROW_STANDALONE);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Too many pattern letters: " + cur);
+                }
+                break;
+            case 'e':
+                switch (count) {
+                    case 1:
+                    case 2:
+                        appendInternal(new WeekFieldsPrinterParser('e', count));
+                        break;
+                    case 3:
+                        appendText(field, TextStyle.SHORT);
+                        break;
+                    case 4:
+                        appendText(field, TextStyle.FULL);
+                        break;
+                    case 5:
+                        appendText(field, TextStyle.NARROW);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Too many pattern letters: " + cur);
+                }
+                break;
+            case 'c':
+                switch (count) {
+                    case 1:
+                        appendInternal(new WeekFieldsPrinterParser('c', count));
+                        break;
+                    case 2:
+                        throw new IllegalArgumentException("Invalid number of pattern letters: " + cur);
+                    case 3:
+                        appendText(field, TextStyle.SHORT_STANDALONE);
+                        break;
+                    case 4:
+                        appendText(field, TextStyle.FULL_STANDALONE);
+                        break;
+                    case 5:
+                        appendText(field, TextStyle.NARROW_STANDALONE);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Too many pattern letters: " + cur);
+                }
+                break;
             case 'a':
+                if (count == 1) {
+                    appendText(field, TextStyle.SHORT);
+                } else {
+                    throw new IllegalArgumentException("Too many pattern letters: " + cur);
+                }
+                break;
+            case 'E':
+            case 'G':
                 switch (count) {
                     case 1:
                     case 2:
@@ -1540,6 +1630,37 @@ public final class DateTimeFormatterBuilder {
             case 'S':
                 appendFraction(NANO_OF_SECOND, count, count, false);
                 break;
+            case 'F':
+                if (count == 1) {
+                    appendValue(field);
+                } else {
+                    throw new IllegalArgumentException("Too many pattern letters: " + cur);
+                }
+                break;
+            case 'd':
+            case 'h':
+            case 'H':
+            case 'k':
+            case 'K':
+            case 'm':
+            case 's':
+                if (count == 1) {
+                    appendValue(field);
+                } else if (count == 2) {
+                    appendValue(field, count);
+                } else {
+                    throw new IllegalArgumentException("Too many pattern letters: " + cur);
+                }
+                break;
+            case 'D':
+                if (count == 1) {
+                    appendValue(field);
+                } else if (count <= 3) {
+                    appendValue(field, count);
+                } else {
+                    throw new IllegalArgumentException("Too many pattern letters: " + cur);
+                }
+                break;
             default:
                 if (count == 1) {
                     appendValue(field);
@@ -1553,44 +1674,30 @@ public final class DateTimeFormatterBuilder {
     /** Map of letters to fields. */
     private static final Map<Character, TemporalField> FIELD_MAP = new HashMap<>();
     static {
-        FIELD_MAP.put('G', ChronoField.ERA);                       // Java, CLDR (different to both for 1/2 chars)
-        FIELD_MAP.put('y', ChronoField.YEAR);                      // CLDR
-        // FIELD_MAP.put('y', ChronoField.YEAR_OF_ERA);            // Java, CLDR  // TODO redefine from above
-        // FIELD_MAP.put('u', ChronoField.YEAR);                   // CLDR  // TODO
-        // FIELD_MAP.put('Y', IsoFields.WEEK_BASED_YEAR);          // Java7, CLDR (needs localized week number)  // TODO
-        FIELD_MAP.put('Q', IsoFields.QUARTER_OF_YEAR);             // CLDR
-        FIELD_MAP.put('M', ChronoField.MONTH_OF_YEAR);             // Java, CLDR
-        // FIELD_MAP.put('w', WeekFields.weekOfYear());            // Java, CLDR (needs localized week number)
-        // FIELD_MAP.put('W', WeekFields.weekOfMonth());           // Java, CLDR (needs localized week number)
-        FIELD_MAP.put('D', ChronoField.DAY_OF_YEAR);               // Java, CLDR
-        FIELD_MAP.put('d', ChronoField.DAY_OF_MONTH);              // Java, CLDR
-        FIELD_MAP.put('F', ChronoField.ALIGNED_WEEK_OF_MONTH);     // Java, CLDR
-        FIELD_MAP.put('E', ChronoField.DAY_OF_WEEK);               // Java, CLDR (different to both for 1/2 chars)
-        // FIELD_MAP.put('e', WeekFields.dayOfWeek());             // CLDR (needs localized week number)
-        FIELD_MAP.put('a', ChronoField.AMPM_OF_DAY);               // Java, CLDR
-        FIELD_MAP.put('H', ChronoField.HOUR_OF_DAY);               // Java, CLDR
-        FIELD_MAP.put('k', ChronoField.CLOCK_HOUR_OF_DAY);         // Java, CLDR
-        FIELD_MAP.put('K', ChronoField.HOUR_OF_AMPM);              // Java, CLDR
-        FIELD_MAP.put('h', ChronoField.CLOCK_HOUR_OF_AMPM);        // Java, CLDR
-        FIELD_MAP.put('m', ChronoField.MINUTE_OF_HOUR);            // Java, CLDR
-        FIELD_MAP.put('s', ChronoField.SECOND_OF_MINUTE);          // Java, CLDR
-        FIELD_MAP.put('S', ChronoField.NANO_OF_SECOND);            // CLDR (Java uses milli-of-second number)
-        FIELD_MAP.put('A', ChronoField.MILLI_OF_DAY);              // CLDR
-        FIELD_MAP.put('n', ChronoField.NANO_OF_SECOND);            // ThreeTen
-        FIELD_MAP.put('N', ChronoField.NANO_OF_DAY);               // ThreeTen
-        // reserved - z,Z,X,I,p
-        // Java - X - compatible, but extended to 4 and 5 letters
-        // Java - u - clashes with CLDR, go with CLDR (year-proleptic) here
-        // CLDR - U - cycle year name, not supported by ThreeTen yet
-        // CLDR - l - deprecated
-        // CLDR - j - not relevant
-        // CLDR - g - modified-julian-day
-        // CLDR - z - time-zone names  // TODO properly
-        // CLDR - Z - different approach here  // TODO bring ThreeTen in line with CLDR
-        // CLDR - v,V - extended time-zone names
-        // CLDR - q/c/L - standalone quarter/day-of-week/month
-        //  ThreeTen - I - time-zone id
-        //  ThreeTen - p - prefix for padding
+        FIELD_MAP.put('G', ChronoField.ERA);
+        FIELD_MAP.put('y', ChronoField.YEAR_OF_ERA);
+        FIELD_MAP.put('u', ChronoField.YEAR);
+        FIELD_MAP.put('Q', IsoFields.QUARTER_OF_YEAR);
+        FIELD_MAP.put('q', IsoFields.QUARTER_OF_YEAR);
+        FIELD_MAP.put('M', ChronoField.MONTH_OF_YEAR);
+        FIELD_MAP.put('L', ChronoField.MONTH_OF_YEAR);
+        FIELD_MAP.put('D', ChronoField.DAY_OF_YEAR);
+        FIELD_MAP.put('d', ChronoField.DAY_OF_MONTH);
+        FIELD_MAP.put('F', ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH);
+        FIELD_MAP.put('E', ChronoField.DAY_OF_WEEK);
+        FIELD_MAP.put('c', ChronoField.DAY_OF_WEEK);
+        FIELD_MAP.put('e', ChronoField.DAY_OF_WEEK);
+        FIELD_MAP.put('a', ChronoField.AMPM_OF_DAY);
+        FIELD_MAP.put('H', ChronoField.HOUR_OF_DAY);
+        FIELD_MAP.put('k', ChronoField.CLOCK_HOUR_OF_DAY);
+        FIELD_MAP.put('K', ChronoField.HOUR_OF_AMPM);
+        FIELD_MAP.put('h', ChronoField.CLOCK_HOUR_OF_AMPM);
+        FIELD_MAP.put('m', ChronoField.MINUTE_OF_HOUR);
+        FIELD_MAP.put('s', ChronoField.SECOND_OF_MINUTE);
+        FIELD_MAP.put('S', ChronoField.NANO_OF_SECOND);
+        FIELD_MAP.put('A', ChronoField.MILLI_OF_DAY);
+        FIELD_MAP.put('n', ChronoField.NANO_OF_SECOND);
+        FIELD_MAP.put('N', ChronoField.NANO_OF_DAY);
     }
 
     //-----------------------------------------------------------------------
@@ -1776,6 +1883,10 @@ public final class DateTimeFormatterBuilder {
         }
         CompositePrinterParser pp = new CompositePrinterParser(printerParsers, false);
         return new DateTimeFormatter(pp, locale, DecimalStyle.STANDARD, ResolverStyle.SMART, null, null, null);
+    }
+
+    DateTimeFormatter toFormatter(ResolverStyle style) {
+        return toFormatter().withResolverStyle(style);
     }
 
     //-----------------------------------------------------------------------
@@ -2431,14 +2542,20 @@ public final class DateTimeFormatterBuilder {
          * Constructor.
          *
          * @param field  the field to print, validated not null
-         * @param width  the field width, from 1 to 18
-         * @param maxWidth  the field max width, from 1 to 18
+         * @param width  the field width, from 1 to 10
+         * @param maxWidth  the field max width, from 1 to 10
          * @param baseValue  the base value
          */
         ReducedPrinterParser(TemporalField field, int width, int maxWidth, int baseValue) {
             super(field, width, maxWidth, SignStyle.NOT_NEGATIVE);
-            if (width < 1 || width > 18) {
-                throw new IllegalArgumentException("The width must be from 1 to 18 inclusive but was " + width);
+            if (width < 1 || width > 10) {
+                throw new IllegalArgumentException("The width must be from 1 to 10 inclusive but was " + width);
+            }
+            if (maxWidth < 1 || maxWidth > 10) {
+                throw new IllegalArgumentException("The maxWidth must be from 1 to 10 inclusive but was " + maxWidth);
+            }
+            if (maxWidth < width) {
+                throw new IllegalArgumentException("The maxWidth must be greater than the width");
             }
             if (field.range().isValidValue(baseValue) == false) {
                 throw new IllegalArgumentException("The base value must be within the range of the field");
@@ -3033,6 +3150,137 @@ public final class DateTimeFormatterBuilder {
 
     //-----------------------------------------------------------------------
     /**
+     * Prints or parses a localized offset.
+     */
+    static final class LocalizedOffsetPrinterParser implements DateTimePrinterParser {
+        private final TextStyle style;
+
+        public LocalizedOffsetPrinterParser(TextStyle style) {
+            this.style = style;
+        }
+
+        @Override
+        public boolean print(DateTimePrintContext context, StringBuilder buf) {
+            Long offsetSecs = context.getValue(OFFSET_SECONDS);
+            if (offsetSecs == null) {
+                return false;
+            }
+            buf.append("GMT");
+            if (style == TextStyle.FULL) {
+                return new OffsetIdPrinterParser("", "+HH:MM:ss").print(context, buf);
+            }
+            int totalSecs = Jdk8Methods.safeToInt(offsetSecs);
+            if (totalSecs != 0) {
+                int absHours = Math.abs((totalSecs / 3600) % 100);  // anything larger than 99 silently dropped
+                int absMinutes = Math.abs((totalSecs / 60) % 60);
+                int absSeconds = Math.abs(totalSecs % 60);
+                buf.append(totalSecs < 0 ? "-" : "+").append(absHours);
+                if (absMinutes > 0 || absSeconds > 0) {
+                    buf.append(":")
+                        .append((char) (absMinutes / 10 + '0')).append((char) (absMinutes % 10 + '0'));
+                    if (absSeconds > 0) {
+                        buf.append(":")
+                            .append((char) (absSeconds / 10 + '0')).append((char) (absSeconds % 10 + '0'));
+                    }
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public int parse(DateTimeParseContext context, CharSequence text, int position) {
+            if (context.subSequenceEquals(text, position, "GMT", 0, 3) == false) {
+                return ~position;
+            }
+            position += 3;
+            if (style == TextStyle.FULL) {
+                return new OffsetIdPrinterParser("", "+HH:MM:ss").parse(context, text, position);
+            }
+            int end = text.length();
+            if (position == end) {
+                return context.setParsedField(OFFSET_SECONDS, 0, position, position);
+            }
+            char sign = text.charAt(position);
+            if (sign != '+' && sign != '-') {
+                return context.setParsedField(OFFSET_SECONDS, 0, position, position);
+            }
+            int negative = (sign == '-' ? -1 : 1);
+            if (position == end) {
+                return ~position;
+            }
+            position++;
+            // hour
+            char ch = text.charAt(position);
+            if (ch < '0' || ch > '9') {
+                return ~position;
+            }
+            position++;
+            int hour = ((int) (ch - 48));
+            if (position != end) {
+                ch = text.charAt(position);
+                if (ch >= '0' && ch <= '9') {
+                    hour = hour * 10 + ((int) (ch - 48));
+                    if (hour > 23) {
+                        return ~position;
+                    }
+                    position++;
+                }
+            }
+            if (position == end || text.charAt(position) != ':') {
+                int offset = negative * 3600 * hour;
+                return context.setParsedField(OFFSET_SECONDS, offset, position, position);
+            }
+            position++;
+            // minute
+            if (position > end - 2) {
+                return ~position;
+            }
+            ch = text.charAt(position);
+            if (ch < '0' || ch > '9') {
+                return ~position;
+            }
+            position++;
+            int min = ((int) (ch - 48));
+            ch = text.charAt(position);
+            if (ch < '0' || ch > '9') {
+                return ~position;
+            }
+            position++;
+            min = min * 10 + ((int) (ch - 48));
+            if (min > 59) {
+                return ~position;
+            }
+            if (position == end || text.charAt(position) != ':') {
+                int offset = negative * (3600 * hour + 60 * min);
+                return context.setParsedField(OFFSET_SECONDS, offset, position, position);
+            }
+            position++;
+            // second
+            if (position > end - 2) {
+                return ~position;
+            }
+            ch = text.charAt(position);
+            if (ch < '0' || ch > '9') {
+                return ~position;
+            }
+            position++;
+            int sec = ((int) (ch - 48));
+            ch = text.charAt(position);
+            if (ch < '0' || ch > '9') {
+                return ~position;
+            }
+            position++;
+            sec = sec * 10 + ((int) (ch - 48));
+            if (sec > 59) {
+                return ~position;
+            }
+            int offset = negative * (3600 * hour + 60 * min + sec);
+            return context.setParsedField(OFFSET_SECONDS, offset, position, position);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Prints or parses a zone ID.
      */
     static final class ZoneTextPrinterParser implements DateTimePrinterParser {
@@ -3132,14 +3380,18 @@ public final class DateTimeFormatterBuilder {
                 return endPos;
             } else if (length >= position + 2) {
                 char nextNextChar = text.charAt(position + 1);
-                if (nextChar == 'U' && nextNextChar == 'T') {
-                    if (length >= position + 3 && text.charAt(position + 2) == 'C') {
-                        return parsePrefixedOffset(context, text, position + 3);
+                if (context.charEquals(nextChar, 'U') &&
+                                context.charEquals(nextNextChar, 'T')) {
+                    if (length >= position + 3 &&
+                                    context.charEquals(text.charAt(position + 2), 'C')) {
+                        return parsePrefixedOffset(context, text, position, position + 3);
                     }
-                    return parsePrefixedOffset(context, text, position + 2);
-                } else if (nextChar == 'G' && length >= position + 3 &&
-                        nextNextChar == 'M' && text.charAt(position + 2) == 'T') {
-                    return parsePrefixedOffset(context, text, position + 3);
+                    return parsePrefixedOffset(context, text, position, position + 2);
+                } else if (context.charEquals(nextChar, 'G') &&
+                        length >= position + 3 &&
+                        context.charEquals(nextNextChar, 'M') &&
+                        context.charEquals(text.charAt(position + 2), 'T')) {
+                    return parsePrefixedOffset(context, text, position, position + 3);
                 }
             }
 
@@ -3169,7 +3421,7 @@ public final class DateTimeFormatterBuilder {
             }
 
             if (parsedZoneId == null || regionIds.contains(parsedZoneId) == false) {
-                if (nextChar == 'Z') {
+                if (context.charEquals(nextChar, 'Z')) {
                     context.setParsed(ZoneOffset.UTC);
                     return position + 1;
                 }
@@ -3179,16 +3431,21 @@ public final class DateTimeFormatterBuilder {
             return position + parsedZoneId.length();
         }
 
-        private int parsePrefixedOffset(DateTimeParseContext context, CharSequence text, int position) {
+        private int parsePrefixedOffset(DateTimeParseContext context, CharSequence text, int prefixPos, int position) {
+            String prefix = text.subSequence(prefixPos, position).toString().toUpperCase();
             DateTimeParseContext newContext = context.copy();
-            int endPos = OffsetIdPrinterParser.INSTANCE_ID.parse(newContext, text, position);
-            if (endPos < 0) {
-                context.setParsed(ZoneOffset.UTC);
+            if (position < text.length() && context.charEquals(text.charAt(position), 'Z')) {
+                context.setParsed(ZoneId.ofOffset(prefix, ZoneOffset.UTC));
                 return position;
             }
-            int offset = (int) newContext.getParsed(OFFSET_SECONDS).longValue();
-            ZoneId zone = ZoneOffset.ofTotalSeconds(offset);
-            context.setParsed(zone);
+            int endPos = OffsetIdPrinterParser.INSTANCE_ID.parse(newContext, text, position);
+            if (endPos < 0) {
+                context.setParsed(ZoneId.ofOffset(prefix, ZoneOffset.UTC));
+                return position;
+            }
+            int offsetSecs = (int) newContext.getParsed(OFFSET_SECONDS).longValue();
+            ZoneOffset offset = ZoneOffset.ofTotalSeconds(offsetSecs);
+            context.setParsed(ZoneId.ofOffset(prefix, offset));
             return endPos;
         }
 
@@ -3386,6 +3643,61 @@ public final class DateTimeFormatterBuilder {
         public String toString() {
             return "Localized(" + (dateStyle != null ? dateStyle : "") + "," +
                 (timeStyle != null ? timeStyle : "") + ")";
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Prints or parses a localized pattern.
+     */
+    static final class WeekFieldsPrinterParser implements DateTimePrinterParser {
+        private final char letter;
+        private final int count;
+
+        public WeekFieldsPrinterParser(char letter, int count) {
+            this.letter = letter;
+            this.count = count;
+        }
+
+        @Override
+        public boolean print(DateTimePrintContext context, StringBuilder buf) {
+            WeekFields weekFields = WeekFields.of(context.getLocale());
+            DateTimePrinterParser pp = evaluate(weekFields);
+            return pp.print(context, buf);
+        }
+
+        @Override
+        public int parse(DateTimeParseContext context, CharSequence text, int position) {
+            WeekFields weekFields = WeekFields.of(context.getLocale());
+            DateTimePrinterParser pp = evaluate(weekFields);
+            return pp.parse(context, text, position);
+        }
+        
+        private DateTimePrinterParser evaluate(WeekFields weekFields) {
+            DateTimePrinterParser pp = null;
+            switch (letter) {
+                case 'e':  // day-of-week
+                    pp = new NumberPrinterParser(weekFields.dayOfWeek(), count, 2, SignStyle.NOT_NEGATIVE);
+                    break;
+                case 'c':  // day-of-week
+                    pp = new NumberPrinterParser(weekFields.dayOfWeek(), count, 2, SignStyle.NOT_NEGATIVE);
+                    break;
+                case 'w':  // week-of-year
+                    pp = new NumberPrinterParser(weekFields.weekOfWeekBasedYear(), count, 2, SignStyle.NOT_NEGATIVE);
+                    break;
+                case 'W':  // week-of-month
+                    pp = new NumberPrinterParser(weekFields.weekOfMonth(), 1, 2, SignStyle.NOT_NEGATIVE);
+                    break;
+                case 'Y':  // weekyear
+                    if (count == 2) {
+                        pp = new ReducedPrinterParser(weekFields.weekBasedYear(), 2, 2, 2000);
+                    } else {
+                        pp = new NumberPrinterParser(weekFields.weekBasedYear(), count, 19,
+                                (count < 4) ? SignStyle.NORMAL : SignStyle.EXCEEDS_PAD, -1);
+                    }
+                    break;
+            }
+            return pp;
         }
     }
 

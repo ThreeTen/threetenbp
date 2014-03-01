@@ -91,7 +91,7 @@ public class TestDateTimeFormatters {
     //-----------------------------------------------------------------------
     @Test
     public void test_pattern_String() {
-        DateTimeFormatter test = DateTimeFormatter.ofPattern("d MMM yyyy");
+        DateTimeFormatter test = DateTimeFormatter.ofPattern("d MMM uuuu");
         assertEquals(test.toString(), "Value(DayOfMonth)' 'Text(MonthOfYear,SHORT)' 'Value(Year,4,19,EXCEEDS_PAD)");
         assertEquals(test.getLocale(), Locale.getDefault());
     }
@@ -111,7 +111,7 @@ public class TestDateTimeFormatters {
     //-----------------------------------------------------------------------
     @Test
     public void test_pattern_StringLocale() {
-        DateTimeFormatter test = DateTimeFormatter.ofPattern("d MMM yyyy", Locale.UK);
+        DateTimeFormatter test = DateTimeFormatter.ofPattern("d MMM uuuu", Locale.UK);
         assertEquals(test.toString(), "Value(DayOfMonth)' 'Text(MonthOfYear,SHORT)' 'Value(Year,4,19,EXCEEDS_PAD)");
         assertEquals(test.getLocale(), Locale.UK);
     }

@@ -864,14 +864,14 @@ public class TestLocalDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void factory_parse_formatter() {
-        DateTimeFormatter f = DateTimeFormatter.ofPattern("y M d H m s");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("u M d H m s");
         LocalDateTime test = LocalDateTime.parse("2010 12 3 11 30 45", f);
         assertEquals(test, LocalDateTime.of(2010, 12, 3, 11, 30, 45));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_formatter_nullText() {
-        DateTimeFormatter f = DateTimeFormatter.ofPattern("y M d H m s");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("u M d H m s");
         LocalDateTime.parse((String) null, f);
     }
 

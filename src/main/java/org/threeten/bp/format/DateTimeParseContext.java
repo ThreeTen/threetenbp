@@ -535,6 +535,8 @@ final class DateTimeParseContext {
             if (zone != null) {
                 builder.addObject(zone);
             }
+            builder.leapSecond = leapSecond;
+            builder.excessDays = excessDays;
             return builder;
         }
     }

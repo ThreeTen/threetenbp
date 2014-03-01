@@ -341,14 +341,14 @@ public class TestYearMonth extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test
     public void factory_parse_formatter() {
-        DateTimeFormatter f = DateTimeFormatter.ofPattern("y M");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("u M");
         YearMonth test = YearMonth.parse("2010 12", f);
         assertEquals(test, YearMonth.of(2010, 12));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_formatter_nullText() {
-        DateTimeFormatter f = DateTimeFormatter.ofPattern("y M");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("u M");
         YearMonth.parse((String) null, f);
     }
 
