@@ -50,6 +50,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.threeten.bp.temporal.IsoFields;
 import org.threeten.bp.temporal.TemporalField;
 
 /**
@@ -201,6 +202,23 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
             map.put(1L, array[Calendar.PM]);
             styleMap.put(TextStyle.FULL, map);
             styleMap.put(TextStyle.SHORT, map);  // re-use, as we don't have different data
+            return new LocaleStore(styleMap);
+        }
+        // hard code English quarter text
+        if (field == IsoFields.QUARTER_OF_YEAR) {
+            Map<TextStyle, Map<Long, String>> styleMap = new HashMap<>();
+            Map<Long, String> map = new HashMap<>();
+            map.put(1L, "Q1");
+            map.put(2L, "Q2");
+            map.put(3L, "Q3");
+            map.put(4L, "Q4");
+            styleMap.put(TextStyle.SHORT, map);
+            map = new HashMap<>();
+            map.put(1L, "1st quarter");
+            map.put(2L, "2nd quarter");
+            map.put(3L, "3rd quarter");
+            map.put(4L, "4th quarter");
+            styleMap.put(TextStyle.FULL, map);
             return new LocaleStore(styleMap);
         }
         return "";  // null marker for map
