@@ -59,7 +59,7 @@ public class TestDateTimeBuilderCombinations {
     Object[][] data_combine() {
         return new Object[][] {
             {YEAR, 2012, MONTH_OF_YEAR, 6, DAY_OF_MONTH, 3, null, null, LocalDate.FROM, LocalDate.of(2012, 6, 3)},
-            {PROLEPTIC_MONTH, (2012 - 1970) * 12 + 6 - 1, DAY_OF_MONTH, 3, null, null, null, null, LocalDate.FROM, LocalDate.of(2012, 6, 3)},
+            {PROLEPTIC_MONTH, 2012 * 12 + 6 - 1, DAY_OF_MONTH, 3, null, null, null, null, LocalDate.FROM, LocalDate.of(2012, 6, 3)},
             {YEAR, 2012, ALIGNED_WEEK_OF_YEAR, 6, DAY_OF_WEEK, 3, null, null, LocalDate.FROM, LocalDate.of(2012, 2, 8)},
             {YEAR, 2012, DAY_OF_YEAR, 155, null, null, null, null, LocalDate.FROM, LocalDate.of(2012, 6, 3)},
 //            {ERA, 1, YEAR_OF_ERA, 2012, DAY_OF_YEAR, 155, null, null, LocalDate.FROM, LocalDate.of(2012, 6, 3)},
@@ -81,7 +81,7 @@ public class TestDateTimeBuilderCombinations {
         if (field4 != null) {
             builder.addFieldValue(field4, value4.longValue());
         }
-        builder.resolve();
+        builder.resolve(ResolverStyle.SMART);
         assertEquals(builder.build(query), expectedVal);
     }
 
@@ -99,8 +99,8 @@ public class TestDateTimeBuilderCombinations {
             {ALIGNED_WEEK_OF_MONTH, 4, null, null, null, null, ALIGNED_WEEK_OF_MONTH, 4},
             {ALIGNED_DAY_OF_WEEK_IN_MONTH, 3, null, null, null, null, ALIGNED_DAY_OF_WEEK_IN_MONTH, 3},
             {PROLEPTIC_MONTH, 15, null, null, null, null, PROLEPTIC_MONTH, null},
-            {PROLEPTIC_MONTH, 15, null, null, null, null, YEAR, 1971},
-            {PROLEPTIC_MONTH, 15, null, null, null, null, MONTH_OF_YEAR, 4},
+            {PROLEPTIC_MONTH, 1971 * 12 + 4 - 1, null, null, null, null, YEAR, 1971},
+            {PROLEPTIC_MONTH, 1971 * 12 + 4 - 1, null, null, null, null, MONTH_OF_YEAR, 4},
         };
     }
 
@@ -114,7 +114,7 @@ public class TestDateTimeBuilderCombinations {
         if (field3 != null) {
             builder.addFieldValue(field3, value3.longValue());
         }
-        builder.resolve();
+        builder.resolve(ResolverStyle.SMART);
         if (expectedVal != null) {
             assertEquals(builder.getLong(query), expectedVal.longValue());
         } else {
