@@ -40,8 +40,10 @@ import java.util.Objects;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.Instant;
 import org.threeten.bp.ZoneId;
+import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.Chronology;
+import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.TemporalAccessor;
@@ -108,66 +110,91 @@ final class DateTimePrintContext {
         }
 
         // ensure minimal change
-        Chronology temporalChrono = Chronology.from(temporal);  // default to ISO, handles Instant
-        ZoneId temporalZone = temporal.query(TemporalQueries.zone());  // zone then offset, handles OffsetDateTime
-        if (temporal.isSupported(EPOCH_DAY) == false || Objects.equals(overrideChrono, temporalChrono)) {
+        Chronology temporalChrono = temporal.query(TemporalQueries.chronology());
+        ZoneId temporalZone = temporal.query(TemporalQueries.zoneId());
+        if (Objects.equals(temporalChrono, overrideChrono)) {
             overrideChrono = null;
         }
-        if (temporal.isSupported(INSTANT_SECONDS) == false || Objects.equals(overrideZone, temporalZone)) {
+        if (Objects.equals(temporalZone, overrideZone)) {
             overrideZone = null;
         }
         if (overrideChrono == null && overrideZone == null) {
             return temporal;
         }
-
-        // make adjustment
-        if (overrideChrono != null && overrideZone != null) {
-            return overrideChrono.zonedDateTime(Instant.from(temporal), overrideZone);
-        } else if (overrideZone != null) {
-            return temporalChrono.zonedDateTime(Instant.from(temporal), overrideZone);
-        } else {  // overrideChrono != null
-            // need class here to handle non-standard cases like OffsetDate
-            final ChronoLocalDate date = overrideChrono.date(temporal);
-            return new DefaultInterfaceTemporalAccessor() {
-                @Override
-                public boolean isSupported(TemporalField field) {
-                    return temporal.isSupported(field);
-                }
-                @Override
-                public ValueRange range(TemporalField field) {
-                    if (field instanceof ChronoField) {
-                        if (((ChronoField) field).isDateBased()) {
-                            return date.range(field);
-                        } else {
-                            return temporal.range(field);
-                        }
-                    }
-                    return field.rangeRefinedBy(this);
-                }
-                @Override
-                public long getLong(TemporalField field) {
-                    if (field instanceof ChronoField) {
-                        if (((ChronoField) field).isDateBased()) {
-                            return date.getLong(field);
-                        } else {
-                            return temporal.getLong(field);
-                        }
-                    }
-                    return field.getFrom(this);
-                }
-                @SuppressWarnings("unchecked")
-                @Override
-                public <R> R query(TemporalQuery<R> query) {
-                    if (query == TemporalQueries.chronology()) {
-                        return (R) date.getChronology();
-                    }
-                    if (query == TemporalQueries.zoneId() || query == TemporalQueries.precision()) {
-                        return temporal.query(query);
-                    }
-                    return query.queryFrom(this);
-                }
-            };
+        final Chronology effectiveChrono = (overrideChrono != null ? overrideChrono : temporalChrono);
+        final ZoneId effectiveZone = (overrideZone != null ? overrideZone : temporalZone);
+        
+        // use overrides
+        if (overrideZone != null) {
+            // handle instant
+            if (temporal.isSupported(INSTANT_SECONDS)) {
+                Chronology chrono = (effectiveChrono != null ? effectiveChrono : IsoChronology.INSTANCE);
+                return chrono.zonedDateTime(Instant.from(temporal), overrideZone);
+            }
+            // block changing zone on OffsetTime, and similar problem cases
+            ZoneId normalizedOffset = overrideZone.normalized();
+            ZoneOffset temporalOffset = temporal.query(TemporalQueries.offset());
+            if (normalizedOffset instanceof ZoneOffset && temporalOffset != null && normalizedOffset.equals(temporalOffset) == false) {
+                throw new DateTimeException("Invalid override zone for temporal: " + overrideZone + " " + temporal);
+            }
         }
+        final ChronoLocalDate effectiveDate;
+        if (overrideChrono != null) {
+            if (temporal.isSupported(EPOCH_DAY)) {
+                effectiveDate = effectiveChrono.date(temporal);
+            } else {
+                // check for date fields other than epoch-day, ignoring case of converting null to ISO
+                if (!(overrideChrono == IsoChronology.INSTANCE && temporalChrono == null)) {
+                    for (ChronoField f : ChronoField.values()) {
+                        if (f.isDateBased() && temporal.isSupported(f)) {
+                            throw new DateTimeException("Invalid override chronology for temporal: " + overrideChrono + " " + temporal);
+                        }
+                    }
+                }
+                effectiveDate = null;
+            }
+        } else {
+            effectiveDate = null;
+        }
+
+        // need class here to handle non-standard cases
+        return new DefaultInterfaceTemporalAccessor() {
+            @Override
+            public boolean isSupported(TemporalField field) {
+                if (effectiveDate != null && field.isDateBased()) {
+                    return effectiveDate.isSupported(field);
+                }
+                return temporal.isSupported(field);
+            }
+            @Override
+            public ValueRange range(TemporalField field) {
+                if (effectiveDate != null && field.isDateBased()) {
+                    return effectiveDate.range(field);
+                }
+                return temporal.range(field);
+            }
+            @Override
+            public long getLong(TemporalField field) {
+                if (effectiveDate != null && field.isDateBased()) {
+                    return effectiveDate.getLong(field);
+                }
+                return temporal.getLong(field);
+            }
+            @SuppressWarnings("unchecked")
+            @Override
+            public <R> R query(TemporalQuery<R> query) {
+                if (query == TemporalQueries.chronology()) {
+                    return (R) effectiveChrono;
+                }
+                if (query == TemporalQueries.zoneId()) {
+                    return (R) effectiveZone;
+                }
+                if (query == TemporalQueries.precision()) {
+                    return temporal.query(query);
+                }
+                return query.queryFrom(this);
+            }
+        };
     }
 
     //-----------------------------------------------------------------------

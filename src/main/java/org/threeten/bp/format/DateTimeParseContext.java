@@ -526,12 +526,7 @@ final class DateTimeParseContext {
             for (Map.Entry<TemporalField, Long> fv : fieldValues.entrySet()) {
                 builder.addFieldValue(fv.getKey(), fv.getValue());
             }
-            if (chrono != null) {
-                builder.addObject(chrono);
-            } else if (chronology != null) {
-                builder.addObject(chronology);
-            }
-//            builder.addCalendrical(getEffectiveChronology());
+            builder.addObject(getEffectiveChronology());
             if (zone != null) {
                 builder.addObject(zone);
             }
