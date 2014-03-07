@@ -44,6 +44,8 @@ import static org.threeten.bp.temporal.ChronoField.PROLEPTIC_MONTH;
 import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.YEAR;
 
+import java.util.HashSet;
+
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.LocalDate;
@@ -81,7 +83,7 @@ public class TestDateTimeBuilderCombinations {
         if (field4 != null) {
             builder.addFieldValue(field4, value4.longValue());
         }
-        builder.resolve(ResolverStyle.SMART);
+        builder.resolve(ResolverStyle.SMART, null);
         assertEquals(builder.build(query), expectedVal);
     }
 
@@ -114,7 +116,7 @@ public class TestDateTimeBuilderCombinations {
         if (field3 != null) {
             builder.addFieldValue(field3, value3.longValue());
         }
-        builder.resolve(ResolverStyle.SMART);
+        builder.resolve(ResolverStyle.SMART, null);
         if (expectedVal != null) {
             assertEquals(builder.getLong(query), expectedVal.longValue());
         } else {

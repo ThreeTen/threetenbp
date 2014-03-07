@@ -66,6 +66,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.DayOfWeek;
@@ -229,7 +230,13 @@ final class DateTimeBuilder
      * @param resolverStyle how to resolve
      * @return {@code this}, for method chaining
      */
-    public DateTimeBuilder resolve(ResolverStyle resolverStyle) {
+    public DateTimeBuilder resolve(ResolverStyle resolverStyle, Set<TemporalField> resolverFields) {
+        if (resolverFields != null) {
+            standardFields.keySet().retainAll(resolverFields);
+            if (otherFields != null) {
+                otherFields.keySet().retainAll(resolverFields);
+            }
+        }
         // handle standard fields
         mergeDate(resolverStyle);
         mergeTime(resolverStyle);

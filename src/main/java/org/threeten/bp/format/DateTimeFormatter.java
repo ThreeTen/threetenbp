@@ -1436,7 +1436,7 @@ public final class DateTimeFormatter {
     public TemporalAccessor parse(CharSequence text) {
         Objects.requireNonNull(text, "text");
         try {
-            return parseToBuilder(text, null).resolve(resolverStyle);
+            return parseToBuilder(text, null).resolve(resolverStyle, resolverFields);
         } catch (DateTimeParseException ex) {
             throw ex;
         } catch (RuntimeException ex) {
@@ -1478,7 +1478,7 @@ public final class DateTimeFormatter {
         Objects.requireNonNull(text, "text");
         Objects.requireNonNull(position, "position");
         try {
-            return parseToBuilder(text, position).resolve(resolverStyle);
+            return parseToBuilder(text, position).resolve(resolverStyle, resolverFields);
         } catch (DateTimeParseException | IndexOutOfBoundsException ex) {
             throw ex;
         } catch (RuntimeException ex) {
@@ -1509,7 +1509,7 @@ public final class DateTimeFormatter {
         Objects.requireNonNull(text, "text");
         Objects.requireNonNull(type, "type");
         try {
-            DateTimeBuilder builder = parseToBuilder(text, null).resolve(resolverStyle);
+            DateTimeBuilder builder = parseToBuilder(text, null).resolve(resolverStyle, resolverFields);
             return builder.build(type);
         } catch (DateTimeParseException ex) {
             throw ex;
@@ -1554,7 +1554,7 @@ public final class DateTimeFormatter {
             throw new IllegalArgumentException("At least two types must be specified");
         }
         try {
-            DateTimeBuilder builder = parseToBuilder(text, null).resolve(resolverStyle);
+            DateTimeBuilder builder = parseToBuilder(text, null).resolve(resolverStyle, resolverFields);
             for (TemporalQuery<?> type : types) {
                 try {
                     return (TemporalAccessor) builder.build(type);
@@ -1772,7 +1772,8 @@ public final class DateTimeFormatter {
             Objects.requireNonNull(text, "text");
             try {
                 if (query == null) {
-                    return formatter.parseToBuilder(text, null).resolve(ResolverStyle.SMART);
+                    return formatter.parseToBuilder(text, null)
+                                    .resolve(formatter.getResolverStyle(), formatter.getResolverFields());
                 }
                 return formatter.parse(text, query);
             } catch (DateTimeParseException ex) {
@@ -1800,7 +1801,8 @@ public final class DateTimeFormatter {
                 return null;
             }
             try {
-                DateTimeBuilder builder = unresolved.resolveFields(ResolverStyle.SMART).toBuilder().resolve(ResolverStyle.SMART);
+                DateTimeBuilder builder = unresolved.resolveFields(ResolverStyle.SMART).toBuilder()
+                                .resolve(formatter.getResolverStyle(), formatter.getResolverFields());
                 if (query == null) {
                     return builder;
                 }
