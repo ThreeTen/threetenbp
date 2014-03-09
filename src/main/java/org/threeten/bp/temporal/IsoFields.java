@@ -268,10 +268,28 @@ public final class IsoFields {
                     return null;
                 }
                 int y = YEAR.checkValidIntValue(yearLong);
-                int qoy = QUARTER_OF_YEAR.range().checkValidIntValue(qoyLong, QUARTER_OF_YEAR);
                 long doq = fieldValues.get(DAY_OF_QUARTER);
-                range().checkValidValue(doq, this);  // leniently check from 1 to 92 TODO: check
-                LocalDate date = LocalDate.of(y, ((qoy - 1) * 3) + 1, 1).plusDays(doq - 1);
+                LocalDate date;
+                if (resolverStyle == ResolverStyle.LENIENT) {
+                    long qoy = qoyLong;
+                    date = LocalDate.of(y, 1, 1);
+                    date = date.plusMonths(Jdk8Methods.safeMultiply(Jdk8Methods.safeSubtract(qoy, 1), 3));
+                    date = date.plusDays(Jdk8Methods.safeSubtract(doq, 1));
+                } else {
+                    int qoy = QUARTER_OF_YEAR.range().checkValidIntValue(qoyLong, QUARTER_OF_YEAR);
+                    if (resolverStyle == ResolverStyle.STRICT) {
+                        int max = 92;
+                        if (qoy == 1) {
+                            max = (IsoChronology.INSTANCE.isLeapYear(y) ? 91 : 90);
+                        } else if (qoy == 2) {
+                            max = 91;
+                        }
+                        ValueRange.of(1, max).checkValidValue(doq, this);
+                    } else {
+                        range().checkValidValue(doq, this);  // leniently check from 1 to 92
+                    }
+                    date = LocalDate.of(y, ((qoy - 1) * 3) + 1, 1).plusDays(doq - 1);
+                }
                 fieldValues.remove(this);
                 fieldValues.remove(YEAR);
                 fieldValues.remove(QUARTER_OF_YEAR);
@@ -369,10 +387,30 @@ public final class IsoFields {
                     return null;
                 }
                 int wby = WEEK_BASED_YEAR.range().checkValidIntValue(wbyLong, WEEK_BASED_YEAR);
-                int dow = DAY_OF_WEEK.checkValidIntValue(dowLong);
                 long wowby = fieldValues.get(WEEK_OF_WEEK_BASED_YEAR);
-                range().checkValidValue(wowby, this);  // lenient range
-                LocalDate date = LocalDate.of(wby, 1, 4).plusWeeks(wowby - 1).with(DAY_OF_WEEK, dow);
+                LocalDate date;
+                if (resolverStyle == ResolverStyle.LENIENT) {
+                    long dow = dowLong;
+                    long weeks = 0;
+                    if (dow > 7) {
+                        weeks = (dow - 1) / 7;
+                        dow = ((dow - 1) % 7) + 1;
+                    } else if (dow < 1) {
+                        weeks = (dow / 7) - 1;
+                        dow = (dow % 7) + 7;
+                    }
+                    date = LocalDate.of(wby, 1, 4).plusWeeks(wowby - 1).plusWeeks(weeks).with(DAY_OF_WEEK, dow);
+                } else {
+                    int dow = DAY_OF_WEEK.checkValidIntValue(dowLong);
+                    if (resolverStyle == ResolverStyle.STRICT) {
+                        LocalDate temp = LocalDate.of(wby, 1, 4);
+                        ValueRange range = getWeekRange(temp);
+                        range.checkValidValue(wowby, this);
+                    } else {
+                        range().checkValidValue(wowby, this);  // leniently check from 1 to 53
+                    }
+                    date = LocalDate.of(wby, 1, 4).plusWeeks(wowby - 1).with(DAY_OF_WEEK, dow);
+                }
                 fieldValues.remove(this);
                 fieldValues.remove(WEEK_BASED_YEAR);
                 fieldValues.remove(DAY_OF_WEEK);
