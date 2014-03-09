@@ -122,7 +122,7 @@ public enum HijrahEra implements Era {
     @Override
     public ValueRange range(TemporalField field) {
         if (field == ERA) {
-            return field.range();
+            return ValueRange.of(1, 1);
         } else if (field instanceof ChronoField) {
             throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
         }
