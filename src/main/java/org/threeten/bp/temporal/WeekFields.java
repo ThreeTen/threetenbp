@@ -50,6 +50,7 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.threeten.bp.DateTimeException;
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.Chronology;
@@ -451,6 +452,9 @@ public final class WeekFields implements Serializable {
      * @return a field providing access to the week-of-week-based-year, not null
      */
     public TemporalField weekOfWeekBasedYear() {
+        if (minimalDays == 4 && firstDayOfWeek == DayOfWeek.MONDAY) {
+            return IsoFields.WEEK_OF_WEEK_BASED_YEAR;
+        }
         throw new UnsupportedOperationException();  // TODO
     }
 
@@ -493,6 +497,9 @@ public final class WeekFields implements Serializable {
      * @return a field providing access to the week-based-year, not null
      */
     public TemporalField weekBasedYear() {
+        if (minimalDays == 4 && firstDayOfWeek == DayOfWeek.MONDAY) {
+            return IsoFields.WEEK_BASED_YEAR;
+        }
         throw new UnsupportedOperationException();  // TODO
     }
 
@@ -595,8 +602,8 @@ public final class WeekFields implements Serializable {
         }
 
         private static final ValueRange DAY_OF_WEEK_RANGE = ValueRange.of(1, 7);
-        private static final ValueRange WEEK_OF_MONTH_RANGE = ValueRange.of(0, 1, 4, 5);
-        private static final ValueRange WEEK_OF_YEAR_RANGE = ValueRange.of(0, 1, 52, 53);
+        private static final ValueRange WEEK_OF_MONTH_RANGE = ValueRange.of(0, 1, 4, 6);
+        private static final ValueRange WEEK_OF_YEAR_RANGE = ValueRange.of(0, 1, 52, 54);
 
         @Override
         public long getFrom(TemporalAccessor temporal) {
@@ -684,11 +691,11 @@ public final class WeekFields implements Serializable {
         @Override
         public TemporalAccessor resolve(Map<TemporalField, Long> fieldValues,
                         TemporalAccessor partialTemporal, ResolverStyle resolverStyle) {
-            final long value = fieldValues.remove(this);
-            int newValue = range.checkValidIntValue(value, this);
             int sow = weekDef.getFirstDayOfWeek().getValue();
             if (rangeUnit == WEEKS) {  // day-of-week
-                int isoDow = Jdk8Methods.floorMod((sow - 1) + (newValue - 1), 7) + 1;
+                final long value = fieldValues.remove(this);
+                int localDow = range.checkValidIntValue(value, this);
+                int isoDow = Jdk8Methods.floorMod((sow - 1) + (localDow - 1), 7) + 1;
                 fieldValues.put(DAY_OF_WEEK, (long) isoDow);
                 return null;
             }
@@ -703,23 +710,57 @@ public final class WeekFields implements Serializable {
                 if (fieldValues.containsKey(MONTH_OF_YEAR) == false) {
                     return null;
                 }
-                int month = MONTH_OF_YEAR.checkValidIntValue(fieldValues.get(MONTH_OF_YEAR));
-                ChronoLocalDate date = chrono.date(year, month, 1);
-                int dateDow = localizedDayOfWeek(date, sow);
-                long weeks = newValue - localizedWeekOfMonth(date, dateDow);
-                int days = dow - dateDow;
-                date = date.plus(weeks * 7 + days, DAYS);
+                final long value = fieldValues.remove(this);
+                ChronoLocalDate date;
+                long days;
+                if (resolverStyle == ResolverStyle.LENIENT) {
+                    long month = fieldValues.get(MONTH_OF_YEAR);
+                    date = chrono.date(year, 1, 1);
+                    date = date.plus(month - 1, MONTHS);
+                    int dateDow = localizedDayOfWeek(date, sow);
+                    long weeks = value - localizedWeekOfMonth(date, dateDow);
+                    days = weeks * 7 + (dow - dateDow);
+                } else {
+                    int month = MONTH_OF_YEAR.checkValidIntValue(fieldValues.get(MONTH_OF_YEAR));
+                    date = chrono.date(year, month, 8);
+                    int dateDow = localizedDayOfWeek(date, sow);
+                    int wom = range.checkValidIntValue(value, this);
+                    long weeks = wom - localizedWeekOfMonth(date, dateDow);
+                    days = weeks * 7 + (dow - dateDow);
+                }
+                date = date.plus(days, DAYS);
+                if (resolverStyle == ResolverStyle.STRICT) {
+                    if (date.getLong(MONTH_OF_YEAR) != fieldValues.get(MONTH_OF_YEAR)) {
+                        throw new DateTimeException("Strict mode rejected date parsed to a different month");
+                    }
+                }
                 fieldValues.remove(this);
                 fieldValues.remove(YEAR);
                 fieldValues.remove(MONTH_OF_YEAR);
                 fieldValues.remove(DAY_OF_WEEK);
                 return date;
             } else if (rangeUnit == YEARS) {  // week-of-year
-                ChronoLocalDate date = chrono.date(year, 1, 1);
-                int dateDow = localizedDayOfWeek(date, sow);
-                long weeks = newValue - localizedWeekOfYear(date, dateDow);
-                int days = dow - dateDow;
-                date = date.plus(weeks * 7 + days, DAYS);
+                final long value = fieldValues.remove(this);
+                ChronoLocalDate date;
+                long days;
+                if (resolverStyle == ResolverStyle.LENIENT) {
+                    date = chrono.date(year, 1, 1);
+                    int dateDow = localizedDayOfWeek(date, sow);
+                    long weeks = value - localizedWeekOfYear(date, dateDow);
+                    days = weeks * 7 + (dow - dateDow);
+                } else {
+                    date = chrono.date(year, 1, 1);
+                    int dateDow = localizedDayOfWeek(date, sow);
+                    int woy = range.checkValidIntValue(value, this);
+                    long weeks = woy - localizedWeekOfYear(date, dateDow);
+                    days = weeks * 7 + (dow - dateDow);
+                }
+                date = date.plus(days, DAYS);
+                if (resolverStyle == ResolverStyle.STRICT) {
+                    if (date.getLong(YEAR) != fieldValues.get(YEAR)) {
+                        throw new DateTimeException("Strict mode rejected date parsed to a different year");
+                    }
+                }
                 fieldValues.remove(this);
                 fieldValues.remove(YEAR);
                 fieldValues.remove(DAY_OF_WEEK);
