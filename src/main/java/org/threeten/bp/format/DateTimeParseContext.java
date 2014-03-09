@@ -119,11 +119,21 @@ final class DateTimeParseContext {
         parsed.add(new Parsed());
     }
 
+    DateTimeParseContext(DateTimeParseContext other) {
+        super();
+        this.locale = other.locale;
+        this.symbols = other.symbols;
+        this.chronology = other.chronology;
+        this.caseSensitive = other.caseSensitive;
+        this.strict = other.strict;
+        parsed.add(new Parsed());
+    }
+
     /**
      * Creates a copy of this context.
      */
     DateTimeParseContext copy() {
-        return new DateTimeParseContext(locale, symbols, chronology);
+        return new DateTimeParseContext(this);
     }
 
     //-----------------------------------------------------------------------

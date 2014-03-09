@@ -56,10 +56,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TimeZone;
 
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.Instant;
@@ -2866,11 +2866,6 @@ public final class DateTimeFormatterBuilder {
         // seconds per day = 86400
         private static final long SECONDS_PER_10000_YEARS = 146097L * 25L * 86400L;
         private static final long SECONDS_0000_TO_1970 = ((146097L * 5L) - (30L * 365L + 7L)) * 86400L;
-        private static final CompositePrinterParser PARSER = new DateTimeFormatterBuilder()
-                    .parseCaseInsensitive()
-                    .append(DateTimeFormatter.ISO_LOCAL_DATE).appendLiteral('T')
-                    .append(DateTimeFormatter.ISO_LOCAL_TIME).appendLiteral('Z')
-                    .toFormatter().toPrinterParser(false);
 
         private final int fractionalDigits;
 
@@ -2937,13 +2932,14 @@ public final class DateTimeFormatterBuilder {
                         buf.append(Integer.toString((inNano) + 1000_000_000).substring(1));
                     }
                 }
-            } else if (fractionalDigits != 0 && inNano != 0) {
+            } else if (fractionalDigits > 0 || (fractionalDigits == -1 && inNano > 0)) {
+                buf.append('.');
                 int div = 100_000_000;
                 for (int i = 0; ((fractionalDigits == -1 && inNano > 0) || i < fractionalDigits); i++) {
                     int digit = inNano / div;
                     buf.append((char) (digit + '0'));
-                    div = div / 10;
                     inNano = inNano - (digit * div);
+                    div = div / 10;
                 }
             }
             buf.append('Z');
@@ -2954,7 +2950,14 @@ public final class DateTimeFormatterBuilder {
         public int parse(DateTimeParseContext context, CharSequence text, int position) {
             // new context to avoid overwriting fields like year/month/day
             DateTimeParseContext newContext = context.copy();
-            int pos = PARSER.parse(newContext, text, position);
+            int minDigits = (fractionalDigits < 0 ? 0 : fractionalDigits);
+            int maxDigits = (fractionalDigits < 0 ? 9 : fractionalDigits);
+            CompositePrinterParser parser = new DateTimeFormatterBuilder()
+                    .append(DateTimeFormatter.ISO_LOCAL_DATE).appendLiteral('T')
+                    .appendValue(HOUR_OF_DAY, 2).appendLiteral(':').appendValue(MINUTE_OF_HOUR, 2).appendLiteral(':')
+                    .appendValue(SECOND_OF_MINUTE, 2).appendFraction(NANO_OF_SECOND, minDigits, maxDigits, true).appendLiteral('Z')
+                    .toFormatter().toPrinterParser(false);
+            int pos = parser.parse(newContext, text, position);
             if (pos < 0) {
                 return pos;
             }
