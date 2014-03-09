@@ -56,11 +56,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 
 import org.threeten.bp.DateTimeException;
+import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
@@ -3299,8 +3301,22 @@ public final class DateTimeFormatterBuilder {
             if (zone == null) {
                 return false;
             }
-            // TODO: fix getText(textStyle, context.getLocale())
-            buf.append(zone.getId());  // TODO: Use symbols
+            if (zone.normalized() instanceof ZoneOffset) {
+                buf.append(zone.getId());
+                return true;
+            }
+            Long epochSec = context.getTemporal().getLong(INSTANT_SECONDS);
+            Instant instant;
+            if (epochSec != null) {
+                instant = Instant.ofEpochSecond(epochSec);
+            } else {
+                instant = Instant.ofEpochSecond(-200L * 365 * 86400);  // about 1770
+            }
+            TimeZone tz = TimeZone.getTimeZone(zone.getId());
+            boolean daylight = zone.getRules().isDaylightSavings(instant);
+            int tzstyle = (textStyle.asNormal() == TextStyle.FULL ? TimeZone.LONG : TimeZone.SHORT);
+            String text = tz.getDisplayName(daylight, tzstyle, context.getLocale());
+            buf.append(text);
             return true;
         }
 
