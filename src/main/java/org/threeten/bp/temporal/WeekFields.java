@@ -52,6 +52,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.DayOfWeek;
+import org.threeten.bp.Year;
 import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.format.ResolverStyle;
@@ -170,16 +171,22 @@ public final class WeekFields implements Serializable {
      * The field used to access the computed DayOfWeek.
      */
     private transient final TemporalField dayOfWeek = ComputedDayOfField.ofDayOfWeekField(this);
-
     /**
      * The field used to access the computed WeekOfMonth.
      */
     private transient final TemporalField weekOfMonth = ComputedDayOfField.ofWeekOfMonthField(this);
-
     /**
      * The field used to access the computed WeekOfYear.
      */
     private transient final TemporalField weekOfYear = ComputedDayOfField.ofWeekOfYearField(this);
+    /**
+     * The field used to access the computed WeekOfWeekBasedYear.
+     */
+    private transient final TemporalField weekOfWeekBasedYear = ComputedDayOfField.ofWeekOfWeekBasedYearField(this);
+    /**
+     * The field used to access the computed WeekBasedYear.
+     */
+    private transient final TemporalField weekBasedYear = ComputedDayOfField.ofWeekBasedYearField(this);
 
     /**
      * Obtains an instance of {@code WeekFields} appropriate for a locale.
@@ -455,7 +462,7 @@ public final class WeekFields implements Serializable {
         if (minimalDays == 4 && firstDayOfWeek == DayOfWeek.MONDAY) {
             return IsoFields.WEEK_OF_WEEK_BASED_YEAR;
         }
-        throw new UnsupportedOperationException();  // TODO
+        return weekOfWeekBasedYear;
     }
 
     /**
@@ -500,7 +507,7 @@ public final class WeekFields implements Serializable {
         if (minimalDays == 4 && firstDayOfWeek == DayOfWeek.MONDAY) {
             return IsoFields.WEEK_BASED_YEAR;
         }
-        throw new UnsupportedOperationException();  // TODO
+        return weekBasedYear;
     }
 
     //-----------------------------------------------------------------------
@@ -587,6 +594,27 @@ public final class WeekFields implements Serializable {
             return new ComputedDayOfField("WeekOfYear", weekDef,
                     ChronoUnit.WEEKS, ChronoUnit.YEARS, WEEK_OF_YEAR_RANGE);
         }
+
+        /**
+         * Returns a field to access the week of week-based-year,
+         * computed based on a WeekFields.
+         * @see WeekFields#weekOfWeekBasedYear()
+         */
+        static ComputedDayOfField ofWeekOfWeekBasedYearField(WeekFields weekDef) {
+            return new ComputedDayOfField("WeekOfWeekBasedYear", weekDef,
+                    ChronoUnit.WEEKS, IsoFields.WEEK_BASED_YEARS, WEEK_OF_WEEK_BASED_YEAR_RANGE);
+        }
+
+        /**
+         * Returns a field to access the week-based-year,
+         * computed based on a WeekFields.
+         * @see WeekFields#weekBasedYear()
+         */
+        static ComputedDayOfField ofWeekBasedYearField(WeekFields weekDef) {
+            return new ComputedDayOfField("WeekBasedYear", weekDef,
+                    IsoFields.WEEK_BASED_YEARS, ChronoUnit.FOREVER, WEEK_BASED_YEAR_RANGE);
+        }
+
         private final String name;
         private final WeekFields weekDef;
         private final TemporalUnit baseUnit;
@@ -604,6 +632,8 @@ public final class WeekFields implements Serializable {
         private static final ValueRange DAY_OF_WEEK_RANGE = ValueRange.of(1, 7);
         private static final ValueRange WEEK_OF_MONTH_RANGE = ValueRange.of(0, 1, 4, 6);
         private static final ValueRange WEEK_OF_YEAR_RANGE = ValueRange.of(0, 1, 52, 54);
+        private static final ValueRange WEEK_OF_WEEK_BASED_YEAR_RANGE = ValueRange.of(1, 52, 53);
+        private static final ValueRange WEEK_BASED_YEAR_RANGE = YEAR.range();
 
         @Override
         public long getFrom(TemporalAccessor temporal) {
@@ -622,6 +652,10 @@ public final class WeekFields implements Serializable {
                 int doy = temporal.get(ChronoField.DAY_OF_YEAR);
                 int offset = startOfWeekOffset(doy, dow);
                 return computeWeek(offset, doy);
+            } else if (rangeUnit == IsoFields.WEEK_BASED_YEARS) {
+                return localizedWOWBY(temporal);
+            } else if (rangeUnit == ChronoUnit.FOREVER) {
+                return localizedWBY(temporal);
             } else {
                 throw new IllegalStateException("unreachable");
             }
@@ -642,6 +676,46 @@ public final class WeekFields implements Serializable {
             int doy = temporal.get(DAY_OF_YEAR);
             int offset = startOfWeekOffset(doy, dow);
             return computeWeek(offset, doy);
+        }
+
+        private int localizedWOWBY(TemporalAccessor temporal) {
+            int sow = weekDef.getFirstDayOfWeek().getValue();
+            int isoDow = temporal.get(DAY_OF_WEEK);
+            int dow = Jdk8Methods.floorMod(isoDow - sow, 7) + 1;
+            long woy = localizedWeekOfYear(temporal, dow);
+            if (woy == 0) {
+                ChronoLocalDate previous = Chronology.from(temporal).date(temporal).minus(1, ChronoUnit.WEEKS);
+                return (int) localizedWeekOfYear(previous, dow) + 1;
+            } else if (woy >= 53) {
+                int offset = startOfWeekOffset(temporal.get(DAY_OF_YEAR), dow);
+                int year = temporal.get(YEAR);
+                int yearLen = Year.isLeap(year) ? 366 : 365;
+                int weekIndexOfFirstWeekNextYear = computeWeek(offset, yearLen + weekDef.getMinimalDaysInFirstWeek());
+                if (woy >= weekIndexOfFirstWeekNextYear) {
+                    return (int) (woy - (weekIndexOfFirstWeekNextYear - 1));
+                }
+            }
+            return (int) woy;
+        }
+
+        private int localizedWBY(TemporalAccessor temporal) {
+            int sow = weekDef.getFirstDayOfWeek().getValue();
+            int isoDow = temporal.get(DAY_OF_WEEK);
+            int dow = Jdk8Methods.floorMod(isoDow - sow, 7) + 1;
+            int year = temporal.get(YEAR);
+            long woy = localizedWeekOfYear(temporal, dow);
+            if (woy == 0) {
+                return year - 1;
+            } else if (woy < 53) {
+                return year;
+            }
+            int offset = startOfWeekOffset(temporal.get(DAY_OF_YEAR), dow);
+            int yearLen = Year.isLeap(year) ? 366 : 365;
+            int weekIndexOfFirstWeekNextYear = computeWeek(offset, yearLen + weekDef.getMinimalDaysInFirstWeek());
+            if (woy >= weekIndexOfFirstWeekNextYear) {
+                return year + 1;
+            }
+            return year;
         }
 
         /**
@@ -683,6 +757,19 @@ public final class WeekFields implements Serializable {
             if (newVal == currentVal) {
                 return temporal;
             }
+            if (rangeUnit == ChronoUnit.FOREVER) {
+                // adjust in whole weeks so dow never changes
+                int baseWowby = temporal.get(weekDef.weekOfWeekBasedYear);
+                long diffWeeks = (long) ((newValue - currentVal) * 52.1775);
+                Temporal result = temporal.plus(diffWeeks, ChronoUnit.WEEKS);
+                int newWowby = result.get(weekDef.weekOfWeekBasedYear);
+                if (baseWowby == 53 && newWowby == 1) {
+                    result = result.minus(1, ChronoUnit.WEEKS);
+                } else if (baseWowby == 1 && newWowby == 53) {
+                    result = result.plus(1, ChronoUnit.WEEKS);
+                }
+                return (R) result;
+            }
             // Compute the difference and add that using the base using of the field
             int delta = newVal - currentVal;
             return (R) temporal.plus(delta, baseUnit);
@@ -699,7 +786,48 @@ public final class WeekFields implements Serializable {
                 fieldValues.put(DAY_OF_WEEK, (long) isoDow);
                 return null;
             }
-            if ((fieldValues.containsKey(YEAR) && fieldValues.containsKey(DAY_OF_WEEK)) == false) {
+            if (fieldValues.containsKey(DAY_OF_WEEK) == false) {
+                return null;
+            }
+            
+            // week-based-year
+            if (rangeUnit == ChronoUnit.FOREVER) {
+                if (fieldValues.containsKey(weekDef.weekOfWeekBasedYear) == false) {
+                    return null;
+                }
+                Chronology chrono = Chronology.from(partialTemporal);  // defaults to ISO
+                int isoDow = DAY_OF_WEEK.checkValidIntValue(fieldValues.get(DAY_OF_WEEK));
+                int dow = Jdk8Methods.floorMod(isoDow - sow, 7) + 1;
+                final int wby = range().checkValidIntValue(fieldValues.get(this), this);
+                ChronoLocalDate date;
+                long days;
+                if (resolverStyle == ResolverStyle.LENIENT) {
+                    date = chrono.date(wby, 1, weekDef.getMinimalDaysInFirstWeek());
+                    long wowby = fieldValues.get(weekDef.weekOfWeekBasedYear);
+                    int dateDow = localizedDayOfWeek(date, sow);
+                    long weeks = wowby - localizedWeekOfYear(date, dateDow);
+                    days = weeks * 7 + (dow - dateDow);
+                } else {
+                    date = chrono.date(wby, 1, weekDef.getMinimalDaysInFirstWeek());
+                    long wowby = weekDef.weekOfWeekBasedYear.range().checkValidIntValue(
+                                    fieldValues.get(weekDef.weekOfWeekBasedYear), weekDef.weekOfWeekBasedYear);
+                    int dateDow = localizedDayOfWeek(date, sow);
+                    long weeks = wowby - localizedWeekOfYear(date, dateDow);
+                    days = weeks * 7 + (dow - dateDow);
+                }
+                date = date.plus(days, DAYS);
+                if (resolverStyle == ResolverStyle.STRICT) {
+                    if (date.getLong(this) != fieldValues.get(this)) {
+                        throw new DateTimeException("Strict mode rejected date parsed to a different year");
+                    }
+                }
+                fieldValues.remove(this);
+                fieldValues.remove(weekDef.weekOfWeekBasedYear);
+                fieldValues.remove(DAY_OF_WEEK);
+                return date;
+            }
+            
+            if (fieldValues.containsKey(YEAR) == false) {
                 return null;
             }
             int isoDow = DAY_OF_WEEK.checkValidIntValue(fieldValues.get(DAY_OF_WEEK));
@@ -741,15 +869,13 @@ public final class WeekFields implements Serializable {
                 return date;
             } else if (rangeUnit == YEARS) {  // week-of-year
                 final long value = fieldValues.remove(this);
-                ChronoLocalDate date;
+                ChronoLocalDate date = chrono.date(year, 1, 1);
                 long days;
                 if (resolverStyle == ResolverStyle.LENIENT) {
-                    date = chrono.date(year, 1, 1);
                     int dateDow = localizedDayOfWeek(date, sow);
                     long weeks = value - localizedWeekOfYear(date, dateDow);
                     days = weeks * 7 + (dow - dateDow);
                 } else {
-                    date = chrono.date(year, 1, 1);
                     int dateDow = localizedDayOfWeek(date, sow);
                     int woy = range.checkValidIntValue(value, this);
                     long weeks = woy - localizedWeekOfYear(date, dateDow);
@@ -806,6 +932,10 @@ public final class WeekFields implements Serializable {
                     return temporal.isSupported(ChronoField.DAY_OF_MONTH);
                 } else if (rangeUnit == ChronoUnit.YEARS) {
                     return temporal.isSupported(ChronoField.DAY_OF_YEAR);
+                } else if (rangeUnit == IsoFields.WEEK_BASED_YEARS) {
+                    return temporal.isSupported(ChronoField.EPOCH_DAY);
+                } else if (rangeUnit == ChronoUnit.FOREVER) {
+                    return temporal.isSupported(ChronoField.EPOCH_DAY);
                 }
             }
             return false;
@@ -822,6 +952,10 @@ public final class WeekFields implements Serializable {
                 field = ChronoField.DAY_OF_MONTH;
             } else if (rangeUnit == ChronoUnit.YEARS) {
                 field = ChronoField.DAY_OF_YEAR;
+            } else if (rangeUnit == IsoFields.WEEK_BASED_YEARS) {
+                return rangeWOWBY(temporal);
+            } else if (rangeUnit == ChronoUnit.FOREVER) {
+                return temporal.range(YEAR);
             } else {
                 throw new IllegalStateException("unreachable");
             }
@@ -835,6 +969,24 @@ public final class WeekFields implements Serializable {
             ValueRange fieldRange = temporal.range(field);
             return ValueRange.of(computeWeek(offset, (int) fieldRange.getMinimum()),
                     computeWeek(offset, (int) fieldRange.getMaximum()));
+        }
+
+        private ValueRange rangeWOWBY(TemporalAccessor temporal) {
+            int sow = weekDef.getFirstDayOfWeek().getValue();
+            int isoDow = temporal.get(DAY_OF_WEEK);
+            int dow = Jdk8Methods.floorMod(isoDow - sow, 7) + 1;
+            long woy = localizedWeekOfYear(temporal, dow);
+            if (woy == 0) {
+                return rangeWOWBY(Chronology.from(temporal).date(temporal).minus(2, ChronoUnit.WEEKS));
+            }
+            int offset = startOfWeekOffset(temporal.get(DAY_OF_YEAR), dow);
+            int year = temporal.get(YEAR);
+            int yearLen = Year.isLeap(year) ? 366 : 365;
+            int weekIndexOfFirstWeekNextYear = computeWeek(offset, yearLen + weekDef.getMinimalDaysInFirstWeek());
+            if (woy >= weekIndexOfFirstWeekNextYear) {
+                return rangeWOWBY(Chronology.from(temporal).date(temporal).plus(2, ChronoUnit.WEEKS));
+            }
+            return ValueRange.of(1, weekIndexOfFirstWeekNextYear - 1);
         }
 
         @Override
