@@ -37,19 +37,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
-import org.threeten.bp.DateTimeException;
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.LocalTime;
 import org.threeten.bp.Period;
 import org.threeten.bp.ZoneId;
-import org.threeten.bp.chrono.ChronoLocalDate;
-import org.threeten.bp.chrono.ChronoLocalDateTime;
 import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
 import org.threeten.bp.jdk8.Jdk8Methods;
-import org.threeten.bp.temporal.ChronoField;
-import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
@@ -81,9 +74,13 @@ final class DateTimeParseContext {
      */
     private DecimalStyle symbols;
     /**
-     * The chronology, not null.
+     * The override chronology.
      */
-    private Chronology chronology;
+    private Chronology overrideChronology;
+    /**
+     * The override zone.
+     */
+    private ZoneId overrideZone;
     /**
      * Whether to parse using case sensitively.
      */
@@ -106,7 +103,8 @@ final class DateTimeParseContext {
         super();
         this.locale = formatter.getLocale();
         this.symbols = formatter.getDecimalStyle();
-        this.chronology = formatter.getChronology();
+        this.overrideChronology = formatter.getChronology();
+        this.overrideZone = formatter.getZone();
         parsed.add(new Parsed());
     }
 
@@ -115,7 +113,8 @@ final class DateTimeParseContext {
         super();
         this.locale = locale;
         this.symbols = symbols;
-        this.chronology = chronology;
+        this.overrideChronology = chronology;
+        this.overrideZone = null;
         parsed.add(new Parsed());
     }
 
@@ -123,7 +122,8 @@ final class DateTimeParseContext {
         super();
         this.locale = other.locale;
         this.symbols = other.symbols;
-        this.chronology = other.chronology;
+        this.overrideChronology = other.overrideChronology;
+        this.overrideZone = other.overrideZone;
         this.caseSensitive = other.caseSensitive;
         this.strict = other.strict;
         parsed.add(new Parsed());
@@ -168,7 +168,7 @@ final class DateTimeParseContext {
     Chronology getEffectiveChronology() {
         Chronology chrono = currentParsed().chrono;
         if (chrono == null) {
-            chrono = chronology;
+            chrono = overrideChronology;
             if (chrono == null) {
                 chrono = IsoChronology.INSTANCE;
             }
@@ -457,69 +457,6 @@ final class DateTimeParseContext {
         }
 
         /**
-         * Resolves the fields in this context.
-         *
-         * @return this, for method chaining
-         * @throws DateTimeException if resolving one field results in a value for
-         *  another field that is in conflict
-         */
-        Parsed resolveFields(ResolverStyle resolverStyle) {
-            int max = 0;
-            outer:
-            while (max < 100) {
-                max++;
-                for (Map.Entry<TemporalField, Long> entry : fieldValues.entrySet()) {
-                    TemporalField targetField = entry.getKey();
-                    TemporalAccessor resolvedObject = targetField.resolve(fieldValues, this, resolverStyle);
-                    if (resolvedObject != null) {
-                        if (resolvedObject instanceof ChronoLocalDate) {
-                            resolveMakeChanges(targetField, (ChronoLocalDate) resolvedObject);
-                            continue outer;  // have to restart to avoid concurrent modification
-                        }
-                        if (resolvedObject instanceof LocalTime) {
-                            resolveMakeChanges(targetField, (LocalTime) resolvedObject);
-                            continue outer;  // have to restart to avoid concurrent modification
-                        }
-                        if (resolvedObject instanceof ChronoLocalDateTime<?>) {
-                            ChronoLocalDateTime<?> cldt = (ChronoLocalDateTime<?>) resolvedObject;
-                            resolveMakeChanges(targetField, cldt.toLocalDate());
-                            resolveMakeChanges(targetField, cldt.toLocalTime());
-                            continue outer;  // have to restart to avoid concurrent modification
-                        }
-                        throw new DateTimeException("Unknown type: " + resolvedObject.getClass().getName());
-                    } else if (fieldValues.containsKey(targetField) == false) {
-                        continue outer;  // have to restart to avoid concurrent modification
-                    }
-                }
-                break;
-            }
-            if (max == 100) {
-                throw new DateTimeException("Badly written field");
-            }
-            return this;
-        }
-
-        private void resolveMakeChanges(TemporalField targetField, ChronoLocalDate date) {
-            long epochDay = date.toEpochDay();
-            Long old = fieldValues.put(ChronoField.EPOCH_DAY, epochDay);
-            if (old != null && old.longValue() != epochDay) {
-                throw new DateTimeException("Conflict found: " + LocalDate.ofEpochDay(old) +
-                        " differs from " + LocalDate.ofEpochDay(epochDay) +
-                        " while resolving  " + targetField);
-            }
-        }
-
-        private void resolveMakeChanges(TemporalField targetField, LocalTime time) {
-            long nanOfDay = time.toNanoOfDay();
-            Long old = fieldValues.put(ChronoField.NANO_OF_DAY, nanOfDay);
-            if (old != null && old.longValue() != nanOfDay) {
-                throw new DateTimeException("Conflict found: " + LocalTime.ofNanoOfDay(old) +
-                        " differs from " + time +
-                        " while resolving  " + targetField);
-            }
-        }
-
-        /**
          * Returns a {@code DateTimeBuilder} that can be used to interpret
          * the results of the parse.
          * <p>
@@ -533,12 +470,12 @@ final class DateTimeParseContext {
          */
         DateTimeBuilder toBuilder() {
             DateTimeBuilder builder = new DateTimeBuilder();
-            for (Map.Entry<TemporalField, Long> fv : fieldValues.entrySet()) {
-                builder.addFieldValue(fv.getKey(), fv.getValue());
-            }
-            builder.addObject(getEffectiveChronology());
+            builder.fieldValues.putAll(fieldValues);
+            builder.chrono = getEffectiveChronology();
             if (zone != null) {
-                builder.addObject(zone);
+                builder.zone = zone;
+            } else {
+                builder.zone = overrideZone;
             }
             builder.leapSecond = leapSecond;
             builder.excessDays = excessDays;

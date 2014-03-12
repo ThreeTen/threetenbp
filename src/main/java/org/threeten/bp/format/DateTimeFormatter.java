@@ -1612,7 +1612,7 @@ public final class DateTimeFormatter {
                         pos.getIndex(), text, pos.getIndex());
             }
         }
-        return result.resolveFields(resolverStyle).toBuilder();
+        return result.toBuilder();
     }
 
     /**
@@ -1801,7 +1801,7 @@ public final class DateTimeFormatter {
                 return null;
             }
             try {
-                DateTimeBuilder builder = unresolved.resolveFields(ResolverStyle.SMART).toBuilder()
+                DateTimeBuilder builder = unresolved.toBuilder()
                                 .resolve(formatter.getResolverStyle(), formatter.getResolverFields());
                 if (query == null) {
                     return builder;
