@@ -31,18 +31,10 @@
  */
 package org.threeten.bp.format;
 
-import static org.threeten.bp.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
-import static org.threeten.bp.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
-import static org.threeten.bp.temporal.ChronoField.ALIGNED_WEEK_OF_MONTH;
-import static org.threeten.bp.temporal.ChronoField.ALIGNED_WEEK_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.AMPM_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.CLOCK_HOUR_OF_AMPM;
 import static org.threeten.bp.temporal.ChronoField.CLOCK_HOUR_OF_DAY;
-import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
-import static org.threeten.bp.temporal.ChronoField.DAY_OF_WEEK;
-import static org.threeten.bp.temporal.ChronoField.DAY_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.EPOCH_DAY;
-import static org.threeten.bp.temporal.ChronoField.ERA;
 import static org.threeten.bp.temporal.ChronoField.HOUR_OF_AMPM;
 import static org.threeten.bp.temporal.ChronoField.HOUR_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.MICRO_OF_DAY;
@@ -51,15 +43,10 @@ import static org.threeten.bp.temporal.ChronoField.MILLI_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.MILLI_OF_SECOND;
 import static org.threeten.bp.temporal.ChronoField.MINUTE_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.MINUTE_OF_HOUR;
-import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
 import static org.threeten.bp.temporal.ChronoField.NANO_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.NANO_OF_SECOND;
-import static org.threeten.bp.temporal.ChronoField.PROLEPTIC_MONTH;
 import static org.threeten.bp.temporal.ChronoField.SECOND_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.SECOND_OF_MINUTE;
-import static org.threeten.bp.temporal.ChronoField.YEAR;
-import static org.threeten.bp.temporal.ChronoField.YEAR_OF_ERA;
-import static org.threeten.bp.temporal.TemporalAdjusters.nextOrSame;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -69,16 +56,14 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.threeten.bp.DateTimeException;
-import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
-import org.threeten.bp.Month;
 import org.threeten.bp.Period;
-import org.threeten.bp.Year;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.ChronoLocalDateTime;
 import org.threeten.bp.chrono.Chronology;
+import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
@@ -288,132 +273,31 @@ final class DateTimeBuilder
     }
 
     private void mergeDate(ResolverStyle resolverStyle) {
-        if (fieldValues.containsKey(EPOCH_DAY)) {
-            checkDate(LocalDate.ofEpochDay(fieldValues.remove(EPOCH_DAY)));
-            return;
-        }
-
-        // normalize fields
-        if (fieldValues.containsKey(PROLEPTIC_MONTH)) {
-            long em = fieldValues.remove(PROLEPTIC_MONTH);
-            addFieldValue(MONTH_OF_YEAR, (em % 12) + 1);
-            addFieldValue(YEAR, (em / 12));
-        }
-
-        // eras
-        Long yoeLong = fieldValues.remove(YEAR_OF_ERA);
-        if (yoeLong != null) {
-            if (resolverStyle != ResolverStyle.LENIENT) {
-                YEAR_OF_ERA.checkValidValue(yoeLong);
-            }
-            Long era = fieldValues.remove(ERA);
-            if (era == null) {
-                Long year = fieldValues.get(YEAR);
-                if (resolverStyle == ResolverStyle.STRICT) {
-                    // do not invent era if strict, but do cross-check with year
-                    if (year != null) {
-                        addFieldValue(YEAR, (year > 0 ? yoeLong: Jdk8Methods.safeSubtract(1, yoeLong)));
-                    } else {
-                        // reinstate the field removed earlier, no cross-check issues
-                        fieldValues.put(YEAR_OF_ERA, yoeLong);
-                    }
-                } else {
-                    // invent era
-                    addFieldValue(YEAR, (year == null || year > 0 ? yoeLong: Jdk8Methods.safeSubtract(1, yoeLong)));
-                }
-            } else if (era.longValue() == 1L) {
-                addFieldValue(YEAR, yoeLong);
-            } else if (era.longValue() == 0L) {
-                addFieldValue(YEAR, Jdk8Methods.safeSubtract(1, yoeLong));
-            } else {
-                throw new DateTimeException("Invalid value for era: " + era);
-            }
-        } else if (fieldValues.containsKey(ERA)) {
-            ERA.checkValidValue(fieldValues.get(ERA));  // always validated
-        }
-
-        // build date
-        if (fieldValues.containsKey(YEAR)) {
-            if (fieldValues.containsKey(MONTH_OF_YEAR)) {
-                if (fieldValues.containsKey(DAY_OF_MONTH)) {
-                    int y = YEAR.checkValidIntValue(fieldValues.remove(YEAR));
-                    int moy = Jdk8Methods.safeToInt(fieldValues.remove(MONTH_OF_YEAR));
-                    int dom = Jdk8Methods.safeToInt(fieldValues.remove(DAY_OF_MONTH));
-                    if (resolverStyle == ResolverStyle.LENIENT) {
-                        long months = Jdk8Methods.safeSubtract(moy, 1);
-                        long days = Jdk8Methods.safeSubtract(dom, 1);
-                        checkDate(LocalDate.of(y, 1, 1).plusMonths(months).plusDays(days));
-                    } else if (resolverStyle == ResolverStyle.SMART){
-                        if (moy == 4 || moy == 6 || moy == 9 || moy == 11) {
-                            dom = Math.min(dom, 30);
-                        } else if (moy == 2) {
-                            dom = Math.min(dom, Month.FEBRUARY.length(Year.isLeap(y)));
-                        }
-                        checkDate(LocalDate.of(y, moy, dom));
-                    } else {
-                        checkDate(LocalDate.of(y, moy, dom));
-                    }
-                    return;
-                }
-                if (fieldValues.containsKey(ALIGNED_WEEK_OF_MONTH)) {
-                    if (fieldValues.containsKey(ALIGNED_DAY_OF_WEEK_IN_MONTH)) {
-                        int y = Jdk8Methods.safeToInt(fieldValues.remove(YEAR));
-                        int moy = Jdk8Methods.safeToInt(fieldValues.remove(MONTH_OF_YEAR));
-                        int aw = Jdk8Methods.safeToInt(fieldValues.remove(ALIGNED_WEEK_OF_MONTH));
-                        int ad = Jdk8Methods.safeToInt(fieldValues.remove(ALIGNED_DAY_OF_WEEK_IN_MONTH));
-                        checkDate(LocalDate.of(y, moy, 1).plusDays((aw - 1) * 7 + (ad - 1)));
-                        return;
-                    }
-                    if (fieldValues.containsKey(DAY_OF_WEEK)) {
-                        int y = Jdk8Methods.safeToInt(fieldValues.remove(YEAR));
-                        int moy = Jdk8Methods.safeToInt(fieldValues.remove(MONTH_OF_YEAR));
-                        int aw = Jdk8Methods.safeToInt(fieldValues.remove(ALIGNED_WEEK_OF_MONTH));
-                        int dow = Jdk8Methods.safeToInt(fieldValues.remove(DAY_OF_WEEK));
-                        checkDate(LocalDate.of(y, moy, 1).plusDays((aw - 1) * 7).with(nextOrSame(DayOfWeek.of(dow))));
-                        return;
-                    }
-                }
-            }
-            if (fieldValues.containsKey(DAY_OF_YEAR)) {
-                int y = Jdk8Methods.safeToInt(fieldValues.remove(YEAR));
-                int doy = Jdk8Methods.safeToInt(fieldValues.remove(DAY_OF_YEAR));
-                checkDate(LocalDate.ofYearDay(y, doy));
+        if (chrono instanceof IsoChronology) {
+            checkDate(IsoChronology.INSTANCE.resolveDate(fieldValues, resolverStyle));
+        } else {
+            if (fieldValues.containsKey(EPOCH_DAY)) {
+                checkDate(LocalDate.ofEpochDay(fieldValues.remove(EPOCH_DAY)));
                 return;
-            }
-            if (fieldValues.containsKey(ALIGNED_WEEK_OF_YEAR)) {
-                if (fieldValues.containsKey(ALIGNED_DAY_OF_WEEK_IN_YEAR)) {
-                    int y = Jdk8Methods.safeToInt(fieldValues.remove(YEAR));
-                    int aw = Jdk8Methods.safeToInt(fieldValues.remove(ALIGNED_WEEK_OF_YEAR));
-                    int ad = Jdk8Methods.safeToInt(fieldValues.remove(ALIGNED_DAY_OF_WEEK_IN_YEAR));
-                    checkDate(LocalDate.of(y, 1, 1).plusDays((aw - 1) * 7 + (ad - 1)));
-                    return;
-                }
-                if (fieldValues.containsKey(DAY_OF_WEEK)) {
-                    int y = Jdk8Methods.safeToInt(fieldValues.remove(YEAR));
-                    int aw = Jdk8Methods.safeToInt(fieldValues.remove(ALIGNED_WEEK_OF_YEAR));
-                    int dow = Jdk8Methods.safeToInt(fieldValues.remove(DAY_OF_WEEK));
-                    checkDate(LocalDate.of(y, 1, 1).plusDays((aw - 1) * 7).with(nextOrSame(DayOfWeek.of(dow))));
-                    return;
-                }
             }
         }
     }
 
     private void checkDate(LocalDate date) {
-        // TODO: this doesn't handle aligned weeks over into next month which would otherwise be valid
-
-        addObject(date);
-        for (TemporalField field : fieldValues.keySet()) {
-            if (field instanceof ChronoField) {
-                long val1;
-                try {
-                    val1 = date.getLong(field);
-                } catch (DateTimeException ex) {
-                    continue;
-                }
-                Long val2 = fieldValues.get(field);
-                if (val1 != val2) {
-                    throw new DateTimeException("Conflict found: Field " + field + " " + val1 + " differs from " + field + " " + val2 + " derived from " + date);
+        if (date != null) {
+            addObject(date);
+            for (TemporalField field : fieldValues.keySet()) {
+                if (field instanceof ChronoField) {
+                    long val1;
+                    try {
+                        val1 = date.getLong(field);
+                    } catch (DateTimeException ex) {
+                        continue;
+                    }
+                    Long val2 = fieldValues.get(field);
+                    if (val1 != val2) {
+                        throw new DateTimeException("Conflict found: Field " + field + " " + val1 + " differs from " + field + " " + val2 + " derived from " + date);
+                    }
                 }
             }
         }

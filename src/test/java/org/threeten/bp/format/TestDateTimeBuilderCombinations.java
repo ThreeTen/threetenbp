@@ -47,6 +47,7 @@ import static org.threeten.bp.temporal.ChronoField.YEAR;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.LocalDate;
+import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQuery;
 
@@ -72,6 +73,7 @@ public class TestDateTimeBuilderCombinations {
     public void test_derive(TemporalField field1, Number value1, TemporalField field2, Number value2,
             TemporalField field3, Number value3, TemporalField field4, Number value4, TemporalQuery<?> query, Object expectedVal) {
         DateTimeBuilder builder = new DateTimeBuilder(field1, value1.longValue());
+        builder.chrono = IsoChronology.INSTANCE;
         if (field2 != null) {
             builder.addFieldValue(field2, value2.longValue());
         }
@@ -108,6 +110,7 @@ public class TestDateTimeBuilderCombinations {
     public void test_normalized(TemporalField field1, Number value1, TemporalField field2, Number value2,
             TemporalField field3, Number value3, TemporalField query, Number expectedVal) {
         DateTimeBuilder builder = new DateTimeBuilder(field1, value1.longValue());
+        builder.chrono = IsoChronology.INSTANCE;
         if (field2 != null) {
             builder.addFieldValue(field2, value2.longValue());
         }

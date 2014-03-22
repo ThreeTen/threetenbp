@@ -755,6 +755,21 @@ public abstract class Chronology implements Comparable<Chronology> {
         throw new UnsupportedOperationException("ThreeTen Backport does not support resolveDate");
     }
 
+    /**
+     * Updates the map of field-values during resolution.
+     *
+     * @param field  the field to update, not null
+     * @param value  the value to update, not null
+     * @throws DateTimeException if a conflict occurs
+     */
+    void updateResolveMap(Map<TemporalField, Long> fieldValues, ChronoField field, long value) {
+        Long current = fieldValues.get(field);
+        if (current != null && current.longValue() != value) {
+            throw new DateTimeException("Invalid state, field: " + field + " " + current + " conflicts with " + field + " " + value);
+        }
+        fieldValues.put(field, value);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Compares this chronology to another chronology.
