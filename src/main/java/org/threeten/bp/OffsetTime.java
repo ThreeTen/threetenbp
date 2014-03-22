@@ -264,7 +264,8 @@ public final class OffsetTime
             ZoneOffset offset = ZoneOffset.from(temporal);
             return new OffsetTime(time, offset);
         } catch (DateTimeException ex) {
-            throw new DateTimeException("Unable to obtain OffsetTime from TemporalAccessor: " + temporal.getClass(), ex);
+            throw new DateTimeException("Unable to obtain OffsetTime from TemporalAccessor: " +
+                    temporal + ", type " + temporal.getClass().getName());
         }
     }
 

@@ -233,7 +233,8 @@ public final class YearMonth
             }
             return of(temporal.get(YEAR), temporal.get(MONTH_OF_YEAR));
         } catch (DateTimeException ex) {
-            throw new DateTimeException("Unable to obtain YearMonth from TemporalAccessor: " + temporal.getClass(), ex);
+            throw new DateTimeException("Unable to obtain YearMonth from TemporalAccessor: " +
+                    temporal + ", type " + temporal.getClass().getName());
         }
     }
 

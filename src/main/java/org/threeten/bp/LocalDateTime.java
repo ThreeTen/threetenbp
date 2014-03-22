@@ -410,7 +410,8 @@ public final class LocalDateTime
             LocalTime time = LocalTime.from(temporal);
             return new LocalDateTime(date, time);
         } catch (DateTimeException ex) {
-            throw new DateTimeException("Unable to obtain LocalDateTime from TemporalAccessor: " + temporal.getClass(), ex);
+            throw new DateTimeException("Unable to obtain LocalDateTime from TemporalAccessor: " +
+                    temporal + ", type " + temporal.getClass().getName());
         }
     }
 

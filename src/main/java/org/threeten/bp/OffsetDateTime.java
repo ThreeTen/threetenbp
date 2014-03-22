@@ -323,7 +323,8 @@ public final class OffsetDateTime
                 return OffsetDateTime.ofInstant(instant, offset);
             }
         } catch (DateTimeException ex) {
-            throw new DateTimeException("Unable to obtain OffsetDateTime from TemporalAccessor: " + temporal.getClass(), ex);
+            throw new DateTimeException("Unable to obtain OffsetDateTime from TemporalAccessor: " +
+                    temporal + ", type " + temporal.getClass().getName());
         }
     }
 

@@ -401,7 +401,8 @@ public final class LocalTime
     public static LocalTime from(TemporalAccessor temporal) {
         LocalTime time = temporal.query(TemporalQueries.localTime());
         if (time == null) {
-            throw new DateTimeException("Unable to obtain LocalTime from TemporalAccessor: " + temporal.getClass());
+            throw new DateTimeException("Unable to obtain LocalTime from TemporalAccessor: " +
+                    temporal + ", type " + temporal.getClass().getName());
         }
         return time;
     }
