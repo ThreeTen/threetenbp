@@ -39,12 +39,14 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAmount;
+import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.temporal.UnsupportedTemporalTypeException;
 
@@ -151,6 +153,11 @@ final class ChronoPeriodImpl
 
     @Override
     public Temporal addTo(Temporal temporal) {
+        Objects.requireNonNull(temporal, "temporal");
+        Chronology temporalChrono = temporal.query(TemporalQueries.chronology());
+        if (temporalChrono != null && chronology.equals(temporalChrono) == false) {
+            throw new DateTimeException("Invalid chronology, required: " + chronology.getId() + ", but was: " + temporalChrono.getId());
+        }
         if (years != 0) {
             temporal = temporal.plus(years, YEARS);
         }
@@ -165,6 +172,11 @@ final class ChronoPeriodImpl
 
     @Override
     public Temporal subtractFrom(Temporal temporal) {
+        Objects.requireNonNull(temporal, "temporal");
+        Chronology temporalChrono = temporal.query(TemporalQueries.chronology());
+        if (temporalChrono != null && chronology.equals(temporalChrono) == false) {
+            throw new DateTimeException("Invalid chronology, required: " + chronology.getId() + ", but was: " + temporalChrono.getId());
+        }
         if (years != 0) {
             temporal = temporal.minus(years, YEARS);
         }
