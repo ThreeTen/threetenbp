@@ -57,7 +57,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.MissingResourceException;
 import java.util.Objects;
+import java.util.Properties;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -3584,7 +3587,13 @@ public final class DateTimeFormatterBuilder {
             if (textStyle == null) {
                 buf.append(chrono.getId());
             } else {
-                buf.append(chrono.getId());  // TODO: Use symbols
+                ResourceBundle bundle = ResourceBundle.getBundle("org.threeten.bp.format.ChronologyText", context.getLocale());
+                try {
+                    String text = bundle.getString(chrono.getId());
+                    buf.append(text);
+                } catch (MissingResourceException ex) {
+                    buf.append(chrono.getId());
+                }
             }
             return true;
         }
