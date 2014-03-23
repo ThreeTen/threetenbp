@@ -59,8 +59,8 @@ public class TestHijrahChronology {
         Chronology c = HijrahChronology.INSTANCE;
         Chronology test = Chronology.of("Hijrah");
         Assert.assertNotNull(test, "The Hijrah calendar could not be found byName");
-        Assert.assertEquals(test.getId(), "Hijrah", "ID mismatch");
-        Assert.assertEquals(test.getCalendarType(), "islamicc", "Type mismatch");
+        Assert.assertEquals(test.getId(), "Hijrah-umalqura", "ID mismatch");
+        Assert.assertEquals(test.getCalendarType(), "islamic-umalqura", "Type mismatch");
         Assert.assertEquals(test, c);
     }
 
@@ -178,11 +178,11 @@ public class TestHijrahChronology {
     @DataProvider(name="toString")
     Object[][] data_toString() {
         return new Object[][] {
-            {HijrahChronology.INSTANCE.date(1, 1, 1), "Hijrah AH 1-01-01"},
-            {HijrahChronology.INSTANCE.date(1728, 10, 28), "Hijrah AH 1728-10-28"},
-            {HijrahChronology.INSTANCE.date(1728, 10, 29), "Hijrah AH 1728-10-29"},
-            {HijrahChronology.INSTANCE.date(1727, 12, 5), "Hijrah AH 1727-12-05"},
-            {HijrahChronology.INSTANCE.date(1727, 12, 6), "Hijrah AH 1727-12-06"},
+            {HijrahChronology.INSTANCE.date(1, 1, 1), "Hijrah-umalqura AH 1-01-01"},
+            {HijrahChronology.INSTANCE.date(1728, 10, 28), "Hijrah-umalqura AH 1728-10-28"},
+            {HijrahChronology.INSTANCE.date(1728, 10, 29), "Hijrah-umalqura AH 1728-10-29"},
+            {HijrahChronology.INSTANCE.date(1727, 12, 5), "Hijrah-umalqura AH 1727-12-05"},
+            {HijrahChronology.INSTANCE.date(1727, 12, 6), "Hijrah-umalqura AH 1727-12-06"},
         };
     }
 

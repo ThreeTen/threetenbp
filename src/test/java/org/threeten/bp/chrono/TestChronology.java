@@ -79,7 +79,7 @@ public class TestChronology {
     @DataProvider(name = "calendars")
     Object[][] data_of_calendars() {
         return new Object[][] {
-                    {"Hijrah", "islamicc", "Hijrah calendar"},
+                    {"Hijrah-umalqura", "islamic-umalqura", "Hijrah calendar"},
                     {"ISO", "iso8601", "ISO calendar"},
                     {"Japanese", "japanese", "Japanese calendar"},
                     {"Minguo", "roc", "Minguo Calendar"},
@@ -136,7 +136,7 @@ public class TestChronology {
     @DataProvider(name = "calendarsystemtype")
     Object[][] data_CalendarType() {
         return new Object[][] {
-            {HijrahChronology.INSTANCE, "islamicc"},
+            {HijrahChronology.INSTANCE, "islamic-umalqura"},
             {IsoChronology.INSTANCE, "iso8601"},
             {JapaneseChronology.INSTANCE, "japanese"},
             {MinguoChronology.INSTANCE, "roc"},

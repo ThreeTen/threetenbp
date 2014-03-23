@@ -288,6 +288,8 @@ public abstract class Chronology implements Comparable<Chronology> {
             register(MinguoChronology.INSTANCE);
             register(JapaneseChronology.INSTANCE);
             register(HijrahChronology.INSTANCE);
+            CHRONOS_BY_ID.putIfAbsent("Hijrah", HijrahChronology.INSTANCE);
+            CHRONOS_BY_TYPE.putIfAbsent("islamic", HijrahChronology.INSTANCE);
             ServiceLoader<Chronology> loader =  ServiceLoader.load(Chronology.class);
             for (Chronology chrono : loader) {
                 CHRONOS_BY_ID.putIfAbsent(chrono.getId(), chrono);
