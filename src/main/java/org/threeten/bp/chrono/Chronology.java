@@ -151,26 +151,11 @@ public abstract class Chronology implements Comparable<Chronology> {
     /**
      * Map of available calendars by ID.
      */
-    private static final ConcurrentHashMap<String, Chronology> CHRONOS_BY_ID;
+    private static final ConcurrentHashMap<String, Chronology> CHRONOS_BY_ID = new ConcurrentHashMap<>();
     /**
      * Map of available calendars by calendar type.
      */
-    private static final ConcurrentHashMap<String, Chronology> CHRONOS_BY_TYPE;
-    static {
-        // TODO: defer initialization?
-        ConcurrentHashMap<String, Chronology> ids = new ConcurrentHashMap<>();
-        ConcurrentHashMap<String, Chronology> types = new ConcurrentHashMap<>();
-        ServiceLoader<Chronology> loader =  ServiceLoader.load(Chronology.class);
-        for (Chronology chrono : loader) {
-            ids.putIfAbsent(chrono.getId(), chrono);
-            String type = chrono.getCalendarType();
-            if (type != null) {
-                types.putIfAbsent(type, chrono);
-            }
-        }
-        CHRONOS_BY_ID = ids;
-        CHRONOS_BY_TYPE = types;
-    }
+    private static final ConcurrentHashMap<String, Chronology> CHRONOS_BY_TYPE = new ConcurrentHashMap<>();
 
     //-----------------------------------------------------------------------
     /**
@@ -237,6 +222,7 @@ public abstract class Chronology implements Comparable<Chronology> {
      * @throws DateTimeException if the locale-specified calendar cannot be found
      */
     public static Chronology ofLocale(Locale locale) {
+        init();
         Objects.requireNonNull(locale, "locale");
         String type = locale.getUnicodeLocaleType("ca");
         if (type == null || "iso".equals(type) || "iso8601".equals(type)) {
@@ -271,6 +257,7 @@ public abstract class Chronology implements Comparable<Chronology> {
      * @throws DateTimeException if the chronology cannot be found
      */
     public static Chronology of(String id) {
+        init();
         Chronology chrono = CHRONOS_BY_ID.get(id);
         if (chrono != null) {
             return chrono;
@@ -290,7 +277,34 @@ public abstract class Chronology implements Comparable<Chronology> {
      * @return the independent, modifiable set of the available chronology IDs, not null
      */
     public static Set<Chronology> getAvailableChronologies() {
+        init();
         return new HashSet<>(CHRONOS_BY_ID.values());
+    }
+
+    private static void init() {
+        if (CHRONOS_BY_ID.isEmpty()) {
+            register(IsoChronology.INSTANCE);
+            register(ThaiBuddhistChronology.INSTANCE);
+            register(MinguoChronology.INSTANCE);
+            register(JapaneseChronology.INSTANCE);
+            register(HijrahChronology.INSTANCE);
+            ServiceLoader<Chronology> loader =  ServiceLoader.load(Chronology.class);
+            for (Chronology chrono : loader) {
+                CHRONOS_BY_ID.putIfAbsent(chrono.getId(), chrono);
+                String type = chrono.getCalendarType();
+                if (type != null) {
+                    CHRONOS_BY_TYPE.putIfAbsent(type, chrono);
+                }
+            }
+        }
+    }
+
+    private static void register(Chronology chrono) {
+        CHRONOS_BY_ID.putIfAbsent(chrono.getId(), chrono);
+        String type = chrono.getCalendarType();
+        if (type != null) {
+            CHRONOS_BY_TYPE.putIfAbsent(type, chrono);
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -298,12 +312,6 @@ public abstract class Chronology implements Comparable<Chronology> {
      * Creates an instance.
      */
     protected Chronology() {
-        // register the subclass
-        CHRONOS_BY_ID.putIfAbsent(this.getId(), this);
-        String type = this.getCalendarType();
-        if (type != null) {
-            CHRONOS_BY_TYPE.putIfAbsent(type, this);
-        }
     }
 
     //-----------------------------------------------------------------------
