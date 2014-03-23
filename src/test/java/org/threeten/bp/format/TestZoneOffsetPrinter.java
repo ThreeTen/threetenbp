@@ -132,7 +132,7 @@ public class TestZoneOffsetPrinter extends AbstractTestPrinterParser {
     @Test(dataProvider="offsets")
     public void test_toString(String pattern, String expected, ZoneOffset offset) throws Exception {
         OffsetIdPrinterParser pp = new OffsetIdPrinterParser("NO-OFFSET", pattern);
-        assertEquals(pp.toString(), "Offset('NO-OFFSET'," + pattern + ")");
+        assertEquals(pp.toString(), "Offset(" + pattern + ",'NO-OFFSET')");
     }
 
     //-----------------------------------------------------------------------

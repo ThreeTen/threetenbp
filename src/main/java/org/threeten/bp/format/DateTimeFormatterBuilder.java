@@ -59,13 +59,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.MissingResourceException;
 import java.util.Objects;
-import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.TimeZone;
 
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
@@ -504,7 +504,7 @@ public final class DateTimeFormatterBuilder {
     public DateTimeFormatterBuilder appendValueReduced(TemporalField field,
             int width, int maxWidth, int baseValue) {
         Objects.requireNonNull(field, "field");
-        ReducedPrinterParser pp = new ReducedPrinterParser(field, width, maxWidth, baseValue);
+        ReducedPrinterParser pp = new ReducedPrinterParser(field, width, maxWidth, baseValue, null);
         if (width == maxWidth) {
             appendFixedWidth(width, pp);
         } else {
@@ -569,7 +569,7 @@ public final class DateTimeFormatterBuilder {
             TemporalField field, int width, int maxWidth, ChronoLocalDate baseDate) {
         Objects.requireNonNull(field, "field");
         Objects.requireNonNull(baseDate, "baseDate");
-        ReducedPrinterParser pp = new ReducedPrinterParser(field, width, maxWidth, baseDate.get(ChronoField.YEAR));
+        ReducedPrinterParser pp = new ReducedPrinterParser(field, width, maxWidth, 0, baseDate);
         if (width == maxWidth) {
             appendFixedWidth(width, pp);
         } else {
@@ -1517,7 +1517,7 @@ public final class DateTimeFormatterBuilder {
             case 'u':
             case 'y':
                 if (count == 2) {
-                    appendValueReduced(field, 2, 2, 2000);
+                    appendValueReduced(field, 2, 2, ReducedPrinterParser.BASE_DATE);
                 } else if (count < 4) {
                     appendValue(field, count, 19, SignStyle.NORMAL);
                 } else {
@@ -2288,8 +2288,8 @@ public final class DateTimeFormatterBuilder {
 
         final TemporalField field;
         final int minWidth;
-        private final int maxWidth;
-        private final SignStyle signStyle;
+        final int maxWidth;
+        final SignStyle signStyle;
         private final int subsequentWidth;
 
         /**
@@ -2353,7 +2353,7 @@ public final class DateTimeFormatterBuilder {
             if (valueLong == null) {
                 return false;
             }
-            long value = getValue(valueLong);
+            long value = getValue(context, valueLong);
             DecimalStyle symbols = context.getSymbols();
             String str = (value == Long.MIN_VALUE ? "9223372036854775808" : Long.toString(Math.abs(value)));
             if (str.length() > maxWidth) {
@@ -2400,7 +2400,7 @@ public final class DateTimeFormatterBuilder {
          * @param value  the base value of the field, not null
          * @return the value
          */
-        long getValue(long value) {
+        long getValue(DateTimePrintContext context, long value) {
             return value;
         }
 
@@ -2540,8 +2540,9 @@ public final class DateTimeFormatterBuilder {
      * Prints and parses a reduced numeric date-time field.
      */
     static final class ReducedPrinterParser extends NumberPrinterParser {
+        static final LocalDate BASE_DATE = LocalDate.of(2000, 1, 1);
         private final int baseValue;
-        private final int range;
+        private final ChronoLocalDate baseDate;
 
         /**
          * Constructor.
@@ -2550,8 +2551,9 @@ public final class DateTimeFormatterBuilder {
          * @param width  the field width, from 1 to 10
          * @param maxWidth  the field max width, from 1 to 10
          * @param baseValue  the base value
+         * @param baseDate  the base date
          */
-        ReducedPrinterParser(TemporalField field, int width, int maxWidth, int baseValue) {
+        ReducedPrinterParser(TemporalField field, int width, int maxWidth, int baseValue, ChronoLocalDate baseDate) {
             super(field, width, maxWidth, SignStyle.NOT_NEGATIVE);
             if (width < 1 || width > 10) {
                 throw new IllegalArgumentException("The width must be from 1 to 10 inclusive but was " + width);
@@ -2562,31 +2564,52 @@ public final class DateTimeFormatterBuilder {
             if (maxWidth < width) {
                 throw new IllegalArgumentException("The maxWidth must be greater than the width");
             }
-            if (field.range().isValidValue(baseValue) == false) {
-                throw new IllegalArgumentException("The base value must be within the range of the field");
+            if (baseDate == null) {
+                if (field.range().isValidValue(baseValue) == false) {
+                    throw new IllegalArgumentException("The base value must be within the range of the field");
+                }
+                if ((((long) baseValue) + EXCEED_POINTS[width]) > Integer.MAX_VALUE) {
+                    throw new DateTimeException("Unable to add printer-parser as the range exceeds the capacity of an int");
+                }
             }
             this.baseValue = baseValue;
-            this.range = EXCEED_POINTS[width];
-            if ((((long) baseValue) + range) > Integer.MAX_VALUE) {
-                throw new DateTimeException("Unable to add printer-parser as the range exceeds the capacity of an int");
-            }
+            this.baseDate = baseDate;
         }
 
         @Override
-        long getValue(long value) {
-            return Math.abs(value % range);
+        long getValue(DateTimePrintContext context, long value) {
+            long absValue = Math.abs(value);
+            int baseValue = this.baseValue;
+            if (baseDate != null) {
+                Chronology chrono = Chronology.from(context.getTemporal());
+                baseValue = chrono.date(baseDate).get(field);
+            }
+            if (value >= baseValue && value < baseValue + EXCEED_POINTS[minWidth]) {
+                return absValue % EXCEED_POINTS[minWidth];
+            }
+            return absValue % EXCEED_POINTS[maxWidth];
         }
 
         @Override
         int setValue(DateTimeParseContext context, long value, int errorPos, int successPos) {
-            int lastPart = baseValue % range;
-            if (baseValue > 0) {
-                value = baseValue - lastPart + value;
-            } else {
-                value = baseValue - lastPart - value;
+            int baseValue = this.baseValue;
+            if (baseDate != null) {
+                Chronology chrono = context.getEffectiveChronology();
+                baseValue = chrono.date(baseDate).get(field);
             }
-            if (value < baseValue) {
-                value += range;
+            int parseLen = successPos - errorPos;
+            if (parseLen == minWidth && value >= 0) {
+                long range = EXCEED_POINTS[minWidth];
+                long lastPart = baseValue % range;
+                long basePart = baseValue - lastPart;
+                if (baseValue > 0) {
+                    value = basePart + value;
+                } else {
+                    value = basePart - value;
+                }
+                if (value < baseValue) {
+                    value += range;
+                }
             }
             return context.setParsedField(field, value, errorPos, successPos);
         }
@@ -2603,7 +2626,7 @@ public final class DateTimeFormatterBuilder {
 
         @Override
         public String toString() {
-            return "ReducedValue(" + field + "," + minWidth + "," + baseValue + ")";
+            return "ReducedValue(" + field + "," + minWidth + "," + maxWidth + "," + (baseDate != null ? baseDate : baseValue) + ")";
         }
     }
 
@@ -3152,7 +3175,7 @@ public final class DateTimeFormatterBuilder {
         @Override
         public String toString() {
             String converted = noOffsetText.replace("'", "''");
-            return "Offset('" + converted + "'," + PATTERNS[type] + ")";
+            return "Offset(" + PATTERNS[type] + ",'" + converted + "')";
         }
     }
 
@@ -3718,7 +3741,7 @@ public final class DateTimeFormatterBuilder {
                     break;
                 case 'Y':  // weekyear
                     if (count == 2) {
-                        pp = new ReducedPrinterParser(weekFields.weekBasedYear(), 2, 2, 2000);
+                        pp = new ReducedPrinterParser(weekFields.weekBasedYear(), 2, 2, 0, ReducedPrinterParser.BASE_DATE);
                     } else {
                         pp = new NumberPrinterParser(weekFields.weekBasedYear(), count, 19,
                                 (count < 4) ? SignStyle.NORMAL : SignStyle.EXCEEDS_PAD, -1);
@@ -3726,6 +3749,35 @@ public final class DateTimeFormatterBuilder {
                     break;
             }
             return pp;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder(30);
+            sb.append("Localized(");
+            if (letter == 'Y') {
+                if (count == 1) {
+                    sb.append("WeekBasedYear");
+                } else if (count == 2) {
+                    sb.append("ReducedValue(WeekBasedYear,2,2,2000-01-01)");
+                } else {
+                    sb.append("WeekBasedYear,").append(count).append(",")
+                            .append(19).append(",")
+                            .append((count < 4) ? SignStyle.NORMAL : SignStyle.EXCEEDS_PAD);
+                }
+            } else {
+                if (letter == 'c' || letter == 'e') {
+                    sb.append("DayOfWeek");
+                } else if (letter == 'w') {
+                    sb.append("WeekOfWeekBasedYear");
+                } else if (letter == 'W') {
+                    sb.append("WeekOfMonth");
+                }
+                sb.append(",");
+                sb.append(count);
+            }
+            sb.append(")");
+            return sb.toString();
         }
     }
 

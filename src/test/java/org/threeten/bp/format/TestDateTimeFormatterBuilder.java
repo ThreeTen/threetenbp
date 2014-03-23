@@ -231,7 +231,7 @@ public class TestDateTimeFormatterBuilder {
     public void test_appendValueReduced() throws Exception {
         builder.appendValueReduced(YEAR, 2, 2, 2000);
         DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toString(), "ReducedValue(Year,2,2000)");
+        assertEquals(f.toString(), "ReducedValue(Year,2,2,2000)");
         TemporalAccessor cal = f.parseUnresolved("12", new ParsePosition(0));
         assertEquals(cal.get(YEAR), 2012);
     }
@@ -240,7 +240,7 @@ public class TestDateTimeFormatterBuilder {
     public void test_appendValueReduced_subsequent_parse() throws Exception {
         builder.appendValue(MONTH_OF_YEAR, 1, 2, SignStyle.NORMAL).appendValueReduced(YEAR, 2, 2, 2000);
         DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toString(), "Value(MonthOfYear,1,2,NORMAL)ReducedValue(Year,2,2000)");
+        assertEquals(f.toString(), "Value(MonthOfYear,1,2,NORMAL)ReducedValue(Year,2,2,2000)");
         TemporalAccessor cal = f.parseUnresolved("123", new ParsePosition(0));
         assertEquals(cal.get(MONTH_OF_YEAR), 1);
         assertEquals(cal.get(YEAR), 2023);
@@ -362,7 +362,7 @@ public class TestDateTimeFormatterBuilder {
     public void test_appendOffsetId() throws Exception {
         builder.appendOffsetId();
         DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toString(), "Offset('Z',+HH:MM:ss)");
+        assertEquals(f.toString(), "Offset(+HH:MM:ss,'Z')");
     }
 
     @DataProvider(name="offsetPatterns")
@@ -382,7 +382,7 @@ public class TestDateTimeFormatterBuilder {
     public void test_appendOffset(String pattern) throws Exception {
         builder.appendOffset(pattern, "Z");
         DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toString(), "Offset('Z'," + pattern + ")");
+        assertEquals(f.toString(), "Offset(" + pattern + ",'Z')");
     }
 
     @DataProvider(name="badOffsetPatterns")
@@ -565,13 +565,13 @@ public class TestDateTimeFormatterBuilder {
             {"GGGGG", "Text(Era,NARROW)"},
 
             {"u", "Value(Year)"},
-            {"uu", "ReducedValue(Year,2,2000)"},
+            {"uu", "ReducedValue(Year,2,2,2000-01-01)"},
             {"uuu", "Value(Year,3,19,NORMAL)"},
             {"uuuu", "Value(Year,4,19,EXCEEDS_PAD)"},
             {"uuuuu", "Value(Year,5,19,EXCEEDS_PAD)"},
 
             {"y", "Value(YearOfEra)"},
-            {"yy", "ReducedValue(YearOfEra,2,2000)"},
+            {"yy", "ReducedValue(YearOfEra,2,2,2000-01-01)"},
             {"yyy", "Value(YearOfEra,3,19,NORMAL)"},
             {"yyyy", "Value(YearOfEra,4,19,EXCEEDS_PAD)"},
             {"yyyyy", "Value(YearOfEra,5,19,EXCEEDS_PAD)"},
@@ -651,21 +651,21 @@ public class TestDateTimeFormatterBuilder {
 
             {"VV", "ZoneId()"},
 
-            {"Z", "Offset('+0000',+HHMM)"},  // SimpleDateFormat compatible
-            {"ZZ", "Offset('+0000',+HHMM)"},
-            {"ZZZ", "Offset('+0000',+HHMM)"},
+            {"Z", "Offset(+HHMM,'+0000')"},  // SimpleDateFormat compatible
+            {"ZZ", "Offset(+HHMM,'+0000')"},
+            {"ZZZ", "Offset(+HHMM,'+0000')"},
 
-            {"X", "Offset('Z',+HHmm)"},
-            {"XX", "Offset('Z',+HHMM)"},
-            {"XXX", "Offset('Z',+HH:MM)"},
-            {"XXXX", "Offset('Z',+HHMMss)"},
-            {"XXXXX", "Offset('Z',+HH:MM:ss)"},
+            {"X", "Offset(+HHmm,'Z')"},
+            {"XX", "Offset(+HHMM,'Z')"},
+            {"XXX", "Offset(+HH:MM,'Z')"},
+            {"XXXX", "Offset(+HHMMss,'Z')"},
+            {"XXXXX", "Offset(+HH:MM:ss,'Z')"},
 
-            {"x", "Offset('+00',+HHmm)"},
-            {"xx", "Offset('+0000',+HHMM)"},
-            {"xxx", "Offset('+00:00',+HH:MM)"},
-            {"xxxx", "Offset('+0000',+HHMMss)"},
-            {"xxxxx", "Offset('+00:00',+HH:MM:ss)"},
+            {"x", "Offset(+HHmm,'+00')"},
+            {"xx", "Offset(+HHMM,'+0000')"},
+            {"xxx", "Offset(+HH:MM,'+00:00')"},
+            {"xxxx", "Offset(+HHMMss,'+0000')"},
+            {"xxxxx", "Offset(+HH:MM:ss,'+00:00')"},
 
             {"ppH", "Pad(Value(HourOfDay),2)"},
             {"pppDD", "Pad(Value(DayOfYear,2),3)"},

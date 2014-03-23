@@ -51,14 +51,14 @@ public class TestReducedPrinter extends AbstractTestPrinterParser {
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=DateTimeException.class)
     public void test_print_emptyCalendrical() throws Exception {
-        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2, 2010);
+        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2, 2010, null);
         pp.print(printEmptyContext, buf);
     }
 
     //-----------------------------------------------------------------------
     public void test_print_append() throws Exception {
         printContext.setDateTime(LocalDate.of(2012, 1, 1));
-        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2, 2010);
+        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2, 2010, null);
         buf.append("EXISTING");
         pp.print(printContext, buf);
         assertEquals(buf.toString(), "EXISTING12");
@@ -127,7 +127,7 @@ public class TestReducedPrinter extends AbstractTestPrinterParser {
     @Test(dataProvider="Pivot")
     public void test_pivot(int width, int baseValue, int value, String result) throws Exception {
         printContext.setDateTime(new MockFieldValue(YEAR, value));
-        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, width, width, baseValue);
+        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, width, width, baseValue, null);
         try {
             pp.print(printContext, buf);
             if (result == null) {
@@ -145,8 +145,8 @@ public class TestReducedPrinter extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
     public void test_toString() throws Exception {
-        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2, 2005);
-        assertEquals(pp.toString(), "ReducedValue(Year,2,2005)");
+        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2, 2005, null);
+        assertEquals(pp.toString(), "ReducedValue(Year,2,2,2005)");
     }
 
 }
