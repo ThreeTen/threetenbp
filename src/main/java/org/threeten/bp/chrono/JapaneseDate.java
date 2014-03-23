@@ -59,8 +59,6 @@ import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.temporal.UnsupportedTemporalTypeException;
 import org.threeten.bp.temporal.ValueRange;
 
-import sun.util.calendar.LocalGregorianCalendar;
-
 /**
  * A date in the Japanese Imperial calendar system.
  * <p>
@@ -83,7 +81,6 @@ import sun.util.calendar.LocalGregorianCalendar;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
-@SuppressWarnings("restriction")
 public final class JapaneseDate
         extends ChronoDateImpl<JapaneseDate>
         implements Serializable {
@@ -92,6 +89,10 @@ public final class JapaneseDate
      * Serialization version.
      */
     private static final long serialVersionUID = -305327627230580483L;
+    /**
+     * Minimum date.
+     */
+    static final LocalDate MIN_DATE = LocalDate.of(1873, 1, 1);
 
     /**
      * The underlying ISO local date.
@@ -177,18 +178,57 @@ public final class JapaneseDate
      * @param dayOfMonth  the Japanese day-of-month, from 1 to 31
      * @return the date in Japanese calendar system, not null
      * @throws DateTimeException if the value of any field is out of range,
-     *  or if the day-of-month is invalid for the month-year,
-     *  or if the date is not a Japanese era
+     *  or if the day-of-month is invalid for the month-year
      */
     public static JapaneseDate of(JapaneseEra era, int yearOfEra, int month, int dayOfMonth) {
         Objects.requireNonNull(era, "era");
-        LocalGregorianCalendar.Date jdate = JapaneseChronology.JCAL.newCalendarDate(null);
-        jdate.setEra(era.getPrivateEra()).setDate(yearOfEra, month, dayOfMonth);
-        if (!JapaneseChronology.JCAL.validate(jdate)) {
-            throw new IllegalArgumentException();
+        if (yearOfEra < 1) {
+            throw new DateTimeException("Invalid YearOfEra: " + yearOfEra);
         }
-        LocalDate date = LocalDate.of(jdate.getNormalizedYear(), month, dayOfMonth);
+        LocalDate eraStartDate = era.startDate();
+        LocalDate eraEndDate = era.endDate();
+        int yearOffset = eraStartDate.getYear() - 1;
+        LocalDate date = LocalDate.of(yearOfEra + yearOffset, month, dayOfMonth);
+        if (date.isBefore(eraStartDate) || date.isAfter(eraEndDate)) {
+            throw new DateTimeException("Requested date is outside bounds of era " + era);
+        }
         return new JapaneseDate(era, yearOfEra, date);
+    }
+
+    /**
+     * Obtains a {@code JapaneseDate} representing a date in the Japanese calendar
+     * system from the era, year-of-era and day-of-year fields.
+     * <p>
+     * This returns a {@code JapaneseDate} with the specified fields.
+     * The day must be valid for the year, otherwise an exception will be thrown.
+     * The Japanese day-of-year is reset when the era changes.
+     *
+     * @param era  the Japanese era, not null
+     * @param yearOfEra  the Japanese year-of-era
+     * @param dayOfYear  the Japanese day-of-year, from 1 to 31
+     * @return the date in Japanese calendar system, not null
+     * @throws DateTimeException if the value of any field is out of range,
+     *  or if the day-of-year is invalid for the year
+     */
+    static JapaneseDate ofYearDay(JapaneseEra era, int yearOfEra, int dayOfYear) {
+        Objects.requireNonNull(era, "era");
+        if (yearOfEra < 1) {
+            throw new DateTimeException("Invalid YearOfEra: " + yearOfEra);
+        }
+        LocalDate eraStartDate = era.startDate();
+        LocalDate eraEndDate = era.endDate();
+        if (yearOfEra == 1) {
+            dayOfYear += eraStartDate.getDayOfYear() - 1;
+            if (dayOfYear > eraStartDate.lengthOfYear()) {
+                throw new DateTimeException("DayOfYear exceeds maximum allowed in the first year of era " + era);
+            }
+        }
+        int yearOffset = eraStartDate.getYear() - 1;
+        LocalDate isoDate = LocalDate.ofYearDay(yearOfEra + yearOffset, dayOfYear);
+        if (isoDate.isBefore(eraStartDate) || isoDate.isAfter(eraEndDate)) {
+            throw new DateTimeException("Requested date is outside bounds of era " + era);
+        }
+        return new JapaneseDate(era, yearOfEra, isoDate);
     }
 
     /**
@@ -240,9 +280,12 @@ public final class JapaneseDate
      * @param isoDate  the standard local date, validated not null
      */
     JapaneseDate(LocalDate isoDate) {
-        LocalGregorianCalendar.Date jdate = toPrivateJapaneseDate(isoDate);
-        this.era = JapaneseEra.toJapaneseEra(jdate.getEra());
-        this.yearOfEra = jdate.getYear();
+        if (isoDate.isBefore(MIN_DATE)) {
+            throw new DateTimeException("Minimum supported date is January 1st Meiji 6");
+        }
+        this.era = JapaneseEra.from(isoDate);
+        int yearOffset = this.era.startDate().getYear() - 1;
+        this.yearOfEra = isoDate.getYear() - yearOffset;
         this.isoDate = isoDate;
     }
 
@@ -255,6 +298,9 @@ public final class JapaneseDate
      * @param isoDate  the standard local date, validated not null
      */
     JapaneseDate(JapaneseEra era, int year, LocalDate isoDate) {
+        if (isoDate.isBefore(MIN_DATE)) {
+            throw new DateTimeException("Minimum supported date is January 1st Meiji 6");
+        }
         this.era = era;
         this.yearOfEra = year;
         this.isoDate = isoDate;
@@ -267,9 +313,9 @@ public final class JapaneseDate
      */
     private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
         stream.defaultReadObject();
-        LocalGregorianCalendar.Date jdate = toPrivateJapaneseDate(isoDate);
-        this.era = JapaneseEra.toJapaneseEra(jdate.getEra());
-        this.yearOfEra = jdate.getYear();
+        this.era = JapaneseEra.from(isoDate);
+        int yearOffset = this.era.startDate().getYear() - 1;
+        this.yearOfEra = isoDate.getYear() - yearOffset;
     }
 
     //-----------------------------------------------------------------------
@@ -377,32 +423,19 @@ public final class JapaneseDate
                     return yearOfEra;
                 case ERA:
                     return era.getValue();
-                case DAY_OF_YEAR: {
-                    LocalGregorianCalendar.Date jdate = toPrivateJapaneseDate(isoDate);
-                    return JapaneseChronology.JCAL.getDayOfYear(jdate);
-                }
+                case DAY_OF_YEAR:
+                    return getDayOfYear();
             }
             return isoDate.getLong(field);
         }
         return field.getFrom(this);
     }
 
-    /**
-     * Returns a {@code LocalGregorianCalendar.Date} converted from the given {@code isoDate}.
-     *
-     * @param isoDate  the local date, not null
-     * @return a {@code LocalGregorianCalendar.Date}, not null
-     */
-    private static LocalGregorianCalendar.Date toPrivateJapaneseDate(LocalDate isoDate) {
-        LocalGregorianCalendar.Date jdate = JapaneseChronology.JCAL.newCalendarDate(null);
-        sun.util.calendar.Era sunEra = JapaneseEra.privateEraFrom(isoDate);
-        int year = isoDate.getYear();
-        if (sunEra != null) {
-            year -= sunEra.getSinceDate().getYear() - 1;
+    private long getDayOfYear() {
+        if (yearOfEra == 1) {
+            return isoDate.getDayOfYear() - era.startDate().getDayOfYear() + 1;
         }
-        jdate.setEra(sunEra).setYear(year).setMonth(isoDate.getMonthValue()).setDayOfMonth(isoDate.getDayOfMonth());
-        JapaneseChronology.JCAL.normalize(jdate);
-        return jdate;
+        return isoDate.getDayOfYear();
     }
 
     //-----------------------------------------------------------------------
@@ -415,19 +448,19 @@ public final class JapaneseDate
     public JapaneseDate with(TemporalField field, long newValue) {
         if (field instanceof ChronoField) {
             ChronoField f = (ChronoField) field;
-            if (getLong(f) == newValue) {
+            if (getLong(f) == newValue) {  // validates unsupported fields
                 return this;
             }
             switch (f) {
+                case DAY_OF_YEAR:
                 case YEAR_OF_ERA:
-                case YEAR:
                 case ERA: {
                     int nvalue = getChronology().range(f).checkValidIntValue(newValue, f);
                     switch (f) {
+                        case DAY_OF_YEAR:
+                            return with(isoDate.plusDays(nvalue - getDayOfYear()));
                         case YEAR_OF_ERA:
                             return this.withYear(nvalue);
-                        case YEAR:
-                            return with(isoDate.withYear(nvalue));
                         case ERA: {
                             return this.withYear(JapaneseEra.of(nvalue), yearOfEra);
                         }

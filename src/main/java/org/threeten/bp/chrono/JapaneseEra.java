@@ -48,6 +48,8 @@ import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.ValueRange;
 
 import sun.util.calendar.CalendarDate;
+import sun.util.calendar.CalendarSystem;
+import sun.util.calendar.LocalGregorianCalendar;
 
 /**
  * An era in the Japanese Imperial calendar system.
@@ -105,7 +107,8 @@ public final class JapaneseEra
     private static final JapaneseEra[] KNOWN_ERAS;
 
     static {
-        ERA_CONFIG = JapaneseChronology.JCAL.getEras();
+        LocalGregorianCalendar jcal = (LocalGregorianCalendar) CalendarSystem.forName("japanese");
+        ERA_CONFIG = jcal.getEras();
 
         KNOWN_ERAS = new JapaneseEra[ERA_CONFIG.length];
         KNOWN_ERAS[0] = MEIJI;
@@ -273,6 +276,27 @@ public final class JapaneseEra
      */
     private static int ordinal(int eraValue) {
         return eraValue + ERA_OFFSET - 1;
+    }
+
+    /**
+     * Returns the start date of the era.
+     * @return the start date
+     */
+    LocalDate startDate() {
+        return since;
+    }
+
+    /**
+     * Returns the start date of the era.
+     * @return the start date
+     */
+    LocalDate endDate() {
+        int ordinal = ordinal(eraValue);
+        JapaneseEra[] eras = values();
+        if (ordinal >= eras.length - 1) {
+            return LocalDate.MAX;
+        }
+        return eras[ordinal + 1].startDate().minusDays(1);
     }
 
     //-----------------------------------------------------------------------
