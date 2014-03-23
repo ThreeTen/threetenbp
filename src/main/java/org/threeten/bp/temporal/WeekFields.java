@@ -992,6 +992,9 @@ public final class WeekFields implements Serializable {
         @Override
         public String getDisplayName(Locale locale) {
             Objects.requireNonNull(locale, "locale");
+            if (rangeUnit == YEARS) {  // week-of-year
+                return "Week";
+            }
             return toString();
         }
 

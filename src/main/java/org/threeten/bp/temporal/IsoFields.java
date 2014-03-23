@@ -351,6 +351,12 @@ public final class IsoFields {
                 return WEEK_BASED_YEARS;
             }
             @Override
+            public String getDisplayName(Locale locale) {
+                Objects.requireNonNull(locale, "locale");
+                return "Week";
+            }
+
+            @Override
             public ValueRange range() {
                 return ValueRange.of(1, 52, 53);
             }
