@@ -166,7 +166,12 @@ public enum DayOfWeek implements TemporalAccessor, TemporalAdjuster {
         if (temporal instanceof DayOfWeek) {
             return (DayOfWeek) temporal;
         }
-        return of(temporal.get(DAY_OF_WEEK));
+        try {
+            return of(temporal.get(DAY_OF_WEEK));
+        } catch (DateTimeException ex) {
+            throw new DateTimeException("Unable to obtain DayOfWeek from TemporalAccessor: " +
+                    temporal + ", type " + temporal.getClass().getName(), ex);
+        }
     }
 
     //-----------------------------------------------------------------------

@@ -195,7 +195,8 @@ public enum Month implements TemporalAccessor, TemporalAdjuster {
             }
             return of(temporal.get(MONTH_OF_YEAR));
         } catch (DateTimeException ex) {
-            throw new DateTimeException("Unable to obtain Month from TemporalAccessor: " + temporal.getClass(), ex);
+            throw new DateTimeException("Unable to obtain Month from TemporalAccessor: " +
+                    temporal + ", type " + temporal.getClass().getName(), ex);
         }
     }
 

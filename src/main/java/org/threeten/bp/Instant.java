@@ -329,9 +329,14 @@ public final class Instant
      * @throws DateTimeException if unable to convert to an {@code Instant}
      */
     public static Instant from(TemporalAccessor temporal) {
-        long instantSecs = temporal.getLong(INSTANT_SECONDS);
-        int nanoOfSecond = temporal.get(NANO_OF_SECOND);
-        return Instant.ofEpochSecond(instantSecs, nanoOfSecond);
+        try {
+            long instantSecs = temporal.getLong(INSTANT_SECONDS);
+            int nanoOfSecond = temporal.get(NANO_OF_SECOND);
+            return Instant.ofEpochSecond(instantSecs, nanoOfSecond);
+        } catch (DateTimeException ex) {
+            throw new DateTimeException("Unable to obtain Instant from TemporalAccessor: " +
+                    temporal + ", type " + temporal.getClass().getName(), ex);
+        }
     }
 
     //-----------------------------------------------------------------------

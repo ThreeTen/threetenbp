@@ -319,7 +319,8 @@ public final class ZoneOffset
     public static ZoneOffset from(TemporalAccessor temporal) {
         ZoneOffset offset = temporal.query(TemporalQueries.offset());
         if (offset == null) {
-            throw new DateTimeException("Unable to obtain ZoneOffset from TemporalAccessor: " + temporal.getClass());
+            throw new DateTimeException("Unable to obtain ZoneOffset from TemporalAccessor: " +
+                    temporal + ", type " + temporal.getClass().getName());
         }
         return offset;
     }

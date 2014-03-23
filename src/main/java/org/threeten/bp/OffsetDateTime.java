@@ -313,8 +313,8 @@ public final class OffsetDateTime
         if (temporal instanceof OffsetDateTime) {
             return (OffsetDateTime) temporal;
         }
-        ZoneOffset offset = ZoneOffset.from(temporal);
         try {
+            ZoneOffset offset = ZoneOffset.from(temporal);
             try {
                 LocalDateTime ldt = LocalDateTime.from(temporal);
                 return OffsetDateTime.of(ldt, offset);
