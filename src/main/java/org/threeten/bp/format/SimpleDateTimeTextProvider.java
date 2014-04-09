@@ -31,6 +31,7 @@
  */
 package org.threeten.bp.format;
 
+import static org.threeten.bp.temporal.ChronoField.ERA;
 import static org.threeten.bp.temporal.ChronoField.AMPM_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.DAY_OF_WEEK;
 import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
@@ -41,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -144,6 +146,22 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
             map.put(f11, array[Calendar.NOVEMBER]);
             map.put(f12, array[Calendar.DECEMBER]);
             styleMap.put(TextStyle.FULL, map);
+            
+            map = new HashMap<>();
+            map.put(f1, array[Calendar.JANUARY].substring(0, 1));
+            map.put(f2, array[Calendar.FEBRUARY].substring(0, 1));
+            map.put(f3, array[Calendar.MARCH].substring(0, 1));
+            map.put(f4, array[Calendar.APRIL].substring(0, 1));
+            map.put(f5, array[Calendar.MAY].substring(0, 1));
+            map.put(f6, array[Calendar.JUNE].substring(0, 1));
+            map.put(f7, array[Calendar.JULY].substring(0, 1));
+            map.put(f8, array[Calendar.AUGUST].substring(0, 1));
+            map.put(f9, array[Calendar.SEPTEMBER].substring(0, 1));
+            map.put(f10, array[Calendar.OCTOBER].substring(0, 1));
+            map.put(f11, array[Calendar.NOVEMBER].substring(0, 1));
+            map.put(f12, array[Calendar.DECEMBER].substring(0, 1));
+            styleMap.put(TextStyle.NARROW, map);
+            
             array = oldSymbols.getShortMonths();
             map = new HashMap<>();
             map.put(f1, array[Calendar.JANUARY]);
@@ -181,6 +199,17 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
             map.put(f6, array[Calendar.SATURDAY]);
             map.put(f7, array[Calendar.SUNDAY]);
             styleMap.put(TextStyle.FULL, map);
+            
+            map = new HashMap<>();
+            map.put(f1, array[Calendar.MONDAY].substring(0, 1));
+            map.put(f2, array[Calendar.TUESDAY].substring(0, 1));
+            map.put(f3, array[Calendar.WEDNESDAY].substring(0, 1));
+            map.put(f4, array[Calendar.THURSDAY].substring(0, 1));
+            map.put(f5, array[Calendar.FRIDAY].substring(0, 1));
+            map.put(f6, array[Calendar.SATURDAY].substring(0, 1));
+            map.put(f7, array[Calendar.SUNDAY].substring(0, 1));
+            styleMap.put(TextStyle.NARROW, map);
+            
             array = oldSymbols.getShortWeekdays();
             map = new HashMap<>();
             map.put(f1, array[Calendar.MONDAY]);
@@ -202,6 +231,21 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
             map.put(1L, array[Calendar.PM]);
             styleMap.put(TextStyle.FULL, map);
             styleMap.put(TextStyle.SHORT, map);  // re-use, as we don't have different data
+            return new LocaleStore(styleMap);
+        }
+        if (field == ERA) {
+            DateFormatSymbols oldSymbols = DateFormatSymbols.getInstance(locale);
+            Map<TextStyle, Map<Long, String>> styleMap = new HashMap<>();
+            String[] array = oldSymbols.getEras();
+            Map<Long, String> map = new HashMap<>();
+            map.put(0L, array[GregorianCalendar.BC]);
+            map.put(1L, array[GregorianCalendar.AD]);
+            styleMap.put(TextStyle.FULL, map);
+            styleMap.put(TextStyle.SHORT, map);  // re-use, as we don't have different data
+            map = new HashMap<>();
+            map.put(0L, array[GregorianCalendar.BC].substring(0, 1));
+            map.put(1L, array[GregorianCalendar.AD].substring(0, 1));
+            styleMap.put(TextStyle.NARROW, map);
             return new LocaleStore(styleMap);
         }
         // hard code English quarter text
