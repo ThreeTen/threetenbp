@@ -2290,7 +2290,7 @@ public final class DateTimeFormatterBuilder {
         final int minWidth;
         final int maxWidth;
         final SignStyle signStyle;
-        private final int subsequentWidth;
+        final int subsequentWidth;
 
         /**
          * Constructor.
@@ -2439,7 +2439,7 @@ public final class DateTimeFormatterBuilder {
             if (minEndPos > length) {
                 return ~position;
             }
-            int effMaxWidth = maxWidth + Math.max(subsequentWidth, 0);
+            int effMaxWidth = (isFixedWidth() || context.isStrict() ? maxWidth : 9) + Math.max(subsequentWidth, 0);
             long total = 0;
             BigInteger totalBig = null;
             int pos = position;
@@ -2576,6 +2576,13 @@ public final class DateTimeFormatterBuilder {
             this.baseDate = baseDate;
         }
 
+        private ReducedPrinterParser(TemporalField field, int minWidth, int maxWidth,
+                int baseValue, ChronoLocalDate baseDate, int subsequentWidth) {
+            super(field, minWidth, maxWidth, SignStyle.NOT_NEGATIVE, subsequentWidth);
+            this.baseValue = baseValue;
+            this.baseDate = baseDate;
+        }
+
         @Override
         long getValue(DateTimePrintContext context, long value) {
             long absValue = Math.abs(value);
@@ -2616,12 +2623,16 @@ public final class DateTimeFormatterBuilder {
 
         @Override
         NumberPrinterParser withFixedWidth() {
-            return this;
+            if (subsequentWidth == -1) {
+                return this;
+            }
+            return new ReducedPrinterParser(field, minWidth, maxWidth, baseValue, baseDate, -1);
         }
 
         @Override
-        boolean isFixedWidth() {
-            return true;
+        ReducedPrinterParser withSubsequentWidth(int subsequentWidth) {
+            return new ReducedPrinterParser(field, minWidth, maxWidth, baseValue, baseDate,
+                this.subsequentWidth + subsequentWidth);
         }
 
         @Override
