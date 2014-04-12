@@ -16,3 +16,5 @@
 *.ear
 /*.launch
 /*.dic
+/.idea
+/*.iml
