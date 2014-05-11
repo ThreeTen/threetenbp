@@ -177,7 +177,7 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
             map.put(f11, array[Calendar.NOVEMBER]);
             map.put(f12, array[Calendar.DECEMBER]);
             styleMap.put(TextStyle.SHORT, map);
-            return new LocaleStore(styleMap);
+            return createLocaleStore(styleMap);
         }
         if (field == DAY_OF_WEEK) {
             DateFormatSymbols oldSymbols = DateFormatSymbols.getInstance(locale);
@@ -220,7 +220,7 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
             map.put(f6, array[Calendar.SATURDAY]);
             map.put(f7, array[Calendar.SUNDAY]);
             styleMap.put(TextStyle.SHORT, map);
-            return new LocaleStore(styleMap);
+            return createLocaleStore(styleMap);
         }
         if (field == AMPM_OF_DAY) {
             DateFormatSymbols oldSymbols = DateFormatSymbols.getInstance(locale);
@@ -231,7 +231,7 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
             map.put(1L, array[Calendar.PM]);
             styleMap.put(TextStyle.FULL, map);
             styleMap.put(TextStyle.SHORT, map);  // re-use, as we don't have different data
-            return new LocaleStore(styleMap);
+            return createLocaleStore(styleMap);
         }
         if (field == ERA) {
             DateFormatSymbols oldSymbols = DateFormatSymbols.getInstance(locale);
@@ -240,13 +240,21 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
             Map<Long, String> map = new HashMap<>();
             map.put(0L, array[GregorianCalendar.BC]);
             map.put(1L, array[GregorianCalendar.AD]);
-            styleMap.put(TextStyle.FULL, map);
-            styleMap.put(TextStyle.SHORT, map);  // re-use, as we don't have different data
+            styleMap.put(TextStyle.SHORT, map);
+            if (locale.getLanguage().equals(Locale.ENGLISH.getLanguage())) {
+                map = new HashMap<>();
+                map.put(0L, "Before Christ");
+                map.put(1L, "Anno Domini");
+                styleMap.put(TextStyle.FULL, map);
+            } else {
+                // re-use, as we don't have different data
+                styleMap.put(TextStyle.FULL, map);
+            }
             map = new HashMap<>();
             map.put(0L, array[GregorianCalendar.BC].substring(0, 1));
             map.put(1L, array[GregorianCalendar.AD].substring(0, 1));
             styleMap.put(TextStyle.NARROW, map);
-            return new LocaleStore(styleMap);
+            return createLocaleStore(styleMap);
         }
         // hard code English quarter text
         if (field == IsoFields.QUARTER_OF_YEAR) {
@@ -263,7 +271,7 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
             map.put(3L, "3rd quarter");
             map.put(4L, "4th quarter");
             styleMap.put(TextStyle.FULL, map);
-            return new LocaleStore(styleMap);
+            return createLocaleStore(styleMap);
         }
         return "";  // null marker for map
     }
@@ -281,6 +289,15 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
     }
 
     //-----------------------------------------------------------------------
+    private static LocaleStore createLocaleStore(Map<TextStyle, Map<Long, String>> valueTextMap) {
+        valueTextMap.put(TextStyle.FULL_STANDALONE, valueTextMap.get(TextStyle.FULL));
+        valueTextMap.put(TextStyle.SHORT_STANDALONE, valueTextMap.get(TextStyle.SHORT));
+        if (valueTextMap.containsKey(TextStyle.NARROW) && valueTextMap.containsKey(TextStyle.NARROW_STANDALONE) == false) {
+            valueTextMap.put(TextStyle.NARROW_STANDALONE, valueTextMap.get(TextStyle.NARROW));
+        }
+        return new LocaleStore(valueTextMap);
+    }
+
     /**
      * Stores the text for a single locale.
      * <p>
