@@ -32,6 +32,7 @@
 package org.threeten.bp.zone;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -491,12 +492,25 @@ public abstract class ZoneRules {
             if (obj instanceof Fixed) {
                 return offset.equals(((Fixed) obj).offset);
             }
+            if (obj instanceof StandardZoneRules) {
+                StandardZoneRules szr = (StandardZoneRules) obj;
+                return szr.isFixedOffset() && offset.equals(szr.getOffset(Instant.EPOCH));
+            }
             return false;
         }
 
         @Override
         public int hashCode() {
-            return offset.hashCode() + 1;
+            return 1 ^
+                    (31 + offset.hashCode()) ^
+                    1 ^
+                    (31 + offset.hashCode()) ^
+                    1;
+        }
+
+        @Override
+        public String toString() {
+            return "FixedRules:" + offset;
         }
     }
 

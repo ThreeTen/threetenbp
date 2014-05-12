@@ -49,6 +49,7 @@ import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.Year;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.jdk8.Jdk8Methods;
+import org.threeten.bp.zone.ZoneRules.Fixed;
 
 /**
  * The rules describing how the zone offset varies through the year and historically.
@@ -570,6 +571,9 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
                     Arrays.equals(savingsInstantTransitions, other.savingsInstantTransitions) &&
                     Arrays.equals(wallOffsets, other.wallOffsets) &&
                     Arrays.equals(lastRules, other.lastRules);
+        }
+        if (obj instanceof Fixed) {
+            return isFixedOffset() && getOffset(Instant.EPOCH).equals(((Fixed) obj).getOffset(Instant.EPOCH));
         }
         return false;
     }
