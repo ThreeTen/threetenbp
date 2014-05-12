@@ -136,7 +136,59 @@ public class TestReducedParser extends AbstractTestPrinterParser {
         assertParsed(YEAR, parseVal != null ? (long) parseVal : null);
     }
 
-    @Test(dataProvider="Parse")
+    @DataProvider(name="ParseLenient")
+    Object[][] provider_parseLenient() {
+        return new Object[][] {
+             // negative zero
+            {new ReducedPrinterParser(YEAR, 1, 1, 2010, null), "-0", 0, ~0, null},
+
+            // general
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010, null), "Xxx12Xxx", 3, 5, 2012},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010, null), "12345", 0, 5, 12345},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010, null), "12-45", 0, 2, 2012},
+
+            // insufficient digits
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010, null), "0", 0, 1, 0},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010, null), "1", 0, 1, 1},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010, null), "1", 1, ~1, null},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010, null), "1-2", 0, 1, 1},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010, null), "9", 0, 1, 9},
+
+            // other junk
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010, null), "A0", 0, ~0, null},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010, null), "0A", 0, 1, 0},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010, null), "  1", 0, ~0, null},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010, null), "-1", 0, ~0, null},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010, null), "-10", 0, ~0, null},
+
+            // parse OK 1
+            {new ReducedPrinterParser(YEAR, 1, 1, 2010, null), "0", 0, 1, 2010},
+            {new ReducedPrinterParser(YEAR, 1, 1, 2010, null), "9", 0, 1, 2019},
+            {new ReducedPrinterParser(YEAR, 1, 1, 2010, null), "10", 0, 2, 10},
+
+            {new ReducedPrinterParser(YEAR, 1, 1, 2005, null), "0", 0, 1, 2010},
+            {new ReducedPrinterParser(YEAR, 1, 1, 2005, null), "4", 0, 1, 2014},
+            {new ReducedPrinterParser(YEAR, 1, 1, 2005, null), "5", 0, 1, 2005},
+            {new ReducedPrinterParser(YEAR, 1, 1, 2005, null), "9", 0, 1, 2009},
+            {new ReducedPrinterParser(YEAR, 1, 1, 2005, null), "10", 0, 2, 10},
+
+            // parse OK 2
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010, null), "00", 0, 2, 2100},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010, null), "09", 0, 2, 2109},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010, null), "10", 0, 2, 2010},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010, null), "99", 0, 2, 2099},
+            {new ReducedPrinterParser(YEAR, 2, 2, 2010, null), "100", 0, 3, 100},
+
+            // parse OK 2
+            {new ReducedPrinterParser(YEAR, 2, 2, -2005, null), "05", 0, 2, -2005},
+            {new ReducedPrinterParser(YEAR, 2, 2, -2005, null), "00", 0, 2, -2000},
+            {new ReducedPrinterParser(YEAR, 2, 2, -2005, null), "99", 0, 2, -1999},
+            {new ReducedPrinterParser(YEAR, 2, 2, -2005, null), "06", 0, 2, -1906},
+            {new ReducedPrinterParser(YEAR, 2, 2, -2005, null), "100", 0, 3, 100},
+       };
+    }
+
+    @Test(dataProvider="ParseLenient")
     public void test_parseLenient(ReducedPrinterParser pp, String input, int pos, int parseLen, Integer parseVal) {
         parseContext.setStrict(false);
         int newPos = pp.parse(parseContext, input, pos);

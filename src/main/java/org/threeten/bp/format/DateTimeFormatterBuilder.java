@@ -346,7 +346,7 @@ public final class DateTimeFormatterBuilder {
      */
     public DateTimeFormatterBuilder appendValue(TemporalField field) {
         Objects.requireNonNull(field, "field");
-        active.valueParserIndex = appendInternal(new NumberPrinterParser(field, 1, 19, SignStyle.NORMAL));
+        appendValue(new NumberPrinterParser(field, 1, 19, SignStyle.NORMAL));
         return this;
     }
 
@@ -404,7 +404,8 @@ public final class DateTimeFormatterBuilder {
             throw new IllegalArgumentException("The width must be from 1 to 19 inclusive but was " + width);
         }
         NumberPrinterParser pp = new NumberPrinterParser(field, width, width, SignStyle.NOT_NEGATIVE);
-        return appendFixedWidth(width, pp);
+        appendValue(pp);
+        return this;
     }
 
     /**
@@ -454,11 +455,7 @@ public final class DateTimeFormatterBuilder {
                     maxWidth + " < " + minWidth);
         }
         NumberPrinterParser pp = new NumberPrinterParser(field, minWidth, maxWidth, signStyle);
-        if (minWidth == maxWidth) {
-            appendInternal(pp);
-        } else {
-            active.valueParserIndex = appendInternal(pp);
-        }
+        appendValue(pp);
         return this;
     }
 
@@ -505,11 +502,7 @@ public final class DateTimeFormatterBuilder {
             int width, int maxWidth, int baseValue) {
         Objects.requireNonNull(field, "field");
         ReducedPrinterParser pp = new ReducedPrinterParser(field, width, maxWidth, baseValue, null);
-        if (width == maxWidth) {
-            appendFixedWidth(width, pp);
-        } else {
-            appendInternal(pp);
-        }
+        appendValue(pp);
         return this;
     }
 
@@ -570,11 +563,7 @@ public final class DateTimeFormatterBuilder {
         Objects.requireNonNull(field, "field");
         Objects.requireNonNull(baseDate, "baseDate");
         ReducedPrinterParser pp = new ReducedPrinterParser(field, width, maxWidth, 0, baseDate);
-        if (width == maxWidth) {
-            appendFixedWidth(width, pp);
-        } else {
-            appendInternal(pp);
-        }
+        appendValue(pp);
         return this;
     }
 
@@ -585,18 +574,31 @@ public final class DateTimeFormatterBuilder {
      * @param pp  the printer-parser, not null
      * @return this, for chaining, not null
      */
-    private DateTimeFormatterBuilder appendFixedWidth(int width, NumberPrinterParser pp) {
-        if (active.valueParserIndex >= 0) {
+    private DateTimeFormatterBuilder appendValue(NumberPrinterParser pp) {
+        if (active.valueParserIndex >= 0 &&
+                active.printerParsers.get(active.valueParserIndex) instanceof NumberPrinterParser) {
+            final int activeValueParser = active.valueParserIndex;
+
             // adjacent parsing mode, update setting in previous parsers
-            NumberPrinterParser basePP = (NumberPrinterParser) active.printerParsers.get(active.valueParserIndex);
-            basePP = basePP.withSubsequentWidth(width);
-            int activeValueParser = active.valueParserIndex;
-            active.printerParsers.set(active.valueParserIndex, basePP);
-            appendInternal(pp.withFixedWidth());
-            active.valueParserIndex = activeValueParser;
+            NumberPrinterParser basePP = (NumberPrinterParser) active.printerParsers.get(activeValueParser);
+            if (pp.minWidth == pp.maxWidth && pp.signStyle == SignStyle.NOT_NEGATIVE) {
+                // Append the width to the subsequentWidth of the active parser
+                basePP = basePP.withSubsequentWidth(pp.maxWidth);
+                // Append the new parser as a fixed width
+                appendInternal(pp.withFixedWidth());
+                // Retain the previous active parser
+                active.valueParserIndex = activeValueParser;
+            } else {
+                // Modify the active parser to be fixed width
+                basePP = basePP.withFixedWidth();
+                // The new parser becomes the mew active parser
+                active.valueParserIndex = appendInternal(pp);
+            }
+            // Replace the modified parser with the updated one
+            active.printerParsers.set(activeValueParser, basePP);
         } else {
-            // not adjacent parsing
-            appendInternal(pp);
+            // The new Parser becomes the active parser
+            active.valueParserIndex = appendInternal(pp);
         }
         return this;
     }
@@ -2334,6 +2336,9 @@ public final class DateTimeFormatterBuilder {
          * @return a new updated printer-parser, not null
          */
         NumberPrinterParser withFixedWidth() {
+            if (subsequentWidth == -1) {
+                return this;
+            }
             return new NumberPrinterParser(field, minWidth, maxWidth, signStyle, -1);
         }
 
@@ -2397,15 +2402,17 @@ public final class DateTimeFormatterBuilder {
         /**
          * Gets the value to output.
          *
-         * @param value  the base value of the field, not null
+         * @param context  the context
+         * @param value  the value of the field, not null
          * @return the value
          */
         long getValue(DateTimePrintContext context, long value) {
             return value;
         }
 
-        boolean isFixedWidth() {
-            return subsequentWidth == -1;
+        boolean isFixedWidth(DateTimeParseContext context) {
+            return subsequentWidth == -1 ||
+                    (subsequentWidth > 0 && minWidth == maxWidth && signStyle == SignStyle.NOT_NEGATIVE);
         }
 
         @Override
@@ -2434,12 +2441,12 @@ public final class DateTimeFormatterBuilder {
                     return ~position;
                 }
             }
-            int effMinWidth = (context.isStrict() || isFixedWidth() ? minWidth : 1);
+            int effMinWidth = (context.isStrict() || isFixedWidth(context) ? minWidth : 1);
             int minEndPos = position + effMinWidth;
             if (minEndPos > length) {
                 return ~position;
             }
-            int effMaxWidth = (isFixedWidth() || context.isStrict() ? maxWidth : 9) + Math.max(subsequentWidth, 0);
+            int effMaxWidth = (context.isStrict() || isFixedWidth(context) ? maxWidth : 9) + Math.max(subsequentWidth, 0);
             long total = 0;
             BigInteger totalBig = null;
             int pos = position;
@@ -2633,6 +2640,14 @@ public final class DateTimeFormatterBuilder {
         ReducedPrinterParser withSubsequentWidth(int subsequentWidth) {
             return new ReducedPrinterParser(field, minWidth, maxWidth, baseValue, baseDate,
                 this.subsequentWidth + subsequentWidth);
+        }
+
+        @Override
+        boolean isFixedWidth(DateTimeParseContext context) {
+           if (context.isStrict() == false) {
+               return false;
+           }
+           return super.isFixedWidth(context);
         }
 
         @Override
