@@ -62,6 +62,7 @@ import org.threeten.bp.Period;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.ChronoLocalDateTime;
+import org.threeten.bp.chrono.ChronoZonedDateTime;
 import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
@@ -221,6 +222,15 @@ final class DateTimeBuilder
                 TemporalField targetField = entry.getKey();
                 TemporalAccessor resolvedObject = targetField.resolve(fieldValues, this, resolverStyle);
                 if (resolvedObject != null) {
+                    if (resolvedObject instanceof ChronoZonedDateTime) {
+                        ChronoZonedDateTime<?> czdt = (ChronoZonedDateTime<?>) resolvedObject;
+                        if (zone == null) {
+                            zone = czdt.getZone();
+                        } else if (zone.equals(czdt.getZone()) == false) {
+                            throw new DateTimeException("ChronoZonedDateTime must use the effective parsed zone: " + zone);
+                        }
+                        resolvedObject = czdt.toLocalDateTime();
+                    }
                     if (resolvedObject instanceof ChronoLocalDate) {
                         resolveMakeChanges(targetField, (ChronoLocalDate) resolvedObject);
                         changes++;
@@ -253,6 +263,9 @@ final class DateTimeBuilder
     }
 
     private void resolveMakeChanges(TemporalField targetField, ChronoLocalDate date) {
+        if (chrono.equals(date.getChronology()) == false) {
+            throw new DateTimeException("ChronoLocalDate must use the effective parsed chronology: " + chrono);
+        }
         long epochDay = date.toEpochDay();
         Long old = fieldValues.put(ChronoField.EPOCH_DAY, epochDay);
         if (old != null && old.longValue() != epochDay) {
