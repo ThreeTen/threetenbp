@@ -459,9 +459,6 @@ public final class WeekFields implements Serializable {
      * @return a field providing access to the week-of-week-based-year, not null
      */
     public TemporalField weekOfWeekBasedYear() {
-        if (minimalDays == 4 && firstDayOfWeek == DayOfWeek.MONDAY) {
-            return IsoFields.WEEK_OF_WEEK_BASED_YEAR;
-        }
         return weekOfWeekBasedYear;
     }
 
@@ -504,9 +501,6 @@ public final class WeekFields implements Serializable {
      * @return a field providing access to the week-based-year, not null
      */
     public TemporalField weekBasedYear() {
-        if (minimalDays == 4 && firstDayOfWeek == DayOfWeek.MONDAY) {
-            return IsoFields.WEEK_BASED_YEAR;
-        }
         return weekBasedYear;
     }
 
@@ -762,11 +756,22 @@ public final class WeekFields implements Serializable {
                 int baseWowby = temporal.get(weekDef.weekOfWeekBasedYear);
                 long diffWeeks = (long) ((newValue - currentVal) * 52.1775);
                 Temporal result = temporal.plus(diffWeeks, ChronoUnit.WEEKS);
-                int newWowby = result.get(weekDef.weekOfWeekBasedYear);
-                if (baseWowby == 53 && newWowby == 1) {
-                    result = result.minus(1, ChronoUnit.WEEKS);
-                } else if (baseWowby == 1 && newWowby == 53) {
-                    result = result.plus(1, ChronoUnit.WEEKS);
+                if (result.get(this) > newVal) {
+                    // ended up in later week-based-year
+                    // move to last week of previous year
+                    int newWowby = result.get(weekDef.weekOfWeekBasedYear);
+                    result = result.minus(newWowby, ChronoUnit.WEEKS);
+                } else {
+                    if (result.get(this) < newVal) {
+                        // ended up in earlier week-based-year
+                        result = result.plus(2, ChronoUnit.WEEKS);
+                    }
+                    // reset the week-of-week-based-year
+                    int newWowby = result.get(weekDef.weekOfWeekBasedYear);
+                    result = result.plus(baseWowby - newWowby, ChronoUnit.WEEKS);
+                    if (result.get(this) > newVal) {
+                        result = result.minus(1, ChronoUnit.WEEKS);
+                    }
                 }
                 return (R) result;
             }
