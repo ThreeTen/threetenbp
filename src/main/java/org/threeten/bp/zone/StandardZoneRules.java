@@ -49,7 +49,6 @@ import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.Year;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.jdk8.Jdk8Methods;
-import org.threeten.bp.zone.ZoneRules.Fixed;
 
 /**
  * The rules describing how the zone offset varies through the year and historically.
