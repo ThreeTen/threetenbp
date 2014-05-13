@@ -62,6 +62,7 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.TreeMap;
 
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.Instant;
@@ -3342,7 +3343,17 @@ public final class DateTimeFormatterBuilder {
      * Prints or parses a zone ID.
      */
     static final class ZoneTextPrinterParser implements DateTimePrinterParser {
-        // TODO: remove this as it is incomplete
+        /** The text style to output. */
+        private static final Comparator<String> LENGTH_COMPARATOR = new Comparator<String>() {
+            @Override
+            public int compare(String str1, String str2) {
+                int cmp = str2.length() - str1.length();
+                if (cmp == 0) {
+                    cmp = str1.compareTo(str2);
+                }
+                return cmp;
+            }
+        };
         /** The text style to output. */
         private final TextStyle textStyle;
 
@@ -3378,7 +3389,24 @@ public final class DateTimeFormatterBuilder {
 
         @Override
         public int parse(DateTimeParseContext context, CharSequence text, int position) {
-            throw new UnsupportedOperationException();
+            // this is a poor implementation that handles some but not all of the spec
+            // JDK8 has a lot of extra information here
+            Map<String, String> ids = new TreeMap<>(LENGTH_COMPARATOR);
+            for (String id : ZoneId.getAvailableZoneIds()) {
+                ids.put(id, id);
+                TimeZone tz = TimeZone.getTimeZone(id);
+                int tzstyle = (textStyle.asNormal() == TextStyle.FULL ? TimeZone.LONG : TimeZone.SHORT);
+                ids.put(tz.getDisplayName(false, tzstyle, context.getLocale()), id);
+                ids.put(tz.getDisplayName(true, tzstyle, context.getLocale()), id);
+            }
+            for (Entry<String, String> entry : ids.entrySet()) {
+                String name = entry.getKey();
+                if (context.subSequenceEquals(text, position, name, 0, name.length())) {
+                    context.setParsed(ZoneId.of(entry.getValue()));
+                    return position + name.length();
+                }
+            }
+            return ~position;
         }
 
         @Override
@@ -3429,7 +3457,6 @@ public final class DateTimeFormatterBuilder {
          */
         @Override
         public int parse(DateTimeParseContext context, CharSequence text, int position) {
-            // TODO case insensitive?
             int length = text.length();
             if (position > length) {
                 throw new IndexOutOfBoundsException();
@@ -3489,18 +3516,34 @@ public final class DateTimeFormatterBuilder {
                     break;
                 }
                 parsedZoneId = text.subSequence(position, position + nodeLength).toString();
-                tree = tree.get(parsedZoneId);
+                tree = tree.get(parsedZoneId, context.isCaseSensitive());
             }
-
-            if (parsedZoneId == null || regionIds.contains(parsedZoneId) == false) {
+            ZoneId zone = convertToZone(regionIds, parsedZoneId, context.isCaseSensitive());
+            if (zone == null) {
                 if (context.charEquals(nextChar, 'Z')) {
                     context.setParsed(ZoneOffset.UTC);
                     return position + 1;
                 }
                 return ~position;
             }
-            context.setParsed(ZoneId.of(parsedZoneId));
+            context.setParsed(zone);
             return position + parsedZoneId.length();
+        }
+
+        private ZoneId convertToZone(Set<String> regionIds, String parsedZoneId, boolean caseSensitive) {
+            if (parsedZoneId == null) {
+                return null;
+            }
+            if (caseSensitive) {
+                return (regionIds.contains(parsedZoneId) ? ZoneId.of(parsedZoneId) : null);
+            } else {
+                for (String regionId : regionIds) {
+                    if (regionId.equalsIgnoreCase(parsedZoneId)) {
+                        return ZoneId.of(regionId);
+                    }
+                }
+                return null;
+            }
         }
 
         private int parsePrefixedOffset(DateTimeParseContext context, CharSequence text, int prefixPos, int position) {
@@ -3553,6 +3596,10 @@ public final class DateTimeFormatterBuilder {
              * Map of a substring to a set of substrings that contain the key.
              */
             private final Map<CharSequence, SubstringTree> substringMap = new HashMap<>();
+            /**
+             * Map of a substring to a set of substrings that contain the key.
+             */
+            private final Map<String, SubstringTree> substringMapCI = new HashMap<>();
 
             /**
              * Constructor.
@@ -3563,9 +3610,12 @@ public final class DateTimeFormatterBuilder {
                 this.length = length;
             }
 
-            private SubstringTree get(CharSequence substring2) {
-                return substringMap.get(substring2);
-
+            private SubstringTree get(CharSequence substring2, boolean caseSensitive) {
+                if (caseSensitive) {
+                    return substringMap.get(substring2);
+                } else {
+                    return substringMapCI.get(substring2.toString().toLowerCase(Locale.ENGLISH));
+                }
             }
 
             /**
@@ -3577,12 +3627,14 @@ public final class DateTimeFormatterBuilder {
                 int idLen = newSubstring.length();
                 if (idLen == length) {
                     substringMap.put(newSubstring, null);
+                    substringMapCI.put(newSubstring.toLowerCase(Locale.ENGLISH), null);
                 } else if (idLen > length) {
                     String substring = newSubstring.substring(0, length);
                     SubstringTree parserTree = substringMap.get(substring);
                     if (parserTree == null) {
                         parserTree = new SubstringTree(idLen);
                         substringMap.put(substring, parserTree);
+                        substringMapCI.put(substring.toLowerCase(Locale.ENGLISH), parserTree);
                     }
                     parserTree.add(newSubstring);
                 }
