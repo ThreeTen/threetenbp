@@ -33,6 +33,7 @@ package org.threeten.bp.format;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -41,6 +42,7 @@ import org.threeten.bp.Period;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.IsoChronology;
+import org.threeten.bp.format.DateTimeFormatterBuilder.ReducedPrinterParser;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.TemporalField;
@@ -355,7 +357,24 @@ final class DateTimeParseContext {
      */
     void setParsed(Chronology chrono) {
         Objects.requireNonNull(chrono, "chrono");
-        currentParsed().chrono = chrono;
+        Parsed currentParsed = currentParsed();
+        currentParsed.chrono = chrono;
+        if (currentParsed.callbacks != null) {
+            List<Object[]> callbacks = new ArrayList<>(currentParsed.callbacks);
+            currentParsed.callbacks.clear();
+            for (Object[] objects : callbacks) {
+                ReducedPrinterParser pp = (ReducedPrinterParser) objects[0];
+                pp.setValue(this, (long) objects[1], (int) objects[2], (int) objects[3]);
+            }
+        }
+    }
+
+    void addChronologyChangedParser(ReducedPrinterParser reducedPrinterParser, long value, int errorPos, int successPos) {
+        Parsed currentParsed = currentParsed();
+        if (currentParsed.callbacks == null) {
+            currentParsed.callbacks = new ArrayList<>(2);
+        }
+        currentParsed.callbacks.add(new Object[] {reducedPrinterParser, value, errorPos, successPos});
     }
 
     /**
@@ -410,6 +429,7 @@ final class DateTimeParseContext {
         final Map<TemporalField, Long> fieldValues = new HashMap<>();
         boolean leapSecond;
         Period excessDays = Period.ZERO;
+        List<Object[]> callbacks;
 
         private Parsed() {
         }

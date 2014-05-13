@@ -2610,6 +2610,7 @@ public final class DateTimeFormatterBuilder {
             if (baseDate != null) {
                 Chronology chrono = context.getEffectiveChronology();
                 baseValue = chrono.date(baseDate).get(field);
+                context.addChronologyChangedParser(this, value, errorPos, successPos);
             }
             int parseLen = successPos - errorPos;
             if (parseLen == minWidth && value >= 0) {
