@@ -1,4 +1,4 @@
 ThreeTen backport project release notes
 =======================================
 
-This release corresponds to the OpenJDK M7 milestone
+This release of the backport corresponds to Java SE 8u20.
