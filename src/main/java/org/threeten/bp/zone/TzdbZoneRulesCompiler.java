@@ -41,6 +41,8 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -109,6 +111,7 @@ final class TzdbZoneRulesCompiler {
         String version = null;
         File baseSrcDir = null;
         File dstDir = null;
+        boolean unpacked = false;
         boolean verbose = false;
 
         // parse options
@@ -131,6 +134,11 @@ final class TzdbZoneRulesCompiler {
             } else if ("-version".equals(arg)) {
                 if (version == null && ++i < args.length) {
                     version = args[i];
+                    continue;
+                }
+            } else if ("-unpacked".equals(arg)) {
+                if (unpacked == false) {
+                    unpacked = true;
                     continue;
                 }
             } else if ("-verbose".equals(arg)) {
@@ -196,8 +204,7 @@ final class TzdbZoneRulesCompiler {
             System.out.println("Destination is not a directory: " + dstDir);
             return;
         }
-        process(srcDirs, srcFileNames, dstDir, verbose);
-        System.exit(0);
+        process(srcDirs, srcFileNames, dstDir, unpacked, verbose);
     }
 
     /**
@@ -209,6 +216,7 @@ final class TzdbZoneRulesCompiler {
         System.out.println("   -srcdir <directory>   Where to find source directories (required)");
         System.out.println("   -dstdir <directory>   Where to output generated files (default srcdir)");
         System.out.println("   -version <version>    Specify the version, such as 2009a (optional)");
+        System.out.println("   -unpacked             Generate dat files without jar files");
         System.out.println("   -help                 Print this usage message");
         System.out.println("   -verbose              Output verbose information during compilation");
         System.out.println(" There must be one directory for each version in srcdir");
@@ -222,7 +230,7 @@ final class TzdbZoneRulesCompiler {
     /**
      * Process to create the jar files.
      */
-    private static void process(List<File> srcDirs, List<String> srcFileNames, File dstDir, boolean verbose) {
+    private static void process(List<File> srcDirs, List<String> srcFileNames, File dstDir, boolean unpacked, boolean verbose) {
         // build actual jar files
         Map<Object, Object> deduplicateMap = new HashMap<>();
         Map<String, SortedMap<String, ZoneRules>> allBuiltZones = new TreeMap<>();
@@ -259,11 +267,13 @@ final class TzdbZoneRulesCompiler {
                 SortedMap<LocalDate, Byte> parsedLeapSeconds = compiler.getLeapSeconds();
 
                 // output version-specific file
-                File dstFile = new File(dstDir, "threeten-TZDB-" + loopVersion + ".jar");
-                if (verbose) {
-                    System.out.println("Outputting file: " + dstFile);
+                if (unpacked == false) {
+                    File dstFile = new File(dstDir, "threeten-TZDB-" + loopVersion + ".jar");
+                    if (verbose) {
+                        System.out.println("Outputting file: " + dstFile);
+                    }
+                    outputFile(dstFile, loopVersion, builtZones, parsedLeapSeconds);
                 }
-                outputFile(dstFile, loopVersion, builtZones, parsedLeapSeconds);
 
                 // create totals
                 allBuiltZones.put(loopVersion, builtZones);
@@ -286,11 +296,41 @@ final class TzdbZoneRulesCompiler {
         }
 
         // output merged file
-        File dstFile = new File(dstDir, "threeten-TZDB-all.jar");
-        if (verbose) {
-            System.out.println("Outputting combined file: " + dstFile);
+        if (unpacked) {
+            if (verbose) {
+                System.out.println("Outputting combined files: " + dstDir);
+            }
+            outputFilesDat(dstDir, allBuiltZones, allRegionIds, allRules, bestLeapSeconds);
+        } else {
+            File dstFile = new File(dstDir, "threeten-TZDB-all.jar");
+            if (verbose) {
+                System.out.println("Outputting combined file: " + dstFile);
+            }
+            outputFile(dstFile, allBuiltZones, allRegionIds, allRules, bestLeapSeconds);
         }
-        outputFile(dstFile, allBuiltZones, allRegionIds, allRules, bestLeapSeconds);
+    }
+
+    /**
+     * Outputs the DAT files.
+     */
+    private static void outputFilesDat(File dstDir, Map<String, SortedMap<String, ZoneRules>> allBuiltZones,
+            Set<String> allRegionIds, Set<ZoneRules> allRules, SortedMap<LocalDate, Byte> leapSeconds) {
+        File tzdbFile = new File(dstDir, "TZDB.dat");
+        tzdbFile.delete();
+        File leapFile = new File(dstDir, "LeapSecondRules.dat");
+        leapFile.delete();
+        try {
+            try (FileOutputStream fos = new FileOutputStream(tzdbFile)) {
+                outputTzdbDat(fos, allBuiltZones, allRegionIds, allRules);
+            }
+            try (FileOutputStream fos = new FileOutputStream(leapFile)) {
+                outputLeapSecondDat(fos, leapSeconds);
+            }
+        } catch (Exception ex) {
+            System.out.println("Failed: " + ex.toString());
+            ex.printStackTrace();
+            System.exit(1);
+        }
     }
 
     /**
@@ -310,7 +350,7 @@ final class TzdbZoneRulesCompiler {
     private static void outputFile(File dstFile, Map<String, SortedMap<String, ZoneRules>> allBuiltZones,
             Set<String> allRegionIds, Set<ZoneRules> allRules, SortedMap<LocalDate, Byte> leapSeconds) {
         try (JarOutputStream jos = new JarOutputStream(new FileOutputStream(dstFile))) {
-            outputTZEntry(jos, allBuiltZones, allRegionIds, allRules);
+            outputTzdbEntry(jos, allBuiltZones, allRegionIds, allRules);
             outputLeapSecondEntry(jos, leapSeconds);
         } catch (Exception ex) {
             System.out.println("Failed: " + ex.toString());
@@ -322,61 +362,69 @@ final class TzdbZoneRulesCompiler {
     /**
      * Outputs the timezone entry in the JAR file.
      */
-    private static void outputTZEntry(
+    private static void outputTzdbEntry(
             JarOutputStream jos, Map<String, SortedMap<String, ZoneRules>> allBuiltZones,
             Set<String> allRegionIds, Set<ZoneRules> allRules) {
         // this format is not publicly specified
         try {
             jos.putNextEntry(new ZipEntry("org/threeten/bp/TZDB.dat"));
-            DataOutputStream out = new DataOutputStream(jos);
-
-            // file version
-            out.writeByte(1);
-            // group
-            out.writeUTF("TZDB");
-            // versions
-            String[] versionArray = allBuiltZones.keySet().toArray(new String[allBuiltZones.size()]);
-            out.writeShort(versionArray.length);
-            for (String version : versionArray) {
-                out.writeUTF(version);
-            }
-            // regions
-            String[] regionArray = allRegionIds.toArray(new String[allRegionIds.size()]);
-            out.writeShort(regionArray.length);
-            for (String regionId : regionArray) {
-                out.writeUTF(regionId);
-            }
-            // rules
-            List<ZoneRules> rulesList = new ArrayList<>(allRules);
-            out.writeShort(rulesList.size());
-            ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
-            for (ZoneRules rules : rulesList) {
-                baos.reset();
-                DataOutputStream dataos = new DataOutputStream(baos);
-                Ser.write(rules, dataos);
-                dataos.close();
-                byte[] bytes = baos.toByteArray();
-                out.writeShort(bytes.length);
-                out.write(bytes);
-            }
-            // link version-region-rules
-            for (String version : allBuiltZones.keySet()) {
-                out.writeShort(allBuiltZones.get(version).size());
-                for (Map.Entry<String, ZoneRules> entry : allBuiltZones.get(version).entrySet()) {
-                     int regionIndex = Arrays.binarySearch(regionArray, entry.getKey());
-                     int rulesIndex = rulesList.indexOf(entry.getValue());
-                     out.writeShort(regionIndex);
-                     out.writeShort(rulesIndex);
-                }
-            }
-
-            out.flush();
+            outputTzdbDat(jos, allBuiltZones, allRegionIds, allRules);
             jos.closeEntry();
         } catch (Exception ex) {
             System.out.println("Failed: " + ex.toString());
             ex.printStackTrace();
             System.exit(1);
         }
+    }
+
+    /**
+     * Outputs the timezone DAT file.
+     */
+    private static void outputTzdbDat(OutputStream jos,
+            Map<String, SortedMap<String, ZoneRules>> allBuiltZones,
+            Set<String> allRegionIds, Set<ZoneRules> allRules) throws IOException {
+        DataOutputStream out = new DataOutputStream(jos);
+
+        // file version
+        out.writeByte(1);
+        // group
+        out.writeUTF("TZDB");
+        // versions
+        String[] versionArray = allBuiltZones.keySet().toArray(new String[allBuiltZones.size()]);
+        out.writeShort(versionArray.length);
+        for (String version : versionArray) {
+            out.writeUTF(version);
+        }
+        // regions
+        String[] regionArray = allRegionIds.toArray(new String[allRegionIds.size()]);
+        out.writeShort(regionArray.length);
+        for (String regionId : regionArray) {
+            out.writeUTF(regionId);
+        }
+        // rules
+        List<ZoneRules> rulesList = new ArrayList<>(allRules);
+        out.writeShort(rulesList.size());
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
+        for (ZoneRules rules : rulesList) {
+            baos.reset();
+            DataOutputStream dataos = new DataOutputStream(baos);
+            Ser.write(rules, dataos);
+            dataos.close();
+            byte[] bytes = baos.toByteArray();
+            out.writeShort(bytes.length);
+            out.write(bytes);
+        }
+        // link version-region-rules
+        for (String version : allBuiltZones.keySet()) {
+            out.writeShort(allBuiltZones.get(version).size());
+            for (Map.Entry<String, ZoneRules> entry : allBuiltZones.get(version).entrySet()) {
+                 int regionIndex = Arrays.binarySearch(regionArray, entry.getKey());
+                 int rulesIndex = rulesList.indexOf(entry.getValue());
+                 out.writeShort(regionIndex);
+                 out.writeShort(rulesIndex);
+            }
+        }
+        out.flush();
     }
 
     /**
@@ -387,31 +435,33 @@ final class TzdbZoneRulesCompiler {
         // this format is not publicly specified
         try {
             jos.putNextEntry(new ZipEntry("org/threeten/bp/LeapSecondRules.dat"));
-            DataOutputStream out = new DataOutputStream(jos);
-
-            // file version
-            out.writeByte(1);
-            // count
-            out.writeInt(leapSeconds.size() + 1);
-
-            // first line is fixed in UTC-TAI leap second system, always 10 seconds at 1972-01-01
-            int offset = 10;
-            out.writeLong(MJD_1972_01_01);
-            out.writeInt(offset);
-
-            // now treat all the transitions
-            for (Map.Entry<LocalDate, Byte> rule : leapSeconds.entrySet()) {
-                out.writeLong(JulianFields.MODIFIED_JULIAN_DAY.getFrom(rule.getKey()));
-                offset += rule.getValue();
-                out.writeInt(offset);
-            }
-            out.flush();
+            outputLeapSecondDat(jos, leapSeconds);
             jos.closeEntry();
         } catch (Exception ex) {
             System.out.println("Failed: " + ex.toString());
             ex.printStackTrace();
             System.exit(1);
         }
+    }
+
+    private static void outputLeapSecondDat(OutputStream jos,
+            SortedMap<LocalDate, Byte> leapSeconds) throws IOException {
+        DataOutputStream out = new DataOutputStream(jos);
+        // file version
+        out.writeByte(1);
+        // count
+        out.writeInt(leapSeconds.size() + 1);
+        // first line is fixed in UTC-TAI leap second system, always 10 seconds at 1972-01-01
+        int offset = 10;
+        out.writeLong(MJD_1972_01_01);
+        out.writeInt(offset);
+        // now treat all the transitions
+        for (Map.Entry<LocalDate, Byte> rule : leapSeconds.entrySet()) {
+            out.writeLong(JulianFields.MODIFIED_JULIAN_DAY.getFrom(rule.getKey()));
+            offset += rule.getValue();
+            out.writeInt(offset);
+        }
+        out.flush();
     }
 
     //-----------------------------------------------------------------------
