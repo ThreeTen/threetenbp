@@ -16,3 +16,9 @@
 *.ear
 /*.launch
 /*.dic
+
+/src/*/
+!/src/changes/
+!/src/main/
+!/src/site/
+!/src/test/
