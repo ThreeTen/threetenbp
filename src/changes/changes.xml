@@ -8,7 +8,10 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="0.9" date="xxx" description="v0.9">
+    <release version="0.9" date="2014--5-16" description="v0.9">
+      <action dev="jodastephen" type="update">
+        Update to match JDK 8u20.
+      </action>
       <action dev="jodastephen" type="update">
         Move to Eclipse m2e and update pom.
       </action>
