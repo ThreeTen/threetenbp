@@ -35,10 +35,16 @@
   </developers>
   <contributors>
     <contributor>
+      <name>Ludovic Hochet</name>
+      <url>https://github.com/lhochet</url>
+    </contributor>
+    <contributor>
       <name>Michael Nascimento Santos</name>
+      <url>https://github.com/sjmisterm</url>
     </contributor>
     <contributor>
       <name>Roger Riggs</name>
+      <url>https://github.com/RogerRiggs</url>
     </contributor>
     <contributor>
       <name>Sherman Shen</name>
