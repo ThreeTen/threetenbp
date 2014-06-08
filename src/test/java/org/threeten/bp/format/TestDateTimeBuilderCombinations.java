@@ -47,7 +47,10 @@ import static org.threeten.bp.temporal.ChronoField.YEAR;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.LocalDate;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.chrono.IsoChronology;
+import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQuery;
 
@@ -55,6 +58,8 @@ import org.threeten.bp.temporal.TemporalQuery;
  * Test.
  */
 public class TestDateTimeBuilderCombinations {
+
+    private static final ZoneId PARIS = ZoneId.of("Europe/Paris");
 
     @DataProvider(name = "combine")
     Object[][] data_combine() {
@@ -123,6 +128,13 @@ public class TestDateTimeBuilderCombinations {
         } else {
             assertEquals(builder.isSupported(query), false);
         }
+    }
+
+    @Test
+    public void test_parse_withZone() {
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(PARIS);
+        TemporalAccessor acc = fmt.parse("2014-06-30 01:02:03");
+        assertEquals(ZonedDateTime.from(acc), ZonedDateTime.of(2014, 6, 30, 1, 2, 3, 0, PARIS));
     }
 
 }
