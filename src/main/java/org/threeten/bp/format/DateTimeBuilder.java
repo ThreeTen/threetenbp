@@ -37,6 +37,7 @@ import static org.threeten.bp.temporal.ChronoField.CLOCK_HOUR_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.EPOCH_DAY;
 import static org.threeten.bp.temporal.ChronoField.HOUR_OF_AMPM;
 import static org.threeten.bp.temporal.ChronoField.HOUR_OF_DAY;
+import static org.threeten.bp.temporal.ChronoField.INSTANT_SECONDS;
 import static org.threeten.bp.temporal.ChronoField.MICRO_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.MICRO_OF_SECOND;
 import static org.threeten.bp.temporal.ChronoField.MILLI_OF_DAY;
@@ -45,6 +46,7 @@ import static org.threeten.bp.temporal.ChronoField.MINUTE_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.MINUTE_OF_HOUR;
 import static org.threeten.bp.temporal.ChronoField.NANO_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.NANO_OF_SECOND;
+import static org.threeten.bp.temporal.ChronoField.OFFSET_SECONDS;
 import static org.threeten.bp.temporal.ChronoField.SECOND_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.SECOND_OF_MINUTE;
 
@@ -56,10 +58,12 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.threeten.bp.DateTimeException;
+import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.Period;
 import org.threeten.bp.ZoneId;
+import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.ChronoLocalDateTime;
 import org.threeten.bp.chrono.ChronoZonedDateTime;
@@ -108,7 +112,7 @@ final class DateTimeBuilder
     /**
      * The date.
      */
-    LocalDate date;
+    ChronoLocalDate date;
     /**
      * The time.
      */
@@ -175,7 +179,7 @@ final class DateTimeBuilder
     }
 
     //-----------------------------------------------------------------------
-    void addObject(LocalDate date) {
+    void addObject(ChronoLocalDate date) {
         this.date = date;
     }
 
@@ -199,9 +203,11 @@ final class DateTimeBuilder
             fieldValues.keySet().retainAll(resolverFields);
         }
         // handle standard fields
+        mergeInstantFields();
         mergeDate(resolverStyle);
         mergeTime(resolverStyle);
         if (resolveFields(resolverStyle)) {
+            mergeInstantFields();
             mergeDate(resolverStyle);
             mergeTime(resolverStyle);
         }
@@ -211,6 +217,8 @@ final class DateTimeBuilder
             date = date.plus(excessDays);
             excessDays = Period.ZERO;
         }
+        resolveFractional();
+        resolveInstant();
         return this;
     }
 
@@ -301,15 +309,17 @@ final class DateTimeBuilder
             addObject(date);
             for (TemporalField field : fieldValues.keySet()) {
                 if (field instanceof ChronoField) {
-                    long val1;
-                    try {
-                        val1 = date.getLong(field);
-                    } catch (DateTimeException ex) {
-                        continue;
-                    }
-                    Long val2 = fieldValues.get(field);
-                    if (val1 != val2) {
-                        throw new DateTimeException("Conflict found: Field " + field + " " + val1 + " differs from " + field + " " + val2 + " derived from " + date);
+                    if (field.isDateBased()) {
+                        long val1;
+                        try {
+                            val1 = date.getLong(field);
+                        } catch (DateTimeException ex) {
+                            continue;
+                        }
+                        Long val2 = fieldValues.get(field);
+                        if (val1 != val2) {
+                            throw new DateTimeException("Conflict found: Field " + field + " " + val1 + " differs from " + field + " " + val2 + " derived from " + date);
+                        }
                     }
                 }
             }
@@ -526,6 +536,32 @@ final class DateTimeBuilder
     }
 
     //-----------------------------------------------------------------------
+    private void mergeInstantFields() {
+        if (fieldValues.containsKey(INSTANT_SECONDS)) {
+            if (zone != null) {
+                mergeInstantFields0(zone);
+            } else {
+                Long offsetSecs = fieldValues.get(OFFSET_SECONDS);
+                if (offsetSecs != null) {
+                    ZoneOffset offset = ZoneOffset.ofTotalSeconds(offsetSecs.intValue());
+                    mergeInstantFields0(offset);
+                }
+            }
+        }
+    }
+
+    private void mergeInstantFields0(ZoneId selectedZone) {
+        Instant instant = Instant.ofEpochSecond(fieldValues.remove(INSTANT_SECONDS));
+        ChronoZonedDateTime<?> zdt = chrono.zonedDateTime(instant, selectedZone);
+        if (date == null) {
+            addObject(zdt.toLocalDate());
+        } else {
+            resolveMakeChanges(INSTANT_SECONDS, zdt.toLocalDate());
+        }
+        addFieldValue(SECOND_OF_DAY, (long) zdt.toLocalTime().toSecondOfDay());
+    }
+
+    //-----------------------------------------------------------------------
     private void crossCheck() {
         if (fieldValues.size() > 0) {
             if (date != null && time != null) {
@@ -556,6 +592,39 @@ final class DateTimeBuilder
                             field + " " + temporalValue + " vs " + field + " " + value);
                 }
                 it.remove();
+            }
+        }
+    }
+
+    private void resolveFractional() {
+        if (time == null &&
+                (fieldValues.containsKey(INSTANT_SECONDS) ||
+                    fieldValues.containsKey(SECOND_OF_DAY) ||
+                    fieldValues.containsKey(SECOND_OF_MINUTE))) {
+            if (fieldValues.containsKey(NANO_OF_SECOND)) {
+                long nos = fieldValues.get(NANO_OF_SECOND);
+                fieldValues.put(MICRO_OF_SECOND, nos / 1000);
+                fieldValues.put(MILLI_OF_SECOND, nos / 1000000);
+            } else {
+                fieldValues.put(NANO_OF_SECOND, 0L);
+                fieldValues.put(MICRO_OF_SECOND, 0L);
+                fieldValues.put(MILLI_OF_SECOND, 0L);
+            }
+        }
+    }
+
+    private void resolveInstant() {
+        if (date != null && time != null) {
+            if (zone != null) {
+                long instant = date.atTime(time).atZone(zone).getLong(ChronoField.INSTANT_SECONDS);
+                fieldValues.put(INSTANT_SECONDS, instant);
+            } else {
+                Long offsetSecs = fieldValues.get(OFFSET_SECONDS);
+                if (offsetSecs != null) {
+                    ZoneOffset offset = ZoneOffset.ofTotalSeconds(offsetSecs.intValue());
+                    long instant = date.atTime(time).atZone(offset).getLong(ChronoField.INSTANT_SECONDS);
+                    fieldValues.put(INSTANT_SECONDS, instant);
+                }
             }
         }
     }
@@ -611,7 +680,7 @@ final class DateTimeBuilder
         } else if (query == TemporalQueries.chronology()) {
             return (R) chrono;
         } else if (query == TemporalQueries.localDate()) {
-            return (R) date;
+            return date != null ? (R) LocalDate.from(date) : null;
         } else if (query == TemporalQueries.localTime()) {
             return (R) time;
         } else if (query == TemporalQueries.zone() || query == TemporalQueries.offset()) {

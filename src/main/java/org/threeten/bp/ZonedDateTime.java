@@ -513,15 +513,18 @@ public final class ZonedDateTime
         }
         try {
             ZoneId zone = ZoneId.from(temporal);
-            try {
-                long epochSecond = temporal.getLong(INSTANT_SECONDS);
-                int nanoOfSecond = temporal.get(NANO_OF_SECOND);
-                return create(epochSecond, nanoOfSecond, zone);
+            if (temporal.isSupported(INSTANT_SECONDS)) {
+                try {
+                    long epochSecond = temporal.getLong(INSTANT_SECONDS);
+                    int nanoOfSecond = temporal.get(NANO_OF_SECOND);
+                    return create(epochSecond, nanoOfSecond, zone);
 
-            } catch (DateTimeException ex1) {
-                LocalDateTime ldt = LocalDateTime.from(temporal);
-                return of(ldt, zone);
+                } catch (DateTimeException ex) {
+                    // ignore
+                }
             }
+            LocalDateTime ldt = LocalDateTime.from(temporal);
+            return of(ldt, zone);
         } catch (DateTimeException ex) {
             throw new DateTimeException("Unable to obtain ZonedDateTime from TemporalAccessor: " +
                     temporal + ", type " + temporal.getClass().getName());

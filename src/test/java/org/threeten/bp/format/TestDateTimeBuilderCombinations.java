@@ -46,6 +46,7 @@ import static org.threeten.bp.temporal.ChronoField.YEAR;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
@@ -131,10 +132,17 @@ public class TestDateTimeBuilderCombinations {
     }
 
     @Test
-    public void test_parse_withZone() {
+    public void test_parse_ZDT_withZone() {
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(PARIS);
         TemporalAccessor acc = fmt.parse("2014-06-30 01:02:03");
         assertEquals(ZonedDateTime.from(acc), ZonedDateTime.of(2014, 6, 30, 1, 2, 3, 0, PARIS));
+    }
+
+    @Test
+    public void test_parse_Instant_withZone() {
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(PARIS);
+        TemporalAccessor acc = fmt.parse("2014-06-30 01:02:03");
+        assertEquals(Instant.from(acc), ZonedDateTime.of(2014, 6, 30, 1, 2, 3, 0, PARIS).toInstant());
     }
 
 }
