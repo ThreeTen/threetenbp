@@ -55,7 +55,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 
 import org.threeten.bp.Clock;
 import org.threeten.bp.DateTimeException;
@@ -114,15 +113,15 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
     /**
      * Narrow names for eras.
      */
-    private static final HashMap<String, String[]> ERA_NARROW_NAMES = new HashMap<>();
+    private static final HashMap<String, String[]> ERA_NARROW_NAMES = new HashMap<String, String[]>();
     /**
      * Short names for eras.
      */
-    private static final HashMap<String, String[]> ERA_SHORT_NAMES = new HashMap<>();
+    private static final HashMap<String, String[]> ERA_SHORT_NAMES = new HashMap<String, String[]>();
     /**
      * Full names for eras.
      */
-    private static final HashMap<String, String[]> ERA_FULL_NAMES = new HashMap<>();
+    private static final HashMap<String, String[]> ERA_FULL_NAMES = new HashMap<String, String[]>();
     /**
      * Fallback language for the era names.
      */
@@ -260,7 +259,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
 
     @Override  // override with covariant return type
     public ThaiBuddhistDate dateNow(Clock clock) {
-        Objects.requireNonNull(clock, "clock");
+        Jdk8Methods.requireNonNull(clock, "clock");
         return (ThaiBuddhistDate) super.dateNow(clock);
     }
 

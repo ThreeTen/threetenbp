@@ -222,7 +222,7 @@ public class TestChronoLocalDate {
     //-----------------------------------------------------------------------
     @Test(dataProvider="calendars")
     public void test_date_comparisons(Chronology chrono) {
-        List<ChronoLocalDate> dates = new ArrayList<>();
+        List<ChronoLocalDate> dates = new ArrayList<ChronoLocalDate>();
 
         ChronoLocalDate date = chrono.date(LocalDate.of(1900, 1, 1));
 
@@ -247,7 +247,7 @@ public class TestChronoLocalDate {
 
         // Check these dates against the corresponding dates for every calendar
         for (Chronology[] clist : data_of_calendars()) {
-            List<ChronoLocalDate> otherDates = new ArrayList<>();
+            List<ChronoLocalDate> otherDates = new ArrayList<ChronoLocalDate>();
             Chronology chrono2 = clist[0];
             if (chrono2 == JapaneseChronology.INSTANCE) {
                 continue;

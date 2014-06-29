@@ -36,7 +36,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 
 import org.threeten.bp.Period;
 import org.threeten.bp.ZoneId;
@@ -94,7 +93,7 @@ final class DateTimeParseContext {
     /**
      * The list of parsed data.
      */
-    private final ArrayList<Parsed> parsed = new ArrayList<>();
+    private final ArrayList<Parsed> parsed = new ArrayList<Parsed>();
 
     /**
      * Creates a new instance of the context.
@@ -342,7 +341,7 @@ final class DateTimeParseContext {
      * @return the new position
      */
     int setParsedField(TemporalField field, long value, int errorPos, int successPos) {
-        Objects.requireNonNull(field, "field");
+        Jdk8Methods.requireNonNull(field, "field");
         Long old = currentParsed().fieldValues.put(field, value);
         return (old != null && old.longValue() != value) ? ~errorPos : successPos;
     }
@@ -356,15 +355,15 @@ final class DateTimeParseContext {
      * @param chrono  the parsed chronology, not null
      */
     void setParsed(Chronology chrono) {
-        Objects.requireNonNull(chrono, "chrono");
+        Jdk8Methods.requireNonNull(chrono, "chrono");
         Parsed currentParsed = currentParsed();
         currentParsed.chrono = chrono;
         if (currentParsed.callbacks != null) {
-            List<Object[]> callbacks = new ArrayList<>(currentParsed.callbacks);
+            List<Object[]> callbacks = new ArrayList<Object[]>(currentParsed.callbacks);
             currentParsed.callbacks.clear();
             for (Object[] objects : callbacks) {
                 ReducedPrinterParser pp = (ReducedPrinterParser) objects[0];
-                pp.setValue(this, (long) objects[1], (int) objects[2], (int) objects[3]);
+                pp.setValue(this, (Long) objects[1], (Integer) objects[2], (Integer) objects[3]);
             }
         }
     }
@@ -372,7 +371,7 @@ final class DateTimeParseContext {
     void addChronologyChangedParser(ReducedPrinterParser reducedPrinterParser, long value, int errorPos, int successPos) {
         Parsed currentParsed = currentParsed();
         if (currentParsed.callbacks == null) {
-            currentParsed.callbacks = new ArrayList<>(2);
+            currentParsed.callbacks = new ArrayList<Object[]>(2);
         }
         currentParsed.callbacks.add(new Object[] {reducedPrinterParser, value, errorPos, successPos});
     }
@@ -386,7 +385,7 @@ final class DateTimeParseContext {
      * @param zone  the parsed zone, not null
      */
     void setParsed(ZoneId zone) {
-        Objects.requireNonNull(zone, "zone");
+        Jdk8Methods.requireNonNull(zone, "zone");
         currentParsed().zone = zone;
     }
 
@@ -426,7 +425,7 @@ final class DateTimeParseContext {
     final class Parsed extends DefaultInterfaceTemporalAccessor {
         Chronology chrono = null;
         ZoneId zone = null;
-        final Map<TemporalField, Long> fieldValues = new HashMap<>();
+        final Map<TemporalField, Long> fieldValues = new HashMap<TemporalField, Long>();
         boolean leapSecond;
         Period excessDays = Period.ZERO;
         List<Object[]> callbacks;
@@ -514,7 +513,7 @@ final class DateTimeParseContext {
      * @param locale  the locale, not null
      */
     void setLocale(Locale locale) {
-        Objects.requireNonNull(locale, "locale");
+        Jdk8Methods.requireNonNull(locale, "locale");
         this.locale = locale;
     }
 

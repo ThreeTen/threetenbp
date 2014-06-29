@@ -78,7 +78,7 @@ public class TestMonth extends AbstractDateTimeTest {
 
     @Override
     protected List<TemporalField> invalidFields() {
-        List<TemporalField> list = new ArrayList<>(Arrays.<TemporalField>asList(ChronoField.values()));
+        List<TemporalField> list = new ArrayList<TemporalField>(Arrays.<TemporalField>asList(ChronoField.values()));
         list.removeAll(validFields());
         list.add(JulianFields.JULIAN_DAY);
         list.add(JulianFields.MODIFIED_JULIAN_DAY);

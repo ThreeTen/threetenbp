@@ -122,7 +122,7 @@ public class TestOffsetTime extends AbstractDateTimeTest {
 
     @Override
     protected List<TemporalField> invalidFields() {
-        List<TemporalField> list = new ArrayList<>(Arrays.<TemporalField>asList(ChronoField.values()));
+        List<TemporalField> list = new ArrayList<TemporalField>(Arrays.<TemporalField>asList(ChronoField.values()));
         list.removeAll(validFields());
         list.add(JulianFields.JULIAN_DAY);
         list.add(JulianFields.MODIFIED_JULIAN_DAY);
@@ -140,7 +140,7 @@ public class TestOffsetTime extends AbstractDateTimeTest {
 
     @Test
     public void test_serialization_format() throws Exception {
-        assertEqualsSerialisedForm(OffsetTime.of(LocalTime.of(22, 17, 59, 464_000_000), ZoneOffset.ofHours(1)));
+        assertEqualsSerialisedForm(OffsetTime.of(LocalTime.of(22, 17, 59, 464000000), ZoneOffset.ofHours(1)));
     }
 
     //-----------------------------------------------------------------------
@@ -328,7 +328,7 @@ public class TestOffsetTime extends AbstractDateTimeTest {
         assertEquals(test.getHour(), 23);
         assertEquals(test.getMinute(), 59);
         assertEquals(test.getSecond(), 59);
-        assertEquals(test.getNano(), 999_999_999);
+        assertEquals(test.getNano(), 999999999);
     }
 
     @Test

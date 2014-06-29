@@ -94,7 +94,7 @@ public class TestZoneRulesProvider {
         ZoneRules rules = ZoneRulesProvider.getRules("Europe/London", false);
         assertEquals(versions.lastEntry().getValue(), rules);
 
-        NavigableMap<String, ZoneRules> copy = new TreeMap<>(versions);
+        NavigableMap<String, ZoneRules> copy = new TreeMap<String, ZoneRules>(versions);
         versions.clear();
         assertEquals(versions.size(), 0);
         NavigableMap<String, ZoneRules> versions2 = ZoneRulesProvider.getVersions("Europe/London");
@@ -142,7 +142,7 @@ public class TestZoneRulesProvider {
         }
         @Override
         protected NavigableMap<String, ZoneRules> provideVersions(String zoneId) {
-            NavigableMap<String, ZoneRules> result = new TreeMap<>();
+            NavigableMap<String, ZoneRules> result = new TreeMap<String, ZoneRules>();
             result.put("BarVersion", rules);
             return result;
         }

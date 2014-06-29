@@ -43,6 +43,7 @@ import java.io.ObjectOutputStream;
 import java.util.Locale;
 import java.util.Set;
 
+import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -149,12 +150,25 @@ public class TestChronology {
         assertEquals(chrono.getCalendarType(), calendarType);
     }
 
-    @Test(dataProvider = "calendarsystemtype")
-    public void test_lookupLocale(Chronology chrono, String calendarType) {
-        Locale locale = new Locale.Builder().setLanguage("en").setRegion("CA").setUnicodeLocaleKeyword("ca", calendarType).build();
-        assertEquals(Chronology.ofLocale(locale), chrono);
+//    @Test(dataProvider = "calendarsystemtype")
+//    public void test_lookupLocale(Chronology chrono, String calendarType) {
+//        Locale locale = new Locale.Builder().setLanguage("en").setRegion("CA").setUnicodeLocaleKeyword("ca", calendarType).build();
+//        assertEquals(Chronology.ofLocale(locale), chrono);
+//    }
+
+    @Test
+    public void test_lookupLocale_jp_JP() {
+        Chronology test = Chronology.ofLocale(new Locale("ja", "JP"));
+        Assert.assertEquals(test.getId(), "ISO");
+        Assert.assertEquals(test, IsoChronology.INSTANCE);
     }
 
+    @Test
+    public void test_lookupLocale_jp_JP_JP() {
+        Chronology test = Chronology.ofLocale(new Locale("ja", "JP", "JP"));
+        Assert.assertEquals(test.getId(), "Japanese");
+        Assert.assertEquals(test, JapaneseChronology.INSTANCE);
+    }
 
     //-----------------------------------------------------------------------
     // serialization; serialize and check each calendar system

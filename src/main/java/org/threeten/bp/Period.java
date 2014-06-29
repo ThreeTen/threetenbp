@@ -39,7 +39,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -217,7 +216,7 @@ public final class Period
                 throw new DateTimeException("Period requires ISO chronology: " + amount);
             }
         }
-        Objects.requireNonNull(amount, "amount");
+        Jdk8Methods.requireNonNull(amount, "amount");
         int years = 0;
         int months = 0;
         int days = 0;
@@ -301,7 +300,7 @@ public final class Period
      * @throws DateTimeParseException if the text cannot be parsed to a period
      */
     public static Period parse(CharSequence text) {
-        Objects.requireNonNull(text, "text");
+        Jdk8Methods.requireNonNull(text, "text");
         Matcher matcher = PATTERN.matcher(text);
         if (matcher.matches()) {
             int negate = ("-".equals(matcher.group(1)) ? -1 : 1);
@@ -797,7 +796,7 @@ public final class Period
      */
     @Override
     public Temporal addTo(Temporal temporal) {
-        Objects.requireNonNull(temporal, "temporal");
+        Jdk8Methods.requireNonNull(temporal, "temporal");
         if (years != 0) {
             if (months != 0) {
                 temporal = temporal.plus(toTotalMonths(), MONTHS);
@@ -847,7 +846,7 @@ public final class Period
      */
     @Override
     public Temporal subtractFrom(Temporal temporal) {
-        Objects.requireNonNull(temporal, "temporal");
+        Jdk8Methods.requireNonNull(temporal, "temporal");
         if (years != 0) {
             if (months != 0) {
                 temporal = temporal.minus(toTotalMonths(), MONTHS);

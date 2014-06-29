@@ -51,7 +51,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 
 import org.threeten.bp.Clock;
 import org.threeten.bp.DateTimeException;
@@ -329,7 +328,7 @@ public final class IsoChronology extends Chronology implements Serializable {
      */
     @Override  // override with covariant return type
     public LocalDate dateNow(Clock clock) {
-        Objects.requireNonNull(clock, "clock");
+        Jdk8Methods.requireNonNull(clock, "clock");
         return date(LocalDate.now(clock));
     }
 

@@ -54,7 +54,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.Set;
 
 import org.threeten.bp.DateTimeException;
@@ -100,7 +99,7 @@ final class DateTimeBuilder
     /**
      * The map of other fields.
      */
-    final Map<TemporalField, Long> fieldValues = new HashMap<>();
+    final Map<TemporalField, Long> fieldValues = new HashMap<TemporalField, Long>();
     /**
      * The chronology.
      */
@@ -165,7 +164,7 @@ final class DateTimeBuilder
      * @throws DateTimeException if the field is already present with a different value
      */
     DateTimeBuilder addFieldValue(TemporalField field, long value) {
-        Objects.requireNonNull(field, "field");
+        Jdk8Methods.requireNonNull(field, "field");
         Long old = getFieldValue0(field);  // check first for better error message
         if (old != null && old.longValue() != value) {
             throw new DateTimeException("Conflict found: " + field + " " + old + " differs from " + field + " " + value + ": " + this);
@@ -377,16 +376,16 @@ final class DateTimeBuilder
             if (resolverStyle != ResolverStyle.LENIENT) {
                 NANO_OF_DAY.checkValidValue(nod);
             }
-            addFieldValue(SECOND_OF_DAY, nod / 1000_000_000L);
-            addFieldValue(NANO_OF_SECOND, nod % 1000_000_000L);
+            addFieldValue(SECOND_OF_DAY, nod / 1000000000L);
+            addFieldValue(NANO_OF_SECOND, nod % 1000000000L);
         }
         if (fieldValues.containsKey(MICRO_OF_DAY)) {
             long cod = fieldValues.remove(MICRO_OF_DAY);
             if (resolverStyle != ResolverStyle.LENIENT) {
                 MICRO_OF_DAY.checkValidValue(cod);
             }
-            addFieldValue(SECOND_OF_DAY, cod / 1000_000L);
-            addFieldValue(MICRO_OF_SECOND, cod % 1000_000L);
+            addFieldValue(SECOND_OF_DAY, cod / 1000000L);
+            addFieldValue(MICRO_OF_SECOND, cod % 1000000L);
         }
         if (fieldValues.containsKey(MILLI_OF_DAY)) {
             long lod = fieldValues.remove(MILLI_OF_DAY);
@@ -414,11 +413,11 @@ final class DateTimeBuilder
             addFieldValue(MINUTE_OF_HOUR, mod % 60);
         }
 
-//            long sod = nod / 1000_000_000L;
+//            long sod = nod / 1000000000L;
 //            addFieldValue(HOUR_OF_DAY, sod / 3600);
 //            addFieldValue(MINUTE_OF_HOUR, (sod / 60) % 60);
 //            addFieldValue(SECOND_OF_MINUTE, sod % 60);
-//            addFieldValue(NANO_OF_SECOND, nod % 1000_000_000L);
+//            addFieldValue(NANO_OF_SECOND, nod % 1000000000L);
         if (resolverStyle != ResolverStyle.LENIENT) {
             if (fieldValues.containsKey(MILLI_OF_SECOND)) {
                 MILLI_OF_SECOND.checkValidValue(fieldValues.get(MILLI_OF_SECOND));
@@ -505,12 +504,12 @@ final class DateTimeBuilder
                         if (nos == null) {
                             nos = 0L;
                         }
-                        long totalNanos = Jdk8Methods.safeMultiply(hodVal, 3600_000_000_000L);
-                        totalNanos = Jdk8Methods.safeAdd(totalNanos, Jdk8Methods.safeMultiply(moh, 60_000_000_000L));
-                        totalNanos = Jdk8Methods.safeAdd(totalNanos, Jdk8Methods.safeMultiply(som, 1_000_000_000L));
+                        long totalNanos = Jdk8Methods.safeMultiply(hodVal, 3600000000000L);
+                        totalNanos = Jdk8Methods.safeAdd(totalNanos, Jdk8Methods.safeMultiply(moh, 60000000000L));
+                        totalNanos = Jdk8Methods.safeAdd(totalNanos, Jdk8Methods.safeMultiply(som, 1000000000L));
                         totalNanos = Jdk8Methods.safeAdd(totalNanos, nos);
-                        int excessDays = (int) Jdk8Methods.floorDiv(totalNanos, 86400_000_000_000L);  // safe int cast
-                        long nod = Jdk8Methods.floorMod(totalNanos, 86400_000_000_000L);
+                        int excessDays = (int) Jdk8Methods.floorDiv(totalNanos, 86400000000000L);  // safe int cast
+                        long nod = Jdk8Methods.floorMod(totalNanos, 86400000000000L);
                         addObject(LocalTime.ofNanoOfDay(nod));
                         this.excessDays = Period.ofDays(excessDays);
                     } else {
@@ -658,7 +657,7 @@ final class DateTimeBuilder
 
     @Override
     public long getLong(TemporalField field) {
-        Objects.requireNonNull(field, "field");
+        Jdk8Methods.requireNonNull(field, "field");
         Long value = getFieldValue0(field);
         if (value == null) {
             if (date != null && date.isSupported(field)) {

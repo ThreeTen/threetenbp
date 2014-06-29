@@ -149,7 +149,7 @@ public class TestLocalDate extends AbstractDateTimeTest {
 
     @Override
     protected List<TemporalField> invalidFields() {
-        List<TemporalField> list = new ArrayList<>(Arrays.<TemporalField>asList(ChronoField.values()));
+        List<TemporalField> list = new ArrayList<TemporalField>(Arrays.<TemporalField>asList(ChronoField.values()));
         list.removeAll(validFields());
         return list;
     }

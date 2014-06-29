@@ -1180,7 +1180,7 @@ public class TestDateTimeFormatters {
 
     //-------------------------------------------------------------------------
     static class MockAccessor extends DefaultInterfaceTemporalAccessor {
-        Map<TemporalField, Long> fields = new HashMap<>();
+        Map<TemporalField, Long> fields = new HashMap<TemporalField, Long>();
         ZoneId zoneId;
 
         void setFields(LocalDate dt) {
@@ -1254,7 +1254,7 @@ public class TestDateTimeFormatters {
 
     //-----------------------------------------------------------------------
     static class Expected {
-        Map<TemporalField, Long> fieldValues = new HashMap<>();
+        Map<TemporalField, Long> fieldValues = new HashMap<TemporalField, Long>();
         ZoneId zone;
         Chronology chrono;
 

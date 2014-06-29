@@ -46,11 +46,11 @@ import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
-import java.util.Objects;
 
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
+import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
@@ -127,7 +127,7 @@ public final class LocalTime
         MIDNIGHT = HOURS[0];
         NOON = HOURS[12];
         MIN = HOURS[0];
-        MAX = new LocalTime(23, 59, 59, 999_999_999);
+        MAX = new LocalTime(23, 59, 59, 999999999);
     }
 
     /**
@@ -161,11 +161,11 @@ public final class LocalTime
     /**
      * Microseconds per day.
      */
-    static final long MICROS_PER_DAY = SECONDS_PER_DAY * 1000_000L;
+    static final long MICROS_PER_DAY = SECONDS_PER_DAY * 1000000L;
     /**
      * Nanos per second.
      */
-    static final long NANOS_PER_SECOND = 1000_000_000L;
+    static final long NANOS_PER_SECOND = 1000000000L;
     /**
      * Nanos per minute.
      */
@@ -244,7 +244,7 @@ public final class LocalTime
      * @return the current time, not null
      */
     public static LocalTime now(Clock clock) {
-        Objects.requireNonNull(clock, "clock");
+        Jdk8Methods.requireNonNull(clock, "clock");
         // inline OffsetTime factory to avoid creating object and InstantProvider checks
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
@@ -433,7 +433,7 @@ public final class LocalTime
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static LocalTime parse(CharSequence text, DateTimeFormatter formatter) {
-        Objects.requireNonNull(formatter, "formatter");
+        Jdk8Methods.requireNonNull(formatter, "formatter");
         return formatter.parse(text, LocalTime.FROM);
     }
 
@@ -625,8 +625,8 @@ public final class LocalTime
             case NANO_OF_DAY: throw new DateTimeException("Field too large for an int: " + field);
             case MICRO_OF_SECOND: return nano / 1000;
             case MICRO_OF_DAY: throw new DateTimeException("Field too large for an int: " + field);
-            case MILLI_OF_SECOND: return nano / 1000_000;
-            case MILLI_OF_DAY: return (int) (toNanoOfDay() / 1000_000);
+            case MILLI_OF_SECOND: return nano / 1000000;
+            case MILLI_OF_DAY: return (int) (toNanoOfDay() / 1000000);
             case SECOND_OF_MINUTE: return second;
             case SECOND_OF_DAY: return toSecondOfDay();
             case MINUTE_OF_HOUR: return minute;
@@ -799,8 +799,8 @@ public final class LocalTime
                 case NANO_OF_DAY: return LocalTime.ofNanoOfDay(newValue);
                 case MICRO_OF_SECOND: return withNano((int) newValue * 1000);
                 case MICRO_OF_DAY: return LocalTime.ofNanoOfDay(newValue * 1000);
-                case MILLI_OF_SECOND: return withNano((int) newValue * 1000_000);
-                case MILLI_OF_DAY: return LocalTime.ofNanoOfDay(newValue * 1000_000);
+                case MILLI_OF_SECOND: return withNano((int) newValue * 1000000);
+                case MILLI_OF_DAY: return LocalTime.ofNanoOfDay(newValue * 1000000);
                 case SECOND_OF_MINUTE: return withSecond((int) newValue);
                 case SECOND_OF_DAY: return plusSeconds(newValue - toSecondOfDay());
                 case MINUTE_OF_HOUR: return withMinute((int) newValue);
@@ -965,7 +965,7 @@ public final class LocalTime
             switch (f) {
                 case NANOS: return plusNanos(amountToAdd);
                 case MICROS: return plusNanos((amountToAdd % MICROS_PER_DAY) * 1000);
-                case MILLIS: return plusNanos((amountToAdd % MILLIS_PER_DAY) * 1000_000);
+                case MILLIS: return plusNanos((amountToAdd % MILLIS_PER_DAY) * 1000000);
                 case SECONDS: return plusSeconds(amountToAdd);
                 case MINUTES: return plusMinutes(amountToAdd);
                 case HOURS: return plusHours(amountToAdd);
@@ -1294,7 +1294,7 @@ public final class LocalTime
             switch ((ChronoUnit) unit) {
                 case NANOS: return nanosUntil;
                 case MICROS: return nanosUntil / 1000;
-                case MILLIS: return nanosUntil / 1000_000;
+                case MILLIS: return nanosUntil / 1000000;
                 case SECONDS: return nanosUntil / NANOS_PER_SECOND;
                 case MINUTES: return nanosUntil / NANOS_PER_MINUTE;
                 case HOURS: return nanosUntil / NANOS_PER_HOUR;
@@ -1373,13 +1373,13 @@ public final class LocalTime
      */
     @Override
     public int compareTo(LocalTime other) {
-        int cmp = Integer.compare(hour, other.hour);
+        int cmp = Jdk8Methods.compareInts(hour, other.hour);
         if (cmp == 0) {
-            cmp = Integer.compare(minute, other.minute);
+            cmp = Jdk8Methods.compareInts(minute, other.minute);
             if (cmp == 0) {
-                cmp = Integer.compare(second, other.second);
+                cmp = Jdk8Methods.compareInts(second, other.second);
                 if (cmp == 0) {
-                    cmp = Integer.compare(nano, other.nano);
+                    cmp = Jdk8Methods.compareInts(nano, other.nano);
                 }
             }
         }
@@ -1479,12 +1479,12 @@ public final class LocalTime
             buf.append(secondValue < 10 ? ":0" : ":").append(secondValue);
             if (nanoValue > 0) {
                 buf.append('.');
-                if (nanoValue % 1000_000 == 0) {
-                    buf.append(Integer.toString((nanoValue / 1000_000) + 1000).substring(1));
+                if (nanoValue % 1000000 == 0) {
+                    buf.append(Integer.toString((nanoValue / 1000000) + 1000).substring(1));
                 } else if (nanoValue % 1000 == 0) {
-                    buf.append(Integer.toString((nanoValue / 1000) + 1000_000).substring(1));
+                    buf.append(Integer.toString((nanoValue / 1000) + 1000000).substring(1));
                 } else {
-                    buf.append(Integer.toString((nanoValue) + 1000_000_000).substring(1));
+                    buf.append(Integer.toString((nanoValue) + 1000000000).substring(1));
                 }
             }
         }
@@ -1502,7 +1502,7 @@ public final class LocalTime
      * @throws DateTimeException if an error occurs during printing
      */
     public String format(DateTimeFormatter formatter) {
-        Objects.requireNonNull(formatter, "formatter");
+        Jdk8Methods.requireNonNull(formatter, "formatter");
         return formatter.format(this);
     }
 

@@ -50,7 +50,6 @@ import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.HashMap;
-import java.util.Objects;
 import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -272,18 +271,18 @@ public final class HijrahDate
      * Holding the adjusted month days in year. The key is a year (Integer) and
      * the value is the all the month days in year (Integer[]).
      */
-    private static final HashMap<Integer, Integer[]> ADJUSTED_MONTH_DAYS = new HashMap<>();
+    private static final HashMap<Integer, Integer[]> ADJUSTED_MONTH_DAYS = new HashMap<Integer, Integer[]>();
     /**
      * Holding the adjusted month length in year. The key is a year (Integer)
      * and the value is the all the month length in year (Integer[]).
      */
-    private static final HashMap<Integer, Integer[]> ADJUSTED_MONTH_LENGTHS = new HashMap<>();
+    private static final HashMap<Integer, Integer[]> ADJUSTED_MONTH_LENGTHS = new HashMap<Integer, Integer[]>();
     /**
      * Holding the adjusted days in the 30 year cycle. The key is a cycle number
      * (Integer) and the value is the all the starting days of the year in the
      * cycle (Integer[]).
      */
-    private static final HashMap<Integer, Integer[]> ADJUSTED_CYCLE_YEARS = new HashMap<>();
+    private static final HashMap<Integer, Integer[]> ADJUSTED_CYCLE_YEARS = new HashMap<Integer, Integer[]>();
     /**
      * Holding the adjusted cycle in the 1 - 30000 year. The key is the cycle
      * number (Integer) and the value is the starting days in the cycle in the
@@ -373,7 +372,10 @@ public final class HijrahDate
         }
         try {
             readDeviationConfig();
-        } catch (IOException | ParseException e) {
+        } catch (IOException e) {
+            // do nothing. Ignore deviation config.
+            // e.printStackTrace();
+        } catch (ParseException e) {
             // do nothing. Ignore deviation config.
             // e.printStackTrace();
         }
@@ -500,7 +502,7 @@ public final class HijrahDate
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     static HijrahDate of(HijrahEra era, int yearOfEra, int monthOfYear, int dayOfMonth) {
-        Objects.requireNonNull(era, "era");
+        Jdk8Methods.requireNonNull(era, "era");
         checkValidYearOfEra(yearOfEra);
         checkValidMonth(monthOfYear);
         checkValidDayOfMonth(dayOfMonth);
@@ -1527,13 +1529,19 @@ public final class HijrahDate
     private static void readDeviationConfig() throws IOException, ParseException {
         InputStream is = getConfigFileInputStream();
         if (is != null) {
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+            BufferedReader br = null;
+            try {
+                br = new BufferedReader(new InputStreamReader(is));
                 String line = "";
                 int num = 0;
                 while ((line = br.readLine()) != null) {
                     num++;
                     line = line.trim();
                     parseLine(line, num);
+                }
+            } finally {
+                if (br != null) {
+                    br.close();
                 }
             }
         }

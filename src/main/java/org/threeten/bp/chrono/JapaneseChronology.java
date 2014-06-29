@@ -56,7 +56,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 
 import org.threeten.bp.Clock;
 import org.threeten.bp.DateTimeException;
@@ -102,7 +101,7 @@ import org.threeten.bp.temporal.ValueRange;
 public final class JapaneseChronology extends Chronology implements Serializable {
 
     // Locale for creating a JapaneseImpericalCalendar.
-    static final Locale LOCALE = Locale.forLanguageTag("ja-JP-u-ca-japanese");
+    static final Locale LOCALE = new Locale("ja", "JP", "JP");
 
     /**
      * Singleton instance for Japanese chronology.
@@ -117,15 +116,15 @@ public final class JapaneseChronology extends Chronology implements Serializable
     /**
      * Narrow names for eras.
      */
-    private static final Map<String, String[]> ERA_NARROW_NAMES = new HashMap<>();
+    private static final Map<String, String[]> ERA_NARROW_NAMES = new HashMap<String, String[]>();
     /**
      * Short names for eras.
      */
-    private static final Map<String, String[]> ERA_SHORT_NAMES = new HashMap<>();
+    private static final Map<String, String[]> ERA_SHORT_NAMES = new HashMap<String, String[]>();
     /**
      * Full names for eras.
      */
-    private static final Map<String, String[]> ERA_FULL_NAMES = new HashMap<>();
+    private static final Map<String, String[]> ERA_FULL_NAMES = new HashMap<String, String[]>();
     /**
      * Fallback language for the era names.
      */
@@ -305,7 +304,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
 
     @Override  // override with covariant return type
     public JapaneseDate dateNow(Clock clock) {
-        Objects.requireNonNull(clock, "clock");
+        Jdk8Methods.requireNonNull(clock, "clock");
         return (JapaneseDate) super.dateNow(clock);
     }
 

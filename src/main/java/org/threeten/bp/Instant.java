@@ -47,7 +47,6 @@ import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
-import java.util.Objects;
 
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeParseException;
@@ -192,7 +191,7 @@ public final class Instant
      * The value is also chosen such that the value of the year fits in
      * an {@code int}.
      */
-    public static final Instant MAX = Instant.ofEpochSecond(MAX_SECOND, 999_999_999);
+    public static final Instant MAX = Instant.ofEpochSecond(MAX_SECOND, 999999999);
     /**
      * Simulate JDK 8 method reference Instant::from.
      */
@@ -210,7 +209,11 @@ public final class Instant
     /**
      * Constant for nanos per second.
      */
-    private static final int NANOS_PER_SECOND = 1000_000_000;
+    private static final int NANOS_PER_SECOND = 1000000000;
+    /**
+     * Constant for nanos per milli.
+     */
+    private static final int NANOS_PER_MILLI = 1000000;
 
     /**
      * The number of seconds from the epoch of 1970-01-01T00:00:00Z.
@@ -250,7 +253,7 @@ public final class Instant
      * @return the current instant, not null
      */
     public static Instant now(Clock clock) {
-        Objects.requireNonNull(clock, "clock");
+        Jdk8Methods.requireNonNull(clock, "clock");
         return clock.instant();
     }
 
@@ -308,7 +311,7 @@ public final class Instant
     public static Instant ofEpochMilli(long epochMilli) {
         long secs = Jdk8Methods.floorDiv(epochMilli, 1000);
         int mos = Jdk8Methods.floorMod(epochMilli, 1000);
-        return create(secs, mos * 1000_000);
+        return create(secs, mos * NANOS_PER_MILLI);
     }
 
     //-----------------------------------------------------------------------
@@ -485,7 +488,7 @@ public final class Instant
             switch ((ChronoField) field) {
                 case NANO_OF_SECOND: return nanos;
                 case MICRO_OF_SECOND: return nanos / 1000;
-                case MILLI_OF_SECOND: return nanos / 1000_000;
+                case MILLI_OF_SECOND: return nanos / NANOS_PER_MILLI;
                 case INSTANT_SECONDS: INSTANT_SECONDS.checkValidIntValue(seconds);
             }
             throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
@@ -521,7 +524,7 @@ public final class Instant
             switch ((ChronoField) field) {
                 case NANO_OF_SECOND: return nanos;
                 case MICRO_OF_SECOND: return nanos / 1000;
-                case MILLI_OF_SECOND: return nanos / 1000_000;
+                case MILLI_OF_SECOND: return nanos / NANOS_PER_MILLI;
                 case INSTANT_SECONDS: return seconds;
             }
             throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
@@ -630,7 +633,7 @@ public final class Instant
             f.checkValidValue(newValue);
             switch (f) {
                 case MILLI_OF_SECOND: {
-                    int nval = (int) newValue * 1000_000;
+                    int nval = (int) newValue * NANOS_PER_MILLI;
                     return (nval != nanos ? create(seconds, nval) : this);
                 }
                 case MICRO_OF_SECOND: {
@@ -705,7 +708,7 @@ public final class Instant
         if (unit instanceof ChronoUnit) {
             switch ((ChronoUnit) unit) {
                 case NANOS: return plusNanos(amountToAdd);
-                case MICROS: return plus(amountToAdd / 1000_000, (amountToAdd % 1000_000) * 1000);
+                case MICROS: return plus(amountToAdd / 1000000, (amountToAdd % 1000000) * 1000);
                 case MILLIS: return plusMillis(amountToAdd);
                 case SECONDS: return plusSeconds(amountToAdd);
                 case MINUTES: return plusSeconds(Jdk8Methods.safeMultiply(amountToAdd, SECONDS_PER_MINUTE));
@@ -744,7 +747,7 @@ public final class Instant
      * @throws ArithmeticException if numeric overflow occurs
      */
     public Instant plusMillis(long millisToAdd) {
-        return plus(millisToAdd / 1000, (millisToAdd % 1000) * 1000_000);
+        return plus(millisToAdd / 1000, (millisToAdd % 1000) * NANOS_PER_MILLI);
     }
 
     /**
@@ -1051,7 +1054,7 @@ public final class Instant
      */
     public long toEpochMilli() {
         long millis = Jdk8Methods.safeMultiply(seconds, 1000);
-        return millis + nanos / 1000_000;
+        return millis + nanos / NANOS_PER_MILLI;
     }
 
     //-----------------------------------------------------------------------
@@ -1067,7 +1070,7 @@ public final class Instant
      */
     @Override
     public int compareTo(Instant otherInstant) {
-        int cmp = Long.compare(seconds, otherInstant.seconds);
+        int cmp = Jdk8Methods.compareLongs(seconds, otherInstant.seconds);
         if (cmp != 0) {
             return cmp;
         }

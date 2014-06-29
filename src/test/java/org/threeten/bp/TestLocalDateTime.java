@@ -173,7 +173,7 @@ public class TestLocalDateTime extends AbstractDateTimeTest {
 
     @Override
     protected List<TemporalField> invalidFields() {
-        List<TemporalField> list = new ArrayList<>(Arrays.<TemporalField>asList(ChronoField.values()));
+        List<TemporalField> list = new ArrayList<TemporalField>(Arrays.<TemporalField>asList(ChronoField.values()));
         list.removeAll(validFields());
         return list;
     }
@@ -796,7 +796,7 @@ public class TestLocalDateTime extends AbstractDateTimeTest {
 
     @Test(expectedExceptions=DateTimeException.class)
     public void factory_ofEpochSecond_badNanos_toBig() {
-        LocalDateTime.ofEpochSecond(0, 1_000_000_000, OFFSET_PONE);
+        LocalDateTime.ofEpochSecond(0, 1000000000, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=DateTimeException.class)

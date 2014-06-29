@@ -36,7 +36,6 @@ import static org.threeten.bp.temporal.ChronoField.NANO_OF_DAY;
 import static org.threeten.bp.temporal.ChronoUnit.NANOS;
 
 import java.util.Comparator;
-import java.util.Objects;
 
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.Instant;
@@ -47,6 +46,7 @@ import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporal;
+import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
@@ -116,9 +116,9 @@ public abstract class ChronoLocalDateTime<D extends ChronoLocalDate>
             new Comparator<ChronoLocalDateTime<?>>() {
         @Override
         public int compare(ChronoLocalDateTime<?> datetime1, ChronoLocalDateTime<?> datetime2) {
-            int cmp = Long.compare(datetime1.toLocalDate().toEpochDay(), datetime2.toLocalDate().toEpochDay());
+            int cmp = Jdk8Methods.compareLongs(datetime1.toLocalDate().toEpochDay(), datetime2.toLocalDate().toEpochDay());
             if (cmp == 0) {
-                cmp = Long.compare(datetime1.toLocalTime().toNanoOfDay(), datetime2.toLocalTime().toNanoOfDay());
+                cmp = Jdk8Methods.compareLongs(datetime1.toLocalTime().toNanoOfDay(), datetime2.toLocalTime().toNanoOfDay());
             }
             return cmp;
         }
@@ -147,7 +147,7 @@ public abstract class ChronoLocalDateTime<D extends ChronoLocalDate>
      * @see Chronology#localDateTime(TemporalAccessor)
      */
     public static ChronoLocalDateTime<?> from(TemporalAccessor temporal) {
-        Objects.requireNonNull(temporal, "temporal");
+        Jdk8Methods.requireNonNull(temporal, "temporal");
         if (temporal instanceof ChronoLocalDateTime) {
             return (ChronoLocalDateTime<?>) temporal;
         }
@@ -259,7 +259,7 @@ public abstract class ChronoLocalDateTime<D extends ChronoLocalDate>
      * @throws DateTimeException if an error occurs during printing
      */
     public String format(DateTimeFormatter formatter) {
-        Objects.requireNonNull(formatter, "formatter");
+        Jdk8Methods.requireNonNull(formatter, "formatter");
         return formatter.format(this);
     }
 
@@ -319,7 +319,7 @@ public abstract class ChronoLocalDateTime<D extends ChronoLocalDate>
      * @return the number of seconds from the epoch of 1970-01-01T00:00:00Z
      */
     public long toEpochSecond(ZoneOffset offset) {
-        Objects.requireNonNull(offset, "offset");
+        Jdk8Methods.requireNonNull(offset, "offset");
         long epochDay = toLocalDate().toEpochDay();
         long secs = epochDay * 86400 + toLocalTime().toSecondOfDay();
         secs -= offset.getTotalSeconds();

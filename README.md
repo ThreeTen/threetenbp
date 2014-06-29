@@ -1,12 +1,12 @@
 
 ## ThreeTen backport project
 JSR-310 provides a new date and time library for Java SE 8.
-This project is the backport to Java SE 7.
+This project is the backport to Java SE 6 and 7.
 
 The backport is NOT an implementation of JSR-310, as that would require
 jumping through lots of unnecessary hoops.
 Instead, this is a simple backport intended to allow users to quickly
-use the JSR-310 API on Java SE 7.
+use the JSR-310 API on Java SE 6 and 7.
 The backport should be referred to using the "ThreeTen" name.
 
 Active development on JSR-310 is at [OpenJDK](http://openjdk.java.net/):

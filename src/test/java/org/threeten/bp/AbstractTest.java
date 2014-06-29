@@ -76,12 +76,24 @@ public abstract class AbstractTest {
 
     protected static Object writeThenRead(Object o) throws IOException, ClassNotFoundException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (ObjectOutputStream oos = new ObjectOutputStream(baos) ) {
+        ObjectOutputStream oos = null;
+        try {
+            oos = new ObjectOutputStream(baos);
             oos.writeObject(o);
+        } finally {
+            if (oos != null) {
+                oos.close();
+            }
         }
 
-        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
+        ObjectInputStream ois = null;
+        try {
+            ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
             return ois.readObject();
+        } finally {
+            if (ois != null) {
+                ois.close();
+            }
         }
     }
 
@@ -95,9 +107,15 @@ public abstract class AbstractTest {
 //            out.writeObject(objectSerialised);
 //        }
 
-        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(SERIALISATION_DATA_FOLDER + className + ".bin"))) {
+        ObjectInputStream in = null;
+        try {
+            in = new ObjectInputStream(new FileInputStream(SERIALISATION_DATA_FOLDER + className + ".bin"));
             Object objectFromFile = in.readObject();
             assertEquals(objectFromFile, objectSerialised);
+        } finally {
+            if (in != null) {
+                in.close();
+            }
         }
     }
 
@@ -128,12 +146,20 @@ public abstract class AbstractTest {
         field.setAccessible(true);
         long serVer = (Long) field.get(null);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (ObjectOutputStream oos = new ObjectOutputStream(baos) ) {
+        ObjectOutputStream oos = null;
+        try {
+            oos = new ObjectOutputStream(baos);
             oos.writeObject(object);
+        } finally {
+            if (oos != null) {
+                oos.close();
+            }
         }
         byte[] bytes = baos.toByteArray();
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-        try (DataInputStream dis = new DataInputStream(bais)) {
+        DataInputStream dis = null;
+        try {
+            dis = new DataInputStream(bais);
             assertEquals(dis.readShort(), ObjectStreamConstants.STREAM_MAGIC);
             assertEquals(dis.readShort(), ObjectStreamConstants.STREAM_VERSION);
             assertEquals(dis.readByte(), ObjectStreamConstants.TC_OBJECT);
@@ -173,6 +199,10 @@ public abstract class AbstractTest {
             } else {
                 assertEquals(dis.readByte(), ObjectStreamConstants.TC_ENDBLOCKDATA);  // end of blockdata
                 assertEquals(dis.read(), -1);
+            }
+        } finally {
+            if (dis != null) {
+                dis.close();
             }
         }
     }

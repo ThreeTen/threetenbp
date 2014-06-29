@@ -128,8 +128,8 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
         }
 
         // convert savings transitions to locals
-        List<LocalDateTime> localTransitionList = new ArrayList<>();
-        List<ZoneOffset> localTransitionOffsetList = new ArrayList<>();
+        List<LocalDateTime> localTransitionList = new ArrayList<LocalDateTime>();
+        List<ZoneOffset> localTransitionOffsetList = new ArrayList<ZoneOffset>();
         localTransitionOffsetList.add(baseWallOffset);
         for (ZoneOffsetTransition trans : transitionList) {
             if (trans.isGap()) {
@@ -181,7 +181,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
         this.lastRules = lastRules;
 
         // convert savings transitions to locals
-        List<LocalDateTime> localTransitionList = new ArrayList<>();
+        List<LocalDateTime> localTransitionList = new ArrayList<LocalDateTime>();
         for (int i = 0; i < savingsInstantTransitions.length; i++) {
             ZoneOffset before = wallOffsets[i];
             ZoneOffset after = wallOffsets[i + 1];
@@ -545,7 +545,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
     //-------------------------------------------------------------------------
     @Override
     public List<ZoneOffsetTransition> getTransitions() {
-        List<ZoneOffsetTransition> list = new ArrayList<>();
+        List<ZoneOffsetTransition> list = new ArrayList<ZoneOffsetTransition>();
         for (int i = 0; i < savingsInstantTransitions.length; i++) {
             list.add(new ZoneOffsetTransition(savingsInstantTransitions[i], wallOffsets[i], wallOffsets[i + 1]));
         }

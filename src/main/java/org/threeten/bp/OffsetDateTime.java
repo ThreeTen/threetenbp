@@ -44,12 +44,12 @@ import java.io.InvalidObjectException;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Comparator;
-import java.util.Objects;
 
 import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporal;
+import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
@@ -136,9 +136,9 @@ public final class OffsetDateTime
     private static final Comparator<OffsetDateTime> INSTANT_COMPARATOR = new Comparator<OffsetDateTime>() {
         @Override
         public int compare(OffsetDateTime datetime1, OffsetDateTime datetime2) {
-            int cmp = Long.compare(datetime1.toEpochSecond(), datetime2.toEpochSecond());
+            int cmp = Jdk8Methods.compareLongs(datetime1.toEpochSecond(), datetime2.toEpochSecond());
             if (cmp == 0) {
-                cmp = Long.compare(datetime1.getNano(), datetime2.getNano());
+                cmp = Jdk8Methods.compareLongs(datetime1.getNano(), datetime2.getNano());
             }
             return cmp;
         }
@@ -205,7 +205,7 @@ public final class OffsetDateTime
      * @return the current date-time, not null
      */
     public static OffsetDateTime now(Clock clock) {
-        Objects.requireNonNull(clock, "clock");
+        Jdk8Methods.requireNonNull(clock, "clock");
         final Instant now = clock.instant();  // called once
         return ofInstant(now, clock.getZone().getRules().getOffset(now));
     }
@@ -284,8 +284,8 @@ public final class OffsetDateTime
      * @throws DateTimeException if the result exceeds the supported range
      */
     public static OffsetDateTime ofInstant(Instant instant, ZoneId zone) {
-        Objects.requireNonNull(instant, "instant");
-        Objects.requireNonNull(zone, "zone");
+        Jdk8Methods.requireNonNull(instant, "instant");
+        Jdk8Methods.requireNonNull(zone, "zone");
         ZoneRules rules = zone.getRules();
         ZoneOffset offset = rules.getOffset(instant);
         LocalDateTime ldt = LocalDateTime.ofEpochSecond(instant.getEpochSecond(), instant.getNano(), offset);
@@ -355,7 +355,7 @@ public final class OffsetDateTime
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static OffsetDateTime parse(CharSequence text, DateTimeFormatter formatter) {
-        Objects.requireNonNull(formatter, "formatter");
+        Jdk8Methods.requireNonNull(formatter, "formatter");
         return formatter.parse(text, OffsetDateTime.FROM);
     }
 
@@ -367,8 +367,8 @@ public final class OffsetDateTime
      * @param offset  the zone offset, not null
      */
     private OffsetDateTime(LocalDateTime dateTime, ZoneOffset offset) {
-        this.dateTime = Objects.requireNonNull(dateTime, "dateTime");
-        this.offset = Objects.requireNonNull(offset, "offset");
+        this.dateTime = Jdk8Methods.requireNonNull(dateTime, "dateTime");
+        this.offset = Jdk8Methods.requireNonNull(offset, "offset");
     }
 
     /**
@@ -1661,7 +1661,7 @@ public final class OffsetDateTime
         if (getOffset().equals(other.getOffset())) {
             return toLocalDateTime().compareTo(other.toLocalDateTime());
         }
-        int cmp = Long.compare(toEpochSecond(), other.toEpochSecond());
+        int cmp = Jdk8Methods.compareLongs(toEpochSecond(), other.toEpochSecond());
         if (cmp == 0) {
             cmp = toLocalTime().getNano() - other.toLocalTime().getNano();
             if (cmp == 0) {
@@ -1787,7 +1787,7 @@ public final class OffsetDateTime
      * @throws DateTimeException if an error occurs during printing
      */
     public String format(DateTimeFormatter formatter) {
-        Objects.requireNonNull(formatter, "formatter");
+        Jdk8Methods.requireNonNull(formatter, "formatter");
         return formatter.format(this);
     }
 

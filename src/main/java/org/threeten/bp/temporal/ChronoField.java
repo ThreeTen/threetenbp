@@ -47,7 +47,6 @@ import static org.threeten.bp.temporal.ChronoUnit.YEARS;
 
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.Instant;
@@ -56,6 +55,7 @@ import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.format.ResolverStyle;
+import org.threeten.bp.jdk8.Jdk8Methods;
 
 /**
  * A standard set of fields.
@@ -89,7 +89,7 @@ public enum ChronoField implements TemporalField {
      * For example, if the {@code TemporalAccessor} stores time to millisecond precision,
      * then the nano-of-second must be divided by 1,000,000 before replacing the milli-of-second.
      */
-    NANO_OF_SECOND("NanoOfSecond", NANOS, SECONDS, ValueRange.of(0, 999_999_999)),
+    NANO_OF_SECOND("NanoOfSecond", NANOS, SECONDS, ValueRange.of(0, 999999999)),
     /**
      * The nano-of-day.
      * <p>
@@ -100,7 +100,7 @@ public enum ChronoField implements TemporalField {
      * Implementations of {@code TemporalAccessor} should provide a value for this field if
      * they can return a value for {@link #SECOND_OF_DAY} filling unknown precision with zero.
      */
-    NANO_OF_DAY("NanoOfDay", NANOS, DAYS, ValueRange.of(0, 86400L * 1000_000_000L - 1)),
+    NANO_OF_DAY("NanoOfDay", NANOS, DAYS, ValueRange.of(0, 86400L * 1000000000L - 1)),
     /**
      * The micro-of-second.
      * <p>
@@ -115,7 +115,7 @@ public enum ChronoField implements TemporalField {
      * When this field is used for setting a value, it should behave in the same way as
      * setting {@link #NANO_OF_SECOND} with the value multiplied by 1,000.
      */
-    MICRO_OF_SECOND("MicroOfSecond", MICROS, SECONDS, ValueRange.of(0, 999_999)),
+    MICRO_OF_SECOND("MicroOfSecond", MICROS, SECONDS, ValueRange.of(0, 999999)),
     /**
      * The micro-of-day.
      * <p>
@@ -129,7 +129,7 @@ public enum ChronoField implements TemporalField {
      * When this field is used for setting a value, it should behave in the same way as
      * setting {@link #NANO_OF_DAY} with the value multiplied by 1,000.
      */
-    MICRO_OF_DAY("MicroOfDay", MICROS, DAYS, ValueRange.of(0, 86400L * 1000_000L - 1)),
+    MICRO_OF_DAY("MicroOfDay", MICROS, DAYS, ValueRange.of(0, 86400L * 1000000L - 1)),
     /**
      * The milli-of-second.
      * <p>
@@ -600,7 +600,7 @@ public enum ChronoField implements TemporalField {
 
     @Override
     public String getDisplayName(Locale locale) {
-        Objects.requireNonNull(locale, "locale");
+        Jdk8Methods.requireNonNull(locale, "locale");
         return toString();
     }
 

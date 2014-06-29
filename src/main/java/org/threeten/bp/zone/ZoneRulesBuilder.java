@@ -40,7 +40,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.DayOfWeek;
@@ -51,6 +50,7 @@ import org.threeten.bp.Month;
 import org.threeten.bp.Year;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.chrono.IsoChronology;
+import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 /**
@@ -74,7 +74,7 @@ class ZoneRulesBuilder {
     /**
      * The list of windows.
      */
-    private List<TZWindow> windowList = new ArrayList<>();
+    private List<TZWindow> windowList = new ArrayList<ZoneRulesBuilder.TZWindow>();
     /**
      * A map for deduplicating the output.
      */
@@ -117,9 +117,9 @@ class ZoneRulesBuilder {
             ZoneOffset standardOffset,
             LocalDateTime until,
             TimeDefinition untilDefinition) {
-        Objects.requireNonNull(standardOffset, "standardOffset");
-        Objects.requireNonNull(until, "until");
-        Objects.requireNonNull(untilDefinition, "untilDefinition");
+        Jdk8Methods.requireNonNull(standardOffset, "standardOffset");
+        Jdk8Methods.requireNonNull(until, "until");
+        Jdk8Methods.requireNonNull(untilDefinition, "untilDefinition");
         TZWindow window = new TZWindow(standardOffset, until, untilDefinition);
         if (windowList.size() > 0) {
             TZWindow previous = windowList.get(windowList.size() - 1);
@@ -192,7 +192,7 @@ class ZoneRulesBuilder {
             LocalDateTime transitionDateTime,
             TimeDefinition timeDefinition,
             int savingAmountSecs) {
-        Objects.requireNonNull(transitionDateTime, "transitionDateTime");
+        Jdk8Methods.requireNonNull(transitionDateTime, "transitionDateTime");
         return addRuleToWindow(
                 transitionDateTime.getYear(), transitionDateTime.getYear(),
                 transitionDateTime.getMonth(), transitionDateTime.getDayOfMonth(),
@@ -264,9 +264,9 @@ class ZoneRulesBuilder {
             boolean timeEndOfDay,
             TimeDefinition timeDefinition,
             int savingAmountSecs) {
-        Objects.requireNonNull(month, "month");
-        Objects.requireNonNull(time, "time");
-        Objects.requireNonNull(timeDefinition, "timeDefinition");
+        Jdk8Methods.requireNonNull(month, "month");
+        Jdk8Methods.requireNonNull(time, "time");
+        Jdk8Methods.requireNonNull(timeDefinition, "timeDefinition");
         YEAR.checkValidValue(startYear);
         YEAR.checkValidValue(endYear);
         if (dayOfMonthIndicator < -28 || dayOfMonthIndicator > 31 || dayOfMonthIndicator == 0) {
@@ -312,15 +312,15 @@ class ZoneRulesBuilder {
      * @throws IllegalStateException if there is only one rule defined as being forever for any given window
      */
     ZoneRules toRules(String zoneId, Map<Object, Object> deduplicateMap) {
-        Objects.requireNonNull(zoneId, "zoneId");
+        Jdk8Methods.requireNonNull(zoneId, "zoneId");
         this.deduplicateMap = deduplicateMap;
         if (windowList.isEmpty()) {
             throw new IllegalStateException("No windows have been added to the builder");
         }
 
-        final List<ZoneOffsetTransition> standardTransitionList = new ArrayList<>(4);
-        final List<ZoneOffsetTransition> transitionList = new ArrayList<>(256);
-        final List<ZoneOffsetTransitionRule> lastTransitionRuleList = new ArrayList<>(2);
+        final List<ZoneOffsetTransition> standardTransitionList = new ArrayList<ZoneOffsetTransition>(4);
+        final List<ZoneOffsetTransition> transitionList = new ArrayList<ZoneOffsetTransition>(256);
+        final List<ZoneOffsetTransitionRule> lastTransitionRuleList = new ArrayList<ZoneOffsetTransitionRule>(2);
 
         // initialize the standard offset calculation
         final TZWindow firstWindow = windowList.get(0);
@@ -434,11 +434,11 @@ class ZoneRulesBuilder {
         /** The fixed amount of the saving to be applied during this window. */
         private Integer fixedSavingAmountSecs;
         /** The rules for the current window. */
-        private List<TZRule> ruleList = new ArrayList<>();
+        private List<TZRule> ruleList = new ArrayList<TZRule>();
         /** The latest year that the last year starts at. */
         private int maxLastRuleStartYear = Year.MIN_VALUE;
         /** The last rules. */
-        private List<TZRule> lastRuleList = new ArrayList<>();
+        private List<TZRule> lastRuleList = new ArrayList<TZRule>();
 
         /**
          * Constructor.

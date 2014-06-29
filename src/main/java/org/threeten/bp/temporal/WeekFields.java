@@ -46,7 +46,6 @@ import java.io.Serializable;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -128,7 +127,7 @@ public final class WeekFields implements Serializable {
      * The cache of rules by firstDayOfWeek plus minimalDays.
      * Initialized first to be available for definition of ISO, etc.
      */
-    private static final ConcurrentMap<String, WeekFields> CACHE = new ConcurrentHashMap<>(4, 0.75f, 2);
+    private static final ConcurrentMap<String, WeekFields> CACHE = new ConcurrentHashMap<String, WeekFields>(4, 0.75f, 2);
 
     /**
      * The ISO-8601 definition, where a week starts on Monday and the first week
@@ -197,7 +196,7 @@ public final class WeekFields implements Serializable {
      * @return the week-definition, not null
      */
     public static WeekFields of(Locale locale) {
-        Objects.requireNonNull(locale, "locale");
+        Jdk8Methods.requireNonNull(locale, "locale");
         locale = new Locale(locale.getLanguage(), locale.getCountry());  // elminate variants
 
         // obtain these from GregorianCalendar for now
@@ -248,7 +247,7 @@ public final class WeekFields implements Serializable {
      * @throws IllegalArgumentException if the minimal days value is invalid
      */
     private WeekFields(DayOfWeek firstDayOfWeek, int minimalDaysInFirstWeek) {
-        Objects.requireNonNull(firstDayOfWeek, "firstDayOfWeek");
+        Jdk8Methods.requireNonNull(firstDayOfWeek, "firstDayOfWeek");
         if (minimalDaysInFirstWeek < 1 || minimalDaysInFirstWeek > 7) {
             throw new IllegalArgumentException("Minimal number of days is invalid");
         }
@@ -996,7 +995,7 @@ public final class WeekFields implements Serializable {
 
         @Override
         public String getDisplayName(Locale locale) {
-            Objects.requireNonNull(locale, "locale");
+            Jdk8Methods.requireNonNull(locale, "locale");
             if (rangeUnit == YEARS) {  // week-of-year
                 return "Week";
             }

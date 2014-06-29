@@ -46,7 +46,6 @@ import static org.threeten.bp.temporal.ChronoUnit.YEARS;
 
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 
 import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDate;
@@ -352,7 +351,7 @@ public final class IsoFields {
             }
             @Override
             public String getDisplayName(Locale locale) {
-                Objects.requireNonNull(locale, "locale");
+                Jdk8Methods.requireNonNull(locale, "locale");
                 return "Week";
             }
 
@@ -477,7 +476,7 @@ public final class IsoFields {
 
         @Override
         public String getDisplayName(Locale locale) {
-            Objects.requireNonNull(locale, "locale");
+            Jdk8Methods.requireNonNull(locale, "locale");
             return toString();
         }
 

@@ -49,7 +49,6 @@ import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
-import java.util.Objects;
 
 import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.IsoChronology;
@@ -186,7 +185,7 @@ public final class YearMonth
      * @throws DateTimeException if the year value is invalid
      */
     public static YearMonth of(int year, Month month) {
-        Objects.requireNonNull(month, "month");
+        Jdk8Methods.requireNonNull(month, "month");
         return of(year, month.getValue());
     }
 
@@ -265,7 +264,7 @@ public final class YearMonth
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static YearMonth parse(CharSequence text, DateTimeFormatter formatter) {
-        Objects.requireNonNull(formatter, "formatter");
+        Jdk8Methods.requireNonNull(formatter, "formatter");
         return formatter.parse(text, YearMonth.FROM);
     }
 
@@ -1077,7 +1076,7 @@ public final class YearMonth
      * @throws DateTimeException if an error occurs during printing
      */
     public String format(DateTimeFormatter formatter) {
-        Objects.requireNonNull(formatter, "formatter");
+        Jdk8Methods.requireNonNull(formatter, "formatter");
         return formatter.format(this);
     }
 

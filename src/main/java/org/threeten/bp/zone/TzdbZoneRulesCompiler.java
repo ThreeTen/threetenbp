@@ -174,7 +174,7 @@ final class TzdbZoneRulesCompiler {
         }
 
         // find source directories to process
-        List<File> srcDirs = new ArrayList<>();
+        List<File> srcDirs = new ArrayList<File>();
         if (version != null) {
             File srcDir = new File(baseSrcDir, version);
             if (srcDir.isDirectory() == false) {
@@ -232,15 +232,15 @@ final class TzdbZoneRulesCompiler {
      */
     private static void process(List<File> srcDirs, List<String> srcFileNames, File dstDir, boolean unpacked, boolean verbose) {
         // build actual jar files
-        Map<Object, Object> deduplicateMap = new HashMap<>();
-        Map<String, SortedMap<String, ZoneRules>> allBuiltZones = new TreeMap<>();
+        Map<Object, Object> deduplicateMap = new HashMap<Object, Object>();
+        Map<String, SortedMap<String, ZoneRules>> allBuiltZones = new TreeMap<String, SortedMap<String, ZoneRules>>();
         Set<String> allRegionIds = new TreeSet<String>();
         Set<ZoneRules> allRules = new HashSet<ZoneRules>();
         SortedMap<LocalDate, Byte> bestLeapSeconds = null;
 
         for (File srcDir : srcDirs) {
             // source files in this directory
-            List<File> srcFiles = new ArrayList<>();
+            List<File> srcFiles = new ArrayList<File>();
             for (String srcFileName : srcFileNames) {
                 File file = new File(srcDir, srcFileName);
                 if (file.exists()) {
@@ -320,11 +320,23 @@ final class TzdbZoneRulesCompiler {
         File leapFile = new File(dstDir, "LeapSecondRules.dat");
         leapFile.delete();
         try {
-            try (FileOutputStream fos = new FileOutputStream(tzdbFile)) {
+            FileOutputStream fos = null;
+            try {
+                fos = new FileOutputStream(tzdbFile);
                 outputTzdbDat(fos, allBuiltZones, allRegionIds, allRules);
+            } finally {
+                if (fos != null) {
+                    fos.close();
+                }
             }
-            try (FileOutputStream fos = new FileOutputStream(leapFile)) {
-                outputLeapSecondDat(fos, leapSeconds);
+            FileOutputStream fos2 = null;
+            try {
+                fos2 = new FileOutputStream(leapFile);
+                outputLeapSecondDat(fos2, leapSeconds);
+            } finally {
+                if (fos2 != null) {
+                    fos2.close();
+                }
             }
         } catch (Exception ex) {
             System.out.println("Failed: " + ex.toString());
@@ -337,7 +349,7 @@ final class TzdbZoneRulesCompiler {
      * Outputs the file.
      */
     private static void outputFile(File dstFile, String version, SortedMap<String, ZoneRules> builtZones, SortedMap<LocalDate, Byte> leapSeconds) {
-        Map<String, SortedMap<String, ZoneRules>> loopAllBuiltZones = new TreeMap<>();
+        Map<String, SortedMap<String, ZoneRules>> loopAllBuiltZones = new TreeMap<String, SortedMap<String, ZoneRules>>();
         loopAllBuiltZones.put(version, builtZones);
         Set<String> loopAllRegionIds = new TreeSet<String>(builtZones.keySet());
         Set<ZoneRules> loopAllRules = new HashSet<ZoneRules>(builtZones.values());
@@ -349,13 +361,23 @@ final class TzdbZoneRulesCompiler {
      */
     private static void outputFile(File dstFile, Map<String, SortedMap<String, ZoneRules>> allBuiltZones,
             Set<String> allRegionIds, Set<ZoneRules> allRules, SortedMap<LocalDate, Byte> leapSeconds) {
-        try (JarOutputStream jos = new JarOutputStream(new FileOutputStream(dstFile))) {
+        JarOutputStream jos = null;
+        try {
+            jos = new JarOutputStream(new FileOutputStream(dstFile));
             outputTzdbEntry(jos, allBuiltZones, allRegionIds, allRules);
             outputLeapSecondEntry(jos, leapSeconds);
         } catch (Exception ex) {
             System.out.println("Failed: " + ex.toString());
             ex.printStackTrace();
             System.exit(1);
+        } finally {
+            if (jos != null) {
+                try {
+                    jos.close();
+                } catch (IOException ex) {
+                    // ignore
+                }
+            }
         }
     }
 
@@ -402,7 +424,7 @@ final class TzdbZoneRulesCompiler {
             out.writeUTF(regionId);
         }
         // rules
-        List<ZoneRules> rulesList = new ArrayList<>(allRules);
+        List<ZoneRules> rulesList = new ArrayList<ZoneRules>(allRules);
         out.writeShort(rulesList.size());
         ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
         for (ZoneRules rules : rulesList) {
@@ -466,17 +488,17 @@ final class TzdbZoneRulesCompiler {
 
     //-----------------------------------------------------------------------
     /** The TZDB rules. */
-    private final Map<String, List<TZDBRule>> rules = new HashMap<>();
+    private final Map<String, List<TZDBRule>> rules = new HashMap<String, List<TZDBRule>>();
     /** The TZDB zones. */
-    private final Map<String, List<TZDBZone>> zones = new HashMap<>();
+    private final Map<String, List<TZDBZone>> zones = new HashMap<String, List<TZDBZone>>();
     /** The TZDB links. */
-    private final Map<String, String> links = new HashMap<>();
+    private final Map<String, String> links = new HashMap<String, String>();
     /** The built zones. */
-    private final SortedMap<String, ZoneRules> builtZones = new TreeMap<>();
+    private final SortedMap<String, ZoneRules> builtZones = new TreeMap<String, ZoneRules>();
     /** A map to deduplicate object instances. */
-    private Map<Object, Object> deduplicateMap = new HashMap<>();
+    private Map<Object, Object> deduplicateMap = new HashMap<Object, Object>();
     /** Sorted collection of LeapSecondRules. */
-    private final SortedMap<LocalDate, Byte> leapSeconds = new TreeMap<>();
+    private final SortedMap<LocalDate, Byte> leapSeconds = new TreeMap<LocalDate, Byte>();
 
     /** The version to produce. */
     private final String version;
@@ -666,7 +688,9 @@ final class TzdbZoneRulesCompiler {
     private void parseFile(File file) throws Exception {
         int lineNumber = 1;
         String line = null;
-        try (BufferedReader in = new BufferedReader(new FileReader(file))) {
+        BufferedReader in = null;
+        try {
+            in = new BufferedReader(new FileReader(file));
             List<TZDBZone> openZone = null;
             for ( ; (line = in.readLine()) != null; lineNumber++) {
                 int index = line.indexOf('#');  // remove comments (doesn't handle # in quotes)
@@ -689,7 +713,7 @@ final class TzdbZoneRulesCompiler {
                                 printVerbose("Invalid Zone line in file: " + file + ", line: " + line);
                                 throw new IllegalArgumentException("Invalid Zone line");
                             }
-                            openZone = new ArrayList<>();
+                            openZone = new ArrayList<TZDBZone>();
                             zones.put(st.nextToken(), openZone);
                             if (parseZoneLine(st, openZone)) {
                                 openZone = null;
@@ -721,6 +745,10 @@ final class TzdbZoneRulesCompiler {
             }
         } catch (Exception ex) {
             throw new Exception("Failed while processing file '" + file + "' on line " + lineNumber + " '" + line + "'", ex);
+        } finally {
+            if (in != null) {
+                in.close();
+            }
         }
     }
 

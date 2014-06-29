@@ -38,11 +38,11 @@ import java.io.InvalidObjectException;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Objects;
 
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.jdk8.DefaultInterfaceEra;
+import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.ValueRange;
@@ -202,7 +202,7 @@ public final class JapaneseEra
      * @throws IllegalArgumentException if there is not JapaneseEra with the specified name
      */
     public static JapaneseEra valueOf(String japaneseEra) {
-        Objects.requireNonNull(japaneseEra, "japaneseEra");
+        Jdk8Methods.requireNonNull(japaneseEra, "japaneseEra");
         for (JapaneseEra era : KNOWN_ERAS) {
             if (japaneseEra.equals(era.getName())) {
                 return era;

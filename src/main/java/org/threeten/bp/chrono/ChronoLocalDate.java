@@ -39,13 +39,13 @@ import static org.threeten.bp.temporal.ChronoField.YEAR;
 import static org.threeten.bp.temporal.ChronoField.YEAR_OF_ERA;
 
 import java.util.Comparator;
-import java.util.Objects;
 
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporal;
+import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
@@ -244,7 +244,7 @@ public abstract class ChronoLocalDate
             new Comparator<ChronoLocalDate>() {
         @Override
         public int compare(ChronoLocalDate date1, ChronoLocalDate date2) {
-            return Long.compare(date1.toEpochDay(), date2.toEpochDay());
+            return Jdk8Methods.compareLongs(date1.toEpochDay(), date2.toEpochDay());
         }
     };
 
@@ -271,7 +271,7 @@ public abstract class ChronoLocalDate
      * @see Chronology#date(TemporalAccessor)
      */
     public static ChronoLocalDate from(TemporalAccessor temporal) {
-        Objects.requireNonNull(temporal, "temporal");
+        Jdk8Methods.requireNonNull(temporal, "temporal");
         if (temporal instanceof ChronoLocalDate) {
             return (ChronoLocalDate) temporal;
         }
@@ -453,7 +453,7 @@ public abstract class ChronoLocalDate
      * @throws DateTimeException if an error occurs during printing
      */
     public String format(DateTimeFormatter formatter) {
-        Objects.requireNonNull(formatter, "formatter");
+        Jdk8Methods.requireNonNull(formatter, "formatter");
         return formatter.format(this);
     }
 
@@ -514,7 +514,7 @@ public abstract class ChronoLocalDate
      */
     @Override
     public int compareTo(ChronoLocalDate other) {
-        int cmp = Long.compare(toEpochDay(), other.toEpochDay());
+        int cmp = Jdk8Methods.compareLongs(toEpochDay(), other.toEpochDay());
         if (cmp == 0) {
             cmp = getChronology().compareTo(other.getChronology());
         }

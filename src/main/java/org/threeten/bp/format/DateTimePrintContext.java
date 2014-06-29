@@ -35,7 +35,6 @@ import static org.threeten.bp.temporal.ChronoField.EPOCH_DAY;
 import static org.threeten.bp.temporal.ChronoField.INSTANT_SECONDS;
 
 import java.util.Locale;
-import java.util.Objects;
 
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.Instant;
@@ -45,6 +44,7 @@ import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
+import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalField;
@@ -112,10 +112,10 @@ final class DateTimePrintContext {
         // ensure minimal change
         Chronology temporalChrono = temporal.query(TemporalQueries.chronology());
         ZoneId temporalZone = temporal.query(TemporalQueries.zoneId());
-        if (Objects.equals(temporalChrono, overrideChrono)) {
+        if (Jdk8Methods.equals(temporalChrono, overrideChrono)) {
             overrideChrono = null;
         }
-        if (Objects.equals(temporalZone, overrideZone)) {
+        if (Jdk8Methods.equals(temporalZone, overrideZone)) {
             overrideZone = null;
         }
         if (overrideChrono == null && overrideZone == null) {
@@ -299,7 +299,7 @@ final class DateTimePrintContext {
      * @param temporal  the date-time object, not null
      */
     void setDateTime(TemporalAccessor temporal) {
-        Objects.requireNonNull(temporal, "temporal");
+        Jdk8Methods.requireNonNull(temporal, "temporal");
         this.temporal = temporal;
     }
 
@@ -312,7 +312,7 @@ final class DateTimePrintContext {
      * @param locale  the locale, not null
      */
     void setLocale(Locale locale) {
-        Objects.requireNonNull(locale, "locale");
+        Jdk8Methods.requireNonNull(locale, "locale");
         this.locale = locale;
     }
 

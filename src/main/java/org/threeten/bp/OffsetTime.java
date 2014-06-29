@@ -45,11 +45,11 @@ import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
-import java.util.Objects;
 
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
+import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
@@ -169,7 +169,7 @@ public final class OffsetTime
      * @return the current time, not null
      */
     public static OffsetTime now(Clock clock) {
-        Objects.requireNonNull(clock, "clock");
+        Jdk8Methods.requireNonNull(clock, "clock");
         final Instant now = clock.instant();  // called once
         return ofInstant(now, clock.getZone().getRules().getOffset(now));
     }
@@ -226,8 +226,8 @@ public final class OffsetTime
      * @return the offset time, not null
      */
     public static OffsetTime ofInstant(Instant instant, ZoneId zone) {
-        Objects.requireNonNull(instant, "instant");
-        Objects.requireNonNull(zone, "zone");
+        Jdk8Methods.requireNonNull(instant, "instant");
+        Jdk8Methods.requireNonNull(zone, "zone");
         ZoneRules rules = zone.getRules();
         ZoneOffset offset = rules.getOffset(instant);
         long secsOfDay = instant.getEpochSecond() % SECONDS_PER_DAY;
@@ -295,7 +295,7 @@ public final class OffsetTime
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static OffsetTime parse(CharSequence text, DateTimeFormatter formatter) {
-        Objects.requireNonNull(formatter, "formatter");
+        Jdk8Methods.requireNonNull(formatter, "formatter");
         return formatter.parse(text, OffsetTime.FROM);
     }
 
@@ -307,8 +307,8 @@ public final class OffsetTime
      * @param offset  the zone offset, not null
      */
     private OffsetTime(LocalTime time, ZoneOffset offset) {
-        this.time = Objects.requireNonNull(time, "time");
-        this.offset = Objects.requireNonNull(offset, "offset");
+        this.time = Jdk8Methods.requireNonNull(time, "time");
+        this.offset = Jdk8Methods.requireNonNull(offset, "offset");
     }
 
     /**
@@ -1079,7 +1079,7 @@ public final class OffsetTime
             switch ((ChronoUnit) unit) {
                 case NANOS: return nanosUntil;
                 case MICROS: return nanosUntil / 1000;
-                case MILLIS: return nanosUntil / 1000_000;
+                case MILLIS: return nanosUntil / 1000000;
                 case SECONDS: return nanosUntil / NANOS_PER_SECOND;
                 case MINUTES: return nanosUntil / NANOS_PER_MINUTE;
                 case HOURS: return nanosUntil / NANOS_PER_HOUR;
@@ -1162,7 +1162,7 @@ public final class OffsetTime
         if (offset.equals(other.offset)) {
             return time.compareTo(other.time);
         }
-        int compare = Long.compare(toEpochNano(), other.toEpochNano());
+        int compare = Jdk8Methods.compareLongs(toEpochNano(), other.toEpochNano());
         if (compare == 0) {
             compare = time.compareTo(other.time);
         }
@@ -1284,7 +1284,7 @@ public final class OffsetTime
      * @throws DateTimeException if an error occurs during printing
      */
     public String format(DateTimeFormatter formatter) {
-        Objects.requireNonNull(formatter, "formatter");
+        Jdk8Methods.requireNonNull(formatter, "formatter");
         return formatter.format(this);
     }
 

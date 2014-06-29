@@ -36,7 +36,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NavigableMap;
-import java.util.Objects;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import java.util.Set;
@@ -47,6 +46,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
+import org.threeten.bp.jdk8.Jdk8Methods;
 
 /**
  * Provider of time-zone rules to the system.
@@ -78,14 +78,14 @@ public abstract class ZoneRulesProvider {
     /**
      * The set of loaded providers.
      */
-    private static final CopyOnWriteArrayList<ZoneRulesProvider> PROVIDERS = new CopyOnWriteArrayList<>();
+    private static final CopyOnWriteArrayList<ZoneRulesProvider> PROVIDERS = new CopyOnWriteArrayList<ZoneRulesProvider>();
     /**
      * The lookup from zone region ID to provider.
      */
-    private static final ConcurrentMap<String, ZoneRulesProvider> ZONES = new ConcurrentHashMap<>(512, 0.75f, 2);
+    private static final ConcurrentMap<String, ZoneRulesProvider> ZONES = new ConcurrentHashMap<String, ZoneRulesProvider>(512, 0.75f, 2);
     static {
         ServiceLoader<ZoneRulesProvider> sl = ServiceLoader.load(ZoneRulesProvider.class, ZoneRulesProvider.class.getClassLoader());
-        List<ZoneRulesProvider> loaded = new ArrayList<>();
+        List<ZoneRulesProvider> loaded = new ArrayList<ZoneRulesProvider>();
         Iterator<ZoneRulesProvider> it = sl.iterator();
         while (it.hasNext()) {
             ZoneRulesProvider provider;
@@ -112,7 +112,7 @@ public abstract class ZoneRulesProvider {
      * @return a modifiable copy of the set of zone IDs, not null
      */
     public static Set<String> getAvailableZoneIds() {
-        return new HashSet<>(ZONES.keySet());
+        return new HashSet<String>(ZONES.keySet());
     }
 
     /**
@@ -139,7 +139,7 @@ public abstract class ZoneRulesProvider {
      * @throws ZoneRulesException if rules cannot be obtained for the zone ID
      */
     public static ZoneRules getRules(String zoneId, boolean forCaching) {
-        Objects.requireNonNull(zoneId, "zoneId");
+        Jdk8Methods.requireNonNull(zoneId, "zoneId");
         return getProvider(zoneId).provideRules(zoneId, forCaching);
     }
 
@@ -168,7 +168,7 @@ public abstract class ZoneRulesProvider {
      * @throws ZoneRulesException if history cannot be obtained for the zone ID
      */
     public static NavigableMap<String, ZoneRules> getVersions(String zoneId) {
-        Objects.requireNonNull(zoneId, "zoneId");
+        Jdk8Methods.requireNonNull(zoneId, "zoneId");
         return getProvider(zoneId).provideVersions(zoneId);
     }
 
@@ -207,7 +207,7 @@ public abstract class ZoneRulesProvider {
      * @throws ZoneRulesException if a region is already registered
      */
     public static void registerProvider(ZoneRulesProvider provider) {
-        Objects.requireNonNull(provider, "provider");
+        Jdk8Methods.requireNonNull(provider, "provider");
         registerProvider0(provider);
         PROVIDERS.add(provider);
     }
@@ -220,7 +220,7 @@ public abstract class ZoneRulesProvider {
      */
     private static void registerProvider0(ZoneRulesProvider provider) {
         for (String zoneId : provider.provideZoneIds()) {
-            Objects.requireNonNull(zoneId, "zoneId");
+            Jdk8Methods.requireNonNull(zoneId, "zoneId");
             ZoneRulesProvider old = ZONES.putIfAbsent(zoneId, provider);
             if (old != null) {
                 throw new ZoneRulesException(

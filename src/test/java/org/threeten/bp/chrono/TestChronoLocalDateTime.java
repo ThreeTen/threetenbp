@@ -228,7 +228,7 @@ public class TestChronoLocalDateTime {
     //-----------------------------------------------------------------------
     @Test(dataProvider="calendars")
     public void test_datetime_comparisons(Chronology chrono) {
-        List<ChronoLocalDateTime<?>> dates = new ArrayList<>();
+        List<ChronoLocalDateTime<?>> dates = new ArrayList<ChronoLocalDateTime<?>>();
 
         ChronoLocalDateTime<?> date = chrono.date(LocalDate.of(1900, 1, 1)).atTime(LocalTime.MIN);
 
@@ -257,7 +257,7 @@ public class TestChronoLocalDateTime {
 
         // Check these dates against the corresponding dates for every calendar
         for (Chronology[] clist : data_of_calendars()) {
-            List<ChronoLocalDateTime<?>> otherDates = new ArrayList<>();
+            List<ChronoLocalDateTime<?>> otherDates = new ArrayList<ChronoLocalDateTime<?>>();
             Chronology chrono2 = clist[0];
             if (chrono2 == JapaneseChronology.INSTANCE) {
                 continue;

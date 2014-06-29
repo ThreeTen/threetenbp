@@ -37,7 +37,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
-import java.util.Objects;
 
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.ZoneId;
@@ -105,11 +104,11 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate>
     /**
      * Microseconds per day.
      */
-    private static final long MICROS_PER_DAY = SECONDS_PER_DAY * 1000_000L;
+    private static final long MICROS_PER_DAY = SECONDS_PER_DAY * 1000000L;
     /**
      * Nanos per second.
      */
-    private static final long NANOS_PER_SECOND = 1000_000_000L;
+    private static final long NANOS_PER_SECOND = 1000000000L;
     /**
      * Nanos per minute.
      */
@@ -141,7 +140,7 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate>
      * @return the local date-time, not null
      */
     static <R extends ChronoLocalDate> ChronoLocalDateTimeImpl<R> of(R date, LocalTime time) {
-        return new ChronoLocalDateTimeImpl<>(date, time);
+        return new ChronoLocalDateTimeImpl<R>(date, time);
     }
 
     /**
@@ -151,8 +150,8 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate>
      * @param time  the time part of the date-time, not null
      */
     private ChronoLocalDateTimeImpl(D date, LocalTime time) {
-        Objects.requireNonNull(date, "date");
-        Objects.requireNonNull(time, "time");
+        Jdk8Methods.requireNonNull(date, "date");
+        Jdk8Methods.requireNonNull(time, "time");
         this.date = date;
         this.time = time;
     }
@@ -171,7 +170,7 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate>
         }
         // Validate that the new DateTime is a ChronoLocalDate (and not something else)
         D cd = date.getChronology().ensureChronoLocalDate(newDate);
-        return new ChronoLocalDateTimeImpl<>(cd, newTime);
+        return new ChronoLocalDateTimeImpl<D>(cd, newTime);
     }
 
     //-----------------------------------------------------------------------

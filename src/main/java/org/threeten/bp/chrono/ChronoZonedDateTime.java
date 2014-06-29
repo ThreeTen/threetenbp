@@ -36,7 +36,6 @@ import static org.threeten.bp.temporal.ChronoField.OFFSET_SECONDS;
 import static org.threeten.bp.temporal.ChronoUnit.NANOS;
 
 import java.util.Comparator;
-import java.util.Objects;
 
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.Instant;
@@ -47,6 +46,7 @@ import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporal;
+import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
@@ -116,9 +116,9 @@ public abstract class ChronoZonedDateTime<D extends ChronoLocalDate>
     private static Comparator<ChronoZonedDateTime<?>> INSTANT_COMPARATOR = new Comparator<ChronoZonedDateTime<?>>() {
         @Override
         public int compare(ChronoZonedDateTime<?> datetime1, ChronoZonedDateTime<?> datetime2) {
-            int cmp = Long.compare(datetime1.toEpochSecond(), datetime2.toEpochSecond());
+            int cmp = Jdk8Methods.compareLongs(datetime1.toEpochSecond(), datetime2.toEpochSecond());
             if (cmp == 0) {
-                cmp = Long.compare(datetime1.toLocalTime().toNanoOfDay(), datetime2.toLocalTime().toNanoOfDay());
+                cmp = Jdk8Methods.compareLongs(datetime1.toLocalTime().toNanoOfDay(), datetime2.toLocalTime().toNanoOfDay());
             }
             return cmp;
         }
@@ -147,7 +147,7 @@ public abstract class ChronoZonedDateTime<D extends ChronoLocalDate>
      * @see Chronology#zonedDateTime(TemporalAccessor)
      */
     public static ChronoZonedDateTime<?> from(TemporalAccessor temporal) {
-        Objects.requireNonNull(temporal, "temporal");
+        Jdk8Methods.requireNonNull(temporal, "temporal");
         if (temporal instanceof ChronoZonedDateTime) {
             return (ChronoZonedDateTime<?>) temporal;
         }
@@ -393,7 +393,7 @@ public abstract class ChronoZonedDateTime<D extends ChronoLocalDate>
      * @throws DateTimeException if an error occurs during printing
      */
     public String format(DateTimeFormatter formatter) {
-        Objects.requireNonNull(formatter, "formatter");
+        Jdk8Methods.requireNonNull(formatter, "formatter");
         return formatter.format(this);
     }
 
@@ -446,7 +446,7 @@ public abstract class ChronoZonedDateTime<D extends ChronoLocalDate>
      */
     @Override
     public int compareTo(ChronoZonedDateTime<?> other) {
-        int cmp = Long.compare(toEpochSecond(), other.toEpochSecond());
+        int cmp = Jdk8Methods.compareLongs(toEpochSecond(), other.toEpochSecond());
         if (cmp == 0) {
             cmp = toLocalTime().getNano() - other.toLocalTime().getNano();
             if (cmp == 0) {

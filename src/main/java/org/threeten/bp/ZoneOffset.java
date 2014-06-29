@@ -39,10 +39,10 @@ import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
@@ -101,9 +101,9 @@ public final class ZoneOffset
     };
 
     /** Cache of time-zone offset by offset in seconds. */
-    private static final ConcurrentMap<Integer, ZoneOffset> SECONDS_CACHE = new ConcurrentHashMap<>(16, 0.75f, 4);
+    private static final ConcurrentMap<Integer, ZoneOffset> SECONDS_CACHE = new ConcurrentHashMap<Integer, ZoneOffset>(16, 0.75f, 4);
     /** Cache of time-zone offset by ID. */
-    private static final ConcurrentMap<String, ZoneOffset> ID_CACHE = new ConcurrentHashMap<>(16, 0.75f, 4);
+    private static final ConcurrentMap<String, ZoneOffset> ID_CACHE = new ConcurrentHashMap<String, ZoneOffset>(16, 0.75f, 4);
 
     /**
      * The number of seconds per hour.
@@ -180,7 +180,7 @@ public final class ZoneOffset
      * @throws DateTimeException if the offset ID is invalid
      */
     public static ZoneOffset of(String offsetId) {
-        Objects.requireNonNull(offsetId, "offsetId");
+        Jdk8Methods.requireNonNull(offsetId, "offsetId");
         // "Z" is always in the cache
         ZoneOffset offset = ID_CACHE.get(offsetId);
         if (offset != null) {

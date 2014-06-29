@@ -171,7 +171,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
 
     @Override
     protected List<TemporalField> invalidFields() {
-        List<TemporalField> list = new ArrayList<>(Arrays.<TemporalField>asList(ChronoField.values()));
+        List<TemporalField> list = new ArrayList<TemporalField>(Arrays.<TemporalField>asList(ChronoField.values()));
         list.removeAll(validFields());
         return list;
     }
@@ -1373,7 +1373,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
 
     @Test(dataProvider="plusTime")
     public void test_plus_longUnit_nanos(ZonedDateTime base, long amount, ZonedDateTime expected) {
-        assertEquals(base.plus(amount * 3600_000_000_000L, NANOS), expected);
+        assertEquals(base.plus(amount * 3600000000000L, NANOS), expected);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -1491,7 +1491,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(dataProvider="plusTime")
     public void test_plusNanos(ZonedDateTime base, long amount, ZonedDateTime expected) {
-        assertEquals(base.plusNanos(amount * 3600_000_000_000L), expected);
+        assertEquals(base.plusNanos(amount * 3600000000000L), expected);
     }
 
     @Test
@@ -1663,7 +1663,7 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     @Test(dataProvider="plusTime")
     public void test_minusNanos(ZonedDateTime base, long amount, ZonedDateTime expected) {
-        assertEquals(base.minusNanos(-amount * 3600_000_000_000L), expected);
+        assertEquals(base.minusNanos(-amount * 3600000000000L), expected);
     }
 
     @Test
@@ -1682,10 +1682,10 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
         return new Object[][] {
             {LocalDateTime.of(1970, 1, 1, 0, 0, 0, 0), 0L, 0},
             {LocalDateTime.of(1970, 1, 1, 0, 0, 0, 1), 0L, 1},
-            {LocalDateTime.of(1970, 1, 1, 0, 0, 0, 999_999_999), 0L, 999_999_999},
+            {LocalDateTime.of(1970, 1, 1, 0, 0, 0, 999999999), 0L, 999999999},
             {LocalDateTime.of(1970, 1, 1, 0, 0, 1, 0), 1L, 0},
             {LocalDateTime.of(1970, 1, 1, 0, 0, 1, 1), 1L, 1},
-            {LocalDateTime.of(1969, 12, 31, 23, 59, 59, 999999999), -1L, 999_999_999},
+            {LocalDateTime.of(1969, 12, 31, 23, 59, 59, 999999999), -1L, 999999999},
             {LocalDateTime.of(1970, 1, 2, 0, 0), 24L * 60L * 60L, 0},
             {LocalDateTime.of(1969, 12, 31, 0, 0), -24L * 60L * 60L, 0},
         };

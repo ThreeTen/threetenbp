@@ -138,7 +138,7 @@ public class TestLocalTime extends AbstractDateTimeTest {
 
     @Override
     protected List<TemporalField> invalidFields() {
-        List<TemporalField> list = new ArrayList<>(Arrays.<TemporalField>asList(ChronoField.values()));
+        List<TemporalField> list = new ArrayList<TemporalField>(Arrays.<TemporalField>asList(ChronoField.values()));
         list.removeAll(validFields());
         list.add(JulianFields.JULIAN_DAY);
         list.add(JulianFields.MODIFIED_JULIAN_DAY);
@@ -286,7 +286,7 @@ public class TestLocalTime extends AbstractDateTimeTest {
         assertEquals(test.getHour(), 23);
         assertEquals(test.getMinute(), 59);
         assertEquals(test.getSecond(), 59);
-        assertEquals(test.getNano(), 999_999_999);
+        assertEquals(test.getNano(), 999999999);
     }
 
     @Test
@@ -964,17 +964,17 @@ public class TestLocalTime extends AbstractDateTimeTest {
     @DataProvider(name="truncatedToValid")
     Object[][] data_truncatedToValid() {
         return new Object[][] {
-            {LocalTime.of(1, 2, 3, 123_456_789), NANOS, LocalTime.of(1, 2, 3, 123_456_789)},
-            {LocalTime.of(1, 2, 3, 123_456_789), MICROS, LocalTime.of(1, 2, 3, 123_456_000)},
-            {LocalTime.of(1, 2, 3, 123_456_789), MILLIS, LocalTime.of(1, 2, 3, 1230_00_000)},
-            {LocalTime.of(1, 2, 3, 123_456_789), SECONDS, LocalTime.of(1, 2, 3)},
-            {LocalTime.of(1, 2, 3, 123_456_789), MINUTES, LocalTime.of(1, 2)},
-            {LocalTime.of(1, 2, 3, 123_456_789), HOURS, LocalTime.of(1, 0)},
-            {LocalTime.of(1, 2, 3, 123_456_789), DAYS, LocalTime.MIDNIGHT},
+            {LocalTime.of(1, 2, 3, 123456789), NANOS, LocalTime.of(1, 2, 3, 123456789)},
+            {LocalTime.of(1, 2, 3, 123456789), MICROS, LocalTime.of(1, 2, 3, 123456000)},
+            {LocalTime.of(1, 2, 3, 123456789), MILLIS, LocalTime.of(1, 2, 3, 123000000)},
+            {LocalTime.of(1, 2, 3, 123456789), SECONDS, LocalTime.of(1, 2, 3)},
+            {LocalTime.of(1, 2, 3, 123456789), MINUTES, LocalTime.of(1, 2)},
+            {LocalTime.of(1, 2, 3, 123456789), HOURS, LocalTime.of(1, 0)},
+            {LocalTime.of(1, 2, 3, 123456789), DAYS, LocalTime.MIDNIGHT},
 
-            {LocalTime.of(1, 1, 1, 123_456_789), NINETY_MINS, LocalTime.of(0, 0)},
-            {LocalTime.of(2, 1, 1, 123_456_789), NINETY_MINS, LocalTime.of(1, 30)},
-            {LocalTime.of(3, 1, 1, 123_456_789), NINETY_MINS, LocalTime.of(3, 0)},
+            {LocalTime.of(1, 1, 1, 123456789), NINETY_MINS, LocalTime.of(0, 0)},
+            {LocalTime.of(2, 1, 1, 123456789), NINETY_MINS, LocalTime.of(1, 30)},
+            {LocalTime.of(3, 1, 1, 123456789), NINETY_MINS, LocalTime.of(3, 0)},
         };
     }
 
@@ -986,10 +986,10 @@ public class TestLocalTime extends AbstractDateTimeTest {
     @DataProvider(name="truncatedToInvalid")
     Object[][] data_truncatedToInvalid() {
         return new Object[][] {
-            {LocalTime.of(1, 2, 3, 123_456_789), NINETY_FIVE_MINS},
-            {LocalTime.of(1, 2, 3, 123_456_789), WEEKS},
-            {LocalTime.of(1, 2, 3, 123_456_789), MONTHS},
-            {LocalTime.of(1, 2, 3, 123_456_789), YEARS},
+            {LocalTime.of(1, 2, 3, 123456789), NINETY_FIVE_MINS},
+            {LocalTime.of(1, 2, 3, 123456789), WEEKS},
+            {LocalTime.of(1, 2, 3, 123456789), MONTHS},
+            {LocalTime.of(1, 2, 3, 123456789), YEARS},
         };
     }
 

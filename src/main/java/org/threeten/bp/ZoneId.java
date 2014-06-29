@@ -38,13 +38,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.TimeZone;
 
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.TextStyle;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
+import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.TemporalQueries;
@@ -192,7 +192,7 @@ public abstract class ZoneId implements Serializable {
      */
     public static final Map<String, String> SHORT_IDS;
     static {
-        Map<String, String> base = new HashMap<>();
+        Map<String, String> base = new HashMap<String, String>();
         base.put("ACT", "Australia/Darwin");
         base.put("AET", "Australia/Sydney");
         base.put("AGT", "America/Argentina/Buenos_Aires");
@@ -278,8 +278,8 @@ public abstract class ZoneId implements Serializable {
      * @throws ZoneRulesException if the zone ID is a region ID that cannot be found
      */
     public static ZoneId of(String zoneId, Map<String, String> aliasMap) {
-        Objects.requireNonNull(zoneId, "zoneId");
-        Objects.requireNonNull(aliasMap, "aliasMap");
+        Jdk8Methods.requireNonNull(zoneId, "zoneId");
+        Jdk8Methods.requireNonNull(aliasMap, "aliasMap");
         String id = aliasMap.get(zoneId);
         id = (id != null ? id : zoneId);
         return of(id);
@@ -326,7 +326,7 @@ public abstract class ZoneId implements Serializable {
      * @throws ZoneRulesException if the zone ID is a region ID that cannot be found
      */
     public static ZoneId of(String zoneId) {
-        Objects.requireNonNull(zoneId, "zoneId");
+        Jdk8Methods.requireNonNull(zoneId, "zoneId");
         if (zoneId.equals("Z")) {
             return ZoneOffset.UTC;
         }
@@ -371,8 +371,8 @@ public abstract class ZoneId implements Serializable {
      *     "GMT", "UTC", or "UT", or ""
      */
     public static ZoneId ofOffset(String prefix, ZoneOffset offset) {
-        Objects.requireNonNull(prefix, "prefix");
-        Objects.requireNonNull(offset, "offset");
+        Jdk8Methods.requireNonNull(prefix, "prefix");
+        Jdk8Methods.requireNonNull(offset, "offset");
         if (prefix.length() == 0) {
             return offset;
         }

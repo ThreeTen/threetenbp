@@ -37,7 +37,6 @@ import static org.threeten.bp.temporal.ChronoUnit.FOREVER;
 
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.chrono.Chronology;
@@ -237,7 +236,7 @@ public final class JulianFields {
 
         @Override
         public String getDisplayName(Locale locale) {
-            Objects.requireNonNull(locale, "locale");
+            Jdk8Methods.requireNonNull(locale, "locale");
             return toString();
         }
 

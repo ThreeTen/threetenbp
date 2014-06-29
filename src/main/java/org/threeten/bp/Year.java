@@ -46,7 +46,6 @@ import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
-import java.util.Objects;
 
 import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.IsoChronology;
@@ -103,11 +102,11 @@ public final class Year
     /**
      * The minimum supported year, '-999,999,999'.
      */
-    public static final int MIN_VALUE = -999_999_999;
+    public static final int MIN_VALUE = -999999999;
     /**
      * The maximum supported year, '+999,999,999'.
      */
-    public static final int MAX_VALUE = 999_999_999;
+    public static final int MAX_VALUE = 999999999;
     /**
      * Simulate JDK 8 method reference Year::from.
      */
@@ -260,7 +259,7 @@ public final class Year
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static Year parse(CharSequence text, DateTimeFormatter formatter) {
-        Objects.requireNonNull(formatter, "formatter");
+        Jdk8Methods.requireNonNull(formatter, "formatter");
         return formatter.parse(text, Year.FROM);
     }
 
@@ -955,7 +954,7 @@ public final class Year
      * @throws DateTimeException if an error occurs during printing
      */
     public String format(DateTimeFormatter formatter) {
-        Objects.requireNonNull(formatter, "formatter");
+        Jdk8Methods.requireNonNull(formatter, "formatter");
         return formatter.format(this);
     }
 

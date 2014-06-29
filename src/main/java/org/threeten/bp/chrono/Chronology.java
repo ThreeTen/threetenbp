@@ -36,11 +36,12 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectStreamException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -55,6 +56,7 @@ import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.ResolverStyle;
 import org.threeten.bp.format.TextStyle;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
+import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
@@ -151,11 +153,24 @@ public abstract class Chronology implements Comparable<Chronology> {
     /**
      * Map of available calendars by ID.
      */
-    private static final ConcurrentHashMap<String, Chronology> CHRONOS_BY_ID = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, Chronology> CHRONOS_BY_ID = new ConcurrentHashMap<String, Chronology>();
     /**
      * Map of available calendars by calendar type.
      */
-    private static final ConcurrentHashMap<String, Chronology> CHRONOS_BY_TYPE = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, Chronology> CHRONOS_BY_TYPE = new ConcurrentHashMap<String, Chronology>();
+    /**
+     * Access JDK 7 method if on JDK 7.
+     */
+    private static final Method LOCALE_METHOD;
+    static {
+        Method method = null;
+        try {
+            method = Locale.class.getMethod("getUnicodeLocaleType", String.class);
+        } catch (Throwable ex) {
+            // ignore
+        }
+        LOCALE_METHOD = method;
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -175,7 +190,7 @@ public abstract class Chronology implements Comparable<Chronology> {
      * @throws DateTimeException if unable to convert to an {@code Chronology}
      */
     public static Chronology from(TemporalAccessor temporal) {
-        Objects.requireNonNull(temporal, "temporal");
+        Jdk8Methods.requireNonNull(temporal, "temporal");
         Chronology obj = temporal.query(TemporalQueries.chronology());
         return (obj != null ? obj : IsoChronology.INSTANCE);
     }
@@ -223,8 +238,22 @@ public abstract class Chronology implements Comparable<Chronology> {
      */
     public static Chronology ofLocale(Locale locale) {
         init();
-        Objects.requireNonNull(locale, "locale");
-        String type = locale.getUnicodeLocaleType("ca");
+        Jdk8Methods.requireNonNull(locale, "locale");
+        String type = "iso";
+        if (LOCALE_METHOD != null) {
+            // JDK 7: locale.getUnicodeLocaleType("ca");
+            try {
+                type = (String) LOCALE_METHOD.invoke(locale, "ca");
+            } catch (IllegalArgumentException ex) {
+                // ignore
+            } catch (IllegalAccessException ex) {
+                // ignore
+            } catch (InvocationTargetException ex) {
+                // ignore
+            }
+        } else if (locale.equals(JapaneseChronology.LOCALE)) {
+            type = "japanese";
+        }
         if (type == null || "iso".equals(type) || "iso8601".equals(type)) {
             return IsoChronology.INSTANCE;
         } else {
@@ -278,7 +307,7 @@ public abstract class Chronology implements Comparable<Chronology> {
      */
     public static Set<Chronology> getAvailableChronologies() {
         init();
-        return new HashSet<>(CHRONOS_BY_ID.values());
+        return new HashSet<Chronology>(CHRONOS_BY_ID.values());
     }
 
     private static void init() {
@@ -525,7 +554,7 @@ public abstract class Chronology implements Comparable<Chronology> {
      * @throws DateTimeException if unable to create the date
      */
     public ChronoLocalDate dateNow(Clock clock) {
-        Objects.requireNonNull(clock, "clock");
+        Jdk8Methods.requireNonNull(clock, "clock");
         return date(LocalDate.now(clock));
     }
 

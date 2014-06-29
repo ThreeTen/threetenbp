@@ -60,16 +60,16 @@ public class TestClock_Tick extends AbstractTest {
     //-----------------------------------------------------------------------
     public void test_tick_ClockDuration_250millis() {
         for (int i = 0; i < 1000; i++) {
-            Clock test = Clock.tick(Clock.fixed(ZDT.withNano(i * 1000_000).toInstant(), PARIS), Duration.ofMillis(250));
-            assertEquals(test.instant(), ZDT.withNano((i / 250) * 250_000_000).toInstant());
+            Clock test = Clock.tick(Clock.fixed(ZDT.withNano(i * 1000000).toInstant(), PARIS), Duration.ofMillis(250));
+            assertEquals(test.instant(), ZDT.withNano((i / 250) * 250000000).toInstant());
             assertEquals(test.getZone(), PARIS);
         }
     }
 
     public void test_tick_ClockDuration_250micros() {
         for (int i = 0; i < 1000; i++) {
-            Clock test = Clock.tick(Clock.fixed(ZDT.withNano(i * 1000).toInstant(), PARIS), Duration.ofNanos(250_000));
-            assertEquals(test.instant(), ZDT.withNano((i / 250) * 250_000).toInstant());
+            Clock test = Clock.tick(Clock.fixed(ZDT.withNano(i * 1000).toInstant(), PARIS), Duration.ofNanos(250000));
+            assertEquals(test.instant(), ZDT.withNano((i / 250) * 250000).toInstant());
             assertEquals(test.getZone(), PARIS);
         }
     }
@@ -110,8 +110,8 @@ public class TestClock_Tick extends AbstractTest {
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
-    public void test_tick_ClockDuration_subMilliNotDivisible_999_999_999ns() {
-        Clock.tick(Clock.systemUTC(), Duration.ofSeconds(0, 999_999_999));
+    public void test_tick_ClockDuration_subMilliNotDivisible_999999999ns() {
+        Clock.tick(Clock.systemUTC(), Duration.ofSeconds(0, 999999999));
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)

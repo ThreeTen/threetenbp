@@ -47,7 +47,6 @@ import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
-import java.util.Objects;
 
 import org.threeten.bp.chrono.ChronoLocalDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
@@ -180,7 +179,7 @@ public final class LocalDateTime
      * @return the current date-time, not null
      */
     public static LocalDateTime now(Clock clock) {
-        Objects.requireNonNull(clock, "clock");
+        Jdk8Methods.requireNonNull(clock, "clock");
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
         return ofEpochSecond(now.getEpochSecond(), now.getNano(), offset);
@@ -332,8 +331,8 @@ public final class LocalDateTime
      * @return the local date-time, not null
      */
     public static LocalDateTime of(LocalDate date, LocalTime time) {
-        Objects.requireNonNull(date, "date");
-        Objects.requireNonNull(time, "time");
+        Jdk8Methods.requireNonNull(date, "date");
+        Jdk8Methods.requireNonNull(time, "time");
         return new LocalDateTime(date, time);
     }
 
@@ -352,8 +351,8 @@ public final class LocalDateTime
      * @throws DateTimeException if the result exceeds the supported range
      */
     public static LocalDateTime ofInstant(Instant instant, ZoneId zone) {
-        Objects.requireNonNull(instant, "instant");
-        Objects.requireNonNull(zone, "zone");
+        Jdk8Methods.requireNonNull(instant, "instant");
+        Jdk8Methods.requireNonNull(zone, "zone");
         ZoneRules rules = zone.getRules();
         ZoneOffset offset = rules.getOffset(instant);
         return ofEpochSecond(instant.getEpochSecond(), instant.getNano(), offset);
@@ -374,7 +373,7 @@ public final class LocalDateTime
      * @throws DateTimeException if the result exceeds the supported range
      */
     public static LocalDateTime ofEpochSecond(long epochSecond, int nanoOfSecond, ZoneOffset offset) {
-        Objects.requireNonNull(offset, "offset");
+        Jdk8Methods.requireNonNull(offset, "offset");
         long localSecond = epochSecond + offset.getTotalSeconds();  // overflow caught later
         long localEpochDay = Jdk8Methods.floorDiv(localSecond, SECONDS_PER_DAY);
         int secsOfDay = Jdk8Methods.floorMod(localSecond, SECONDS_PER_DAY);
@@ -441,7 +440,7 @@ public final class LocalDateTime
      * @throws DateTimeParseException if the text cannot be parsed
      */
     public static LocalDateTime parse(CharSequence text, DateTimeFormatter formatter) {
-        Objects.requireNonNull(formatter, "formatter");
+        Jdk8Methods.requireNonNull(formatter, "formatter");
         return formatter.parse(text, LocalDateTime.FROM);
     }
 
@@ -1039,7 +1038,7 @@ public final class LocalDateTime
             switch (f) {
                 case NANOS: return plusNanos(amountToAdd);
                 case MICROS: return plusDays(amountToAdd / MICROS_PER_DAY).plusNanos((amountToAdd % MICROS_PER_DAY) * 1000);
-                case MILLIS: return plusDays(amountToAdd / MILLIS_PER_DAY).plusNanos((amountToAdd % MILLIS_PER_DAY) * 1000_000);
+                case MILLIS: return plusDays(amountToAdd / MILLIS_PER_DAY).plusNanos((amountToAdd % MILLIS_PER_DAY) * 1000000);
                 case SECONDS: return plusSeconds(amountToAdd);
                 case MINUTES: return plusMinutes(amountToAdd);
                 case HOURS: return plusHours(amountToAdd);
