@@ -3688,7 +3688,8 @@ public final class DateTimeFormatterBuilder {
             if (textStyle == null) {
                 buf.append(chrono.getId());
             } else {
-                ResourceBundle bundle = ResourceBundle.getBundle("org.threeten.bp.format.ChronologyText", context.getLocale());
+                ResourceBundle bundle = ResourceBundle.getBundle(
+                        "org.threeten.bp.format.ChronologyText", context.getLocale(), DateTimeFormatterBuilder.class.getClassLoader());
                 try {
                     String text = bundle.getString(chrono.getId());
                     buf.append(text);

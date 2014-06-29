@@ -9,6 +9,10 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="1.0" date="xxx" description="v1.0">
+      <action dev="jodastephen" type="fix" >
+        Try to be more OSGi friemdly.
+        Fixes #4.
+      </action>
       <action dev="jodastephen" type="add" >
         Backport to JDK 6.
         Fixes #11.

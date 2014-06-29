@@ -319,7 +319,7 @@ public abstract class Chronology implements Comparable<Chronology> {
             register(HijrahChronology.INSTANCE);
             CHRONOS_BY_ID.putIfAbsent("Hijrah", HijrahChronology.INSTANCE);
             CHRONOS_BY_TYPE.putIfAbsent("islamic", HijrahChronology.INSTANCE);
-            ServiceLoader<Chronology> loader =  ServiceLoader.load(Chronology.class);
+            ServiceLoader<Chronology> loader =  ServiceLoader.load(Chronology.class, Chronology.class.getClassLoader());
             for (Chronology chrono : loader) {
                 CHRONOS_BY_ID.putIfAbsent(chrono.getId(), chrono);
                 String type = chrono.getCalendarType();
