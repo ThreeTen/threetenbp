@@ -8,12 +8,17 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.0.1" date="xxxx-xx-xx" description="v1.0.1">
+      <action dev="jodastephen" type="fix" >
+        Fix parsing of Durations between 0 and -1 seconds.
+      </action>
+    </release>
     <release version="1.0" date="2014-07-01" description="v1.0">
       <action dev="jodastephen" type="fix" >
         Fix Chronology text missing from jar.
       </action>
       <action dev="jodastephen" type="fix" >
-        Try to be more OSGi friemdly.
+        Try to be more OSGi friendly.
         Fixes #4.
       </action>
       <action dev="jodastephen" type="add" >

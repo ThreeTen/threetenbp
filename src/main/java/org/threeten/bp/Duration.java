@@ -367,8 +367,8 @@ public final class Duration
      * there must be at least one section after the "T".
      * The number part of each section must consist of one or more ASCII digits.
      * The number may be prefixed by the ASCII negative or positive symbol.
-     * The number of days, hours and minutes must parse to an {@code long}.
-     * The number of seconds must parse to an {@code long} with optional fraction.
+     * The number of days, hours and minutes must parse to a {@code long}.
+     * The number of seconds must parse to a {@code long} with optional fraction.
      * The decimal point may be either a dot or a comma.
      * The fractional part may have from zero to 9 digits.
      * <p>
@@ -408,7 +408,8 @@ public final class Duration
                     long hoursAsSecs = parseNumber(text, hourMatch, SECONDS_PER_HOUR, "hours");
                     long minsAsSecs = parseNumber(text, minuteMatch, SECONDS_PER_MINUTE, "minutes");
                     long seconds = parseNumber(text, secondMatch, 1, "seconds");
-                    int nanos = parseFraction(text,  fractionMatch, seconds < 0 ? -1 : 1);
+                    boolean negativeSecs = secondMatch != null && secondMatch.charAt(0) == '-';
+                    int nanos = parseFraction(text,  fractionMatch, negativeSecs ? -1 : 1);
                     try {
                         return create(negate, daysAsSecs, hoursAsSecs, minsAsSecs, seconds, nanos);
                     } catch (ArithmeticException ex) {
