@@ -1537,7 +1537,7 @@ public final class DateTimeFormatter {
      * Normally, applications will use {@code instanceof} to check the result.
      * For example:
      * <pre>
-     *  TemporalAccessor dt = parser.parseBest(str, LocalDate.class, YearMonth.class);
+     *  TemporalAccessor dt = parser.parseBest(str, LocalDate.FROM, YearMonth.FROM);
      *  if (dt instanceof LocalDate) {
      *   ...
      *  } else {
