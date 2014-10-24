@@ -165,8 +165,7 @@ public final class JapaneseEra
      * Returns the Sun private Era instance corresponding to this {@code JapaneseEra}.
      * SEIREKI doesn't have its corresponding one.
      *
-     * @return the Sun private Era instance for this {@code JapaneseEra},
-     *         or null for SEIREKI.
+     * @return the Sun private Era instance for this {@code JapaneseEra}
      */
     sun.util.calendar.Era getPrivateEra() {
         return ERA_CONFIG[ordinal(eraValue)];
@@ -305,7 +304,7 @@ public final class JapaneseEra
      * <p>
      * The {@link #SHOWA} era that contains 1970-01-01 (ISO calendar system) has the value 1.
      * Later eras are numbered from 2 ({@link #HEISEI}).
-     * Earlier eras are numbered 0 ({@link #TAISHO}), -1 ({@link #MEIJI}), and -999 ({@link #SEIREKI}).
+     * Earlier eras are numbered 0 ({@link #TAISHO}) and -1 ({@link #MEIJI}).
      *
      * @return the era value
      */

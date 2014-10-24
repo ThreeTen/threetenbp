@@ -35,7 +35,7 @@ package org.threeten.bp.format;
  * Enumeration of the style of a localized date, time or date-time formatter.
  * <p>
  * These styles are used when obtaining a date-time style from configuration.
- * See {@link DateTimeFormatters} and {@link DateTimeFormatterBuilder} for usage.
+ * See {@link DateTimeFormatter} and {@link DateTimeFormatterBuilder} for usage.
  *
  * <h3>Specification for implementors</h3>
  * This is an immutable and thread-safe enum.

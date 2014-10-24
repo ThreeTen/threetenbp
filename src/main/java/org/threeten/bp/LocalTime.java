@@ -412,7 +412,7 @@ public final class LocalTime
      * Obtains an instance of {@code LocalTime} from a text string such as {@code 10:15}.
      * <p>
      * The string must represent a valid time and is parsed using
-     * {@link org.threeten.bp.format.DateTimeFormatters#isoLocalTime()}.
+     * {@link org.threeten.bp.format.DateTimeFormatter#ISO_LOCAL_TIME}.
      *
      * @param text the text to parse such as "10:15:30", not null
      * @return the parsed local time, not null

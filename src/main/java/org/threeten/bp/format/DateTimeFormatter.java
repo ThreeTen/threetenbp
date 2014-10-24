@@ -87,7 +87,7 @@ import org.threeten.bp.temporal.TemporalQuery;
  * {@code format(DateTimeFormatter formatter)}, and one for parsing,
  * For example:
  * <pre>
- *  String text = date.toString(formatter);
+ *  String text = date.format(formatter);
  *  LocalDate date = LocalDate.parse(text, formatter);
  * </pre>
  * Some aspects of printing and parsing are dependent on the locale.
@@ -121,8 +121,6 @@ public final class DateTimeFormatter {
      * <li>Two digits for the {@link ChronoField#DAY_OF_MONTH day-of-month}.
      *  This is pre-padded by zero to ensure two digits.
      * </ul><p>
-     *
-     * @return the ISO local date formatter, not null
      */
     public static final DateTimeFormatter ISO_LOCAL_DATE;
     static {
@@ -144,13 +142,11 @@ public final class DateTimeFormatter {
      * the ISO-8601 extended offset date format.
      * The format consists of:
      * <p><ul>
-     * <li>The {@link #isoLocalDate()}
+     * <li>The {@link #ISO_LOCAL_DATE}
      * <li>The {@link ZoneOffset#getId() offset ID}. If the offset has seconds then
      *  they will be handled even though this is not part of the ISO-8601 standard.
      *  Parsing is case insensitive.
      * </ul><p>
-     *
-     * @return the ISO offset date formatter, not null
      */
     public static final DateTimeFormatter ISO_OFFSET_DATE;
     static {
@@ -170,7 +166,7 @@ public final class DateTimeFormatter {
      * the ISO-8601 extended date format.
      * The format consists of:
      * <p><ul>
-     * <li>The {@link #isoLocalDate()}
+     * <li>The {@link #ISO_LOCAL_DATE}
      * <li>If the offset is not available to print/parse then the format is complete.
      * <li>The {@link ZoneOffset#getId() offset ID}. If the offset has seconds then
      *  they will be handled even though this is not part of the ISO-8601 standard.
@@ -178,8 +174,6 @@ public final class DateTimeFormatter {
      * </ul><p>
      * As this formatter has an optional element, it may be necessary to parse using
      * {@link DateTimeFormatter#parseBest}.
-     *
-     * @return the ISO date formatter, not null
      */
     public static final DateTimeFormatter ISO_DATE;
     static {
@@ -214,8 +208,6 @@ public final class DateTimeFormatter {
      * <li>One to nine digits for the {@link ChronoField#NANO_OF_SECOND nano-of-second}.
      *  As many digits will be printed as required.
      * </ul><p>
-     *
-     * @return the ISO local time formatter, not null
      */
     public static final DateTimeFormatter ISO_LOCAL_TIME;
     static {
@@ -240,13 +232,11 @@ public final class DateTimeFormatter {
      * the ISO-8601 extended offset time format.
      * The format consists of:
      * <p><ul>
-     * <li>The {@link #isoLocalTime()}
+     * <li>The {@link #ISO_LOCAL_TIME}
      * <li>The {@link ZoneOffset#getId() offset ID}. If the offset has seconds then
      *  they will be handled even though this is not part of the ISO-8601 standard.
      *  Parsing is case insensitive.
      * </ul><p>
-     *
-     * @return the ISO offset time formatter, not null
      */
     public static final DateTimeFormatter ISO_OFFSET_TIME;
     static {
@@ -266,7 +256,7 @@ public final class DateTimeFormatter {
      * the ISO-8601 extended offset time format.
      * The format consists of:
      * <p><ul>
-     * <li>The {@link #isoLocalTime()}
+     * <li>The {@link #ISO_LOCAL_TIME}
      * <li>If the offset is not available to print/parse then the format is complete.
      * <li>The {@link ZoneOffset#getId() offset ID}. If the offset has seconds then
      *  they will be handled even though this is not part of the ISO-8601 standard.
@@ -274,8 +264,6 @@ public final class DateTimeFormatter {
      * </ul><p>
      * As this formatter has an optional element, it may be necessary to parse using
      * {@link DateTimeFormatter#parseBest}.
-     *
-     * @return the ISO time formatter, not null
      */
     public static final DateTimeFormatter ISO_TIME;
     static {
@@ -296,12 +284,10 @@ public final class DateTimeFormatter {
      * the ISO-8601 extended offset date-time format.
      * The format consists of:
      * <p><ul>
-     * <li>The {@link #isoLocalDate()}
+     * <li>The {@link #ISO_LOCAL_DATE}
      * <li>The letter 'T'. Parsing is case insensitive.
-     * <li>The {@link #isoLocalTime()}
+     * <li>The {@link #ISO_LOCAL_TIME}
      * </ul><p>
-     *
-     * @return the ISO local date-time formatter, not null
      */
     public static final DateTimeFormatter ISO_LOCAL_DATE_TIME;
     static {
@@ -322,13 +308,11 @@ public final class DateTimeFormatter {
      * the ISO-8601 extended offset date-time format.
      * The format consists of:
      * <p><ul>
-     * <li>The {@link #isoLocalDateTime()}
+     * <li>The {@link #ISO_LOCAL_DATE_TIME}
      * <li>The {@link ZoneOffset#getId() offset ID}. If the offset has seconds then
      *  they will be handled even though this is not part of the ISO-8601 standard.
      *  Parsing is case insensitive.
      * </ul><p>
-     *
-     * @return the ISO offset date-time formatter, not null
      */
     public static final DateTimeFormatter ISO_OFFSET_DATE_TIME;
     static {
@@ -349,15 +333,13 @@ public final class DateTimeFormatter {
      * to add the time-zone.
      * The format consists of:
      * <p><ul>
-     * <li>The {@link #isoOffsetDateTime()}
+     * <li>The {@link #ISO_OFFSET_DATE_TIME}
      * <li>If the zone ID is not available or is a {@code ZoneOffset} then the format is complete.
      * <li>An open square bracket '['.
      * <li>The {@link ZoneId#getId() zone ID}. This is not part of the ISO-8601 standard.
      *  Parsing is case sensitive.
      * <li>A close square bracket ']'.
      * </ul><p>
-     *
-     * @return the ISO zoned date-time formatter, not null
      */
     public static final DateTimeFormatter ISO_ZONED_DATE_TIME;
     static {
@@ -381,7 +363,7 @@ public final class DateTimeFormatter {
      * the ISO-8601 extended offset date-time format.
      * The format consists of:
      * <p><ul>
-     * <li>The {@link #isoLocalDateTime()}
+     * <li>The {@link #ISO_LOCAL_DATE_TIME}
      * <li>If the offset is not available to print/parse then the format is complete.
      * <li>The {@link ZoneOffset#getId() offset ID}. If the offset has seconds then
      *  they will be handled even though this is not part of the ISO-8601 standard.
@@ -393,8 +375,6 @@ public final class DateTimeFormatter {
      * </ul><p>
      * As this formatter has an optional element, it may be necessary to parse using
      * {@link DateTimeFormatter#parseBest}.
-     *
-     * @return the ISO date-time formatter, not null
      */
     public static final DateTimeFormatter ISO_DATE_TIME;
     static {
@@ -432,8 +412,6 @@ public final class DateTimeFormatter {
      * </ul><p>
      * As this formatter has an optional element, it may be necessary to parse using
      * {@link DateTimeFormatter#parseBest}.
-     *
-     * @return the ISO ordinal date formatter, not null
      */
     public static final DateTimeFormatter ISO_ORDINAL_DATE;
     static {
@@ -473,8 +451,6 @@ public final class DateTimeFormatter {
      * </ul><p>
      * As this formatter has an optional element, it may be necessary to parse using
      * {@link DateTimeFormatter#parseBest}.
-     *
-     * @return the ISO week-based date formatter, not null
      */
     public static final DateTimeFormatter ISO_WEEK_DATE;
     static {
@@ -504,7 +480,8 @@ public final class DateTimeFormatter {
      * The localized decimal style is not used.
      * <p>
      * This is a special case formatter intended to allow a human readable form
-     * of an {@link java.time.Instant}. The {@code Instant} class is designed to
+     * of an {@link org.threeten.bp.Instant Instant}.
+     * The {@code Instant} class is designed to
      * only represent a point in time and internally stores a value in nanoseconds
      * from a fixed epoch of 1970-01-01Z. As such, an {@code Instant} cannot be
      * formatted as a date or time without providing some form of time-zone.
@@ -551,8 +528,6 @@ public final class DateTimeFormatter {
      * </ul><p>
      * As this formatter has an optional element, it may be necessary to parse using
      * {@link DateTimeFormatter#parseBest}.
-     *
-     * @return the ISO basic local date formatter, not null
      */
     public static final DateTimeFormatter BASIC_ISO_DATE;
     static {
@@ -604,8 +579,6 @@ public final class DateTimeFormatter {
      *  An offset of zero uses "GMT". North American zone names and military zone names are not handled.
      * </ul><p>
      * Parsing is case insensitive.
-     *
-     * @return the RFC-1123 formatter, not null
      */
     public static final DateTimeFormatter RFC_1123_DATE_TIME;
     static {

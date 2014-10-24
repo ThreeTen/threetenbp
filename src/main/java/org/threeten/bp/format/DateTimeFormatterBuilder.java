@@ -1088,7 +1088,7 @@ public final class DateTimeFormatterBuilder {
      * This appends an instruction to format/parse the chronology ID to the builder.
      * <p>
      * During printing, the chronology is obtained using a mechanism equivalent
-     * to querying the temporal with {@link Queries#chronology()}.
+     * to querying the temporal with {@link TemporalQueries#chronology()}.
      * It will be printed using the result of {@link Chronology#getId()}.
      * If the chronology cannot be obtained then an exception is thrown unless the
      * section of the formatter is optional.

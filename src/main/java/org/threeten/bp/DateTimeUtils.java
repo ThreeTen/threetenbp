@@ -172,7 +172,7 @@ public final class DateTimeUtils {
     /**
      * Converts a {@code LocalDate} to a {@code java.sql.Date}.
      *
-     * @param localDate  the local date, not null
+     * @param date  the local date, not null
      * @return the SQL date, not null
      */
     @SuppressWarnings("deprecation")
@@ -195,7 +195,7 @@ public final class DateTimeUtils {
     /**
      * Converts a {@code LocalTime} to a {@code java.sql.Time}.
      *
-     * @param localTime  the local time, not null
+     * @param time  the local time, not null
      * @return the SQL time, not null
      */
     @SuppressWarnings("deprecation")

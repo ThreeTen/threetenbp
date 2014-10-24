@@ -348,7 +348,7 @@ public final class Instant
      * {@code 2007-12-03T10:15:30.000Z}.
      * <p>
      * The string must represent a valid instant in UTC and is parsed using
-     * {@link DateTimeFormatters#isoInstant()}.
+     * {@link DateTimeFormatter#ISO_INSTANT}.
      *
      * @param text  the text to parse, not null
      * @return the parsed instant, not null
@@ -1139,7 +1139,7 @@ public final class Instant
     /**
      * A string representation of this instant using ISO-8601 representation.
      * <p>
-     * The format used is the same as {@link DateTimeFormatters#ISO_INSTANT}.
+     * The format used is the same as {@link DateTimeFormatter#ISO_INSTANT}.
      *
      * @return an ISO-8601 representation of this instant, not null
      */

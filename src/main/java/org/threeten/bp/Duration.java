@@ -56,6 +56,7 @@ import java.util.regex.Pattern;
 
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.Jdk8Methods;
+import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAmount;
@@ -310,7 +311,7 @@ public final class Duration
      * This calculates the duration between two temporal objects of the same type.
      * The difference in seconds is calculated using {@link Temporal#until(Temporal, TemporalUnit)}.
      * The difference in nanoseconds is calculated using by querying the
-     * {@link ChronoUnit#NANO_OF_SECOND NANO_OF_SECOND} field.
+     * {@link ChronoField#NANO_OF_SECOND NANO_OF_SECOND} field.
      * <p>
      * The result of this method can be a negative period if the end is before the start.
      * To guarantee to obtain a positive duration call abs() on the result.

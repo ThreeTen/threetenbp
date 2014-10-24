@@ -341,7 +341,7 @@ public final class LocalDate
      * Obtains an instance of {@code LocalDate} from a text string such as {@code 2007-12-03}.
      * <p>
      * The string must represent a valid date and is parsed using
-     * {@link org.threeten.bp.format.DateTimeFormatters#isoLocalDate()}.
+     * {@link org.threeten.bp.format.DateTimeFormatter#ISO_LOCAL_DATE}.
      *
      * @param text  the text to parse such as "2007-12-03", not null
      * @return the parsed local date, not null

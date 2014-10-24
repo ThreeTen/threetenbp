@@ -191,7 +191,7 @@ public interface Temporal extends TemporalAccessor {
      * <p>
      * This adjusts this temporal, adding according to the rules of the specified amount.
      * The amount is typically a {@link Period} but may be any other type implementing
-     * the {@link TemporalAdder} interface, such as {@link Duration}.
+     * the {@link TemporalAmount} interface, such as {@link Duration}.
      * <p>
      * Some example code indicating how and why this method is used:
      * <pre>
