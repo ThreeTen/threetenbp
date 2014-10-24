@@ -8,7 +8,15 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="1.0.1" date="xxxx-xx-xx" description="v1.0.1">
+    <release version="1.1" date="xxxx-xx-xx" description="v1.1">
+      <action dev="jodastephen" type="update" >
+        Update to time-zone data 2014i.
+        Fixes #19.
+      </action>
+      <action dev="jodastephen" type="fix" >
+        Be more OSGi friendly wrt JDK internal packages.
+        Fixes #14, #15.
+      </action>
       <action dev="jodastephen" type="fix" >
         Fix parsing of Durations between 0 and -1 seconds.
       </action>
