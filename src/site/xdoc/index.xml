@@ -60,7 +60,7 @@ Formatting and parsing often depends on data only available in Java SE 8.
 Zone id and text parsing is significantly less powerful.
 </p>
 <p>
-Available in <a href="http://search.maven.org/#artifactdetails|org.threeten|threetenbp|1.1|jar">Maven Central</a>.
+Available in <a href="http://search.maven.org/#artifactdetails%7Corg.threeten%7Cthreetenbp%7C1.1%7Cjar">Maven Central</a>.
 </p>
 </section>
 

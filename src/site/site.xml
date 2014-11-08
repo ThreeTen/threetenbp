@@ -1,22 +1,68 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="ThreeTen-Backport">
-  <publishDate position="navigation-bottom" format="yyyy-MM-dd"/>
-  <bannerLeft>
-    <name>ThreeTen.org</name>
-    <href>http://www.threeten.org/</href>
-  </bannerLeft>
-  <bannerRight>
-    <name>ThreeTen-Backport</name>
-    <href>http://www.threeten.org/threetenbp/</href>
-  </bannerRight>
+  <publishDate position="bottom" format="yyyy-MM-dd"/>
+  <version position="bottom"/>
+  <googleAnalyticsAccountId>UA-1425975-2</googleAnalyticsAccountId>
+
+  <skin>
+    <groupId>lt.velykis.maven.skins</groupId>
+    <artifactId>reflow-maven-skin</artifactId>
+    <version>1.1.1</version>
+  </skin>
+
+  <custom>
+    <reflowSkin>
+      <smoothScroll>true</smoothScroll>
+      <highlightJs>true</highlightJs>
+      <highlightJsTheme>github</highlightJsTheme>
+      <theme>bootswatch-cerulean</theme>
+      <brand>
+        <name><![CDATA[<span class="color-highlight">ThreeTen</span> Backport]]></name>
+        <href>index.html</href>
+      </brand>
+      <topNav>Documentation|Releases|Development|ThreeTen</topNav>
+      <bottomNav>
+        <column>Documentation</column>
+        <column>Releases</column>
+        <column>Development</column>
+        <column>Reports</column>
+      </bottomNav>
+      <bottomDescription><![CDATA[
+        Backport of Java SE 8 date and time (JSR-310) to Java 6 and 7
+        by <a href="http://www.joda.org/">Stephen Colebourne</a>
+      ]]></bottomDescription>
+      <toc>false</toc>
+      <breadcrumbs>false</breadcrumbs>
+      <pages>
+        <source-repository>
+          <highlightJs>false</highlightJs>
+        </source-repository>
+        <issue-tracking>
+          <highlightJs>false</highlightJs>
+        </issue-tracking>
+        <license>
+          <highlightJs>false</highlightJs>
+        </license>
+      </pages>
+    </reflowSkin>
+  </custom>
 
   <body>
-    <menu name="ThreeTen Backport">
-      <item name="Overview" href="index.html"/>
+    <head>
+      <link rel="author" href="https://plus.google.com/113137868744510231215"/>
+    </head>
+
+    <menu name="Documentation">
+      <item name="Home" href="index.html"/>
       <item name="Javadoc" href="apidocs/index.html"/>
+      <item name="Update time zones" href="update-tzdb.html"/>
       <item name="License" href="license.html"/>
+    </menu>
+
+    <menu name="Releases">
       <item name="Release notes" href="changes-report.html"/>
-      <item name="Download" href="http://search.maven.org/#search|gav|1|g%3A%22org.threeten%22%20AND%20a%3A%22threetenbp%22"/>
+      <item name="Dependency info" href="dependency-info.html"/>
+      <item name="Download" href="http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.threeten%22%20AND%20a%3A%22threetenbp%22"/>
     </menu>
 
     <menu name="Development">
@@ -26,16 +72,9 @@
     </menu>
 
     <menu name="ThreeTen">
-      <item name="ThreeTen home" href="http://www.threeten.org"/>
+      <item name="ThreeTen Home" href="http://www.threeten.org"/>
     </menu>
 
-    <menu ref="reports"/>
+    <menu name="Reports" ref="reports"/>
   </body>
-
-  <poweredBy>
-    <logo name="Maven" href="http://maven.apache.org/"
-          img="http://maven.apache.org/images/logos/maven-feather.png"/>
-    <logo name="GitHub" href="https://github.com/ThreeTen/threetenbp"
-          img="http://www.threeten.org/images/github.png"/>
-  </poweredBy>
 </project>
