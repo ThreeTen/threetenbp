@@ -12,12 +12,13 @@
 
   <custom>
     <reflowSkin>
-      <smoothScroll>true</smoothScroll>
+      <smoothScroll>false</smoothScroll>
       <highlightJs>true</highlightJs>
       <highlightJsTheme>github</highlightJsTheme>
-      <theme>bootswatch-cerulean</theme>
+      <imgLightbox>false</imgLightbox>
+      <theme>bootswatch-cosmo</theme>
       <brand>
-        <name><![CDATA[<span class="color-highlight">ThreeTen</span> Backport]]></name>
+        <name>ThreeTen Backport</name>
         <href>index.html</href>
       </brand>
       <topNav>Documentation|Releases|Development|ThreeTen</topNav>
@@ -29,11 +30,20 @@
       </bottomNav>
       <bottomDescription><![CDATA[
         Backport of Java SE 8 date and time (JSR-310) to Java 6 and 7
-        by <a href="http://www.joda.org/">Stephen Colebourne</a>
       ]]></bottomDescription>
       <toc>false</toc>
       <breadcrumbs>false</breadcrumbs>
+      <markPageHeader>false</markPageHeader>
       <pages>
+        <index>
+          <sections>
+            <columns>3</columns>
+            <body />
+            <sidebar />
+          </sections>
+          <shortTitle>Home</shortTitle>
+          <highlightJs>false</highlightJs>
+        </index>
         <source-repository>
           <highlightJs>false</highlightJs>
         </source-repository>
@@ -49,13 +59,14 @@
 
   <body>
     <head>
+      <link href="http://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet"/>
       <link rel="author" href="https://plus.google.com/113137868744510231215"/>
     </head>
 
     <menu name="Documentation">
       <item name="Home" href="index.html"/>
-      <item name="Javadoc" href="apidocs/index.html"/>
       <item name="Update time zones" href="update-tzdb.html"/>
+      <item name="Javadoc" href="apidocs/index.html"/>
       <item name="License" href="license.html"/>
     </menu>
 
@@ -72,7 +83,8 @@
     </menu>
 
     <menu name="ThreeTen">
-      <item name="ThreeTen Home" href="http://www.threeten.org"/>
+      <item name="Home" href="http://www.threeten.org"/>
+      <item name="Extra" href="http://www.threeten.org/threeten-extra"/>
     </menu>
 
     <menu name="Reports" ref="reports"/>
