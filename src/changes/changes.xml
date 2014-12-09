@@ -8,6 +8,12 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.2" date="SNAPSHOT" description="v1.2">
+      <action dev="jodastephen" type="fix" >
+        Remove references to LocaleServiceProvider.
+        Fixes #22.
+      </action>
+    </release>
     <release version="1.1" date="2014-10-24" description="v1.1">
       <action dev="jodastephen" type="update" >
         Update to time-zone data 2014i.

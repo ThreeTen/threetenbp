@@ -34,7 +34,6 @@ package org.threeten.bp.format;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map.Entry;
-import java.util.spi.LocaleServiceProvider;
 
 import org.threeten.bp.temporal.TemporalField;
 
@@ -47,7 +46,7 @@ import org.threeten.bp.temporal.TemporalField;
  * Implementations must be thread-safe.
  * Implementations should cache the textual information.
  */
-abstract class DateTimeTextProvider extends LocaleServiceProvider {
+abstract class DateTimeTextProvider {
 
     /**
      * Gets the provider.
@@ -56,6 +55,15 @@ abstract class DateTimeTextProvider extends LocaleServiceProvider {
      */
     static DateTimeTextProvider getInstance() {
         return new SimpleDateTimeTextProvider();
+    }
+
+    /**
+     * Gets the available locales.
+     * 
+     * @return the locales
+     */
+    public Locale[] getAvailableLocales() {
+        throw new UnsupportedOperationException();
     }
 
     /**
