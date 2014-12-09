@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="1.2" date="SNAPSHOT" description="v1.2">
+    <release version="1.2" date="2014-12-09" description="v1.2">
       <action dev="jodastephen" type="fix" >
         Fix parsing of Etc/GMT+1 and similar zones which have a longer form like Etc/GMT+10.
         Fixes #21.
