@@ -48,6 +48,8 @@ import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.YearMonth;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalQuery;
 
@@ -483,6 +485,16 @@ public class TestDateTimeFormatter {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_toFormat_Class() throws Exception {
         BASIC_FORMATTER.toFormat(null);
+    }
+
+    //-------------------------------------------------------------------------
+    public void test_parse_allZones() throws Exception {
+        for (String zoneStr : ZoneId.getAvailableZoneIds()) {
+            ZoneId zone = ZoneId.of(zoneStr);
+            ZonedDateTime base = ZonedDateTime.of(2014, 12, 31, 12, 0, 0, 0, zone);
+            ZonedDateTime test = ZonedDateTime.parse(base.toString());
+            assertEquals(test, base);
+        }
     }
 
 }

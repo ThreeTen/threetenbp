@@ -10,6 +10,10 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.2" date="SNAPSHOT" description="v1.2">
       <action dev="jodastephen" type="fix" >
+        Fix parsing of Etc/GMT+1 and similar zones which have a longer form like Etc/GMT+10.
+        Fixes #21.
+      </action>
+      <action dev="jodastephen" type="fix" >
         Remove references to LocaleServiceProvider.
         Fixes #22.
       </action>

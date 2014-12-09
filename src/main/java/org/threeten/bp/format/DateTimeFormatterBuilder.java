@@ -3505,21 +3505,27 @@ public final class DateTimeFormatterBuilder {
 
             // parse
             String parsedZoneId = null;
+            String lastZoneId = null;
             while (tree != null) {
                 int nodeLength = tree.length;
                 if (position + nodeLength > length) {
                     break;
                 }
+                lastZoneId = parsedZoneId;
                 parsedZoneId = text.subSequence(position, position + nodeLength).toString();
                 tree = tree.get(parsedZoneId, context.isCaseSensitive());
             }
             ZoneId zone = convertToZone(regionIds, parsedZoneId, context.isCaseSensitive());
             if (zone == null) {
-                if (context.charEquals(nextChar, 'Z')) {
-                    context.setParsed(ZoneOffset.UTC);
-                    return position + 1;
+                zone = convertToZone(regionIds, lastZoneId, context.isCaseSensitive());
+                if (zone == null) {
+                    if (context.charEquals(nextChar, 'Z')) {
+                        context.setParsed(ZoneOffset.UTC);
+                        return position + 1;
+                    }
+                    return ~position;
                 }
-                return ~position;
+                parsedZoneId = lastZoneId;
             }
             context.setParsed(zone);
             return position + parsedZoneId.length();
