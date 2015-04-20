@@ -1473,7 +1473,7 @@ public final class DateTimeFormatter {
      * It parses the entire text to produce the required date-time.
      * For example:
      * <pre>
-     *  LocalDateTime dt = parser.parse(str, LocalDateTime.class);
+     *  LocalDateTime dt = parser.parse(str, LocalDateTime.FROM);
      * </pre>
      * If the parse completes without reading the entire length of the text,
      * or a problem occurs during parsing or merging, then an exception is thrown.
