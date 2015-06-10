@@ -84,23 +84,17 @@ public abstract class ZoneRulesProvider {
      */
     private static final ConcurrentMap<String, ZoneRulesProvider> ZONES = new ConcurrentHashMap<String, ZoneRulesProvider>(512, 0.75f, 2);
     static {
-        ServiceLoader<ZoneRulesProvider> sl = ServiceLoader.load(ZoneRulesProvider.class, ZoneRulesProvider.class.getClassLoader());
-        List<ZoneRulesProvider> loaded = new ArrayList<ZoneRulesProvider>();
-        Iterator<ZoneRulesProvider> it = sl.iterator();
-        while (it.hasNext()) {
-            ZoneRulesProvider provider;
+        ServiceLoader<ZoneRulesProvider> loader = ServiceLoader.load(ZoneRulesProvider.class, ZoneRulesProvider.class.getClassLoader());
+        for (ZoneRulesProvider provider : loader) {
             try {
-                provider = it.next();
-            } catch (ServiceConfigurationError ex) {
-                if (ex.getCause() instanceof SecurityException) {
-                    continue;  // ignore the security exception, try the next provider
+                registerProvider0(provider);
+            } catch (ServiceConfigurationError e) {
+                boolean isAllowedException = (e.getCause() instanceof SecurityException);
+                if (!isAllowedException) {
+                    throw e;
                 }
-                throw ex;
             }
-            registerProvider0(provider);
         }
-        // CopyOnWriteList could be slow if lots of providers and each added individually
-        PROVIDERS.addAll(loaded);
     }
 
     //-------------------------------------------------------------------------
