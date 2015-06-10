@@ -31,10 +31,7 @@
  */
 package org.threeten.bp.zone;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.NavigableMap;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
@@ -88,10 +85,9 @@ public abstract class ZoneRulesProvider {
         for (ZoneRulesProvider provider : loader) {
             try {
                 registerProvider0(provider);
-            } catch (ServiceConfigurationError e) {
-                boolean isAllowedException = (e.getCause() instanceof SecurityException);
-                if (!isAllowedException) {
-                    throw e;
+            } catch (ServiceConfigurationError ex) {
+                if (!(ex.getCause() instanceof SecurityException)) {
+                    throw ex;
                 }
             }
         }

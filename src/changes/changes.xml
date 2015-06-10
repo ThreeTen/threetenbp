@@ -9,6 +9,10 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="1.2.1" date="SNAPSHOT" description="v1.2.1">
+      <action dev="paplorinc" type="fix" >
+        Fix loading of multiple versions of tzdb data.
+        Fixes #28.
+      </action>
       <action dev="jodastephen" type="fix" >
         Fix Javadoc in Duration.
         Fixes #24.

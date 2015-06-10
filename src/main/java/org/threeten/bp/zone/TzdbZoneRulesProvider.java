@@ -135,6 +135,8 @@ public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
                 if (loadedUrls.add(url.toExternalForm())) {
                     Iterable<Version> loadedVersions = load(url);
                     for (Version loadedVersion : loadedVersions) {
+                        // see https://github.com/ThreeTen/threetenbp/pull/28 for issue wrt
+                        // multiple versions of lib on classpath
                         Version existing = versions.putIfAbsent(loadedVersion.versionId, loadedVersion);
                         if (existing != null && !existing.versionId.equals(loadedVersion.versionId)) {
                             throw new ZoneRulesException("Data already loaded for TZDB time-zone rules version: " + loadedVersion.versionId);
