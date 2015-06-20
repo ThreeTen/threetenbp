@@ -9,6 +9,14 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="1.2.1" date="SNAPSHOT" description="v1.2.1">
+      <action dev="jodastephen" type="add" >
+        Produce a no-tzdb jar file.
+        A second jar file is now located in Maven Central with the classifier "no-tzdb".
+        This is the same as the main threetenbp jar file, except that the tzdb data and TZDB compiler are omitted.
+        This is intended for use by Android, but could be used in other environments.
+        The default behaviour in the standard jar file is unchanged, with time-zone data included in the jar file.
+        Fixes #29.
+      </action>
       <action dev="jodastephen" type="fix" >
         Remove leap seconds data, as not in the JDK.
       </action>
