@@ -132,18 +132,7 @@ public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
             Enumeration<URL> en = classLoader.getResources("org/threeten/bp/TZDB.dat");
             while (en.hasMoreElements()) {
                 url = en.nextElement();
-                if (loadedUrls.add(url.toExternalForm())) {
-                    Iterable<Version> loadedVersions = load(url);
-                    for (Version loadedVersion : loadedVersions) {
-                        // see https://github.com/ThreeTen/threetenbp/pull/28 for issue wrt
-                        // multiple versions of lib on classpath
-                        Version existing = versions.putIfAbsent(loadedVersion.versionId, loadedVersion);
-                        if (existing != null && !existing.versionId.equals(loadedVersion.versionId)) {
-                            throw new ZoneRulesException("Data already loaded for TZDB time-zone rules version: " + loadedVersion.versionId);
-                        }
-                    }
-                    updated = true;
-                }
+                updated |= load(url);
             }
         } catch (Exception ex) {
             throw new ZoneRulesException("Unable to load TZDB time-zone rules: " + url, ex);
@@ -155,9 +144,35 @@ public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
      * Loads the rules from a URL, often in a jar file.
      *
      * @param url  the jar file to load, not null
+     * @return true if updated
+     * @throws ClassNotFoundException if a classpath error occurs
+     * @throws IOException if an IO error occurs
+     * @throws ZoneRulesException if the data is already loaded for the version
+     */
+    public boolean load(URL url) throws ClassNotFoundException, IOException, ZoneRulesException {
+        boolean updated = false;
+        if (loadedUrls.add(url.toExternalForm())) {
+            Iterable<Version> loadedVersions = load0(url);
+            for (Version loadedVersion : loadedVersions) {
+                // see https://github.com/ThreeTen/threetenbp/pull/28 for issue wrt
+                // multiple versions of lib on classpath
+                Version existing = versions.putIfAbsent(loadedVersion.versionId, loadedVersion);
+                if (existing != null && !existing.versionId.equals(loadedVersion.versionId)) {
+                    throw new ZoneRulesException("Data already loaded for TZDB time-zone rules version: " + loadedVersion.versionId);
+                }
+                updated = true;
+            }
+        }
+        return updated;
+    }
+
+    /**
+     * Loads the rules from a URL, often in a jar file.
+     *
+     * @param url  the jar file to load, not null
      * @throws Exception if an error occurs
      */
-    private Iterable<Version> load(URL url) throws ClassNotFoundException, IOException {
+    private Iterable<Version> load0(URL url) throws ClassNotFoundException, IOException {
         InputStream in = null;
         try {
             in = url.openStream();
