@@ -9,6 +9,9 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="1.2.1" date="SNAPSHOT" description="v1.2.1">
+      <action dev="jodastephen" type="fix" >
+        Remove leap seconds data, as not in the JDK.
+      </action>
       <action dev="paplorinc" type="fix" >
         Fix loading of multiple versions of tzdb data.
         Fixes #28.

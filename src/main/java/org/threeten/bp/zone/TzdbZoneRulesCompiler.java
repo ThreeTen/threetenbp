@@ -67,7 +67,6 @@ import org.threeten.bp.Year;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
-import org.threeten.bp.temporal.JulianFields;
 import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalAdjusters;
 import org.threeten.bp.zone.ZoneOffsetTransitionRule.TimeDefinition;
@@ -91,10 +90,6 @@ final class TzdbZoneRulesCompiler {
             .optionalStart().appendLiteral(':').appendValue(SECOND_OF_MINUTE, 2)
             .toFormatter();
     }
-    /**
-     * Constant for MJD 1972-01-01.
-     */
-    private static final long MJD_1972_01_01 = 41317L;
 
     /**
      * Reads a set of TZDB files and builds a single combined data file.
@@ -317,8 +312,6 @@ final class TzdbZoneRulesCompiler {
             Set<String> allRegionIds, Set<ZoneRules> allRules, SortedMap<LocalDate, Byte> leapSeconds) {
         File tzdbFile = new File(dstDir, "TZDB.dat");
         tzdbFile.delete();
-        File leapFile = new File(dstDir, "LeapSecondRules.dat");
-        leapFile.delete();
         try {
             FileOutputStream fos = null;
             try {
@@ -327,15 +320,6 @@ final class TzdbZoneRulesCompiler {
             } finally {
                 if (fos != null) {
                     fos.close();
-                }
-            }
-            FileOutputStream fos2 = null;
-            try {
-                fos2 = new FileOutputStream(leapFile);
-                outputLeapSecondDat(fos2, leapSeconds);
-            } finally {
-                if (fos2 != null) {
-                    fos2.close();
                 }
             }
         } catch (Exception ex) {
@@ -365,7 +349,6 @@ final class TzdbZoneRulesCompiler {
         try {
             jos = new JarOutputStream(new FileOutputStream(dstFile));
             outputTzdbEntry(jos, allBuiltZones, allRegionIds, allRules);
-            outputLeapSecondEntry(jos, leapSeconds);
         } catch (Exception ex) {
             System.out.println("Failed: " + ex.toString());
             ex.printStackTrace();
@@ -445,43 +428,6 @@ final class TzdbZoneRulesCompiler {
                  out.writeShort(regionIndex);
                  out.writeShort(rulesIndex);
             }
-        }
-        out.flush();
-    }
-
-    /**
-     * Outputs the leap second entries in the JAR file.
-     */
-    private static void outputLeapSecondEntry(
-            JarOutputStream jos, SortedMap<LocalDate, Byte> leapSeconds) {
-        // this format is not publicly specified
-        try {
-            jos.putNextEntry(new ZipEntry("org/threeten/bp/LeapSecondRules.dat"));
-            outputLeapSecondDat(jos, leapSeconds);
-            jos.closeEntry();
-        } catch (Exception ex) {
-            System.out.println("Failed: " + ex.toString());
-            ex.printStackTrace();
-            System.exit(1);
-        }
-    }
-
-    private static void outputLeapSecondDat(OutputStream jos,
-            SortedMap<LocalDate, Byte> leapSeconds) throws IOException {
-        DataOutputStream out = new DataOutputStream(jos);
-        // file version
-        out.writeByte(1);
-        // count
-        out.writeInt(leapSeconds.size() + 1);
-        // first line is fixed in UTC-TAI leap second system, always 10 seconds at 1972-01-01
-        int offset = 10;
-        out.writeLong(MJD_1972_01_01);
-        out.writeInt(offset);
-        // now treat all the transitions
-        for (Map.Entry<LocalDate, Byte> rule : leapSeconds.entrySet()) {
-            out.writeLong(JulianFields.MODIFIED_JULIAN_DAY.getFrom(rule.getKey()));
-            offset += rule.getValue();
-            out.writeInt(offset);
         }
         out.flush();
     }
