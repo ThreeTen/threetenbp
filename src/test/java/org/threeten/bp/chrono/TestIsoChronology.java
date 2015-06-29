@@ -231,6 +231,25 @@ public class TestIsoChronology {
 
                 {1900, false},
                 {2100, false},
+
+                {-500, false},
+                {-400, true},
+                {-300, false},
+                {-100, false},
+                {-5, false},
+                {-4, true},
+                {-3, false},
+                {-2, false},
+                {-1, false},
+                {0, true},
+                {1, false},
+                {3, false},
+                {4, true},
+                {5, false},
+                {100, false},
+                {300, false},
+                {400, true},
+                {500, false},
         };
     }
 
