@@ -89,6 +89,25 @@ public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
         }
     }
 
+    /**
+     * Creates an instance and loads the specified URL.
+     * <p>
+     * This could be used to wrap this provider in another instance.
+     *
+     * @param url  the URL to load
+     * @throws ZoneRulesException if unable to load
+     */
+    public TzdbZoneRulesProvider(URL url) {
+        super();
+        try {
+            if (load(url) == false) {
+                throw new ZoneRulesException("No time-zone rules found: " + url);
+            }
+        } catch (Exception ex) {
+            throw new ZoneRulesException("Unable to load TZDB time-zone rules: " + url, ex);
+        }
+    }
+
     //-----------------------------------------------------------------------
     @Override
     protected Set<String> provideZoneIds() {
@@ -149,7 +168,7 @@ public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
      * @throws IOException if an IO error occurs
      * @throws ZoneRulesException if the data is already loaded for the version
      */
-    public boolean load(URL url) throws ClassNotFoundException, IOException, ZoneRulesException {
+    private boolean load(URL url) throws ClassNotFoundException, IOException, ZoneRulesException {
         boolean updated = false;
         if (loadedUrls.add(url.toExternalForm())) {
             Iterable<Version> loadedVersions = load0(url);
