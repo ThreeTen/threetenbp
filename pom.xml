@@ -123,9 +123,38 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-jar</id>
+            <configuration>
+              <archive>
+                <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+              </archive>
+            </configuration>
+          </execution>
+          <execution>
+            <id>no-tzdb</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <classifier>no-tzdb</classifier>
+              <archive>
+                <manifestEntries>
+                  <Implementation-Title>ThreeTen backport No-TZDB</Implementation-Title>
+                </manifestEntries>
+              </archive>
+              <excludes>
+                <exclude>org/threeten/bp/*.dat</exclude>
+                <exclude>org/threeten/bp/zone/TzdbZoneRulesCompiler*</exclude>
+                <exclude>META-INF/services/org.threeten.bp.zone.ZoneRulesProvider</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
         <configuration>
           <archive>
-            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
             <manifest>
               <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
               <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>

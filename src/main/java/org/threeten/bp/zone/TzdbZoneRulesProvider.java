@@ -89,6 +89,42 @@ public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
         }
     }
 
+    /**
+     * Creates an instance and loads the specified URL.
+     * <p>
+     * This could be used to wrap this provider in another instance.
+     *
+     * @param url  the URL to load, not null
+     * @throws ZoneRulesException if unable to load
+     */
+    public TzdbZoneRulesProvider(URL url) {
+        super();
+        try {
+            if (load(url) == false) {
+                throw new ZoneRulesException("No time-zone rules found: " + url);
+            }
+        } catch (Exception ex) {
+            throw new ZoneRulesException("Unable to load TZDB time-zone rules: " + url, ex);
+        }
+    }
+
+    /**
+     * Creates an instance and loads the specified input stream.
+     * <p>
+     * This could be used to wrap this provider in another instance.
+     *
+     * @param stream  the stream to load, not null, not closed after use
+     * @throws ZoneRulesException if unable to load
+     */
+    public TzdbZoneRulesProvider(InputStream stream) {
+        super();
+        try {
+            load(stream);
+        } catch (Exception ex) {
+            throw new ZoneRulesException("Unable to load TZDB time-zone rules", ex);
+        }
+    }
+
     //-----------------------------------------------------------------------
     @Override
     protected Set<String> provideZoneIds() {
@@ -132,18 +168,7 @@ public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
             Enumeration<URL> en = classLoader.getResources("org/threeten/bp/TZDB.dat");
             while (en.hasMoreElements()) {
                 url = en.nextElement();
-                if (loadedUrls.add(url.toExternalForm())) {
-                    Iterable<Version> loadedVersions = load(url);
-                    for (Version loadedVersion : loadedVersions) {
-                        // see https://github.com/ThreeTen/threetenbp/pull/28 for issue wrt
-                        // multiple versions of lib on classpath
-                        Version existing = versions.putIfAbsent(loadedVersion.versionId, loadedVersion);
-                        if (existing != null && !existing.versionId.equals(loadedVersion.versionId)) {
-                            throw new ZoneRulesException("Data already loaded for TZDB time-zone rules version: " + loadedVersion.versionId);
-                        }
-                    }
-                    updated = true;
-                }
+                updated |= load(url);
             }
         } catch (Exception ex) {
             throw new ZoneRulesException("Unable to load TZDB time-zone rules: " + url, ex);
@@ -155,61 +180,99 @@ public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
      * Loads the rules from a URL, often in a jar file.
      *
      * @param url  the jar file to load, not null
-     * @throws Exception if an error occurs
+     * @return true if updated
+     * @throws ClassNotFoundException if a classpath error occurs
+     * @throws IOException if an IO error occurs
+     * @throws ZoneRulesException if the data is already loaded for the version
      */
-    private Iterable<Version> load(URL url) throws ClassNotFoundException, IOException {
-        InputStream in = null;
-        try {
-            in = url.openStream();
-            DataInputStream dis = new DataInputStream(in);
-            if (dis.readByte() != 1) {
-                throw new StreamCorruptedException("File format not recognised");
-            }
-            // group
-            String groupId = dis.readUTF();
-            if ("TZDB".equals(groupId) == false) {
-                throw new StreamCorruptedException("File format not recognised");
-            }
-            // versions
-            int versionCount = dis.readShort();
-            String[] versionArray = new String[versionCount];
-            for (int i = 0; i < versionCount; i++) {
-                versionArray[i] = dis.readUTF();
-            }
-            // regions
-            int regionCount = dis.readShort();
-            String[] regionArray = new String[regionCount];
-            for (int i = 0; i < regionCount; i++) {
-                regionArray[i] = dis.readUTF();
-            }
-            regionIds.addAll(Arrays.asList(regionArray));
-            // rules
-            int ruleCount = dis.readShort();
-            Object[] ruleArray = new Object[ruleCount];
-            for (int i = 0; i < ruleCount; i++) {
-                byte[] bytes = new byte[dis.readShort()];
-                dis.readFully(bytes);
-                ruleArray[i] = bytes;
-            }
-            AtomicReferenceArray<Object> ruleData = new AtomicReferenceArray<Object>(ruleArray);
-            // link version-region-rules
-            Set<Version> versionSet = new HashSet<Version>(versionCount);
-            for (int i = 0; i < versionCount; i++) {
-                int versionRegionCount = dis.readShort();
-                String[] versionRegionArray = new String[versionRegionCount];
-                short[] versionRulesArray = new short[versionRegionCount];
-                for (int j = 0; j < versionRegionCount; j++) {
-                    versionRegionArray[j] = regionArray[dis.readShort()];
-                    versionRulesArray[j] = dis.readShort();
+    private boolean load(URL url) throws ClassNotFoundException, IOException, ZoneRulesException {
+        boolean updated = false;
+        if (loadedUrls.add(url.toExternalForm())) {
+            InputStream in = null;
+            try {
+                in = url.openStream();
+                updated |= load(in);
+            } finally {
+                if (in != null) {
+                    in.close();
                 }
-                versionSet.add(new Version(versionArray[i], versionRegionArray, versionRulesArray, ruleData));
-            }
-            return versionSet;
-        } finally {
-            if (in != null) {
-                in.close();
             }
         }
+        return updated;
+    }
+
+    /**
+     * Loads the rules from an input stream.
+     *
+     * @param in  the stream to load, not null, not closed after use
+     * @throws Exception if an error occurs
+     */
+    private boolean load(InputStream in) throws IOException, StreamCorruptedException {
+        boolean updated = false;
+        Iterable<Version> loadedVersions = loadData(in);
+        for (Version loadedVersion : loadedVersions) {
+            // see https://github.com/ThreeTen/threetenbp/pull/28 for issue wrt
+            // multiple versions of lib on classpath
+            Version existing = versions.putIfAbsent(loadedVersion.versionId, loadedVersion);
+            if (existing != null && !existing.versionId.equals(loadedVersion.versionId)) {
+                throw new ZoneRulesException("Data already loaded for TZDB time-zone rules version: " + loadedVersion.versionId);
+            }
+            updated = true;
+        }
+        return updated;
+    }
+
+    /**
+     * Loads the rules from an input stream.
+     *
+     * @param in  the stream to load, not null, not closed after use
+     * @throws Exception if an error occurs
+     */
+    private Iterable<Version> loadData(InputStream in) throws IOException, StreamCorruptedException {
+        DataInputStream dis = new DataInputStream(in);
+        if (dis.readByte() != 1) {
+            throw new StreamCorruptedException("File format not recognised");
+        }
+        // group
+        String groupId = dis.readUTF();
+        if ("TZDB".equals(groupId) == false) {
+            throw new StreamCorruptedException("File format not recognised");
+        }
+        // versions
+        int versionCount = dis.readShort();
+        String[] versionArray = new String[versionCount];
+        for (int i = 0; i < versionCount; i++) {
+            versionArray[i] = dis.readUTF();
+        }
+        // regions
+        int regionCount = dis.readShort();
+        String[] regionArray = new String[regionCount];
+        for (int i = 0; i < regionCount; i++) {
+            regionArray[i] = dis.readUTF();
+        }
+        regionIds.addAll(Arrays.asList(regionArray));
+        // rules
+        int ruleCount = dis.readShort();
+        Object[] ruleArray = new Object[ruleCount];
+        for (int i = 0; i < ruleCount; i++) {
+            byte[] bytes = new byte[dis.readShort()];
+            dis.readFully(bytes);
+            ruleArray[i] = bytes;
+        }
+        AtomicReferenceArray<Object> ruleData = new AtomicReferenceArray<Object>(ruleArray);
+        // link version-region-rules
+        Set<Version> versionSet = new HashSet<Version>(versionCount);
+        for (int i = 0; i < versionCount; i++) {
+            int versionRegionCount = dis.readShort();
+            String[] versionRegionArray = new String[versionRegionCount];
+            short[] versionRulesArray = new short[versionRegionCount];
+            for (int j = 0; j < versionRegionCount; j++) {
+                versionRegionArray[j] = regionArray[dis.readShort()];
+                versionRulesArray[j] = dis.readShort();
+            }
+            versionSet.add(new Version(versionArray[i], versionRegionArray, versionRulesArray, ruleData));
+        }
+        return versionSet;
     }
 
     @Override
