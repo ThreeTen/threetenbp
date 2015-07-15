@@ -46,10 +46,8 @@ import org.testng.annotations.Test;
 @Test
 public class TestDateTimeUtils {
 
-    private static final ZoneId MOSCOW = ZoneId.of("Europe/Moscow");
     private static final ZoneId PARIS = ZoneId.of("Europe/Paris");
     private static final TimeZone PARIS_TZ = TimeZone.getTimeZone("Europe/Paris");
-    private static final Instant INSTANT = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500).atZone(ZoneOffset.ofHours(2)).toInstant();
 
     //-----------------------------------------------------------------------
     public void test_toInstant_Date() {
@@ -103,12 +101,14 @@ public class TestDateTimeUtils {
 
     //-----------------------------------------------------------------------
     public void test_toLocalDate_SqlDate() {
+        @SuppressWarnings("deprecation")
         java.sql.Date sqlDate = new java.sql.Date(2012 - 1900, 6 - 1, 30);
         LocalDate localDate = LocalDate.of(2012, 6, 30);
         assertEquals(DateTimeUtils.toLocalDate(sqlDate), localDate);
     }
 
     public void test_toSqlDate_LocalDate() {
+        @SuppressWarnings("deprecation")
         java.sql.Date sqlDate = new java.sql.Date(2012 - 1900, 6 - 1, 30);
         LocalDate localDate = LocalDate.of(2012, 6, 30);
         assertEquals(DateTimeUtils.toSqlDate(localDate), sqlDate);
@@ -116,12 +116,14 @@ public class TestDateTimeUtils {
 
     //-----------------------------------------------------------------------
     public void test_toLocalTime_SqlTime() {
+        @SuppressWarnings("deprecation")
         java.sql.Time sqlTime = new java.sql.Time(11, 30, 40);
         LocalTime localTime = LocalTime.of(11, 30, 40);
         assertEquals(DateTimeUtils.toLocalTime(sqlTime), localTime);
     }
 
     public void test_toSqlTime_LocalTime() {
+        @SuppressWarnings("deprecation")
         java.sql.Time sqlTime = new java.sql.Time(11, 30, 40);
         LocalTime localTime = LocalTime.of(11, 30, 40);
         assertEquals(DateTimeUtils.toSqlTime(localTime), sqlTime);
@@ -129,12 +131,14 @@ public class TestDateTimeUtils {
 
     //-----------------------------------------------------------------------
     public void test_toLocalDateTime_SqlTimestamp() {
+        @SuppressWarnings("deprecation")
         java.sql.Timestamp sqlDateTime = new java.sql.Timestamp(2012 - 1900, 6 - 1, 30, 11, 30, 40, 0);
         LocalDateTime localDateTime = LocalDateTime.of(2012, 6, 30, 11, 30, 40, 0);
         assertEquals(DateTimeUtils.toLocalDateTime(sqlDateTime), localDateTime);
     }
 
     public void test_toSqlTimestamp_LocalDateTime() {
+        @SuppressWarnings("deprecation")
         java.sql.Timestamp sqlDateTime = new java.sql.Timestamp(2012 - 1900, 6 - 1, 30, 11, 30, 40, 0);
         LocalDateTime localDateTime = LocalDateTime.of(2012, 6, 30, 11, 30, 40, 0);
         assertEquals(DateTimeUtils.toSqlTimestamp(localDateTime), sqlDateTime);
@@ -142,6 +146,7 @@ public class TestDateTimeUtils {
 
     //-----------------------------------------------------------------------
     public void test_toInstant_SqlTimestamp() {
+        @SuppressWarnings("deprecation")
         java.sql.Timestamp sqlDateTime = new java.sql.Timestamp(2012 - 1900, 6 - 1, 30, 11, 30, 40, 0);
         assertEquals(DateTimeUtils.toInstant(sqlDateTime), Instant.ofEpochMilli(sqlDateTime.getTime()));
     }
