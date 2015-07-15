@@ -542,46 +542,30 @@
   <!-- ==================================================================== -->
   <profiles>
     <profile>
-      <id>activate-jdk8</id>
+      <id>java8</id>
       <activation>
+        <jdk>1.8</jdk>
         <property>
-          <name>jdk8</name>
+          <name>!oss.repo</name>
         </property>
       </activation>
       <build>
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-toolchains-plugin</artifactId>
-            <executions>
-              <execution>
-                <phase>validate</phase>
-                <goals>
-                  <goal>toolchain</goal>
-                </goals>
-              </execution>
-            </executions>
+            <artifactId>maven-javadoc-plugin</artifactId>
             <configuration>
-              <toolchains>
-                <jdk>
-                  <version>1.8</version>
-                  <vendor>oracle</vendor>
-                </jdk>
-              </toolchains>
+              <additionalparam>-Xdoclint:none</additionalparam>
             </configuration>
           </plugin>
         </plugins>
       </build>
-      <properties>
-        <additionalparam>-Xdoclint:none</additionalparam>
-      </properties>
     </profile>
     <profile>
       <id>repo-sign-artifacts</id>
       <activation>
         <property>
           <name>oss.repo</name>
-          <value>true</value>
         </property>
       </activation>
       <build>
@@ -733,7 +717,6 @@
     <!-- Properties for maven-javadoc-plugin -->
     <author>false</author>
     <notimestamp>true</notimestamp>
-    <additionalparam>-Xdoclint:none</additionalparam>
     <!-- Other properties -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
