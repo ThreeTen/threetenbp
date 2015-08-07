@@ -463,6 +463,10 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
     //-----------------------------------------------------------------------
     @Override
     public ZoneOffsetTransition nextTransition(Instant instant) {
+        if (savingsInstantTransitions.length == 0) {
+            return null;
+        }
+        
         long epochSec = instant.getEpochSecond();
 
         // check if using last rules
@@ -498,6 +502,10 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
 
     @Override
     public ZoneOffsetTransition previousTransition(Instant instant) {
+        if (savingsInstantTransitions.length == 0) {
+            return null;
+        }
+        
         long epochSec = instant.getEpochSecond();
         if (instant.getNano() > 0 && epochSec < Long.MAX_VALUE) {
             epochSec += 1;  // allow rest of method to only use seconds
