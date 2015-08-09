@@ -34,6 +34,7 @@ package org.threeten.bp.zone;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -91,6 +92,21 @@ public class TestStandardZoneRules {
         ZoneRules result = (ZoneRules) in.readObject();
 
         assertEquals(result, test);
+    }
+    
+    //-----------------------------------------------------------------------
+    // Etc/GMT
+    //-----------------------------------------------------------------------
+    private ZoneRules etcGmt() {
+        return ZoneId.of("Etc/GMT").getRules();
+    }
+    
+    public void test_EtcGmt_nextTransition() {
+        assertNull(etcGmt().nextTransition(Instant.EPOCH));
+    }
+
+    public void test_EtcGmt_previousTransition() {
+        assertNull(etcGmt().previousTransition(Instant.EPOCH));
     }
 
     //-----------------------------------------------------------------------
