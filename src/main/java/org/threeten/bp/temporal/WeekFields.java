@@ -81,7 +81,7 @@ import org.threeten.bp.jdk8.Jdk8Methods;
  * <li>The first day-of-week.
  * For example, the ISO-8601 standard considers Monday to be the first day-of-week.
  * <li>The minimal number of days in the first week.
- * For example, the ISO-08601 standard counts the first week as needing at least 4 days.
+ * For example, the ISO-8601 standard counts the first week as needing at least 4 days.
  * </ul><p>
  * Together these two values allow a year or month to be divided into weeks.
  * <p>
