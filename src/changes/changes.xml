@@ -10,6 +10,10 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.3.2" date="SNAPSHOT" description="v1.3.2">
       <action dev="jodastephen" type="fix" >
+        Graceful fallback when printing time-zone name.
+        Fixes #44.
+      </action>
+      <action dev="jodastephen" type="fix" >
         Ensure LocalDate.ofEpochDay() is correctly validated.
         Fixes #39.
       </action>

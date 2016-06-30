@@ -3367,15 +3367,13 @@ public final class DateTimeFormatterBuilder {
                 buf.append(zone.getId());
                 return true;
             }
-            Long epochSec = context.getTemporal().getLong(INSTANT_SECONDS);
-            Instant instant;
-            if (epochSec != null) {
-                instant = Instant.ofEpochSecond(epochSec);
-            } else {
-                instant = Instant.ofEpochSecond(-200L * 365 * 86400);  // about 1770
+            TemporalAccessor temporal = context.getTemporal();
+            boolean daylight = false;
+            if (temporal.isSupported(INSTANT_SECONDS)) {
+                Instant instant = Instant.ofEpochSecond(temporal.getLong(INSTANT_SECONDS));
+                daylight = zone.getRules().isDaylightSavings(instant);
             }
             TimeZone tz = TimeZone.getTimeZone(zone.getId());
-            boolean daylight = zone.getRules().isDaylightSavings(instant);
             int tzstyle = (textStyle.asNormal() == TextStyle.FULL ? TimeZone.LONG : TimeZone.SHORT);
             String text = tz.getDisplayName(daylight, tzstyle, context.getLocale());
             buf.append(text);
