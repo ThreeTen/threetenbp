@@ -22,3 +22,5 @@
 !/src/main/
 !/src/site/
 !/src/test/
+
+**/TempTest.java
