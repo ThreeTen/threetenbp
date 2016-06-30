@@ -8,6 +8,12 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.3.2" date="SNAPSHOT" description="v1.3.2">
+      <action dev="jodastephen" type="fix" >
+        Remove unnecessary code.
+        Fixes #41.
+      </action>
+    </release>
     <release version="1.3.1" date="2015-09-01" description="v1.3.1">
       <action dev="jodastephen" type="update" >
         Update to time-zone data 2015f.
