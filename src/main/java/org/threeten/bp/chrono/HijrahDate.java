@@ -646,7 +646,7 @@ public final class HijrahDate
         if (field instanceof ChronoField) {
             switch ((ChronoField) field) {
                 case DAY_OF_WEEK: return dayOfWeek.getValue();
-                case ALIGNED_DAY_OF_WEEK_IN_MONTH: return ((dayOfWeek.getValue() - 1) % 7) + 1;
+                case ALIGNED_DAY_OF_WEEK_IN_MONTH: return ((dayOfMonth - 1) % 7) + 1;
                 case ALIGNED_DAY_OF_WEEK_IN_YEAR: return ((dayOfYear - 1) % 7) + 1;
                 case DAY_OF_MONTH: return this.dayOfMonth;
                 case DAY_OF_YEAR: return this.dayOfYear;

@@ -35,6 +35,8 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
+import static org.threeten.bp.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
+
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -120,6 +122,15 @@ public class TestHijrahChronology {
     @Test(dataProvider="badDates", expectedExceptions=DateTimeException.class)
     public void test_badDates(int year, int month, int dom) {
         HijrahChronology.INSTANCE.date(year, month, dom);
+    }
+
+    //-----------------------------------------------------------------------
+    // getLong(field)
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_alignedDayOfWeekInMonth() {
+        HijrahDate date = HijrahChronology.INSTANCE.date(1728, 10, 28);
+        assertEquals(date.getLong(ALIGNED_DAY_OF_WEEK_IN_MONTH), 7);
     }
 
     //-----------------------------------------------------------------------
