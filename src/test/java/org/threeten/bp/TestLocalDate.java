@@ -385,7 +385,7 @@ public class TestLocalDate extends AbstractDateTimeTest {
     @Test
     public void factory_ofYearDay_ints_nonLeap() {
         LocalDate date = LocalDate.of(2007, 1, 1);
-        for (int i = 1; i < 365; i++) {
+        for (int i = 1; i <= 365; i++) {
             assertEquals(LocalDate.ofYearDay(2007, i), date);
             date = next(date);
         }
@@ -394,7 +394,7 @@ public class TestLocalDate extends AbstractDateTimeTest {
     @Test
     public void factory_ofYearDay_ints_leap() {
         LocalDate date = LocalDate.of(2008, 1, 1);
-        for (int i = 1; i < 366; i++) {
+        for (int i = 1; i <= 366; i++) {
             assertEquals(LocalDate.ofYearDay(2008, i), date);
             date = next(date);
         }
