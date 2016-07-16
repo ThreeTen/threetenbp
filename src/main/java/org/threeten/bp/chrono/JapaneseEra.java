@@ -286,8 +286,8 @@ public final class JapaneseEra
     }
 
     /**
-     * Returns the start date of the era.
-     * @return the start date
+     * Returns the end date of the era.
+     * @return the end date
      */
     LocalDate endDate() {
         int ordinal = ordinal(eraValue);
