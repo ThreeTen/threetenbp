@@ -1592,7 +1592,21 @@ public class TestInstant extends AbstractDateTimeTest {
                 {LocalDateTime.of(20000, 1, 2, 12, 30).toInstant(ZoneOffset.UTC), "+20000-01-02T12:30:00Z"},
                 {LocalDateTime.of(25000, 12, 31, 12, 30).toInstant(ZoneOffset.UTC), "+25000-12-31T12:30:00Z"},
 
+                {LocalDateTime.of(19999, 12, 31, 23, 59, 59, 9999999).toInstant(ZoneOffset.UTC), "+19999-12-31T23:59:59.009999999Z"},
+                {LocalDateTime.of(19999, 12, 31, 23, 59, 59, 999999000).toInstant(ZoneOffset.UTC), "+19999-12-31T23:59:59.999999Z"},
+                {LocalDateTime.of(19999, 12, 31, 23, 59, 59, 9999000).toInstant(ZoneOffset.UTC), "+19999-12-31T23:59:59.009999Z"},
+                {LocalDateTime.of(19999, 12, 31, 23, 59, 59, 123000000).toInstant(ZoneOffset.UTC), "+19999-12-31T23:59:59.123Z"},
+                {LocalDateTime.of(19999, 12, 31, 23, 59, 59, 100000000).toInstant(ZoneOffset.UTC), "+19999-12-31T23:59:59.100Z"},
+                {LocalDateTime.of(19999, 12, 31, 23, 59, 59, 20000000).toInstant(ZoneOffset.UTC), "+19999-12-31T23:59:59.020Z"},
+                {LocalDateTime.of(19999, 12, 31, 23, 59, 59, 3000000).toInstant(ZoneOffset.UTC), "+19999-12-31T23:59:59.003Z"},
+                {LocalDateTime.of(19999, 12, 31, 23, 59, 59, 400000).toInstant(ZoneOffset.UTC), "+19999-12-31T23:59:59.000400Z"},
+                {LocalDateTime.of(19999, 12, 31, 23, 59, 59, 50000).toInstant(ZoneOffset.UTC), "+19999-12-31T23:59:59.000050Z"},
+                {LocalDateTime.of(19999, 12, 31, 23, 59, 59, 6000).toInstant(ZoneOffset.UTC), "+19999-12-31T23:59:59.000006Z"},
+                {LocalDateTime.of(19999, 12, 31, 23, 59, 59, 700).toInstant(ZoneOffset.UTC), "+19999-12-31T23:59:59.000000700Z"},
+                {LocalDateTime.of(19999, 12, 31, 23, 59, 59, 80).toInstant(ZoneOffset.UTC), "+19999-12-31T23:59:59.000000080Z"},
+                {LocalDateTime.of(19999, 12, 31, 23, 59, 59, 9).toInstant(ZoneOffset.UTC), "+19999-12-31T23:59:59.000000009Z"},
                 {LocalDateTime.of(-999999999, 1, 1, 12, 30).toInstant(ZoneOffset.UTC).minus(1, DAYS), "-1000000000-12-31T12:30:00Z"},
+
                 {LocalDateTime.of(999999999, 12, 31, 12, 30).toInstant(ZoneOffset.UTC).plus(1, DAYS), "+1000000000-01-01T12:30:00Z"},
 
                 {Instant.MIN, "-1000000000-01-01T00:00:00Z"},
