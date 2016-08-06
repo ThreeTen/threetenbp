@@ -790,9 +790,7 @@ public abstract class Chronology implements Comparable<Chronology> {
      * @throws DateTimeException if the date cannot be resolved, typically
      *  because of a conflict in the input data
      */
-    public ChronoLocalDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
-        throw new UnsupportedOperationException("ThreeTen Backport does not support resolveDate");
-    }
+    public abstract ChronoLocalDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle);
 
     /**
      * Updates the map of field-values during resolution.

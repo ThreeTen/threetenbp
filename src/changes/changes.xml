@@ -9,6 +9,10 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="1.3.3" date="SNAPSHOT" description="v1.3.3">
+      <action dev="jodastephen" type="fix" >
+        Chronology.resolveDate() should be abstract.
+        Fixes #48.
+      </action>
       <action dev="kemokid" type="fix" >
         Fix HijrahDate aligned-day-of-month field.
         Fixes #47.
