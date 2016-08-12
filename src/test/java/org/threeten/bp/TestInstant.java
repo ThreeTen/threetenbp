@@ -1402,6 +1402,26 @@ public class TestInstant extends AbstractDateTimeTest {
         Instant.ofEpochSecond(Long.MIN_VALUE / 1000 - 1).toEpochMilli();
     }
 
+
+    @DataProvider(name="sampleEpochMillis")
+    private Object[][] provider_sampleEpochMillis() {
+        return new Object[][] {
+                {"Long.MAX_VALUE", Long.MAX_VALUE},
+                {"Long.MAX_VALUE-1", Long.MAX_VALUE - 1},
+                {"1", 1L},
+                {"0", 0L},
+                {"-1", -1L},
+                {"Long.MIN_VALUE+1", Long.MIN_VALUE + 1},
+                {"Long.MIN_VALUE", Long.MIN_VALUE}
+        };
+    }
+    @Test(dataProvider="sampleEpochMillis")
+    public void test_epochMillis(String name, long millis) {
+        Instant t1 = Instant.ofEpochMilli(millis);
+        long m = t1.toEpochMilli();
+        assertEquals(millis, m, name);
+    }
+
     //-----------------------------------------------------------------------
     // compareTo()
     //-----------------------------------------------------------------------

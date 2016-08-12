@@ -1052,8 +1052,14 @@ public final class Instant
      * @throws ArithmeticException if numeric overflow occurs
      */
     public long toEpochMilli() {
-        long millis = Jdk8Methods.safeMultiply(seconds, 1000);
-        return millis + nanos / NANOS_PER_MILLI;
+        if (seconds < 0 && nanos > 0) {
+            long millis = Jdk8Methods.safeMultiply(seconds+1, 1000);
+            long adjustment = nanos / NANOS_PER_MILLI - 1000;
+            return millis + adjustment;
+        } else {
+            long millis = Jdk8Methods.safeMultiply(seconds, 1000);
+            return millis + nanos / NANOS_PER_MILLI;
+        }
     }
 
     //-----------------------------------------------------------------------
