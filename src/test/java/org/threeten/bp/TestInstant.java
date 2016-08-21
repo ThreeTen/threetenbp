@@ -245,10 +245,10 @@ public class TestInstant extends AbstractDateTimeTest {
                 {-999, -1, 1000000},
                 {-1000, -1, 0},
                 {-1001, -2, 999000000},
-                {Long.MAX_VALUE, Long.MAX_VALUE / 1000, (int) (Long.MAX_VALUE % 1000) * 1_000_000},
-                {Long.MAX_VALUE - 1, (Long.MAX_VALUE - 1) / 1000, (int) ((Long.MAX_VALUE - 1) % 1000) * 1_000_000},
-                {Long.MIN_VALUE, (Long.MIN_VALUE / 1000) - 1, (int) (Long.MIN_VALUE % 1000) * 1_000_000 + 1_000_000_000},
-                {Long.MIN_VALUE + 1, ((Long.MIN_VALUE + 1) / 1000) - 1, (int) ((Long.MIN_VALUE + 1) % 1000) * 1_000_000 + 1_000_000_000},
+                {Long.MAX_VALUE, Long.MAX_VALUE / 1000, (int) (Long.MAX_VALUE % 1000) * 1000000},
+                {Long.MAX_VALUE - 1, (Long.MAX_VALUE - 1) / 1000, (int) ((Long.MAX_VALUE - 1) % 1000) * 1000000},
+                {Long.MIN_VALUE, (Long.MIN_VALUE / 1000) - 1, (int) (Long.MIN_VALUE % 1000) * 1000000 + 1000000000},
+                {Long.MIN_VALUE + 1, ((Long.MIN_VALUE + 1) / 1000) - 1, (int) ((Long.MIN_VALUE + 1) % 1000) * 1000000 + 1000000000},
         };
     }
 
