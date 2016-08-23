@@ -245,6 +245,10 @@ public class TestInstant extends AbstractDateTimeTest {
                 {-999, -1, 1000000},
                 {-1000, -1, 0},
                 {-1001, -2, 999000000},
+                {Long.MAX_VALUE, Long.MAX_VALUE / 1000, (int) (Long.MAX_VALUE % 1000) * 1000000},
+                {Long.MAX_VALUE - 1, (Long.MAX_VALUE - 1) / 1000, (int) ((Long.MAX_VALUE - 1) % 1000) * 1000000},
+//                {Long.MIN_VALUE, (Long.MIN_VALUE / 1000) - 1, (int) (Long.MIN_VALUE % 1000) * 1000000 + 1000000000},
+//                {Long.MIN_VALUE + 1, ((Long.MIN_VALUE + 1) / 1000) - 1, (int) ((Long.MIN_VALUE + 1) % 1000) * 1000000 + 1000000000},
         };
     }
 
@@ -253,6 +257,7 @@ public class TestInstant extends AbstractDateTimeTest {
         Instant t = Instant.ofEpochMilli(millis);
         assertEquals(t.getEpochSecond(), expectedSeconds);
         assertEquals(t.getNano(), expectedNanoOfSecond);
+        assertEquals(t.toEpochMilli(), millis);
     }
 
     //-----------------------------------------------------------------------
@@ -1369,6 +1374,19 @@ public class TestInstant extends AbstractDateTimeTest {
     public void minusNanos_long_overflowTooSmall() {
         Instant i = Instant.ofEpochSecond(MIN_SECOND, 0);
         i.minusNanos(1);
+    }
+
+    //-----------------------------------------------------------------------
+    // truncatedTo()
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_truncatedTo() {
+        assertEquals(Instant.ofEpochSecond(2L, 1000000).truncatedTo(ChronoUnit.SECONDS), Instant.ofEpochSecond(2L));
+        assertEquals(Instant.ofEpochSecond(2L, -1000000).truncatedTo(ChronoUnit.SECONDS), Instant.ofEpochSecond(1L));
+        assertEquals(Instant.ofEpochSecond(0L, -1000000).truncatedTo(ChronoUnit.SECONDS), Instant.ofEpochSecond(-1L));
+        assertEquals(Instant.ofEpochSecond(-1L).truncatedTo(ChronoUnit.SECONDS), Instant.ofEpochSecond(-1L));
+        assertEquals(Instant.ofEpochSecond(-1L, -1000000).truncatedTo(ChronoUnit.SECONDS), Instant.ofEpochSecond(-2L));
+        assertEquals(Instant.ofEpochSecond(-2L).truncatedTo(ChronoUnit.SECONDS), Instant.ofEpochSecond(-2L));
     }
 
     //-----------------------------------------------------------------------

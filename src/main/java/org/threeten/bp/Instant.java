@@ -682,7 +682,7 @@ public final class Instant
             throw new DateTimeException("Unit must divide into a standard day without remainder");
         }
         long nod = (seconds % LocalTime.SECONDS_PER_DAY) * LocalTime.NANOS_PER_SECOND + nanos;
-        long result = (nod / dur) * dur;
+        long result = Jdk8Methods.floorDiv(nod, dur) * dur;
         return plusNanos(result - nod);
     }
 

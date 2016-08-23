@@ -24,3 +24,5 @@
 !/src/test/
 
 **/TempTest.java
+/.idea/
+/threetenbp.iml
