@@ -38,6 +38,7 @@ import java.io.InvalidObjectException;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalDate;
@@ -47,10 +48,6 @@ import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.TemporalField;
 import org.threeten.bp.temporal.ValueRange;
 
-import sun.util.calendar.CalendarDate;
-import sun.util.calendar.CalendarSystem;
-import sun.util.calendar.LocalGregorianCalendar;
-
 /**
  * An era in the Japanese Imperial calendar system.
  * <p>
@@ -58,11 +55,13 @@ import sun.util.calendar.LocalGregorianCalendar;
  * Japan introduced the Gregorian calendar starting with Meiji 6.
  * Only Meiji and later eras are supported;
  * dates before Meiji 6, January 1 are not supported.
+ * <p>
+ * The four supported eras are hard-coded.
+ * A single additional era may be registered using {@link #registerEra(LocalDate, String)}.
  *
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
-@SuppressWarnings("restriction")
 public final class JapaneseEra
         extends DefaultInterfaceEra
         implements Serializable {
@@ -71,32 +70,30 @@ public final class JapaneseEra
     // i.e., getValue() + ERA_OFFSET == 0-based index; except that -999 is mapped to zero
     static final int ERA_OFFSET = 2;
 
-    static final sun.util.calendar.Era[] ERA_CONFIG;
-
     /**
      * The singleton instance for the 'Meiji' era (1868-09-08 - 1912-07-29)
      * which has the value -1.
      */
-    public static final JapaneseEra MEIJI = new JapaneseEra(-1, LocalDate.of(1868, 9, 8));
+    public static final JapaneseEra MEIJI = new JapaneseEra(-1, LocalDate.of(1868, 9, 8), "Meiji");
     /**
      * The singleton instance for the 'Taisho' era (1912-07-30 - 1926-12-24)
      * which has the value 0.
      */
-    public static final JapaneseEra TAISHO = new JapaneseEra(0, LocalDate.of(1912, 7, 30));
+    public static final JapaneseEra TAISHO = new JapaneseEra(0, LocalDate.of(1912, 7, 30), "Taisho");
     /**
      * The singleton instance for the 'Showa' era (1926-12-25 - 1989-01-07)
      * which has the value 1.
      */
-    public static final JapaneseEra SHOWA = new JapaneseEra(1, LocalDate.of(1926, 12, 25));
+    public static final JapaneseEra SHOWA = new JapaneseEra(1, LocalDate.of(1926, 12, 25), "Showa");
     /**
      * The singleton instance for the 'Heisei' era (1989-01-08 - current)
      * which has the value 2.
      */
-    public static final JapaneseEra HEISEI = new JapaneseEra(2, LocalDate.of(1989, 1, 8));
-
-    // the number of defined JapaneseEra constants.
-    // There could be an extra era defined in its configuration.
-    private static final int N_ERA_CONSTANTS = HEISEI.getValue() + ERA_OFFSET + 1;
+    public static final JapaneseEra HEISEI = new JapaneseEra(2, LocalDate.of(1989, 1, 8), "Heisei");
+    /**
+     * The value of the additional era.
+     */
+    private static final int ADDITIONAL_VALUE = 3;
 
     /**
      * Serialization version.
@@ -104,23 +101,16 @@ public final class JapaneseEra
     private static final long serialVersionUID = 1466499369062886794L;
 
     // array for the singleton JapaneseEra instances
-    private static final JapaneseEra[] KNOWN_ERAS;
+    private static final AtomicReference<JapaneseEra[]> KNOWN_ERAS;
 
     static {
-        LocalGregorianCalendar jcal = (LocalGregorianCalendar) CalendarSystem.forName("japanese");
-        ERA_CONFIG = jcal.getEras();
-
-        KNOWN_ERAS = new JapaneseEra[ERA_CONFIG.length];
-        KNOWN_ERAS[0] = MEIJI;
-        KNOWN_ERAS[1] = TAISHO;
-        KNOWN_ERAS[2] = SHOWA;
-        KNOWN_ERAS[3] = HEISEI;
-        for (int i = N_ERA_CONSTANTS; i < ERA_CONFIG.length; i++) {
-            CalendarDate date = ERA_CONFIG[i].getSinceDate();
-            LocalDate isoDate = LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth());
-            KNOWN_ERAS[i] = new JapaneseEra(i - ERA_OFFSET, isoDate);
-        }
-    };
+        JapaneseEra[] array = new JapaneseEra[4];
+        array[0] = MEIJI;
+        array[1] = TAISHO;
+        array[2] = SHOWA;
+        array[3] = HEISEI;
+        KNOWN_ERAS = new AtomicReference<JapaneseEra[]>(array);
+    }
 
     /**
      * The era value.
@@ -130,16 +120,20 @@ public final class JapaneseEra
 
     // the first day of the era
     private final transient LocalDate since;
+    // the name of the era
+    private final transient String name;
 
     /**
      * Creates an instance.
      *
      * @param eraValue  the era value, validated
      * @param since  the date representing the first date of the era, validated not null
+     * @param name  the name
      */
-    private JapaneseEra(int eraValue, LocalDate since) {
+    private JapaneseEra(int eraValue, LocalDate since, String name) {
         this.eraValue = eraValue;
         this.since = since;
+        this.name = name;
     }
 
     /**
@@ -162,16 +156,39 @@ public final class JapaneseEra
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the Sun private Era instance corresponding to this {@code JapaneseEra}.
-     * SEIREKI doesn't have its corresponding one.
+     * Registers an additional instance of {@code JapaneseEra}.
+     * <p>
+     * A new Japanese era can begin at any time.
+     * This method allows one new era to be registered without the need for a new library version.
+     * If needed, callers should assign the result to a static variable accessible
+     * across the application. This must be done once, in early startup code.
+     * <p>
+     * NOTE: This method does not exist in Java SE 8.
      *
-     * @return the Sun private Era instance for this {@code JapaneseEra}
+     * @param since  the date representing the first date of the era, validated not null
+     * @param name  the name
+     * @return the {@code JapaneseEra} singleton, not null
+     * @throws DateTimeException if an additional era has already been registered
      */
-    sun.util.calendar.Era getPrivateEra() {
-        return ERA_CONFIG[ordinal(eraValue)];
+    public static JapaneseEra registerEra(LocalDate since, String name) {
+        JapaneseEra[] known = KNOWN_ERAS.get();
+        if (known.length > 4) {
+            throw new DateTimeException("Only one additional Japanese era can be added");
+        }
+        Jdk8Methods.requireNonNull(since, "since");
+        Jdk8Methods.requireNonNull(name, "name");
+        if (!since.isAfter(HEISEI.since)) {
+            throw new DateTimeException("Invalid since date for additional Japanese era, must be after Heisei");
+        }
+        JapaneseEra era = new JapaneseEra(ADDITIONAL_VALUE, since, name);
+        JapaneseEra[] newArray = Arrays.copyOf(known, 5);
+        newArray[4] = era;
+        if (!KNOWN_ERAS.compareAndSet(known, newArray)) {
+            throw new DateTimeException("Only one additional Japanese era can be added");
+        }
+        return era;
     }
 
-    //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code JapaneseEra} from an {@code int} value.
      * <p>
@@ -184,10 +201,11 @@ public final class JapaneseEra
      * @throws DateTimeException if the value is invalid
      */
     public static JapaneseEra of(int japaneseEra) {
-        if (japaneseEra < MEIJI.eraValue || japaneseEra + ERA_OFFSET - 1 >= KNOWN_ERAS.length) {
+        JapaneseEra[] known = KNOWN_ERAS.get();
+        if (japaneseEra < MEIJI.eraValue || japaneseEra > known[known.length - 1].eraValue) {
             throw new DateTimeException("japaneseEra is invalid");
         }
-        return KNOWN_ERAS[ordinal(japaneseEra)];
+        return known[ordinal(japaneseEra)];
     }
 
     /**
@@ -202,8 +220,9 @@ public final class JapaneseEra
      */
     public static JapaneseEra valueOf(String japaneseEra) {
         Jdk8Methods.requireNonNull(japaneseEra, "japaneseEra");
-        for (JapaneseEra era : KNOWN_ERAS) {
-            if (japaneseEra.equals(era.getName())) {
+        JapaneseEra[] known = KNOWN_ERAS.get();
+        for (JapaneseEra era : known) {
+            if (japaneseEra.equals(era.name)) {
                 return era;
             }
         }
@@ -222,7 +241,8 @@ public final class JapaneseEra
      * @return an array of JapaneseEras
      */
     public static JapaneseEra[] values() {
-        return Arrays.copyOf(KNOWN_ERAS, KNOWN_ERAS.length);
+        JapaneseEra[] known = KNOWN_ERAS.get();
+        return Arrays.copyOf(known, known.length);
     }
 
     //-----------------------------------------------------------------------
@@ -236,32 +256,11 @@ public final class JapaneseEra
         if (date.isBefore(MEIJI.since)) {
             throw new DateTimeException("Date too early: " + date);
         }
-        for (int i = KNOWN_ERAS.length - 1; i >= 0; i--) {
-            JapaneseEra era = KNOWN_ERAS[i];
+        JapaneseEra[] known = KNOWN_ERAS.get();
+        for (int i = known.length - 1; i >= 0; i--) {
+            JapaneseEra era = known[i];
             if (date.compareTo(era.since) >= 0) {
                 return era;
-            }
-        }
-        return null;
-    }
-
-    static JapaneseEra toJapaneseEra(sun.util.calendar.Era privateEra) {
-        for (int i = ERA_CONFIG.length - 1; i >= 0; i--) {
-            if (ERA_CONFIG[i].equals(privateEra)) {
-                return KNOWN_ERAS[i];
-            }
-        }
-        return null;
-    }
-
-    static sun.util.calendar.Era privateEraFrom(LocalDate isoDate) {
-        if (isoDate.isBefore(MEIJI.since)) {
-            throw new DateTimeException("Date too early: " + isoDate);
-        }
-        for (int i = KNOWN_ERAS.length - 1; i >= 0; i--) {
-            JapaneseEra era = KNOWN_ERAS[i];
-            if (isoDate.compareTo(era.since) >= 0) {
-                return ERA_CONFIG[i];
             }
         }
         return null;
@@ -274,7 +273,7 @@ public final class JapaneseEra
      * @return the index of the current Era
      */
     private static int ordinal(int eraValue) {
-        return eraValue + ERA_OFFSET - 1;
+        return eraValue + 1;
     }
 
     /**
@@ -322,22 +321,9 @@ public final class JapaneseEra
     }
 
     //-----------------------------------------------------------------------
-    String getAbbreviation() {
-        int index = ordinal(getValue());
-        if (index == 0) {
-            return "";
-        }
-        return ERA_CONFIG[index].getAbbreviation();
-    }
-
-    String getName() {
-        int index = ordinal(getValue());
-        return ERA_CONFIG[index].getName();
-    }
-
     @Override
     public String toString() {
-        return getName();
+        return name;
     }
 
     //-----------------------------------------------------------------------

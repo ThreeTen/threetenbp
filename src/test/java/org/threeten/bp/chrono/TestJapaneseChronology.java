@@ -168,7 +168,7 @@ public class TestJapaneseChronology {
     // Check Japanese Eras
     //-----------------------------------------------------------------------
     @DataProvider(name="japaneseEras")
-    Object[][] data_japanseseEras() {
+    Object[][] data_japaneseEras() {
         return new Object[][] {
             { JapaneseEra.MEIJI, -1, "Meiji"},
             { JapaneseEra.TAISHO, 0, "Taisho"},
@@ -182,20 +182,47 @@ public class TestJapaneseChronology {
         assertEquals(era.getValue(), eraValue, "EraValue");
         assertEquals(era.toString(), name, "Era Name");
         assertEquals(era, JapaneseChronology.INSTANCE.eraOf(eraValue), "JapaneseChrono.eraOf()");
+        assertEquals(JapaneseEra.valueOf(name), era);
         List<Era> eras = JapaneseChronology.INSTANCE.eras();
-        assertTrue(eras.contains(era), "Era is not present in JapaneseChrono.INSTANCE.eras()");
+        assertTrue(eras.contains(era), "Era is not present in JapaneseChronology.INSTANCE.eras()");
     }
 
     @Test
     public void test_Japanese_badEras() {
-        int badEras[] = {-1000, -998, -997, -2, 3, 4, 1000};
+        int badEras[] = {-1000, -998, -997, -2, 4, 1000};
         for (int badEra : badEras) {
             try {
                 Era era = JapaneseChronology.INSTANCE.eraOf(badEra);
-                fail("JapaneseChrono.eraOf returned " + era + " + for invalid eraValue " + badEra);
+                fail("JapaneseChronology.eraOf returned " + era + " + for invalid eraValue " + badEra);
             } catch (DateTimeException ex) {
                 // ignore expected exception
             }
+        }
+        try {
+            Era era = JapaneseEra.valueOf("Rubbish");
+            fail("JapaneseEra.valueOf returned " + era + " + for invalid era name Rubbish");
+        } catch (IllegalArgumentException ex) {
+            // ignore expected exception
+        }
+    }
+
+    @Test
+    public void test_Japanese_registerEra() {
+        try {
+            JapaneseEra.registerEra(JapaneseEra.SHOWA.endDate(), "TestAdditional");
+            fail("JapaneseEra.registerEra should have failed");
+        } catch (DateTimeException ex) {
+            // ignore expected exception
+        }
+        JapaneseEra additional = JapaneseEra.registerEra(LocalDate.of(2100, 1, 1), "TestAdditional");
+        assertEquals(JapaneseEra.of(3), additional);
+        assertEquals(JapaneseEra.valueOf("TestAdditional"), additional);
+        assertEquals(JapaneseEra.values()[4], additional);
+        try {
+            JapaneseEra.registerEra(LocalDate.of(2200, 1, 1), "TestAdditional2");
+            fail("JapaneseEra.registerEra should have failed");
+        } catch (DateTimeException ex) {
+            // ignore expected exception
         }
     }
 
