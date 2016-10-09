@@ -234,27 +234,33 @@ public class TestInstant extends AbstractDateTimeTest {
     @DataProvider(name="MillisInstantNoNanos")
     Object[][] provider_factory_millis_long() {
         return new Object[][] {
-                {0, 0, 0},
-                {1, 0, 1000000},
-                {2, 0, 2000000},
-                {999, 0, 999000000},
-                {1000, 1, 0},
-                {1001, 1, 1000000},
-                {-1, -1, 999000000},
-                {-2, -1, 998000000},
-                {-999, -1, 1000000},
-                {-1000, -1, 0},
-                {-1001, -2, 999000000},
-                {Long.MAX_VALUE, Long.MAX_VALUE / 1000, (int) (Long.MAX_VALUE % 1000) * 1000000},
-                {Long.MAX_VALUE - 1, (Long.MAX_VALUE - 1) / 1000, (int) ((Long.MAX_VALUE - 1) % 1000) * 1000000},
-//                {Long.MIN_VALUE, (Long.MIN_VALUE / 1000) - 1, (int) (Long.MIN_VALUE % 1000) * 1000000 + 1000000000},
-//                {Long.MIN_VALUE + 1, ((Long.MIN_VALUE + 1) / 1000) - 1, (int) ((Long.MIN_VALUE + 1) % 1000) * 1000000 + 1000000000},
+                {0, 0, 0, 0},
+                {0, 999999, 0, 999999},
+                {1, 0, 0, 1000000},
+                {1, 1, 0, 1000001},
+                {2, 0, 0, 2000000},
+                {999, 0, 0, 999000000},
+                {1000, 0, 1, 0},
+                {1001, 0, 1, 1000000},
+                {-1, 1, -1, 999000001},
+                {-1, 0, -1, 999000000},
+                {-2, 999999, -1, 998999999},
+                {-2, 0, -1, 998000000},
+                {-999, 0, -1, 1000000},
+                {-1000, 0, -1, 0},
+                {-1001, 0, -2, 999000000},
+                {Long.MAX_VALUE, 0, Long.MAX_VALUE / 1000, (int) (Long.MAX_VALUE % 1000) * 1000000},
+                {Long.MAX_VALUE - 1, 0, (Long.MAX_VALUE - 1) / 1000, (int) ((Long.MAX_VALUE - 1) % 1000) * 1000000},
+                {Long.MIN_VALUE, 0, (Long.MIN_VALUE / 1000) - 1, (int) (Long.MIN_VALUE % 1000) * 1000000 + 1000000000},
+                {Long.MIN_VALUE, 1, (Long.MIN_VALUE / 1000) - 1, (int) (Long.MIN_VALUE % 1000) * 1000000 + 1000000000 + 1},
+                {Long.MIN_VALUE + 1, 0, ((Long.MIN_VALUE + 1) / 1000) - 1, (int) ((Long.MIN_VALUE + 1) % 1000) * 1000000 + 1000000000},
+                {Long.MIN_VALUE + 1, 1, ((Long.MIN_VALUE + 1) / 1000) - 1, (int) ((Long.MIN_VALUE + 1) % 1000) * 1000000 + 1000000000 + 1},
         };
     }
 
     @Test(dataProvider="MillisInstantNoNanos")
-    public void factory_millis_long(long millis, long expectedSeconds, int expectedNanoOfSecond) {
-        Instant t = Instant.ofEpochMilli(millis);
+    public void factory_millis_long(long millis, int nanos, long expectedSeconds, int expectedNanoOfSecond) {
+        Instant t = Instant.ofEpochMilli(millis).plusNanos(nanos);
         assertEquals(t.getEpochSecond(), expectedSeconds);
         assertEquals(t.getNano(), expectedNanoOfSecond);
         assertEquals(t.toEpochMilli(), millis);
@@ -1416,8 +1422,18 @@ public class TestInstant extends AbstractDateTimeTest {
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
+    public void test_toEpochMilli_tooBigDueToNanos() {
+        Instant.ofEpochMilli(Long.MAX_VALUE).plusMillis(1).toEpochMilli();
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
     public void test_toEpochMilli_tooSmall() {
         Instant.ofEpochSecond(Long.MIN_VALUE / 1000 - 1).toEpochMilli();
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void test_toEpochMilli_tooSmallDueToNanos() {
+        Instant.ofEpochMilli(Long.MIN_VALUE).minusMillis(1).toEpochMilli();
     }
 
     //-----------------------------------------------------------------------
