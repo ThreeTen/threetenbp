@@ -214,6 +214,10 @@ public final class Instant
      * Constant for nanos per milli.
      */
     private static final int NANOS_PER_MILLI = 1000000;
+    /**
+     * Constant for millis per sec.
+     */
+    private static final long MILLIS_PER_SEC = 1000;
 
     /**
      * The number of seconds from the epoch of 1970-01-01T00:00:00Z.
@@ -1052,8 +1056,19 @@ public final class Instant
      * @throws ArithmeticException if numeric overflow occurs
      */
     public long toEpochMilli() {
-        long millis = Jdk8Methods.safeMultiply(seconds, 1000);
-        return millis + nanos / NANOS_PER_MILLI;
+        if (seconds >= 0) {
+            long millis = Jdk8Methods.safeMultiply(seconds, MILLIS_PER_SEC);
+            return Jdk8Methods.safeAdd(millis, nanos / NANOS_PER_MILLI);
+        } else {
+            // prevent an overflow in seconds * 1000
+            // instead of going form the second farther away from 0
+            // going toward 0
+            // we go from the second closer to 0 away from 0
+            // that way we always stay in the valid long range
+            // seconds + 1 can not overflow because it is negative
+            long millis = Jdk8Methods.safeMultiply(seconds + 1, MILLIS_PER_SEC);
+            return Jdk8Methods.safeSubtract(millis, (MILLIS_PER_SEC - nanos / NANOS_PER_MILLI));
+        }
     }
 
     //-----------------------------------------------------------------------
