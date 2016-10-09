@@ -1058,7 +1058,7 @@ public final class Instant
     public long toEpochMilli() {
         if (seconds >= 0) {
             long millis = Jdk8Methods.safeMultiply(seconds, MILLIS_PER_SEC);
-            return millis + nanos / NANOS_PER_MILLI;
+            return Jdk8Methods.safeAdd(millis, nanos / NANOS_PER_MILLI);
         } else {
             // prevent an overflow in seconds * 1000
             // instead of going form the second farther away from 0
