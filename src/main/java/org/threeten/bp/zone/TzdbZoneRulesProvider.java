@@ -40,6 +40,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.List;
 import java.util.NavigableMap;
 import java.util.Set;
 import java.util.TreeMap;
@@ -65,7 +66,7 @@ public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
     /**
      * All the regions that are available.
      */
-    private final Set<String> regionIds = new CopyOnWriteArraySet<String>();
+    private List<String> regionIds;
     /**
      * All the versions that are available.
      */
@@ -250,7 +251,7 @@ public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
         for (int i = 0; i < regionCount; i++) {
             regionArray[i] = dis.readUTF();
         }
-        regionIds.addAll(Arrays.asList(regionArray));
+        regionIds = Arrays.asList(regionArray);
         // rules
         int ruleCount = dis.readShort();
         Object[] ruleArray = new Object[ruleCount];
