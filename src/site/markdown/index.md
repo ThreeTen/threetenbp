@@ -42,7 +42,7 @@ Various documentation is available:
 
 ## <i></i> Releases
 
-Release 1.3.2 is the latest release.
+Release 1.3.3 is the latest release.
 It is considered to be stable and usable in production.
 
 The project runs on Java SE 6 (or later) and has no [dependencies](dependencies.html).
@@ -52,13 +52,13 @@ The Hijrah calendar system does not work.
 Formatting and parsing often depends on data only available in Java SE 8.
 Zone id and text parsing is significantly less powerful.
 
-Available in [Maven Central](http://search.maven.org/#artifactdetails%7Corg.threeten%7Cthreetenbp%7C1.3.2%7Cjar).
+Available in [Maven Central](http://search.maven.org/#artifactdetails%7Corg.threeten%7Cthreetenbp%7C1.3.3%7Cjar).
 
 ```xml
 <dependency>
   <groupId>org.threeten</groupId>
   <artifactId>threetenbp</artifactId>
-  <version>1.3.2</version>
+  <version>1.3.3</version>
 </dependency>
 ```
 
