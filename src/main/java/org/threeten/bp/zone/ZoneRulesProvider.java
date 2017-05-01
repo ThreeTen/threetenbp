@@ -31,19 +31,17 @@
  */
 package org.threeten.bp.zone;
 
-import java.util.HashSet;
-import java.util.NavigableMap;
-import java.util.ServiceConfigurationError;
-import java.util.ServiceLoader;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.jdk8.Jdk8Methods;
+
+import java.util.HashSet;
+import java.util.NavigableMap;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Provider of time-zone rules to the system.
@@ -81,16 +79,7 @@ public abstract class ZoneRulesProvider {
      */
     private static final ConcurrentMap<String, ZoneRulesProvider> ZONES = new ConcurrentHashMap<String, ZoneRulesProvider>(512, 0.75f, 2);
     static {
-        ServiceLoader<ZoneRulesProvider> loader = ServiceLoader.load(ZoneRulesProvider.class, ZoneRulesProvider.class.getClassLoader());
-        for (ZoneRulesProvider provider : loader) {
-            try {
-                registerProvider0(provider);
-            } catch (ServiceConfigurationError ex) {
-                if (!(ex.getCause() instanceof SecurityException)) {
-                    throw ex;
-                }
-            }
-        }
+        ZoneRulesInitializer.initialize();
     }
 
     //-------------------------------------------------------------------------
