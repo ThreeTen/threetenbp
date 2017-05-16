@@ -31,32 +31,105 @@
  */
 package org.threeten.bp.zone;
 
+import java.util.ServiceConfigurationError;
+import java.util.ServiceLoader;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * Provides instructions on how to initialize {@link ZoneRulesProvider}. If you need to override the default behavior
- * of how to load time zone data, you should set this up before any other usage of the library.
+ * Controls how the time-zone rules are initialized.
+ * <p>
+ * The default behavior is to use {@link ServiceLoader} to find instances of {@link ZoneRulesProvider}.
+ * Use the {@link #setInitializer(ZoneRulesInitializer)} method to replace this behavior.
+ * The initializer instance must perform the work of creating the {@code ZoneRulesProvider} within
+ * the {@link #initializeProviders()} method to ensure that the provider is not initialized too early.
+ * <p>
+ * <b>The initializer must be set before class loading of any other ThreeTen-Backport class to have any effect!</b>
+ * <p>
+ * This class has been added primarily for the benefit of Android.
  */
 public abstract class ZoneRulesInitializer {
 
-    private static final AtomicBoolean INITIALIZED = new AtomicBoolean(false);
-    private static final AtomicReference<ZoneRulesInitializer> initializer = new AtomicReference<ZoneRulesInitializer>();
+    /**
+     * An instance that does nothing.
+     * Call {@link #setInitializer(ZoneRulesInitializer)} with this instance to
+     * block the service loader search. This will leave the system with no providers.
+     */
+    public static final ZoneRulesInitializer DO_NOTHING = new DoNothingZoneRulesInitializer();
 
-    public static void setInitializer(final ZoneRulesInitializer newInitializer) {
-        if (!initializer.compareAndSet(null, newInitializer)) {
+    private static final AtomicBoolean INITIALIZED = new AtomicBoolean(false);
+    private static final AtomicReference<ZoneRulesInitializer> INITIALIZER = new AtomicReference<ZoneRulesInitializer>();
+
+    /**
+     * Sets the initializer to use.
+     * <p>
+     * This can only be invoked before the {@link ZoneRulesProvider} class is loaded.
+     * Invoking this method at a later point will throw an exception.
+     * 
+     * @param initializer  the initializer to use
+     * @throws IllegalStateException if initialization has already occurred or another initializer has been set
+     */
+    public static void setInitializer(ZoneRulesInitializer initializer) {
+        if (INITIALIZED.get()) {
+            throw new IllegalStateException("Already initialized");
+        }
+        if (!INITIALIZER.compareAndSet(null, initializer)) {
             throw new IllegalStateException("Initializer was already set, possibly with a default during initialization");
         }
     }
 
+    //-----------------------------------------------------------------------
+    // initialize the providers
     static void initialize() {
         if (INITIALIZED.getAndSet(true)) {
             throw new IllegalStateException("Already initialized");
         }
         // Set the default initializer if none has been provided yet.
-        initializer.compareAndSet(null, new ServiceLoaderZoneRulesInitializer());
-        initializer.get().initializeZoneProviders();
+        INITIALIZER.compareAndSet(null, new ServiceLoaderZoneRulesInitializer());
+        INITIALIZER.get().initializeProviders();
     }
 
-    protected abstract void initializeZoneProviders();
+    /**
+     * Initialize the providers.
+     * <p>
+     * The implementation should perform whatever work is necessary to initialize the providers.
+     * This will result in one or more calls to {@link ZoneRulesProvider#registerProvider(ZoneRulesProvider)}.
+     * <p>
+     * It is vital that the instance of {@link ZoneRulesProvider} is not created until this method is invoked.
+     * <p>
+     * It is guaranteed that this method will be invoked once and only once.
+     */
+    protected abstract void initializeProviders();
+
+    //-----------------------------------------------------------------------
+    /**
+     * Implementation that does nothing.
+     */
+    static class DoNothingZoneRulesInitializer extends ZoneRulesInitializer {
+
+        @Override
+        protected void initializeProviders() {
+        }
+    }
+
+    /**
+     * Implementation that uses the service loader.
+     */
+    static class ServiceLoaderZoneRulesInitializer extends ZoneRulesInitializer {
+
+        @Override
+        protected void initializeProviders() {
+            ServiceLoader<ZoneRulesProvider> loader = ServiceLoader.load(ZoneRulesProvider.class, ZoneRulesProvider.class.getClassLoader());
+            for (ZoneRulesProvider provider : loader) {
+                try {
+                    ZoneRulesProvider.registerProvider(provider);
+                } catch (ServiceConfigurationError ex) {
+                    if (!(ex.getCause() instanceof SecurityException)) {
+                        throw ex;
+                    }
+                }
+            }
+        }
+    }
+
 }
