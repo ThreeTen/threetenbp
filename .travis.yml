@@ -4,8 +4,24 @@
 #
 # For more information, see https://travis-ci.org
 
+sudo: false
 language: java
-
 jdk: 
   - oraclejdk7
   - openjdk6
+cache:
+  directories:
+    - "$HOME/.m2/repository"
+before_cache:
+  - rm -rf $HOME/.m2/repository/org/threeten/threetenbp
+# install
+install:
+  - mvn --version
+script:
+  - mvn install -e -B
+after_success:
+  - if [[ $TRAVIS_TAG =~ ^v.*$ ]] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_JDK_VERSION" == "oraclejdk8" ]; then travis_wait 40 mvn site-deploy -e -B --settings .github/maven-settings.xml; fi
+# secure keys for GITHUB_TOKEN
+env:
+  global:
+    secure: h37TUVcVI30W5UyQBXMCkiKeY7ZWriQmaVLJQJUEgjTP2hDvHbM6kypx7WaU24c72gqL3peJDv3XEfJngLUDZ4n0v5apRDacfJkyXVdPu1qF5fWTjGWDau0hFzYvlHTbtLQLP6e1OIa/ZrgtHmkTw+XG9/bEY+6xp9GbC8fGIdw=

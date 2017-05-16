@@ -43,3 +43,12 @@ However if bugs are found, or pull requests received then a release may occur.
 No. This project is derived from the Reference Implementation previously hosted on GitHub.
 That project had a BSD license, which has been preserved here.
 Thus, this project is a fork of the original code before entry to OpenJDK.
+
+
+### Release process
+
+* Update version (pom.xml, README.md, index.md, changes.xml)
+* Commit and push
+* `mvn clean deploy -Doss.repo -Dgpg.passphrase=""`
+* Release project in [Nexus](https://oss.sonatype.org)
+* Website will be built and released by Travis
