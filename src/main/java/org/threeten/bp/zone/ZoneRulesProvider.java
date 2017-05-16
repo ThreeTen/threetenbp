@@ -34,8 +34,6 @@ package org.threeten.bp.zone;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.NavigableMap;
-import java.util.ServiceConfigurationError;
-import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -82,16 +80,7 @@ public abstract class ZoneRulesProvider {
      */
     private static final ConcurrentMap<String, ZoneRulesProvider> ZONES = new ConcurrentHashMap<String, ZoneRulesProvider>(512, 0.75f, 2);
     static {
-        ServiceLoader<ZoneRulesProvider> loader = ServiceLoader.load(ZoneRulesProvider.class, ZoneRulesProvider.class.getClassLoader());
-        for (ZoneRulesProvider provider : loader) {
-            try {
-                registerProvider0(provider);
-            } catch (ServiceConfigurationError ex) {
-                if (!(ex.getCause() instanceof SecurityException)) {
-                    throw ex;
-                }
-            }
-        }
+        ZoneRulesInitializer.initialize();
     }
 
     //-------------------------------------------------------------------------
