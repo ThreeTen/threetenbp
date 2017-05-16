@@ -25,7 +25,6 @@
     <developer>
       <id>jodastephen</id>
       <name>Stephen Colebourne</name>
-      <email></email>
       <roles>
         <role>Project Lead</role>
       </roles>
@@ -84,8 +83,8 @@
     </license>
   </licenses>
   <scm>
-    <connection>scm:git:git@github.com:ThreeTen/threetenbp.git</connection>
-    <developerConnection>scm:git:git@github.com:ThreeTen/threetenbp.git</developerConnection>
+    <connection>scm:git:https://github.com/ThreeTen/threetenbp.git</connection>
+    <developerConnection>scm:git:https://github.com/ThreeTen/threetenbp.git</developerConnection>
     <url>https://github.com/ThreeTen/threetenbp</url>
   </scm>
   <organization>
@@ -104,7 +103,7 @@
         </includes>
       </resource>
       <resource>
-        <directory>${basedir}/src/main/resources</directory>
+        <directory>${project.basedir}/src/main/resources</directory>
       </resource>
     </resources>
     <!-- define build -->
@@ -131,7 +130,7 @@
             </property>
             <property>
               <name>reporter</name>
-              <value>org.testng.reporters.FailedReporter,org.testng.reporters.XMLReporter,org.testng.reporters.JUnitReportReporter</value>
+              <value>org.testng.reporters.JUnitReportReporter</value>
             </property>
           </properties>
         </configuration>
@@ -442,7 +441,7 @@
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
-      <version>6.8</version>
+      <version>6.8</version><!-- Later versions need JDK 7 -->
       <scope>test</scope>
       <exclusions>
         <exclusion>
@@ -507,7 +506,7 @@
         <artifactId>maven-surefire-report-plugin</artifactId>
         <version>${maven-surefire-report-plugin.version}</version>
         <configuration>
-           <showSuccess>true</showSuccess>
+          <showSuccess>true</showSuccess>
         </configuration>
       </plugin>
       <plugin>
@@ -639,7 +638,7 @@
             <version>1.1.1</version>
             <configuration>
               <releaseName>Release v${project.version}</releaseName>
-              <description>See the [change notes](http://www.threeten.org/threetenbp/changes-report.html) for more information.</description>
+              <description>See the [release notes](http://www.threeten.org/threetenbp/changes-report.html) for more information.</description>
               <tag>v${project.version}</tag>
               <overwriteArtifact>true</overwriteArtifact>
             </configuration>
