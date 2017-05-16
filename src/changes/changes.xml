@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="1.3.4" date="SNAPSHOT" description="v1.3.4">
+    <release version="1.3.4" date="2017-05-16" description="v1.3.4">
       <action dev="jodastephen" type="add" >
         Add ZoneRulesInitializer to allow the service loader initialization to be replaced.
         See #63 and #65.
