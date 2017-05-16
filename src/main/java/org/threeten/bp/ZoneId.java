@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -257,7 +258,7 @@ public abstract class ZoneId implements Serializable {
      * @return a modifiable copy of the set of zone IDs, not null
      */
     public static Set<String> getAvailableZoneIds() {
-        return ZoneRulesProvider.getAvailableZoneIds();
+        return new HashSet<String>(ZoneRulesProvider.getAvailableZoneIds());
     }
 
     //-----------------------------------------------------------------------

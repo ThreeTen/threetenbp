@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.3.4" date="SNAPSHOT" description="v1.3.4">
+      <action dev="jodastephen" type="fix" >
+        Avoid copying the set of available time-zone IDs (performance).
+      </action>
+    </release>
     <release version="1.3.3" date="2016-12-19" description="v1.3.3">
       <action dev="jodastephen" type="update" >
         Update to time-zone data 2016j.

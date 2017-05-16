@@ -34,6 +34,7 @@ package org.threeten.bp.zone;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -57,8 +58,12 @@ public class TestZoneRulesProvider {
     public void test_getAvailableGroupIds() {
         Set<String> zoneIds = ZoneRulesProvider.getAvailableZoneIds();
         assertEquals(zoneIds.contains("Europe/London"), true);
-        zoneIds.clear();
-        assertEquals(zoneIds.size(), 0);
+        try {
+            zoneIds.clear();
+            fail();
+        } catch (UnsupportedOperationException ex) {
+            // ignore
+        }
         Set<String> zoneIds2 = ZoneRulesProvider.getAvailableZoneIds();
         assertEquals(zoneIds2.contains("Europe/London"), true);
     }
@@ -127,7 +132,6 @@ public class TestZoneRulesProvider {
         Set<String> pre = ZoneRulesProvider.getAvailableZoneIds();
         assertEquals(pre.contains("FooLocation"), false);
         ZoneRulesProvider.registerProvider(new MockTempProvider());
-        assertEquals(pre.contains("FooLocation"), false);
         Set<String> post = ZoneRulesProvider.getAvailableZoneIds();
         assertEquals(post.contains("FooLocation"), true);
 

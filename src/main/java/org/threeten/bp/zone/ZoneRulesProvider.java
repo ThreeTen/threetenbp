@@ -31,6 +31,7 @@
  */
 package org.threeten.bp.zone;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.NavigableMap;
 import java.util.ServiceConfigurationError;
@@ -99,10 +100,10 @@ public abstract class ZoneRulesProvider {
      * <p>
      * These zone IDs are loaded and available for use by {@code ZoneId}.
      *
-     * @return a modifiable copy of the set of zone IDs, not null
+     * @return the unmodifiable set of zone IDs, not null
      */
     public static Set<String> getAvailableZoneIds() {
-        return new HashSet<String>(ZONES.keySet());
+        return Collections.unmodifiableSet(ZONES.keySet());
     }
 
     /**
