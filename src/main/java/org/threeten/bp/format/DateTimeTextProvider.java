@@ -48,13 +48,26 @@ import org.threeten.bp.temporal.TemporalField;
  */
 abstract class DateTimeTextProvider {
 
+    private static volatile DateTimeTextProvider INSTANCE;
+    private static final Object LOCK = new Object();
+
     /**
      * Gets the provider.
      *
      * @return the provider, not null
      */
     static DateTimeTextProvider getInstance() {
-        return new SimpleDateTimeTextProvider();
+        DateTimeTextProvider result = INSTANCE;
+        if (result == null) {
+            synchronized (LOCK) {
+                result = INSTANCE;
+                if (result == null) {
+                    result = new SimpleDateTimeTextProvider();
+                    INSTANCE = result;
+                }
+            }
+        }
+        return result;
     }
 
     /**
