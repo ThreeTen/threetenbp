@@ -35,6 +35,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map.Entry;
 
+import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.TemporalField;
 
 /**
@@ -68,6 +69,25 @@ abstract class DateTimeTextProvider {
             }
         }
         return result;
+    }
+
+    /**
+     * Sets the provider to use.
+     * <p>
+     * This can only be called once and before the first call to {@link #getInstance()}.
+     *
+     * @param provider the provider to use, not null
+     * @throws IllegalStateException if provider is already set
+     */
+    static void setInstance(DateTimeTextProvider provider) {
+        Jdk8Methods.requireNonNull(provider, "provider");
+
+        synchronized (LOCK) {
+            if (INSTANCE != null) {
+                throw new IllegalStateException("Instance is already set");
+            }
+            INSTANCE = provider;
+        }
     }
 
     /**
