@@ -50,36 +50,13 @@ import org.threeten.bp.temporal.TemporalField;
  */
 abstract class DateTimeTextProvider {
 
-    private static final AtomicReference<DateTimeTextProvider> PROVIDER = new AtomicReference<DateTimeTextProvider>();
-
     /**
      * Gets the provider.
      *
      * @return the provider, not null
      */
     static DateTimeTextProvider getInstance() {
-        DateTimeTextProvider provider = PROVIDER.get();
-        if (provider == null) {
-            PROVIDER.compareAndSet(null, new SimpleDateTimeTextProvider());
-            // avoid race condition by getting again
-            provider = PROVIDER.get();
-        }
-        return provider;
-    }
-
-    /**
-     * Sets the provider to use.
-     * <p>
-     * This can only be called once and before the first call to {@link #getInstance()}.
-     *
-     * @param provider the provider to use, not null
-     * @throws IllegalStateException if provider is already set
-     */
-    static void setInstance(DateTimeTextProvider provider) {
-        Jdk8Methods.requireNonNull(provider, "provider");
-        if (!PROVIDER.compareAndSet(null, new SimpleDateTimeTextProvider())) {
-            throw new IllegalStateException("Instance is already set");
-        }
+        return new SimpleDateTimeTextProvider();
     }
 
     /**
