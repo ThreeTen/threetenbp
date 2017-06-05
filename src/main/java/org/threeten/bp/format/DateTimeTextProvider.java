@@ -34,6 +34,7 @@ package org.threeten.bp.format;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.TemporalField;
@@ -49,8 +50,7 @@ import org.threeten.bp.temporal.TemporalField;
  */
 abstract class DateTimeTextProvider {
 
-    private static volatile DateTimeTextProvider INSTANCE;
-    private static final Object LOCK = new Object();
+    private static final AtomicReference<DateTimeTextProvider> PROVIDER = new AtomicReference<DateTimeTextProvider>();
 
     /**
      * Gets the provider.
@@ -58,17 +58,13 @@ abstract class DateTimeTextProvider {
      * @return the provider, not null
      */
     static DateTimeTextProvider getInstance() {
-        DateTimeTextProvider result = INSTANCE;
-        if (result == null) {
-            synchronized (LOCK) {
-                result = INSTANCE;
-                if (result == null) {
-                    result = new SimpleDateTimeTextProvider();
-                    INSTANCE = result;
-                }
-            }
+        DateTimeTextProvider provider = PROVIDER.get();
+        if (provider == null) {
+            PROVIDER.compareAndSet(null, new SimpleDateTimeTextProvider());
+            // avoid race condition by getting again
+            provider = PROVIDER.get();
         }
-        return result;
+        return provider;
     }
 
     /**
@@ -81,12 +77,8 @@ abstract class DateTimeTextProvider {
      */
     static void setInstance(DateTimeTextProvider provider) {
         Jdk8Methods.requireNonNull(provider, "provider");
-
-        synchronized (LOCK) {
-            if (INSTANCE != null) {
-                throw new IllegalStateException("Instance is already set");
-            }
-            INSTANCE = provider;
+        if (!PROVIDER.compareAndSet(null, new SimpleDateTimeTextProvider())) {
+            throw new IllegalStateException("Instance is already set");
         }
     }
 
