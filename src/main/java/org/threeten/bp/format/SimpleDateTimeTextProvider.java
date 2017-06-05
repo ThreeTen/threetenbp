@@ -66,9 +66,6 @@ import org.threeten.bp.temporal.TemporalField;
 final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
      // TODO: Better implementation based on CLDR
 
-    /** Cache. */
-    private static final ConcurrentMap<Entry<TemporalField, Locale>, Object> CACHE =
-        new ConcurrentHashMap<Entry<TemporalField, Locale>, Object>(16, 0.75f, 2);
     /** Comparator. */
     private static final Comparator<Entry<String, Long>> COMPARATOR = new Comparator<Entry<String, Long>>() {
         @Override
@@ -76,6 +73,10 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
             return obj2.getKey().length() - obj1.getKey().length();  // longest to shortest
         }
     };
+
+    /** Cache. */
+    private final ConcurrentMap<Entry<TemporalField, Locale>, Object> cache =
+            new ConcurrentHashMap<Entry<TemporalField, Locale>, Object>(16, 0.75f, 2);
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
@@ -106,11 +107,11 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
     //-----------------------------------------------------------------------
     private Object findStore(TemporalField field, Locale locale) {
         Entry<TemporalField, Locale> key = createEntry(field, locale);
-        Object store = CACHE.get(key);
+        Object store = cache.get(key);
         if (store == null) {
             store = createStore(field, locale);
-            CACHE.putIfAbsent(key, store);
-            store = CACHE.get(key);
+            cache.putIfAbsent(key, store);
+            store = cache.get(key);
         }
         return store;
     }
