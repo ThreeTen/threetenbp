@@ -36,7 +36,6 @@ import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.TemporalField;
 
 /**
@@ -47,8 +46,12 @@ import org.threeten.bp.temporal.TemporalField;
  * This interface is a service provider that can be called by multiple threads.
  * Implementations must be thread-safe.
  * Implementations should cache the textual information.
+ * <p>
+ * This class has been made pubilc primarily for the benefit of Android.
  */
-abstract class DateTimeTextProvider {
+public abstract class DateTimeTextProvider {
+
+    private static final AtomicReference<DateTimeTextProvider> MUTABLE_PROVIDER = new AtomicReference<DateTimeTextProvider>();
 
     /**
      * Gets the provider.
@@ -56,18 +59,25 @@ abstract class DateTimeTextProvider {
      * @return the provider, not null
      */
     static DateTimeTextProvider getInstance() {
-        return new SimpleDateTimeTextProvider();
+        return ProviderSingleton.PROVIDER;
     }
 
     /**
-     * Gets the available locales.
+     * Sets the provider to use.
+     * <p>
+     * This can only be invoked before {@link DateTimeTextProvider} class is used for formatting/parsing.
+     * Invoking this method at a later point will throw an exception.
      * 
-     * @return the locales
+     * @param provider  the provider to use
+     * @throws IllegalStateException if initialization has already occurred or another provider has been set
      */
-    public Locale[] getAvailableLocales() {
-        throw new UnsupportedOperationException();
+    public static void setInitializer(DateTimeTextProvider provider) {
+        if (!MUTABLE_PROVIDER.compareAndSet(null, provider)) {
+            throw new IllegalStateException("Provider was already set, possibly with a default during initialization");
+        }
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Gets the text for the specified field, locale and style
      * for the purpose of printing.
@@ -101,5 +111,18 @@ abstract class DateTimeTextProvider {
      *  null if the field or style is not parsable
      */
     public abstract Iterator<Entry<String, Long>> getTextIterator(TemporalField field, TextStyle style, Locale locale);
+
+    //-----------------------------------------------------------------------
+    // use JVM class initializtion to lock the singleton without additional synchronization
+    static class ProviderSingleton {
+        static final DateTimeTextProvider PROVIDER = initialize();
+
+        // initialize the provider
+        static DateTimeTextProvider initialize() {
+            // Set the default initializer if none has been provided yet
+            MUTABLE_PROVIDER.compareAndSet(null, new SimpleDateTimeTextProvider());
+            return MUTABLE_PROVIDER.get();
+        }
+    }
 
 }

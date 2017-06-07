@@ -117,7 +117,7 @@
           </includes>
           <argLine>-Xmx2G</argLine>
           <parallel>classes</parallel>
-          <threadCount>4</threadCount>
+          <threadCount>1</threadCount>
           <!-- remove slow SuiteHTMLReporter -->
           <properties>
             <property>
@@ -441,7 +441,7 @@
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
-      <version>6.8</version><!-- Later versions need JDK 7 -->
+      <version>6.8.21</version><!-- Later versions need JDK 7 -->
       <scope>test</scope>
       <exclusions>
         <exclusion>

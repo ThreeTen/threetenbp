@@ -9,6 +9,10 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="1.3.5" date="SNAPSHOT" description="v1.3.5">
+      <action dev="pamalyshev" type="add" >
+        Add DateTimeTextProvider.setInstance() to allow the provider to be replaced.
+        See #69 and #70.
+      </action>
       <action dev="jodastephen" type="update" >
         Update to time-zone data 2017b.
       </action>
