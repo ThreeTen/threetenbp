@@ -614,16 +614,14 @@ final class DateTimeBuilder
 
     private void resolveInstant() {
         if (date != null && time != null) {
-            if (zone != null) {
+            Long offsetSecs = fieldValues.get(OFFSET_SECONDS);
+            if (offsetSecs != null) {
+                ZoneOffset offset = ZoneOffset.ofTotalSeconds(offsetSecs.intValue());
+                long instant = date.atTime(time).atZone(offset).getLong(ChronoField.INSTANT_SECONDS);
+                fieldValues.put(INSTANT_SECONDS, instant);
+            }  else if (zone != null) {
                 long instant = date.atTime(time).atZone(zone).getLong(ChronoField.INSTANT_SECONDS);
                 fieldValues.put(INSTANT_SECONDS, instant);
-            } else {
-                Long offsetSecs = fieldValues.get(OFFSET_SECONDS);
-                if (offsetSecs != null) {
-                    ZoneOffset offset = ZoneOffset.ofTotalSeconds(offsetSecs.intValue());
-                    long instant = date.atTime(time).atZone(offset).getLong(ChronoField.INSTANT_SECONDS);
-                    fieldValues.put(INSTANT_SECONDS, instant);
-                }
             }
         }
     }
