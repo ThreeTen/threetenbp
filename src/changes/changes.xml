@@ -8,6 +8,12 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.3.7" date="SNAPSHOT" description="v1.3.7">
+      <action dev="pithu" type="fix" >
+        Fix for parsing during DST overlap.
+        See #77.
+      </action>
+    </release>
     <release version="1.3.6" date="2017-07-10" description="v1.3.6">
       <action dev="pamalyshev" type="fix" >
         Remove time-zone jar files from release.
