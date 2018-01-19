@@ -330,45 +330,45 @@ public final class HijrahDate
 
         DEFAULT_MONTH_DAYS = new Integer[NUM_DAYS.length];
         for (int i = 0; i < NUM_DAYS.length; i++) {
-            DEFAULT_MONTH_DAYS[i] = new Integer(NUM_DAYS[i]);
+            DEFAULT_MONTH_DAYS[i] = Integer.valueOf(NUM_DAYS[i]);
         }
 
         DEFAULT_LEAP_MONTH_DAYS = new Integer[LEAP_NUM_DAYS.length];
         for (int i = 0; i < LEAP_NUM_DAYS.length; i++) {
-            DEFAULT_LEAP_MONTH_DAYS[i] = new Integer(LEAP_NUM_DAYS[i]);
+            DEFAULT_LEAP_MONTH_DAYS[i] = Integer.valueOf(LEAP_NUM_DAYS[i]);
         }
 
         DEFAULT_MONTH_LENGTHS = new Integer[MONTH_LENGTH.length];
         for (int i = 0; i < MONTH_LENGTH.length; i++) {
-            DEFAULT_MONTH_LENGTHS[i] = new Integer(MONTH_LENGTH[i]);
+            DEFAULT_MONTH_LENGTHS[i] = Integer.valueOf(MONTH_LENGTH[i]);
         }
 
         DEFAULT_LEAP_MONTH_LENGTHS = new Integer[LEAP_MONTH_LENGTH.length];
         for (int i = 0; i < LEAP_MONTH_LENGTH.length; i++) {
-            DEFAULT_LEAP_MONTH_LENGTHS[i] = new Integer(LEAP_MONTH_LENGTH[i]);
+            DEFAULT_LEAP_MONTH_LENGTHS[i] = Integer.valueOf(LEAP_MONTH_LENGTH[i]);
         }
 
         DEFAULT_CYCLE_YEARS = new Integer[CYCLEYEAR_START_DATE.length];
         for (int i = 0; i < CYCLEYEAR_START_DATE.length; i++) {
-            DEFAULT_CYCLE_YEARS[i] = new Integer(CYCLEYEAR_START_DATE[i]);
+            DEFAULT_CYCLE_YEARS[i] = Integer.valueOf(CYCLEYEAR_START_DATE[i]);
         }
 
         ADJUSTED_CYCLES = new Long[MAX_ADJUSTED_CYCLE];
         for (int i = 0; i < ADJUSTED_CYCLES.length; i++) {
-            ADJUSTED_CYCLES[i] = new Long(10631 * i);
+            ADJUSTED_CYCLES[i] = Long.valueOf(10631 * i);
         }
         // Initialize min values, least max values and max values.
         ADJUSTED_MIN_VALUES = new Integer[MIN_VALUES.length];
         for (int i = 0; i < MIN_VALUES.length; i++) {
-            ADJUSTED_MIN_VALUES[i] = new Integer(MIN_VALUES[i]);
+            ADJUSTED_MIN_VALUES[i] = Integer.valueOf(MIN_VALUES[i]);
         }
         ADJUSTED_LEAST_MAX_VALUES = new Integer[LEAST_MAX_VALUES.length];
         for (int i = 0; i < LEAST_MAX_VALUES.length; i++) {
-            ADJUSTED_LEAST_MAX_VALUES[i] = new Integer(LEAST_MAX_VALUES[i]);
+            ADJUSTED_LEAST_MAX_VALUES[i] = Integer.valueOf(LEAST_MAX_VALUES[i]);
         }
         ADJUSTED_MAX_VALUES = new Integer[MAX_VALUES.length];
         for (int i = 0; i < MAX_VALUES.length; i++) {
-            ADJUSTED_MAX_VALUES[i] = new Integer(MAX_VALUES[i]);
+            ADJUSTED_MAX_VALUES[i] = Integer.valueOf(MAX_VALUES[i]);
         }
         try {
             readDeviationConfig();
@@ -881,7 +881,7 @@ public final class HijrahDate
         }
 
         if (cycleDays == null) {
-            cycleDays = new Long(cycleNumber * 10631);
+            cycleDays = Long.valueOf(cycleNumber * 10631);
         }
 
         return (cycleDays.longValue() + dayInCycle + HIJRAH_JAN_1_1_GREGORIAN_DAY - 1);
@@ -925,7 +925,7 @@ public final class HijrahDate
             day = null;
         }
         if (day == null) {
-            day = new Long(cycleNumber * 10631);
+            day = Long.valueOf(cycleNumber * 10631);
         }
         return (int) (epochDay - day.longValue());
     }
@@ -971,7 +971,7 @@ public final class HijrahDate
     private static Integer[] getAdjustedCycle(int cycleNumber) {
         Integer[] cycles;
         try {
-            cycles = ADJUSTED_CYCLE_YEARS.get(new Integer(cycleNumber));
+            cycles = ADJUSTED_CYCLE_YEARS.get(Integer.valueOf(cycleNumber));
         } catch (ArrayIndexOutOfBoundsException e) {
             cycles = null;
         }
@@ -990,7 +990,7 @@ public final class HijrahDate
     private static Integer[] getAdjustedMonthDays(int year) {
         Integer[] newMonths;
         try {
-            newMonths = ADJUSTED_MONTH_DAYS.get(new Integer(year));
+            newMonths = ADJUSTED_MONTH_DAYS.get(Integer.valueOf(year));
         } catch (ArrayIndexOutOfBoundsException e) {
             newMonths = null;
         }
@@ -1013,7 +1013,7 @@ public final class HijrahDate
     private static Integer[] getAdjustedMonthLength(int year) {
         Integer[] newMonths;
         try {
-            newMonths = ADJUSTED_MONTH_LENGTHS.get(new Integer(year));
+            newMonths = ADJUSTED_MONTH_LENGTHS.get(Integer.valueOf(year));
         } catch (ArrayIndexOutOfBoundsException e) {
             newMonths = null;
         }
@@ -1261,18 +1261,18 @@ public final class HijrahDate
         boolean isStartYLeap = isLeapYear(startYear);
 
         // Adjusting the number of month.
-        Integer[] orgStartMonthNums = ADJUSTED_MONTH_DAYS.get(new Integer(
+        Integer[] orgStartMonthNums = ADJUSTED_MONTH_DAYS.get(Integer.valueOf(
                 startYear));
         if (orgStartMonthNums == null) {
             if (isStartYLeap) {
                 orgStartMonthNums = new Integer[LEAP_NUM_DAYS.length];
                 for (int l = 0; l < LEAP_NUM_DAYS.length; l++) {
-                    orgStartMonthNums[l] = new Integer(LEAP_NUM_DAYS[l]);
+                    orgStartMonthNums[l] = Integer.valueOf(LEAP_NUM_DAYS[l]);
                 }
             } else {
                 orgStartMonthNums = new Integer[NUM_DAYS.length];
                 for (int l = 0; l < NUM_DAYS.length; l++) {
-                    orgStartMonthNums[l] = new Integer(NUM_DAYS[l]);
+                    orgStartMonthNums[l] = Integer.valueOf(NUM_DAYS[l]);
                 }
             }
         }
@@ -1281,31 +1281,31 @@ public final class HijrahDate
 
         for (int month = 0; month < 12; month++) {
             if (month > startMonth) {
-                newStartMonthNums[month] = new Integer(orgStartMonthNums[month]
+                newStartMonthNums[month] = Integer.valueOf(orgStartMonthNums[month]
                         .intValue()
                         - offset);
             } else {
-                newStartMonthNums[month] = new Integer(orgStartMonthNums[month]
+                newStartMonthNums[month] = Integer.valueOf(orgStartMonthNums[month]
                         .intValue());
             }
         }
 
-        ADJUSTED_MONTH_DAYS.put(new Integer(startYear), newStartMonthNums);
+        ADJUSTED_MONTH_DAYS.put(Integer.valueOf(startYear), newStartMonthNums);
 
         // Adjusting the days of month.
 
-        Integer[] orgStartMonthLengths = ADJUSTED_MONTH_LENGTHS.get(new Integer(
+        Integer[] orgStartMonthLengths = ADJUSTED_MONTH_LENGTHS.get(Integer.valueOf(
                 startYear));
         if (orgStartMonthLengths == null) {
             if (isStartYLeap) {
                 orgStartMonthLengths = new Integer[LEAP_MONTH_LENGTH.length];
                 for (int l = 0; l < LEAP_MONTH_LENGTH.length; l++) {
-                    orgStartMonthLengths[l] = new Integer(LEAP_MONTH_LENGTH[l]);
+                    orgStartMonthLengths[l] = Integer.valueOf(LEAP_MONTH_LENGTH[l]);
                 }
             } else {
                 orgStartMonthLengths = new Integer[MONTH_LENGTH.length];
                 for (int l = 0; l < MONTH_LENGTH.length; l++) {
-                    orgStartMonthLengths[l] = new Integer(MONTH_LENGTH[l]);
+                    orgStartMonthLengths[l] = Integer.valueOf(MONTH_LENGTH[l]);
                 }
             }
         }
@@ -1314,36 +1314,36 @@ public final class HijrahDate
 
         for (int month = 0; month < 12; month++) {
             if (month == startMonth) {
-                newStartMonthLengths[month] = new Integer(
+                newStartMonthLengths[month] = Integer.valueOf(
                         orgStartMonthLengths[month].intValue() - offset);
             } else {
-                newStartMonthLengths[month] = new Integer(
+                newStartMonthLengths[month] = Integer.valueOf(
                         orgStartMonthLengths[month].intValue());
             }
         }
 
-        ADJUSTED_MONTH_LENGTHS.put(new Integer(startYear), newStartMonthLengths);
+        ADJUSTED_MONTH_LENGTHS.put(Integer.valueOf(startYear), newStartMonthLengths);
 
         if (startYear != endYear) {
             // System.out.println("over year");
             // Adjusting starting 30 year cycle.
             int sCycleNumber = (startYear - 1) / 30;
             int sYearInCycle = (startYear - 1) % 30; // 0-based.
-            Integer[] startCycles = ADJUSTED_CYCLE_YEARS.get(new Integer(
+            Integer[] startCycles = ADJUSTED_CYCLE_YEARS.get(Integer.valueOf(
                     sCycleNumber));
             if (startCycles == null) {
                 startCycles = new Integer[CYCLEYEAR_START_DATE.length];
                 for (int j = 0; j < startCycles.length; j++) {
-                    startCycles[j] = new Integer(CYCLEYEAR_START_DATE[j]);
+                    startCycles[j] = Integer.valueOf(CYCLEYEAR_START_DATE[j]);
                 }
             }
 
             for (int j = sYearInCycle + 1; j < CYCLEYEAR_START_DATE.length; j++) {
-                startCycles[j] = new Integer(startCycles[j].intValue() - offset);
+                startCycles[j] = Integer.valueOf(startCycles[j].intValue() - offset);
             }
 
             // System.out.println(sCycleNumber + ":" + sYearInCycle);
-            ADJUSTED_CYCLE_YEARS.put(new Integer(sCycleNumber), startCycles);
+            ADJUSTED_CYCLE_YEARS.put(Integer.valueOf(sCycleNumber), startCycles);
 
             int sYearInMaxY = (startYear - 1) / 30;
             int sEndInMaxY = (endYear - 1) / 30;
@@ -1354,13 +1354,13 @@ public final class HijrahDate
                 // System.out.println(sYearInMaxY);
 
                 for (int j = sYearInMaxY + 1; j < ADJUSTED_CYCLES.length; j++) {
-                    ADJUSTED_CYCLES[j] = new Long(ADJUSTED_CYCLES[j].longValue()
+                    ADJUSTED_CYCLES[j] = Long.valueOf(ADJUSTED_CYCLES[j].longValue()
                             - offset);
                 }
 
                 // Adjusting ending 30 * MAX_ADJUSTED_CYCLE year cycles.
                 for (int j = sEndInMaxY + 1; j < ADJUSTED_CYCLES.length; j++) {
-                    ADJUSTED_CYCLES[j] = new Long(ADJUSTED_CYCLES[j].longValue()
+                    ADJUSTED_CYCLES[j] = Long.valueOf(ADJUSTED_CYCLES[j].longValue()
                             + offset);
                 }
             }
@@ -1368,35 +1368,35 @@ public final class HijrahDate
             // Adjusting ending 30 year cycle.
             int eCycleNumber = (endYear - 1) / 30;
             int sEndInCycle = (endYear - 1) % 30; // 0-based.
-            Integer[] endCycles = ADJUSTED_CYCLE_YEARS.get(new Integer(
+            Integer[] endCycles = ADJUSTED_CYCLE_YEARS.get(Integer.valueOf(
                     eCycleNumber));
             if (endCycles == null) {
                 endCycles = new Integer[CYCLEYEAR_START_DATE.length];
                 for (int j = 0; j < endCycles.length; j++) {
-                    endCycles[j] = new Integer(CYCLEYEAR_START_DATE[j]);
+                    endCycles[j] = Integer.valueOf(CYCLEYEAR_START_DATE[j]);
                 }
             }
             for (int j = sEndInCycle + 1; j < CYCLEYEAR_START_DATE.length; j++) {
-                endCycles[j] = new Integer(endCycles[j].intValue() + offset);
+                endCycles[j] = Integer.valueOf(endCycles[j].intValue() + offset);
             }
-            ADJUSTED_CYCLE_YEARS.put(new Integer(eCycleNumber), endCycles);
+            ADJUSTED_CYCLE_YEARS.put(Integer.valueOf(eCycleNumber), endCycles);
         }
 
         // Adjusting ending year.
         boolean isEndYLeap = isLeapYear(endYear);
 
-        Integer[] orgEndMonthDays = ADJUSTED_MONTH_DAYS.get(new Integer(endYear));
+        Integer[] orgEndMonthDays = ADJUSTED_MONTH_DAYS.get(Integer.valueOf(endYear));
 
         if (orgEndMonthDays == null) {
             if (isEndYLeap) {
                 orgEndMonthDays = new Integer[LEAP_NUM_DAYS.length];
                 for (int l = 0; l < LEAP_NUM_DAYS.length; l++) {
-                    orgEndMonthDays[l] = new Integer(LEAP_NUM_DAYS[l]);
+                    orgEndMonthDays[l] = Integer.valueOf(LEAP_NUM_DAYS[l]);
                 }
             } else {
                 orgEndMonthDays = new Integer[NUM_DAYS.length];
                 for (int l = 0; l < NUM_DAYS.length; l++) {
-                    orgEndMonthDays[l] = new Integer(NUM_DAYS[l]);
+                    orgEndMonthDays[l] = Integer.valueOf(NUM_DAYS[l]);
                 }
             }
         }
@@ -1405,31 +1405,31 @@ public final class HijrahDate
 
         for (int month = 0; month < 12; month++) {
             if (month > endMonth) {
-                newEndMonthDays[month] = new Integer(orgEndMonthDays[month]
+                newEndMonthDays[month] = Integer.valueOf(orgEndMonthDays[month]
                         .intValue()
                         + offset);
             } else {
-                newEndMonthDays[month] = new Integer(orgEndMonthDays[month]
+                newEndMonthDays[month] = Integer.valueOf(orgEndMonthDays[month]
                         .intValue());
             }
         }
 
-        ADJUSTED_MONTH_DAYS.put(new Integer(endYear), newEndMonthDays);
+        ADJUSTED_MONTH_DAYS.put(Integer.valueOf(endYear), newEndMonthDays);
 
         // Adjusting the days of month.
-        Integer[] orgEndMonthLengths = ADJUSTED_MONTH_LENGTHS.get(new Integer(
+        Integer[] orgEndMonthLengths = ADJUSTED_MONTH_LENGTHS.get(Integer.valueOf(
                 endYear));
 
         if (orgEndMonthLengths == null) {
             if (isEndYLeap) {
                 orgEndMonthLengths = new Integer[LEAP_MONTH_LENGTH.length];
                 for (int l = 0; l < LEAP_MONTH_LENGTH.length; l++) {
-                    orgEndMonthLengths[l] = new Integer(LEAP_MONTH_LENGTH[l]);
+                    orgEndMonthLengths[l] = Integer.valueOf(LEAP_MONTH_LENGTH[l]);
                 }
             } else {
                 orgEndMonthLengths = new Integer[MONTH_LENGTH.length];
                 for (int l = 0; l < MONTH_LENGTH.length; l++) {
-                    orgEndMonthLengths[l] = new Integer(MONTH_LENGTH[l]);
+                    orgEndMonthLengths[l] = Integer.valueOf(MONTH_LENGTH[l]);
                 }
             }
         }
@@ -1438,23 +1438,23 @@ public final class HijrahDate
 
         for (int month = 0; month < 12; month++) {
             if (month == endMonth) {
-                newEndMonthLengths[month] = new Integer(
+                newEndMonthLengths[month] = Integer.valueOf(
                         orgEndMonthLengths[month].intValue() + offset);
             } else {
-                newEndMonthLengths[month] = new Integer(
+                newEndMonthLengths[month] = Integer.valueOf(
                         orgEndMonthLengths[month].intValue());
             }
         }
 
-        ADJUSTED_MONTH_LENGTHS.put(new Integer(endYear), newEndMonthLengths);
+        ADJUSTED_MONTH_LENGTHS.put(Integer.valueOf(endYear), newEndMonthLengths);
 
-        Integer[] startMonthLengths = ADJUSTED_MONTH_LENGTHS.get(new Integer(
+        Integer[] startMonthLengths = ADJUSTED_MONTH_LENGTHS.get(Integer.valueOf(
                 startYear));
-        Integer[] endMonthLengths = ADJUSTED_MONTH_LENGTHS.get(new Integer(
+        Integer[] endMonthLengths = ADJUSTED_MONTH_LENGTHS.get(Integer.valueOf(
                 endYear));
         Integer[] startMonthDays = ADJUSTED_MONTH_DAYS
-                .get(new Integer(startYear));
-        Integer[] endMonthDays = ADJUSTED_MONTH_DAYS.get(new Integer(endYear));
+                .get(Integer.valueOf(startYear));
+        Integer[] endMonthDays = ADJUSTED_MONTH_DAYS.get(Integer.valueOf(endYear));
 
         int startMonthLength = startMonthLengths[startMonth].intValue();
         int endMonthLength = endMonthLengths[endMonth].intValue();
@@ -1474,7 +1474,7 @@ public final class HijrahDate
         if (maxMonthLength < endMonthLength) {
             maxMonthLength = endMonthLength;
         }
-        ADJUSTED_MAX_VALUES[POSITION_DAY_OF_MONTH] = new Integer(maxMonthLength);
+        ADJUSTED_MAX_VALUES[POSITION_DAY_OF_MONTH] = Integer.valueOf(maxMonthLength);
 
         if (leastMaxMonthLength > startMonthLength) {
             leastMaxMonthLength = startMonthLength;
@@ -1482,7 +1482,7 @@ public final class HijrahDate
         if (leastMaxMonthLength > endMonthLength) {
             leastMaxMonthLength = endMonthLength;
         }
-        ADJUSTED_LEAST_MAX_VALUES[POSITION_DAY_OF_MONTH] = new Integer(
+        ADJUSTED_LEAST_MAX_VALUES[POSITION_DAY_OF_MONTH] = Integer.valueOf(
                 leastMaxMonthLength);
 
         int maxMonthDay = ADJUSTED_MAX_VALUES[POSITION_DAY_OF_YEAR].intValue();
@@ -1496,7 +1496,7 @@ public final class HijrahDate
             maxMonthDay = endMonthDay;
         }
 
-        ADJUSTED_MAX_VALUES[POSITION_DAY_OF_YEAR] = new Integer(maxMonthDay);
+        ADJUSTED_MAX_VALUES[POSITION_DAY_OF_YEAR] = Integer.valueOf(maxMonthDay);
 
         if (leastMaxMonthDay > startMonthDay) {
             leastMaxMonthDay = startMonthDay;
@@ -1504,7 +1504,7 @@ public final class HijrahDate
         if (leastMaxMonthDay > endMonthDay) {
             leastMaxMonthDay = endMonthDay;
         }
-        ADJUSTED_LEAST_MAX_VALUES[POSITION_DAY_OF_YEAR] = new Integer(
+        ADJUSTED_LEAST_MAX_VALUES[POSITION_DAY_OF_YEAR] = Integer.valueOf(
                 leastMaxMonthDay);
     }
 
