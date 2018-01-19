@@ -558,37 +558,6 @@
   <!-- ==================================================================== -->
   <profiles>
     <profile>
-      <id>java8</id>
-      <activation>
-        <jdk>1.8</jdk>
-        <property>
-          <name>!oss.repo</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <configuration>
-              <additionalparam>-Xdoclint:none</additionalparam>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-      <reporting>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <configuration>
-              <additionalparam>-Xdoclint:none</additionalparam>
-            </configuration>
-          </plugin>
-        </plugins>
-      </reporting>
-    </profile>
-    <profile>
       <id>repo-sign-artifacts</id>
       <activation>
         <property>
@@ -744,7 +713,7 @@
     <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
     <maven-install-plugin.version>2.5.2</maven-install-plugin.version>
     <maven-jar-plugin.version>2.6</maven-jar-plugin.version>
-    <maven-javadoc-plugin.version>2.10.3</maven-javadoc-plugin.version>
+    <maven-javadoc-plugin.version>3.0.0-M1</maven-javadoc-plugin.version>
     <maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
     <maven-plugin-plugin.version>3.4</maven-plugin-plugin.version>
     <maven-pmd-plugin.version>3.5</maven-pmd-plugin.version>
@@ -767,6 +736,7 @@
     <!-- Properties for maven-javadoc-plugin -->
     <author>false</author>
     <notimestamp>true</notimestamp>
+    <doclint>none</doclint>
     <!-- Other properties -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
