@@ -154,7 +154,7 @@ public class TestSimpleDateTimeTextProvider {
     @Test(dataProvider = "Text")
     public void test_getText(TemporalField field, Number value, TextStyle style, Locale locale, String expected) {
         DateTimeTextProvider tp = DateTimeTextProvider.getInstance();
-        assertEquals(tp.getText(field, value.longValue(), style, locale), expected);
+        assertEquals(tp.getText(field, value.longValue(), style, locale).equalsIgnoreCase(expected), true, expected);
     }
 
 }
