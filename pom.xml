@@ -150,6 +150,7 @@
                 <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
                 <manifestEntries>
                   <Time-Zone-Database-Version>${tz.database.version}</Time-Zone-Database-Version>
+                  <Automatic-Module-Name>org.threeten.bp</Automatic-Module-Name>
                 </manifestEntries>
               </archive>
             </configuration>
