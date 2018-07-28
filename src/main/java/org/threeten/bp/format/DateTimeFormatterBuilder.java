@@ -3389,8 +3389,14 @@ public final class DateTimeFormatterBuilder {
                 ids.put(id, id);
                 TimeZone tz = TimeZone.getTimeZone(id);
                 int tzstyle = (textStyle.asNormal() == TextStyle.FULL ? TimeZone.LONG : TimeZone.SHORT);
-                ids.put(tz.getDisplayName(false, tzstyle, context.getLocale()), id);
-                ids.put(tz.getDisplayName(true, tzstyle, context.getLocale()), id);
+                String textWinter = tz.getDisplayName(false, tzstyle, context.getLocale());
+                if (id.startsWith("Etc/") || (!textWinter.startsWith("GMT+") && !textWinter.startsWith("GMT+"))) {
+                    ids.put(textWinter, id);
+                }
+                String textSummer = tz.getDisplayName(true, tzstyle, context.getLocale());
+                if (id.startsWith("Etc/") || (!textSummer.startsWith("GMT+") && !textSummer.startsWith("GMT+"))) {
+                    ids.put(textSummer, id);
+                }
             }
             for (Entry<String, String> entry : ids.entrySet()) {
                 String name = entry.getKey();

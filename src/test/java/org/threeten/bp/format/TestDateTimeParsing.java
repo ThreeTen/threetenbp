@@ -41,6 +41,8 @@ import static org.threeten.bp.temporal.ChronoField.OFFSET_SECONDS;
 import static org.threeten.bp.temporal.ChronoField.SECOND_OF_DAY;
 import static org.threeten.bp.temporal.ChronoField.SECOND_OF_MINUTE;
 
+import java.util.Locale;
+
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.threeten.bp.DateTimeException;
@@ -272,6 +274,14 @@ public class TestDateTimeParsing {
         assertEquals(acc.getLong(NANO_OF_SECOND), 123456789L);
         assertEquals(acc.getLong(MICRO_OF_SECOND), 123456L);
         assertEquals(acc.getLong(MILLI_OF_SECOND), 123L);
+    }
+
+    @Test
+    public void test_parse_tzdbGmtZone() {
+        String dateString = "2015,7,21,0,0,0,GMT+02:00";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy,M,d,H,m,s,z", Locale.US);
+        ZonedDateTime parsed = ZonedDateTime.parse(dateString, formatter);
+        assertEquals(parsed, ZonedDateTime.of(2015, 7, 21, 0, 0, 0, 0, ZoneId.of("Etc/GMT-2")));
     }
 
 }
