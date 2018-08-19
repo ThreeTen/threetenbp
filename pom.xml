@@ -813,7 +813,7 @@
     <!-- Other properties -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <tz.database.version>2017b</tz.database.version>
     <linkXRef>false</linkXRef>
+    <tz.database.version>2018e</tz.database.version>
   </properties>
 </project>
