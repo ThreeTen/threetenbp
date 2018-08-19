@@ -52,7 +52,7 @@ The Hijrah calendar system does not work.
 Formatting and parsing often depends on data only available in Java SE 8.
 Zone id and text parsing is significantly less powerful.
 
-Available in [Maven Central](http://search.maven.org/#artifactdetails%7Corg.threeten%7Cthreetenbp%7C1.3.6%7Cjar).
+Available in [Maven Central](https://search.maven.org/search?q=g:org.threeten%20AND%20a:threetenbp&core=gav).
 
 ```xml
 <dependency>
