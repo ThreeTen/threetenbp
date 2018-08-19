@@ -3,7 +3,7 @@
 
   <!-- ==================================================================== -->
   <!-- Build requires Java SE 8 or later -->
-  <!-- Releases require Java SE 8 or later -->
+  <!-- Releases require Java SE 9 or later -->
   <!-- ==================================================================== -->
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.threeten</groupId>
@@ -183,6 +183,7 @@
             <configuration>
               <instructions>
                 <Import-Package>!sun.util.calendar,*</Import-Package>
+                <Require-Capability>osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.6))"</Require-Capability>
               </instructions>
             </configuration>
           </execution>
@@ -454,20 +455,7 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <ignore></ignore>
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-toolchains-plugin</artifactId>
-                    <versionRange>[1.0,)</versionRange>
-                    <goals>
-                      <goal>toolchain</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore></ignore>
+                    <ignore />
                   </action>
                 </pluginExecution>
               </pluginExecutions>
@@ -591,6 +579,16 @@
 
   <!-- ==================================================================== -->
   <profiles>
+    <!-- Setup for Java 9+ -->
+    <profile>
+      <id>java9plus</id>
+      <activation>
+        <jdk>[9,)</jdk>
+      </activation>
+      <properties>
+        <maven.compiler.release>6</maven.compiler.release>
+      </properties>
+    </profile>
     <!-- extra javadoc jar file -->
     <profile>
       <id>attach-additional-javadoc</id>
@@ -636,26 +634,25 @@
       </activation>
       <build>
         <plugins>
-          <!-- Use Java 6 -->
+          <!-- Enforce Java 9 -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-toolchains-plugin</artifactId>
+            <artifactId>maven-enforcer-plugin</artifactId>
             <executions>
               <execution>
-                <phase>validate</phase>
+                <id>enforce-maven</id>
                 <goals>
-                  <goal>toolchain</goal>
+                  <goal>enforce</goal>
                 </goals>
+                <configuration>
+                  <rules>
+                    <requireJavaVersion>
+                      <version>9</version>
+                    </requireJavaVersion>
+                  </rules>
+                </configuration>
               </execution>
             </executions>
-            <configuration>
-              <toolchains>
-                <jdk>
-                  <version>1.6</version>
-                  <vendor>sun</vendor>
-                </jdk>
-              </toolchains>
-            </configuration>
           </plugin>
           <!-- Sign artifacts -->
           <plugin>
