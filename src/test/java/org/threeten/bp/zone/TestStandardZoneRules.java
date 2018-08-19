@@ -490,6 +490,185 @@ public class TestStandardZoneRules {
     }
 
     //-----------------------------------------------------------------------
+    // Europe/Dublin
+    //-----------------------------------------------------------------------
+    private ZoneRules europeDublin() {
+        return ZoneId.of("Europe/Dublin").getRules();
+    }
+
+    public void test_Dublin() {
+        ZoneRules test = europeDublin();
+        assertEquals(test.isFixedOffset(), false);
+    }
+
+    public void test_Dublin_getOffset() {
+        ZoneRules test = europeDublin();
+        assertEquals(test.getOffset(createInstant(2008, 1, 1, ZoneOffset.UTC)), OFFSET_ZERO);
+        assertEquals(test.getOffset(createInstant(2008, 2, 1, ZoneOffset.UTC)), OFFSET_ZERO);
+        assertEquals(test.getOffset(createInstant(2008, 3, 1, ZoneOffset.UTC)), OFFSET_ZERO);
+        assertEquals(test.getOffset(createInstant(2008, 4, 1, ZoneOffset.UTC)), OFFSET_PONE);
+        assertEquals(test.getOffset(createInstant(2008, 5, 1, ZoneOffset.UTC)), OFFSET_PONE);
+        assertEquals(test.getOffset(createInstant(2008, 6, 1, ZoneOffset.UTC)), OFFSET_PONE);
+        assertEquals(test.getOffset(createInstant(2008, 7, 1, ZoneOffset.UTC)), OFFSET_PONE);
+        assertEquals(test.getOffset(createInstant(2008, 8, 1, ZoneOffset.UTC)), OFFSET_PONE);
+        assertEquals(test.getOffset(createInstant(2008, 9, 1, ZoneOffset.UTC)), OFFSET_PONE);
+        assertEquals(test.getOffset(createInstant(2008, 10, 1, ZoneOffset.UTC)), OFFSET_PONE);
+        assertEquals(test.getOffset(createInstant(2008, 11, 1, ZoneOffset.UTC)), OFFSET_ZERO);
+        assertEquals(test.getOffset(createInstant(2008, 12, 1, ZoneOffset.UTC)), OFFSET_ZERO);
+    }
+
+    public void test_Dublin_getOffset_toDST() {
+        ZoneRules test = europeDublin();
+        assertEquals(test.getOffset(createInstant(2008, 3, 24, ZoneOffset.UTC)), OFFSET_ZERO);
+        assertEquals(test.getOffset(createInstant(2008, 3, 25, ZoneOffset.UTC)), OFFSET_ZERO);
+        assertEquals(test.getOffset(createInstant(2008, 3, 26, ZoneOffset.UTC)), OFFSET_ZERO);
+        assertEquals(test.getOffset(createInstant(2008, 3, 27, ZoneOffset.UTC)), OFFSET_ZERO);
+        assertEquals(test.getOffset(createInstant(2008, 3, 28, ZoneOffset.UTC)), OFFSET_ZERO);
+        assertEquals(test.getOffset(createInstant(2008, 3, 29, ZoneOffset.UTC)), OFFSET_ZERO);
+        assertEquals(test.getOffset(createInstant(2008, 3, 30, ZoneOffset.UTC)), OFFSET_ZERO);
+        assertEquals(test.getOffset(createInstant(2008, 3, 31, ZoneOffset.UTC)), OFFSET_PONE);
+        // cutover at 01:00Z
+        assertEquals(test.getOffset(createInstant(2008, 3, 30, 0, 59, 59, 999999999, ZoneOffset.UTC)), OFFSET_ZERO);
+        assertEquals(test.getOffset(createInstant(2008, 3, 30, 1, 0, 0, 0, ZoneOffset.UTC)), OFFSET_PONE);
+    }
+
+    public void test_Dublin_getOffset_fromDST() {
+        ZoneRules test = europeDublin();
+        assertEquals(test.getOffset(createInstant(2008, 10, 24, ZoneOffset.UTC)), OFFSET_PONE);
+        assertEquals(test.getOffset(createInstant(2008, 10, 25, ZoneOffset.UTC)), OFFSET_PONE);
+        assertEquals(test.getOffset(createInstant(2008, 10, 26, ZoneOffset.UTC)), OFFSET_PONE);
+        assertEquals(test.getOffset(createInstant(2008, 10, 27, ZoneOffset.UTC)), OFFSET_ZERO);
+        assertEquals(test.getOffset(createInstant(2008, 10, 28, ZoneOffset.UTC)), OFFSET_ZERO);
+        assertEquals(test.getOffset(createInstant(2008, 10, 29, ZoneOffset.UTC)), OFFSET_ZERO);
+        assertEquals(test.getOffset(createInstant(2008, 10, 30, ZoneOffset.UTC)), OFFSET_ZERO);
+        assertEquals(test.getOffset(createInstant(2008, 10, 31, ZoneOffset.UTC)), OFFSET_ZERO);
+        // cutover at 01:00Z
+        assertEquals(test.getOffset(createInstant(2008, 10, 26, 0, 59, 59, 999999999, ZoneOffset.UTC)), OFFSET_PONE);
+        assertEquals(test.getOffset(createInstant(2008, 10, 26, 1, 0, 0, 0, ZoneOffset.UTC)), OFFSET_ZERO);
+    }
+
+    public void test_Dublin_getOffsetInfo() {
+        ZoneRules test = europeDublin();
+        checkOffset(test, createLDT(2008, 1, 1), OFFSET_ZERO, 1);
+        checkOffset(test, createLDT(2008, 2, 1), OFFSET_ZERO, 1);
+        checkOffset(test, createLDT(2008, 3, 1), OFFSET_ZERO, 1);
+        checkOffset(test, createLDT(2008, 4, 1), OFFSET_PONE, 1);
+        checkOffset(test, createLDT(2008, 5, 1), OFFSET_PONE, 1);
+        checkOffset(test, createLDT(2008, 6, 1), OFFSET_PONE, 1);
+        checkOffset(test, createLDT(2008, 7, 1), OFFSET_PONE, 1);
+        checkOffset(test, createLDT(2008, 8, 1), OFFSET_PONE, 1);
+        checkOffset(test, createLDT(2008, 9, 1), OFFSET_PONE, 1);
+        checkOffset(test, createLDT(2008, 10, 1), OFFSET_PONE, 1);
+        checkOffset(test, createLDT(2008, 11, 1), OFFSET_ZERO, 1);
+        checkOffset(test, createLDT(2008, 12, 1), OFFSET_ZERO, 1);
+    }
+
+    public void test_Dublin_getOffsetInfo_toDST() {
+        ZoneRules test = europeDublin();
+        checkOffset(test, createLDT(2008, 3, 24), OFFSET_ZERO, 1);
+        checkOffset(test, createLDT(2008, 3, 25), OFFSET_ZERO, 1);
+        checkOffset(test, createLDT(2008, 3, 26), OFFSET_ZERO, 1);
+        checkOffset(test, createLDT(2008, 3, 27), OFFSET_ZERO, 1);
+        checkOffset(test, createLDT(2008, 3, 28), OFFSET_ZERO, 1);
+        checkOffset(test, createLDT(2008, 3, 29), OFFSET_ZERO, 1);
+        checkOffset(test, createLDT(2008, 3, 30), OFFSET_ZERO, 1);
+        checkOffset(test, createLDT(2008, 3, 31), OFFSET_PONE, 1);
+        // cutover at 01:00Z
+        checkOffset(test, LocalDateTime.of(2008, 3, 30, 0, 59, 59, 999999999), OFFSET_ZERO, 1);
+        checkOffset(test, LocalDateTime.of(2008, 3, 30, 2, 0, 0, 0), OFFSET_PONE, 1);
+    }
+
+    public void test_Dublin_getOffsetInfo_fromDST() {
+        ZoneRules test = europeDublin();
+        checkOffset(test, createLDT(2008, 10, 24), OFFSET_PONE, 1);
+        checkOffset(test, createLDT(2008, 10, 25), OFFSET_PONE, 1);
+        checkOffset(test, createLDT(2008, 10, 26), OFFSET_PONE, 1);
+        checkOffset(test, createLDT(2008, 10, 27), OFFSET_ZERO, 1);
+        checkOffset(test, createLDT(2008, 10, 28), OFFSET_ZERO, 1);
+        checkOffset(test, createLDT(2008, 10, 29), OFFSET_ZERO, 1);
+        checkOffset(test, createLDT(2008, 10, 30), OFFSET_ZERO, 1);
+        checkOffset(test, createLDT(2008, 10, 31), OFFSET_ZERO, 1);
+        // cutover at 01:00Z
+        checkOffset(test, LocalDateTime.of(2008, 10, 26, 0, 59, 59, 999999999), OFFSET_PONE, 1);
+        checkOffset(test, LocalDateTime.of(2008, 10, 26, 2, 0, 0, 0), OFFSET_ZERO, 1);
+    }
+
+    public void test_Dublin_getOffsetInfo_gap() {
+        ZoneRules test = europeDublin();
+        final LocalDateTime dateTime = LocalDateTime.of(2008, 3, 30, 1, 0, 0, 0);
+        ZoneOffsetTransition trans = checkOffset(test, dateTime, OFFSET_ZERO, GAP);
+        assertEquals(trans.isGap(), true);
+        assertEquals(trans.isOverlap(), false);
+        assertEquals(trans.getOffsetBefore(), OFFSET_ZERO);
+        assertEquals(trans.getOffsetAfter(), OFFSET_PONE);
+        assertEquals(trans.getInstant(), createInstant(2008, 3, 30, 1, 0, ZoneOffset.UTC));
+        assertEquals(trans.getDateTimeBefore(), LocalDateTime.of(2008, 3, 30, 1, 0));
+        assertEquals(trans.getDateTimeAfter(), LocalDateTime.of(2008, 3, 30, 2, 0));
+        assertEquals(trans.isValidOffset(OFFSET_ZERO), false);
+        assertEquals(trans.isValidOffset(OFFSET_PONE), false);
+        assertEquals(trans.isValidOffset(OFFSET_PTWO), false);
+        assertEquals(trans.toString(), "Transition[Gap at 2008-03-30T01:00Z to +01:00]");
+    }
+
+    public void test_Dublin_getOffsetInfo_overlap() {
+        ZoneRules test = europeDublin();
+        final LocalDateTime dateTime = LocalDateTime.of(2008, 10, 26, 1, 0, 0, 0);
+        ZoneOffsetTransition trans = checkOffset(test, dateTime, OFFSET_PONE, OVERLAP);
+        assertEquals(trans.isGap(), false);
+        assertEquals(trans.isOverlap(), true);
+        assertEquals(trans.getOffsetBefore(), OFFSET_PONE);
+        assertEquals(trans.getOffsetAfter(), OFFSET_ZERO);
+        assertEquals(trans.getInstant(), createInstant(2008, 10, 26, 1, 0, ZoneOffset.UTC));
+        assertEquals(trans.getDateTimeBefore(), LocalDateTime.of(2008, 10, 26, 2, 0));
+        assertEquals(trans.getDateTimeAfter(), LocalDateTime.of(2008, 10, 26, 1, 0));
+        assertEquals(trans.isValidOffset(ZoneOffset.ofHours(-1)), false);
+        assertEquals(trans.isValidOffset(OFFSET_ZERO), true);
+        assertEquals(trans.isValidOffset(OFFSET_PONE), true);
+        assertEquals(trans.isValidOffset(OFFSET_PTWO), false);
+        assertEquals(trans.toString(), "Transition[Overlap at 2008-10-26T02:00+01:00 to Z]");
+    }
+
+    public void test_Dublin_getStandardOffset() {
+        ZoneRules test = europeDublin();
+        ZonedDateTime zdt = createZDT(1840, 1, 1, ZoneOffset.UTC);
+        while (zdt.getYear() < 2010) {
+            Instant instant = zdt.toInstant();
+            if (zdt.getYear() < 1881) {
+                assertEquals(test.getStandardOffset(instant), ZoneOffset.ofHoursMinutes(0, -25));
+            } else if (zdt.getYear() >= 1881 && zdt.getYear() < 1917) {
+                assertEquals(test.getStandardOffset(instant), ZoneOffset.ofHoursMinutesSeconds(0, -25, -21));
+            } else if (zdt.getYear() >= 1917 && zdt.getYear() < 1969) {
+                assertEquals(test.getStandardOffset(instant), OFFSET_ZERO, zdt.toString());
+            } else {
+                assertEquals(test.getStandardOffset(instant), OFFSET_PONE);  // negative DST
+            }
+            zdt = zdt.plusMonths(6);
+        }
+    }
+
+    public void test_Dublin_dst() {
+        ZoneRules test = europeDublin();
+        assertEquals(test.isDaylightSavings(createZDT(1960, 1, 1, ZoneOffset.UTC).toInstant()), false);
+        assertEquals(test.getDaylightSavings(createZDT(1960, 1, 1, ZoneOffset.UTC).toInstant()), Duration.ofHours(0));
+        assertEquals(test.isDaylightSavings(createZDT(1960, 7, 1, ZoneOffset.UTC).toInstant()), true);
+        assertEquals(test.getDaylightSavings(createZDT(1960, 7, 1, ZoneOffset.UTC).toInstant()), Duration.ofHours(1));
+        // negative DST causes isDaylightSavings() to reverse
+        assertEquals(test.isDaylightSavings(createZDT(2016, 1, 1, ZoneOffset.UTC).toInstant()), true);
+        assertEquals(test.getDaylightSavings(createZDT(2016, 1, 1, ZoneOffset.UTC).toInstant()), Duration.ofHours(-1));
+        assertEquals(test.isDaylightSavings(createZDT(2016, 7, 1, ZoneOffset.UTC).toInstant()), false);
+        assertEquals(test.getDaylightSavings(createZDT(2016, 7, 1, ZoneOffset.UTC).toInstant()), Duration.ofHours(0));
+
+        // TZDB data is messed up, comment out tests until better fix available
+//        DateTimeFormatter formatter1 = new DateTimeFormatterBuilder().appendZoneText(TextStyle.FULL).toFormatter();
+//        assertEquals(formatter1.format(createZDT(2016, 1, 1, ZoneId.of("Europe/Dublin"))), "Greenwich Mean Time");
+//        assertEquals(formatter1.format(createZDT(2016, 7, 1, ZoneId.of("Europe/Dublin"))), "Irish Standard Time");
+
+//        DateTimeFormatter formatter2 = new DateTimeFormatterBuilder().appendZoneText(TextStyle.SHORT).toFormatter();
+//        assertEquals(formatter2.format(createZDT(2016, 1, 1, ZoneId.of("Europe/Dublin"))), "GMT");
+//        assertEquals(formatter2.format(createZDT(2016, 7, 1, ZoneId.of("Europe/Dublin"))), "IST");
+    }
+
+    //-----------------------------------------------------------------------
     // Europe/Paris
     //-----------------------------------------------------------------------
     private ZoneRules europeParis() {
