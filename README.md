@@ -3,7 +3,7 @@
 JSR-310 provides a new date and time library for Java SE 8.
 This project is the backport to Java SE 6 and 7.
 
-See the [main home page](http://www.threeten.org/threetenbp/) of the project.
+See the [main home page](https://www.threeten.org/threetenbp/) of the project.
 
 The backport is NOT an implementation of JSR-310, as that would require
 jumping through lots of unnecessary hoops.

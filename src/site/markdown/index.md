@@ -8,7 +8,7 @@ jumping through lots of unnecessary hoops.
 Instead, this is a simple backport intended to allow users to quickly
 use the JSR-310 API on Java SE 6 and 7.
 The backport should be referred to using the "ThreeTen" name.
-The backport is curated by the primary author of the Java 8 date and time library, [Stephen Colebourne](http://www.joda.org/).
+The backport is curated by the primary author of the Java 8 date and time library, [Stephen Colebourne](https://www.joda.org/).
 
 ThreeTen-Backport is licensed under the business-friendly [BSD 3-clause license](license.html).
 

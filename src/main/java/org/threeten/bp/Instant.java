@@ -138,7 +138,7 @@ import org.threeten.bp.temporal.ValueRange;
  * <p>
  * If an application does have access to an accurate clock that reports leap-seconds, then the
  * recommended technique to implement the Java time-scale is to use the UTC-SLS convention.
- * <a href="http://www.cl.cam.ac.uk/~mgk25/time/utc-sls/">UTC-SLS</a> effectively smoothes the
+ * <a href="https://www.cl.cam.ac.uk/~mgk25/time/utc-sls/">UTC-SLS</a> effectively smoothes the
  * leap-second over the last 1000 seconds of the day, making each of the last 1000 "seconds"
  * 1/1000th longer or shorter than a real SI second.
  * <p>

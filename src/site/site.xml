@@ -34,6 +34,7 @@
       <toc>false</toc>
       <breadcrumbs>false</breadcrumbs>
       <markPageHeader>false</markPageHeader>
+      <protocolRelativeURLs>true</protocolRelativeURLs>
       <pages>
         <index>
           <sections>
@@ -60,7 +61,7 @@
   <body>
     <head>
       <![CDATA[
-        <link href="http://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet"/>
+        <link href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet"/>
         <link rel="author" href="https://plus.google.com/113137868744510231215"/>]]>
     </head>
 
@@ -84,8 +85,8 @@
     </menu>
 
     <menu name="ThreeTen">
-      <item name="Home" href="http://www.threeten.org"/>
-      <item name="Extra" href="http://www.threeten.org/threeten-extra"/>
+      <item name="Home" href="https://www.threeten.org"/>
+      <item name="Extra" href="https://www.threeten.org/threeten-extra"/>
     </menu>
 
     <menu name="Reports" ref="reports"/>
