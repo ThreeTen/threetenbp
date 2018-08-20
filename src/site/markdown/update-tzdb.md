@@ -11,7 +11,7 @@ The first option is to build a standalone tzdb file.
 The generated jar file is added to the classpath in addition to the standard threetenbp.jar file.
 
 1. Clone the [source repository](https://github.com/ThreeTen/threetenbp) from GitHub
-2. [Download](http://www.iana.org/time-zones) the latest tzdb from IANA
+2. [Download](https://www.iana.org/time-zones) the latest tzdb from IANA
 3. Unpack the files in the tar.gz to the folder `src/tzdb/{tzdb-version}` inside the cloned source
 4. Run the maven command `mvn clean package -Dtzdb-jar`
 5. Add the resulting tzdb-{version}.jar file in the `target` folder to your classpath
@@ -26,7 +26,7 @@ The second option is to rebuild the main threetenbp.jar file.
 The generated jar file will replace the standard threetenbp.jar file.
 
 1. Clone the [source repository](https://github.com/ThreeTen/threetenbp) from GitHub
-2. [Download](http://www.iana.org/time-zones) the latest tzdb from IANA
+2. [Download](https://www.iana.org/time-zones) the latest tzdb from IANA
 3. Unpack the files in the tar.gz to the folder `src/tzdb/{tzdb-version}` inside the cloned source
 4. Change the version number in the maven pom to indicate it is your unoffical build
 5. Run the maven command `mvn clean compile`
