@@ -381,7 +381,7 @@ public class TestTzdbZoneRulesCompiler {
     }
 
     @Test
-    public void test_parseMonthDayTime_sepSatAfter62500() throws Exception {
+    public void test_parseMonthDayTime_sepSatAfter82500() throws Exception {
         TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2018f", new ArrayList<File>(), null, false);
         TZDBRule mdt = parseMonthDayTime(test, "Sep Sat>=8 25:00");
         assertEquals(mdt.month, Month.SEPTEMBER);
