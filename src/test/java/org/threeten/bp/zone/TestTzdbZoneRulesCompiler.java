@@ -380,6 +380,19 @@ public class TestTzdbZoneRulesCompiler {
         assertEquals(mdt.timeDefinition, TimeDefinition.UTC);
     }
 
+    @Test
+    public void test_parseMonthDayTime_sepSatAfter62500() throws Exception {
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2018f", new ArrayList<File>(), null, false);
+        TZDBRule mdt = parseMonthDayTime(test, "Sep Sat>=8 25:00");
+        assertEquals(mdt.month, Month.SEPTEMBER);
+        assertEquals(mdt.dayOfWeek, DayOfWeek.SUNDAY);
+        assertEquals(mdt.dayOfMonth, 9);
+        assertEquals(mdt.adjustForwards, true);
+        assertEquals(mdt.time, LocalTime.of(1, 0));
+        assertEquals(mdt.endOfDay, false);
+        assertEquals(mdt.timeDefinition, TimeDefinition.WALL);
+    }
+
     static final Method PARSE_MDT;
     static {
         try {

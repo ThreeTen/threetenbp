@@ -791,6 +791,15 @@ final class TzdbZoneRulesCompiler {
                 if (secsOfDay == 86400) {
                     mdt.endOfDay = true;
                     secsOfDay = 0;
+                } else if (secsOfDay > 86400) {
+                    int daysToForward = secsOfDay / 86400;
+                    mdt.dayOfWeek = mdt.dayOfWeek.plus(daysToForward);
+                    if (mdt.dayOfMonth != -1) {
+                        mdt.dayOfMonth += daysToForward;
+                    } else {
+                        throw new IllegalArgumentException("Unable to determine which day '" + timeStr + "' rollover would apply to.");
+                    }
+                    secsOfDay = secsOfDay % 86400;
                 }
                 LocalTime time = deduplicate(LocalTime.ofSecondOfDay(secsOfDay));
                 mdt.time = time;
