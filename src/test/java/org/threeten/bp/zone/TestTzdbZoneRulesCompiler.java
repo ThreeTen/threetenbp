@@ -311,7 +311,7 @@ public class TestTzdbZoneRulesCompiler {
         assertEquals(mdt.dayOfMonth, -1);
         assertEquals(mdt.adjustForwards, false);
         assertEquals(mdt.time, LocalTime.of(2, 20));
-        assertEquals(mdt.endOfDay, false);
+        assertEquals(mdt.adjustDays, 0);
         assertEquals(mdt.timeDefinition, TimeDefinition.WALL);
     }
 
@@ -324,7 +324,7 @@ public class TestTzdbZoneRulesCompiler {
         assertEquals(mdt.dayOfMonth, 5);
         assertEquals(mdt.adjustForwards, true);
         assertEquals(mdt.time, LocalTime.of(2, 20));
-        assertEquals(mdt.endOfDay, false);
+        assertEquals(mdt.adjustDays, 0);
         assertEquals(mdt.timeDefinition, TimeDefinition.STANDARD);
     }
 
@@ -337,7 +337,7 @@ public class TestTzdbZoneRulesCompiler {
         assertEquals(mdt.dayOfMonth, 5);
         assertEquals(mdt.adjustForwards, true);
         assertEquals(mdt.time, LocalTime.of(2, 20));
-        assertEquals(mdt.endOfDay, false);
+        assertEquals(mdt.adjustDays, 0);
         assertEquals(mdt.timeDefinition, TimeDefinition.UTC);
     }
 
@@ -350,7 +350,7 @@ public class TestTzdbZoneRulesCompiler {
         assertEquals(mdt.dayOfMonth, 5);
         assertEquals(mdt.adjustForwards, false);
         assertEquals(mdt.time, LocalTime.of(0, 0));
-        assertEquals(mdt.endOfDay, true);
+        assertEquals(mdt.adjustDays, 1);
         assertEquals(mdt.timeDefinition, TimeDefinition.UTC);
     }
 
@@ -363,7 +363,7 @@ public class TestTzdbZoneRulesCompiler {
         assertEquals(mdt.dayOfMonth, 15);
         assertEquals(mdt.adjustForwards, false);
         assertEquals(mdt.time, LocalTime.of(0, 0));
-        assertEquals(mdt.endOfDay, false);
+        assertEquals(mdt.adjustDays, 0);
         assertEquals(mdt.timeDefinition, TimeDefinition.WALL);
     }
 
@@ -376,7 +376,7 @@ public class TestTzdbZoneRulesCompiler {
         assertEquals(mdt.dayOfMonth, -1);
         assertEquals(mdt.adjustForwards, false);
         assertEquals(mdt.time, LocalTime.of(3, 0));
-        assertEquals(mdt.endOfDay, false);
+        assertEquals(mdt.adjustDays, 0);
         assertEquals(mdt.timeDefinition, TimeDefinition.UTC);
     }
 
@@ -385,11 +385,11 @@ public class TestTzdbZoneRulesCompiler {
         TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2018f", new ArrayList<File>(), null, false);
         TZDBRule mdt = parseMonthDayTime(test, "Sep Sat>=8 25:00");
         assertEquals(mdt.month, Month.SEPTEMBER);
-        assertEquals(mdt.dayOfWeek, DayOfWeek.SUNDAY);
-        assertEquals(mdt.dayOfMonth, 9);
+        assertEquals(mdt.dayOfWeek, DayOfWeek.SATURDAY);
+        assertEquals(mdt.dayOfMonth, 8);
         assertEquals(mdt.adjustForwards, true);
         assertEquals(mdt.time, LocalTime.of(1, 0));
-        assertEquals(mdt.endOfDay, false);
+        assertEquals(mdt.adjustDays, 1);
         assertEquals(mdt.timeDefinition, TimeDefinition.WALL);
     }
 

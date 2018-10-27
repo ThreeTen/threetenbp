@@ -35,6 +35,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.threeten.bp.DayOfWeek.FRIDAY;
 import static org.threeten.bp.DayOfWeek.MONDAY;
+import static org.threeten.bp.DayOfWeek.SATURDAY;
 import static org.threeten.bp.DayOfWeek.SUNDAY;
 import static org.threeten.bp.DayOfWeek.THURSDAY;
 import static org.threeten.bp.DayOfWeek.TUESDAY;
@@ -42,6 +43,7 @@ import static org.threeten.bp.Month.APRIL;
 import static org.threeten.bp.Month.AUGUST;
 import static org.threeten.bp.Month.FEBRUARY;
 import static org.threeten.bp.Month.MARCH;
+import static org.threeten.bp.Month.MAY;
 import static org.threeten.bp.Month.NOVEMBER;
 import static org.threeten.bp.Month.OCTOBER;
 import static org.threeten.bp.Month.SEPTEMBER;
@@ -659,6 +661,38 @@ public class TestZoneRulesBuilder {
         assertOverlap(test, 2002, 9, 27, 0, 0, plus3, plus2);
         assertOffsetInfo(test, dateTime(2002, 9, 26, 23, 0), plus3);
         assertOffsetInfo(test, dateTime(2002, 9, 27, 1, 0), plus2);
+    }
+
+    @Test
+    public void test_japan2500() {
+        // cutover time overflows into next day
+        //    Rule  Japan   1948    only    -   May Sat>=1  24:00   1:00    D
+        //    Rule  Japan   1948    1951    -   Sep Sat>=8  25:00   0   S
+        //    Rule  Japan   1949    only    -   Apr Sat>=1  24:00   1:00    D
+        //    Rule  Japan   1950    1951    -   May Sat>=1  24:00   1:00    D
+        ZoneOffset plus9 = ZoneOffset.ofHours(9);
+        ZoneOffset plus10 = ZoneOffset.ofHours(10);
+        ZoneRulesBuilder b = new ZoneRulesBuilder();
+        b.addWindowForever(plus9);
+        b.addRuleToWindow(1948, 1948, MAY, 1, SATURDAY, time(0, 0), true, WALL, PERIOD_1HOUR);
+        b.addRuleToWindow(1948, 1951, SEPTEMBER, 8, SATURDAY, time(1, 0), 1, WALL, PERIOD_0);
+        b.addRuleToWindow(1949, 1949, APRIL, 1, SATURDAY, time(0, 0), true, WALL, PERIOD_1HOUR);
+        b.addRuleToWindow(1950, 1951, MAY, 1, SATURDAY, time(0, 0), true, WALL, PERIOD_1HOUR);
+        ZoneRules test = b.toRules("Japan");
+         assertOffsetInfo(test, DATE_TIME_FIRST, plus9);
+        assertOffsetInfo(test, DATE_TIME_LAST, plus9);
+         // Sat>=1 => May 1st
+        assertGap(test, 1948, 5, 2, 0, 0, plus9, plus10);
+        assertOffsetInfo(test, dateTime(1948, 5, 1, 23, 0), plus9);
+        assertOffsetInfo(test, dateTime(1948, 5, 2, 1, 0), plus10);
+         // Sat>=8 => September 11th
+        assertOverlap(test, 1948, 9, 12, 0, 0, plus10, plus9);
+        assertOffsetInfo(test, dateTime(1948, 9, 11, 23, 0), plus10);
+        assertOffsetInfo(test, dateTime(1948, 9, 12, 1, 0), plus9);
+         // Sat>=1 => May 2nd
+        assertGap(test, 1949, 4, 3, 0, 0, plus9, plus10);
+        assertOffsetInfo(test, dateTime(1949, 4, 2, 23, 0), plus9);
+        assertOffsetInfo(test, dateTime(1949, 4, 3, 1, 0), plus10);
     }
 
     //-----------------------------------------------------------------------

@@ -70,6 +70,10 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      * Serialization version.
      */
     private static final long serialVersionUID = 6889046316657758795L;
+    /**
+     * The number of seconds per day.
+     */
+    private static final int SECS_PER_DAY = 86400;
 
     /**
      * The month of the month-day of the first day of the cutover week.
@@ -94,9 +98,9 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      */
     private final LocalTime time;
     /**
-     * Whether the cutover time is midnight at the end of day.
+     * The number of days to adjust by.
      */
-    private final boolean timeEndOfDay;
+    private final int adjustDays;
     /**
      * The definition of how the local time should be interpreted.
      */
@@ -157,7 +161,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
         if (timeEndOfDay && time.equals(LocalTime.MIDNIGHT) == false) {
             throw new IllegalArgumentException("Time must be midnight when end of day flag is true");
         }
-        return new ZoneOffsetTransitionRule(month, dayOfMonthIndicator, dayOfWeek, time, timeEndOfDay, timeDefnition, standardOffset, offsetBefore, offsetAfter);
+        return new ZoneOffsetTransitionRule(month, dayOfMonthIndicator, dayOfWeek, time, timeEndOfDay ? 1 : 0, timeDefnition, standardOffset, offsetBefore, offsetAfter);
     }
 
     /**
@@ -169,7 +173,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      *  from -28 to 31 excluding 0
      * @param dayOfWeek  the required day-of-week, null if the month-day should not be changed
      * @param time  the cutover time in the 'before' offset, not null
-     * @param timeEndOfDay  whether the time is midnight at the end of day
+     * @param adjustDays  the time days adjustment
      * @param timeDefnition  how to interpret the cutover
      * @param standardOffset  the standard offset in force at the cutover, not null
      * @param offsetBefore  the offset before the cutover, not null
@@ -182,7 +186,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
             int dayOfMonthIndicator,
             DayOfWeek dayOfWeek,
             LocalTime time,
-            boolean timeEndOfDay,
+            int adjustDays,
             TimeDefinition timeDefnition,
             ZoneOffset standardOffset,
             ZoneOffset offsetBefore,
@@ -191,7 +195,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
         this.dom = (byte) dayOfMonthIndicator;
         this.dow = dayOfWeek;
         this.time = time;
-        this.timeEndOfDay = timeEndOfDay;
+        this.adjustDays = adjustDays;
         this.timeDefinition = timeDefnition;
         this.standardOffset = standardOffset;
         this.offsetBefore = offsetBefore;
@@ -215,11 +219,12 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      * @throws IOException if an error occurs
      */
     void writeExternal(DataOutput out) throws IOException {
-        final int timeSecs = (timeEndOfDay ? 86400 : time.toSecondOfDay());
+        final int timeSecs = time.toSecondOfDay() + adjustDays * SECS_PER_DAY;
         final int stdOffset = standardOffset.getTotalSeconds();
         final int beforeDiff = offsetBefore.getTotalSeconds() - stdOffset;
         final int afterDiff = offsetAfter.getTotalSeconds() - stdOffset;
-        final int timeByte = (timeSecs % 3600 == 0 ? (timeEndOfDay ? 24 : time.getHour()) : 31);
+        final int timeByte = (timeSecs % 3600 == 0 && timeSecs <= SECS_PER_DAY ?
+                (timeSecs == SECS_PER_DAY ? 24 : time.getHour()) : 31);
         final int stdOffsetByte = (stdOffset % 900 == 0 ? stdOffset / 900 + 128 : 255);
         final int beforeByte = (beforeDiff == 0 || beforeDiff == 1800 || beforeDiff == 3600 ? beforeDiff / 1800 : 3);
         final int afterByte = (afterDiff == 0 || afterDiff == 1800 || afterDiff == 3600 ? afterDiff / 1800 : 3);
@@ -265,11 +270,17 @@ public final class ZoneOffsetTransitionRule implements Serializable {
         int stdByte = (data & (255 << 4)) >>> 4;
         int beforeByte = (data & (3 << 2)) >>> 2;
         int afterByte = (data & 3);
-        LocalTime time = (timeByte == 31 ? LocalTime.ofSecondOfDay(in.readInt()) : LocalTime.of(timeByte % 24, 0));
+        int timeOfDaysSecs = (timeByte == 31 ? in.readInt() : timeByte * 3600);
         ZoneOffset std = (stdByte == 255 ? ZoneOffset.ofTotalSeconds(in.readInt()) : ZoneOffset.ofTotalSeconds((stdByte - 128) * 900));
         ZoneOffset before = (beforeByte == 3 ? ZoneOffset.ofTotalSeconds(in.readInt()) : ZoneOffset.ofTotalSeconds(std.getTotalSeconds() + beforeByte * 1800));
         ZoneOffset after = (afterByte == 3 ? ZoneOffset.ofTotalSeconds(in.readInt()) : ZoneOffset.ofTotalSeconds(std.getTotalSeconds() + afterByte * 1800));
-        return ZoneOffsetTransitionRule.of(month, dom, dow, time, timeByte == 24, defn, std, before, after);
+        // only bit of validation that we need to copy from public of() method
+        if (dom < -28 || dom > 31 || dom == 0) {
+            throw new IllegalArgumentException("Day of month indicator must be between -28 and 31 inclusive excluding zero");
+        }
+        LocalTime time = LocalTime.ofSecondOfDay(Jdk8Methods.floorMod(timeOfDaysSecs, SECS_PER_DAY));
+        int adjustDays = Jdk8Methods.floorDiv(timeOfDaysSecs, SECS_PER_DAY);
+        return new ZoneOffsetTransitionRule(month, dom, dow, time, adjustDays, defn, std, before, after);
     }
 
     //-----------------------------------------------------------------------
@@ -345,7 +356,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      * @return whether a local time of midnight is at the start or end of the day
      */
     public boolean isMidnightEndOfDay() {
-        return timeEndOfDay;
+        return adjustDays == 1 && time.equals(LocalTime.MIDNIGHT);
     }
 
     /**
@@ -409,10 +420,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
                 date = date.with(nextOrSame(dow));
             }
         }
-        if (timeEndOfDay) {
-            date = date.plusDays(1);
-        }
-        LocalDateTime localDT = LocalDateTime.of(date, time);
+        LocalDateTime localDT = LocalDateTime.of(date.plusDays(adjustDays), time);
         LocalDateTime transition = timeDefinition.createDateTime(localDT, standardOffset, offsetBefore);
         return new ZoneOffsetTransition(transition, offsetBefore, offsetAfter);
     }
@@ -435,8 +443,8 @@ public final class ZoneOffsetTransitionRule implements Serializable {
             ZoneOffsetTransitionRule other = (ZoneOffsetTransitionRule) otherRule;
             return month == other.month && dom == other.dom && dow == other.dow &&
                 timeDefinition == other.timeDefinition &&
+                adjustDays == other.adjustDays &&
                 time.equals(other.time) &&
-                timeEndOfDay == other.timeEndOfDay &&
                 standardOffset.equals(other.standardOffset) &&
                 offsetBefore.equals(other.offsetBefore) &&
                 offsetAfter.equals(other.offsetAfter);
@@ -451,7 +459,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      */
     @Override
     public int hashCode() {
-        int hash = ((time.toSecondOfDay() + (timeEndOfDay ? 1 : 0)) << 15) +
+        int hash = ((time.toSecondOfDay() + adjustDays) << 15) +
                 (month.ordinal() << 11) + ((dom + 32) << 5) +
                 ((dow == null ? 7 : dow.ordinal()) << 2) + (timeDefinition.ordinal());
         return hash ^ standardOffset.hashCode() ^
@@ -481,11 +489,26 @@ public final class ZoneOffsetTransitionRule implements Serializable {
         } else {
             buf.append(month.name()).append(' ').append(dom);
         }
-        buf.append(" at ").append(timeEndOfDay ? "24:00" : time.toString())
-            .append(" ").append(timeDefinition)
+        buf.append(" at ");
+        if (adjustDays == 0) {
+            buf.append(time);
+        } else {
+            long timeOfDaysMins = time.toSecondOfDay() / 60 + adjustDays * 24 * 60;
+            appendZeroPad(buf, Jdk8Methods.floorDiv(timeOfDaysMins, 60));
+            buf.append(':');
+            appendZeroPad(buf, Jdk8Methods.floorMod(timeOfDaysMins, 60));
+        }
+        buf.append(" ").append(timeDefinition)
             .append(", standard offset ").append(standardOffset)
             .append(']');
         return buf.toString();
+    }
+
+    private void appendZeroPad(StringBuilder sb, long number) {
+        if (number < 10) {
+            sb.append(0);
+        }
+        sb.append(number);
     }
 
     //-----------------------------------------------------------------------
