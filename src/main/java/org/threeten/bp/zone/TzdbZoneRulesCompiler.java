@@ -978,7 +978,7 @@ final class TzdbZoneRulesCompiler {
         /** The day-of-week of the cutover. */
         DayOfWeek dayOfWeek;
         /** The time of the cutover. */
-        LocalTime time;
+        LocalTime time = LocalTime.MIDNIGHT;
         /** The time days adjustment. */
         int adjustDays;
         /** The time of the cutover. */
