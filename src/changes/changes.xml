@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="1.3.8" date="SNAPSHOT" description="v1.3.8">
+    <release version="1.3.8" date="2018-10-27" description="v1.3.8">
       <action dev="Kiskae" type="fix" >
         Handle time of 25:00 in TZDB.
         Fixes #95.
