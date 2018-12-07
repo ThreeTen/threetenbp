@@ -69,7 +69,7 @@ import org.threeten.bp.zone.ZoneRules;
 
 /**
  * A date-time without a time-zone in the ISO-8601 calendar system,
- * such as {@code 2007-12-03T10:15:30}.
+ * such as {@code 2007-12-23T10:15:30}.
  * <p>
  * {@code LocalDateTime} is an immutable date-time object that represents a date-time,
  * often viewed as year-month-day-hour-minute-second. Other date and time fields,
@@ -416,12 +416,12 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code LocalDateTime} from a text string such as {@code 2007-12-03T10:15:30}.
+     * Obtains an instance of {@code LocalDateTime} from a text string such as {@code 2007-12-23T10:15:30}.
      * <p>
      * The string must represent a valid date-time and is parsed using
      * {@link org.threeten.bp.format.DateTimeFormatter#ISO_LOCAL_DATE_TIME}.
      *
-     * @param text  the text to parse such as "2007-12-03T10:15:30", not null
+     * @param text  the text to parse such as "2007-12-23T10:15:30", not null
      * @return the parsed local date-time, not null
      * @throws DateTimeParseException if the text cannot be parsed
      */
@@ -1793,7 +1793,7 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs this date-time as a {@code String}, such as {@code 2007-12-03T10:15:30}.
+     * Outputs this date-time as a {@code String}, such as {@code 2007-12-23T10:15:30}.
      * <p>
      * The output will be one of the following ISO-8601 formats:
      * <p><ul>
