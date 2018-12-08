@@ -65,7 +65,7 @@ import org.threeten.bp.zone.ZoneRules;
 
 /**
  * A date-time with a time-zone in the ISO-8601 calendar system,
- * such as {@code 2007-12-03T10:15:30+01:00 Europe/Paris}.
+ * such as {@code 2007-12-23T10:15:30+01:00 Europe/Paris}.
  * <p>
  * {@code ZonedDateTime} is an immutable representation of a date-time with a time-zone.
  * This class stores all date and time fields, to a precision of nanoseconds,
@@ -534,12 +534,12 @@ public final class ZonedDateTime
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code ZonedDateTime} from a text string such as
-     * {@code 2007-12-03T10:15:30+01:00[Europe/Paris]}.
+     * {@code 2007-12-23T10:15:30+01:00[Europe/Paris]}.
      * <p>
      * The string must represent a valid date-time and is parsed using
      * {@link org.threeten.bp.format.DateTimeFormatter#ISO_ZONED_DATE_TIME}.
      *
-     * @param text  the text to parse such as "2007-12-03T10:15:30+01:00[Europe/Paris]", not null
+     * @param text  the text to parse such as "2007-12-23T10:15:30+01:00[Europe/Paris]", not null
      * @return the parsed zoned date-time, not null
      * @throws DateTimeParseException if the text cannot be parsed
      */
@@ -2064,7 +2064,7 @@ public final class ZonedDateTime
     //-----------------------------------------------------------------------
     /**
      * Outputs this date-time as a {@code String}, such as
-     * {@code 2007-12-03T10:15:30+01:00[Europe/Paris]}.
+     * {@code 2007-12-23T10:15:30+01:00[Europe/Paris]}.
      * <p>
      * The format consists of the {@code LocalDateTime} followed by the {@code ZoneOffset}.
      * If the {@code ZoneId} is not the same as the offset, then the ID is output.

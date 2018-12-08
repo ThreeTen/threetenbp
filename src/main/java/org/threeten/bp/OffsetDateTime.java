@@ -66,7 +66,7 @@ import org.threeten.bp.zone.ZoneRules;
 
 /**
  * A date-time with an offset from UTC/Greenwich in the ISO-8601 calendar system,
- * such as {@code 2007-12-03T10:15:30+01:00}.
+ * such as {@code 2007-12-23T10:15:30+01:00}.
  * <p>
  * {@code OffsetDateTime} is an immutable representation of a date-time with an offset.
  * This class stores all date and time fields, to a precision of nanoseconds,
@@ -331,12 +331,12 @@ public final class OffsetDateTime
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code OffsetDateTime} from a text string
-     * such as {@code 2007-12-03T10:15:30+01:00}.
+     * such as {@code 2007-12-23T10:15:30+01:00}.
      * <p>
      * The string must represent a valid date-time and is parsed using
      * {@link org.threeten.bp.format.DateTimeFormatter#ISO_OFFSET_DATE_TIME}.
      *
-     * @param text  the text to parse such as "2007-12-03T10:15:30+01:00", not null
+     * @param text  the text to parse such as "2007-12-23T10:15:30+01:00", not null
      * @return the parsed offset date-time, not null
      * @throws DateTimeParseException if the text cannot be parsed
      */
@@ -571,8 +571,8 @@ public final class OffsetDateTime
      * <p>
      * This method returns an object with the same {@code LocalDateTime} and the specified {@code ZoneOffset}.
      * No calculation is needed or performed.
-     * For example, if this time represents {@code 2007-12-03T10:30+02:00} and the offset specified is
-     * {@code +03:00}, then this method will return {@code 2007-12-03T10:30+03:00}.
+     * For example, if this time represents {@code 2007-12-23T10:30+02:00} and the offset specified is
+     * {@code +03:00}, then this method will return {@code 2007-12-23T10:30+03:00}.
      * <p>
      * To take into account the difference between the offsets, and adjust the time fields,
      * use {@link #withOffsetSameInstant}.
@@ -594,8 +594,8 @@ public final class OffsetDateTime
      * adjusted by the difference between the two offsets.
      * This will result in the old and new objects representing the same instant.
      * This is useful for finding the local time in a different offset.
-     * For example, if this time represents {@code 2007-12-03T10:30+02:00} and the offset specified is
-     * {@code +03:00}, then this method will return {@code 2007-12-03T11:30+03:00}.
+     * For example, if this time represents {@code 2007-12-23T10:30+02:00} and the offset specified is
+     * {@code +03:00}, then this method will return {@code 2007-12-23T11:30+03:00}.
      * <p>
      * To change the offset without adjusting the local time use {@link #withOffsetSameLocal}.
      * <p>
@@ -1756,7 +1756,7 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs this date-time as a {@code String}, such as {@code 2007-12-03T10:15:30+01:00}.
+     * Outputs this date-time as a {@code String}, such as {@code 2007-12-23T10:15:30+01:00}.
      * <p>
      * The output will be one of the following ISO-8601 formats:
      * <p><ul>
