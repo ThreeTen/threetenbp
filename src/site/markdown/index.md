@@ -66,12 +66,14 @@ Available in [Maven Central](https://search.maven.org/search?q=g:org.threeten%20
 
 ### Support
 
-Support on bugs, library usage or enhancement requests is available on a best efforts basis.
+Please use [Stack Overflow](https://stackoverflow.com/questions/tagged/threetenbp) for general usage questions.
+GitHub [issues](https://github.com/ThreeTen/threetenbp/issues) and [pull requests](https://github.com/ThreeTen/threetenbp/pulls)
+should be used when you want to help advance the project.
+Commercial support is available via the
+[Tidelift subscription](https://tidelift.com/subscription/pkg/maven-org-threeten-threetenbp?utm_source=maven-org-threeten-threetenbp&utm_medium=referral&utm_campaign=website).
 
-To suggest enhancements or contribute, please [fork the source code](https://github.com/ThreeTen/threetenbp)
-on GitHub and send a Pull Request.
-
-Alternatively, use GitHub [issues](https://github.com/ThreeTen/threetenbp/issues).
-
-Note that pull requests and issues will only be considered so far as matching the behaviour of Java SE 8.
+Note that pull requests and issues will only be considered so far as matching the behaviour of Java SE releases.
 Additional requested features will be rejected.
+
+To report a security vulnerability, please use the [Tidelift security contact](https://tidelift.com/security).
+Tidelift will coordinate the fix and disclosure.

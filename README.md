@@ -44,6 +44,25 @@ No. This project is derived from the Reference Implementation previously hosted 
 That project had a BSD license, which has been preserved here.
 Thus, this project is a fork of the original code before entry to OpenJDK.
 
+### Releases
+Available in the [Maven Central repository](https://search.maven.org/search?q=g:org.threeten%20AND%20a:threetenbp&core=gav)
+
+![Tidelift dependency check](https://tidelift.com/badges/github/ThreeTen/threetenbp)
+
+
+### Support
+Please use [Stack Overflow](https://stackoverflow.com/questions/tagged/threetenbp) for general usage questions.
+GitHub [issues](https://github.com/ThreeTen/threetenbp/issues) and [pull requests](https://github.com/ThreeTen/threetenbp/pulls)
+should be used when you want to help advance the project.
+Commercial support is available via the
+[Tidelift subscription](https://tidelift.com/subscription/pkg/maven-org-threeten-threetenbp?utm_source=maven-org-threeten-threetenbp&utm_medium=referral&utm_campaign=readme).
+
+Note that pull requests and issues will only be considered so far as matching the behaviour of Java SE releases.
+Additional requested features will be rejected.
+
+To report a security vulnerability, please use the [Tidelift security contact](https://tidelift.com/security).
+Tidelift will coordinate the fix and disclosure.
+
 
 ### Release process
 
