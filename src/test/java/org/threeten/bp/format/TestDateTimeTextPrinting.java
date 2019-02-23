@@ -216,12 +216,6 @@ public class TestDateTimeTextPrinting {
         assertEquals(f.withLocale(Locale.CHINA).format(dt.withMonth(10)), "\u5341");
         assertEquals(f.withLocale(Locale.CHINA).format(dt.withMonth(11)), "\u5341\u4e00"); // Nov
         assertEquals(f.withLocale(Locale.CHINA).format(dt.withMonth(12)), "\u5341\u4e8c"); // Dec
-        // this loop might fail if JDK data changes
-        for (int month = 1; month <= 12; month++) {
-            String narrowTxt = f.withLocale(Locale.CHINA).format(dt.withMonth(month));
-            String shortTxt = Month.of(month).getDisplayName(TextStyle.SHORT, Locale.CHINA);
-            assertTrue(shortTxt.startsWith(narrowTxt));
-        }
     }
 
     @Test
