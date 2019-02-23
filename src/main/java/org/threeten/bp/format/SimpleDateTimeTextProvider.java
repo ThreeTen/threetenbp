@@ -142,18 +142,18 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
             styleMap.put(TextStyle.FULL, map);
             
             map = new HashMap<Long, String>();
-            map.put(f1, array[Calendar.JANUARY].substring(0, 1));
-            map.put(f2, array[Calendar.FEBRUARY].substring(0, 1));
-            map.put(f3, array[Calendar.MARCH].substring(0, 1));
-            map.put(f4, array[Calendar.APRIL].substring(0, 1));
-            map.put(f5, array[Calendar.MAY].substring(0, 1));
-            map.put(f6, array[Calendar.JUNE].substring(0, 1));
-            map.put(f7, array[Calendar.JULY].substring(0, 1));
-            map.put(f8, array[Calendar.AUGUST].substring(0, 1));
-            map.put(f9, array[Calendar.SEPTEMBER].substring(0, 1));
-            map.put(f10, array[Calendar.OCTOBER].substring(0, 1));
-            map.put(f11, array[Calendar.NOVEMBER].substring(0, 1));
-            map.put(f12, array[Calendar.DECEMBER].substring(0, 1));
+            map.put(f1, narrowMonth(1, array[Calendar.JANUARY], locale));
+            map.put(f2, narrowMonth(2, array[Calendar.FEBRUARY], locale));
+            map.put(f3, narrowMonth(3, array[Calendar.MARCH], locale));
+            map.put(f4, narrowMonth(4, array[Calendar.APRIL], locale));
+            map.put(f5, narrowMonth(5, array[Calendar.MAY], locale));
+            map.put(f6, narrowMonth(6, array[Calendar.JUNE], locale));
+            map.put(f7, narrowMonth(7, array[Calendar.JULY], locale));
+            map.put(f8, narrowMonth(8, array[Calendar.AUGUST], locale));
+            map.put(f9, narrowMonth(9, array[Calendar.SEPTEMBER], locale));
+            map.put(f10, narrowMonth(10, array[Calendar.OCTOBER], locale));
+            map.put(f11, narrowMonth(11, array[Calendar.NOVEMBER], locale));
+            map.put(f12, narrowMonth(12, array[Calendar.DECEMBER], locale));
             styleMap.put(TextStyle.NARROW, map);
             
             array = oldSymbols.getShortMonths();
@@ -195,13 +195,13 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
             styleMap.put(TextStyle.FULL, map);
             
             map = new HashMap<Long, String>();
-            map.put(f1, array[Calendar.MONDAY].substring(0, 1));
-            map.put(f2, array[Calendar.TUESDAY].substring(0, 1));
-            map.put(f3, array[Calendar.WEDNESDAY].substring(0, 1));
-            map.put(f4, array[Calendar.THURSDAY].substring(0, 1));
-            map.put(f5, array[Calendar.FRIDAY].substring(0, 1));
-            map.put(f6, array[Calendar.SATURDAY].substring(0, 1));
-            map.put(f7, array[Calendar.SUNDAY].substring(0, 1));
+            map.put(f1, narrowDayOfWeek(1, array[Calendar.MONDAY], locale));
+            map.put(f2, narrowDayOfWeek(2, array[Calendar.TUESDAY], locale));
+            map.put(f3, narrowDayOfWeek(3, array[Calendar.WEDNESDAY], locale));
+            map.put(f4, narrowDayOfWeek(4, array[Calendar.THURSDAY], locale));
+            map.put(f5, narrowDayOfWeek(5, array[Calendar.FRIDAY], locale));
+            map.put(f6, narrowDayOfWeek(6, array[Calendar.SATURDAY], locale));
+            map.put(f7, narrowDayOfWeek(7, array[Calendar.SUNDAY], locale));
             styleMap.put(TextStyle.NARROW, map);
             
             array = oldSymbols.getShortWeekdays();
@@ -268,6 +268,65 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
             return createLocaleStore(styleMap);
         }
         return "";  // null marker for map
+    }
+
+    // for China/Japan we need special behaviour
+    private String narrowMonth(int month, String text, Locale locale) {
+        if (locale.getLanguage().equals("zh") && locale.getCountry().equals("CN")) {
+            switch (month) {
+                case 1:
+                    return "\u4e00";
+                case 2:
+                    return "\u4e8c";
+                case 3:
+                    return "\u4e09";
+                case 4:
+                    return "\u56db";
+                case 5:
+                    return "\u4e94";
+                case 6:
+                    return "\u516d";
+                case 7:
+                    return "\u4e03";
+                case 8:
+                    return "\u516b";
+                case 9:
+                    return "\u4e5d";
+                case 10:
+                    return "\u5341";
+                case 11:
+                    return "\u5341\u4e00";
+                case 12:
+                    return "\u5341\u4e8c";
+            }
+        }
+        if (locale.getLanguage().equals("ja") && locale.getCountry().equals("JP")) {
+            return Integer.toString(month);
+        }
+        return text.substring(0, 1);
+    }
+
+    // for China we need to select the last character
+    private String narrowDayOfWeek(int dow, String text, Locale locale) {
+        if (locale.getLanguage().equals("zh") && locale.getCountry().equals("CN")) {
+            switch (dow) {
+                case 1:
+                    return "\u4e00";
+                case 2:
+                    return "\u4e8c";
+                case 3:
+                    return "\u4e09";
+                case 4:
+                    return "\u56db";
+                case 5:
+                    return "\u4e94";
+                case 6:
+                    return "\u516d";
+                case 7:
+                    return "\u65e5";
+            }
+        }
+        return text.substring(0, 1);
     }
 
     //-----------------------------------------------------------------------

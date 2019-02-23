@@ -13,6 +13,11 @@
         Fix parsing of fixed zone offsets.
         Fixes #133.
       </action>
+      <action dev="jodastephen" type="fix">
+        Ensure narrow text is accurate for China/Japan.
+        Hard code a reasonable answer.
+        Fixes #97.
+      </action>
     </release>
     <release version="1.4.4" date="2020-04-24" description="v1.4.4">
       <action dev="jodastephen" type="update" >

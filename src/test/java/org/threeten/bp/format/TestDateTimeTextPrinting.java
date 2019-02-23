@@ -32,6 +32,7 @@
 package org.threeten.bp.format;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 import static org.threeten.bp.temporal.ChronoField.DAY_OF_MONTH;
 import static org.threeten.bp.temporal.ChronoField.DAY_OF_WEEK;
 import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
@@ -187,6 +188,51 @@ public class TestDateTimeTextPrinting {
         DateTimeFormatter f = builder.toFormatter();
         LocalDateTime dt = LocalDateTime.of(2010, 2, 1, 0, 0);
         assertEquals(f.format(dt), "2");
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_chineseNarrowDayOfWeek() throws Exception {
+        builder.appendText(DAY_OF_WEEK, TextStyle.NARROW);
+        LocalDateTime dt = LocalDateTime.of(2010, 2, 1, 0, 0);
+        DateTimeFormatter f = builder.toFormatter();
+        assertEquals(f.withLocale(Locale.ENGLISH).format(dt), "M");
+        assertEquals(f.withLocale(Locale.CHINA).format(dt), "\u4e00");
+        assertEquals(f.withLocale(Locale.CHINA).format(dt.plusDays(1)), "\u4e8c"); // Tue
+        assertEquals(f.withLocale(Locale.CHINA).format(dt.plusDays(2)), "\u4e09"); // Wed
+        assertEquals(f.withLocale(Locale.CHINA).format(dt.plusDays(3)), "\u56db"); // Thu
+        assertEquals(f.withLocale(Locale.CHINA).format(dt.plusDays(4)), "\u4e94"); // Fri
+        assertEquals(f.withLocale(Locale.CHINA).format(dt.plusDays(5)), "\u516d"); // Sat
+        assertEquals(f.withLocale(Locale.CHINA).format(dt.plusDays(6)), "\u65e5"); // Sun
+    }
+
+    @Test
+    public void test_chineseNarrowMonth() throws Exception {
+        builder.appendText(MONTH_OF_YEAR, TextStyle.NARROW);
+        LocalDateTime dt = LocalDateTime.of(2010, 1, 1, 0, 0);
+        DateTimeFormatter f = builder.toFormatter();
+        assertEquals(f.withLocale(Locale.ENGLISH).format(dt), "J");
+        assertEquals(f.withLocale(Locale.CHINA).format(dt.withMonth(9)), "\u4e5d");
+        assertEquals(f.withLocale(Locale.CHINA).format(dt.withMonth(10)), "\u5341");
+        assertEquals(f.withLocale(Locale.CHINA).format(dt.withMonth(11)), "\u5341\u4e00"); // Nov
+        assertEquals(f.withLocale(Locale.CHINA).format(dt.withMonth(12)), "\u5341\u4e8c"); // Dec
+        // this loop might fail if JDK data changes
+        for (int month = 1; month <= 12; month++) {
+            String narrowTxt = f.withLocale(Locale.CHINA).format(dt.withMonth(month));
+            String shortTxt = Month.of(month).getDisplayName(TextStyle.SHORT, Locale.CHINA);
+            assertTrue(shortTxt.startsWith(narrowTxt));
+        }
+    }
+
+    @Test
+    public void test_japaneseNarrowMonth() throws Exception {
+        builder.appendText(MONTH_OF_YEAR, TextStyle.NARROW);
+        LocalDateTime dt = LocalDateTime.of(2010, 10, 1, 0, 0);
+        DateTimeFormatter f = builder.toFormatter();
+        assertEquals(f.withLocale(Locale.ENGLISH).format(dt.withMonth(10)), "O");
+        assertEquals(f.withLocale(Locale.JAPAN).format(dt.withMonth(10)), "10");
+        assertEquals(f.withLocale(Locale.JAPAN).format(dt.withMonth(11)), "11"); // Nov
+        assertEquals(f.withLocale(Locale.JAPAN).format(dt.withMonth(12)), "12"); // Dec
     }
 
 }
