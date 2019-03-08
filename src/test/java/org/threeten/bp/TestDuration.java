@@ -628,6 +628,18 @@ public class TestDuration extends AbstractTest {
         assertEquals(Duration.ofSeconds(-1, -1).isNegative(), true);
     }
 
+    @Test
+    public void test_isPositive() {
+        assertEquals(Duration.ofNanos(0).isPositive(), false);
+        assertEquals(Duration.ofSeconds(0).isPositive(), false);
+        assertEquals(Duration.ofNanos(1).isPositive(), true);
+        assertEquals(Duration.ofSeconds(1).isPositive(), true);
+        assertEquals(Duration.ofSeconds(1, 1).isPositive(), true);
+        assertEquals(Duration.ofNanos(-1).isPositive(), false);
+        assertEquals(Duration.ofSeconds(-1).isPositive(), false);
+        assertEquals(Duration.ofSeconds(-1, -1).isPositive(), false);
+    }
+
     //-----------------------------------------------------------------------
     // plus()
     //-----------------------------------------------------------------------
