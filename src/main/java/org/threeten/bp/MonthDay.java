@@ -62,7 +62,7 @@ import org.threeten.bp.temporal.ValueRange;
  * A month-day in the ISO-8601 calendar system, such as {@code --12-03}.
  * <p>
  * {@code MonthDay} is an immutable date-time object that represents the combination
- * of a year and month. Any field that can be derived from a month and day, such as
+ * of a month and day. Any field that can be derived from a month and day, such as
  * quarter-of-year, can be obtained.
  * <p>
  * This class does not store or represent a year, time or time-zone.
