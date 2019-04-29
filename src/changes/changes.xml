@@ -12,6 +12,10 @@
       <action dev="dlew" type="update" >
         Update to time-zone data 2019a.
       </action>
+      <action dev="GrahamBorland" type="fix">
+        Fix Javadoc.
+        Fixes #102.
+      </action>
       <action dev="jodastephen" type="add">
         Add Tidelift commercial support and security policy.
       </action>
