@@ -33,7 +33,7 @@ Pull requests with later versions of the dat file will be accepted.
 #### FAQs
 
 1. What version of Java SE 8 does this project map to?
-This project currently maps to the expected contents of release Java SE 8u20.
+This project currently maps to the contents of release Java SE 8u20.
 
 2. Will the backport be kept up to date?
 There are no plans for further releases.
@@ -59,6 +59,8 @@ Commercial support is available via the
 
 Note that pull requests and issues will only be considered so far as matching the behaviour of Java SE releases.
 Additional requested features will be rejected.
+
+Pull requests must _not_ be copied from the JDK, because the GPL license is incompatible with the BSD license used here.
 
 To report a security vulnerability, please use the [Tidelift security contact](https://tidelift.com/security).
 Tidelift will coordinate the fix and disclosure.

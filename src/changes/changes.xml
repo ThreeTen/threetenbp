@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="1.3.9" date="SNAPSHOT" description="v1.3.9">
+    <release version="1.4.0" date="2019-05-08" description="v1.4.0">
       <action dev="dlew" type="update" >
         Update to time-zone data 2019a.
       </action>
