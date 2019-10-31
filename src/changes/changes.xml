@@ -9,6 +9,9 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="1.4.0" date="2019-05-08" description="v1.4.0">
+      <action dev="summerlyr" type="update" >
+        Update to time-zone data 2019c.
+      </action>
       <action dev="dlew" type="update" >
         Update to time-zone data 2019a.
       </action>
