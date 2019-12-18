@@ -1,0 +1,6 @@
+#
+# Exclude entire package
+#
+
+*
+
