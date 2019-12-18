@@ -48,6 +48,7 @@ import java.io.InvalidObjectException;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
@@ -1163,6 +1164,7 @@ public final class Instant
     }
 
     //-----------------------------------------------------------------------
+    @GwtIncompatible
     private Object writeReplace() {
         return new Ser(Ser.INSTANT_TYPE, this);
     }
@@ -1172,15 +1174,18 @@ public final class Instant
      * @return never
      * @throws InvalidObjectException always
      */
+    @GwtIncompatible
     private Object readResolve() throws ObjectStreamException {
         throw new InvalidObjectException("Deserialization via serialization delegate");
     }
 
+    @GwtIncompatible
     void writeExternal(DataOutput out) throws IOException {
         out.writeLong(seconds);
         out.writeInt(nanos);
     }
 
+    @GwtIncompatible
     static Instant readExternal(DataInput in) throws IOException {
         long seconds = in.readLong();
         int nanos = in.readInt();

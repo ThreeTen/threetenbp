@@ -40,6 +40,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.jdk8.DefaultInterfaceEra;
@@ -327,14 +328,17 @@ public final class JapaneseEra
     }
 
     //-----------------------------------------------------------------------
+    @GwtIncompatible
     private Object writeReplace() {
         return new Ser(Ser.JAPANESE_ERA_TYPE, this);
     }
 
+    @GwtIncompatible
     void writeExternal(DataOutput out) throws IOException {
         out.writeByte(this.getValue());
     }
 
+    @GwtIncompatible
     static JapaneseEra readExternal(DataInput in) throws IOException {
         byte eraValue = in.readByte();
         return JapaneseEra.of(eraValue);

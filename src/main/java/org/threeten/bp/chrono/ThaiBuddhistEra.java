@@ -38,6 +38,7 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Locale;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.TextStyle;
@@ -173,14 +174,17 @@ public enum ThaiBuddhistEra implements Era {
     }
 
     //-----------------------------------------------------------------------
+    @GwtIncompatible
     private Object writeReplace() {
         return new Ser(Ser.THAIBUDDHIST_ERA_TYPE, this);
     }
 
+    @GwtIncompatible
     void writeExternal(DataOutput out) throws IOException {
         out.writeByte(this.getValue());
     }
 
+    @GwtIncompatible
     static ThaiBuddhistEra readExternal(DataInput in) throws IOException {
         byte eraValue = in.readByte();
         return ThaiBuddhistEra.of(eraValue);

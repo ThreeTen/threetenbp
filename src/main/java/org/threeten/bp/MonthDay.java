@@ -41,6 +41,7 @@ import java.io.InvalidObjectException;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.format.DateTimeFormatter;
@@ -721,6 +722,7 @@ public final class MonthDay
     }
 
     //-----------------------------------------------------------------------
+    @GwtIncompatible
     private Object writeReplace() {
         return new Ser(Ser.MONTH_DAY_TYPE, this);
     }
@@ -730,15 +732,18 @@ public final class MonthDay
      * @return never
      * @throws InvalidObjectException always
      */
+    @GwtIncompatible
     private Object readResolve() throws ObjectStreamException {
         throw new InvalidObjectException("Deserialization via serialization delegate");
     }
 
+    @GwtIncompatible
     void writeExternal(DataOutput out) throws IOException {
         out.writeByte(month);
         out.writeByte(day);
     }
 
+    @GwtIncompatible
     static MonthDay readExternal(DataInput in) throws IOException {
         byte month = in.readByte();
         byte day = in.readByte();

@@ -41,6 +41,7 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.List;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
@@ -274,6 +275,7 @@ final class ChronoZonedDateTimeImpl<D extends ChronoLocalDate>
     }
 
     //-----------------------------------------------------------------------
+    @GwtIncompatible
     private Object writeReplace() {
         return new Ser(Ser.CHRONO_ZONEDDATETIME_TYPE, this);
     }
@@ -283,16 +285,19 @@ final class ChronoZonedDateTimeImpl<D extends ChronoLocalDate>
      * @return never
      * @throws InvalidObjectException always
      */
+    @GwtIncompatible
     private Object readResolve() throws ObjectStreamException {
         throw new InvalidObjectException("Deserialization via serialization delegate");
     }
 
+    @GwtIncompatible
     void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(dateTime);
         out.writeObject(offset);
         out.writeObject(zone);
     }
 
+    @GwtIncompatible
     static ChronoZonedDateTime<?> readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         ChronoLocalDateTime<?> dateTime = (ChronoLocalDateTime<?>) in.readObject();
         ZoneOffset offset = (ZoneOffset) in.readObject();

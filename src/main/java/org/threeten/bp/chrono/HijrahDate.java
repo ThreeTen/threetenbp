@@ -54,6 +54,7 @@ import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.Clock;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.DayOfWeek;
@@ -1758,10 +1759,12 @@ public final class HijrahDate
         }
     }
     //-----------------------------------------------------------------------
+    @GwtIncompatible
     private Object writeReplace() {
         return new Ser(Ser.HIJRAH_DATE_TYPE, this);
     }
 
+    @GwtIncompatible
     void writeExternal(DataOutput out) throws IOException {
         // HijrahChrono is implicit in the Hijrah_DATE_TYPE
         out.writeInt(get(YEAR));
@@ -1769,6 +1772,7 @@ public final class HijrahDate
         out.writeByte(get(DAY_OF_MONTH));
     }
 
+    @GwtIncompatible
     static ChronoLocalDate readExternal(DataInput in) throws IOException {
         int year = in.readInt();
         int month = in.readByte();

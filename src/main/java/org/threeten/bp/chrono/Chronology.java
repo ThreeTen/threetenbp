@@ -46,6 +46,7 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.Clock;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.Instant;
@@ -872,6 +873,7 @@ public abstract class Chronology implements Comparable<Chronology> {
     }
 
     //-----------------------------------------------------------------------
+    @GwtIncompatible
     private Object writeReplace() {
         return new Ser(Ser.CHRONO_TYPE, this);
     }
@@ -881,14 +883,17 @@ public abstract class Chronology implements Comparable<Chronology> {
      * @return never
      * @throws InvalidObjectException always
      */
+    @GwtIncompatible
     private Object readResolve() throws ObjectStreamException {
         throw new InvalidObjectException("Deserialization via serialization delegate");
     }
 
+    @GwtIncompatible
     void writeExternal(DataOutput out) throws IOException {
         out.writeUTF(getId());
     }
 
+    @GwtIncompatible
     static Chronology readExternal(DataInput in) throws IOException {
         String id = in.readUTF();
         return Chronology.of(id);

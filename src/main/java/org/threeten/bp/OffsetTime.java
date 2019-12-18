@@ -46,6 +46,7 @@ import java.io.InvalidObjectException;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
@@ -1289,6 +1290,7 @@ public final class OffsetTime
     }
 
     // -----------------------------------------------------------------------
+    @GwtIncompatible
     private Object writeReplace() {
         return new Ser(Ser.OFFSET_TIME_TYPE, this);
     }
@@ -1298,15 +1300,18 @@ public final class OffsetTime
      * @return never
      * @throws InvalidObjectException always
      */
+    @GwtIncompatible
     private Object readResolve() throws ObjectStreamException {
         throw new InvalidObjectException("Deserialization via serialization delegate");
     }
 
+    @GwtIncompatible
     void writeExternal(DataOutput out) throws IOException {
         time.writeExternal(out);
         offset.writeExternal(out);
     }
 
+    @GwtIncompatible
     static OffsetTime readExternal(DataInput in) throws IOException {
         LocalTime time = LocalTime.readExternal(in);
         ZoneOffset offset = ZoneOffset.readExternal(in);

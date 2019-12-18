@@ -50,6 +50,7 @@ import java.io.InvalidObjectException;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.format.DateTimeFormatter;
@@ -1081,6 +1082,7 @@ public final class YearMonth
     }
 
     //-----------------------------------------------------------------------
+    @GwtIncompatible
     private Object writeReplace() {
         return new Ser(Ser.YEAR_MONTH_TYPE, this);
     }
@@ -1090,15 +1092,18 @@ public final class YearMonth
      * @return never
      * @throws InvalidObjectException always
      */
+    @GwtIncompatible
     private Object readResolve() throws ObjectStreamException {
         throw new InvalidObjectException("Deserialization via serialization delegate");
     }
 
+    @GwtIncompatible
     void writeExternal(DataOutput out) throws IOException {
         out.writeInt(year);
         out.writeByte(month);
     }
 
+    @GwtIncompatible
     static YearMonth readExternal(DataInput in) throws IOException {
         int year = in.readInt();
         byte month = in.readByte();
