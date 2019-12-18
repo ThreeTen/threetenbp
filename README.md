@@ -97,3 +97,5 @@ the javascript. Another goal is to support executing as many as possible of the 
 
 - Clock.systemUTC() & Clock.systemDefaultZone() are equivalent, both without a ZoneId.
 - Clock.getZone() is unavailable.
+- FixedClock not supported
+- OffsetClock not supported
