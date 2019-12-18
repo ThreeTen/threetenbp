@@ -31,10 +31,7 @@
  */
 package org.threeten.bp.jdk8;
 
-import static org.threeten.bp.temporal.ChronoField.ERA;
-
-import java.util.Locale;
-
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.chrono.Era;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.TextStyle;
@@ -46,12 +43,17 @@ import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.UnsupportedTemporalTypeException;
 
+import java.util.Locale;
+
+import static org.threeten.bp.temporal.ChronoField.ERA;
+
 /**
  * A temporary class providing implementations that will become default interface
  * methods once integrated into JDK 8.
  *
  * @param  the chronology of this era
  */
+@GwtIncompatible
 public abstract class DefaultInterfaceEra
         extends DefaultInterfaceTemporalAccessor
         implements Era {

@@ -31,6 +31,8 @@
  */
 package org.threeten.bp.jdk8;
 
+import java.util.Objects;
+
 /**
  * A set of utility methods that provide additional functionality for working
  * with dates and times.
@@ -40,6 +42,10 @@ package org.threeten.bp.jdk8;
  * <h3>Specification for implementors</h3>
  * This is a thread-safe utility class.
  * All returned classes are immutable and thread-safe.
+ */
+
+/**
+ * Where possible methods here delegate to the actual JDK method.
  */
 public final class Jdk8Methods {
 
@@ -59,10 +65,11 @@ public final class Jdk8Methods {
      * @throws NullPointerException if the value is null
      */
     public static <T> T requireNonNull(T value) {
-        if (value == null) {
-            throw new NullPointerException("Value must not be null");
-        }
-        return value;
+//        if (value == null) {
+//            throw new NullPointerException("Value must not be null");
+//        }
+//        return value;
+        return Objects.requireNonNull(value);
     }
 
     /**
@@ -75,10 +82,11 @@ public final class Jdk8Methods {
      * @throws NullPointerException if the value is null
      */
     public static <T> T requireNonNull(T value, String parameterName) {
-        if (value == null) {
-            throw new NullPointerException(parameterName + " must not be null");
-        }
-        return value;
+//        if (value == null) {
+//            throw new NullPointerException(parameterName + " must not be null");
+//        }
+//        return value;
+        return Objects.requireNonNull(value, parameterName);
     }
 
     //-----------------------------------------------------------------------
@@ -90,13 +98,14 @@ public final class Jdk8Methods {
      * @return the result
      */
     public static boolean equals(Object a, Object b) {
-        if (a == null) {
-            return b == null;
-        }
-        if (b == null) {
-            return false;
-        }
-        return a.equals(b);
+//        if (a == null) {
+//            return b == null;
+//        }
+//        if (b == null) {
+//            return false;
+//        }
+//        return a.equals(b);
+        return Objects.equals(a, b);
     }
 
     /**
@@ -107,13 +116,14 @@ public final class Jdk8Methods {
      * @return the result
      */
     public static int compareInts(int a, int b) {
-        if (a < b) {
-            return -1;
-        }
-        if (a > b) {
-            return 1;
-        }
-        return 0;
+//        if (a < b) {
+//            return -1;
+//        }
+//        if (a > b) {
+//            return 1;
+//        }
+//        return 0;
+        return Integer.compare(a, b);
     }
 
     /**
@@ -124,13 +134,14 @@ public final class Jdk8Methods {
      * @return the result
      */
     public static int compareLongs(long a, long b) {
-        if (a < b) {
-            return -1;
-        }
-        if (a > b) {
-            return 1;
-        }
-        return 0;
+//        if (a < b) {
+//            return -1;
+//        }
+//        if (a > b) {
+//            return 1;
+//        }
+//        return 0;
+        return Long.compare(a, b);
     }
 
     //-----------------------------------------------------------------------
@@ -143,12 +154,13 @@ public final class Jdk8Methods {
      * @throws ArithmeticException if the result overflows an int
      */
     public static int safeAdd(int a, int b) {
-        int sum = a + b;
-        // check for a change of sign in the result when the inputs have the same sign
-        if ((a ^ sum) < 0 && (a ^ b) >= 0) {
-            throw new ArithmeticException("Addition overflows an int: " + a + " + " + b);
-        }
-        return sum;
+//        int sum = a + b;
+//        // check for a change of sign in the result when the inputs have the same sign
+//        if ((a ^ sum) < 0 && (a ^ b) >= 0) {
+//            throw new ArithmeticException("Addition overflows an int: " + a + " + " + b);
+//        }
+//        return sum;
+        return Math.addExact(a, b);
     }
 
     /**
@@ -160,12 +172,13 @@ public final class Jdk8Methods {
      * @throws ArithmeticException if the result overflows a long
      */
     public static long safeAdd(long a, long b) {
-        long sum = a + b;
-        // check for a change of sign in the result when the inputs have the same sign
-        if ((a ^ sum) < 0 && (a ^ b) >= 0) {
-            throw new ArithmeticException("Addition overflows a long: " + a + " + " + b);
-        }
-        return sum;
+//        long sum = a + b;
+//        // check for a change of sign in the result when the inputs have the same sign
+//        if ((a ^ sum) < 0 && (a ^ b) >= 0) {
+//            throw new ArithmeticException("Addition overflows a long: " + a + " + " + b);
+//        }
+//        return sum;
+        return Math.addExact(a, b);
     }
 
     //-----------------------------------------------------------------------
@@ -178,12 +191,13 @@ public final class Jdk8Methods {
      * @throws ArithmeticException if the result overflows an int
      */
     public static int safeSubtract(int a, int b) {
-        int result = a - b;
-        // check for a change of sign in the result when the inputs have the different signs
-        if ((a ^ result) < 0 && (a ^ b) < 0) {
-            throw new ArithmeticException("Subtraction overflows an int: " + a + " - " + b);
-        }
-        return result;
+//        int result = a - b;
+//        // check for a change of sign in the result when the inputs have the different signs
+//        if ((a ^ result) < 0 && (a ^ b) < 0) {
+//            throw new ArithmeticException("Subtraction overflows an int: " + a + " - " + b);
+//        }
+//        return result;
+        return Math.subtractExact(a, b);
     }
 
     /**
@@ -195,12 +209,13 @@ public final class Jdk8Methods {
      * @throws ArithmeticException if the result overflows a long
      */
     public static long safeSubtract(long a, long b) {
-        long result = a - b;
-        // check for a change of sign in the result when the inputs have the different signs
-        if ((a ^ result) < 0 && (a ^ b) < 0) {
-            throw new ArithmeticException("Subtraction overflows a long: " + a + " - " + b);
-        }
-        return result;
+//        long result = a - b;
+//        // check for a change of sign in the result when the inputs have the different signs
+//        if ((a ^ result) < 0 && (a ^ b) < 0) {
+//            throw new ArithmeticException("Subtraction overflows a long: " + a + " - " + b);
+//        }
+//        return result;
+        return Math.subtractExact(a, b);
     }
 
     //-----------------------------------------------------------------------
@@ -213,11 +228,12 @@ public final class Jdk8Methods {
      * @throws ArithmeticException if the result overflows an int
      */
     public static int safeMultiply(int a, int b) {
-        long total = (long) a * (long) b;
-        if (total < Integer.MIN_VALUE || total > Integer.MAX_VALUE) {
-            throw new ArithmeticException("Multiplication overflows an int: " + a + " * " + b);
-        }
-        return (int) total;
+//        long total = (long) a * (long) b;
+//        if (total < Integer.MIN_VALUE || total > Integer.MAX_VALUE) {
+//            throw new ArithmeticException("Multiplication overflows an int: " + a + " * " + b);
+//        }
+//        return (int) total;
+        return Math.multiplyExact(a, b);
     }
 
     /**
@@ -256,20 +272,21 @@ public final class Jdk8Methods {
      * @throws ArithmeticException if the result overflows a long
      */
     public static long safeMultiply(long a, long b) {
-        if (b == 1) {
-            return a;
-        }
-        if (a == 1) {
-            return b;
-        }
-        if (a == 0 || b == 0) {
-            return 0;
-        }
-        long total = a * b;
-        if (total / b != a || (a == Long.MIN_VALUE && b == -1) || (b == Long.MIN_VALUE && a == -1)) {
-            throw new ArithmeticException("Multiplication overflows a long: " + a + " * " + b);
-        }
-        return total;
+//        if (b == 1) {
+//            return a;
+//        }
+//        if (a == 1) {
+//            return b;
+//        }
+//        if (a == 0 || b == 0) {
+//            return 0;
+//        }
+//        long total = a * b;
+//        if (total / b != a || (a == Long.MIN_VALUE && b == -1) || (b == Long.MIN_VALUE && a == -1)) {
+//            throw new ArithmeticException("Multiplication overflows a long: " + a + " * " + b);
+//        }
+//        return total;
+        return Math.multiplyExact(a, b);
     }
 
     //-----------------------------------------------------------------------
@@ -281,10 +298,11 @@ public final class Jdk8Methods {
      * @throws ArithmeticException if the result overflows an int
      */
     public static int safeToInt(long value) {
-        if (value > Integer.MAX_VALUE || value < Integer.MIN_VALUE) {
-            throw new ArithmeticException("Calculation overflows an int: " + value);
-        }
-        return (int) value;
+//        if (value > Integer.MAX_VALUE || value < Integer.MIN_VALUE) {
+//            throw new ArithmeticException("Calculation overflows an int: " + value);
+//        }
+//        return (int) value;
+        return Math.toIntExact(value);
     }
 
     //-----------------------------------------------------------------------
@@ -303,7 +321,8 @@ public final class Jdk8Methods {
      * @return the floor division
      */
     public static long floorDiv(long a, long b) {
-        return (a >= 0 ? a / b : ((a + 1) / b) - 1);
+        //return (a >= 0 ? a / b : ((a + 1) / b) - 1);
+        return Math.floorDiv(a, b);
     }
 
     /**
@@ -320,7 +339,8 @@ public final class Jdk8Methods {
      * @return the floor modulus (positive)
      */
     public static long floorMod(long a, long b) {
-        return ((a % b) + b) % b;
+        //return ((a % b) + b) % b;
+        return Math.floorMod(a, b);
     }
 
     /**
@@ -338,7 +358,8 @@ public final class Jdk8Methods {
      * @return the floor modulus (positive)
      */
     public static int floorMod(long a, int b) {
-        return (int) (((a % b) + b) % b);
+        //return (int) (((a % b) + b) % b);
+        return (int)Math.floorMod(a, b);
     }
 
     /**
@@ -358,7 +379,8 @@ public final class Jdk8Methods {
      * @return the floor division
      */
     public static int floorDiv(int a, int b) {
-        return (a >= 0 ? a / b : ((a + 1) / b) - 1);
+        //return (a >= 0 ? a / b : ((a + 1) / b) - 1);
+        return Math.floorDiv(a, b);
     }
 
     /**
@@ -378,7 +400,8 @@ public final class Jdk8Methods {
      * @return the floor modulus (positive)
      */
     public static int floorMod(int a, int b) {
-        return ((a % b) + b) % b;
+        //return ((a % b) + b) % b;
+        return Math.floorMod(a, b);
     }
 
 }
