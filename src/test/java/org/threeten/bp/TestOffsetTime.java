@@ -159,16 +159,16 @@ public class TestOffsetTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // now()
     //-----------------------------------------------------------------------
-    @Test
-    public void now() {
-        ZonedDateTime nowDT = ZonedDateTime.now();
-
-        OffsetTime expected = OffsetTime.now(Clock.systemDefaultZone());
-        OffsetTime test = OffsetTime.now();
-        long diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
-        assertTrue(diff < 100000000);  // less than 0.1 secs
-        assertEquals(test.getOffset(), nowDT.getOffset());
-    }
+//    @Test
+//    public void now() {
+//        ZonedDateTime nowDT = ZonedDateTime.now();
+//
+//        OffsetTime expected = OffsetTime.now(Clock.systemDefaultZone());
+//        OffsetTime test = OffsetTime.now();
+//        long diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
+//        assertTrue(diff < 100000000);  // less than 0.1 secs
+//        assertEquals(test.getOffset(), nowDT.getOffset());
+//    }
 
     //-----------------------------------------------------------------------
     // now(Clock)

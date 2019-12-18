@@ -48,6 +48,7 @@ import java.io.InvalidObjectException;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.chrono.ChronoLocalDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.DateTimeParseException;
@@ -181,8 +182,9 @@ public final class LocalDateTime
     public static LocalDateTime now(Clock clock) {
         Jdk8Methods.requireNonNull(clock, "clock");
         final Instant now = clock.instant();  // called once
-        ZoneOffset offset = clock.getZone().getRules().getOffset(now);
-        return ofEpochSecond(now.getEpochSecond(), now.getNano(), offset);
+        //ZoneOffset offset = clock.getZone().getRules().getOffset(now);
+        //return ofEpochSecond(now.getEpochSecond(), now.getNano(), offset);
+        return ofEpochSecond(now.getEpochSecond(), now.getNano());
     }
 
     //-----------------------------------------------------------------------
@@ -350,6 +352,7 @@ public final class LocalDateTime
      * @return the local date-time, not null
      * @throws DateTimeException if the result exceeds the supported range
      */
+    @GwtIncompatible
     public static LocalDateTime ofInstant(Instant instant, ZoneId zone) {
         Jdk8Methods.requireNonNull(instant, "instant");
         Jdk8Methods.requireNonNull(zone, "zone");
@@ -372,9 +375,19 @@ public final class LocalDateTime
      * @return the local date-time, not null
      * @throws DateTimeException if the result exceeds the supported range
      */
+    @GwtIncompatible
     public static LocalDateTime ofEpochSecond(long epochSecond, int nanoOfSecond, ZoneOffset offset) {
         Jdk8Methods.requireNonNull(offset, "offset");
         long localSecond = epochSecond + offset.getTotalSeconds();  // overflow caught later
+        long localEpochDay = Jdk8Methods.floorDiv(localSecond, SECONDS_PER_DAY);
+        int secsOfDay = Jdk8Methods.floorMod(localSecond, SECONDS_PER_DAY);
+        LocalDate date = LocalDate.ofEpochDay(localEpochDay);
+        LocalTime time = LocalTime.ofSecondOfDay(secsOfDay, nanoOfSecond);
+        return new LocalDateTime(date, time);
+    }
+
+    private static LocalDateTime ofEpochSecond(long epochSecond, int nanoOfSecond) {
+        long localSecond = epochSecond;  // overflow caught later
         long localEpochDay = Jdk8Methods.floorDiv(localSecond, SECONDS_PER_DAY);
         int secsOfDay = Jdk8Methods.floorMod(localSecond, SECONDS_PER_DAY);
         LocalDate date = LocalDate.ofEpochDay(localEpochDay);
