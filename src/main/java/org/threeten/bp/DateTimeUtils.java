@@ -31,6 +31,8 @@
  */
 package org.threeten.bp;
 
+import javaemul.internal.annotations.GwtIncompatible;
+
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
@@ -210,6 +212,7 @@ public final class DateTimeUtils {
      * @param dateTime  the local date-time, not null
      * @return the SQL timestamp, not null
      */
+    @GwtIncompatible
     @SuppressWarnings("deprecation")
     public static Timestamp toSqlTimestamp(LocalDateTime dateTime) {
         return new Timestamp(
@@ -228,6 +231,7 @@ public final class DateTimeUtils {
      * @param sqlTimestamp  the SQL timestamp, not null
      * @return the local date-time, not null
      */
+    @GwtIncompatible
     @SuppressWarnings("deprecation")
     public static LocalDateTime toLocalDateTime(Timestamp sqlTimestamp) {
         return LocalDateTime.of(
@@ -246,6 +250,7 @@ public final class DateTimeUtils {
      * @param instant  the instant, not null
      * @return the SQL timestamp, not null
      */
+    @GwtIncompatible
     public static Timestamp toSqlTimestamp(Instant instant) {
         try {
             Timestamp ts = new Timestamp(instant.getEpochSecond() * 1000);
@@ -262,6 +267,7 @@ public final class DateTimeUtils {
      * @param sqlTimestamp  the SQL timestamp, not null
      * @return the instant, not null
      */
+    @GwtIncompatible
     public static Instant toInstant(Timestamp sqlTimestamp) {
         return Instant.ofEpochSecond(sqlTimestamp.getTime() / 1000, sqlTimestamp.getNanos());
     }
