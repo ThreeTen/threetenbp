@@ -44,6 +44,7 @@ import java.util.TimeZone;
  * <p>
  * This class is not found in Java SE 8 but provides methods that are.
  */
+@GwtIncompatible
 public final class DateTimeUtils {
 
     /**
