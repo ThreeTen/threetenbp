@@ -39,6 +39,7 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serializable;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
@@ -208,6 +209,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      *
      * @return the replacing object, not null
      */
+    @GwtIncompatible
     private Object writeReplace() {
         return new Ser(Ser.ZOTRULE, this);
     }
@@ -218,6 +220,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      * @param out  the output stream, not null
      * @throws IOException if an error occurs
      */
+    @GwtIncompatible
     void writeExternal(DataOutput out) throws IOException {
         final int timeSecs = time.toSecondOfDay() + adjustDays * SECS_PER_DAY;
         final int stdOffset = standardOffset.getTotalSeconds();
@@ -259,6 +262,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      * @return the created object, not null
      * @throws IOException if an error occurs
      */
+    @GwtIncompatible
     static ZoneOffsetTransitionRule readExternal(DataInput in) throws IOException {
         int data = in.readInt();
         Month month = Month.of(data >>> 28);

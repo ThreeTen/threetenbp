@@ -42,6 +42,7 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.Calendar;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.Clock;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalDate;
@@ -585,10 +586,12 @@ public final class JapaneseDate
     }
 
     //-----------------------------------------------------------------------
+    @GwtIncompatible
     private Object writeReplace() {
         return new Ser(Ser.JAPANESE_DATE_TYPE, this);
     }
 
+    @GwtIncompatible
     void writeExternal(DataOutput out) throws IOException {
         // JapaneseChrono is implicit in the JAPANESE_DATE_TYPE
         out.writeInt(get(YEAR));
@@ -596,6 +599,7 @@ public final class JapaneseDate
         out.writeByte(get(DAY_OF_MONTH));
     }
 
+    @GwtIncompatible
     static ChronoLocalDate readExternal(DataInput in) throws IOException {
         int year = in.readInt();
         int month = in.readByte();

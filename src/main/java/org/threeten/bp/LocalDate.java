@@ -51,6 +51,7 @@ import java.io.InvalidObjectException;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.Era;
 import org.threeten.bp.chrono.IsoChronology;
@@ -1862,6 +1863,7 @@ public final class LocalDate
     }
 
     //-----------------------------------------------------------------------
+    @GwtIncompatible
     private Object writeReplace() {
         return new Ser(Ser.LOCAL_DATE_TYPE, this);
     }
@@ -1871,16 +1873,19 @@ public final class LocalDate
      * @return never
      * @throws InvalidObjectException always
      */
+    @GwtIncompatible
     private Object readResolve() throws ObjectStreamException {
         throw new InvalidObjectException("Deserialization via serialization delegate");
     }
 
+    @GwtIncompatible
     void writeExternal(DataOutput out) throws IOException {
         out.writeInt(year);
         out.writeByte(month);
         out.writeByte(day);
     }
 
+    @GwtIncompatible
     static LocalDate readExternal(DataInput in) throws IOException {
         int year = in.readInt();
         int month = in.readByte();

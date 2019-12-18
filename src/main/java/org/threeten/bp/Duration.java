@@ -54,6 +54,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.format.DateTimeParseException;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
@@ -1238,6 +1239,7 @@ public final class Duration
     }
 
     //-----------------------------------------------------------------------
+    @GwtIncompatible
     private Object writeReplace() {
         return new Ser(Ser.DURATION_TYPE, this);
     }
@@ -1247,15 +1249,18 @@ public final class Duration
      * @return never
      * @throws InvalidObjectException always
      */
+    @GwtIncompatible
     private Object readResolve() throws ObjectStreamException {
         throw new InvalidObjectException("Deserialization via serialization delegate");
     }
 
+    @GwtIncompatible
     void writeExternal(DataOutput out) throws IOException {
         out.writeLong(seconds);
         out.writeInt(nanos);
     }
 
+    @GwtIncompatible
     static Duration readExternal(DataInput in) throws IOException {
         long seconds = in.readLong();
         int nanos = in.readInt();

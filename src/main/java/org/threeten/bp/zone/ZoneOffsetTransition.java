@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.Duration;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDateTime;
@@ -143,6 +144,7 @@ public final class ZoneOffsetTransition
      *
      * @return the replacing object, not null
      */
+    @GwtIncompatible
     private Object writeReplace() {
         return new Ser(Ser.ZOT, this);
     }
@@ -153,6 +155,7 @@ public final class ZoneOffsetTransition
      * @param out  the output stream, not null
      * @throws IOException if an error occurs
      */
+    @GwtIncompatible
     void writeExternal(DataOutput out) throws IOException {
         Ser.writeEpochSec(toEpochSecond(), out);
         Ser.writeOffset(offsetBefore, out);
@@ -166,6 +169,7 @@ public final class ZoneOffsetTransition
      * @return the created object, not null
      * @throws IOException if an error occurs
      */
+    @GwtIncompatible
     static ZoneOffsetTransition readExternal(DataInput in) throws IOException {
         long epochSecond = Ser.readEpochSec(in);
         ZoneOffset before = Ser.readOffset(in);

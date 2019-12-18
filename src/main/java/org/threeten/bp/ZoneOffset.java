@@ -42,6 +42,7 @@ import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.Temporal;
@@ -725,6 +726,7 @@ public final class ZoneOffset
     }
 
     // -----------------------------------------------------------------------
+    @GwtIncompatible
     private Object writeReplace() {
         return new Ser(Ser.ZONE_OFFSET_TYPE, this);
     }
@@ -734,16 +736,19 @@ public final class ZoneOffset
      * @return never
      * @throws InvalidObjectException always
      */
+    @GwtIncompatible
     private Object readResolve() throws ObjectStreamException {
         throw new InvalidObjectException("Deserialization via serialization delegate");
     }
 
+    @GwtIncompatible
     @Override
     void write(DataOutput out) throws IOException {
         out.writeByte(Ser.ZONE_OFFSET_TYPE);
         writeExternal(out);
     }
 
+    @GwtIncompatible
     void writeExternal(DataOutput out) throws IOException {
         final int offsetSecs = totalSeconds;
         int offsetByte = offsetSecs % 900 == 0 ? offsetSecs / 900 : 127;  // compress to -72 to +72
@@ -753,6 +758,7 @@ public final class ZoneOffset
         }
     }
 
+    @GwtIncompatible
     static ZoneOffset readExternal(DataInput in) throws IOException {
         int offsetByte = in.readByte();
         return (offsetByte == 127 ? ZoneOffset.ofTotalSeconds(in.readInt()) : ZoneOffset.ofTotalSeconds(offsetByte * 900));

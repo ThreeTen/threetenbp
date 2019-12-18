@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.Duration;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
@@ -203,6 +204,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
      *
      * @return the replacing object, not null
      */
+    @GwtIncompatible
     private Object writeReplace() {
         return new Ser(Ser.SZR, this);
     }
@@ -213,6 +215,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
      * @param out  the output stream, not null
      * @throws IOException if an error occurs
      */
+    @GwtIncompatible
     void writeExternal(DataOutput out) throws IOException {
         out.writeInt(standardTransitions.length);
         for (long trans : standardTransitions) {
@@ -241,6 +244,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
      * @return the created object, not null
      * @throws IOException if an error occurs
      */
+    @GwtIncompatible
     static StandardZoneRules readExternal(DataInput in) throws IOException, ClassNotFoundException {
         int stdSize = in.readInt();
         long[] stdTrans = new long[stdSize];

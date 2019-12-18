@@ -38,6 +38,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.jdk8.Jdk8Methods;
@@ -348,15 +349,18 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate>
     }
 
     //-----------------------------------------------------------------------
+    @GwtIncompatible
     private Object writeReplace() {
         return new Ser(Ser.CHRONO_LOCALDATETIME_TYPE, this);
     }
 
+    @GwtIncompatible
     void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(date);
         out.writeObject(time);
     }
 
+    @GwtIncompatible
     static ChronoLocalDateTime<?> readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         ChronoLocalDate date = (ChronoLocalDate) in.readObject();
         LocalTime time = (LocalTime) in.readObject();

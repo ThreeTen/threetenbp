@@ -41,6 +41,7 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serializable;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.Clock;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalDate;
@@ -358,10 +359,12 @@ public final class MinguoDate
     }
 
     //-----------------------------------------------------------------------
+    @GwtIncompatible
     private Object writeReplace() {
         return new Ser(Ser.MINGUO_DATE_TYPE, this);
     }
 
+    @GwtIncompatible
     void writeExternal(DataOutput out) throws IOException {
         // MinguoChrono is implicit in the MINGUO_DATE_TYPE
         out.writeInt(get(YEAR));
@@ -370,6 +373,7 @@ public final class MinguoDate
 
     }
 
+    @GwtIncompatible
     static ChronoLocalDate readExternal(DataInput in) throws IOException {
         int year = in.readInt();
         int month = in.readByte();

@@ -39,6 +39,7 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.regex.Pattern;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.zone.ZoneRules;
 import org.threeten.bp.zone.ZoneRulesException;
@@ -178,6 +179,7 @@ final class ZoneRegion extends ZoneId implements Serializable {
     }
 
     //-----------------------------------------------------------------------
+    @GwtIncompatible
     private Object writeReplace() {
         return new Ser(Ser.ZONE_REGION_TYPE, this);
     }
@@ -187,20 +189,24 @@ final class ZoneRegion extends ZoneId implements Serializable {
      * @return never
      * @throws InvalidObjectException always
      */
+    @GwtIncompatible
     private Object readResolve() throws ObjectStreamException {
         throw new InvalidObjectException("Deserialization via serialization delegate");
     }
 
+    @GwtIncompatible
     @Override
     void write(DataOutput out) throws IOException {
         out.writeByte(Ser.ZONE_REGION_TYPE);
         writeExternal(out);
     }
 
+    @GwtIncompatible
     void writeExternal(DataOutput out) throws IOException {
         out.writeUTF(id);
     }
 
+    @GwtIncompatible
     static ZoneId readExternal(DataInput in) throws IOException {
         String id = in.readUTF();
         return ofLenient(id);

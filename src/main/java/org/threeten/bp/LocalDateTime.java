@@ -1842,6 +1842,7 @@ public final class LocalDateTime
     }
 
     //-----------------------------------------------------------------------
+    @GwtIncompatible
     private Object writeReplace() {
         return new Ser(Ser.LOCAL_DATE_TIME_TYPE, this);
     }
@@ -1851,15 +1852,18 @@ public final class LocalDateTime
      * @return never
      * @throws InvalidObjectException always
      */
+    @GwtIncompatible
     private Object readResolve() throws ObjectStreamException {
         throw new InvalidObjectException("Deserialization via serialization delegate");
     }
 
+    @GwtIncompatible
     void writeExternal(DataOutput out) throws IOException {
         date.writeExternal(out);
         time.writeExternal(out);
     }
 
+    @GwtIncompatible
     static LocalDateTime readExternal(DataInput in) throws IOException {
         LocalDate date = LocalDate.readExternal(in);
         LocalTime time = LocalTime.readExternal(in);
