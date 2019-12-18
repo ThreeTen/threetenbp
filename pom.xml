@@ -11,7 +11,7 @@
     <artifactId>java-time-j2cl</artifactId>
     <packaging>jar</packaging>
     <name>ThreeTen backport j2cl ready java-time</name>
-    <version>1.4.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <description>A fork of the backport of JSR-310 from JDK 8 to JDK 7 and JDK 6. updated to be j2cl compatible.
     </description>
     <url>https://www.threeten.org/threetenbp</url>
@@ -122,7 +122,6 @@
         <!-- v3.0.0 does not work with Eclipse -->
         <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
-        <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
         <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
         <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
         <maven-enforcer-plugin.version>3.0.0-M1</maven-enforcer-plugin.version>
@@ -144,11 +143,6 @@
         <maven-toolchains-plugin.version>1.1</maven-toolchains-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
         <bndlib.version>4.1.0</bndlib.version>
-        <!-- Properties for maven-compiler-plugin -->
-        <maven.compiler.compilerVersion>1.6</maven.compiler.compilerVersion>
-        <maven.compiler.source>1.6</maven.compiler.source>
-        <maven.compiler.target>1.6</maven.compiler.target>
-        <maven.compiler.fork>true</maven.compiler.fork>
         <!-- Properties for maven-javadoc-plugin -->
         <author>false</author>
         <notimestamp>true</notimestamp>
@@ -247,6 +241,16 @@
         </resources>
         <!-- define build -->
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
+                <configuration>
+                    <source>9</source>
+                    <target>9</target>
+                    <forceJavacCompilerUse>true</forceJavacCompilerUse>
+                </configuration>
+            </plugin>
             <!-- Enforce Maven 3.5.0 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -399,7 +403,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>${maven-compiler-plugin.version}</version>
+                    <version>3.8.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -634,16 +638,6 @@
 
     <!-- ==================================================================== -->
     <profiles>
-        <!-- Setup for Java 9+ -->
-        <profile>
-            <id>java9plus</id>
-            <activation>
-                <jdk>[9,)</jdk>
-            </activation>
-            <properties>
-                <maven.compiler.release>6</maven.compiler.release>
-            </properties>
-        </profile>
         <!-- extra javadoc jar file -->
         <profile>
             <id>attach-additional-javadoc</id>
