@@ -6,18 +6,18 @@
   <!-- Releases require Java SE 11 or later -->
   <!-- ==================================================================== -->
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.threeten</groupId>
-  <artifactId>threetenbp</artifactId>
+  <groupId>walkingkooka</groupId>
+  <artifactId>java-time-j2cl</artifactId>
   <packaging>jar</packaging>
-  <name>ThreeTen backport</name>
+  <name>ThreeTen backport j2cl ready java-time</name>
   <version>1.4.1-SNAPSHOT</version>
-  <description>Backport of JSR-310 from JDK 8 to JDK 7 and JDK 6. NOT an implementation of the JSR.</description>
+  <description>A fork of the backport of JSR-310 from JDK 8 to JDK 7 and JDK 6. updated to be j2cl compatible.</description>
   <url>https://www.threeten.org/threetenbp</url>
 
   <!-- ==================================================================== -->
   <issueManagement>
     <system>GitHub</system>
-    <url>https://github.com/ThreeTen/threetenbp/issues</url>
+    <url>https://github.com/mP1/java-time-j2cl/issues</url>
   </issueManagement>
   <inceptionYear>2007</inceptionYear>
 
@@ -85,6 +85,10 @@
       <name>Philipp Thuerwaechter</name>
       <url>https://github.com/pithu</url>
     </contributor>
+    <contributor>
+      <name>Miroslav Pokorny</name>
+      <url>https://github.com/mP1</url>
+    </contributor>
   </contributors>
 
   <!-- ==================================================================== -->
@@ -96,15 +100,63 @@
     </license>
   </licenses>
   <scm>
-    <connection>scm:git:https://github.com/ThreeTen/threetenbp.git</connection>
-    <developerConnection>scm:git:https://github.com/ThreeTen/threetenbp.git</developerConnection>
-    <url>https://github.com/ThreeTen/threetenbp</url>
+    <connection>scm:git:https://github.com/mP1/java-time-j2cl.git</connection>
+    <developerConnection>scm:git:https://github.com/mP1/java-time-j2cl.git</developerConnection>
+    <url>https://github.com/mP1/java-time-j2cl</url>
     <tag>HEAD</tag>
   </scm>
   <organization>
     <name>ThreeTen.org</name>
     <url>https://www.threeten.org</url>
   </organization>
+
+  <!-- ==================================================================== -->
+  <properties>
+    <!-- Plugin version numbers -->
+    <build-helper-maven-plugin.version>1.12</build-helper-maven-plugin.version>
+    <maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
+    <maven-bundle-plugin.version>4.1.0</maven-bundle-plugin.version>
+    <maven-changes-plugin.version>2.12.1</maven-changes-plugin.version>
+    <!-- v3.0.0 does not work with Eclipse -->
+    <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
+    <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
+    <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+    <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
+    <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
+    <maven-enforcer-plugin.version>3.0.0-M1</maven-enforcer-plugin.version>
+    <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+    <maven-install-plugin.version>2.5.2</maven-install-plugin.version>
+    <maven-jar-plugin.version>3.1.0</maven-jar-plugin.version>
+    <maven-javadoc-plugin.version>3.0.0-M1</maven-javadoc-plugin.version>
+    <maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
+    <maven-plugin-plugin.version>3.5.2</maven-plugin-plugin.version>
+    <maven-pmd-plugin.version>3.10.0</maven-pmd-plugin.version>
+    <maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
+    <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
+    <maven-repository-plugin.version>2.4</maven-repository-plugin.version>
+    <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
+    <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
+    <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+    <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
+    <maven-surefire-report-plugin.version>2.22.1</maven-surefire-report-plugin.version>
+    <maven-toolchains-plugin.version>1.1</maven-toolchains-plugin.version>
+    <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
+    <bndlib.version>4.1.0</bndlib.version>
+    <!-- Properties for maven-compiler-plugin -->
+    <maven.compiler.compilerVersion>1.6</maven.compiler.compilerVersion>
+    <maven.compiler.source>1.6</maven.compiler.source>
+    <maven.compiler.target>1.6</maven.compiler.target>
+    <maven.compiler.fork>true</maven.compiler.fork>
+    <!-- Properties for maven-javadoc-plugin -->
+    <author>false</author>
+    <notimestamp>true</notimestamp>
+    <doclint>none</doclint>
+    <!-- Other properties -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <linkXRef>false</linkXRef>
+    <tz.database.version>2019a</tz.database.version>
+  </properties>
 
   <!-- ==================================================================== -->
   <build>
@@ -571,19 +623,10 @@
   <!-- ==================================================================== -->
   <distributionManagement>
     <repository>
-      <id>sonatype-threeten-staging</id>
-      <name>Sonatype OSS staging repository</name>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-      <layout>default</layout>
+      <id>github-mp1-appengine-repo</id>
+      <name>github.com/mP1 repository</name>
+      <url>https://maven-repo-254709.appspot.com</url>
     </repository>
-    <snapshotRepository>
-      <uniqueVersion>false</uniqueVersion>
-      <id>sonatype-threeten-snapshot</id>
-      <name>Sonatype OSS snapshot repository</name>
-      <url>https://oss.sonatype.org/content/repositories/threeten-snapshots</url>
-      <layout>default</layout>
-    </snapshotRepository>
-    <downloadUrl>https://oss.sonatype.org/content/repositories/threeten-releases</downloadUrl>
   </distributionManagement>
 
   <!-- ==================================================================== -->
@@ -792,52 +835,4 @@
       </build>
     </profile>
   </profiles>
-
-  <!-- ==================================================================== -->
-  <properties>
-    <!-- Plugin version numbers -->
-    <build-helper-maven-plugin.version>1.12</build-helper-maven-plugin.version>
-    <maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
-    <maven-bundle-plugin.version>4.1.0</maven-bundle-plugin.version>
-    <maven-changes-plugin.version>2.12.1</maven-changes-plugin.version>
-    <!-- v3.0.0 does not work with Eclipse -->
-    <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
-    <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
-    <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
-    <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
-    <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
-    <maven-enforcer-plugin.version>3.0.0-M1</maven-enforcer-plugin.version>
-    <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
-    <maven-install-plugin.version>2.5.2</maven-install-plugin.version>
-    <maven-jar-plugin.version>3.1.0</maven-jar-plugin.version>
-    <maven-javadoc-plugin.version>3.0.0-M1</maven-javadoc-plugin.version>
-    <maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
-    <maven-plugin-plugin.version>3.5.2</maven-plugin-plugin.version>
-    <maven-pmd-plugin.version>3.10.0</maven-pmd-plugin.version>
-    <maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
-    <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
-    <maven-repository-plugin.version>2.4</maven-repository-plugin.version>
-    <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
-    <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
-    <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
-    <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
-    <maven-surefire-report-plugin.version>2.22.1</maven-surefire-report-plugin.version>
-    <maven-toolchains-plugin.version>1.1</maven-toolchains-plugin.version>
-    <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
-    <bndlib.version>4.1.0</bndlib.version>
-    <!-- Properties for maven-compiler-plugin -->
-    <maven.compiler.compilerVersion>1.6</maven.compiler.compilerVersion>
-    <maven.compiler.source>1.6</maven.compiler.source>
-    <maven.compiler.target>1.6</maven.compiler.target>
-    <maven.compiler.fork>true</maven.compiler.fork>
-    <!-- Properties for maven-javadoc-plugin -->
-    <author>false</author>
-    <notimestamp>true</notimestamp>
-    <doclint>none</doclint>
-    <!-- Other properties -->
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <linkXRef>false</linkXRef>
-    <tz.database.version>2019a</tz.database.version>
-  </properties>
 </project>
