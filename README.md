@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/mP1/java-time-j2cl.svg?branch=master)](https://travis-ci.com/mP1/java-time-j2cl.svg?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/mP1/java-time-j2cl/badge.svg?branch=master)](https://coveralls.io/github/mP1/java-time-j2cl?branch=master)
 
 # java.time j2cl
 
