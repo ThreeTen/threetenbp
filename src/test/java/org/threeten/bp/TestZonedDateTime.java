@@ -191,18 +191,23 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // now()
     //-----------------------------------------------------------------------
-    @Test
+//    @Test
+//    public void now() {
+//        ZonedDateTime expected = ZonedDateTime.now(Clock.systemDefaultZone());
+//        ZonedDateTime test = ZonedDateTime.now();
+//        long diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
+//        if (diff >= 100000000) {
+//            // may be date change
+//            expected = ZonedDateTime.now(Clock.systemDefaultZone());
+//            test = ZonedDateTime.now();
+//            diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
+//        }
+//        assertTrue(diff < 100000000);  // less than 0.1 secs
+//    }
+
+    @Test(expectedExceptions = UnsupportedOperationException.class)
     public void now() {
-        ZonedDateTime expected = ZonedDateTime.now(Clock.systemDefaultZone());
-        ZonedDateTime test = ZonedDateTime.now();
-        long diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
-        if (diff >= 100000000) {
-            // may be date change
-            expected = ZonedDateTime.now(Clock.systemDefaultZone());
-            test = ZonedDateTime.now();
-            diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
-        }
-        assertTrue(diff < 100000000);  // less than 0.1 secs
+        ZonedDateTime.now(Clock.systemDefaultZone());
     }
 
     //-----------------------------------------------------------------------
@@ -213,19 +218,25 @@ public class TestZonedDateTime extends AbstractDateTimeTest {
         ZonedDateTime.now((ZoneId) null);
     }
 
-    @Test
+//    @Test
+//    public void now_ZoneId() {
+//        ZoneId zone = ZoneId.of("UTC+01:02:03");
+//        //ZonedDateTime expected = ZonedDateTime.now(Clock.system(zone));
+//        ZonedDateTime expected = ZonedDateTime.now(Clock.systemUTC());
+//        ZonedDateTime test = ZonedDateTime.now(zone);
+//        for (int i = 0; i < 100; i++) {
+//            if (expected.equals(test)) {
+//                return;
+//            }
+//            expected = ZonedDateTime.now(Clock.system(zone));
+//            test = ZonedDateTime.now(zone);
+//        }
+//        assertEquals(test, expected);
+//    }
+
+    @Test(expectedExceptions = UnsupportedOperationException.class)
     public void now_ZoneId() {
-        ZoneId zone = ZoneId.of("UTC+01:02:03");
-        ZonedDateTime expected = ZonedDateTime.now(Clock.system(zone));
-        ZonedDateTime test = ZonedDateTime.now(zone);
-        for (int i = 0; i < 100; i++) {
-            if (expected.equals(test)) {
-                return;
-            }
-            expected = ZonedDateTime.now(Clock.system(zone));
-            test = ZonedDateTime.now(zone);
-        }
-        assertEquals(test, expected);
+        ZonedDateTime.now(Clock.systemUTC());
     }
 
     //-----------------------------------------------------------------------

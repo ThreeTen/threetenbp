@@ -247,9 +247,10 @@ public final class LocalTime
         Jdk8Methods.requireNonNull(clock, "clock");
         // inline OffsetTime factory to avoid creating object and InstantProvider checks
         final Instant now = clock.instant();  // called once
-        ZoneOffset offset = clock.getZone().getRules().getOffset(now);
+//        ZoneOffset offset = clock.getZone().getRules().getOffset(now);
+
         long secsOfDay = now.getEpochSecond() % SECONDS_PER_DAY;
-        secsOfDay = (secsOfDay + offset.getTotalSeconds()) % SECONDS_PER_DAY;
+//        secsOfDay = (secsOfDay + offset.getTotalSeconds()) % SECONDS_PER_DAY;
         if (secsOfDay < 0) {
             secsOfDay += SECONDS_PER_DAY;
         }

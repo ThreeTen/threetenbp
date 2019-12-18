@@ -182,18 +182,23 @@ public class TestOffsetDateTime extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // now()
     //-----------------------------------------------------------------------
-    @Test
+//    @Test
+//    public void now() {
+//        OffsetDateTime expected = OffsetDateTime.now(Clock.systemDefaultZone());
+//        OffsetDateTime test = OffsetDateTime.now();
+//        long diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
+//        if (diff >= 100000000) {
+//            // may be date change
+//            expected = OffsetDateTime.now(Clock.systemDefaultZone());
+//            test = OffsetDateTime.now();
+//            diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
+//        }
+//        assertTrue(diff < 100000000);  // less than 0.1 secs
+//    }
+
+    @Test(expectedExceptions = UnsupportedOperationException.class)
     public void now() {
-        OffsetDateTime expected = OffsetDateTime.now(Clock.systemDefaultZone());
-        OffsetDateTime test = OffsetDateTime.now();
-        long diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
-        if (diff >= 100000000) {
-            // may be date change
-            expected = OffsetDateTime.now(Clock.systemDefaultZone());
-            test = OffsetDateTime.now();
-            diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
-        }
-        assertTrue(diff < 100000000);  // less than 0.1 secs
+        OffsetDateTime.now(Clock.systemDefaultZone());
     }
 
     //-----------------------------------------------------------------------

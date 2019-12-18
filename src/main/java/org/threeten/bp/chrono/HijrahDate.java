@@ -517,20 +517,23 @@ public final class HijrahDate
     private static void checkValidYearOfEra(int yearOfEra) {
          if (yearOfEra < MIN_VALUE_OF_ERA  ||
                  yearOfEra > MAX_VALUE_OF_ERA) {
-             throw new DateTimeException("Invalid year of Hijrah Era");
+//             throw new DateTimeException("Invalid year of Hijrah Era");
+             throw new DateTimeException("Invalid year " + yearOfEra + " of Hijrah Era");
          }
     }
 
     private static void checkValidDayOfYear(int dayOfYear) {
          if (dayOfYear < 1  ||
                  dayOfYear > getMaximumDayOfYear()) {
-             throw new DateTimeException("Invalid day of year of Hijrah date");
+//             throw new DateTimeException("Invalid day of year of Hijrah date");
+             throw new DateTimeException("Invalid day " + dayOfYear + " of year of Hijrah date");
          }
     }
 
     private static void checkValidMonth(int month) {
          if (month < 1 || month > 12) {
-             throw new DateTimeException("Invalid month of Hijrah date");
+//             throw new DateTimeException("Invalid month of Hijrah date");
+             throw new DateTimeException("Invalid month " + month + " of Hijrah date");
          }
     }
 

@@ -89,3 +89,11 @@ Serialization is not supported, and all support classes and forms including magi
 
 A goal is to leave source in their original package `org.threeten.bp` and correct this in the distributed zip containing 
 the javascript. Another goal is to support executing as many as possible of the original backport tests.
+
+
+## JRE Differences
+
+### Clock
+
+- Clock.systemUTC() & Clock.systemDefaultZone() are equivalent, both without a ZoneId.
+- Clock.getZone() is unavailable.
