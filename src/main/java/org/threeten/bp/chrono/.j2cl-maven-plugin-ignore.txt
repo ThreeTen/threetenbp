@@ -1,0 +1,66 @@
+#
+# ChronoLocalDateTime filter ChronoLocalDateTimeImpl
+#
+ChronoLocalDateTimeImpl.*
+
+
+
+#
+# ChronoLocalDate + LocalDate, filter ChronoDateImpl and sub classes
+#
+ChronoDateImpl.*
+HijrahDate.*
+JapaneseDate.*
+ThaiBuddhistDate.*
+MinguoDate.*
+
+
+
+#
+# Chronology, IsoChronology, filter ALL other sub classes
+#
+AbstractChronology.*
+
+
+
+#
+# filter ALL ChronoZonedDateTime
+#
+ChronoZonedDateTime.*
+ChronoZonedDateTimeImpl.*
+ZonedDateTime.*
+
+
+
+#
+# Hijrah
+#
+Hijrah*
+
+
+
+#
+# Japanese
+#
+Japanese*
+
+
+
+#
+# Minguo
+#
+Minguo*
+
+
+
+#
+# Thai
+#
+Thai*
+
+
+
+#
+# Serialization
+#
+Ser.*
