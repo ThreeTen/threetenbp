@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2019 Miroslav Pokorny (github.com/mP1)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>walkingkooka</groupId>
+    <artifactId>java-time-j2cl</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>1.9</maven.compiler.source>
+        <maven.compiler.target>1.9</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>github-mp1-appengine-repo</id>
+            <url>https://maven-repo-254709.appspot.com</url>
+        </repository>
+        <repository>
+            <id>vertispan-releases</id>
+            <name>Vertispan hosted artifacts-releases</name>
+            <url>https://repo.vertispan.com/j2cl</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>vertispan-gwt-snapshots</id>
+            <url>https://repo.vertispan.com/gwt-snapshot/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>google-sonatype-snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/google-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <!-- j2cl compile dependencies -->
+        <dependency>
+            <groupId>com.google.jsinterop</groupId>
+            <artifactId>jsinterop-annotations</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vertispan.j2cl</groupId>
+            <artifactId>bootstrap</artifactId>
+            <version>0.5-SNAPSHOT</version>
+            <type>zip</type>
+            <classifier>jszip</classifier>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vertispan.j2cl</groupId>
+            <artifactId>javac-bootstrap-classpath</artifactId>
+            <version>0.5-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vertispan.j2cl</groupId>
+            <artifactId>jre</artifactId>
+            <version>0.5-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vertispan.j2cl</groupId>
+            <artifactId>jre</artifactId>
+            <version>0.5-SNAPSHOT</version>
+            <type>zip</type>
+            <classifier>jszip</classifier>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vertispan.jsinterop</groupId>
+            <artifactId>base</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>jsr250-api</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <!-- junit dependencies, excluded for j2cl transpile-->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.4.0</version>
+        </dependency>
+    </dependencies>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>github.com mP1 maven repo</id>
+            <url>https://maven-repo-254709.appspot.com</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </snapshots>
+        </pluginRepository>
+
+        <pluginRepository>
+            <id>vertispan-releases</id>
+            <name>Vertispan hosted artifacts-releases</name>
+            <url>https://repo.vertispan.com/j2cl</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>walkingkooka</groupId>
+                <artifactId>j2cl-maven-plugin</artifactId>
+                <version>1.0-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <id>build-js</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                        <configuration>
+                            <classpath-scope>runtime</classpath-scope>
+                            <compilation-level>ADVANCED</compilation-level>
+                            <defines>
+                                <jre.checkedMode>DISABLED</jre.checkedMode>
+                                <jre.checks.checkLevel>MINIMAL</jre.checks.checkLevel>
+                                <jsinterop.checks>DISABLED</jsinterop.checks>
+                            </defines>
+                            <entry-points>org.threeten.bp.app</entry-points>
+                            <externs></externs>
+                            <formatting/><!--<formatting>PRETTY_PRINT</formatting>-->
+                            <language-out>ECMASCRIPT_2016</language-out>
+                            <thread-pool-size>0</thread-pool-size>
+
+                            <added-dependencies>
+                                <param>
+                                    com.vertispan.jsinterop:base:jar:1.0.0-SNAPSHOT=com.vertispan.j2cl:gwt-internal-annotations:0.5-SNAPSHOT
+                                </param>
+                            </added-dependencies>
+                            <classpath-required>
+                                <param>com.vertispan.j2cl:javac-bootstrap-classpath:0.5-SNAPSHOT</param>
+                                <param>com.vertispan.j2cl:jre:0.5-SNAPSHOT</param>
+                                <param>com.vertispan.jsinterop:base:jar:1.0.0-SNAPSHOT</param>
+                                <param>com.vertispan.j2cl:gwt-internal-annotations:jar:0.5-SNAPSHOT</param>
+                                <param>com.google.jsinterop:jsinterop-annotations:jar:2.0.0</param>
+                                <param>javax.annotation:jsr250-api:1.0</param>
+                            </classpath-required>
+                            <excluded-dependencies>
+                                <param>com.google.gwt:gwt-user:2.8.2</param>
+                                <param>com.google.jsinterop:jsinterop-annotations:1.0.2</param>
+                                <param>javax.servlet:javax.servlet-api:3.1.0</param>
+                                <param>javax.validation:validation-api:1.0.0.GA</param>
+                                <param>org.w3c.css:sac:1.3</param>
+                            </excluded-dependencies>
+
+                            <javascript-source-required>
+                                <param>com.vertispan.j2cl:bootstrap:zip:jszip:0.5-SNAPSHOT</param>
+                                <param>com.vertispan.j2cl:jre:zip:jszip:0.5-SNAPSHOT</param>
+                            </javascript-source-required>
+                            <processing-skipped>
+                                <!-- jre & bootstrap transpiled versions also included as dependencies, skip transpiling-->
+                                <param>com.vertispan.j2cl:javac-bootstrap-classpath:0.5-SNAPSHOT</param>
+                                <param>com.vertispan.j2cl:jre:0.5-SNAPSHOT</param>
+                                <param>com.vertispan.j2cl:bootstrap:zip:jszip:0.5-SNAPSHOT</param>
+                                <param>com.vertispan.j2cl:jre:zip:jszip:0.5-SNAPSHOT</param>
+                                <!-- dependencies below only contain annotations -->
+                                <param>com.google.jsinterop:jsinterop-annotations:jar:2.0.0</param>
+                                <param>com.vertispan.j2cl:gwt-internal-annotations:jar:0.5-SNAPSHOT</param>
+                                <param>javax.annotation:jsr250-api:1.0</param>
+
+                                <!-- only require junit during javac compiles -->
+                                <param>org.apiguardian:apiguardian-api:1.0.0</param>
+                                <param>org.junit.jupiter:junit-jupiter-api:5.4.0</param>
+                                <param>org.junit.jupiter:junit-jupiter-engine:5.4.0</param>
+                                <param>org.junit.platform:junit-platform-commons:1.4.0</param>
+                                <param>org.junit.platform:junit-platform-engine:1.4.0</param>
+                                <param>org.opentest4j:opentest4j:1.1.1</param>
+                            </processing-skipped>
+                            <replaced-dependencies>
+                                <param>com.vertispan.j2cl:gwt-internal-annotations:0.4-SNAPSHOT=com.vertispan.j2cl:gwt-internal-annotations:0.5-SNAPSHOT</param>
+                            </replaced-dependencies>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.19.1</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.junit.platform</groupId>
+                        <artifactId>junit-platform-surefire-provider</artifactId>
+                        <version>1.1.0</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
