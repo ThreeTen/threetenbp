@@ -156,20 +156,20 @@ public class TestMonth extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // getDisplayName()
     //-----------------------------------------------------------------------
-//    @Test
-//    public void test_getDisplayName() {
-//        assertEquals(Month.JANUARY.getDisplayName(TextStyle.SHORT, Locale.US), "Jan");
-//    }
+    @Test
+    public void test_getDisplayName() {
+        assertEquals(Month.JANUARY.getDisplayName(TextStyle.SHORT, Locale.US), "Jan");
+    }
 
-//    @Test(expectedExceptions = NullPointerException.class)
-//    public void test_getDisplayName_nullStyle() {
-//        Month.JANUARY.getDisplayName(null, Locale.US);
-//    }
-//
-//    @Test(expectedExceptions = NullPointerException.class)
-//    public void test_getDisplayName_nullLocale() {
-//        Month.JANUARY.getDisplayName(TextStyle.FULL, null);
-//    }
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_getDisplayName_nullStyle() {
+        Month.JANUARY.getDisplayName(null, Locale.US);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_getDisplayName_nullLocale() {
+        Month.JANUARY.getDisplayName(TextStyle.FULL, null);
+    }
 
     //-----------------------------------------------------------------------
     // plus(long), plus(long,unit)
