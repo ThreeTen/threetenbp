@@ -36,7 +36,6 @@ import static org.threeten.bp.temporal.ChronoUnit.DAYS;
 
 import java.util.Locale;
 
-import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.TextStyle;
 import org.threeten.bp.temporal.ChronoField;
@@ -201,10 +200,9 @@ public enum DayOfWeek implements TemporalAccessor, TemporalAdjuster {
      * @param locale  the locale to use, not null
      * @return the text value of the day-of-week, not null
      */
-//    public String getDisplayName(TextStyle style, Locale locale) {
-//        //return new DateTimeFormatterBuilder().appendText(DAY_OF_WEEK, style).toFormatter(locale).format(this);
-//        throw new UnsupportedOperationException();
-//    }
+    public String getDisplayName(TextStyle style, Locale locale) {
+        return new DateTimeFormatterBuilder().appendText(DAY_OF_WEEK, style).toFormatter(locale).format(this);
+    }
 
     //-----------------------------------------------------------------------
     /**
