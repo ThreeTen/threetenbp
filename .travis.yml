@@ -2,3 +2,5 @@ sudo: false
 language: java
 jdk:
   - oraclejdk9
+
+dist: trusty
