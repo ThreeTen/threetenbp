@@ -50,7 +50,6 @@ import java.util.concurrent.atomic.AtomicReference;
  * <p>
  * This class has been added primarily for the benefit of Android.
  */
-@GwtIncompatible
 public abstract class ZoneRulesInitializer {
 
     /**
@@ -118,6 +117,7 @@ public abstract class ZoneRulesInitializer {
     /**
      * Implementation that uses the service loader.
      */
+    @GwtIncompatible
     static class ServiceLoaderZoneRulesInitializer extends ZoneRulesInitializer {
 
         @Override

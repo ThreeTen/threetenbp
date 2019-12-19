@@ -1,6 +1,6 @@
 #
-# Exclude entire package
+# Only exclude compiler, serialization helpers will be marked with @GwtIncompatible
 #
+TzdbZoneRulesCompiler.*
 
-*
 

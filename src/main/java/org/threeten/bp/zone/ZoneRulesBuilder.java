@@ -70,7 +70,6 @@ import org.threeten.bp.zone.ZoneOffsetTransitionRule.TimeDefinition;
  * It must only be used from a single thread.
  * The created instances are immutable and thread-safe.
  */
-@GwtIncompatible
 class ZoneRulesBuilder {
 
     /**
