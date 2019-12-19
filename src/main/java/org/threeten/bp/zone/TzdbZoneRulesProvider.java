@@ -78,7 +78,8 @@ public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
      * All the URLs that have been loaded.
      * Uses String to avoid equals() on URL.
      */
-    private Set<String> loadedUrls = new CopyOnWriteArraySet<String>();
+//    private Set<String> loadedUrls = new CopyOnWriteArraySet<String>();
+    private Set<String> loadedUrls = JdkCollections.copyOnWriteArraySet();
 
     /**
      * Creates an instance.
