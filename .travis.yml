@@ -2,8 +2,3 @@ sudo: false
 language: java
 jdk:
   - oraclejdk9
-cache:
-  directories:
-    - "$HOME/.m2/repository"
-before_cache:
-  - rm -rf $HOME/.m2/repository/org/threeten/threetenbp
