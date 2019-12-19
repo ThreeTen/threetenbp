@@ -263,6 +263,7 @@ public final class WeekFields implements Serializable {
      * @return the valid week fields instance, not null
      * @throws InvalidObjectException if invalid
      */
+    @GwtIncompatible
     private Object readResolve() throws InvalidObjectException {
         try {
             return WeekFields.of(firstDayOfWeek, minimalDays);
