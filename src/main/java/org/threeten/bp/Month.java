@@ -36,6 +36,7 @@ import static org.threeten.bp.temporal.ChronoUnit.MONTHS;
 
 import java.util.Locale;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
@@ -226,9 +227,9 @@ public enum Month implements TemporalAccessor, TemporalAdjuster {
      * @param locale  the locale to use, not null
      * @return the text value of the month-of-year, not null
      */
-    public String getDisplayName(TextStyle style, Locale locale) {
-        return new DateTimeFormatterBuilder().appendText(MONTH_OF_YEAR, style).toFormatter(locale).format(this);
-    }
+//    public String getDisplayName(TextStyle style, Locale locale) {
+//        return new DateTimeFormatterBuilder().appendText(MONTH_OF_YEAR, style).toFormatter(locale).format(this);
+//    }
 
     //-----------------------------------------------------------------------
     /**
