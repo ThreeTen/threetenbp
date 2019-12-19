@@ -59,7 +59,6 @@ import org.threeten.bp.jdk8.JdkCollections;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
-@GwtIncompatible
 public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
     // TODO: can this be private/hidden in any way?
     // service loader seems to need it to be public
@@ -87,6 +86,7 @@ public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
      *
      * @throws ZoneRulesException if unable to load
      */
+    @GwtIncompatible
     public TzdbZoneRulesProvider() {
         super();
         if (load(ZoneRulesProvider.class.getClassLoader()) == false) {
@@ -102,6 +102,7 @@ public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
      * @param url  the URL to load, not null
      * @throws ZoneRulesException if unable to load
      */
+    @GwtIncompatible
     public TzdbZoneRulesProvider(URL url) {
         super();
         try {
@@ -166,6 +167,7 @@ public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
      * @return true if updated
      * @throws ZoneRulesException if unable to load
      */
+    @GwtIncompatible
     private boolean load(ClassLoader classLoader) {
         boolean updated = false;
         URL url = null;
@@ -190,6 +192,7 @@ public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
      * @throws IOException if an IO error occurs
      * @throws ZoneRulesException if the data is already loaded for the version
      */
+    @GwtIncompatible
     private boolean load(URL url) throws ClassNotFoundException, IOException, ZoneRulesException {
         boolean updated = false;
         if (loadedUrls.add(url.toExternalForm())) {

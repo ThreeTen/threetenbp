@@ -70,7 +70,6 @@ import org.threeten.bp.jdk8.JdkCollections;
  * When examined in detail, this is a complex problem.
  * Providers may choose to handle dynamic updates, however the default provider does not.
  */
-@GwtIncompatible
 public abstract class ZoneRulesProvider {
 
     /**

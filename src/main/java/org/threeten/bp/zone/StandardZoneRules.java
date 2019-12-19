@@ -59,7 +59,6 @@ import org.threeten.bp.jdk8.JdkCollections;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
-@GwtIncompatible
 final class StandardZoneRules extends ZoneRules implements Serializable {
 
     /**
@@ -246,7 +245,6 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
      * @return the created object, not null
      * @throws IOException if an error occurs
      */
-    @GwtIncompatible
     static StandardZoneRules readExternal(DataInput in) throws IOException, ClassNotFoundException {
         int stdSize = in.readInt();
         long[] stdTrans = new long[stdSize];

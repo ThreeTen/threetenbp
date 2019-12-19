@@ -64,7 +64,6 @@ import org.threeten.bp.jdk8.Jdk8Methods;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
-@GwtIncompatible
 public final class ZoneOffsetTransition
         implements Comparable<ZoneOffsetTransition>, Serializable {
 
@@ -171,7 +170,6 @@ public final class ZoneOffsetTransition
      * @return the created object, not null
      * @throws IOException if an error occurs
      */
-    @GwtIncompatible
     static ZoneOffsetTransition readExternal(DataInput in) throws IOException {
         long epochSecond = Ser.readEpochSec(in);
         ZoneOffset before = Ser.readOffset(in);

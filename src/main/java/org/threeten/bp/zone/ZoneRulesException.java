@@ -43,7 +43,6 @@ import org.threeten.bp.DateTimeException;
  * <h3>Specification for implementors</h3>
  * This class is intended for use in a single thread.
  */
-@GwtIncompatible
 public class ZoneRulesException extends DateTimeException {
 
     /**

@@ -65,7 +65,6 @@ import org.threeten.bp.jdk8.Jdk8Methods;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
-@GwtIncompatible
 public final class ZoneOffsetTransitionRule implements Serializable {
 
     /**
@@ -264,7 +263,6 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      * @return the created object, not null
      * @throws IOException if an error occurs
      */
-    @GwtIncompatible
     static ZoneOffsetTransitionRule readExternal(DataInput in) throws IOException {
         int data = in.readInt();
         Month month = Month.of(data >>> 28);

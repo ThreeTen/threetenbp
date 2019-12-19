@@ -51,7 +51,6 @@ import org.threeten.bp.ZoneOffset;
  *
  * @serial include
  */
-@GwtIncompatible
 final class Ser implements Externalizable {
 
     /**
@@ -95,14 +94,17 @@ final class Ser implements Externalizable {
      *
      * @param out  the data stream to write to, not null
      */
+    @GwtIncompatible
     public void writeExternal(ObjectOutput out) throws IOException {
         writeInternal(type, object, out);
     }
 
+    @GwtIncompatible
     static void write(Object object, DataOutput out) throws IOException {
         writeInternal(SZR, object, out);
     }
 
+    @GwtIncompatible
     private static void writeInternal(byte type, Object object, DataOutput out) throws IOException {
         out.writeByte(type);
         switch (type) {
@@ -166,6 +168,7 @@ final class Ser implements Externalizable {
      * @param out  the output stream, not null
      * @throws IOException if an error occurs
      */
+    @GwtIncompatible
     static void writeOffset(ZoneOffset offset, DataOutput out) throws IOException {
         final int offsetSecs = offset.getTotalSeconds();
         int offsetByte = offsetSecs % 900 == 0 ? offsetSecs / 900 : 127;  // compress to -72 to +72
@@ -195,6 +198,7 @@ final class Ser implements Externalizable {
      * @param out  the output stream, not null
      * @throws IOException if an error occurs
      */
+    @GwtIncompatible
     static void writeEpochSec(long epochSec, DataOutput out) throws IOException {
         if (epochSec >= -4575744000L && epochSec < 10413792000L && epochSec % 900 == 0) {  // quarter hours between 1825 and 2300
             int store = (int) ((epochSec + 4575744000L) / 900);
