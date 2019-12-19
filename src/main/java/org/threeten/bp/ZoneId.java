@@ -474,26 +474,26 @@ public abstract class ZoneId implements Serializable {
      * @param locale  the locale to use, not null
      * @return the text value of the zone, not null
      */
-    public String getDisplayName(TextStyle style, Locale locale) {
-        return new DateTimeFormatterBuilder().appendZoneText(style).toFormatter(locale).format(new DefaultInterfaceTemporalAccessor() {
-            @Override
-            public boolean isSupported(TemporalField field) {
-                return false;
-            }
-            @Override
-            public long getLong(TemporalField field) {
-                throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
-            }
-            @SuppressWarnings("unchecked")
-            @Override
-            public <R> R query(TemporalQuery<R> query) {
-                if (query == TemporalQueries.zoneId()) {
-                    return (R) ZoneId.this;
-                }
-                return super.query(query);
-            }
-        });
-    }
+//    public String getDisplayName(TextStyle style, Locale locale) {
+//        return new DateTimeFormatterBuilder().appendZoneText(style).toFormatter(locale).format(new DefaultInterfaceTemporalAccessor() {
+//            @Override
+//            public boolean isSupported(TemporalField field) {
+//                return false;
+//            }
+//            @Override
+//            public long getLong(TemporalField field) {
+//                throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
+//            }
+//            @SuppressWarnings("unchecked")
+//            @Override
+//            public <R> R query(TemporalQuery<R> query) {
+//                if (query == TemporalQueries.zoneId()) {
+//                    return (R) ZoneId.this;
+//                }
+//                return super.query(query);
+//            }
+//        });
+//    }
 
     /**
      * Normalizes the time-zone ID, returning a {@code ZoneOffset} where possible.
