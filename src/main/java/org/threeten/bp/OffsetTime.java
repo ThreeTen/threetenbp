@@ -113,6 +113,7 @@ public final class OffsetTime
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = 7264499704384272492L;
 
     /**

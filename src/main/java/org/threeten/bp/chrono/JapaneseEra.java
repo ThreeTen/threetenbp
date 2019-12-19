@@ -100,6 +100,7 @@ public final class JapaneseEra
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = 1466499369062886794L;
 
     // array for the singleton JapaneseEra instances

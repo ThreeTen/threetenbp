@@ -119,6 +119,7 @@ public final class HijrahDate
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = -5207853542612002020L;
 
     /**

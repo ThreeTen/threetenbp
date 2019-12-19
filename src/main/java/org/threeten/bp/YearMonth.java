@@ -109,6 +109,7 @@ public final class YearMonth
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = 4183400860270640070L;
     /**
      * Parser.

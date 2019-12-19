@@ -107,6 +107,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = 2775954514031616474L;
     /**
      * Containing the offset to add to the ISO year.

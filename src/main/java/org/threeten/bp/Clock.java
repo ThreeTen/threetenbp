@@ -475,6 +475,7 @@ public abstract class Clock {
      */
     @GwtIncompatible
     static final class FixedClock extends Clock implements Serializable {
+        @GwtIncompatible
        private static final long serialVersionUID = 7430389292664866958L;
         private final Instant instant;
         private final ZoneId zone;
@@ -527,6 +528,7 @@ public abstract class Clock {
      */
     @GwtIncompatible
     static final class OffsetClock extends Clock implements Serializable {
+        @GwtIncompatible
        private static final long serialVersionUID = 2007484719125426256L;
         private final Clock baseClock;
         private final Duration offset;

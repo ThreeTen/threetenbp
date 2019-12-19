@@ -71,6 +71,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = 6889046316657758795L;
     /**
      * The number of seconds per day.

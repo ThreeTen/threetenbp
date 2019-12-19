@@ -77,6 +77,7 @@ public final class MinguoDate
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = 1300372329181994526L;
 
     /**

@@ -74,6 +74,7 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate>
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = 4556003607393004514L;
     /**
      * Hours per minute.

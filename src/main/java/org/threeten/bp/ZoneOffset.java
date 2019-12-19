@@ -126,6 +126,7 @@ public final class ZoneOffset
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = 2357656521762053153L;
 
     /**

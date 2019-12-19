@@ -57,6 +57,7 @@ final class Ser implements Externalizable {
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = -8885321777449118786L;
 
     /** Type for StandardZoneRules. */

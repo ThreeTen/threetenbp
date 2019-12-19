@@ -78,6 +78,7 @@ final class ChronoZonedDateTimeImpl<D extends ChronoLocalDate>
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = -5261813987200935591L;
 
     /**

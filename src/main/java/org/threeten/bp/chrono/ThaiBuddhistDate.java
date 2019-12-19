@@ -77,6 +77,7 @@ public final class ThaiBuddhistDate
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = -8722293800195731463L;
 
     /**

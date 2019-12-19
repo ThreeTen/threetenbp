@@ -65,6 +65,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = 3044319355680032515L;
     /**
      * The last year to have its transitions cached.

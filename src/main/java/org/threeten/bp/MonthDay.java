@@ -105,6 +105,7 @@ public final class MonthDay
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = -939150713474957432L;
     /**
      * Parser.
