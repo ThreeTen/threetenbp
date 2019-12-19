@@ -75,8 +75,10 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
     };
 
     /** Cache. */
-    private final ConcurrentMap<Entry<TemporalField, Locale>, Object> cache =
-            new ConcurrentHashMap<Entry<TemporalField, Locale>, Object>(16, 0.75f, 2);
+//    private final ConcurrentMap<Entry<TemporalField, Locale>, Object> cache =
+//            new ConcurrentHashMap<Entry<TemporalField, Locale>, Object>(16, 0.75f, 2);
+    private final Map<Entry<TemporalField, Locale>, Object> cache =
+            new HashMap<Entry<TemporalField, Locale>, Object>(16, 0.75f);
 
     //-----------------------------------------------------------------------
     @Override
