@@ -59,6 +59,7 @@ import org.threeten.bp.jdk8.Jdk8Methods;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
+@GwtIncompatible
 final class StandardZoneRules extends ZoneRules implements Serializable {
 
     /**

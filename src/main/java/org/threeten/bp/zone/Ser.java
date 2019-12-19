@@ -40,6 +40,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.StreamCorruptedException;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.ZoneOffset;
 
 /**
@@ -50,6 +51,7 @@ import org.threeten.bp.ZoneOffset;
  *
  * @serial include
  */
+@GwtIncompatible
 final class Ser implements Externalizable {
 
     /**

@@ -31,6 +31,8 @@
  */
 package org.threeten.bp.zone;
 
+import javaemul.internal.annotations.GwtIncompatible;
+
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -48,6 +50,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * <p>
  * This class has been added primarily for the benefit of Android.
  */
+@GwtIncompatible
 public abstract class ZoneRulesInitializer {
 
     /**

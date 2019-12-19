@@ -56,6 +56,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.Clock;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.DayOfWeek;
@@ -95,6 +96,7 @@ import org.threeten.bp.temporal.ValueRange;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
+@GwtIncompatible
 public final class ThaiBuddhistChronology extends Chronology implements Serializable {
 
     /**

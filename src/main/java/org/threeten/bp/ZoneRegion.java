@@ -63,6 +63,7 @@ import org.threeten.bp.zone.ZoneRulesProvider;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
+@GwtIncompatible
 final class ZoneRegion extends ZoneId implements Serializable {
 
     /**

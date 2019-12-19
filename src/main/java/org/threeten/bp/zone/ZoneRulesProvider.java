@@ -38,6 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
@@ -68,6 +69,7 @@ import org.threeten.bp.jdk8.Jdk8Methods;
  * When examined in detail, this is a complex problem.
  * Providers may choose to handle dynamic updates, however the default provider does not.
  */
+@GwtIncompatible
 public abstract class ZoneRulesProvider {
 
     /**

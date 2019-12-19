@@ -35,6 +35,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.Duration;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDateTime;
@@ -65,6 +66,7 @@ import org.threeten.bp.jdk8.Jdk8Methods;
  * <h3>Specification for implementors</h3>
  * The supplied implementations of this class are immutable and thread-safe.
  */
+@GwtIncompatible
 public abstract class ZoneRules {
 
     /**

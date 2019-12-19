@@ -58,6 +58,7 @@ import java.util.TreeSet;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
@@ -78,6 +79,7 @@ import org.threeten.bp.zone.ZoneOffsetTransitionRule.TimeDefinition;
  * <h3>Specification for implementors</h3>
  * This class is a mutable builder. A new instance must be created for each compile.
  */
+@GwtIncompatible
 final class TzdbZoneRulesCompiler {
 
     /**
