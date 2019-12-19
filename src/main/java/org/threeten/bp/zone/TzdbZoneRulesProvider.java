@@ -44,13 +44,12 @@ import java.util.List;
 import java.util.NavigableMap;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.concurrent.ConcurrentNavigableMap;
-import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.jdk8.Jdk8Methods;
+import org.threeten.bp.jdk8.JdkCollections;
 
 /**
  * Loads time-zone rules for 'TZDB'.
@@ -72,7 +71,9 @@ public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
     /**
      * All the versions that are available.
      */
-    private final ConcurrentNavigableMap<String, Version> versions = new ConcurrentSkipListMap<String, Version>();
+//    private final ConcurrentNavigableMap<String, Version> versions = new ConcurrentSkipListMap<String, Version>();
+    private final NavigableMap<String, Version> versions = JdkCollections.concurrentNavigableMap();
+
     /**
      * All the URLs that have been loaded.
      * Uses String to avoid equals() on URL.

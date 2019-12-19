@@ -46,8 +46,6 @@ import java.io.Serializable;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.DateTimeException;
@@ -57,6 +55,7 @@ import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.format.ResolverStyle;
 import org.threeten.bp.jdk8.Jdk8Methods;
+import org.threeten.bp.jdk8.JdkCollections;
 
 /**
  * Localized definitions of the day-of-week, week-of-month and week-of-year fields.
@@ -128,7 +127,8 @@ public final class WeekFields implements Serializable {
      * The cache of rules by firstDayOfWeek plus minimalDays.
      * Initialized first to be available for definition of ISO, etc.
      */
-    private static final ConcurrentMap<String, WeekFields> CACHE = new ConcurrentHashMap<String, WeekFields>(4, 0.75f, 2);
+    //private static final ConcurrentMap<String, WeekFields> CACHE = new ConcurrentHashMap<String, WeekFields>(4, 0.75f, 2);
+    private static final Map<String, WeekFields> CACHE = JdkCollections.concurrentHashMap(4, 2);
 
     /**
      * The ISO-8601 definition, where a week starts on Monday and the first week

@@ -32,10 +32,9 @@
 package org.threeten.bp.zone;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javaemul.internal.annotations.GwtIncompatible;
@@ -43,6 +42,7 @@ import org.threeten.bp.DateTimeException;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.jdk8.Jdk8Methods;
+import org.threeten.bp.jdk8.JdkCollections;
 
 /**
  * Provider of time-zone rules to the system.
@@ -79,7 +79,8 @@ public abstract class ZoneRulesProvider {
     /**
      * The lookup from zone region ID to provider.
      */
-    private static final ConcurrentMap<String, ZoneRulesProvider> ZONES = new ConcurrentHashMap<String, ZoneRulesProvider>(512, 0.75f, 2);
+    //private static final ConcurrentMap<String, ZoneRulesProvider> ZONES = new ConcurrentHashMap<String, ZoneRulesProvider>(512, 0.75f, 2);
+    private static final Map<String, ZoneRulesProvider> ZONES = JdkCollections.concurrentHashMap(512, 0.75f);
     static {
         ZoneRulesInitializer.initialize();
     }

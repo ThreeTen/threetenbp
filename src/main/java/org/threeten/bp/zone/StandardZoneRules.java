@@ -39,8 +39,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.Map;
 
 import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.Duration;
@@ -50,6 +49,7 @@ import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.Year;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.jdk8.Jdk8Methods;
+import org.threeten.bp.jdk8.JdkCollections;
 
 /**
  * The rules describing how the zone offset varies through the year and historically.
@@ -101,9 +101,9 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
     /**
      * The map of recent transitions.
      */
-    private final ConcurrentMap<Integer, ZoneOffsetTransition[]> lastRulesCache =
-                new ConcurrentHashMap<Integer, ZoneOffsetTransition[]>();
-
+//    private final ConcurrentMap<Integer, ZoneOffsetTransition[]> lastRulesCache =
+//                new ConcurrentHashMap<Integer, ZoneOffsetTransition[]>();
+    private final Map<Integer, ZoneOffsetTransition[]> lastRulesCache = JdkCollections.concurrentHashMap();
     /**
      * Creates an instance.
      *
