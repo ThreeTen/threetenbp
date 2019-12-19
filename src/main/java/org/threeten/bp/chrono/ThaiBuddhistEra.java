@@ -62,6 +62,7 @@ import org.threeten.bp.temporal.ValueRange;
  * <h3>Specification for implementors</h3>
  * This is an immutable and thread-safe enum.
  */
+@GwtIncompatible
 public enum ThaiBuddhistEra implements Era {
 
     /**

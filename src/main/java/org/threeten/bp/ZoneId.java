@@ -42,6 +42,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.format.DateTimeFormatterBuilder;
 import org.threeten.bp.format.TextStyle;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
@@ -136,6 +137,7 @@ import org.threeten.bp.zone.ZoneRulesProvider;
  * One implementation models region-based IDs, the other is {@code ZoneOffset} modelling
  * offset-based IDs. This difference is visible in serialization.
  */
+@GwtIncompatible
 public abstract class ZoneId implements Serializable {
 
     /**

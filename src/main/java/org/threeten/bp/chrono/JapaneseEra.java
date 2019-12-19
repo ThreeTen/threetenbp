@@ -63,6 +63,7 @@ import org.threeten.bp.temporal.ValueRange;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
+@GwtIncompatible
 public final class JapaneseEra
         extends DefaultInterfaceEra
         implements Serializable {

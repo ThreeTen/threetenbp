@@ -31,6 +31,8 @@
  */
 package org.threeten.bp;
 
+import javaemul.internal.annotations.GwtIncompatible;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.Externalizable;
@@ -62,6 +64,7 @@ import java.io.StreamCorruptedException;
  *
  * @serial include
  */
+@GwtIncompatible
 final class Ser implements Externalizable {
 
     /**

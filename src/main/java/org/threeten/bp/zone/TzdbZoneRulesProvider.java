@@ -49,6 +49,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.jdk8.Jdk8Methods;
 
 /**
@@ -59,6 +60,7 @@ import org.threeten.bp.jdk8.Jdk8Methods;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
+@GwtIncompatible
 public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
     // TODO: can this be private/hidden in any way?
     // service loader seems to need it to be public

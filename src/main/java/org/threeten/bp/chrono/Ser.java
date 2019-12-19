@@ -38,6 +38,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.StreamCorruptedException;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
 
@@ -63,6 +64,7 @@ import org.threeten.bp.LocalDateTime;
  *
  * @serial include
  */
+@GwtIncompatible
 final class Ser implements Externalizable {
 
     /**

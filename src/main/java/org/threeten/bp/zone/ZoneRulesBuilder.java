@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.LocalDate;
@@ -69,6 +70,7 @@ import org.threeten.bp.zone.ZoneOffsetTransitionRule.TimeDefinition;
  * It must only be used from a single thread.
  * The created instances are immutable and thread-safe.
  */
+@GwtIncompatible
 class ZoneRulesBuilder {
 
     /**

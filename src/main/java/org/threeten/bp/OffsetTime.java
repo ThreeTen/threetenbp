@@ -79,6 +79,7 @@ import org.threeten.bp.zone.ZoneRules;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
+@GwtIncompatible
 public final class OffsetTime
         extends DefaultInterfaceTemporalAccessor
         implements Temporal, TemporalAdjuster, Comparable<OffsetTime>, Serializable {

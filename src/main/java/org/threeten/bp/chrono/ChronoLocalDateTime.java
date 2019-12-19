@@ -37,6 +37,7 @@ import static org.threeten.bp.temporal.ChronoUnit.NANOS;
 
 import java.util.Comparator;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
@@ -90,6 +91,7 @@ import org.threeten.bp.zone.ZoneRules;
  *
  * @param <D> the date type
  */
+@GwtIncompatible
 public abstract class ChronoLocalDateTime<D extends ChronoLocalDate>
         extends DefaultInterfaceTemporal
         implements Temporal, TemporalAdjuster, Comparable<ChronoLocalDateTime<?>> {
