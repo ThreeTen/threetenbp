@@ -229,20 +229,20 @@ public class TestLocalTime extends AbstractDateTimeTest {
         LocalTime.now((ZoneId) null);
     }
 
-//    @Test
-//    public void now_ZoneId() {
-//        ZoneId zone = ZoneId.of("UTC+01:02:03");
-//        LocalTime expected = LocalTime.now(Clock.system(zone));
-//        LocalTime test = LocalTime.now(zone);
-//        for (int i = 0; i < 100; i++) {
-//            if (expected.equals(test)) {
-//                return;
-//            }
-//            expected = LocalTime.now(Clock.system(zone));
-//            test = LocalTime.now(zone);
-//        }
-//        assertEquals(test, expected);
-//    }
+    @Test
+    public void now_ZoneId() {
+        ZoneId zone = ZoneId.of("UTC+01:02:03");
+        LocalTime expected = LocalTime.now(Clock.system(zone));
+        LocalTime test = LocalTime.now(zone);
+        for (int i = 0; i < 100; i++) {
+            if (expected.equals(test)) {
+                return;
+            }
+            expected = LocalTime.now(Clock.system(zone));
+            test = LocalTime.now(zone);
+        }
+        assertEquals(test, expected);
+    }
 
     //-----------------------------------------------------------------------
     // now(Clock)
