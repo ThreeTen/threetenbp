@@ -90,6 +90,6 @@ public interface Era extends TemporalAccessor, TemporalAdjuster {
      * @param locale  the locale to use, not null
      * @return the text value of the era, not null
      */
-    String getDisplayName(TextStyle style, Locale locale);
+    //String getDisplayName(TextStyle style, Locale locale);
 
 }

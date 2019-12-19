@@ -170,9 +170,9 @@ public enum IsoEra implements Era {
     }
 
     //-----------------------------------------------------------------------
-    @Override
-    public String getDisplayName(TextStyle style, Locale locale) {
-        return new DateTimeFormatterBuilder().appendText(ERA, style).toFormatter(locale).format(this);
-    }
+//    @Override
+//    public String getDisplayName(TextStyle style, Locale locale) {
+//        return new DateTimeFormatterBuilder().appendText(ERA, style).toFormatter(locale).format(this);
+//    }
 
 }
