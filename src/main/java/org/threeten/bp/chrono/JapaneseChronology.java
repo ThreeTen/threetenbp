@@ -113,6 +113,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = 459996390165777884L;
 
     /**

@@ -31,6 +31,8 @@
  */
 package org.threeten.bp;
 
+import javaemul.internal.annotations.GwtIncompatible;
+
 /**
  * Exception used to indicate a problem while calculating a date-time.
  * <p>
@@ -45,6 +47,7 @@ public class DateTimeException extends RuntimeException {
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = -1632418723876261839L;
 
     /**

@@ -69,6 +69,7 @@ final class ZoneRegion extends ZoneId implements Serializable {
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = 8386373296231747096L;
     /**
      * The regex pattern for region IDs.

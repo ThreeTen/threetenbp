@@ -40,6 +40,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
@@ -59,6 +60,7 @@ final class ChronoPeriodImpl
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = 275618735781L;
 
     private final Chronology chronology;

@@ -106,6 +106,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = 1039765215346859963L;
     /**
      * The difference in years between ISO and Minguo.

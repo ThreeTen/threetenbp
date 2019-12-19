@@ -90,6 +90,7 @@ public final class JapaneseDate
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = -305327627230580483L;
     /**
      * Minimum date.

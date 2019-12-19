@@ -71,6 +71,7 @@ public final class ZoneOffsetTransition
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = -6946044323557704546L;
     /**
      * The local transition date-time at the transition.

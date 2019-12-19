@@ -101,6 +101,7 @@ public final class Duration
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = 3078945930695997490L;
     /**
      * Constant for nanos per second.

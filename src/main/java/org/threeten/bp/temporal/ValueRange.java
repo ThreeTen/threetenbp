@@ -33,6 +33,7 @@ package org.threeten.bp.temporal;
 
 import java.io.Serializable;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.DateTimeException;
 
 /**
@@ -58,6 +59,7 @@ public final class ValueRange implements Serializable {
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = -7317881728594519368L;
 
     /**

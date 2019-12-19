@@ -33,6 +33,7 @@ package org.threeten.bp.chrono;
 
 import java.io.Serializable;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
@@ -115,6 +116,7 @@ abstract class ChronoDateImpl<D extends ChronoLocalDate>
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = 6282433883239719096L;
 
     /**

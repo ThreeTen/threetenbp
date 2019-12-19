@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.ChronoPeriod;
 import org.threeten.bp.chrono.Chronology;
@@ -99,6 +100,7 @@ public final class Period
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = -8290556941213247973L;
     /**
      * The pattern for parsing.

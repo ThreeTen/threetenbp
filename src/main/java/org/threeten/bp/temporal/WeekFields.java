@@ -49,6 +49,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.Year;
@@ -155,6 +156,7 @@ public final class WeekFields implements Serializable {
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = -1177360819670808121L;
 
     /**

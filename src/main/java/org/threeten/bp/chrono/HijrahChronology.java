@@ -180,6 +180,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = 3127340209035924785L;
     /**
      * Narrow names for eras.

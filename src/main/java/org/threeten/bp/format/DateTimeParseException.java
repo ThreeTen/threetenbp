@@ -31,6 +31,7 @@
  */
 package org.threeten.bp.format;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.DateTimeException;
 
 /**
@@ -46,6 +47,7 @@ public class DateTimeParseException extends DateTimeException {
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = 4304633501674722597L;
 
     /**

@@ -183,6 +183,7 @@ public final class LocalTime
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = 6414437269572265201L;
 
     /**

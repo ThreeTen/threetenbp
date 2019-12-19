@@ -121,6 +121,7 @@ public final class Year
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = -23038383694477807L;
     /**
      * Parser.

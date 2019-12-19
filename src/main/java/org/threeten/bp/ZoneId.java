@@ -229,6 +229,7 @@ public abstract class ZoneId implements Serializable {
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = 8352817235686L;
 
     //-----------------------------------------------------------------------

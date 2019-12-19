@@ -52,6 +52,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.Clock;
 import org.threeten.bp.DateTimeException;
 import org.threeten.bp.DayOfWeek;
@@ -105,6 +106,7 @@ public final class IsoChronology extends Chronology implements Serializable {
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = -1440403870442975015L;
 
     /**

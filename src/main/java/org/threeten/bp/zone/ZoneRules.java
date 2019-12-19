@@ -403,6 +403,7 @@ public abstract class ZoneRules {
      */
     static final class Fixed extends ZoneRules implements Serializable {
         /** A serialization identifier for this class. */
+        @GwtIncompatible
         private static final long serialVersionUID = -8733721350312276297L;
         /** The offset. */
         private final ZoneOffset offset;

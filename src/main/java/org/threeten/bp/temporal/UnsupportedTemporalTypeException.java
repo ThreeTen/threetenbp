@@ -31,6 +31,7 @@
  */
 package org.threeten.bp.temporal;
 
+import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.DateTimeException;
 
 /**
@@ -44,6 +45,7 @@ public class UnsupportedTemporalTypeException extends DateTimeException {
     /**
      * Serialization version.
      */
+    @GwtIncompatible
     private static final long serialVersionUID = -189676278478L;
 
     /**
