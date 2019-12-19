@@ -31,16 +31,6 @@
  */
 package org.threeten.bp.format;
 
-import java.text.DecimalFormatSymbols;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import org.threeten.bp.jdk8.Jdk8Methods;
-
 /**
  * Localized symbols used in date and time formatting.
  * <p>
@@ -61,7 +51,7 @@ public final class DecimalStyle {
     /**
      * The cache of symbols instances.
      */
-    private static final Map<Locale, DecimalStyle> CACHE = new HashMap<Locale, DecimalStyle>(16, 0.75f);
+    //private static final Map<Locale, DecimalStyle> CACHE = new HashMap<Locale, DecimalStyle>(16, 0.75f);
 
     /**
      * The zero digit.
@@ -80,61 +70,61 @@ public final class DecimalStyle {
      */
     private final char decimalSeparator;
 
-    //-----------------------------------------------------------------------
-    /**
-     * Lists all the locales that are supported.
-     * <p>
-     * The locale 'en_US' will always be present.
-     *
-     * @return an array of locales for which localization is supported
-     */
-    public static Set<Locale> getAvailableLocales() {
-        Locale[] l = DecimalFormatSymbols.getAvailableLocales();
-        return new HashSet<Locale>(Arrays.asList(l));
-    }
-
-    /**
-     * Obtains symbols for the default locale.
-     * <p>
-     * This method provides access to locale sensitive symbols.
-     *
-     * @return the info, not null
-     */
-    public static DecimalStyle ofDefaultLocale() {
-        return of(Locale.getDefault());
-    }
-
-    /**
-     * Obtains symbols for the specified locale.
-     * <p>
-     * This method provides access to locale sensitive symbols.
-     *
-     * @param locale  the locale, not null
-     * @return the info, not null
-     */
-    public static DecimalStyle of(Locale locale) {
-        Jdk8Methods.requireNonNull(locale, "locale");
-        DecimalStyle info = CACHE.get(locale);
-        if (info == null) {
-            info = create(locale);
-            //CACHE.putIfAbsent(locale, info);
-            CACHE.put(locale, info);
-            info = CACHE.get(locale);
-        }
-        return info;
-    }
-
-    private static DecimalStyle create(Locale locale) {
-        DecimalFormatSymbols oldSymbols = DecimalFormatSymbols.getInstance(locale);
-        char zeroDigit = oldSymbols.getZeroDigit();
-        char positiveSign = '+';
-        char negativeSign = oldSymbols.getMinusSign();
-        char decimalSeparator = oldSymbols.getDecimalSeparator();
-        if (zeroDigit == '0' && negativeSign == '-' && decimalSeparator == '.') {
-            return STANDARD;
-        }
-        return new DecimalStyle(zeroDigit, positiveSign, negativeSign, decimalSeparator);
-    }
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Lists all the locales that are supported.
+//     * <p>
+//     * The locale 'en_US' will always be present.
+//     *
+//     * @return an array of locales for which localization is supported
+//     */
+//    public static Set<Locale> getAvailableLocales() {
+//        Locale[] l = DecimalFormatSymbols.getAvailableLocales();
+//        return new HashSet<Locale>(Arrays.asList(l));
+//    }
+//
+//    /**
+//     * Obtains symbols for the default locale.
+//     * <p>
+//     * This method provides access to locale sensitive symbols.
+//     *
+//     * @return the info, not null
+//     */
+//    public static DecimalStyle ofDefaultLocale() {
+//        return of(Locale.getDefault());
+//    }
+//
+//    /**
+//     * Obtains symbols for the specified locale.
+//     * <p>
+//     * This method provides access to locale sensitive symbols.
+//     *
+//     * @param locale  the locale, not null
+//     * @return the info, not null
+//     */
+//    public static DecimalStyle of(Locale locale) {
+//        Jdk8Methods.requireNonNull(locale, "locale");
+//        DecimalStyle info = CACHE.get(locale);
+//        if (info == null) {
+//            info = create(locale);
+//            //CACHE.putIfAbsent(locale, info);
+//            CACHE.put(locale, info);
+//            info = CACHE.get(locale);
+//        }
+//        return info;
+//    }
+//
+//    private static DecimalStyle create(Locale locale) {
+//        DecimalFormatSymbols oldSymbols = DecimalFormatSymbols.getInstance(locale);
+//        char zeroDigit = oldSymbols.getZeroDigit();
+//        char positiveSign = '+';
+//        char negativeSign = oldSymbols.getMinusSign();
+//        char decimalSeparator = oldSymbols.getDecimalSeparator();
+//        if (zeroDigit == '0' && negativeSign == '-' && decimalSeparator == '.') {
+//            return STANDARD;
+//        }
+//        return new DecimalStyle(zeroDigit, positiveSign, negativeSign, decimalSeparator);
+//    }
 
     //-----------------------------------------------------------------------
     /**

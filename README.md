@@ -99,3 +99,15 @@ the javascript. Another goal is to support executing as many as possible of the 
 - Clock.getZone() is unavailable.
 - FixedClock not supported
 - OffsetClock not supported
+
+### DecimalStyle
+
+- All methods that accept a Locale as a parameter have been removed.
+- DecimalStyles must be constructed by calling the withXXX methods with the appropriate symbols.
+
+```java
+DecimalStyle strange = DecimalStyle.STANDARD.withDecimalSeparator(',')
+    .withNegativeSign('M')
+    .withPositiveSign('P')
+    .withZeroDigit('Z');
+```
