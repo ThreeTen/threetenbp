@@ -161,20 +161,20 @@ public class TestDayOfWeek extends AbstractDateTimeTest {
     //-----------------------------------------------------------------------
     // getDisplayName()
     //-----------------------------------------------------------------------
-//    @Test
-//    public void test_getDisplayName() {
-//        assertEquals(DayOfWeek.MONDAY.getDisplayName(TextStyle.SHORT, Locale.US), "Mon");
-//    }
+    @Test
+    public void test_getDisplayName() {
+        assertEquals(DayOfWeek.MONDAY.getDisplayName(TextStyle.SHORT, Locale.US), "Mon");
+    }
 
-//    @Test(expectedExceptions = NullPointerException.class)
-//    public void test_getDisplayName_nullStyle() {
-//        DayOfWeek.MONDAY.getDisplayName(null, Locale.US);
-//    }
-//
-//    @Test(expectedExceptions = NullPointerException.class)
-//    public void test_getDisplayName_nullLocale() {
-//        DayOfWeek.MONDAY.getDisplayName(TextStyle.FULL, null);
-//    }
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_getDisplayName_nullStyle() {
+        DayOfWeek.MONDAY.getDisplayName(null, Locale.US);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_getDisplayName_nullLocale() {
+        DayOfWeek.MONDAY.getDisplayName(TextStyle.FULL, null);
+    }
 
     //-----------------------------------------------------------------------
     // plus(long), plus(long,unit)
