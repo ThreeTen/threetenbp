@@ -1,9 +1,11 @@
 package org.threeten.bp.jdk8;
 
+import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Provides factory methods for concurrency {@link Map maps}, which will be replaced with a regular {@link Map} when transpiled.
@@ -27,6 +29,10 @@ public final class JdkCollections {
 
     public static <K, V> NavigableMap<K, V> concurrentNavigableMap() {
         return new ConcurrentSkipListMap<>();
+    }
+
+    public static <E> List<E> copyOnWriteArrayList() {
+        return new CopyOnWriteArrayList<>();
     }
 
     private JdkCollections() {

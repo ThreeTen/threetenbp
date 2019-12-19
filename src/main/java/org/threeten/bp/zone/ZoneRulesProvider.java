@@ -32,6 +32,7 @@
 package org.threeten.bp.zone;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Set;
@@ -75,7 +76,8 @@ public abstract class ZoneRulesProvider {
     /**
      * The set of loaded providers.
      */
-    private static final CopyOnWriteArrayList<ZoneRulesProvider> PROVIDERS = new CopyOnWriteArrayList<ZoneRulesProvider>();
+    //private static final CopyOnWriteArrayList<ZoneRulesProvider> PROVIDERS = new CopyOnWriteArrayList<ZoneRulesProvider>();
+    private static final List<ZoneRulesProvider> PROVIDERS = JdkCollections.copyOnWriteArrayList();
     /**
      * The lookup from zone region ID to provider.
      */
