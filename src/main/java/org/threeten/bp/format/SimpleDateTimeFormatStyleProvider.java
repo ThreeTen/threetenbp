@@ -33,7 +33,9 @@ package org.threeten.bp.format;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -51,8 +53,9 @@ final class SimpleDateTimeFormatStyleProvider extends DateTimeFormatStyleProvide
     // TODO: Better implementation based on CLDR
 
     /** Cache of formatters. */
-    private static final ConcurrentMap<String, Object> FORMATTER_CACHE =
-                        new ConcurrentHashMap<String, Object>(16, 0.75f, 2);
+//    private static final ConcurrentMap<String, Object> FORMATTER_CACHE =
+//                        new ConcurrentHashMap<String, Object>(16, 0.75f, 2);
+    private static final Map<String, Object> FORMATTER_CACHE = new HashMap<String, Object>(16, 0.75f);
 
     @Override
     public Locale[] getAvailableLocales() {
@@ -86,10 +89,12 @@ final class SimpleDateTimeFormatStyleProvider extends DateTimeFormatStyleProvide
         if (dateFormat instanceof SimpleDateFormat) {
             String pattern = ((SimpleDateFormat) dateFormat).toPattern();
             DateTimeFormatter formatter = new DateTimeFormatterBuilder().appendPattern(pattern).toFormatter(locale);
-            FORMATTER_CACHE.putIfAbsent(key, formatter);
+            //FORMATTER_CACHE.putIfAbsent(key, formatter);
+            FORMATTER_CACHE.put(key, formatter);
             return formatter;
         }
-        FORMATTER_CACHE.putIfAbsent(key, "");
+        //FORMATTER_CACHE.putIfAbsent(key, "");
+        FORMATTER_CACHE.put(key, "");
         throw new IllegalArgumentException("Unable to convert DateFormat to DateTimeFormatter");
     }
 
