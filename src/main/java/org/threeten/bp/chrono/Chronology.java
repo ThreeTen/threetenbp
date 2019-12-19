@@ -44,7 +44,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.Clock;
@@ -58,6 +57,7 @@ import org.threeten.bp.format.ResolverStyle;
 import org.threeten.bp.format.TextStyle;
 import org.threeten.bp.jdk8.DefaultInterfaceTemporalAccessor;
 import org.threeten.bp.jdk8.Jdk8Methods;
+import org.threeten.bp.jdk8.JdkCollections;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
@@ -154,11 +154,14 @@ public abstract class Chronology implements Comparable<Chronology> {
     /**
      * Map of available calendars by ID.
      */
-    private static final ConcurrentHashMap<String, Chronology> CHRONOS_BY_ID = new ConcurrentHashMap<String, Chronology>();
+//    private static final ConcurrentHashMap<String, Chronology> CHRONOS_BY_ID = new ConcurrentHashMap<String, Chronology>();
+    private static final Map<String, Chronology> CHRONOS_BY_ID = JdkCollections.concurrentHashMap();
+
     /**
      * Map of available calendars by calendar type.
      */
-    private static final ConcurrentHashMap<String, Chronology> CHRONOS_BY_TYPE = new ConcurrentHashMap<String, Chronology>();
+    //private static final ConcurrentHashMap<String, Chronology> CHRONOS_BY_TYPE = new ConcurrentHashMap<String, Chronology>();
+    private static final Map<String, Chronology> CHRONOS_BY_TYPE = JdkCollections.concurrentHashMap();
     /**
      * Access JDK 7 method if on JDK 7.
      */
