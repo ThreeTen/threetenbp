@@ -142,28 +142,19 @@ public class TestYear extends AbstractDateTimeTest {
         Year.now((ZoneId) null);
     }
 
-//    @Test
-//    public void now_ZoneId() {
-//        //ZoneId zone = ZoneId.of("UTC+01:02:03");
-//        ZoneId zone = ZoneId.of("UTC");
-//
-//        //Year expected = Year.now(Clock.system(zone));
-//        Year expected = Year.now(Clock.systemUTC());
-//        Year test = Year.now(zone);
-//        for (int i = 0; i < 100; i++) {
-//            if (expected.equals(test)) {
-//                return;
-//            }
-////            expected = Year.now(Clock.system(zone));
-//            expected = Year.now(Clock.systemUTC());
-//            test = Year.now(zone);
-//        }
-//        assertEquals(test, expected);
-//    }
-
-    @Test(expectedExceptions = UnsupportedOperationException.class)
+    @Test
     public void now_ZoneId() {
-        Year.now(ZoneId.systemDefault());
+        ZoneId zone = ZoneId.of("UTC+01:02:03");
+        Year expected = Year.now(Clock.system(zone));
+        Year test = Year.now(zone);
+        for (int i = 0; i < 100; i++) {
+            if (expected.equals(test)) {
+                return;
+            }
+            expected = Year.now(Clock.system(zone));
+            test = Year.now(zone);
+        }
+        assertEquals(test, expected);
     }
 
     //-----------------------------------------------------------------------

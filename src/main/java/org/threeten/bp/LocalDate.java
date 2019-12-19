@@ -196,10 +196,8 @@ public final class LocalDate
     public static LocalDate now(Clock clock) {
         Jdk8Methods.requireNonNull(clock, "clock");
         final Instant now = clock.instant();  // called once
-//        ZoneOffset offset = clock.getZone().getRules().getOffset(now);
-//        long epochSec = now.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
-        final long epochSec = now.getEpochSecond();
-
+        ZoneOffset offset = clock.getZone().getRules().getOffset(now);
+        long epochSec = now.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
         long epochDay = Jdk8Methods.floorDiv(epochSec, SECONDS_PER_DAY);
         return LocalDate.ofEpochDay(epochDay);
     }

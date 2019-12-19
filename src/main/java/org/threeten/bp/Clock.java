@@ -31,14 +31,14 @@
  */
 package org.threeten.bp;
 
-import javaemul.internal.annotations.GwtIncompatible;
-import org.threeten.bp.jdk8.Jdk8Methods;
+import static org.threeten.bp.LocalTime.NANOS_PER_MINUTE;
+import static org.threeten.bp.LocalTime.NANOS_PER_SECOND;
 
 import java.io.Serializable;
 import java.util.TimeZone;
 
-import static org.threeten.bp.LocalTime.NANOS_PER_MINUTE;
-import static org.threeten.bp.LocalTime.NANOS_PER_SECOND;
+import javaemul.internal.annotations.GwtIncompatible;
+import org.threeten.bp.jdk8.Jdk8Methods;
 
 /**
  * A clock providing access to the current instant, date and time using a time-zone.
@@ -112,8 +112,7 @@ public abstract class Clock {
      * @return a clock that uses the best available system clock in the UTC zone, not null
      */
     public static Clock systemUTC() {
-        //return new SystemClock(ZoneOffset.UTC);
-        return new SystemClock();
+        return new SystemClock(ZoneOffset.UTC);
     }
 
     /**
@@ -136,8 +135,7 @@ public abstract class Clock {
      * @see ZoneId#systemDefault()
      */
     public static Clock systemDefaultZone() {
-        //return new SystemClock(ZoneId.systemDefault());
-        return new SystemClock();
+        return new SystemClock(ZoneId.systemDefault());
     }
 
     /**
@@ -155,7 +153,6 @@ public abstract class Clock {
      * @param zone  the time-zone to use to convert the instant to date-time, not null
      * @return a clock that uses the best available system clock in the specified zone, not null
      */
-    @GwtIncompatible
     public static Clock system(ZoneId zone) {
         Jdk8Methods.requireNonNull(zone, "zone");
         return new SystemClock(zone);
@@ -181,7 +178,6 @@ public abstract class Clock {
      * @param zone  the time-zone to use to convert the instant to date-time, not null
      * @return a clock that ticks in whole seconds using the specified zone, not null
      */
-    @GwtIncompatible
     public static Clock tickSeconds(ZoneId zone) {
         return new TickClock(system(zone), NANOS_PER_SECOND);
     }
@@ -205,7 +201,6 @@ public abstract class Clock {
      * @param zone  the time-zone to use to convert the instant to date-time, not null
      * @return a clock that ticks in whole minutes using the specified zone, not null
      */
-    @GwtIncompatible
     public static Clock tickMinutes(ZoneId zone) {
         return new TickClock(system(zone), NANOS_PER_MINUTE);
     }
@@ -276,7 +271,6 @@ public abstract class Clock {
      * @param zone  the time-zone to use to convert the instant to date-time, not null
      * @return a clock that always returns the same instant, not null
      */
-    @GwtIncompatible
     public static Clock fixed(Instant fixedInstant, ZoneId zone) {
         Jdk8Methods.requireNonNull(fixedInstant, "fixedInstant");
         Jdk8Methods.requireNonNull(zone, "zone");
@@ -303,7 +297,6 @@ public abstract class Clock {
      * @param offsetDuration  the duration to add, not null
      * @return a clock based on the base clock with the duration added, not null
      */
-    @GwtIncompatible
     public static Clock offset(Clock baseClock, Duration offsetDuration) {
         Jdk8Methods.requireNonNull(baseClock, "baseClock");
         Jdk8Methods.requireNonNull(offsetDuration, "offsetDuration");
@@ -329,7 +322,6 @@ public abstract class Clock {
      *
      * @return the time-zone being used to interpret instants, not null
      */
-    @GwtIncompatible
     public abstract ZoneId getZone();
 
     /**
@@ -406,40 +398,22 @@ public abstract class Clock {
      * {@link System#currentTimeMillis()}.
      */
     static final class SystemClock extends Clock implements Serializable {
-        @GwtIncompatible
         private static final long serialVersionUID = 6740630888130243051L;
-
-        //private final ZoneId zone;
-
-        SystemClock() {
-        }
+        private final ZoneId zone;
 
         SystemClock(ZoneId zone) {
-            //this.zone = zone;
-            throw new UnsupportedOperationException();
+            this.zone = zone;
         }
-//        @Override
-//        public ZoneId getZone() {
-//            return zone;
-//        }
-
-        @GwtIncompatible
         @Override
         public ZoneId getZone() {
-            throw new UnsupportedOperationException();
+            return zone;
         }
-//        @Override
-//        public Clock withZone(ZoneId zone) {
-//            if (zone.equals(this.zone)) {  // intentional NPE
-//                return this;
-//            }
-//            return new SystemClock(zone);
-//        }
-
-        @GwtIncompatible
         @Override
         public Clock withZone(ZoneId zone) {
-            throw new UnsupportedOperationException();
+            if (zone.equals(this.zone)) {  // intentional NPE
+                return this;
+            }
+            return new SystemClock(zone);
         }
         @Override
         public long millis() {
@@ -451,20 +425,18 @@ public abstract class Clock {
         }
         @Override
         public boolean equals(Object obj) {
-//            if (obj instanceof SystemClock) {
-//                //return zone.equals(((SystemClock) obj).zone);
-//            }
-//            return false;
-            return obj instanceof SystemClock;
+            if (obj instanceof SystemClock) {
+                return zone.equals(((SystemClock) obj).zone);
+            }
+            return false;
         }
         @Override
         public int hashCode() {
-            //return zone.hashCode() + 1;
-            return 1;
+            return zone.hashCode() + 1;
         }
         @Override
         public String toString() {
-            return "SystemClock";
+            return "SystemClock[" + zone + "]";
         }
     }
 
@@ -473,7 +445,6 @@ public abstract class Clock {
      * Implementation of a clock that always returns the same instant.
      * This is typically used for testing.
      */
-    @GwtIncompatible
     static final class FixedClock extends Clock implements Serializable {
         @GwtIncompatible
        private static final long serialVersionUID = 7430389292664866958L;
@@ -484,7 +455,6 @@ public abstract class Clock {
             this.instant = fixedInstant;
             this.zone = zone;
         }
-        @GwtIncompatible
         @Override
         public ZoneId getZone() {
             return zone;
@@ -526,7 +496,6 @@ public abstract class Clock {
     /**
      * Implementation of a clock that adds an offset to an underlying clock.
      */
-    @GwtIncompatible
     static final class OffsetClock extends Clock implements Serializable {
         @GwtIncompatible
        private static final long serialVersionUID = 2007484719125426256L;
@@ -537,7 +506,6 @@ public abstract class Clock {
             this.baseClock = baseClock;
             this.offset = offset;
         }
-        @GwtIncompatible
         @Override
         public ZoneId getZone() {
             return baseClock.getZone();
@@ -580,7 +548,6 @@ public abstract class Clock {
      * Implementation of a clock that adds an offset to an underlying clock.
      */
     static final class TickClock extends Clock implements Serializable {
-        @GwtIncompatible
         private static final long serialVersionUID = 6504659149906368850L;
         private final Clock baseClock;
         private final long tickNanos;
@@ -589,7 +556,6 @@ public abstract class Clock {
             this.baseClock = baseClock;
             this.tickNanos = tickNanos;
         }
-        @GwtIncompatible
         @Override
         public ZoneId getZone() {
             return baseClock.getZone();
