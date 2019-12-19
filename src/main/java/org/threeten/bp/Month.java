@@ -31,16 +31,8 @@
  */
 package org.threeten.bp;
 
-import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
-import static org.threeten.bp.temporal.ChronoUnit.MONTHS;
-
-import java.util.Locale;
-
-import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.chrono.IsoChronology;
-import org.threeten.bp.format.DateTimeFormatterBuilder;
-import org.threeten.bp.format.TextStyle;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
@@ -50,6 +42,9 @@ import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.UnsupportedTemporalTypeException;
 import org.threeten.bp.temporal.ValueRange;
+
+import static org.threeten.bp.temporal.ChronoField.MONTH_OF_YEAR;
+import static org.threeten.bp.temporal.ChronoUnit.MONTHS;
 
 /**
  * A month-of-year, such as 'July'.
