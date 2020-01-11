@@ -1,0 +1,93 @@
+name: Java CI
+
+on: [push]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Maven cache
+      uses: actions/cache@v1
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}-${{ hashFiles('.github/workflows/tzdbupdate.yml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+    - name: Maven version
+      run: |
+        mkdir -p ./.mvn
+        echo '-e -B -DtrimStackTrace=false' > ./.mvn/maven.config
+        mvn --version
+        mkdir -p target
+
+    - name: Get current version
+      run: |
+        CURRENT_TZDB=$(mvn help:evaluate -Dexpression=tz.database.version -q -DforceStdout)
+        echo "current: $CURRENT_TZDB"
+        echo "::set-env name=CURRENT_TZDB::$CURRENT_TZDB"
+    - name: Get latest version
+      working-directory: target
+      run: |
+        git clone https://github.com/eggert/tz.git
+        cd tz
+        LATEST_TZDB=$(git describe --abbrev=0 --tags)
+        echo "latest: $LATEST_TZDB"
+        echo "::set-env name=LATEST_TZDB::$LATEST_TZDB"
+    - name: Compare versions
+      run: |
+        echo "current: $CURRENT_TZDB"
+        echo "latest:  $LATEST_TZDB"
+        if [ "$CURRENT_TZDB" == "$LATEST_TZDB" ]; then echo "::set-env name=NOOP::true"; fi
+
+    - name: Build with Maven
+      if: env.NOOP != 'true'
+      run: |
+        mvn install site
+    - name: Make
+      if: env.NOOP != 'true'
+      working-directory: target/tz
+      run: |
+        git checkout master
+        git reset --hard ${LATEST_TZDB} --
+        git status
+        make rearguard_tarballs
+        cd tzdata${LATEST_TZDB}-rearguard.dir
+        ls -lR
+    - name: Copy rearguard files
+      if: env.NOOP != 'true'
+      run: |
+        mkdir -p src/tzdb/${LATEST_TZDB}
+        cp -r target/tz/tzdata${LATEST_TZDB}-rearguard.dir/. src/tzdb/${LATEST_TZDB}
+        ls -lR src/tzdb
+    - name: Update build with new tzdb
+      if: env.NOOP != 'true'
+      run: |
+        mvn package -Dtzdb-update
+        mvn versions:set-property -DnewVersion=${LATEST_TZDB} -Dproperty=tz.database.version -DgenerateBackupPoms=false
+        cat pom.xml
+
+    - name: Create Pull Request
+      if: env.NOOP != 'true'
+      id: createpr
+      uses: peter-evans/create-pull-request@v2
+      with:
+        token: ${{ secrets.GITHUB_PERSONAL_TOKEN }}
+        commit-message: 'Update TZDB to ${{ env.LATEST_TZDB }}'
+        committer: Stephen Colebourne (CI) <scolebourne@joda.org>
+        author: Stephen Colebourne (CI) <scolebourne@joda.org>
+        title: 'Update TZDB to ${{ env.LATEST_TZDB }}'
+        body: 'Updates TZDB data to ${{ env.LATEST_TZDB }}'
+        labels: TZDB
+        branch: bot/update-tzdb
+    - name: Check outputs
+      run: |
+        echo "Pull Request Number - ${{ env.PULL_REQUEST_NUMBER }}"
+        echo "Pull Request Number - ${{ steps.createpr.outputs.pr_number }}"
