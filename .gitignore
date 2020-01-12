@@ -16,6 +16,7 @@
 *.ear
 /*.launch
 /*.dic
+/*.mvn/
 
 /src/*/
 !/src/changes/
