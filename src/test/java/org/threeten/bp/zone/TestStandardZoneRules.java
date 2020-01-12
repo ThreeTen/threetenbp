@@ -56,6 +56,9 @@ import org.threeten.bp.Year;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.ZonedDateTime;
+import org.threeten.bp.format.DateTimeFormatter;
+import org.threeten.bp.format.DateTimeFormatterBuilder;
+import org.threeten.bp.format.TextStyle;
 import org.threeten.bp.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 /**
@@ -639,8 +642,13 @@ public class TestStandardZoneRules {
                 assertEquals(test.getStandardOffset(instant), ZoneOffset.ofHoursMinutesSeconds(0, -25, -21));
             } else if (zdt.getYear() >= 1917 && zdt.getYear() < 1969) {
                 assertEquals(test.getStandardOffset(instant), OFFSET_ZERO, zdt.toString());
+            } else if (zdt.getYear() >= 1969 && zdt.getYear() < 1972) {
+                // from 1968-02-18 to 1971-10-31, permanent UTC+1
+                assertEquals(test.getStandardOffset(instant), OFFSET_PONE);
+                assertEquals(test.getOffset(instant), OFFSET_PONE, zdt.toString());
             } else {
-                assertEquals(test.getStandardOffset(instant), OFFSET_PONE);  // negative DST
+                assertEquals(test.getStandardOffset(instant), OFFSET_ZERO, zdt.toString());
+                assertEquals(test.getOffset(instant), zdt.getMonth() == Month.JANUARY ? OFFSET_ZERO : OFFSET_PONE, zdt.toString());
             }
             zdt = zdt.plusMonths(6);
         }
@@ -652,20 +660,20 @@ public class TestStandardZoneRules {
         assertEquals(test.getDaylightSavings(createZDT(1960, 1, 1, ZoneOffset.UTC).toInstant()), Duration.ofHours(0));
         assertEquals(test.isDaylightSavings(createZDT(1960, 7, 1, ZoneOffset.UTC).toInstant()), true);
         assertEquals(test.getDaylightSavings(createZDT(1960, 7, 1, ZoneOffset.UTC).toInstant()), Duration.ofHours(1));
-        // negative DST causes isDaylightSavings() to reverse
-        assertEquals(test.isDaylightSavings(createZDT(2016, 1, 1, ZoneOffset.UTC).toInstant()), true);
-        assertEquals(test.getDaylightSavings(createZDT(2016, 1, 1, ZoneOffset.UTC).toInstant()), Duration.ofHours(-1));
-        assertEquals(test.isDaylightSavings(createZDT(2016, 7, 1, ZoneOffset.UTC).toInstant()), false);
-        assertEquals(test.getDaylightSavings(createZDT(2016, 7, 1, ZoneOffset.UTC).toInstant()), Duration.ofHours(0));
+        // check negative DST is correctly handled
+        assertEquals(test.isDaylightSavings(createZDT(2016, 1, 1, ZoneOffset.UTC).toInstant()), false);
+        assertEquals(test.getDaylightSavings(createZDT(2016, 1, 1, ZoneOffset.UTC).toInstant()), Duration.ofHours(0));
+        assertEquals(test.isDaylightSavings(createZDT(2016, 7, 1, ZoneOffset.UTC).toInstant()), true);
+        assertEquals(test.getDaylightSavings(createZDT(2016, 7, 1, ZoneOffset.UTC).toInstant()), Duration.ofHours(1));
 
         // TZDB data is messed up, comment out tests until better fix available
-//        DateTimeFormatter formatter1 = new DateTimeFormatterBuilder().appendZoneText(TextStyle.FULL).toFormatter();
-//        assertEquals(formatter1.format(createZDT(2016, 1, 1, ZoneId.of("Europe/Dublin"))), "Greenwich Mean Time");
-//        assertEquals(formatter1.format(createZDT(2016, 7, 1, ZoneId.of("Europe/Dublin"))), "Irish Standard Time");
+        DateTimeFormatter formatter1 = new DateTimeFormatterBuilder().appendZoneText(TextStyle.FULL).toFormatter();
+        assertEquals(formatter1.format(createZDT(2016, 1, 1, ZoneId.of("Europe/Dublin"))), "Greenwich Mean Time");
+        assertEquals(formatter1.format(createZDT(2016, 7, 1, ZoneId.of("Europe/Dublin"))).startsWith("Irish S"), true);
 
-//        DateTimeFormatter formatter2 = new DateTimeFormatterBuilder().appendZoneText(TextStyle.SHORT).toFormatter();
-//        assertEquals(formatter2.format(createZDT(2016, 1, 1, ZoneId.of("Europe/Dublin"))), "GMT");
-//        assertEquals(formatter2.format(createZDT(2016, 7, 1, ZoneId.of("Europe/Dublin"))), "IST");
+        DateTimeFormatter formatter2 = new DateTimeFormatterBuilder().appendZoneText(TextStyle.SHORT).toFormatter();
+        assertEquals(formatter2.format(createZDT(2016, 1, 1, ZoneId.of("Europe/Dublin"))), "GMT");
+        assertEquals(formatter2.format(createZDT(2016, 7, 1, ZoneId.of("Europe/Dublin"))), "IST");
     }
 
     //-----------------------------------------------------------------------
