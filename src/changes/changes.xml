@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.4.1" date="2020-01-13" description="v1.4.1">
+      <action dev="jodastephen" type="update" >
+        Update to time-zone data 2019c.
+      </action>
+    </release>
     <release version="1.4.0" date="2019-05-08" description="v1.4.0">
       <action dev="dlew" type="update" >
         Update to time-zone data 2019a.

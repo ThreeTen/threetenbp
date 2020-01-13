@@ -28,7 +28,7 @@ The time-zone database is stored as a pre-compiled dat file that is included in 
 The version of the time-zone data used is stored within the dat file (near the start).
 Updating the time-zone database involves using the `TzdbZoneRulesCompiler` class
 and re-compiling the jar file.
-Pull requests with later versions of the dat file will be accepted.
+An automated CI job should help keep the time-zone data up to date.
 
 #### FAQs
 
@@ -68,7 +68,7 @@ Tidelift will coordinate the fix and disclosure.
 
 ### Release process
 
-* Update version (README.md, index.md, changes.xml)
+* Update version (index.md, changes.xml - checking tzdb version)
 * Commit and push
 * `mvn clean release:clean release:prepare release:perform`
 * Website will be built and released by Travis
