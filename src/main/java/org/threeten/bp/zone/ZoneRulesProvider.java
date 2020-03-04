@@ -31,6 +31,9 @@
  */
 package org.threeten.bp.zone;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -83,7 +86,15 @@ public abstract class ZoneRulesProvider {
     //private static final ConcurrentMap<String, ZoneRulesProvider> ZONES = new ConcurrentHashMap<String, ZoneRulesProvider>(512, 0.75f, 2);
     private static final Map<String, ZoneRulesProvider> ZONES = JdkCollections.concurrentHashMap(512, 0.75f);
     static {
-        ZoneRulesInitializer.initialize();
+//        ZoneRulesInitializer.initialize();
+
+        final TzdbZoneRulesProvider tzdb = new TzdbZoneRulesProvider();
+        try {
+            tzdb.load(new ByteArrayInputStream(Base64.getDecoder().decode(TZDBDat.tzdb())));
+            registerProvider(tzdb);
+        } catch (final IOException cause) {
+            throw new Error("Unable to load timezone dat file", cause);
+        }
     }
 
     //-------------------------------------------------------------------------

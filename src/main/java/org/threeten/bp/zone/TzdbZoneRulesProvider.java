@@ -215,7 +215,8 @@ public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
      * @param in  the stream to load, not null, not closed after use
      * @throws Exception if an error occurs
      */
-    private boolean load(InputStream in) throws IOException, StreamCorruptedException {
+    //private boolean load(InputStream in) throws IOException, StreamCorruptedException {
+    boolean load(InputStream in) throws IOException {
         boolean updated = false;
         Iterable<Version> loadedVersions = loadData(in);
         for (Version loadedVersion : loadedVersions) {
