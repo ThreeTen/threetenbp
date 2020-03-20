@@ -70,5 +70,5 @@ Tidelift will coordinate the fix and disclosure.
 
 * Update version (index.md, changes.xml - checking tzdb version)
 * Commit and push
-* `mvn clean release:clean release:prepare release:perform`
-* Website will be built and released by Travis
+* Run `mvn clean release:clean release:prepare release:perform` on Java 11
+* Website will be built and released by GitHub Actions
