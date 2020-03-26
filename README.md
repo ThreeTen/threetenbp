@@ -1,8 +1,8 @@
-[![Build Status](https://travis-ci.com/mP1/java-time-j2cl.svg?branch=master)](https://travis-ci.com/mP1/java-time-j2cl.svg?branch=master)
-[![Coverage Status](https://coveralls.io/repos/github/mP1/java-time-j2cl/badge.svg?branch=master)](https://coveralls.io/github/mP1/java-time-j2cl?branch=master)
+[![Build Status](https://travis-ci.com/mP1/j2cl-java-time.svg?branch=master)](https://travis-ci.com/mP1/j2cl-java-time.svg?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/mP1/j2cl-java-time/badge.svg?branch=master)](https://coveralls.io/github/mP1/j2cl-java-time?branch=master)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-# java.time j2cl
+# java.time
 
 This project aims to provide an emulated subset of `java.time` by taking a fork of [threetenbp](https://github.com/ThreeTen/threetenbp).
 

@@ -22,7 +22,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>walkingkooka</groupId>
-    <artifactId>java-time-j2cl</artifactId>
+    <artifactId>j2cl-java-time</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
