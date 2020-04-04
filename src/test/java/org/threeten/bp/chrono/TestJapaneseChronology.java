@@ -174,6 +174,7 @@ public class TestJapaneseChronology {
             { JapaneseEra.TAISHO, 0, "Taisho"},
             { JapaneseEra.SHOWA, 1, "Showa"},
             { JapaneseEra.HEISEI, 2, "Heisei"},
+            { JapaneseEra.REIWA, 3, "Reiwa"},
         };
     }
 
@@ -215,9 +216,9 @@ public class TestJapaneseChronology {
             // ignore expected exception
         }
         JapaneseEra additional = JapaneseEra.registerEra(LocalDate.of(2100, 1, 1), "TestAdditional");
-        assertEquals(JapaneseEra.of(3), additional);
+        assertEquals(JapaneseEra.of(4), additional);
         assertEquals(JapaneseEra.valueOf("TestAdditional"), additional);
-        assertEquals(JapaneseEra.values()[4], additional);
+        assertEquals(JapaneseEra.values()[5], additional);
         try {
             JapaneseEra.registerEra(LocalDate.of(2200, 1, 1), "TestAdditional2");
             fail("JapaneseEra.registerEra should have failed");
@@ -239,7 +240,9 @@ public class TestJapaneseChronology {
             {JapaneseChronology.INSTANCE.date(1926, 12, 25), "Japanese Showa 1-12-25"},
             {JapaneseChronology.INSTANCE.date(1989,  1,  7), "Japanese Showa 64-01-07"},
             {JapaneseChronology.INSTANCE.date(1989,  1,  8), "Japanese Heisei 1-01-08"},
-            {JapaneseChronology.INSTANCE.date(2012, 12,  6), "Japanese Heisei 24-12-06"},
+            {JapaneseChronology.INSTANCE.date(2019, 4,  30), "Japanese Heisei 31-04-30"},
+            {JapaneseChronology.INSTANCE.date(2019, 5,  1), "Japanese Reiwa 1-05-01"},
+            {JapaneseChronology.INSTANCE.date(2020, 12,  24), "Japanese Reiwa 2-12-24"},
         };
     }
 

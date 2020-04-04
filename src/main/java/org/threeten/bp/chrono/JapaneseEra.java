@@ -86,14 +86,19 @@ public final class JapaneseEra
      */
     public static final JapaneseEra SHOWA = new JapaneseEra(1, LocalDate.of(1926, 12, 25), "Showa");
     /**
-     * The singleton instance for the 'Heisei' era (1989-01-08 - current)
+     * The singleton instance for the 'Heisei' era (1989-01-08 - 2019-04-30)
      * which has the value 2.
      */
     public static final JapaneseEra HEISEI = new JapaneseEra(2, LocalDate.of(1989, 1, 8), "Heisei");
     /**
+     * The singleton instance for the 'Reiwa' era (2019-05-01 - current)
+     * which has the value 3.
+     */
+    public static final JapaneseEra REIWA = new JapaneseEra(3, LocalDate.of(2019, 5, 1), "Reiwa");
+    /**
      * The value of the additional era.
      */
-    private static final int ADDITIONAL_VALUE = 3;
+    private static final int ADDITIONAL_VALUE = 4;
 
     /**
      * Serialization version.
@@ -104,11 +109,12 @@ public final class JapaneseEra
     private static final AtomicReference<JapaneseEra[]> KNOWN_ERAS;
 
     static {
-        JapaneseEra[] array = new JapaneseEra[4];
+        JapaneseEra[] array = new JapaneseEra[5];
         array[0] = MEIJI;
         array[1] = TAISHO;
         array[2] = SHOWA;
         array[3] = HEISEI;
+        array[4] = REIWA;
         KNOWN_ERAS = new AtomicReference<JapaneseEra[]>(array);
     }
 
@@ -172,17 +178,17 @@ public final class JapaneseEra
      */
     public static JapaneseEra registerEra(LocalDate since, String name) {
         JapaneseEra[] known = KNOWN_ERAS.get();
-        if (known.length > 4) {
+        if (known.length > 5) {
             throw new DateTimeException("Only one additional Japanese era can be added");
         }
         Jdk8Methods.requireNonNull(since, "since");
         Jdk8Methods.requireNonNull(name, "name");
-        if (!since.isAfter(HEISEI.since)) {
-            throw new DateTimeException("Invalid since date for additional Japanese era, must be after Heisei");
+        if (!since.isAfter(REIWA.since)) {
+            throw new DateTimeException("Invalid since date for additional Japanese era, must be after Reiwa");
         }
         JapaneseEra era = new JapaneseEra(ADDITIONAL_VALUE, since, name);
-        JapaneseEra[] newArray = Arrays.copyOf(known, 5);
-        newArray[4] = era;
+        JapaneseEra[] newArray = Arrays.copyOf(known, 6);
+        newArray[5] = era;
         if (!KNOWN_ERAS.compareAndSet(known, newArray)) {
             throw new DateTimeException("Only one additional Japanese era can be added");
         }
