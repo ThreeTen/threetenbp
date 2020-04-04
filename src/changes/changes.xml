@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.4.3" date="2020-04-04" description="v1.4.3">
+      <action dev="ericksli" type="ericksli" >
+        Add Japanese Reiwa era.
+      </action>
+    </release>
     <release version="1.4.2" date="2020-03-20" description="v1.4.2">
       <action dev="jodastephen" type="update" >
         Add ProGuard configuration file for Android users.
