@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.4.4" date="2020-04-24" description="v1.4.4">
+      <action dev="jodastephen" type="update" >
+        Update to time-zone data 2020a.
+      </action>
+    </release>
     <release version="1.4.3" date="2020-04-04" description="v1.4.3">
       <action dev="ericksli" type="ericksli" >
         Add Japanese Reiwa era.
