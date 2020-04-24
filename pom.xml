@@ -846,6 +846,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <linkXRef>false</linkXRef>
-    <tz.database.version>2019c</tz.database.version>
+    <tz.database.version>2020a</tz.database.version>
   </properties>
 </project>
