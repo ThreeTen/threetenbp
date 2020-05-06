@@ -378,21 +378,6 @@
     </build>
 
     <!-- ==================================================================== -->
-    <reporting>
-        <plugins>
-            <!-- Setup Surefire report -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>${maven-surefire-report-plugin.version}</version>
-                <configuration>
-                    <showSuccess>true</showSuccess>
-                </configuration>
-            </plugin>
-        </plugins>
-    </reporting>
-
-    <!-- ==================================================================== -->
     <distributionManagement>
         <repository>
             <id>github-mp1-appengine-repo</id>
