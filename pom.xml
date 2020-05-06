@@ -175,52 +175,6 @@
     </repositories>
 
     <dependencies>
-
-        <!-- j2cl compile dependencies -->
-        <dependency>
-            <groupId>com.google.jsinterop</groupId>
-            <artifactId>jsinterop-annotations</artifactId>
-            <version>2.0.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.vertispan.j2cl</groupId>
-            <artifactId>bootstrap</artifactId>
-            <version>0.5-SNAPSHOT</version>
-            <type>zip</type>
-            <classifier>jszip</classifier>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.vertispan.j2cl</groupId>
-            <artifactId>javac-bootstrap-classpath</artifactId>
-            <version>0.5-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.vertispan.j2cl</groupId>
-            <artifactId>jre</artifactId>
-            <version>0.5-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.vertispan.j2cl</groupId>
-            <artifactId>jre</artifactId>
-            <version>0.5-SNAPSHOT</version>
-            <type>zip</type>
-            <classifier>jszip</classifier>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.vertispan.jsinterop</groupId>
-            <artifactId>base</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-
         <dependency>
             <groupId>javax.annotation</groupId>
             <artifactId>jsr250-api</artifactId>
@@ -250,6 +204,19 @@
             <version>1.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>walkingkooka</groupId>
+            <artifactId>walkingkooka</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>walkingkooka</groupId>
+            <artifactId>j2cl-java-util-Locale</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
     <!-- ==================================================================== -->
@@ -283,6 +250,9 @@
                     <source>9</source>
                     <target>9</target>
                     <forceJavacCompilerUse>true</forceJavacCompilerUse>
+                    <compilerArgs>
+                        <arg>-Awalkingkooka.j2cl.java.util.Locale=*</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
             <!-- Setup testing -->
