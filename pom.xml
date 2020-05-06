@@ -256,6 +256,12 @@
     <build>
         <resources>
             <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+            <resource>
                 <directory>src/main/resources</directory>
             </resource>
             <resource>
@@ -266,6 +272,7 @@
                 </includes>
             </resource>
         </resources>
+
         <!-- define build -->
         <plugins>
             <plugin>
@@ -334,8 +341,28 @@
                                 <exclude>org/threeten/bp/*.dat</exclude>
                                 <exclude>org/threeten/bp/zone/TzdbZoneRulesCompiler*</exclude>
                                 <exclude>META-INF/services/org.threeten.bp.zone.ZoneRulesProvider</exclude>
+                                <exclude>walkingkooka/j2cl/java/util/locale/LocaleProvider*</exclude>
                             </excludes>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <configuration>
+                    <excludes>
+                        <exclude>walkingkooka/j2cl/java/util/locale/LocaleProvider*</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
