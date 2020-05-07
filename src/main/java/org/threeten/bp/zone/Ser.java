@@ -129,17 +129,17 @@ final class Ser implements Externalizable {
      *
      * @param in  the data to read, not null
      */
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    public void readExternal(ObjectInput in) throws IOException {
         type = in.readByte();
         object = readInternal(type, in);
     }
 
-    static Object read(DataInput in) throws IOException, ClassNotFoundException {
+    static Object read(DataInput in) throws IOException {
         byte type = in.readByte();
         return readInternal(type, in);
     }
 
-    private static Object readInternal(byte type, DataInput in) throws IOException, ClassNotFoundException {
+    private static Object readInternal(byte type, DataInput in) throws IOException {
         switch (type) {
             case SZR:
                 return StandardZoneRules.readExternal(in);
