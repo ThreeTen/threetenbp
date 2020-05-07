@@ -11,7 +11,7 @@
     <artifactId>j2cl-java-time</artifactId>
     <packaging>jar</packaging>
     <name>ThreeTen backport j2cl ready java-time</name>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
     <description>A fork of the backport of JSR-310 from JDK 8 to JDK 7 and JDK 6. updated to be j2cl compatible.
     </description>
     <url>https://www.threeten.org/threetenbp</url>
