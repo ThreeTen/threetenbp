@@ -20,6 +20,7 @@
 /src/*/
 !/src/changes/
 !/src/main/
+!/src/maven/
 !/src/site/
 !/src/test/
 

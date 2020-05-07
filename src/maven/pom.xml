@@ -116,12 +116,6 @@
     <properties>
         <maven.compiler.source>1.9</maven.compiler.source>
         <maven.compiler.target>1.9</maven.compiler.target>
-        <maven-install-plugin.version>2.5.2</maven-install-plugin.version>
-        <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
-        <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
-        <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
-        <!-- Other properties -->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <tz.database.version>2019a</tz.database.version>
     </properties>
 
@@ -182,23 +176,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>6.8.21</version><!-- Later versions need JDK 7 -->
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.beanshell</groupId>
-                    <artifactId>bsh</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.yaml</groupId>
-                    <artifactId>snakeyaml</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
             <groupId>walkingkooka</groupId>
             <artifactId>walkingkooka-text-printer</artifactId>
             <version>1.0-SNAPSHOT</version>
@@ -239,157 +216,7 @@
                 </includes>
             </resource>
         </resources>
-
-        <!-- define build -->
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
-                <configuration>
-                    <source>9</source>
-                    <target>9</target>
-                    <forceJavacCompilerUse>true</forceJavacCompilerUse>
-                    <compilerArgs>
-                        <arg>-Awalkingkooka.j2cl.java.util.Locale=*</arg>
-                    </compilerArgs>
-                </configuration>
-            </plugin>
-            <!-- Setup testing -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <includes>
-                        <include>**/Test*.java</include>
-                    </includes>
-                    <argLine>-Xmx2G</argLine>
-                    <parallel>classes</parallel>
-                    <threadCount>1</threadCount>
-                    <!-- remove slow SuiteHTMLReporter -->
-                    <properties>
-                        <property>
-                            <name>usedefaultlisteners</name>
-                            <value>false</value>
-                        </property>
-                        <property>
-                            <name>listener</name>
-                            <value>org.testng.reporters.ExitCodeListener</value>
-                        </property>
-                        <property>
-                            <name>reporter</name>
-                            <value>org.testng.reporters.JUnitReportReporter</value>
-                        </property>
-                    </properties>
-                </configuration>
-            </plugin>
-
-            <!-- order is important-->
-            <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>org/threeten/bp/*.dat</exclude>
-                        <exclude>org/threeten/bp/zone/TzdbZoneRulesCompiler*</exclude>
-                        <exclude>META-INF/services/org.threeten.bp.zone.ZoneRulesProvider</exclude>
-                        <exclude>walkingkooka/j2cl/java/util/locale/LocaleProvider*</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <configuration>
-                    <excludeResources>true</excludeResources>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>attach-no-tztb-sources</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                        <configuration>
-                            <classifier>no-tzdb-sources</classifier>
-                            <excludes>
-                                <exclude>org/threeten/bp/*.dat</exclude>
-                                <exclude>org/threeten/bp/zone/TzdbZoneRulesCompiler*</exclude>
-                                <exclude>META-INF/services/org.threeten.bp.zone.ZoneRulesProvider</exclude>
-                                <exclude>walkingkooka/j2cl/java/util/locale/LocaleProvider*</exclude>
-                            </excludes>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- this plugin must be run after the maven-jar-plugin above as it replaces the POM inside the created jar-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <id>replace-pom</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target>
-                                <delete dir="${project.build.directory}/.maven-replace-pom"/>
-                                <mkdir dir="${project.build.directory}/.maven-replace-pom"/>
-                                <unzip src="${project.build.directory}/${project.build.finalName}.jar"
-                                       dest="${project.build.directory}/.maven-replace-pom"/>
-                                <move file="${project.build.directory}/.maven-replace-pom/META-INF/maven/walkingkooka/j2cl-java-time/pom.xml"
-                                      tofile="${project.build.directory}/.maven-replace-pom/META-INF/maven/walkingkooka/j2cl-java-time/pom.xml.bak"
-                                      failonerror="true"/>
-                                <copy file="${basedir}/src/maven/pom.xml"
-                                      tofile="${project.build.directory}/.maven-replace-pom/META-INF/maven/walkingkooka/j2cl-java-time/pom.xml"/>
-                                <delete dir="${project.build.directory}/${project.build.finalName}.jar"/>
-                                <zip destfile="${project.build.directory}/${project.build.finalName}.jar"
-                                     basedir="${project.build.directory}/.maven-replace-pom"/>
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <id>replace-sources-pom</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target>
-                                <delete dir="${project.build.directory}/.maven-replace-pom"/>
-                                <mkdir dir="${project.build.directory}/.maven-replace-pom"/>
-                                <unzip src="${project.build.directory}/${project.build.finalName}-sources.jar"
-                                       dest="${project.build.directory}/.maven-replace-pom"/>
-                                <move file="${project.build.directory}/.maven-replace-pom/META-INF/maven/walkingkooka/j2cl-java-time/pom.xml"
-                                      tofile="${project.build.directory}/.maven-replace-pom/META-INF/maven/walkingkooka/j2cl-java-time/pom.xml.bak"
-                                      failonerror="true"/>
-                                <copy file="${basedir}/src/maven/pom.xml"
-                                      tofile="${project.build.directory}/.maven-replace-pom/META-INF/maven/walkingkooka/j2cl-java-time/pom.xml"/>
-                                <delete dir="${project.build.directory}/${project.build.finalName}.jar"/>
-                                <zip destfile="${project.build.directory}/${project.build.finalName}-sources.jar"
-                                     basedir="${project.build.directory}/.maven-replace-pom"/>
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
+        <plugins/>
         <!-- Manage plugin versions -->
         <pluginManagement>
             <plugins>
