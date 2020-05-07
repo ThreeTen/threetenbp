@@ -49,7 +49,7 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.jdk8.Jdk8Methods;
-import org.threeten.bp.jdk8.JdkCollections;
+import walkingkooka.j2cl.java.time.JdkCollections;
 
 /**
  * Loads time-zone rules for 'TZDB'.

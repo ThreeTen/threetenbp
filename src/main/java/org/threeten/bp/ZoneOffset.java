@@ -43,7 +43,6 @@ import java.util.Map;
 
 import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.jdk8.Jdk8Methods;
-import org.threeten.bp.jdk8.JdkCollections;
 import org.threeten.bp.temporal.ChronoField;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAccessor;
@@ -54,6 +53,7 @@ import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.UnsupportedTemporalTypeException;
 import org.threeten.bp.temporal.ValueRange;
 import org.threeten.bp.zone.ZoneRules;
+import walkingkooka.j2cl.java.time.JdkCollections;
 
 /**
  * A time-zone offset from Greenwich/UTC, such as {@code +02:00}.

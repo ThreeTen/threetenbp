@@ -55,7 +55,7 @@ import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.Chronology;
 import org.threeten.bp.format.ResolverStyle;
 import org.threeten.bp.jdk8.Jdk8Methods;
-import org.threeten.bp.jdk8.JdkCollections;
+import walkingkooka.j2cl.java.time.JdkCollections;
 
 /**
  * Localized definitions of the day-of-week, week-of-month and week-of-year fields.
