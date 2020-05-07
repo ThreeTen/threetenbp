@@ -57,8 +57,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeMap;
@@ -71,6 +70,9 @@ import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.chrono.ChronoLocalDate;
 import org.threeten.bp.chrono.Chronology;
+import org.threeten.bp.format.DateTimeFormatterBuilder.DateTimePrinterParser;
+import org.threeten.bp.format.DateTimeFormatterBuilder.NumberPrinterParser;
+import org.threeten.bp.format.DateTimeFormatterBuilder.ReducedPrinterParser;
 import org.threeten.bp.format.SimpleDateTimeTextProvider.LocaleStore;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.temporal.ChronoField;
@@ -3691,18 +3693,18 @@ public final class DateTimeFormatterBuilder {
             if (chrono == null) {
                 return false;
             }
-            if (textStyle == null) {
+//            if (textStyle == null) {
                 buf.append(chrono.getId());
-            } else {
-                ResourceBundle bundle = ResourceBundle.getBundle(
-                        "org.threeten.bp.format.ChronologyText", context.getLocale(), DateTimeFormatterBuilder.class.getClassLoader());
-                try {
-                    String text = bundle.getString(chrono.getId());
-                    buf.append(text);
-                } catch (MissingResourceException ex) {
-                    buf.append(chrono.getId());
-                }
-            }
+//            } else {
+//                ResourceBundle bundle = ResourceBundle.getBundle(
+//                        "org.threeten.bp.format.ChronologyText", context.getLocale(), DateTimeFormatterBuilder.class.getClassLoader());
+//                try {
+//                    String text = bundle.getString(chrono.getId());
+//                    buf.append(text);
+//                } catch (MissingResourceException ex) {
+//                    buf.append(chrono.getId());
+//                }
+//            }
             return true;
         }
 
