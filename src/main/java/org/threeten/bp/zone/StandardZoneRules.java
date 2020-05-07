@@ -245,7 +245,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
      * @return the created object, not null
      * @throws IOException if an error occurs
      */
-    static StandardZoneRules readExternal(DataInput in) throws IOException, ClassNotFoundException {
+    static StandardZoneRules readExternal(DataInput in) throws IOException {
         int stdSize = in.readInt();
         long[] stdTrans = new long[stdSize];
         for (int i = 0; i < stdSize; i++) {
