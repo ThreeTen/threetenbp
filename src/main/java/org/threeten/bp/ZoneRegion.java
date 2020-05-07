@@ -37,13 +37,13 @@ import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
-import java.util.regex.Pattern;
 
 import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.zone.ZoneRules;
 import org.threeten.bp.zone.ZoneRulesException;
 import org.threeten.bp.zone.ZoneRulesProvider;
+import walkingkooka.j2cl.java.time.Pattern;
 
 /**
  * A geographical region where the same time-zone rules apply.
@@ -74,7 +74,7 @@ final class ZoneRegion extends ZoneId implements Serializable {
     /**
      * The regex pattern for region IDs.
      */
-    private static final Pattern PATTERN = Pattern.compile("[A-Za-z][A-Za-z0-9~/._+-]+");
+    //private static final Pattern PATTERN = Pattern.compile("[A-Za-z][A-Za-z0-9~/._+-]+");
 
     /**
      * The time-zone ID, not null.
@@ -137,7 +137,8 @@ final class ZoneRegion extends ZoneId implements Serializable {
      */
     static ZoneRegion ofId(String zoneId, boolean checkAvailable) {
         Jdk8Methods.requireNonNull(zoneId, "zoneId");
-        if (zoneId.length() < 2 || PATTERN.matcher(zoneId).matches() == false) {
+        //if (zoneId.length() < 2 || PATTERN.matcher(zoneId).matches() == false) {
+        if (zoneId.length() < 2 || Pattern.isZoneId(zoneId) == false) {
             throw new DateTimeException("Invalid ID for region-based ZoneId, invalid format: " + zoneId);
         }
         ZoneRules rules = null;
