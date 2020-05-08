@@ -61,6 +61,7 @@ import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.temporal.UnsupportedTemporalTypeException;
 import org.threeten.bp.temporal.ValueRange;
+import org.threeten.bp.zone.Ser2;
 import org.threeten.bp.zone.ZoneOffsetTransition;
 import org.threeten.bp.zone.ZoneRules;
 
@@ -2126,7 +2127,7 @@ public final class ZonedDateTime
     static ZonedDateTime readExternal(DataInput in) throws IOException {
         LocalDateTime dateTime = LocalDateTime.readExternal(in);
         ZoneOffset offset = ZoneOffset.readExternal(in);
-        ZoneId zone = (ZoneId) Ser.read(in);
+        ZoneId zone = (ZoneId) Ser2.read(in);
         return ZonedDateTime.ofLenient(dateTime, offset, zone);
     }
 

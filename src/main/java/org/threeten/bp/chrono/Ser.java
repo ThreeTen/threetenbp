@@ -70,7 +70,6 @@ final class Ser implements Externalizable {
     /**
      * Serialization version.
      */
-    @GwtIncompatible
     private static final long serialVersionUID = 7857518227608961174L;
 
     static final byte JAPANESE_DATE_TYPE = 1;

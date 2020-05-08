@@ -249,20 +249,20 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
         int stdSize = in.readInt();
         long[] stdTrans = new long[stdSize];
         for (int i = 0; i < stdSize; i++) {
-            stdTrans[i] = Ser.readEpochSec(in);
+            stdTrans[i] = Ser2.readEpochSec(in);
         }
         ZoneOffset[] stdOffsets = new ZoneOffset[stdSize + 1];
         for (int i = 0; i < stdOffsets.length; i++) {
-            stdOffsets[i] = Ser.readOffset(in);
+            stdOffsets[i] = Ser2.readOffset(in);
         }
         int savSize = in.readInt();
         long[] savTrans = new long[savSize];
         for (int i = 0; i < savSize; i++) {
-            savTrans[i] = Ser.readEpochSec(in);
+            savTrans[i] = Ser2.readEpochSec(in);
         }
         ZoneOffset[] savOffsets = new ZoneOffset[savSize + 1];
         for (int i = 0; i < savOffsets.length; i++) {
-            savOffsets[i] = Ser.readOffset(in);
+            savOffsets[i] = Ser2.readOffset(in);
         }
         int ruleSize = in.readByte();
         ZoneOffsetTransitionRule[] rules = new ZoneOffsetTransitionRule[ruleSize];

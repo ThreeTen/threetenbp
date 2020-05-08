@@ -52,20 +52,20 @@ import org.threeten.bp.ZoneOffset;
  *
  * @serial include
  */
-final class Ser implements Externalizable {
+@GwtIncompatible
+final class Ser extends Ser2 implements Externalizable {
 
     /**
      * Serialization version.
      */
-    @GwtIncompatible
     private static final long serialVersionUID = -8885321777449118786L;
 
-    /** Type for StandardZoneRules. */
-    static final byte SZR = 1;
-    /** Type for ZoneOffsetTransition. */
-    static final byte ZOT = 2;
-    /** Type for ZoneOffsetTransition. */
-    static final byte ZOTRULE = 3;
+//    /** Type for StandardZoneRules. */
+//    static final byte SZR = 1;
+//    /** Type for ZoneOffsetTransition. */
+//    static final byte ZOT = 2;
+//    /** Type for ZoneOffsetTransition. */
+//    static final byte ZOTRULE = 3;
 
     /** The type being serialized. */
     private byte type;
@@ -95,17 +95,14 @@ final class Ser implements Externalizable {
      *
      * @param out  the data stream to write to, not null
      */
-    @GwtIncompatible
     public void writeExternal(ObjectOutput out) throws IOException {
         writeInternal(type, object, out);
     }
 
-    @GwtIncompatible
     static void write(Object object, DataOutput out) throws IOException {
         writeInternal(SZR, object, out);
     }
 
-    @GwtIncompatible
     private static void writeInternal(byte type, Object object, DataOutput out) throws IOException {
         out.writeByte(type);
         switch (type) {
@@ -134,23 +131,24 @@ final class Ser implements Externalizable {
         object = readInternal(type, in);
     }
 
-    static Object read(DataInput in) throws IOException {
-        byte type = in.readByte();
-        return readInternal(type, in);
-    }
-
-    private static Object readInternal(byte type, DataInput in) throws IOException {
-        switch (type) {
-            case SZR:
-                return StandardZoneRules.readExternal(in);
-            case ZOT:
-                return ZoneOffsetTransition.readExternal(in);
-            case ZOTRULE:
-                return ZoneOffsetTransitionRule.readExternal(in);
-            default:
-                throw new StreamCorruptedException("Unknown serialized type");
-        }
-    }
+//    static Object read(DataInput in) throws IOException {
+//        byte type = in.readByte();
+//        return readInternal(type, in);
+//    }
+//
+//    private static Object readInternal(byte type, DataInput in) throws IOException {
+//        switch (type) {
+//            case SZR:
+//                return StandardZoneRules.readExternal(in);
+//            case ZOT:
+//                return ZoneOffsetTransition.readExternal(in);
+//            case ZOTRULE:
+//                return ZoneOffsetTransitionRule.readExternal(in);
+//            default:
+//                throw new StreamCorruptedException("Unknown serialized type");
+//        }
+//    }
+//
 
     /**
      * Returns the object that will replace this one.
@@ -169,7 +167,6 @@ final class Ser implements Externalizable {
      * @param out  the output stream, not null
      * @throws IOException if an error occurs
      */
-    @GwtIncompatible
     static void writeOffset(ZoneOffset offset, DataOutput out) throws IOException {
         final int offsetSecs = offset.getTotalSeconds();
         int offsetByte = offsetSecs % 900 == 0 ? offsetSecs / 900 : 127;  // compress to -72 to +72
@@ -179,17 +176,19 @@ final class Ser implements Externalizable {
         }
     }
 
-    /**
-     * Reads the state from the stream.
-     *
-     * @param in  the input stream, not null
-     * @return the created object, not null
-     * @throws IOException if an error occurs
-     */
-    static ZoneOffset readOffset(DataInput in) throws IOException {
-        int offsetByte = in.readByte();
-        return (offsetByte == 127 ? ZoneOffset.ofTotalSeconds(in.readInt()) : ZoneOffset.ofTotalSeconds(offsetByte * 900));
-    }
+// moved to Ser2
+//
+//    /**
+//     * Reads the state from the stream.
+//     *
+//     * @param in  the input stream, not null
+//     * @return the created object, not null
+//     * @throws IOException if an error occurs
+//     */
+//    static ZoneOffset readOffset(DataInput in) throws IOException {
+//        int offsetByte = in.readByte();
+//        return (offsetByte == 127 ? ZoneOffset.ofTotalSeconds(in.readInt()) : ZoneOffset.ofTotalSeconds(offsetByte * 900));
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -199,7 +198,6 @@ final class Ser implements Externalizable {
      * @param out  the output stream, not null
      * @throws IOException if an error occurs
      */
-    @GwtIncompatible
     static void writeEpochSec(long epochSec, DataOutput out) throws IOException {
         if (epochSec >= -4575744000L && epochSec < 10413792000L && epochSec % 900 == 0) {  // quarter hours between 1825 and 2300
             int store = (int) ((epochSec + 4575744000L) / 900);
@@ -212,23 +210,23 @@ final class Ser implements Externalizable {
         }
     }
 
-    /**
-     * Reads the state from the stream.
-     *
-     * @param in  the input stream, not null
-     * @return the epoch seconds, not null
-     * @throws IOException if an error occurs
-     */
-    static long readEpochSec(DataInput in) throws IOException {
-        int hiByte = in.readByte() & 255;
-        if (hiByte == 255) {
-            return in.readLong();
-        } else {
-            int midByte = in.readByte() & 255;
-            int loByte = in.readByte() & 255;
-            long tot = ((hiByte << 16) + (midByte << 8) + loByte);
-            return (tot * 900) - 4575744000L;
-        }
-    }
-
+// moved to Ser2
+//    /**
+//     * Reads the state from the stream.
+//     *
+//     * @param in  the input stream, not null
+//     * @return the epoch seconds, not null
+//     * @throws IOException if an error occurs
+//     */
+//    static long readEpochSec(DataInput in) throws IOException {
+//        int hiByte = in.readByte() & 255;
+//        if (hiByte == 255) {
+//            return in.readLong();
+//        } else {
+//            int midByte = in.readByte() & 255;
+//            int loByte = in.readByte() & 255;
+//            long tot = ((hiByte << 16) + (midByte << 8) + loByte);
+//            return (tot * 900) - 4575744000L;
+//        }
+//    }
 }

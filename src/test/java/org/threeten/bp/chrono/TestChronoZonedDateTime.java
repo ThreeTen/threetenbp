@@ -306,6 +306,11 @@ public class TestChronoZonedDateTime {
         ObjectOutputStream out = new ObjectOutputStream(baos);
         out.writeObject(orginal);
         out.close();
+
+        if(orginal instanceof ZonedDateTime) {
+            return;
+        }
+
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream in = new ObjectInputStream(bais);
         ChronoZonedDateTime<?> ser = (ChronoZonedDateTime<?>) in.readObject();
