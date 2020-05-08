@@ -53,7 +53,7 @@ import org.threeten.bp.ZoneOffset;
  * @serial include
  */
 @GwtIncompatible
-final class Ser extends Ser2 implements Externalizable {
+final class Ser implements Externalizable {
 
     /**
      * Serialization version.
@@ -62,10 +62,15 @@ final class Ser extends Ser2 implements Externalizable {
 
 //    /** Type for StandardZoneRules. */
 //    static final byte SZR = 1;
+    static final byte SZR = Ser2.SZR;
+
 //    /** Type for ZoneOffsetTransition. */
 //    static final byte ZOT = 2;
+    static final byte ZOT = Ser2.ZOT;
+
 //    /** Type for ZoneOffsetTransition. */
 //    static final byte ZOTRULE = 3;
+    static final byte ZOTRULE = Ser2.ZOTRULE;
 
     /** The type being serialized. */
     private byte type;
@@ -128,7 +133,7 @@ final class Ser extends Ser2 implements Externalizable {
      */
     public void readExternal(ObjectInput in) throws IOException {
         type = in.readByte();
-        object = readInternal(type, in);
+        object = Ser2.readInternal(type, in);
     }
 
 //    static Object read(DataInput in) throws IOException {
