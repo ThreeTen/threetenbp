@@ -33,8 +33,7 @@ package org.threeten.bp;
 
 import javaemul.internal.annotations.GwtIncompatible;
 
-import walkingkooka.j2cl.java.time.Externalizable;
-
+import java.io.Externalizable;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
