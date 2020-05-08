@@ -237,7 +237,7 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
             map.put(0L, array[GregorianCalendar.BC]);
             map.put(1L, array[GregorianCalendar.AD]);
             styleMap.put(TextStyle.SHORT, map);
-            if (locale.getLanguage().equals(Locale.ENGLISH.getLanguage())) {
+            if (locale.getLanguage().equals(walkingkooka.j2cl.java.time.Locale.ENGLISH.getLanguage())) {
                 map = new HashMap<Long, String>();
                 map.put(0L, "Before Christ");
                 map.put(1L, "Anno Domini");

@@ -3621,7 +3621,7 @@ public final class DateTimeFormatterBuilder {
                 if (caseSensitive) {
                     return substringMap.get(substring2);
                 } else {
-                    return substringMapCI.get(substring2.toString().toLowerCase(Locale.ENGLISH));
+                    return substringMapCI.get(substring2.toString().toLowerCase(walkingkooka.j2cl.java.time.Locale.ENGLISH));
                 }
             }
 
@@ -3634,14 +3634,14 @@ public final class DateTimeFormatterBuilder {
                 int idLen = newSubstring.length();
                 if (idLen == length) {
                     substringMap.put(newSubstring, null);
-                    substringMapCI.put(newSubstring.toLowerCase(Locale.ENGLISH), null);
+                    substringMapCI.put(newSubstring.toLowerCase(walkingkooka.j2cl.java.time.Locale.ENGLISH), null);
                 } else if (idLen > length) {
                     String substring = newSubstring.substring(0, length);
                     SubstringTree parserTree = substringMap.get(substring);
                     if (parserTree == null) {
                         parserTree = new SubstringTree(idLen);
                         substringMap.put(substring, parserTree);
-                        substringMapCI.put(substring.toLowerCase(Locale.ENGLISH), parserTree);
+                        substringMapCI.put(substring.toLowerCase(walkingkooka.j2cl.java.time.Locale.ENGLISH), parserTree);
                     }
                     parserTree.add(newSubstring);
                 }
