@@ -314,6 +314,7 @@ public final class JapaneseDate
      *
      * @param stream object input stream
      */
+    @GwtIncompatible
     private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
         stream.defaultReadObject();
         this.era = JapaneseEra.from(isoDate);
