@@ -147,6 +147,7 @@ public final class JapaneseEra
      * @return the singleton {@code JapaneseEra} for this object
      * @throws ObjectStreamException if the deserialized object has any unknown numeric era value.
      */
+    @GwtIncompatible
     private Object readResolve() throws ObjectStreamException {
         try {
             return of(eraValue);
