@@ -145,34 +145,34 @@ public class PatternTest {
     // Pattern.parse....................................................................................................
 
     @Test
-    public void testParseEmptyFails() {
-        parseFails("");
+    public void testPeriodParseEmptyFails() {
+        periodParseFails("");
     }
 
     @Test
-    public void testParseSpacesFails() {
-        parseFails("");
+    public void testPeriodParseSpacesFails() {
+        periodParseFails("");
     }
 
     @Test
-    public void testParsePlusSignFails() {
-        parseFails("+");
+    public void testPeriodParsePlusSignFails() {
+        periodParseFails("+");
     }
 
     @Test
-    public void testParseMinusSignFails() {
-        parseFails("-");
+    public void testPeriodParseMinusSignFails() {
+        periodParseFails("-");
     }
 
     @Test
-    public void testParseNotPFails() {
-        parseFails("Q");
+    public void testPeriodParseNotPFails() {
+        periodParseFails("Q");
     }
 
     @Test
-    private static void parseFails(final String text) {
+    private static void periodParseFails(final String text) {
         assertEquals(null,
-                Pattern.parse(text),
-                "parse " + CharSequences.quoteAndEscape(text));
+                Pattern.periodParse(text),
+                "periodParse " + CharSequences.quoteAndEscape(text));
     }
 }

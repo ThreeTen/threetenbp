@@ -309,7 +309,7 @@ public final class Period
 //            String monthMatch = matcher.group(3);
 //            String weekMatch = matcher.group(4);
 //            String dayMatch = matcher.group(5);
-        final String[] groups = Pattern.parse(text);
+        final String[] groups = Pattern.periodParse(text);
         if(null != groups) {
             int negate = ("-".equals(groups[1]) ? -1 : 1);
             String yearMatch = groups[2];
