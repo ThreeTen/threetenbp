@@ -1,0 +1,55 @@
+#
+# https://maven.apache.org/plugins-archives/maven-invoker-plugin-1.4/run-mojo.html
+#
+# A comma or space separated list of goals/phases to execute, may
+# specify an empty list to execute the default goal of the IT project
+# invoker.goals = clean install
+
+# Optionally, a list of goals to run during further invocations of Maven
+# invoker.goals.2 = ${project.groupId}:${project.artifactId}:${project.version}:run
+
+# A comma or space separated list of profiles to activate
+# invoker.profiles = its,jdk15
+
+# The path to an alternative POM or base directory to invoke Maven on, defaults to the
+# project that was originally specified in the plugin configuration
+# Since plugin version 1.4
+# invoker.project = sub-module
+
+# The value for the environment variable MAVEN_OPTS
+# invoker.mavenOpts = -Dfile.encoding=UTF-16 -Xms32m -Xmx256m
+
+# Possible values are "fail-fast" (default), "fail-at-end" and "fail-never"
+# invoker.failureBehavior = fail-never
+
+# The expected result of the build, possible values are "success" (default) and "failure"
+# invoker.buildResult = failure
+
+# A boolean value controlling the aggregator mode of Maven, defaults to "false"
+# invoker.nonRecursive = true
+
+# A boolean value controlling the network behavior of Maven, defaults to "false"
+# Since plugin version 1.4
+# invoker.offline = true
+
+# The path to the properties file from which to load system properties, defaults to the
+# filename given by the plugin parameter testPropertiesFile
+# Since plugin version 1.4
+# invoker.systemPropertiesFile = test.properties
+
+# An optional human friendly name for this build job to be included in the build reports.
+# Since plugin version 1.4
+# invoker.name = Test Build 01
+
+# An optional description for this build job to be included in the build reports.
+# Since plugin version 1.4
+# invoker.description = Checks the support for build reports.
+
+# A comma separated list of JRE versions on which this build job should be run.
+# Since plugin version 1.4
+# invoker.java.version = 1.4+, !1.4.1, 1.7-
+
+# A comma separated list of OS families on which this build job should be run.
+# Since plugin version 1.4
+# invoker.os.family = !windows, unix, mac
+

@@ -6,7 +6,7 @@
 /temp*
 /.settings/
 /nbproject/private/
-/target/
+target/
 .classpath
 .project
 .checkstyle
@@ -19,6 +19,7 @@
 
 /src/*/
 !/src/changes/
+!/src/it/
 !/src/main/
 !/src/maven/
 !/src/site/
