@@ -21,7 +21,6 @@ import org.threeten.bp.ZoneOffset;
 
 import java.io.DataInput;
 import java.io.IOException;
-import java.io.StreamCorruptedException;
 
 /**
  * Holds numerous methods pulled from {@link Ser} which will be completely ignored and unavailable in JS.
@@ -54,7 +53,7 @@ public abstract class Ser2 {
             case ZOTRULE:
                 return ZoneOffsetTransitionRule.readExternal(in);
             default:
-                throw new StreamCorruptedException("Unknown serialized type");
+                throw new IOException("Unknown serialized type");
         }
     }
 
