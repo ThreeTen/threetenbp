@@ -39,8 +39,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.chrono.ChronoLocalDate;
@@ -54,6 +52,7 @@ import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.temporal.UnsupportedTemporalTypeException;
+import walkingkooka.j2cl.java.time.Pattern;
 
 /**
  * A date-based amount of time, such as '2 years, 3 months and 4 days'.
@@ -105,8 +104,8 @@ public final class Period
     /**
      * The pattern for parsing.
      */
-    private final static Pattern PATTERN =
-            Pattern.compile("([-+]?)P(?:([-+]?[0-9]+)Y)?(?:([-+]?[0-9]+)M)?(?:([-+]?[0-9]+)W)?(?:([-+]?[0-9]+)D)?", Pattern.CASE_INSENSITIVE);
+//    private final static Pattern PATTERN =
+//            Pattern.compile("([-+]?)P(?:([-+]?[0-9]+)Y)?(?:([-+]?[0-9]+)M)?(?:([-+]?[0-9]+)W)?(?:([-+]?[0-9]+)D)?", Pattern.CASE_INSENSITIVE);
 
     /**
      * The number of years.
@@ -303,13 +302,20 @@ public final class Period
      */
     public static Period parse(CharSequence text) {
         Jdk8Methods.requireNonNull(text, "text");
-        Matcher matcher = PATTERN.matcher(text);
-        if (matcher.matches()) {
-            int negate = ("-".equals(matcher.group(1)) ? -1 : 1);
-            String yearMatch = matcher.group(2);
-            String monthMatch = matcher.group(3);
-            String weekMatch = matcher.group(4);
-            String dayMatch = matcher.group(5);
+        //Matcher matcher = PATTERN.matcher(text);
+        //if (matcher.matches()) {
+//            int negate = ("-".equals(matcher.group(1)) ? -1 : 1);
+//            String yearMatch = matcher.group(2);
+//            String monthMatch = matcher.group(3);
+//            String weekMatch = matcher.group(4);
+//            String dayMatch = matcher.group(5);
+        final String[] groups = Pattern.parse(text);
+        if(null != groups) {
+            int negate = ("-".equals(groups[1]) ? -1 : 1);
+            String yearMatch = groups[2];
+            String monthMatch = groups[3];
+            String weekMatch = groups[4];
+            String dayMatch = groups[5];
             if (yearMatch != null || monthMatch != null || weekMatch != null || dayMatch != null) {
                 try {
                     int years = parseNumber(text, yearMatch, negate);
