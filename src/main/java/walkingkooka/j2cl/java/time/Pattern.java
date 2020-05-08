@@ -86,42 +86,42 @@ public final class Pattern {
      * @return the parsed period, not null
      * @throws DateTimeParseException if the text cannot be parsed to a period
      */
-    public static String[] parse(final CharSequence text) {
+    public static String[] periodParse(final CharSequence text) {
         final int length = text.length();
         int i = 0;
 
-        int mode = PATTERN_SIGN;
+        int mode = PERIOD_PARSE_SIGN;
         int startIndex = 0;
-        int groupIndex = PATTERN_GROUPS_YEAR;
+        int groupIndex = PERIOD_PARSE_GROUPS_YEAR;
 
-        String[] groups = new String[PATTERN_GROUPS_SIZE];
+        String[] groups = new String[PERIOD_PARSE_GROUPS_SIZE];
 
         Exit:
         while (i < length) {
             final char c = text.charAt(i);
             switch (mode) {
-                case PATTERN_SIGN:
+                case PERIOD_PARSE_SIGN:
                     switch (c) {
                         case '-':
-                            groups[PATTERN_GROUPS_SIGN] = PATTERN_NEGATIVE_STRING;
+                            groups[PERIOD_PARSE_GROUPS_SIGN] = PERIOD_PARSE_NEGATIVE_STRING;
                             i++;
                             break;
                         case '+':
-                            groups[PATTERN_GROUPS_SIGN] = PATTERN_POSITIVE_STRING;
+                            groups[PERIOD_PARSE_GROUPS_SIGN] = PERIOD_PARSE_POSITIVE_STRING;
                             i++;
                             break;
                         default:
                             break;
                     }
 
-                    mode = PATTERN_P;
+                    mode = PERIOD_PARSE_P;
                     break;
-                case PATTERN_P:
+                case PERIOD_PARSE_P:
                     switch (c) {
                         case 'P':
                         case 'p':
                             i++;
-                            mode = PATTERN_NUMBER_SIGN;
+                            mode = PERIOD_PARSE_NUMBER_SIGN;
                             startIndex = i;
                             break;
                         default:
@@ -129,100 +129,100 @@ public final class Pattern {
                             break Exit;
                     }
                     break;
-                case PATTERN_NUMBER_SIGN:
+                case PERIOD_PARSE_NUMBER_SIGN:
                     startIndex = i;
                     switch (c) {
                         case '-':
                         case '+':
                             i++;
-                            mode = PATTERN_NUMBER_FIRST_DIGIT;
+                            mode = PERIOD_PARSE_NUMBER_FIRST_DIGIT;
                             break;
                         default:
-                            mode = PATTERN_NUMBER_DIGIT;
+                            mode = PERIOD_PARSE_NUMBER_DIGIT;
                             break;
                     }
                     break;
 
-                case PATTERN_NUMBER_FIRST_DIGIT:
+                case PERIOD_PARSE_NUMBER_FIRST_DIGIT:
                     if (false == isDigit(c)) {
                         groups = null;
                         break Exit;
                     }
                     i++;
-                    mode = PATTERN_NUMBER_DIGIT;
+                    mode = PERIOD_PARSE_NUMBER_DIGIT;
                     break;
-                case PATTERN_NUMBER_DIGIT:
+                case PERIOD_PARSE_NUMBER_DIGIT:
                     if (false == isDigit(c)) {
-                        mode = PATTERN_YEAR_MONTH_WEEK_DAY;
+                        mode = PERIOD_PARSE_YEAR_MONTH_WEEK_DAY;
                         break;
                     }
                     i++;
                     break;
-                case PATTERN_YEAR_MONTH_WEEK_DAY:
+                case PERIOD_PARSE_YEAR_MONTH_WEEK_DAY:
                     switch (c) {
                         case 'y':
                         case 'Y':
-                            if (groupIndex > PATTERN_GROUPS_YEAR) {
+                            if (groupIndex > PERIOD_PARSE_GROUPS_YEAR) {
                                 groups = null;
                                 break Exit;
                             }
-                            groups[PATTERN_GROUPS_YEAR] = text.subSequence(startIndex, i).toString();
-                            groupIndex = PATTERN_GROUPS_MONTH;
+                            groups[PERIOD_PARSE_GROUPS_YEAR] = text.subSequence(startIndex, i).toString();
+                            groupIndex = PERIOD_PARSE_GROUPS_MONTH;
                             i++;
-                            mode = PATTERN_NUMBER_SIGN;
+                            mode = PERIOD_PARSE_NUMBER_SIGN;
                             break;
                         case 'm':
                         case 'M':
-                            if (groupIndex > PATTERN_GROUPS_MONTH) {
+                            if (groupIndex > PERIOD_PARSE_GROUPS_MONTH) {
                                 groups = null;
                                 break Exit;
                             }
-                            groups[PATTERN_GROUPS_MONTH] = text.subSequence(startIndex, i).toString();
-                            groupIndex = PATTERN_GROUPS_WEEK;
+                            groups[PERIOD_PARSE_GROUPS_MONTH] = text.subSequence(startIndex, i).toString();
+                            groupIndex = PERIOD_PARSE_GROUPS_WEEK;
                             i++;
-                            mode = PATTERN_NUMBER_SIGN;
+                            mode = PERIOD_PARSE_NUMBER_SIGN;
                             break;
                         case 'w':
                         case 'W':
-                            if (groupIndex > PATTERN_GROUPS_WEEK) {
+                            if (groupIndex > PERIOD_PARSE_GROUPS_WEEK) {
                                 groups = null;
                                 break Exit;
                             }
-                            groups[PATTERN_GROUPS_WEEK] = text.subSequence(startIndex, i).toString();
-                            groupIndex = PATTERN_GROUPS_DAY;
+                            groups[PERIOD_PARSE_GROUPS_WEEK] = text.subSequence(startIndex, i).toString();
+                            groupIndex = PERIOD_PARSE_GROUPS_DAY;
                             i++;
-                            mode = PATTERN_NUMBER_SIGN;
+                            mode = PERIOD_PARSE_NUMBER_SIGN;
                             break;
                         case 'd':
                         case 'D':
-                            if (groupIndex > PATTERN_GROUPS_DAY) {
+                            if (groupIndex > PERIOD_PARSE_GROUPS_DAY) {
                                 groups = null;
                                 break Exit;
                             }
-                            groups[PATTERN_GROUPS_DAY] = text.subSequence(startIndex, i).toString();
+                            groups[PERIOD_PARSE_GROUPS_DAY] = text.subSequence(startIndex, i).toString();
                             i++;
-                            mode = PATTERN_END;
+                            mode = PERIOD_PARSE_END;
                             break;
                         default: // unexpected character -> ERROR
                             groups = null;
                             break Exit;
                     }
                     break;
-                case PATTERN_END:
+                case PERIOD_PARSE_END:
                     groups = null;
                     break Exit;
             }
         }
 
         switch (mode) {
-            case PATTERN_SIGN: // must be empty text
-            case PATTERN_P: // pattern sign but no 'P'
-            case PATTERN_NUMBER_DIGIT: // string of digits but missing 'Y', 'M', 'W' or 'D'
-            case PATTERN_YEAR_MONTH_WEEK_DAY: // expecting 'Y', 'M', 'W' or 'D' shouldnt really happen
+            case PERIOD_PARSE_SIGN: // must be empty text
+            case PERIOD_PARSE_P: // pattern sign but no 'P'
+            case PERIOD_PARSE_NUMBER_DIGIT: // string of digits but missing 'Y', 'M', 'W' or 'D'
+            case PERIOD_PARSE_YEAR_MONTH_WEEK_DAY: // expecting 'Y', 'M', 'W' or 'D' shouldnt really happen
                 groups = null; // enough to report an error
                 break;
-            case PATTERN_NUMBER_SIGN: // must be just after a letter, but no number
-            case PATTERN_END:
+            case PERIOD_PARSE_NUMBER_SIGN: // must be just after a letter, but no number
+            case PERIOD_PARSE_END:
                 break;
         }
 
@@ -236,47 +236,50 @@ public final class Pattern {
     /**
      * Optional sign before the 'P'.
      */
-    private final static int PATTERN_SIGN = 1;
+    private final static int PERIOD_PARSE_SIGN = 1;
 
     /**
      * Required 'P'
      */
-    private final static int PATTERN_P = PATTERN_SIGN + 1;
+    private final static int PERIOD_PARSE_P = PERIOD_PARSE_SIGN + 1;
 
     /**\
      * Optional sign before a number
      */
-    private final static int PATTERN_NUMBER_SIGN = PATTERN_P + 1;
+    private final static int PERIOD_PARSE_NUMBER_SIGN = PERIOD_PARSE_P + 1;
 
     /**
      * Required first digit after a number sign.
      */
-    private final static int PATTERN_NUMBER_FIRST_DIGIT = PATTERN_NUMBER_SIGN + 1;
+    private final static int PERIOD_PARSE_NUMBER_FIRST_DIGIT = PERIOD_PARSE_NUMBER_SIGN + 1;
 
     /**
      * Optional digits in a number.
      */
-    private final static int PATTERN_NUMBER_DIGIT = PATTERN_NUMBER_FIRST_DIGIT + 1;
+    private final static int PERIOD_PARSE_NUMBER_DIGIT = PERIOD_PARSE_NUMBER_FIRST_DIGIT + 1;
 
     /**
      * Required letter after a series of digits.
      */
-    private final static int PATTERN_YEAR_MONTH_WEEK_DAY = PATTERN_NUMBER_DIGIT + 1;
+    private final static int PERIOD_PARSE_YEAR_MONTH_WEEK_DAY = PERIOD_PARSE_NUMBER_DIGIT + 1;
 
     /**
      * Required letter after a series of digits.
      */
-    private final static int PATTERN_END = PATTERN_YEAR_MONTH_WEEK_DAY + 1;
+    private final static int PERIOD_PARSE_END = PERIOD_PARSE_YEAR_MONTH_WEEK_DAY + 1;
 
-    private final static int PATTERN_GROUPS_SIGN = 1;
-    private final static int PATTERN_GROUPS_YEAR = PATTERN_GROUPS_SIGN + 1;
-    private final static int PATTERN_GROUPS_MONTH = PATTERN_GROUPS_YEAR + 1;
-    private final static int PATTERN_GROUPS_WEEK = PATTERN_GROUPS_MONTH + 1;
-    private final static int PATTERN_GROUPS_DAY = PATTERN_GROUPS_WEEK + 1;
-    private final static int PATTERN_GROUPS_SIZE = PATTERN_GROUPS_DAY + 1;
+    private final static int PERIOD_PARSE_GROUPS_SIGN = 1;
+    private final static int PERIOD_PARSE_GROUPS_YEAR = PERIOD_PARSE_GROUPS_SIGN + 1;
+    private final static int PERIOD_PARSE_GROUPS_MONTH = PERIOD_PARSE_GROUPS_YEAR + 1;
+    private final static int PERIOD_PARSE_GROUPS_WEEK = PERIOD_PARSE_GROUPS_MONTH + 1;
+    private final static int PERIOD_PARSE_GROUPS_DAY = PERIOD_PARSE_GROUPS_WEEK + 1;
+    private final static int PERIOD_PARSE_GROUPS_SIZE = PERIOD_PARSE_GROUPS_DAY + 1;
 
-    private final static String PATTERN_NEGATIVE_STRING = "-";
-    private final static String PATTERN_POSITIVE_STRING = "+";
+    private final static String PERIOD_PARSE_NEGATIVE_STRING = "-";
+    private final static String PERIOD_PARSE_POSITIVE_STRING = "+";
+
+    // Duration.parse ..................................................................................................
+
 
     private Pattern() {
         throw new UnsupportedOperationException();
