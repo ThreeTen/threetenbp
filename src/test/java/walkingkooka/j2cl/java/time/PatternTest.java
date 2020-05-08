@@ -141,4 +141,38 @@ public class PatternTest {
                 expected,
                 "zoneId " + CharSequences.quoteAndEscape(zoneId));
     }
+
+    // Pattern.parse....................................................................................................
+
+    @Test
+    public void testParseEmptyFails() {
+        parseFails("");
+    }
+
+    @Test
+    public void testParseSpacesFails() {
+        parseFails("");
+    }
+
+    @Test
+    public void testParsePlusSignFails() {
+        parseFails("+");
+    }
+
+    @Test
+    public void testParseMinusSignFails() {
+        parseFails("-");
+    }
+
+    @Test
+    public void testParseNotPFails() {
+        parseFails("Q");
+    }
+
+    @Test
+    private static void parseFails(final String text) {
+        assertEquals(null,
+                Pattern.parse(text),
+                "parse " + CharSequences.quoteAndEscape(text));
+    }
 }
