@@ -323,7 +323,7 @@ public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
             if (obj instanceof byte[]) {
                 byte[] bytes = (byte[]) obj;
                 DataInputStream dis = new DataInputStream(new ByteArrayInputStream(bytes));
-                obj = Ser.read(dis);
+                obj = Ser2.read(dis);
                 ruleData.set(index, obj);
             }
             return (ZoneRules) obj;
