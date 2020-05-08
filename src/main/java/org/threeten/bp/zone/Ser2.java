@@ -27,6 +27,7 @@ import java.io.StreamCorruptedException;
  * Holds numerous methods pulled from {@link Ser} which will be completely ignored and unavailable in JS.
  */
 public abstract class Ser2 {
+
     /** Type for StandardZoneRules. */
     static final byte SZR = 1;
     /** Type for ZoneOffsetTransition. */

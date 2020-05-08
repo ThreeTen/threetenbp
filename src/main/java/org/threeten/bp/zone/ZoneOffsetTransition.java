@@ -171,9 +171,9 @@ public final class ZoneOffsetTransition
      * @throws IOException if an error occurs
      */
     static ZoneOffsetTransition readExternal(DataInput in) throws IOException {
-        long epochSecond = Ser.readEpochSec(in);
-        ZoneOffset before = Ser.readOffset(in);
-        ZoneOffset after = Ser.readOffset(in);
+        long epochSecond = Ser2.readEpochSec(in);
+        ZoneOffset before = Ser2.readOffset(in);
+        ZoneOffset after = Ser2.readOffset(in);
         if (before.equals(after)) {
             throw new IllegalArgumentException("Offsets must not be equal");
         }
