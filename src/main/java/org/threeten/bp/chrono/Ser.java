@@ -31,8 +31,7 @@
  */
 package org.threeten.bp.chrono;
 
-import walkingkooka.j2cl.java.time.Externalizable;
-
+import java.io.Externalizable;
 import java.io.IOException;
 import java.io.InvalidClassException;
 import java.io.ObjectInput;
