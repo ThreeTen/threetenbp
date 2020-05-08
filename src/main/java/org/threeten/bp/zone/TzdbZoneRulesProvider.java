@@ -237,15 +237,17 @@ public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
      * @param in  the stream to load, not null, not closed after use
      * @throws Exception if an error occurs
      */
-    private Iterable<Version> loadData(InputStream in) throws IOException, StreamCorruptedException {
+    private Iterable<Version> loadData(InputStream in) throws IOException {
         DataInputStream dis = new DataInputStream(in);
         if (dis.readByte() != 1) {
-            throw new StreamCorruptedException("File format not recognised");
+            //throw new StreamCorruptedException("File format not recognised");
+            throw new IOException("File format not recognised");
         }
         // group
         String groupId = dis.readUTF();
         if ("TZDB".equals(groupId) == false) {
-            throw new StreamCorruptedException("File format not recognised");
+            //throw new StreamCorruptedException("File format not recognised");
+            throw new IOException("File format not recognised");
         }
         // versions
         int versionCount = dis.readShort();
