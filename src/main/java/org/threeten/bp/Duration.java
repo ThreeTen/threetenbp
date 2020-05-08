@@ -51,8 +51,6 @@ import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.format.DateTimeParseException;
@@ -63,6 +61,7 @@ import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.temporal.UnsupportedTemporalTypeException;
+import walkingkooka.j2cl.java.time.Pattern;
 
 /**
  * A time-based amount of time, such as '34.5 seconds'.
@@ -118,10 +117,10 @@ public final class Duration
     /**
      * The pattern for parsing.
      */
-    private final static Pattern PATTERN =
-            Pattern.compile("([-+]?)P(?:([-+]?[0-9]+)D)?" +
-                    "(T(?:([-+]?[0-9]+)H)?(?:([-+]?[0-9]+)M)?(?:([-+]?[0-9]+)(?:[.,]([0-9]{0,9}))?S)?)?",
-                    Pattern.CASE_INSENSITIVE);
+//    private final static Pattern PATTERN =
+//            Pattern.compile("([-+]?)P(?:([-+]?[0-9]+)D)?" +
+//                    "(T(?:([-+]?[0-9]+)H)?(?:([-+]?[0-9]+)M)?(?:([-+]?[0-9]+)(?:[.,]([0-9]{0,9}))?S)?)?",
+//                    Pattern.CASE_INSENSITIVE);
 
     /**
      * The number of seconds in the duration.
@@ -396,16 +395,26 @@ public final class Duration
      */
     public static Duration parse(CharSequence text) {
         Jdk8Methods.requireNonNull(text, "text");
-        Matcher matcher = PATTERN.matcher(text);
-        if (matcher.matches()) {
+//        Matcher matcher = PATTERN.matcher(text);
+//        if (matcher.matches()) {
+//            // check for letter T but no time sections
+//            if ("T".equals(matcher.group(3)) == false) {
+//                boolean negate = "-".equals(matcher.group(1));
+//                String dayMatch = matcher.group(2);
+//                String hourMatch = matcher.group(4);
+//                String minuteMatch = matcher.group(5);
+//                String secondMatch = matcher.group(6);
+//                String fractionMatch = matcher.group(7);
+        final String[] groups = Pattern.durationParse(text);
+        if (null != groups) {
             // check for letter T but no time sections
-            if ("T".equals(matcher.group(3)) == false) {
-                boolean negate = "-".equals(matcher.group(1));
-                String dayMatch = matcher.group(2);
-                String hourMatch = matcher.group(4);
-                String minuteMatch = matcher.group(5);
-                String secondMatch = matcher.group(6);
-                String fractionMatch = matcher.group(7);
+            //if ("T".equals(groups[3]) == false) {
+                boolean negate = "-".equals(groups[1]);
+                String dayMatch = groups[2];
+                String hourMatch = groups[4];
+                String minuteMatch = groups[5];
+                String secondMatch = groups[6];
+                String fractionMatch = groups[7];
                 if (dayMatch != null || hourMatch != null || minuteMatch != null || secondMatch != null) {
                     long daysAsSecs = parseNumber(text, dayMatch, SECONDS_PER_DAY, "days");
                     long hoursAsSecs = parseNumber(text, hourMatch, SECONDS_PER_HOUR, "hours");
@@ -419,7 +428,7 @@ public final class Duration
                         throw (DateTimeParseException) new DateTimeParseException("Text cannot be parsed to a Duration: overflow", text, 0).initCause(ex);
                     }
                 }
-            }
+            //}
         }
         throw new DateTimeParseException("Text cannot be parsed to a Duration", text, 0);
     }
