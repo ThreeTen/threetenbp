@@ -4,21 +4,21 @@
 
 # java.time
 
-This project aims to provide an emulated subset of `java.time` by taking a fork of [threetenbp](https://github.com/ThreeTen/threetenbp).
-
-The end goal is to provide all value types such as `Instance`, `LocalDate`, minus offset and zone support, along with
-`DateTimeFormat` and `DateTimeFormatBuilder`. 
-
-
-## Classes
-
-The following section describes in general form the following groups of classes and what is and what is not suppored.
+This project aims to provide an emulated subset of `java.time` by taking a fork of [threetenbp](https://github.com/ThreeTen/threetenbp)
+and minimal changes primarily due to j2cl and browser limitations such as reading files.
 
 
 
-### Serialization
+## Missing/Unsupported APIs
 
-Serialization is not supported, and all support classes and forms including magic methods such as `writeReplace` are removed.
+- `java.time.chrono.Chronology` support for `java.util.ServiceLoader` has been removed rendering the manifest entries ignored.
+- `java.time.chrono.DayOfWeek#getDisplayName` has been removed. [Ticket](https://github.com/mP1/j2cl-java-time/issues/99).
+- `java.time.chrono.Era#getDisplayName` has been removed. [Ticket](https://github.com/mP1/j2cl-java-time/issues/98).
+- `java.time.chrono.HijrahDate` support for loading a deviation file given by a system property has been removed. [Ticket](https://github.com/mP1/j2cl-java-time/issues/96)
+- `java.time.chrono.Month#getDisplayName` has been removed. [Ticket](https://github.com/mP1/j2cl-java-time/issues/100).
+- `java.time.format.DecimalStyle`, APIs using `java.util.Locale` are not available and was removed. [Ticket](https://github.com/mP1/j2cl-java-time/issues/97)
+- Serialization of any class is not supported.
+- `java.time.zone.ZoneId#getDisplay` has been removed. [Ticket](https://github.com/mP1/j2cl-java-time/issues/101).
 
 
 
