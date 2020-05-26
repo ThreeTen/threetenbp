@@ -254,22 +254,22 @@ public final class HijrahDate
         10277
         };
 
-    /**
-     * File separator.
-     */
-    private static final char FILE_SEP = File.separatorChar;
-    /**
-     * Path separator.
-     */
-    private static final String PATH_SEP = File.pathSeparator;
-    /**
-     * Default config file name.
-     */
-    private static final String DEFAULT_CONFIG_FILENAME = "hijrah_deviation.cfg";
-    /**
-     * Default path to the config file.
-     */
-    private static final String DEFAULT_CONFIG_PATH = "org" + FILE_SEP + "threeten" + FILE_SEP + "bp" + FILE_SEP + "chrono";
+//    /**
+//     * File separator.
+//     */
+//    private static final char FILE_SEP = File.separatorChar;
+//    /**
+//     * Path separator.
+//     */
+//    private static final String PATH_SEP = File.pathSeparator;
+//    /**
+//     * Default config file name.
+//     */
+//    private static final String DEFAULT_CONFIG_FILENAME = "hijrah_deviation.cfg";
+//    /**
+//     * Default path to the config file.
+//     */
+//    private static final String DEFAULT_CONFIG_PATH = "org" + FILE_SEP + "threeten" + FILE_SEP + "bp" + FILE_SEP + "chrono";
     /**
      * Holding the adjusted month days in year. The key is a year (Integer) and
      * the value is the all the month days in year (Integer[]).
@@ -373,15 +373,15 @@ public final class HijrahDate
         for (int i = 0; i < MAX_VALUES.length; i++) {
             ADJUSTED_MAX_VALUES[i] = Integer.valueOf(MAX_VALUES[i]);
         }
-        try {
-            readDeviationConfig();
-        } catch (IOException e) {
-            // do nothing. Ignore deviation config.
-            // e.printStackTrace();
-        } catch (ParseException e) {
-            // do nothing. Ignore deviation config.
-            // e.printStackTrace();
-        }
+//        try {
+//            readDeviationConfig();
+//        } catch (IOException e) {
+//            // do nothing. Ignore deviation config.
+//            // e.printStackTrace();
+//        } catch (ParseException e) {
+//            // do nothing. Ignore deviation config.
+//            // e.printStackTrace();
+//        }
     }
     /**
      * Number of Gregorian day of July 19, year 622 (Gregorian), which is epoch day
@@ -1511,252 +1511,252 @@ public final class HijrahDate
                 leastMaxMonthDay);
     }
 
-    /**
-     * Read hijrah_deviation.cfg file. The config file contains the deviation data with
-     * following format.
-     *
-     * StartYear/StartMonth(0-based)-EndYear/EndMonth(0-based):Deviation day (1,
-     * 2, -1, or -2)
-     *
-     * Line separator or ";" is used for the separator of each deviation data.
-     *
-     * Here is the example.
-     *
-     * 1429/0-1429/1:1
-     * 1429/2-1429/7:1;1429/6-1429/11:1
-     * 1429/11-9999/11:1
-     *
-     * @throws IOException for zip/jar file handling exception.
-     * @throws ParseException if the format of the configuration file is wrong.
-     */
-    private static void readDeviationConfig() throws IOException, ParseException {
-        InputStream is = getConfigFileInputStream();
-        if (is != null) {
-            BufferedReader br = null;
-            try {
-                br = new BufferedReader(new InputStreamReader(is));
-                String line = "";
-                int num = 0;
-                while ((line = br.readLine()) != null) {
-                    num++;
-                    line = line.trim();
-                    parseLine(line, num);
-                }
-            } finally {
-                if (br != null) {
-                    br.close();
-                }
-            }
-        }
-    }
-
-    /**
-     * Parse each deviation element.
-     *
-     * @param line  a line to parse
-     * @param num  line number
-     * @throws ParseException if line has incorrect format.
-     */
-    private static void parseLine(String line, int num) throws ParseException {
-        StringTokenizer st = new StringTokenizer(line, ";");
-        while (st.hasMoreTokens()) {
-            String deviationElement = st.nextToken();
-            int offsetIndex = deviationElement.indexOf(':');
-            if (offsetIndex != -1) {
-                String offsetString = deviationElement.substring(
-                        offsetIndex + 1, deviationElement.length());
-                int offset;
-                try {
-                    offset = Integer.parseInt(offsetString);
-                } catch (NumberFormatException ex) {
-                    throw new ParseException(
-                            "Offset is not properly set at line " + num + ".",
-                            num);
-                }
-                int separatorIndex = deviationElement.indexOf('-');
-                if (separatorIndex != -1) {
-                    String startDateStg = deviationElement.substring(0,
-                            separatorIndex);
-                    String endDateStg = deviationElement.substring(
-                            separatorIndex + 1, offsetIndex);
-                    int startDateYearSepIndex = startDateStg.indexOf('/');
-                    int endDateYearSepIndex = endDateStg.indexOf('/');
-                    int startYear = -1;
-                    int endYear = -1;
-                    int startMonth = -1;
-                    int endMonth = -1;
-                    if (startDateYearSepIndex != -1) {
-                        String startYearStg = startDateStg.substring(0,
-                                startDateYearSepIndex);
-                        String startMonthStg = startDateStg.substring(
-                                startDateYearSepIndex + 1, startDateStg
-                                        .length());
-                        try {
-                            startYear = Integer.parseInt(startYearStg);
-                        } catch (NumberFormatException ex) {
-                            throw new ParseException(
-                                    "Start year is not properly set at line "
-                                            + num + ".", num);
-                        }
-                        try {
-                            startMonth = Integer.parseInt(startMonthStg);
-                        } catch (NumberFormatException ex) {
-                            throw new ParseException(
-                                    "Start month is not properly set at line "
-                                            + num + ".", num);
-                        }
-                    } else {
-                        throw new ParseException(
-                                "Start year/month has incorrect format at line "
-                                        + num + ".", num);
-                    }
-                    if (endDateYearSepIndex != -1) {
-                        String endYearStg = endDateStg.substring(0,
-                                endDateYearSepIndex);
-                        String endMonthStg = endDateStg.substring(
-                                endDateYearSepIndex + 1, endDateStg.length());
-                        try {
-                            endYear = Integer.parseInt(endYearStg);
-                        } catch (NumberFormatException ex) {
-                            throw new ParseException(
-                                    "End year is not properly set at line "
-                                            + num + ".", num);
-                        }
-                        try {
-                            endMonth = Integer.parseInt(endMonthStg);
-                        } catch (NumberFormatException ex) {
-                            throw new ParseException(
-                                    "End month is not properly set at line "
-                                            + num + ".", num);
-                        }
-                    } else {
-                        throw new ParseException(
-                                "End year/month has incorrect format at line "
-                                        + num + ".", num);
-                    }
-                    if (startYear != -1 && startMonth != -1 && endYear != -1
-                            && endMonth != -1) {
-                        addDeviationAsHijrah(startYear, startMonth, endYear,
-                                endMonth, offset);
-                    } else {
-                        throw new ParseException("Unknown error at line " + num
-                                + ".", num);
-                    }
-                } else {
-                    throw new ParseException(
-                            "Start and end year/month has incorrect format at line "
-                                    + num + ".", num);
-                }
-            } else {
-                throw new ParseException("Offset has incorrect format at line "
-                        + num + ".", num);
-            }
-        }
-    }
-
-    /**
-     * Return InputStream for deviation configuration file.
-     * The default location of the deviation file is:
-     * <pre>
-     *   $CLASSPATH/org/threeten/bp/chrono
-     * </pre>
-     * And the default file name is:
-     * <pre>
-     *   hijrah_deviation.cfg
-     * </pre>
-     * The default location and file name can be overriden by setting
-     * following two Java's system property.
-     * <pre>
-     *   Location: org.threeten.bp.i18n.HijrahDate.deviationConfigDir
-     *   File name: org.threeten.bp.i18n.HijrahDate.deviationConfigFile
-     * </pre>
-     * Regarding the file format, see readDeviationConfig() method for details.
-     *
-     * @return InputStream for file reading exception.
-     * @throws IOException for zip/jar file handling exception.
-     */
-    private static InputStream getConfigFileInputStream() throws IOException {
-
-        String fileName = System
-                .getProperty("org.threeten.bp.i18n.HijrahDate.deviationConfigFile");
-
-        if (fileName == null) {
-            fileName = DEFAULT_CONFIG_FILENAME;
-        }
-
-        String dir = System
-                .getProperty("org.threeten.bp.i18n.HijrahDate.deviationConfigDir");
-
-        if (dir != null) {
-            if (!(dir.length() == 0 && dir.endsWith(System
-                    .getProperty("file.separator")))) {
-                dir = dir + System.getProperty("file.separator");
-            }
-            File file = new File(dir + FILE_SEP + fileName);
-            if (file.exists()) {
-                try {
-                    return new FileInputStream(file);
-                } catch (IOException ioe) {
-                    throw ioe;
-                }
-            } else {
-                return null;
-            }
-        } else {
-            String classPath = System.getProperty("java.class.path");
-            StringTokenizer st = new StringTokenizer(classPath, PATH_SEP);
-            while (st.hasMoreTokens()) {
-                String path = st.nextToken();
-                File file = new File(path);
-                if (file.exists()) {
-                    if (file.isDirectory()) {
-                        File f = new File(
-                                path + FILE_SEP + DEFAULT_CONFIG_PATH, fileName);
-                        if (f.exists()) {
-                            try {
-                                return new FileInputStream(path + FILE_SEP
-                                        + DEFAULT_CONFIG_PATH + FILE_SEP
-                                        + fileName);
-                            } catch (IOException ioe) {
-                                throw ioe;
-                            }
-                        }
-                    } else {
-                        ZipFile zip;
-                        try {
-                            zip = new ZipFile(file);
-                        } catch (IOException ioe) {
-                            zip = null;
-                        }
-
-                        if (zip != null) {
-                            String targetFile = DEFAULT_CONFIG_PATH + FILE_SEP
-                                    + fileName;
-                            ZipEntry entry = zip.getEntry(targetFile);
-
-                            if (entry == null) {
-                                if (FILE_SEP == '/') {
-                                    targetFile = targetFile.replace('/', '\\');
-                                } else if (FILE_SEP == '\\') {
-                                    targetFile = targetFile.replace('\\', '/');
-                                }
-                                entry = zip.getEntry(targetFile);
-                            }
-
-                            if (entry != null) {
-                                try {
-                                    return zip.getInputStream(entry);
-                                } catch (IOException ioe) {
-                                    throw ioe;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            return null;
-        }
-    }
+//    /**
+//     * Read hijrah_deviation.cfg file. The config file contains the deviation data with
+//     * following format.
+//     *
+//     * StartYear/StartMonth(0-based)-EndYear/EndMonth(0-based):Deviation day (1,
+//     * 2, -1, or -2)
+//     *
+//     * Line separator or ";" is used for the separator of each deviation data.
+//     *
+//     * Here is the example.
+//     *
+//     * 1429/0-1429/1:1
+//     * 1429/2-1429/7:1;1429/6-1429/11:1
+//     * 1429/11-9999/11:1
+//     *
+//     * @throws IOException for zip/jar file handling exception.
+//     * @throws ParseException if the format of the configuration file is wrong.
+//     */
+//    private static void readDeviationConfig() throws IOException, ParseException {
+//        InputStream is = getConfigFileInputStream();
+//        if (is != null) {
+//            BufferedReader br = null;
+//            try {
+//                br = new BufferedReader(new InputStreamReader(is));
+//                String line = "";
+//                int num = 0;
+//                while ((line = br.readLine()) != null) {
+//                    num++;
+//                    line = line.trim();
+//                    parseLine(line, num);
+//                }
+//            } finally {
+//                if (br != null) {
+//                    br.close();
+//                }
+//            }
+//        }
+//    }
+//
+//    /**
+//     * Parse each deviation element.
+//     *
+//     * @param line  a line to parse
+//     * @param num  line number
+//     * @throws ParseException if line has incorrect format.
+//     */
+//    private static void parseLine(String line, int num) throws ParseException {
+//        StringTokenizer st = new StringTokenizer(line, ";");
+//        while (st.hasMoreTokens()) {
+//            String deviationElement = st.nextToken();
+//            int offsetIndex = deviationElement.indexOf(':');
+//            if (offsetIndex != -1) {
+//                String offsetString = deviationElement.substring(
+//                        offsetIndex + 1, deviationElement.length());
+//                int offset;
+//                try {
+//                    offset = Integer.parseInt(offsetString);
+//                } catch (NumberFormatException ex) {
+//                    throw new ParseException(
+//                            "Offset is not properly set at line " + num + ".",
+//                            num);
+//                }
+//                int separatorIndex = deviationElement.indexOf('-');
+//                if (separatorIndex != -1) {
+//                    String startDateStg = deviationElement.substring(0,
+//                            separatorIndex);
+//                    String endDateStg = deviationElement.substring(
+//                            separatorIndex + 1, offsetIndex);
+//                    int startDateYearSepIndex = startDateStg.indexOf('/');
+//                    int endDateYearSepIndex = endDateStg.indexOf('/');
+//                    int startYear = -1;
+//                    int endYear = -1;
+//                    int startMonth = -1;
+//                    int endMonth = -1;
+//                    if (startDateYearSepIndex != -1) {
+//                        String startYearStg = startDateStg.substring(0,
+//                                startDateYearSepIndex);
+//                        String startMonthStg = startDateStg.substring(
+//                                startDateYearSepIndex + 1, startDateStg
+//                                        .length());
+//                        try {
+//                            startYear = Integer.parseInt(startYearStg);
+//                        } catch (NumberFormatException ex) {
+//                            throw new ParseException(
+//                                    "Start year is not properly set at line "
+//                                            + num + ".", num);
+//                        }
+//                        try {
+//                            startMonth = Integer.parseInt(startMonthStg);
+//                        } catch (NumberFormatException ex) {
+//                            throw new ParseException(
+//                                    "Start month is not properly set at line "
+//                                            + num + ".", num);
+//                        }
+//                    } else {
+//                        throw new ParseException(
+//                                "Start year/month has incorrect format at line "
+//                                        + num + ".", num);
+//                    }
+//                    if (endDateYearSepIndex != -1) {
+//                        String endYearStg = endDateStg.substring(0,
+//                                endDateYearSepIndex);
+//                        String endMonthStg = endDateStg.substring(
+//                                endDateYearSepIndex + 1, endDateStg.length());
+//                        try {
+//                            endYear = Integer.parseInt(endYearStg);
+//                        } catch (NumberFormatException ex) {
+//                            throw new ParseException(
+//                                    "End year is not properly set at line "
+//                                            + num + ".", num);
+//                        }
+//                        try {
+//                            endMonth = Integer.parseInt(endMonthStg);
+//                        } catch (NumberFormatException ex) {
+//                            throw new ParseException(
+//                                    "End month is not properly set at line "
+//                                            + num + ".", num);
+//                        }
+//                    } else {
+//                        throw new ParseException(
+//                                "End year/month has incorrect format at line "
+//                                        + num + ".", num);
+//                    }
+//                    if (startYear != -1 && startMonth != -1 && endYear != -1
+//                            && endMonth != -1) {
+//                        addDeviationAsHijrah(startYear, startMonth, endYear,
+//                                endMonth, offset);
+//                    } else {
+//                        throw new ParseException("Unknown error at line " + num
+//                                + ".", num);
+//                    }
+//                } else {
+//                    throw new ParseException(
+//                            "Start and end year/month has incorrect format at line "
+//                                    + num + ".", num);
+//                }
+//            } else {
+//                throw new ParseException("Offset has incorrect format at line "
+//                        + num + ".", num);
+//            }
+//        }
+//    }
+//
+//    /**
+//     * Return InputStream for deviation configuration file.
+//     * The default location of the deviation file is:
+//     * <pre>
+//     *   $CLASSPATH/org/threeten/bp/chrono
+//     * </pre>
+//     * And the default file name is:
+//     * <pre>
+//     *   hijrah_deviation.cfg
+//     * </pre>
+//     * The default location and file name can be overriden by setting
+//     * following two Java's system property.
+//     * <pre>
+//     *   Location: org.threeten.bp.i18n.HijrahDate.deviationConfigDir
+//     *   File name: org.threeten.bp.i18n.HijrahDate.deviationConfigFile
+//     * </pre>
+//     * Regarding the file format, see readDeviationConfig() method for details.
+//     *
+//     * @return InputStream for file reading exception.
+//     * @throws IOException for zip/jar file handling exception.
+//     */
+//    private static InputStream getConfigFileInputStream() throws IOException {
+//
+//        String fileName = System
+//                .getProperty("org.threeten.bp.i18n.HijrahDate.deviationConfigFile");
+//
+//        if (fileName == null) {
+//            fileName = DEFAULT_CONFIG_FILENAME;
+//        }
+//
+//        String dir = System
+//                .getProperty("org.threeten.bp.i18n.HijrahDate.deviationConfigDir");
+//
+//        if (dir != null) {
+//            if (!(dir.length() == 0 && dir.endsWith(System
+//                    .getProperty("file.separator")))) {
+//                dir = dir + System.getProperty("file.separator");
+//            }
+//            File file = new File(dir + FILE_SEP + fileName);
+//            if (file.exists()) {
+//                try {
+//                    return new FileInputStream(file);
+//                } catch (IOException ioe) {
+//                    throw ioe;
+//                }
+//            } else {
+//                return null;
+//            }
+//        } else {
+//            String classPath = System.getProperty("java.class.path");
+//            StringTokenizer st = new StringTokenizer(classPath, PATH_SEP);
+//            while (st.hasMoreTokens()) {
+//                String path = st.nextToken();
+//                File file = new File(path);
+//                if (file.exists()) {
+//                    if (file.isDirectory()) {
+//                        File f = new File(
+//                                path + FILE_SEP + DEFAULT_CONFIG_PATH, fileName);
+//                        if (f.exists()) {
+//                            try {
+//                                return new FileInputStream(path + FILE_SEP
+//                                        + DEFAULT_CONFIG_PATH + FILE_SEP
+//                                        + fileName);
+//                            } catch (IOException ioe) {
+//                                throw ioe;
+//                            }
+//                        }
+//                    } else {
+//                        ZipFile zip;
+//                        try {
+//                            zip = new ZipFile(file);
+//                        } catch (IOException ioe) {
+//                            zip = null;
+//                        }
+//
+//                        if (zip != null) {
+//                            String targetFile = DEFAULT_CONFIG_PATH + FILE_SEP
+//                                    + fileName;
+//                            ZipEntry entry = zip.getEntry(targetFile);
+//
+//                            if (entry == null) {
+//                                if (FILE_SEP == '/') {
+//                                    targetFile = targetFile.replace('/', '\\');
+//                                } else if (FILE_SEP == '\\') {
+//                                    targetFile = targetFile.replace('\\', '/');
+//                                }
+//                                entry = zip.getEntry(targetFile);
+//                            }
+//
+//                            if (entry != null) {
+//                                try {
+//                                    return zip.getInputStream(entry);
+//                                } catch (IOException ioe) {
+//                                    throw ioe;
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//            return null;
+//        }
+//    }
     //-----------------------------------------------------------------------
     @GwtIncompatible
     private Object writeReplace() {
