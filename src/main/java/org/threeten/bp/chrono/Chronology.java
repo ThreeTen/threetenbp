@@ -31,20 +31,6 @@
  */
 package org.threeten.bp.chrono;
 
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
-import java.io.InvalidObjectException;
-import java.io.ObjectStreamException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ServiceLoader;
-import java.util.Set;
-
 import javaemul.internal.annotations.GwtIncompatible;
 import org.threeten.bp.Clock;
 import org.threeten.bp.DateTimeException;
@@ -65,8 +51,19 @@ import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalQuery;
 import org.threeten.bp.temporal.UnsupportedTemporalTypeException;
 import org.threeten.bp.temporal.ValueRange;
-
 import walkingkooka.j2cl.java.time.JdkCollections;
+
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+import java.io.InvalidObjectException;
+import java.io.ObjectStreamException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ServiceLoader;
+import java.util.Set;
 
 /**
  * A calendar system, used to organize and identify dates.
@@ -164,18 +161,18 @@ public abstract class Chronology implements Comparable<Chronology> {
     //private static final ConcurrentHashMap<String, Chronology> CHRONOS_BY_TYPE = new ConcurrentHashMap<String, Chronology>();
     private static final Map<String, Chronology> CHRONOS_BY_TYPE = JdkCollections.concurrentHashMap();
     /**
-     * Access JDK 7 method if on JDK 7.
-     */
-    private static final Method LOCALE_METHOD;
-    static {
-        Method method = null;
-        try {
-            method = Locale.class.getMethod("getUnicodeLocaleType", String.class);
-        } catch (Throwable ex) {
-            // ignore
-        }
-        LOCALE_METHOD = method;
-    }
+//     * Access JDK 7 method if on JDK 7.
+//     */
+//    private static final Method LOCALE_METHOD;
+//    static {
+//        Method method = null;
+//        try {
+//            method = Locale.class.getMethod("getUnicodeLocaleType", String.class);
+//        } catch (Throwable ex) {
+//            // ignore
+//        }
+//        LOCALE_METHOD = method;
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -241,22 +238,51 @@ public abstract class Chronology implements Comparable<Chronology> {
      * @return the calendar system associated with the locale, not null
      * @throws DateTimeException if the locale-specified calendar cannot be found
      */
+//    public static Chronology ofLocale(Locale locale) {
+//        init();
+//        Jdk8Methods.requireNonNull(locale, "locale");
+//        String type = "iso";
+//        if (LOCALE_METHOD != null) {
+//            // JDK 7: locale.getUnicodeLocaleType("ca");
+//            try {
+//                type = (String) LOCALE_METHOD.invoke(locale, "ca");
+//            } catch (IllegalArgumentException ex) {
+//                // ignore
+//            } catch (IllegalAccessException ex) {
+//                // ignore
+//            } catch (InvocationTargetException ex) {
+//                // ignore
+//            }
+//        } else if (locale.equals(JapaneseChronology.LOCALE)) {
+//            type = "japanese";
+//        }
+//        if (type == null || "iso".equals(type) || "iso8601".equals(type)) {
+//            return IsoChronology.INSTANCE;
+//        } else {
+//            Chronology chrono = CHRONOS_BY_TYPE.get(type);
+//            if (chrono == null) {
+//                throw new DateTimeException("Unknown calendar system: " + type);
+//            }
+//            return chrono;
+//        }
+//    }
     public static Chronology ofLocale(Locale locale) {
         init();
         Jdk8Methods.requireNonNull(locale, "locale");
         String type = "iso";
-        if (LOCALE_METHOD != null) {
-            // JDK 7: locale.getUnicodeLocaleType("ca");
-            try {
-                type = (String) LOCALE_METHOD.invoke(locale, "ca");
-            } catch (IllegalArgumentException ex) {
-                // ignore
-            } catch (IllegalAccessException ex) {
-                // ignore
-            } catch (InvocationTargetException ex) {
-                // ignore
-            }
-        } else if (locale.equals(JapaneseChronology.LOCALE)) {
+//        if (LOCALE_METHOD != null) {
+//            // JDK 7: locale.getUnicodeLocaleType("ca");
+//            try {
+//                type = (String) LOCALE_METHOD.invoke(locale, "ca");
+//            } catch (IllegalArgumentException ex) {
+//                // ignore
+//            } catch (IllegalAccessException ex) {
+//                // ignore
+//            } catch (InvocationTargetException ex) {
+//                // ignore
+//            }
+//        } else
+        if (locale.equals(JapaneseChronology.LOCALE)) {
             type = "japanese";
         }
         if (type == null || "iso".equals(type) || "iso8601".equals(type)) {
