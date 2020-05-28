@@ -79,7 +79,6 @@ import org.threeten.bp.zone.ZoneRules;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
-@GwtIncompatible
 public final class OffsetTime
         extends DefaultInterfaceTemporalAccessor
         implements Temporal, TemporalAdjuster, Comparable<OffsetTime>, Serializable {
@@ -1313,7 +1312,6 @@ public final class OffsetTime
         offset.writeExternal(out);
     }
 
-    @GwtIncompatible
     static OffsetTime readExternal(DataInput in) throws IOException {
         LocalTime time = LocalTime.readExternal(in);
         ZoneOffset offset = ZoneOffset.readExternal(in);

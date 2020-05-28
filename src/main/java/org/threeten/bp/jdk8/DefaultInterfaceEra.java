@@ -53,7 +53,6 @@ import static org.threeten.bp.temporal.ChronoField.ERA;
  *
  * @param  the chronology of this era
  */
-@GwtIncompatible
 public abstract class DefaultInterfaceEra
         extends DefaultInterfaceTemporalAccessor
         implements Era {

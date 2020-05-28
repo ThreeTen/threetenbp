@@ -1270,7 +1270,6 @@ public final class Duration
         out.writeInt(nanos);
     }
 
-    @GwtIncompatible
     static Duration readExternal(DataInput in) throws IOException {
         long seconds = in.readLong();
         int nanos = in.readInt();

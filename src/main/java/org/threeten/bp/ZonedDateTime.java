@@ -121,7 +121,6 @@ import org.threeten.bp.zone.ZoneRules;
  * <p>
  * This class is immutable and thread-safe.
  */
-@GwtIncompatible
 public final class ZonedDateTime
         extends ChronoZonedDateTime<LocalDate>
         implements Temporal, Serializable {
@@ -2123,7 +2122,6 @@ public final class ZonedDateTime
         zone.write(out);
     }
 
-    @GwtIncompatible
     static ZonedDateTime readExternal(DataInput in) throws IOException {
         LocalDateTime dateTime = LocalDateTime.readExternal(in);
         ZoneOffset offset = ZoneOffset.readExternal(in);

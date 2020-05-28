@@ -1186,7 +1186,6 @@ public final class Instant
         out.writeInt(nanos);
     }
 
-    @GwtIncompatible
     static Instant readExternal(DataInput in) throws IOException {
         long seconds = in.readLong();
         int nanos = in.readInt();

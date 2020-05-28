@@ -86,12 +86,11 @@ public final class TzdbZoneRulesProvider extends ZoneRulesProvider {
      *
      * @throws ZoneRulesException if unable to load
      */
-    @GwtIncompatible
     public TzdbZoneRulesProvider() {
         super();
-        if (load(ZoneRulesProvider.class.getClassLoader()) == false) {
-            throw new ZoneRulesException("No time-zone rules found for 'TZDB'");
-        }
+//        if (load(ZoneRulesProvider.class.getClassLoader()) == false) {
+//            throw new ZoneRulesException("No time-zone rules found for 'TZDB'");
+//        }
     }
 
     /**

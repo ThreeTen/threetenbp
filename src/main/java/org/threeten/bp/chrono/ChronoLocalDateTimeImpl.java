@@ -66,7 +66,6 @@ import org.threeten.bp.temporal.ValueRange;
  *
  * @param <D> the date type
  */
-@GwtIncompatible
 final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate>
         extends ChronoLocalDateTime<D>
         implements Temporal, TemporalAdjuster, Serializable {

@@ -137,7 +137,6 @@ import org.threeten.bp.zone.ZoneRulesProvider;
  * One implementation models region-based IDs, the other is {@code ZoneOffset} modelling
  * offset-based IDs. This difference is visible in serialization.
  */
-@GwtIncompatible
 public abstract class ZoneId implements Serializable {
 
     /**
@@ -563,6 +562,7 @@ public abstract class ZoneId implements Serializable {
     }
 
     //-----------------------------------------------------------------------
+    @GwtIncompatible
     abstract void write(DataOutput out) throws IOException;
 
 }
