@@ -200,9 +200,32 @@
 
         <dependency>
             <groupId>walkingkooka</groupId>
-            <artifactId>walkingkooka-text-printer</artifactId>
+            <artifactId>j2cl-java-util-Locale</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>walkingkooka</groupId>
+            <artifactId>j2cl-java-io</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>walkingkooka</groupId>
+            <artifactId>j2cl-java-util-Base64</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>walkingkooka</groupId>
+            <artifactId>j2cl-java-text</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>walkingkooka</groupId>
+            <artifactId>j2cl-java-util-Calendar</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -213,8 +236,9 @@
 
         <dependency>
             <groupId>walkingkooka</groupId>
-            <artifactId>j2cl-java-util-Locale</artifactId>
+            <artifactId>walkingkooka-text-printer</artifactId>
             <version>1.0-SNAPSHOT</version>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
@@ -251,7 +275,9 @@
                     <target>9</target>
                     <forceJavacCompilerUse>true</forceJavacCompilerUse>
                     <compilerArgs>
-                        <arg>-Awalkingkooka.j2cl.java.util.Locale=*</arg>
+                        <arg>-Awalkingkooka.j2cl.java.util.Locale=,EN*</arg>
+                        <arg>-Awalkingkooka.j2cl.java.util.TimeZone=Australia/*</arg>
+                        <arg>-Awalkingkooka.j2cl.locale.Logging=SLASH_SLASH_COMMENTS</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>
@@ -388,6 +414,28 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-invoker-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>install</goal>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <cloneProjectsTo>${project.build.directory}/it-tests</cloneProjectsTo>
+                    <debug>true</debug>
+                    <invokerPropertiesFile>${project.build.directory}/it-repo/invoker.properties</invokerPropertiesFile>
+                    <localRepositoryPath>${project.build.directory}/it-repo</localRepositoryPath>
+                    <settingsFile>src/it/settings.xml</settingsFile>
+                    <streamLogs>false</streamLogs>
+                </configuration>
             </plugin>
         </plugins>
         <!-- Manage plugin versions -->

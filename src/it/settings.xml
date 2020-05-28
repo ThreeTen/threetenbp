@@ -1,0 +1,40 @@
+<settings>
+    <profiles>
+        <profile>
+            <id>it-repo</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <repositories>
+                <repository>
+                    <id>local.central</id>
+                    <url>@localRepositoryUrl@</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+                <repository>
+                    <id>vertispan-releases</id>
+                    <name>Vertispan hosted artifacts-releases</name>
+                    <url>https://repo.vertispan.com/j2cl</url>
+                </repository>
+
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>local.central</id>
+                    <url>@localRepositoryUrl@</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+    </profiles>
+</settings>

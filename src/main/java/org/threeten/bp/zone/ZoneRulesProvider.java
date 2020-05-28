@@ -85,9 +85,9 @@ public abstract class ZoneRulesProvider {
     private static final Map<String, ZoneRulesProvider> ZONES = JdkCollections.concurrentHashMap(512, 0.75f);
     static {
 //        ZoneRulesInitializer.initialize();
-
-        final TzdbZoneRulesProvider tzdb = new TzdbZoneRulesProvider();
+//        final TzdbZoneRulesProvider tzdb = new TzdbZoneRulesProvider();
         try {
+            final TzdbZoneRulesProvider tzdb = new TzdbZoneRulesProvider();
             tzdb.load(new ByteArrayInputStream(Base64.getDecoder().decode(TZDBDat.tzdb())));
             registerProvider(tzdb);
         } catch (final IOException cause) {
