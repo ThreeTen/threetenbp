@@ -1852,7 +1852,6 @@ public final class LocalDateTime
         time.writeExternal(out);
     }
 
-    @GwtIncompatible
     static LocalDateTime readExternal(DataInput in) throws IOException {
         LocalDate date = LocalDate.readExternal(in);
         LocalTime time = LocalTime.readExternal(in);

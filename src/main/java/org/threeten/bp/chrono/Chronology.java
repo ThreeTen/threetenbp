@@ -923,7 +923,6 @@ public abstract class Chronology implements Comparable<Chronology> {
         out.writeUTF(getId());
     }
 
-    @GwtIncompatible
     static Chronology readExternal(DataInput in) throws IOException {
         String id = in.readUTF();
         return Chronology.of(id);

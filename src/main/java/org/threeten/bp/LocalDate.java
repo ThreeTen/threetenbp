@@ -1884,7 +1884,6 @@ public final class LocalDate
         out.writeByte(day);
     }
 
-    @GwtIncompatible
     static LocalDate readExternal(DataInput in) throws IOException {
         int year = in.readInt();
         int month = in.readByte();

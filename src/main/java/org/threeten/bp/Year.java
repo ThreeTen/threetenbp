@@ -981,7 +981,6 @@ public final class Year
         out.writeInt(year);
     }
 
-    @GwtIncompatible
     static Year readExternal(DataInput in) throws IOException {
         return Year.of(in.readInt());
     }

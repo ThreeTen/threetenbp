@@ -1104,7 +1104,6 @@ public final class YearMonth
         out.writeByte(month);
     }
 
-    @GwtIncompatible
     static YearMonth readExternal(DataInput in) throws IOException {
         int year = in.readInt();
         byte month = in.readByte();

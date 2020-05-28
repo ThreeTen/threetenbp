@@ -91,7 +91,6 @@ import org.threeten.bp.zone.ZoneRules;
  *
  * @param <D> the date type
  */
-@GwtIncompatible
 public abstract class ChronoLocalDateTime<D extends ChronoLocalDate>
         extends DefaultInterfaceTemporal
         implements Temporal, TemporalAdjuster, Comparable<ChronoLocalDateTime<?>> {

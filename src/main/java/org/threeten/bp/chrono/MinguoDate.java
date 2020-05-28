@@ -69,7 +69,6 @@ import org.threeten.bp.temporal.ValueRange;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
-@GwtIncompatible
 public final class MinguoDate
         extends ChronoDateImpl<MinguoDate>
         implements Serializable {
@@ -375,7 +374,6 @@ public final class MinguoDate
 
     }
 
-    @GwtIncompatible
     static ChronoLocalDate readExternal(DataInput in) throws IOException {
         int year = in.readInt();
         int month = in.readByte();

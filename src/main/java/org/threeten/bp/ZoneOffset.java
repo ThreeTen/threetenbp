@@ -87,7 +87,6 @@ import walkingkooka.j2cl.java.time.JdkCollections;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
-@GwtIncompatible
 public final class ZoneOffset
         extends ZoneId
         implements TemporalAccessor, TemporalAdjuster, Comparable<ZoneOffset>, Serializable {
@@ -763,7 +762,6 @@ public final class ZoneOffset
         }
     }
 
-    @GwtIncompatible
     static ZoneOffset readExternal(DataInput in) throws IOException {
         int offsetByte = in.readByte();
         return (offsetByte == 127 ? ZoneOffset.ofTotalSeconds(in.readInt()) : ZoneOffset.ofTotalSeconds(offsetByte * 900));

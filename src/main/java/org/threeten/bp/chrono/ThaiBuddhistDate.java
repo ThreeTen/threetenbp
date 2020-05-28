@@ -69,7 +69,6 @@ import org.threeten.bp.temporal.ValueRange;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
-@GwtIncompatible
 public final class ThaiBuddhistDate
         extends ChronoDateImpl<ThaiBuddhistDate>
         implements Serializable {
@@ -374,7 +373,6 @@ public final class ThaiBuddhistDate
         out.writeByte(this.get(DAY_OF_MONTH));
     }
 
-    @GwtIncompatible
     static ChronoLocalDate readExternal(DataInput in) throws IOException {
         int year = in.readInt();
         int month = in.readByte();

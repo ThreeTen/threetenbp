@@ -63,7 +63,6 @@ import org.threeten.bp.temporal.ValueRange;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
-@GwtIncompatible
 public final class JapaneseEra
         extends DefaultInterfaceEra
         implements Serializable {
@@ -341,7 +340,6 @@ public final class JapaneseEra
         out.writeByte(this.getValue());
     }
 
-    @GwtIncompatible
     static JapaneseEra readExternal(DataInput in) throws IOException {
         byte eraValue = in.readByte();
         return JapaneseEra.of(eraValue);

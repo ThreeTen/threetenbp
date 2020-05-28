@@ -63,7 +63,6 @@ import org.threeten.bp.temporal.ValueRange;
  * <h3>Specification for implementors</h3>
  * This is an immutable and thread-safe enum.
  */
-@GwtIncompatible
 public enum HijrahEra implements Era {
 
     /**
@@ -196,7 +195,6 @@ public enum HijrahEra implements Era {
         out.writeByte(this.getValue());
     }
 
-    @GwtIncompatible
     static HijrahEra readExternal(DataInput in) throws IOException {
         byte eraValue = in.readByte();
         return HijrahEra.of(eraValue);

@@ -744,7 +744,6 @@ public final class MonthDay
         out.writeByte(day);
     }
 
-    @GwtIncompatible
     static MonthDay readExternal(DataInput in) throws IOException {
         byte month = in.readByte();
         byte day = in.readByte();

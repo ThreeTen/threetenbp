@@ -63,7 +63,6 @@ import walkingkooka.j2cl.java.time.Pattern;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
-@GwtIncompatible
 final class ZoneRegion extends ZoneId implements Serializable {
 
     /**
@@ -209,7 +208,6 @@ final class ZoneRegion extends ZoneId implements Serializable {
         out.writeUTF(id);
     }
 
-    @GwtIncompatible
     static ZoneId readExternal(DataInput in) throws IOException {
         String id = in.readUTF();
         return ofLenient(id);

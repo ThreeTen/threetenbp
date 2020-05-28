@@ -63,7 +63,6 @@ import org.threeten.bp.temporal.ValueRange;
  * <h3>Specification for implementors</h3>
  * This is an immutable and thread-safe enum.
  */
-@GwtIncompatible
 public enum MinguoEra implements Era  {
 
     /**
@@ -186,7 +185,6 @@ public enum MinguoEra implements Era  {
         out.writeByte(this.getValue());
     }
 
-    @GwtIncompatible
     static MinguoEra readExternal(DataInput in) throws IOException {
         byte eraValue = in.readByte();
         return MinguoEra.of(eraValue);

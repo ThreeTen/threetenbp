@@ -1547,7 +1547,6 @@ public final class LocalTime
         }
     }
 
-    @GwtIncompatible
     static LocalTime readExternal(DataInput in) throws IOException {
         int hour = in.readByte();
         int minute = 0;
