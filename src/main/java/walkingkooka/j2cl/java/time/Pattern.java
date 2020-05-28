@@ -17,8 +17,6 @@
 
 package walkingkooka.j2cl.java.time;
 
-import org.threeten.bp.format.DateTimeParseException;
-
 /**
  * Holds functionality equivalent code for {@link Pattern usage}.
  */
