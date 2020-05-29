@@ -200,19 +200,7 @@
 
         <dependency>
             <groupId>walkingkooka</groupId>
-            <artifactId>j2cl-java-util-Locale</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>walkingkooka</groupId>
             <artifactId>j2cl-java-io</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>walkingkooka</groupId>
-            <artifactId>j2cl-java-util-Base64</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
@@ -230,6 +218,18 @@
 
         <dependency>
             <groupId>walkingkooka</groupId>
+            <artifactId>j2cl-java-util-Locale</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>walkingkooka</groupId>
+            <artifactId>j2cl-java-util-TimeZone</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>walkingkooka</groupId>
             <artifactId>walkingkooka</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
@@ -238,7 +238,6 @@
             <groupId>walkingkooka</groupId>
             <artifactId>walkingkooka-text-printer</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <scope>test</scope>
         </dependency>
 
     </dependencies>
@@ -273,14 +272,14 @@
                 <configuration>
                     <source>9</source>
                     <target>9</target>
-                    <forceJavacCompilerUse>true</forceJavacCompilerUse>
                     <compilerArgs>
-                        <arg>-Awalkingkooka.j2cl.java.util.Locale=,EN*</arg>
-                        <arg>-Awalkingkooka.j2cl.java.util.TimeZone=Australia/*</arg>
+                        <arg>-Awalkingkooka.j2cl.java.util.Locale=,EN-AU,EN-US</arg>
+                        <arg>-Awalkingkooka.j2cl.java.util.TimeZone=America/*,Europe/*,Asia/*,Australia/*,Etc/GMT,GMT,UTC</arg>
                         <arg>-Awalkingkooka.j2cl.locale.Logging=SLASH_SLASH_COMMENTS</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>
+
             <!-- Setup testing -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -319,6 +318,7 @@
                         <exclude>org/threeten/bp/zone/TzdbZoneRulesCompiler*</exclude>
                         <exclude>META-INF/services/org.threeten.bp.zone.ZoneRulesProvider</exclude>
                         <exclude>walkingkooka/j2cl/java/util/locale/LocaleProvider*</exclude>
+                        <exclude>walkingkooka/j2cl/java/util/timezone/support/TimeZoneProvider.*</exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -349,6 +349,7 @@
                                 <exclude>org/threeten/bp/zone/TzdbZoneRulesCompiler*</exclude>
                                 <exclude>META-INF/services/org.threeten.bp.zone.ZoneRulesProvider</exclude>
                                 <exclude>walkingkooka/j2cl/java/util/locale/LocaleProvider*</exclude>
+                                <exclude>walkingkooka/j2cl/java/util/timezone/support/TimeZoneProvider.*</exclude>
                             </excludes>
                         </configuration>
                     </execution>
