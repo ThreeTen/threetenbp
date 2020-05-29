@@ -23,29 +23,6 @@ package walkingkooka.j2cl.java.time;
 public final class Pattern {
 
     /**
-     * Replaces the j2cl unsupported {@link java.util.regex.Pattern} used to validate the {@link String zoneId}
-     */
-    // Pattern.compile("[A-Za-z][A-Za-z0-9~/._+-]+");
-    public static boolean isZoneId(final String zoneId) {
-        boolean valid = isAlpha(zoneId.charAt(0));
-        final int length = zoneId.length();
-        int i = 1;
-
-        while (valid && i < length) {
-            final char c = zoneId.charAt(i);
-            valid &= isAlpha(c) || "0123456789~/._+-".indexOf(c) != -1;
-            i++;
-        }
-
-        return valid;
-    }
-
-    private static boolean isAlpha(final char c) {
-        return (c >= 'A' && c <= 'Z') ||
-                (c >= 'a' && c <= 'z');
-    }
-
-    /**
      * Obtains a {@code Period} from a text string such as {@code PnYnMnD}.
      * <p>
      * This will parse the string produced by {@code toString()} which is
