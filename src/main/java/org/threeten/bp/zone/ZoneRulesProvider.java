@@ -35,11 +35,10 @@ import org.threeten.bp.DateTimeException;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.jdk8.Jdk8Methods;
+import walkingkooka.j2cl.java.io.string.StringDataInputDataOutput;
 import walkingkooka.j2cl.java.time.JdkCollections;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -86,13 +85,15 @@ public abstract class ZoneRulesProvider {
     static {
 //        ZoneRulesInitializer.initialize();
 //        final TzdbZoneRulesProvider tzdb = new TzdbZoneRulesProvider();
-        try {
-            final TzdbZoneRulesProvider tzdb = new TzdbZoneRulesProvider();
-            tzdb.load(new ByteArrayInputStream(Base64.getDecoder().decode(TZDBDat.tzdb())));
-            registerProvider(tzdb);
-        } catch (final IOException cause) {
-            throw new Error("Unable to load timezone dat file", cause);
-        }
+//        try {
+            //final TzdbZoneRulesProvider tzdb = new TzdbZoneRulesProvider();
+            ////StringDataInputDataOutput.input(walkingkooka.j2cl.java.util.timezone.support.TimeZoneProvider.DATA);
+            //tzdb.load(null/*StringDataInputDataOutput.input(walkingkooka.j2cl.java.util.timezone.support.TimeZoneProvider.DATA)*/);
+
+            registerProvider(TimeZoneProviderZoneRulesProvider.load());
+//        } catch (final IOException cause) {
+//            throw new Error("Unable to load timezone dat file", cause);
+//        }
     }
 
     //-------------------------------------------------------------------------
