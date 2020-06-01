@@ -277,6 +277,7 @@
                         <arg>-Awalkingkooka.j2cl.java.util.TimeZone=America/*,Europe/*,Asia/*,Australia/*,Etc/GMT,GMT,UTC</arg>
                         <arg>-Awalkingkooka.j2cl.locale.Logging=SLASH_SLASH_COMMENTS</arg>
                     </compilerArgs>
+                    <showWarnings>true</showWarnings>
                 </configuration>
             </plugin>
 
