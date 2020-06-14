@@ -38,14 +38,8 @@ import java.util.stream.Collectors;
 
 
 @J2clTestInput(JunitTest.class)
-public class JunitTest {
-
-    @BeforeClass
-    public static void setDefaultLocale() {
-        Locale.setDefault(Locale.forLanguageTag("EN-AU"));
-        TimeZone.setDefault(TimeZone.getTimeZone("Australia/Sydney"));
-    }
-
+public final class JunitTest {
+    
     @Test
     public void testDateTimeFormatterFormatLocalDate() {
         this.formatAndCheck(DateTimeFormatter.ISO_LOCAL_DATE,
