@@ -220,9 +220,8 @@
                                 <jre.checkedMode>DISABLED</jre.checkedMode>
                                 <jre.checks.checkLevel>MINIMAL</jre.checks.checkLevel>
                                 <jsinterop.checks>DISABLED</jsinterop.checks>
-                                <!--
                                 <walkingkooka.j2cl.java.util.locale.Locale.DEFAULT>EN-AU</walkingkooka.j2cl.java.util.locale.Locale.DEFAULT>
-                                -->
+                                <walkingkooka.j2cl.java.util.timezone.TimeZone.DEFAULT>Australia/Sydney</walkingkooka.j2cl.java.util.timezone.TimeZone.DEFAULT>
                             </defines>
                             <externs/>
                             <formatting>
