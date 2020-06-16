@@ -53,13 +53,6 @@ The currency code `XXX` must be selected as it is used by various `java.text` cl
 
 
 
-## Project
-
-A goal is to leave source in their original package `org.threeten.bp` and correct this in the distributed zip containing 
-the javascript. Another goal is to support executing as many as possible of the original backport tests.
-
-
-
 ## Getting the source
 
 You can either download the source using the "ZIP" button at the top
