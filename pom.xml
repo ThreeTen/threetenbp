@@ -361,67 +361,6 @@
                             <goal>jar-no-fork</goal>
                         </goals>
                     </execution>
-                    <execution>
-                        <id>attach-no-tztb-sources</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                        <configuration>
-                            <classifier>no-tzdb-sources</classifier>
-                            <excludes>
-                                <exclude>org/threeten/bp/*.dat</exclude>
-                                <exclude>org/threeten/bp/zone/TzdbZoneRulesCompiler*</exclude>
-                                <exclude>META-INF/services/org.threeten.bp.zone.ZoneRulesProvider</exclude>
-                                <exclude>walkingkooka/j2cl/java/util/locale/LocaleProvider*</exclude>
-                                <exclude>walkingkooka/j2cl/java/util/timezone/support/TimeZoneProvider.*</exclude>
-                            </excludes>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- this plugin must be run after the maven-jar-plugin & maven-sources-plugin above as it replaces the POM both-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <id>replace-pom</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target>
-                                <delete dir="${project.build.directory}/.maven-replace-pom"/>
-                                <mkdir dir="${project.build.directory}/.maven-replace-pom"/>
-                                <unzip src="${project.build.directory}/${project.build.finalName}.jar"
-                                       dest="${project.build.directory}/.maven-replace-pom"/>
-                                <move file="${project.build.directory}/.maven-replace-pom/META-INF/maven/walkingkooka/j2cl-java-time/pom.xml"
-                                      tofile="${project.build.directory}/.maven-replace-pom/META-INF/maven/walkingkooka/j2cl-java-time/pom.xml.bak"
-                                      failonerror="true"/>
-                                <copy file="${basedir}/src/maven/pom.xml"
-                                      tofile="${project.build.directory}/.maven-replace-pom/META-INF/maven/walkingkooka/j2cl-java-time/pom.xml"/>
-                                <delete dir="${project.build.directory}/${project.build.finalName}.jar"/>
-                                <zip destfile="${project.build.directory}/${project.build.finalName}.jar"
-                                     basedir="${project.build.directory}/.maven-replace-pom"/>
-
-                                <delete dir="${project.build.directory}/.maven-replace-pom"/>
-                                <mkdir dir="${project.build.directory}/.maven-replace-pom"/>
-                                <unzip src="${project.build.directory}/${project.build.finalName}-sources.jar"
-                                       dest="${project.build.directory}/.maven-replace-pom"/>
-                                <move file="${project.build.directory}/.maven-replace-pom/META-INF/maven/walkingkooka/j2cl-java-time/pom.xml"
-                                      tofile="${project.build.directory}/.maven-replace-pom/META-INF/maven/walkingkooka/j2cl-java-time/pom.xml.bak"
-                                      failonerror="true"/>
-                                <copy file="${basedir}/src/maven/pom.xml"
-                                      tofile="${project.build.directory}/.maven-replace-pom/META-INF/maven/walkingkooka/j2cl-java-time/pom.xml"/>
-                                <delete dir="${project.build.directory}/${project.build.finalName}.jar"/>
-                                <zip destfile="${project.build.directory}/${project.build.finalName}-sources.jar"
-                                     basedir="${project.build.directory}/.maven-replace-pom"/>
-                            </target>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
             <plugin>
