@@ -39,7 +39,14 @@ import java.util.stream.Collectors;
 
 @J2clTestInput(JunitTest.class)
 public final class JunitTest {
-    
+
+    @Test
+    public void testLocalDateEpoch() {
+        this.formatAndCheck(DateTimeFormatter.ISO_LOCAL_DATE,
+                LocalDate.EPOCH,
+                "1970-01-01");
+    }
+
     @Test
     public void testDateTimeFormatterFormatLocalDate() {
         this.formatAndCheck(DateTimeFormatter.ISO_LOCAL_DATE,
