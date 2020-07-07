@@ -55,8 +55,6 @@ The currency code `XXX` must be selected as it is used by various `java.text` cl
 
 ## File sizes
 
-
-
 Builds were repeated on [JunitTest](https://github.com/mP1/j2cl-java-time/blob/master/src/it/junit-test/src/test/java/test/JunitTest.java) 
 with only the selection of Locale and Timezone changed. Building has been done with `compilationLevel=ADVANCED` so that
 dead code is pruned and everything is obsfucated and minified. 
@@ -66,7 +64,11 @@ a JRE component such as `java.text.DateFormatSymbols` and so on.
 
 
 
-EN-NZ, Australia/* 304k, 94k compressed, 1 Locale, All Australian Timezone data
+### EN-NZ, Australia/* 304k, 94k compressed
+
+TimeZones: 23 All Australian.
+Locale: 2
+
 ```text
 LocaleProviderAnnotationProcessor generated walkingkooka.j2cl.java.util.locale.LocaleProvider.java, 1 Locale(s) selected by "EN-NZ", data: 15 char(s), utf-8: 15 byte(s), gzipped 33 byte(s)
 DateFormatSymbolsProviderAnnotationProcessor generated walkingkooka.j2cl.java.text.DateFormatSymbolsProvider.java, 1 Locale(s) selected by "EN-NZ", data: 256 char(s), utf-8: 256 byte(s), gzipped 177 byte(s)
@@ -79,7 +81,11 @@ CurrencyProviderAnnotationProcessor generated walkingkooka.j2cl.java.util.curren
 
 
 
-EN-NZ, EN-AU, Australia/* 305k, 94k compressed, 2 Locales, All Australian Timezone data
+### EN-NZ, EN-AU, Australia/* 305k, 94k compressed
+
+TimeZones: 23 All Australian.
+Locale: 2
+
 ```text
 LocaleProviderAnnotationProcessor generated walkingkooka.j2cl.java.util.locale.LocaleProvider.java, 2 Locale(s) selected by "EN-NZ,EN-AU", data: 29 char(s), utf-8: 29 byte(s), gzipped 41 byte(s)
 DateFormatSymbolsProviderAnnotationProcessor generated walkingkooka.j2cl.java.text.DateFormatSymbolsProvider.java, 2 Locale(s) selected by "EN-NZ,EN-AU", data: 529 char(s), utf-8: 529 byte(s), gzipped 229 byte(s)
@@ -92,7 +98,9 @@ CurrencyProviderAnnotationProcessor generated walkingkooka.j2cl.java.util.curren
 
 
 
-EN-*, Australia/* 342k, ~ 100k compressed, Timezone ids: 23 All Australian, locales: 105
+### EN-*, Australia/* 342k, ~ 100k compressed
+
+TimeZones: 23 All Australian.
 Locales: "en-001,en-150,en-AG,en-AI,en-AS,en-AT,en-AU,en-BB,en-BE,en-BI,en-BM,en-BS,en-BW,en-BZ,en-CA,en-CC,en-CH,en-CK,en-CM,en-CX,en-CY,en-DE,en-DG,en-DK,en-DM,en-ER,en-FI,en-FJ,en-FK,en-FM,en-GB,en-GD,en-GG,en-GH,en-GI,en-GM,en-GU,en-GY,en-HK,en-IE,en-IL,en-IM,en-IN,en-IO,en-JE,en-JM,en-KE,en-KI,en-KN,en-KY,en-LC,en-LR,en-LS,en-MG,en-MH,en-MO,en-MP,en-MS,en-MT,en-MU,en-MW,en-MY,en-NA,en-NF,en-NG,en-NL,en-NR,en-NU,en-NZ,en-PG,en-PH,en-PK,en-PN,en-PR,en-PW,en-RW,en-SB,en-SC,en-SD,en-SE,en-SG,en-SH,en-SI,en-SL,en-SS,en-SX,en-SZ,en-TC,en-TK,en-TO,en-TT,en-TV,en-TZ,en-UG,en-UM,en-US,en-US-POSIX,en-VC,en-VG,en-VI,en-VU,en-WS,en-ZA,en-ZM,en-ZW"
 
 ```text
