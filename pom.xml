@@ -343,8 +343,7 @@
                         <exclude>org/threeten/bp/*.dat</exclude>
                         <exclude>org/threeten/bp/zone/TzdbZoneRulesCompiler*</exclude>
                         <exclude>META-INF/services/org.threeten.bp.zone.ZoneRulesProvider</exclude>
-                        <exclude>walkingkooka/j2cl/java/text/**</exclude>
-                        <exclude>walkingkooka/j2cl/java/util/**</exclude>
+                        <exclude>walkingkooka/j2cl/java/**/*Provider*</exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -357,8 +356,7 @@
                         <exclude>org/threeten/bp/*.dat</exclude>
                         <exclude>org/threeten/bp/zone/TzdbZoneRulesCompiler*</exclude>
                         <exclude>META-INF/services/org.threeten.bp.zone.ZoneRulesProvider</exclude>
-                        <exclude>walkingkooka/j2cl/java/text/**</exclude>
-                        <exclude>walkingkooka/j2cl/java/util/**</exclude>
+                        <exclude>walkingkooka/j2cl/java/**/*Provider*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
