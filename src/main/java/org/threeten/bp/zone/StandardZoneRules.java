@@ -38,6 +38,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -46,10 +47,14 @@ import org.threeten.bp.Duration;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.LocalTime;
 import org.threeten.bp.Year;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.jdk8.Jdk8Methods;
 import walkingkooka.j2cl.java.time.JdkCollections;
+import walkingkooka.j2cl.locale.Calendar;
+import walkingkooka.j2cl.locale.GregorianCalendar;
+import walkingkooka.j2cl.locale.TimeZoneOffsetAndDaylightSavings;
 
 /**
  * The rules describing how the zone offset varies through the year and historically.
@@ -59,7 +64,8 @@ import walkingkooka.j2cl.java.time.JdkCollections;
  * <h3>Specification for implementors</h3>
  * This class is immutable and thread-safe.
  */
-final class StandardZoneRules extends ZoneRules implements Serializable {
+public
+final class StandardZoneRules extends ZoneRules implements Serializable, TimeZoneOffsetAndDaylightSavings {
 
     /**
      * Serialization version.
@@ -245,6 +251,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
      * @return the created object, not null
      * @throws IOException if an error occurs
      */
+    public
     static StandardZoneRules readExternal(DataInput in) throws IOException {
         int stdSize = in.readInt();
         long[] stdTrans = new long[stdSize];
@@ -609,4 +616,115 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
         return "StandardZoneRules[currentStandardOffset=" + standardOffsets[standardOffsets.length - 1] + "]";
     }
 
+    // implement TimeZoneOffsetAndDaylightSavings.......................................................................
+
+    @Override
+    public boolean inDaylightTime(final Date time) {
+        return this.isDaylightSavings(Instant.ofEpochMilli(time.getTime()));
+    }
+
+    /**
+     * Gets the offset from GMT of this {@code TimeZone} for the specified date and
+     * time. The offset includes daylight savings time if the specified date and
+     * time are within the daylight savings time period.
+     *
+     * @param era       the {@code GregorianCalendar} era, either {@code GregorianCalendar.BC} or
+     *                  {@code GregorianCalendar.AD}.
+     * @param year      the year.
+     * @param month     the {@code Calendar} month.
+     * @param day       the day of the month.
+     * @param dayOfWeek the {@code Calendar} day of the week.
+     * @param time      the time of day in milliseconds.
+     * @return the offset from GMT in milliseconds.
+     */
+    @Override
+    public int getOffset(final int era,
+                         final int year,
+                         final int month,
+                         final int day,
+                         final int dayOfWeek,
+                         final int time) {
+        if (GregorianCalendar.AD != era) {
+            throw new IllegalArgumentException("Invalid era " + era + " only AD supported"); // TODO add BC support.
+        }
+        // checkRange/checkDay/isLeapYear copied from ApacheHarmony's java.util.TimeZone.getOffset(int,int,int,int,int,int);
+        checkRange(month, dayOfWeek, time);
+        if (month != Calendar.FEBRUARY || day != 29 || !isLeapYear(year)) {
+            checkDay(month, day);
+        }
+
+        final LocalTime localTime = LocalTime.ofNanoOfDay(time/ 1000);
+
+        return this.getOffset(Instant.ofEpochMilli(new Date(year - YEAR_BIAS,
+                month,
+                day,
+                localTime.getHour(),
+                localTime.getMinute())
+                .getTime())).getTotalSeconds() * 1000;
+    }
+
+    private void checkRange(int month, int dayOfWeek, int time) {
+        if (month < Calendar.JANUARY || month > Calendar.DECEMBER) {
+            //throw new IllegalArgumentException(Messages.getString("luni.3D", month)); //$NON-NLS-1$
+            throw new IllegalArgumentException("Invalid month: " + month); //$NON-NLS-1$
+        }
+        if (dayOfWeek < Calendar.SUNDAY || dayOfWeek > Calendar.SATURDAY) {
+//            throw new IllegalArgumentException(Messages
+//                    .getString("luni.48", dayOfWeek)); //$NON-NLS-1$
+            throw new IllegalArgumentException("Invalid dayOfWeek: " + dayOfWeek);
+        }
+        if (time < 0 || time >= 24 * 3600000) {
+//            throw new IllegalArgumentException(Messages.getString("luni.3E", time)); //$NON-NLS-1$
+            throw new IllegalArgumentException("Invalid time " + time);
+        }
+    }
+
+    private void checkDay(int month, int day) {
+        if (day <= 0 || day > GregorianCalendar.DaysInMonth[month]) {
+            //throw new IllegalArgumentException(Messages.getString("luni.3F", day)); //$NON-NLS-1$
+            throw new IllegalArgumentException("Invalid day " + day + " must be between 0 and " + GregorianCalendar.DaysInMonth[month]); //$NON-NLS-1$
+        }
+    }
+
+    private boolean isLeapYear(int year) {
+        if (year > 1582) {
+            return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
+        }
+        return year % 4 == 0;
+    }
+
+    final static int YEAR_BIAS = 1900;
+
+    @Override
+    public final int getOffset(final long time) {
+        final int millisOnly = (int)(time % 1000);
+        return this.getOffset(Instant.ofEpochMilli(time))
+                .getTotalSeconds() * 1000 + millisOnly;
+    }
+
+    /**
+     * <a href="https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html#observesDaylightTime()"></a>
+     */
+    @Override
+    public boolean observesDaylightTime() {
+        return this.useDaylightTime() || this.inDaylightTime(new Date());
+    }
+
+    /**
+     * Returns whether this {@code TimeZone} has a daylight savings time period.
+     *
+     * @return {@code true} if this {@code TimeZone} has a daylight savings time period, {@code false}
+     * otherwise.
+     */
+    @Override
+    public boolean useDaylightTime() {
+        return this.useDaylightTimeTransitionRules();
+    }
+
+    /**
+     * If any rules exist daylight savings must be happening.
+     */
+    private boolean useDaylightTimeTransitionRules() {
+        return this.getTransitionRules().size() >= 2;
+    }
 }
