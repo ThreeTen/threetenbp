@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>walkingkooka</groupId>
+    <artifactId>j2cl-java-time-it-timezone-test</artifactId>
+    <version>1.0</version>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <inceptionYear>2020</inceptionYear>
+
+    <properties>
+        <maven.compiler.source>1.9</maven.compiler.source>
+        <maven.compiler.target>1.9</maven.compiler.target>
+        <maven.compiler.plugin>3.7.0</maven.compiler.plugin>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>github-mp1-appengine-repo</id>
+            <url>https://maven-repo-254709.appspot.com</url>
+        </repository>
+        <repository>
+            <id>vertispan-releases</id>
+            <name>Vertispan hosted artifacts-releases</name>
+            <url>https://repo.vertispan.com/j2cl</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>vertispan-gwt-snapshots</id>
+            <url>https://repo.vertispan.com/gwt-snapshot/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>google-sonatype-snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/google-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>github-mp1-appengine-repo</id>
+            <url>https://maven-repo-254709.appspot.com</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>vertispan-releases</id>
+            <name>Vertispan hosted artifacts-releases</name>
+            <url>https://repo.vertispan.com/j2cl</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>vertispan-gwt-snapshots</id>
+            <url>https://repo.vertispan.com/gwt-snapshot/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>google-sonatype-snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/google-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>@project.groupId@</groupId>
+            <artifactId>@project.artifactId@</artifactId>
+            <version>@project.version@</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apiguardian</groupId>
+                    <artifactId>apiguardian-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.junit.platform</groupId>
+                    <artifactId>junit-platform-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>walkingkooka</groupId>
+            <artifactId>j2cl-uber-test</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <testResources>
+            <testResource>
+                <directory>src/test/java</directory>
+            </testResource>
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
+        </testResources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.plugin}</version>
+                <configuration>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>default-Compile</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <phase>compile</phase>
+                    </execution>
+                    <execution>
+                        <id>default-testCompile</id>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                        <phase>test-compile</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>walkingkooka</groupId>
+                <artifactId>j2cl-maven-plugin</artifactId>
+                <version>1.0-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <id>j2cl-java-time-it-timezone-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <browsers>
+                                <param>CHROME</param>
+                            </browsers>
+                            <classpath-scope>test</classpath-scope>
+                            <compilation-level>SIMPLE</compilation-level>
+                            <defines>
+                                <gwt.cspCompatModeEnabled>true</gwt.cspCompatModeEnabled>
+                                <gwt.enableDebugId>true</gwt.enableDebugId>
+                                <gwt.strictCspTestingEnabled>true</gwt.strictCspTestingEnabled>
+                                <jre.checkedMode>DISABLED</jre.checkedMode>
+                                <jre.checks.checkLevel>MINIMAL</jre.checks.checkLevel>
+                                <jsinterop.checks>DISABLED</jsinterop.checks>
+                                <walkingkooka.j2cl.java.util.locale.Locale.DEFAULT>EN-AU</walkingkooka.j2cl.java.util.locale.Locale.DEFAULT>
+                                <walkingkooka.j2cl.java.util.timezone.TimeZone.DEFAULT>Australia/Hobart</walkingkooka.j2cl.java.util.timezone.TimeZone.DEFAULT>
+                            </defines>
+                            <externs/>
+                            <formatting>
+                                <param>PRETTY_PRINT</param>
+                            </formatting>
+                            <java-compiler-arguments>
+                                <param>-Awalkingkooka.j2cl.java.util.Locale=,EN-*,DE-DE</param>
+                                <param>-Awalkingkooka.j2cl.java.util.TimeZone=Australia/*,Europe/*</param>
+                                <param>-Awalkingkooka.j2cl.locale.Logging=SLASH_SLASH_COMMENTS</param>
+                            </java-compiler-arguments>
+                            <language-out>ECMASCRIPT_2016</language-out>
+                            <!-- dont want to parallelize -->
+                            <thread-pool-size>0</thread-pool-size>
+
+                            <classpath-required/>
+                            <ignored-dependencies>
+                                <param>org.junit.jupiter:junit-jupiter-engine:*</param>
+                                <param>org.junit.platform:junit-platform-commons:*</param>
+                                <param>org.junit.jupiter:junit-jupiter-api:*</param>
+                                <param>walkingkooka:walkingkooka-text-printer:*</param>
+                            </ignored-dependencies>
+                            <javascript-source-required/>
+
+                            <skip-tests>false</skip-tests>
+                            <tests>
+                                <test>test.JunitTest</test>
+                            </tests>
+                            <test-timeout>20</test-timeout>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+
+    </build>
+</project>
