@@ -43,7 +43,7 @@ import org.threeten.bp.jdk8.Jdk8Methods;
 import org.threeten.bp.zone.ZoneRules;
 import org.threeten.bp.zone.ZoneRulesException;
 import org.threeten.bp.zone.ZoneRulesProvider;
-import org.threeten.bp.zone.support.Pattern;
+import walkingkooka.j2cl.java.time.Pattern;
 
 /**
  * A geographical region where the same time-zone rules apply.
