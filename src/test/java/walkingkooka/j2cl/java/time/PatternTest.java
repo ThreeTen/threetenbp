@@ -27,6 +27,123 @@ import static org.testng.Assert.assertNotNull;
 @Test
 public final class PatternTest {
 
+    @org.junit.jupiter.api.Test
+    public void testFirstNonAlpha() {
+        this.isZoneIdAndCheck("9AA", false);
+    }
+
+    @org.junit.jupiter.api.Test
+    public void testAlphaAlpha() {
+        this.isZoneIdAndCheck("AA", true);
+    }
+
+    @org.junit.jupiter.api.Test
+    public void testAlphaAlpha2() {
+        this.isZoneIdAndCheck("AZ", true);
+    }
+
+    @org.junit.jupiter.api.Test
+    public void testAlphaAlpha3() {
+        this.isZoneIdAndCheck("Aa", true);
+    }
+
+    @org.junit.jupiter.api.Test
+    public void testAlphaAlpha4() {
+        this.isZoneIdAndCheck("Az", true);
+    }
+
+    @org.junit.jupiter.api.Test
+    public void testAlphaAlpha5() {
+        this.isZoneIdAndCheck("ZA", true);
+    }
+
+    @org.junit.jupiter.api.Test
+    public void testAlphaAlpha6() {
+        this.isZoneIdAndCheck("ZZ", true);
+    }
+
+    @org.junit.jupiter.api.Test
+    public void testAlphaAlpha7() {
+        this.isZoneIdAndCheck("aA", true);
+    }
+
+    @org.junit.jupiter.api.Test
+    public void testAlphaAlpha8() {
+        this.isZoneIdAndCheck("aZ", true);
+    }
+
+    @org.junit.jupiter.api.Test
+    public void testAlphaAlpha9() {
+        this.isZoneIdAndCheck("zA", true);
+    }
+
+    @org.junit.jupiter.api.Test
+    public void testAlphaAlpha10() {
+        this.isZoneIdAndCheck("zZ", true);
+    }
+
+    @org.junit.jupiter.api.Test
+    public void testAlphaAlphaAlpha() {
+        this.isZoneIdAndCheck("ABC", true);
+    }
+
+    @org.junit.jupiter.api.Test
+    public void testAlphaDigit() {
+        this.isZoneIdAndCheck("A0", true);
+    }
+
+    @org.junit.jupiter.api.Test
+    public void testAlphaDigit2() {
+        this.isZoneIdAndCheck("A9", true);
+    }
+
+    @org.junit.jupiter.api.Test
+    public void testAlphaTilde() {
+        this.isZoneIdAndCheck("A~", true);
+    }
+
+    @org.junit.jupiter.api.Test
+    public void testAlphaSlash() {
+        this.isZoneIdAndCheck("A/", true);
+    }
+
+    @org.junit.jupiter.api.Test
+    public void testAlphaDot() {
+        this.isZoneIdAndCheck("A.", true);
+    }
+
+    @org.junit.jupiter.api.Test
+    public void testAlphaUnderscore() {
+        this.isZoneIdAndCheck("A_", true);
+    }
+
+    @org.junit.jupiter.api.Test
+    public void testAlphaPlus() {
+        this.isZoneIdAndCheck("A+", true);
+    }
+
+    @org.junit.jupiter.api.Test
+    public void testAlphaMinus() {
+        this.isZoneIdAndCheck("A-", true);
+    }
+
+    @org.junit.jupiter.api.Test
+    public void testLong() {
+        this.isZoneIdAndCheck("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~/._+-", true);
+    }
+
+    @org.junit.jupiter.api.Test
+    public void testAlphaInvalid() {
+        this.isZoneIdAndCheck("AAAA ", false);
+    }
+
+    private static void isZoneIdAndCheck(final String zoneId,
+                                         final boolean expected) {
+        assertEquals(Pattern.isZoneId(zoneId),
+                expected,
+                "zoneId " + CharSequences.quoteAndEscape(zoneId));
+    }
+    
     // Pattern.periodParse..............................................................................................
 
     @Test
