@@ -107,12 +107,12 @@
             <version>@project.version@</version>
             <exclusions>
                 <exclusion>
-                    <groupId>org.apiguardian</groupId>
-                    <artifactId>apiguardian-api</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>org.junit.platform</groupId>
                     <artifactId>junit-platform-engine</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.testng</groupId>
+                    <artifactId>testng</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -122,6 +122,16 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.10</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <testResources>
