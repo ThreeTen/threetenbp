@@ -35,9 +35,8 @@ and `java.util.TimeZone` selected for bundling.
 - `java.time.chrono.Era#getDisplayName` has been removed. [Ticket](https://github.com/mP1/j2cl-java-time/issues/98).
 - `java.time.chrono.HijrahDate` support for loading a deviation file given by a system property has been removed. [Ticket](https://github.com/mP1/j2cl-java-time/issues/96)
 - `java.time.chrono.Month#getDisplayName` has been removed. [Ticket](https://github.com/mP1/j2cl-java-time/issues/100).
-- `java.time.format.DecimalStyle`, APIs using `java.util.Locale` are not available and was removed. [Ticket](https://github.com/mP1/j2cl-java-time/issues/97)
-- Serialization of any class is not supported.
 - `java.time.zone.ZoneId#getDisplay` has been removed. [Ticket](https://github.com/mP1/j2cl-java-time/issues/101).
+- Serialization of any class is not supported.
 
 
 
