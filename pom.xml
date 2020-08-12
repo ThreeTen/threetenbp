@@ -380,7 +380,7 @@
                 <configuration>
                     <cloneProjectsTo>${project.build.directory}/it-tests</cloneProjectsTo>
                     <debug>true</debug>
-                    <invokerPropertiesFile>${project.build.directory}/it-repo/invoker.properties</invokerPropertiesFile>
+                    <invokerPropertiesFile>src/it/invoker.properties</invokerPropertiesFile>
                     <localRepositoryPath>${project.build.directory}/it-repo</localRepositoryPath>
                     <settingsFile>src/it/settings.xml</settingsFile>
                     <streamLogs>false</streamLogs>
