@@ -129,6 +129,14 @@
         <repository>
             <id>github-mp1-appengine-repo</id>
             <url>https://maven-repo-254709.appspot.com</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </snapshots>
         </repository>
         <repository>
             <id>vertispan-releases</id>
