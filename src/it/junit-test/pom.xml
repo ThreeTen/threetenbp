@@ -46,16 +46,6 @@
             <groupId>@project.groupId@</groupId>
             <artifactId>@project.artifactId@</artifactId>
             <version>@project.version@</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.junit.platform</groupId>
-                    <artifactId>junit-platform-engine</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.testng</groupId>
-                    <artifactId>testng</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>walkingkooka</groupId>
@@ -165,7 +155,6 @@
                                 <param>org.junit.jupiter:junit-jupiter-engine:*</param>
                                 <param>org.junit.platform:junit-platform-commons:*</param>
                                 <param>org.junit.jupiter:junit-jupiter-api:*</param>
-                                <param>walkingkooka:walkingkooka-text-printer:*</param>
                             </ignored-dependencies>
                             <javascript-source-required/>
 
