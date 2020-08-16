@@ -130,7 +130,6 @@
                                 <param>-Awalkingkooka.j2cl.locale.Logging=SLASH_SLASH_COMMENTS</param>
                             </java-compiler-arguments>
                             <language-out>ECMASCRIPT_2016</language-out>
-                            <!-- dont want to parallelize -->
                             <thread-pool-size>0</thread-pool-size>
 
                             <classpath-required/>
