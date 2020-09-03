@@ -122,6 +122,7 @@
                             <goal>test</goal>
                         </goals>
                         <configuration>
+                            <browser-log-level>ALL</browser-log-level>
                             <browsers>
                                 <param>CHROME</param>
                             </browsers>
