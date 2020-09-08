@@ -7,15 +7,19 @@
 
 # java.time
 
-This project aims to provide an emulated subset of `java.time` by taking a fork of [threetenbp](https://github.com/ThreeTen/threetenbp)
-and minimal changes primarily due to j2cl and browser limitations such as reading files. 
+This project aims to provide an most of `java.time` by taking a fork of [threetenbp](https://github.com/ThreeTen/threetenbp).
 
-- Only `java.time` imports should be used.
-- All `org.threeten.bp` source is shaded to `java.time` during the build and not available in transpiled code.
-- The public APIs for both are almost identical from class names, fields and method signatures.
+- Only `java.time` imports should be used, the `org.threeten.bp` source is shaded to `java.time` during the build and not available in transpiled code.
+- The public APIs for both `java.time` and `org.threetenbp` are almost identical in the vast majority of class names, methods and fields.
+- Many other java packages are required by `java.time` and are not currently emulated by the JRE provided by [j2cl](https://github.com/google/j2cl).
+- The missing JRE packages are provided and listed at [additional java packages](https://github.com/mP1/j2cl-central#jre-emulation).
 
 
-## org.threeten.bp changes
+
+## org.threeten.bp
+
+Changes have been kept to a minimum when porting `org.threeten.bp`. It should be relatively straightforward to pull
+updates from the original when necessary. 
 
 - Unnecessary code has been commented out as much as possible.
 - Replacing `java.util.regex.Pattern` with a pure java equivalent
@@ -59,13 +63,15 @@ with only the selection of Locale and Timezone changed. Building has been done w
 dead code is pruned and everything is obsfucated and minified. 
 
 Each sample includes the selected locales and timezone along with some logging that reports the actual size of data for
-a JRE component such as `java.text.DateFormatSymbols` and so on.
+a JRE component such as `java.text.DateFormatSymbols` and so on. The selected logging text is taken from the log generated
+during the build by [j2cl-maven-plugin](https://github.com/mP1/j2cl-maven-plugin).
 
 
 
 ### EN-NZ, Australia/* 287k, 89k compressed
 
 TimeZones: 23 All Australian.
+
 Locale: 2
 
 ```text
@@ -83,6 +89,7 @@ CurrencyProviderAnnotationProcessor generated walkingkooka.j2cl.java.util.curren
 ### EN-NZ, EN-AU, Australia/* 288k, 89k compressed
 
 TimeZones: 23 All Australian.
+
 Locale: 2
 
 ```text
@@ -99,6 +106,7 @@ CurrencyProviderAnnotationProcessor generated walkingkooka.j2cl.java.util.curren
 
 ### EN-*, Australia/* 326k 94k compressed
 TimeZones: 23 All Australian.
+
 Locales: "en-001,en-150,en-AG,en-AI,en-AS,en-AT,en-AU,en-BB,en-BE,en-BI,en-BM,en-BS,en-BW,en-BZ,en-CA,en-CC,en-CH,en-CK,en-CM,en-CX,en-CY,en-DE,en-DG,en-DK,en-DM,en-ER,en-FI,en-FJ,en-FK,en-FM,en-GB,en-GD,en-GG,en-GH,en-GI,en-GM,en-GU,en-GY,en-HK,en-IE,en-IL,en-IM,en-IN,en-IO,en-JE,en-JM,en-KE,en-KI,en-KN,en-KY,en-LC,en-LR,en-LS,en-MG,en-MH,en-MO,en-MP,en-MS,en-MT,en-MU,en-MW,en-MY,en-NA,en-NF,en-NG,en-NL,en-NR,en-NU,en-NZ,en-PG,en-PH,en-PK,en-PN,en-PR,en-PW,en-RW,en-SB,en-SC,en-SD,en-SE,en-SG,en-SH,en-SI,en-SL,en-SS,en-SX,en-SZ,en-TC,en-TK,en-TO,en-TT,en-TV,en-TZ,en-UG,en-UM,en-US,en-US-POSIX,en-VC,en-VG,en-VI,en-VU,en-WS,en-ZA,en-ZM,en-ZW"
 
 ```text
@@ -131,4 +139,4 @@ You can either download the source using the "ZIP" button at the top
 of the github page, or you can make a clone using git:
 
 ```
-git clone git://github.com/mP1/j2cl-java-text.git
+git clone git://github.com/mP1/j2cl-java-time.git
