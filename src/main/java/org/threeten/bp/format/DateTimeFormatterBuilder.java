@@ -3058,6 +3058,7 @@ public final class DateTimeFormatterBuilder {
             "+HH", "+HHmm", "+HH:mm", "+HHMM", "+HH:MM", "+HHMMss", "+HH:MM:ss", "+HHMMSS", "+HH:MM:SS",
         };  // order used in pattern builder
         static final OffsetIdPrinterParser INSTANCE_ID = new OffsetIdPrinterParser("Z", "+HH:MM:ss");
+        static final OffsetIdPrinterParser INSTANCE_ID_ZERO = new OffsetIdPrinterParser("0", "+HH:MM:ss");
 
         private final String noOffsetText;
         private final int type;
@@ -3382,6 +3383,31 @@ public final class DateTimeFormatterBuilder {
 
         @Override
         public int parse(DateTimeParseContext context, CharSequence text, int position) {
+            // handle fixed offsets
+            int len = text.length();
+            if (position > len) {
+                throw new IndexOutOfBoundsException();
+            }
+            if (position == len) {
+                return ~position;
+            }
+            char first = text.charAt(position);
+            if (first == '+' || first == '-') {
+                if (position + 6 > len) {
+                    return ~position;
+                }
+                return parseOffset(context, text, position, "");
+            }
+            if (context.subSequenceEquals(text, position, "GMT", 0, 3)) {
+                return parseOffset(context, text, position, "GMT");
+            }
+            if (context.subSequenceEquals(text, position, "UTC", 0, 3)) {
+                return parseOffset(context, text, position, "UTC");
+            }
+            if (context.subSequenceEquals(text, position, "UT", 0, 2)) {
+                return parseOffset(context, text, position, "UT");
+            }
+
             // this is a poor implementation that handles some but not all of the spec
             // JDK8 has a lot of extra information here
             Map<String, String> ids = new TreeMap<String, String>(LENGTH_COMPARATOR);
@@ -3405,7 +3431,39 @@ public final class DateTimeFormatterBuilder {
                     return position + name.length();
                 }
             }
+            if (first == 'Z') {
+                context.setParsed(ZoneOffset.UTC);
+                return position + 1;
+            }
             return ~position;
+        }
+
+        private int parseOffset(DateTimeParseContext context, CharSequence text, int position, String prefix) {
+            int prefixLen = prefix.length();
+            int searchPos = position + prefixLen;
+            if (searchPos >= text.length()) {
+                context.setParsed(ZoneId.of(prefix));
+                return searchPos;
+            }
+            char first = text.charAt(searchPos);
+            if (first != '+' && first != '-') {
+                context.setParsed(ZoneId.of(prefix));
+                return searchPos;
+            }
+            DateTimeParseContext contextCopy = context.copy();
+            try {
+                int result = OffsetIdPrinterParser.INSTANCE_ID_ZERO.parse(contextCopy, text, searchPos);
+                if (result < 0) {
+                    context.setParsed(ZoneId.of(prefix));
+                    return searchPos;
+                }
+                int offsetSecs = (int) contextCopy.getParsed(OFFSET_SECONDS).longValue();
+                ZoneOffset zoneOffset = ZoneOffset.ofTotalSeconds(offsetSecs);
+                context.setParsed(prefixLen == 0 ? zoneOffset : ZoneId.ofOffset(prefix, zoneOffset));
+                return result;
+            } catch (DateTimeException dte) {
+                return ~position;
+            }
         }
 
         @Override

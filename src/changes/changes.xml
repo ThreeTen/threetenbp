@@ -8,6 +8,12 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.4.5" date="SNAPSHOT" description="v1.4.5">
+      <action dev="jodastephen" type="fix" >
+        Fix parsing of fixed zone offsets.
+        Fixes #133.
+      </action>
+    </release>
     <release version="1.4.4" date="2020-04-24" description="v1.4.4">
       <action dev="jodastephen" type="update" >
         Update to time-zone data 2020a.

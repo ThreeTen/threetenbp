@@ -41,6 +41,7 @@ import org.testng.annotations.Test;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.format.DateTimeFormatterBuilder.ZoneIdPrinterParser;
+import org.threeten.bp.temporal.TemporalAccessor;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.zone.ZoneRulesProvider;
 
@@ -168,6 +169,51 @@ public class TestZoneIdParser extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
+    @DataProvider(name = "fixedZones")
+    Object[][] data_fixedZones() {
+        return new Object[][] {
+                { "+01:00", "+01:00" },
+                { "-01:00", "-01:00" },
+                { "+12:34:56", "+12:34:56" },
+                { "Z", "Z" },
+                { "GMT", "GMT" },
+                { "GMT+01:00", "GMT+01:00" },
+                { "UTC", "UTC" },
+                { "UTC-01:00", "UTC-01:00" },
+                { "UT", "UT" },
+                { "UT+01:00", "UT+01:00" }, };
+    }
+
+    @Test(dataProvider = "fixedZones")
+    public void test_parse_fixed(String input, String expectedZone) throws Exception {
+        ZoneIdPrinterParser pp = new ZoneIdPrinterParser(TemporalQueries.zoneId(), null);
+        int result = pp.parse(parseContext, input, 0);
+        assertEquals(result, input.length());
+        assertEquals(parseContext.toParsed().query(ZoneId.FROM), ZoneId.of(expectedZone));
+    }
+
+    @Test(dataProvider = "fixedZones")
+    public void test_parse_fixed_byFormatterWithPrefix(String input, String expectedZone) throws Exception {
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("MMzzz");
+        TemporalAccessor parsed = f.parse("12" + input);
+        assertEquals(parsed.query(ZoneId.FROM), ZoneId.of(expectedZone));
+    }
+
+    @Test(dataProvider = "fixedZones")
+    public void test_parse_fixed_byFormatterWithSuffixZ(String input, String expectedZone) throws Exception {
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("MMzzz'Z'");
+        TemporalAccessor parsed = f.parse("12" + input + "Z");
+        assertEquals(parsed.query(ZoneId.FROM), ZoneId.of(expectedZone));
+    }
+
+    @Test(dataProvider = "fixedZones")
+    public void test_parse_fixed_byFormatterWithSuffix0(String input, String expectedZone) throws Exception {
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("MMzzz'0'");
+        TemporalAccessor parsed = f.parse("12" + input + "0");
+        assertEquals(parsed.query(ZoneId.FROM), ZoneId.of(expectedZone));
+    }
+
+    //-------------------------------------------------------------------------
     public void test_toString_id() {
         ZoneIdPrinterParser pp = new ZoneIdPrinterParser(TemporalQueries.zoneId(), "ZoneId()");
         assertEquals(pp.toString(), "ZoneId()");

@@ -277,11 +277,19 @@ public class TestDateTimeParsing {
     }
 
     @Test
+    public void test_parse_tzdbGmtZoneEtc() {
+        String dateString = "2015,7,21,0,0,0,Etc/GMT-2";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy,M,d,H,m,s,z", Locale.US);
+        ZonedDateTime parsed = ZonedDateTime.parse(dateString, formatter);
+        assertEquals(parsed, ZonedDateTime.of(2015, 7, 21, 0, 0, 0, 0, ZoneId.of("Etc/GMT-2")));
+    }
+
+    @Test
     public void test_parse_tzdbGmtZone() {
         String dateString = "2015,7,21,0,0,0,GMT+02:00";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy,M,d,H,m,s,z", Locale.US);
         ZonedDateTime parsed = ZonedDateTime.parse(dateString, formatter);
-        assertEquals(parsed, ZonedDateTime.of(2015, 7, 21, 0, 0, 0, 0, ZoneId.of("Etc/GMT-2")));
+        assertEquals(parsed, ZonedDateTime.of(2015, 7, 21, 0, 0, 0, 0, ZoneId.of("GMT+02:00")));
     }
 
 }
