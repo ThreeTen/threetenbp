@@ -300,6 +300,34 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
                     return "\u5341\u4e8c";
             }
         }
+        if (locale.getLanguage().equals("ar")) {
+            switch (month) {
+                case 1:
+                    return "\u064a";
+                case 2:
+                    return "\u0641";
+                case 3:
+                    return "\u0645";
+                case 4:
+                    return "\u0623";
+                case 5:
+                    return "\u0648";
+                case 6:
+                    return "\u0646";
+                case 7:
+                    return "\u0644";
+                case 8:
+                    return "\u063a";
+                case 9:
+                    return "\u0633";
+                case 10:
+                    return "\u0643";
+                case 11:
+                    return "\u0628";
+                case 12:
+                    return "\u062f";
+            }
+        }
         if (locale.getLanguage().equals("ja") && locale.getCountry().equals("JP")) {
             return Integer.toString(month);
         }
@@ -324,6 +352,24 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
                     return "\u516d";
                 case 7:
                     return "\u65e5";
+            }
+        }
+        if (locale.getLanguage().equals("ar")) {
+            switch (dow) {
+                case 1:
+                    return "\u0646";
+                case 2:
+                    return "\u062b";
+                case 3:
+                    return "\u0631";
+                case 4:
+                    return "\u062e";
+                case 5:
+                    return "\u062c";
+                case 6:
+                    return "\u0633";
+                case 7:
+                    return "\u062d";
             }
         }
         return text.substring(0, 1);

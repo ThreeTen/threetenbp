@@ -14,7 +14,7 @@
         Fixes #133.
       </action>
       <action dev="jodastephen" type="fix">
-        Ensure narrow text is accurate for China/Japan.
+        Ensure narrow text is accurate for Chinese/Japanese/Arabbic.
         Hard code a reasonable answer.
         Fixes #97.
       </action>
