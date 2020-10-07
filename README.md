@@ -37,7 +37,7 @@ This project currently maps to the contents of release Java SE 8u20.
 
 2. Will the backport be kept up to date?
 There are no plans for further releases.
-However if bugs are found, or pull requests received then a release may occur.
+However if security issues or bugs are found, or pull requests received then a release may occur.
 
 3. Is this project derived from OpenJDK?
 No. This project is derived from the Reference Implementation previously hosted on GitHub.

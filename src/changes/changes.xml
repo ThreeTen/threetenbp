@@ -9,6 +9,9 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="1.4.5" date="SNAPSHOT" description="v1.4.5">
+      <action dev="jodastephen" type="update" >
+        Update to time-zone data 2020b.
+      </action>
       <action dev="jodastephen" type="fix" >
         Fix parsing of fixed zone offsets.
         Fixes #133.
@@ -17,6 +20,10 @@
         Ensure narrow text is accurate for Chinese/Japanese/Arabbic.
         Hard code a reasonable answer.
         Fixes #97.
+      </action>
+      <action dev="tomislavhofman" type="fix" >
+        Fix Javadoc nit.
+        Fixes #128.
       </action>
     </release>
     <release version="1.4.4" date="2020-04-24" description="v1.4.4">
