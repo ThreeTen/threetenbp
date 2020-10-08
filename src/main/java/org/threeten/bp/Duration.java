@@ -1119,6 +1119,94 @@ public final class Duration
         return result;
     }
 
+    //----------------------------------------------------------------------- work in progress
+    /**
+     * Extracts the number of days in this duration.
+     * <p>
+     * This returns the total number of days in the duration by dividing the number of seconds by 86400.
+     * This is based on the standard definition of a day as 24 hours.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @return the number of days in the duration, may be negative
+     */
+    public long toDaysPart() {
+        return seconds / SECONDS_PER_DAY;
+    }
+
+    /**
+     * Extracts the number of hours part in this duration.
+     * <p>
+     * This returns the number of remaining hours when dividing {@link Duration#toHours()} by hours in a day.
+     * This is based on the standard definition of a day as 24 hours.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @return the number of hours part in the duration, may be negative
+     */
+    public int toHoursPart() {
+        return (int) (toHours() % LocalTime.HOURS_PER_DAY);
+    }
+
+    /**
+     * Extracts the number of minutes part in this duration.
+     * <p>
+     * This returns the number of remaining minutes when dividing {@link Duration#toMinutes()} by minutes in an hour.
+     * This is based on the standard definition of an hour as 60 minutes.
+     * <p>
+     * This instance is immutable and    by this method call.
+     *
+     * @return the number of minutes parts in the duration, may be negative
+     */
+    public int toMinutesPart() {
+        return (int) (toMinutes() % LocalTime.MINUTES_PER_HOUR);
+    }
+
+    /**
+     * Extracts the number of seconds part in this duration.
+     * <p>
+     * This returns the remaining seconds when dividing {@link Duration#toSeconds} by seconds in a minute.
+     * This is based on the standard definition of a minute as 60 seconds.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @return the number of seconds parts in the duration, may be negative
+     */
+    public int toSecondsPart() {
+        return (int) (seconds % SECONDS_PER_MINUTE);
+    }
+
+    /**
+     * Extracts the number of milliseconds part of this duration.
+     * <p>
+     * This returns the milliseconds part by dividing the number of nanoseconds by 1,000,000.
+     * The length of the duration is stored using two fields - seconds and nanoseconds.
+     * The nanoseconds part is a value from 0 to 999,999,999 that is an adjustment to the length in seconds.
+     * The total duration is defined by calling {@link Duration#getNano()} and {@link Duration#getSeconds()}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @return the number of milliseconds part of the duration.
+     */
+    public int toMillisPart() {
+        return nanos / NANOS_PER_MILLI;
+    }
+
+    /**
+     * Get the nanoseconds part within seconds of the duration.
+     * <p>
+     * The length of the duration is stored using two fields - seconds and nanoseconds.
+     * The nanoseconds part is a value from 0 to 999,999,999 that is an adjustment to the length in seconds.
+     * The total duration is defined by calling {@link Duration#getNano()} and {@link Duration#getSeconds()}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @return the nanoseconds within the second part of the length of the duration, from 0 to 999,999,999
+     */
+    public int toNanosPart() {
+        return nanos;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Compares this duration to the specified {@code Duration}.
