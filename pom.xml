@@ -10,7 +10,7 @@
   <artifactId>threetenbp</artifactId>
   <packaging>jar</packaging>
   <name>ThreeTen backport</name>
-  <version>1.4.6-SNAPSHOT</version>
+  <version>1.5.0-SNAPSHOT</version>
   <description>Backport of JSR-310 from JDK 8 to JDK 7 and JDK 6. NOT an implementation of the JSR.</description>
   <url>https://www.threeten.org/threetenbp</url>
 
@@ -77,6 +77,10 @@
     <contributor>
       <name>Michael Nascimento Santos</name>
       <url>https://github.com/sjmisterm</url>
+    </contributor>
+    <contributor>
+      <name>Björn Raupach</name>
+      <url>https://github.com/raupachz</url>
     </contributor>
     <contributor>
       <name>Roger Riggs</name>

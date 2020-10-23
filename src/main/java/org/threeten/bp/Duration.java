@@ -1129,6 +1129,7 @@ public final class Duration
      * This instance is immutable and unaffected by this method call.
      *
      * @return the number of days in the duration, may be negative
+     * @since 1.5.0 (only added in Java 9)
      */
     public long toDaysPart() {
         return seconds / SECONDS_PER_DAY;
@@ -1143,6 +1144,7 @@ public final class Duration
      * This instance is immutable and unaffected by this method call.
      *
      * @return the number of hours part in the duration, may be negative
+     * @since 1.5.0 (only added in Java 9)
      */
     public int toHoursPart() {
         return (int) (toHours() % LocalTime.HOURS_PER_DAY);
@@ -1157,6 +1159,7 @@ public final class Duration
      * This instance is immutable and    by this method call.
      *
      * @return the number of minutes parts in the duration, may be negative
+     * @since 1.5.0 (only added in Java 9)
      */
     public int toMinutesPart() {
         return (int) (toMinutes() % LocalTime.MINUTES_PER_HOUR);
@@ -1171,6 +1174,7 @@ public final class Duration
      * This instance is immutable and unaffected by this method call.
      *
      * @return the number of seconds parts in the duration, may be negative
+     * @since 1.5.0 (only added in Java 9)
      */
     public int toSecondsPart() {
         return (int) (seconds % SECONDS_PER_MINUTE);
@@ -1187,6 +1191,7 @@ public final class Duration
      * This instance is immutable and unaffected by this method call.
      *
      * @return the number of milliseconds part of the duration.
+     * @since 1.5.0 (only added in Java 9)
      */
     public int toMillisPart() {
         return nanos / NANOS_PER_MILLI;
@@ -1202,6 +1207,7 @@ public final class Duration
      * This instance is immutable and unaffected by this method call.
      *
      * @return the nanoseconds within the second part of the length of the duration, from 0 to 999,999,999
+     * @since 1.5.0 (only added in Java 9)
      */
     public int toNanosPart() {
         return nanos;
