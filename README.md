@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/mP1/j2cl-java-time.svg?branch=master)](https://travis-ci.com/mP1/j2cl-java-time.svg?branch=master)
+[![Build Status](https://github.com/mP1/j2cl-java-time/actions/workflows/build.yaml/badge.svg)](https://github.com/mP1/j2cl-java-time/actions/workflows/build.yaml/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/mP1/j2cl-java-time/badge.svg?branch=master)](https://coveralls.io/github/mP1/j2cl-java-time?branch=master)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![J2CL compatible](https://img.shields.io/badge/J2CL-compatible-brightgreen.svg)](https://github.com/mP1/j2cl-central)
