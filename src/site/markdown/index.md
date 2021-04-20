@@ -42,7 +42,7 @@ Various documentation is available:
 
 ## <i></i> Releases
 
-Release 1.5.0 is the latest release.
+Release 1.5.1 is the latest release.
 It is considered to be stable and usable in production.
 
 The project runs on Java SE 6 (or later) and has no [dependencies](dependencies.html).
@@ -58,7 +58,7 @@ Available in [Maven Central](https://search.maven.org/search?q=g:org.threeten%20
 <dependency>
   <groupId>org.threeten</groupId>
   <artifactId>threetenbp</artifactId>
-  <version>1.5.0</version>
+  <version>1.5.1</version>
 </dependency>
 ```
 

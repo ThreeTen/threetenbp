@@ -8,10 +8,15 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.5.1" date="2021-04-20" description="v1.5.1">
+      <action dev="jodastephen" type="update" >
+        Update to time-zone data 2021a.
+      </action>
+    </release>
     <release version="1.5.0" date="2020-10-23" description="v1.5.0">
       <action dev="raupachz" type="add" >
         Add Duration.toXxxPart() methods from Java 9.
-		Fixes #76.
+        Fixes #76.
       </action>
       <action dev="jodastephen" type="update" >
         Update to time-zone data 2020d.
