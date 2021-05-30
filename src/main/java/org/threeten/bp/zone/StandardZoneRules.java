@@ -277,14 +277,11 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
     //-----------------------------------------------------------------------
     @Override
     public ZoneOffset getOffset(Instant instant) {
-        if (savingsInstantTransitions.length == 0) {
-            return wallOffsets[0];
-        }
         long epochSec = instant.getEpochSecond();
 
         // check if using last rules
-        if (lastRules.length > 0 &&
-                epochSec > savingsInstantTransitions[savingsInstantTransitions.length - 1]) {
+        if (lastRules.length > 0 && (savingsInstantTransitions.length == 0 ||
+                epochSec > savingsInstantTransitions[savingsInstantTransitions.length - 1])) {
             int year = findYear(epochSec, wallOffsets[wallOffsets.length - 1]);
             ZoneOffsetTransition[] transArray = findTransitionArray(year);
             ZoneOffsetTransition trans = null;
@@ -333,12 +330,9 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
     }
 
     private Object getOffsetInfo(LocalDateTime dt) {
-        if (savingsLocalTransitions.length == 0) {
-            return wallOffsets[0];
-        }
         // check if using last rules
-        if (lastRules.length > 0 &&
-                dt.isAfter(savingsLocalTransitions[savingsLocalTransitions.length - 1])) {
+        if (lastRules.length > 0 && (savingsLocalTransitions.length == 0 ||
+                dt.isAfter(savingsLocalTransitions[savingsLocalTransitions.length - 1]))) {
             ZoneOffsetTransition[] transArray = findTransitionArray(dt.getYear());
             Object info = null;
             for (ZoneOffsetTransition trans : transArray) {
