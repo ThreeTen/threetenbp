@@ -271,7 +271,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
     //-----------------------------------------------------------------------
     @Override
     public boolean isFixedOffset() {
-        return savingsInstantTransitions.length == 0;
+        return savingsInstantTransitions.length == 0 && lastRules.length == 0 && wallOffsets[0].equals(standardOffsets[0]);
     }
 
     //-----------------------------------------------------------------------
