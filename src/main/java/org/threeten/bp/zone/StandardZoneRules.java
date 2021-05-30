@@ -330,6 +330,9 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
     }
 
     private Object getOffsetInfo(LocalDateTime dt) {
+        if (savingsLocalTransitions.length == 0) {
+            return wallOffsets[0];
+        }
         // check if using last rules
         if (lastRules.length > 0 &&
                 dt.isAfter(savingsLocalTransitions[savingsLocalTransitions.length - 1])) {
