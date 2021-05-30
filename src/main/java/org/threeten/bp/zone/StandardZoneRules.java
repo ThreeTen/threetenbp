@@ -277,6 +277,9 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
     //-----------------------------------------------------------------------
     @Override
     public ZoneOffset getOffset(Instant instant) {
+        if (savingsInstantTransitions.length == 0) {
+            return wallOffsets[0];
+        }
         long epochSec = instant.getEpochSecond();
 
         // check if using last rules
