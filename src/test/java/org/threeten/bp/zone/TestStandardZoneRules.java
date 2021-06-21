@@ -41,6 +41,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -1101,6 +1102,24 @@ public class TestStandardZoneRules {
     public void test_getTransitionRules_immutable() {
         ZoneRules test = europeParis();
         test.getTransitionRules().clear();
+    }
+
+    //-------------------------------------------------------------------------
+    @Test
+    public void test_rulesWithoutTransitions() {
+        // this was not intended to be a valid setup of ZoneRules
+        List<ZoneOffsetTransitionRule> r = new ArrayList<ZoneOffsetTransitionRule>();
+        r.add(ZoneOffsetTransitionRule.of(Month.MARCH, 25, DayOfWeek.SUNDAY, LocalTime.of(1, 0), false,
+                TimeDefinition.UTC, OFFSET_PONE, OFFSET_PONE, OFFSET_PTWO));
+        r.add(ZoneOffsetTransitionRule.of(Month.OCTOBER, 25, DayOfWeek.SUNDAY, LocalTime.of(1, 0), false,
+                TimeDefinition.UTC, OFFSET_PONE, OFFSET_PTWO, OFFSET_PONE));
+        ZoneRules test = ZoneRules.of(OFFSET_ZERO, OFFSET_ZERO, new ArrayList<ZoneOffsetTransition>(),
+                new ArrayList<ZoneOffsetTransition>(), r);
+        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 0, 0);
+        test.getTransition(ldt);
+        Instant instant = LocalDateTime.of(2008, 10, 26, 2, 30).toInstant(OFFSET_PONE);
+        assertEquals(test.getOffset(instant), OFFSET_PONE);
+        assertFalse(test.isFixedOffset());
     }
 
     //-----------------------------------------------------------------------
