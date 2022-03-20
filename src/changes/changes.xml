@@ -8,6 +8,13 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.6.0" date="2022-03-20" description="v1.6.0">
+      <action dev="jodastephen" type="update" >
+        Update to time-zone data 2022agtz.
+        ThreeTen-Backport now uses global-tz for time zone data.
+        https://github.com/JodaOrg/global-tz
+      </action>
+    </release>
     <release version="1.5.2" date="2021-11-08" description="v1.5.2">
       <action dev="jodastephen" type="update" >
         Update to time-zone data 2021efork.
