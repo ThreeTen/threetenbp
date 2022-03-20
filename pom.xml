@@ -862,6 +862,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <linkXRef>false</linkXRef>
-    <tz.database.version>2021efork</tz.database.version>
+    <tz.database.version>2022agtz</tz.database.version>
   </properties>
 </project>
