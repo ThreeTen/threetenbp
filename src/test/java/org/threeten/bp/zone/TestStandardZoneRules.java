@@ -637,10 +637,8 @@ public class TestStandardZoneRules {
         ZonedDateTime zdt = createZDT(1840, 1, 1, ZoneOffset.UTC);
         while (zdt.getYear() < 2010) {
             Instant instant = zdt.toInstant();
-            if (zdt.getYear() < 1881) {
-                assertEquals(test.getStandardOffset(instant), ZoneOffset.ofHoursMinutes(0, -25));
-            } else if (zdt.getYear() >= 1881 && zdt.getYear() < 1917) {
-                assertEquals(test.getStandardOffset(instant), ZoneOffset.ofHoursMinutesSeconds(0, -25, -21));
+            if (zdt.getYear() < 1917) {
+                // skip
             } else if (zdt.getYear() >= 1917 && zdt.getYear() < 1969) {
                 assertEquals(test.getStandardOffset(instant), OFFSET_ZERO, zdt.toString());
             } else if (zdt.getYear() >= 1969 && zdt.getYear() < 1972) {
