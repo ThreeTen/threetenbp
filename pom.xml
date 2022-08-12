@@ -199,13 +199,6 @@
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <version>${maven-bundle-plugin.version}</version>
-        <dependencies>
-          <dependency>
-            <groupId>biz.aQute.bnd</groupId>
-            <artifactId>biz.aQute.bndlib</artifactId>
-            <version>${bndlib.version}</version>
-          </dependency>
-        </dependencies>
         <executions>
           <execution>
             <id>bundle-manifest</id>
@@ -448,6 +441,13 @@
             <tagNameFormat>v@{project.version}</tagNameFormat>
             <localCheckout>true</localCheckout>
           </configuration>
+          <dependencies>
+            <dependency>
+              <groupId>org.kohsuke</groupId>
+              <artifactId>github-api</artifactId>
+              <version>${github-api.version}</version>
+            </dependency>
+          </dependencies>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
@@ -466,7 +466,7 @@
             <dependency>
               <groupId>org.joda.external</groupId>
               <artifactId>reflow-velocity-tools</artifactId>
-              <version>1.2</version>
+              <version>${reflow-velocity-tools.version}</version>
             </dependency>
           </dependencies>
         </plugin>
@@ -708,7 +708,7 @@
           <plugin>
             <groupId>de.jutzig</groupId>
             <artifactId>github-release-plugin</artifactId>
-            <version>1.4.0</version>
+            <version>${github-release-plugin.version}</version>
             <configuration>
               <releaseName>Release v${project.version}</releaseName>
               <description>See the [change notes](https://www.threeten.org/threetenbp/changes-report.html) for more information.</description>
@@ -766,7 +766,6 @@
             <configuration>
               <mainClass>org.threeten.bp.zone.TzdbZoneRulesCompiler</mainClass>
               <classpathScope>compile</classpathScope>
-              <verbose>true</verbose>
               <arguments>
                 <argument>-srcdir</argument>
                 <argument>${project.basedir}/src/tzdb</argument>
@@ -803,7 +802,6 @@
             <configuration>
               <mainClass>org.threeten.bp.zone.TzdbZoneRulesCompiler</mainClass>
               <classpathScope>compile</classpathScope>
-              <verbose>true</verbose>
               <arguments>
                 <argument>-srcdir</argument>
                 <argument>${project.basedir}/src/tzdb</argument>
@@ -821,34 +819,37 @@
   <properties>
     <!-- Plugin version numbers -->
     <build-helper-maven-plugin.version>1.12</build-helper-maven-plugin.version>
-    <maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
-    <maven-bundle-plugin.version>4.1.0</maven-bundle-plugin.version>
+    <maven-assembly-plugin.version>3.4.2</maven-assembly-plugin.version>
+    <maven-bundle-plugin.version>5.1.8</maven-bundle-plugin.version>
     <maven-changes-plugin.version>2.12.1</maven-changes-plugin.version>
     <!-- v3.0.0 does not work with Eclipse -->
     <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
-    <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
-    <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
-    <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
-    <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
-    <maven-enforcer-plugin.version>3.0.0-M1</maven-enforcer-plugin.version>
-    <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
-    <maven-install-plugin.version>2.5.2</maven-install-plugin.version>
-    <maven-jar-plugin.version>3.1.0</maven-jar-plugin.version>
-    <maven-javadoc-plugin.version>3.0.0-M1</maven-javadoc-plugin.version>
-    <maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
-    <maven-plugin-plugin.version>3.5.2</maven-plugin-plugin.version>
-    <maven-pmd-plugin.version>3.10.0</maven-pmd-plugin.version>
-    <maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
+    <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
+    <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
+    <maven-deploy-plugin.version>3.0.0</maven-deploy-plugin.version>
+    <maven-dependency-plugin.version>3.3.0</maven-dependency-plugin.version>
+    <maven-enforcer-plugin.version>3.1.0</maven-enforcer-plugin.version>
+    <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
+    <maven-install-plugin.version>3.0.1</maven-install-plugin.version>
+    <maven-jar-plugin.version>3.2.2</maven-jar-plugin.version>
+    <maven-javadoc-plugin.version>3.4.0</maven-javadoc-plugin.version>
+    <maven-jxr-plugin.version>3.2.0</maven-jxr-plugin.version>
+    <maven-plugin-plugin.version>3.6.4</maven-plugin-plugin.version>
+    <maven-pmd-plugin.version>3.17.0</maven-pmd-plugin.version>
+    <maven-project-info-reports-plugin.version>3.4.0</maven-project-info-reports-plugin.version>
     <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
     <maven-repository-plugin.version>2.4</maven-repository-plugin.version>
-    <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
-    <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
-    <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
-    <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
-    <maven-surefire-report-plugin.version>2.22.1</maven-surefire-report-plugin.version>
-    <maven-toolchains-plugin.version>1.1</maven-toolchains-plugin.version>
-    <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
-    <bndlib.version>4.1.0</bndlib.version>
+    <maven-resources-plugin.version>3.3.0</maven-resources-plugin.version>
+    <maven-site-plugin.version>3.12.0</maven-site-plugin.version>
+    <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+    <maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version>
+    <maven-surefire-report-plugin.version>3.0.0-M7</maven-surefire-report-plugin.version>
+    <maven-toolchains-plugin.version>3.1.0</maven-toolchains-plugin.version>
+    <!-- Other plugins -->
+    <github-api.version>1.307</github-api.version>
+    <github-release-plugin.version>1.4.0</github-release-plugin.version>
+    <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
+    <reflow-velocity-tools.version>1.2</reflow-velocity-tools.version>
     <!-- Properties for maven-compiler-plugin -->
     <maven.compiler.compilerVersion>1.6</maven.compiler.compilerVersion>
     <maven.compiler.source>1.6</maven.compiler.source>
