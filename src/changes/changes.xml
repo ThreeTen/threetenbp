@@ -8,6 +8,17 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.6.2" date="SNAPSHOT" description="v1.6.2">
+      <action dev="jodastephen" type="update" >
+        Update to time-zone data 2022dgtz.
+      </action>
+      <action dev="jodastephen" type="update">
+        Switch LGTM to CodeQL.
+      </action>
+      <action dev="jodastephen" type="update">
+        Switch master to main.
+      </action>
+    </release>
     <release version="1.6.1" date="2022-08-12" description="v1.6.1">
       <action dev="jodastephen" type="update" >
         Update to time-zone data 2022bgtz.
