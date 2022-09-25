@@ -2,14 +2,19 @@ name: TZDB check
 
 on:
   push:
-    branches:
-      - 'master'
-      - 'enhance-*'
+    tags:
+      - 'tzdb*'
   schedule:
     - cron: '50 1 * * *'
 
+permissions:
+  contents: read
+
 jobs:
   tzdbcheck:
+    permissions:
+      contents: write  # for peter-evans/create-pull-request to create branch
+      pull-requests: write  # for peter-evans/create-pull-request to create a PR
     runs-on: ubuntu-latest
 
     steps:
@@ -85,11 +90,12 @@ jobs:
     - name: Create Pull Request
       if: env.NOOP != 'true'
       id: createpr
-      uses: peter-evans/create-pull-request@v3.10.1
+      uses: peter-evans/create-pull-request@7380612b49221684fefa025244f2ef4008ae50ad  #v3.10.1
       env:
         GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN_GH }}
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
+        base: main
         commit-message: 'Update time zone data to ${{ env.LATEST_TZDB }}'
         committer: Stephen Colebourne (CI) <scolebourne@joda.org>
         author: Stephen Colebourne (CI) <scolebourne@joda.org>
