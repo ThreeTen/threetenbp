@@ -19,6 +19,6 @@ git status
 git commit --message "Update threetenbp from Travis: Build $TRAVIS_BUILD_NUMBER"
 
 echo "## push..."
-git push origin master
+git push origin main
 
 echo "## done"
