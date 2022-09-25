@@ -99,7 +99,7 @@ public class TestLocalTime extends AbstractDateTimeTest {
     private static final TemporalUnit[] INVALID_UNITS;
     static {
         EnumSet<ChronoUnit> set = EnumSet.range(WEEKS, FOREVER);
-        INVALID_UNITS = (TemporalUnit[]) set.toArray(new TemporalUnit[set.size()]);
+        INVALID_UNITS = set.toArray(new TemporalUnit[set.size()]);
     }
 
     @BeforeMethod
@@ -1394,7 +1394,7 @@ public class TestLocalTime extends AbstractDateTimeTest {
             long i = -3660 * 1000000000L;
             int hour = 22;
             int min = 59;
-            int sec = 0;
+            long sec = 0;
             long nanos = 0;
 
             public boolean hasNext() {
@@ -1402,7 +1402,7 @@ public class TestLocalTime extends AbstractDateTimeTest {
             }
 
             public Object[] next() {
-                final Object[] ret = new Object[] {i, hour, min, sec, (int)nanos};
+                final Object[] ret = new Object[] {i, hour, min, sec, nanos};
                 i += delta;
                 nanos += delta;
 
@@ -1435,7 +1435,7 @@ public class TestLocalTime extends AbstractDateTimeTest {
     }
 
     @Test(dataProvider="plusNanos_fromZero")
-    public void test_plusNanos_fromZero(long nanoseconds, int hour, int min, int sec, int nanos) {
+    public void test_plusNanos_fromZero(long nanoseconds, int hour, int min, long sec, long nanos) {
         LocalTime base = LocalTime.MIDNIGHT;
         LocalTime t = base.plusNanos(nanoseconds);
 
@@ -1861,7 +1861,7 @@ public class TestLocalTime extends AbstractDateTimeTest {
             long i = 3660 * 1000000000L;
             int hour = 22;
             int min = 59;
-            int sec = 0;
+            long sec = 0;
             long nanos = 0;
 
             public boolean hasNext() {
@@ -1869,7 +1869,7 @@ public class TestLocalTime extends AbstractDateTimeTest {
             }
 
             public Object[] next() {
-                final Object[] ret = new Object[] {i, hour, min, sec, (int)nanos};
+                final Object[] ret = new Object[] {i, hour, min, sec, nanos};
                 i -= delta;
                 nanos += delta;
 
@@ -1902,7 +1902,7 @@ public class TestLocalTime extends AbstractDateTimeTest {
     }
 
     @Test(dataProvider="minusNanos_fromZero")
-    public void test_minusNanos_fromZero(long nanoseconds, int hour, int min, int sec, int nanos) {
+    public void test_minusNanos_fromZero(long nanoseconds, int hour, int min, long sec, long nanos) {
         LocalTime base = LocalTime.MIDNIGHT;
         LocalTime t = base.minusNanos(nanoseconds);
 

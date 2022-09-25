@@ -1850,7 +1850,7 @@ public class TestLocalDateTime extends AbstractDateTimeTest {
             LocalDate date = TEST_2007_07_15_12_30_40_987654321.toLocalDate().minusDays(1);
             int hour = 22;
             int min = 59;
-            int sec = 0;
+            long sec = 0;
             long nanos = 0;
 
             public boolean hasNext() {
@@ -1858,7 +1858,7 @@ public class TestLocalDateTime extends AbstractDateTimeTest {
             }
 
             public Object[] next() {
-                final Object[] ret = new Object[] {i, date, hour, min, sec, (int)nanos};
+                final Object[] ret = new Object[] {i, date, hour, min, sec, nanos};
                 i += delta;
                 nanos += delta;
 
@@ -1892,7 +1892,7 @@ public class TestLocalDateTime extends AbstractDateTimeTest {
     }
 
     @Test(dataProvider="plusNanos_fromZero")
-    public void test_plusNanos_fromZero(long nanoseconds, LocalDate date, int hour, int min, int sec, int nanos) {
+    public void test_plusNanos_fromZero(long nanoseconds, LocalDate date, int hour, int min, long sec, long nanos) {
         LocalDateTime base = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.MIDNIGHT);
         LocalDateTime t = base.plusNanos(nanoseconds);
 
@@ -2563,7 +2563,7 @@ public class TestLocalDateTime extends AbstractDateTimeTest {
             LocalDate date = TEST_2007_07_15_12_30_40_987654321.toLocalDate().minusDays(1);
             int hour = 22;
             int min = 59;
-            int sec = 0;
+            long sec = 0;
             long nanos = 0;
 
             public boolean hasNext() {
@@ -2571,7 +2571,7 @@ public class TestLocalDateTime extends AbstractDateTimeTest {
             }
 
             public Object[] next() {
-                final Object[] ret = new Object[] {i, date, hour, min, sec, (int)nanos};
+                final Object[] ret = new Object[] {i, date, hour, min, sec, nanos};
                 i -= delta;
                 nanos += delta;
 
@@ -2605,7 +2605,7 @@ public class TestLocalDateTime extends AbstractDateTimeTest {
     }
 
     @Test(dataProvider="minusNanos_fromZero")
-    public void test_minusNanos_fromZero(long nanoseconds, LocalDate date, int hour, int min, int sec, int nanos) {
+    public void test_minusNanos_fromZero(long nanoseconds, LocalDate date, int hour, int min, long sec, long nanos) {
         LocalDateTime base = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.MIDNIGHT);
         LocalDateTime t = base.minusNanos(nanoseconds);
 
