@@ -734,7 +734,6 @@
             <configuration>
               <nexusUrl>https://oss.sonatype.org/</nexusUrl>
               <serverId>sonatype-joda-staging</serverId>
-              <description>Releasing ${project.groupId}:${project.artifactId}:${project.version}</description>
               <autoReleaseAfterClose>true</autoReleaseAfterClose>
               <keepStagingRepositoryOnCloseRuleFailure>true</keepStagingRepositoryOnCloseRuleFailure>
             </configuration>
