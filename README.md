@@ -14,7 +14,7 @@ The backport should be referred to using the "ThreeTen" name.
 Active development on JSR-310 is at [OpenJDK](http://openjdk.java.net/):
 
 This GitHub repository is a fork of that originally used to create JSR-310.
-That repository used the same BSD 3-clause license as this repository.
+That repository used the same BSD-3-Clause license as this repository.
 
 Issues about the backport should be reported here at GitHub.
 Pull requests and issues will only be considered so far as matching the behaviour
