@@ -114,7 +114,7 @@
   <!-- ==================================================================== -->
   <licenses>
     <license>
-      <name>BSD 3-clause</name>
+      <name>BSD-3-Clause</name>
       <url>https://raw.githubusercontent.com/ThreeTen/threetenbp/main/LICENSE.txt</url>
       <distribution>repo</distribution>
     </license>
