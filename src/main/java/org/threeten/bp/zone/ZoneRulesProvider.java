@@ -87,8 +87,8 @@ public abstract class ZoneRulesProvider {
 //        final TzdbZoneRulesProvider tzdb = new TzdbZoneRulesProvider();
 //        try {
             //final TzdbZoneRulesProvider tzdb = new TzdbZoneRulesProvider();
-            ////StringDataInputDataOutput.input(walkingkooka.j2cl.java.util.timezone.support.TimeZoneProvider.DATA);
-            //tzdb.load(null/*StringDataInputDataOutput.input(walkingkooka.j2cl.java.util.timezone.support.TimeZoneProvider.DATA)*/);
+            ////StringDataInputDataOutput.input(walkingkooka.j2cl.java.util.timezone.generated.TimeZoneProvider.DATA);
+            //tzdb.load(null/*StringDataInputDataOutput.input(walkingkooka.j2cl.java.util.timezone.generated.TimeZoneProvider.DATA)*/);
 
             registerProvider(TimeZoneProviderZoneRulesProvider.load());
 //        } catch (final IOException cause) {
