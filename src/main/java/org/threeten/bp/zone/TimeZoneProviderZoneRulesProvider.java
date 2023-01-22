@@ -51,7 +51,7 @@ public final class TimeZoneProviderZoneRulesProvider extends ZoneRulesProvider {
                                final List<MultiLocaleValue<TimeZoneDisplay>> allDisplayLocales) {
                 zoneIdToZoneRule.put(id, zoneRules);
             }
-        }.read(walkingkooka.j2cl.java.util.timezone.support.TimeZoneProvider.DATA);
+        }.read(walkingkooka.j2cl.java.util.timezone.generated.TimeZoneProvider.DATA);
 
         return new TimeZoneProviderZoneRulesProvider(zoneIdToZoneRule);
     }
