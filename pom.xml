@@ -227,12 +227,6 @@
 
         <dependency>
             <groupId>walkingkooka</groupId>
-            <artifactId>walkingkooka</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>walkingkooka</groupId>
             <artifactId>walkingkooka-text-printer</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
@@ -309,46 +303,86 @@
                     </properties>
                 </configuration>
             </plugin>
+
             <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.4</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
                 <executions>
                     <execution>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>report</id>
+                        <id>create j2cl-java-util-Locale-jar/temp</id>
                         <phase>prepare-package</phase>
                         <goals>
-                            <goal>report</goal>
+                            <goal>jar</goal>
                         </goals>
-                    </execution>
-                    <execution>
-                        <id>prepare-integration-test-agent</id>
-                        <goals>
-                            <goal>prepare-agent-integration</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>generate-integration-test-report</id>
-                        <goals>
-                            <goal>report-integration</goal>
-                        </goals>
+                        <configuration>
+                            <classifier>temp</classifier>
+                            <excludes>
+                                <exclude>org/threeten/bp/*.dat</exclude>
+                                <exclude>org/threeten/bp/zone/TzdbZoneRulesCompiler*</exclude>
+                                <exclude>META-INF/services/org.threeten.bp.zone.ZoneRulesProvider</exclude>
+                                <exclude>**/generated/**</exclude>
+                            </excludes>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>walkingkooka</groupId>
+                <artifactId>walkingkooka-gwt-archive-maker-maven-plugin</artifactId>
+                <version>1.0-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <id>build gwt-java-time JAR</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                        <configuration>
+                            <input>target/j2cl-java-time-1.0-SNAPSHOT-temp.jar</input>
+                            <output>target/gwt-java-time-1.0-SNAPSHOT.jar</output>
+                            <pom-file>gwt-pom.xml</pom-file>
+                        </configuration>
+                    </execution>
+
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>install walkingkooka:gwt-java-time</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>walkingkooka</groupId>
+                            <artifactId>gwt-java-time</artifactId>
+                            <version>1.0-SNAPSHOT</version>
+                            <packaging>jar</packaging>
+                            <file>target/gwt-java-time-1.0-SNAPSHOT.jar</file>
+                            <localRepositoryPath>${project.build.directory}/it-repo</localRepositoryPath>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- order is important-->
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
                 <configuration>
                     <excludes>
                         <exclude>org/threeten/bp/*.dat</exclude>
                         <exclude>org/threeten/bp/zone/TzdbZoneRulesCompiler*</exclude>
                         <exclude>META-INF/services/org.threeten.bp.zone.ZoneRulesProvider</exclude>
-                        <exclude>walkingkooka/j2cl/java/**/*Provider*</exclude>
+                        <exclude>**/generated/**</exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -375,6 +409,76 @@
                     <streamLogs>false</streamLogs>
                 </configuration>
             </plugin>
+
+<!--            <plugin>-->
+<!--                <groupId>org.jacoco</groupId>-->
+<!--                <artifactId>jacoco-maven-plugin</artifactId>-->
+<!--                <version>0.8.4</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <goals>-->
+<!--                            <goal>prepare-agent</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                    <execution>-->
+<!--                        <id>report</id>-->
+<!--                        <phase>prepare-package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>report</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                    <execution>-->
+<!--                        <id>prepare-integration-test-agent</id>-->
+<!--                        <goals>-->
+<!--                            <goal>prepare-agent-integration</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                    <execution>-->
+<!--                        <id>generate-integration-test-report</id>-->
+<!--                        <goals>-->
+<!--                            <goal>report-integration</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <groupId>org.eluder.coveralls</groupId>-->
+<!--                <artifactId>coveralls-maven-plugin</artifactId>-->
+<!--                <version>4.3.0</version>-->
+
+<!--                <dependencies>-->
+<!--                    <dependency>-->
+<!--                        <groupId>javax.xml.bind</groupId>-->
+<!--                        <artifactId>jaxb-api</artifactId>-->
+<!--                        <version>2.3.1</version>-->
+<!--                        <scope>compile</scope>-->
+<!--                    </dependency>-->
+<!--                </dependencies>-->
+<!--            </plugin>-->
+
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-deploy-plugin</artifactId>-->
+<!--                <version>3.0.0</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>deploy walkingkooka:gwt-java-time</id>-->
+<!--                        <phase>deploy</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>deploy-file</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <groupId>walkingkooka</groupId>-->
+<!--                            <artifactId>gwt-java-time</artifactId>-->
+<!--                            <version>1.0-SNAPSHOT</version>-->
+<!--                            <packaging>jar</packaging>-->
+<!--                            <file>target/gwt-java-time-1.0-SNAPSHOT.jar</file>-->
+<!--                            <url>https://maven-repo-254709.appspot.com</url>-->
+<!--                            <repositoryId>github-mp1-appengine-repo</repositoryId>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
         </plugins>
         <!-- Manage plugin versions -->
         <pluginManagement>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+    <inherits name="walkingkooka.j2cl.java.text.Text"/>
+    <inherits name="walkingkooka.j2cl.java.util.calendar.Calendar"/>
+    <inherits name="walkingkooka.j2cl.java.util.currency.Currency"/>
+    <inherits name="walkingkooka.j2cl.java.util.timezone.TimeZone"/>
+
+    <super-source path="super"/>
+    <source path=""/>
+</module>
