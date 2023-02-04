@@ -373,18 +373,29 @@
             </plugin>
 
             <!-- order is important-->
+            <!-- dont want to include *.gwt.xml in *.jar -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.3.0</version>
-                <configuration>
-                    <excludes>
-                        <exclude>org/threeten/bp/*.dat</exclude>
-                        <exclude>org/threeten/bp/zone/TzdbZoneRulesCompiler*</exclude>
-                        <exclude>META-INF/services/org.threeten.bp.zone.ZoneRulesProvider</exclude>
-                        <exclude>**/generated/**</exclude>
-                    </excludes>
-                </configuration>
+                <executions>
+                    <execution>
+                        <id>default-jar</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>org/threeten/bp/*.dat</exclude>
+                                <exclude>org/threeten/bp/zone/TzdbZoneRulesCompiler*</exclude>
+                                <exclude>META-INF/services/org.threeten.bp.zone.ZoneRulesProvider</exclude>
+                                <exclude>**/generated/**</exclude>
+                                <exclude>**/*.gwt.xml</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
