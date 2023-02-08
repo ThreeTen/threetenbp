@@ -387,6 +387,7 @@
                         </goals>
                         <configuration>
                             <excludes>
+                                <exclude>java/**</exclude>
                                 <exclude>org/threeten/bp/*.dat</exclude>
                                 <exclude>org/threeten/bp/zone/TzdbZoneRulesCompiler*</exclude>
                                 <exclude>META-INF/services/org.threeten.bp.zone.ZoneRulesProvider</exclude>

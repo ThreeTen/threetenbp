@@ -16,6 +16,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>walkingkooka</groupId>
+            <artifactId>gwt-java-util-Locale</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
@@ -52,17 +58,40 @@
                 <configuration>
                     <source>9</source>
                     <target>9</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>walkingkooka</groupId>
+                            <artifactId>j2cl-java-util-currency-annotation-processor</artifactId>
+                            <version>1.0-SNAPSHOT</version>
+                        </path>
+                        <path>
+                            <groupId>walkingkooka</groupId>
+                            <artifactId>j2cl-java-util-Locale-annotation-processor</artifactId>
+                            <version>1.0-SNAPSHOT</version>
+                        </path>
+                        <path>
+                            <groupId>walkingkooka</groupId>
+                            <artifactId>j2cl-java-text-annotation-processor</artifactId>
+                            <version>1.0-SNAPSHOT</version>
+                        </path>
+                        <path>
+                            <groupId>walkingkooka</groupId>
+                            <artifactId>j2cl-java-util-TimeZone-annotation-processor</artifactId>
+                            <version>1.0-SNAPSHOT</version>
+                        </path>
+                    </annotationProcessorPaths>
                     <compilerArgs>
                         <arg>-Awalkingkooka.j2cl.java.util.Currency=XXX</arg>
-                        <arg>-Awalkingkooka.j2cl.java.util.Locale=EN-AU</arg>
+                        <arg>-Awalkingkooka.j2cl.java.util.Locale=en-AU</arg>
                         <arg>-Awalkingkooka.j2cl.java.util.Locale.DEFAULT=en-AU</arg>
-                        <arg>-Awalkingkooka.j2cl.java.util.TimeZone=Australia/*</arg>
+                        <arg>-Awalkingkooka.j2cl.java.util.TimeZone=Australia/Sydney</arg>
                         <arg>-Awalkingkooka.j2cl.java.util.TimeZone.DEFAULT=Australia/Sydney</arg>
                         <arg>-Awalkingkooka.j2cl.locale.Logging=SLASH_SLASH_COMMENTS</arg>
                     </compilerArgs>
                     <showWarnings>true</showWarnings>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>net.ltgt.gwt.maven</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
@@ -71,11 +100,20 @@
                 <configuration>
                     <failOnError>true</failOnError>
                     <moduleName>test.Test</moduleName>
-                    <sourceLevel>1.8</sourceLevel>
+                    <sourceLevel>1.9</sourceLevel>
                     <logLevel>DEBUG</logLevel>
                     <style>PRETTY</style>
+                    <!--
+Disable assertions to avoid exception below
+Caused by: java.lang.AssertionError
+	at com.google.gwt.dev.javac.JdtUtil.signature(JdtUtil.java:369)
+	at com.google.gwt.dev.jjs.impl.ReferenceMapper.get(ReferenceMapper.java:121)
+	at com.google.gwt.dev.jjs.impl.GwtAstBuilder$AstVisitor.endVisit(GwtAstBuilder.java:641)
+                    -->
+                    <enableAssertions>false</enableAssertions>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 </project>

@@ -4,8 +4,10 @@ import com.google.gwt.junit.client.GWTTestCase;
 
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDate;
-import java.util.Locale;
 
+import walkingkooka.j2cl.locale.LocaleAware;
+
+@LocaleAware
 public class TestGwtTest extends GWTTestCase {
     @Override
     public String getModuleName() {
