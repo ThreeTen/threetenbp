@@ -75,6 +75,7 @@
     <menu name="Releases">
       <item name="Release notes" href="changes-report.html"/>
       <item name="Dependency info" href="dependency-info.html"/>
+      <item name="Security" href="security.html"/>
       <item name="Download" href="https://search.maven.org/search?q=g:org.threeten%20AND%20a:threetenbp&amp;core=gav"/>
     </menu>
 
