@@ -35,6 +35,7 @@ Various documentation is available:
 
 * The [Javadoc](apidocs/index.html)
 * The [change notes](changes-report.html) for each release
+* The [security](security.html) issues page
 * The [GitHub](https://github.com/ThreeTen/threetenbp) source repository
 * The mechanism to [update](update-tzdb.html) the time-zone information
 
