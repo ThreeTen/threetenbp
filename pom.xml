@@ -335,7 +335,7 @@
                     <includes>
                         <include>**/Test*.java</include>
                     </includes>
-                    <argLine>-Xmx2G</argLine>
+                    <argLine>-Xmx2G -Duser.language=EN -Duser.region=AU</argLine>
                     <parallel>classes</parallel>
                     <threadCount>1</threadCount>
                     <!-- remove slow SuiteHTMLReporter -->
