@@ -24,7 +24,7 @@ jobs:
         run: mvn dependency:resolve
 
       - name: Maven install
-        run: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -e > output.txt
+        run: mvn install -Dmaven.javadoc.skip=true -B -V -e > output.txt
 
       - name: Print logs
         if: ${{ always() }}
