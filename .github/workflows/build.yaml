@@ -41,7 +41,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: failure()
         with:
-          name: it-output.txt
-          path: it-output.txt
+          name: output.txt
+          path: output.txt
 
 
