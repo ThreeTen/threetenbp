@@ -34,25 +34,25 @@ jobs:
           tail -n 500 target/it-tests/gwt-jar-test/build.log
           tail -n 500 target/it-tests/timezone-test/build.log
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: maven-install-output.txt
           path: maven-install-output.txt
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: gwt-jar-test-build.log
           path: target/it-tests/gwt-jar-test/build.log
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: junit-test-build.log
           path: target/it-tests/junit-test/build.log
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: timezone-test-build.log
