@@ -697,14 +697,14 @@ final class TzdbZoneRulesCompiler {
                 if (line.trim().length() == 0) {  // ignore blank lines
                     continue;
                 }
-                StringTokenizer st = new StringTokenizer(line, " \t");
+                StringTokenizer st = new StringTokenizer(line, " \f\r\t\u000b");
                 if (openZone != null && Character.isWhitespace(line.charAt(0)) && st.hasMoreTokens()) {
                     if (parseZoneLine(st, openZone)) {
                         openZone = null;
                     }
                 } else {
                     if (st.hasMoreTokens()) {
-                        String first = st.nextToken();
+                        String first = st.nextToken().toLowerCase(Locale.ENGLISH);
                         if (ZONE_LOOKUP.contains(first)) {
                             if (st.countTokens() < 3) {
                                 printVerbose("Invalid Zone line in file: " + file + ", line: " + line);
