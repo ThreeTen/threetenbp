@@ -48,7 +48,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
@@ -90,6 +92,54 @@ final class TzdbZoneRulesCompiler {
             .optionalStart().appendLiteral(':').appendValue(MINUTE_OF_HOUR, 2)
             .optionalStart().appendLiteral(':').appendValue(SECOND_OF_MINUTE, 2)
             .toFormatter();
+    }
+    private static final Set<String> RULE_LOOKUP = expand("rule", "r");
+    private static final Set<String> ZONE_LOOKUP = expand("zone", "z");
+    private static final Set<String> LINK_LOOKUP = expand("link", "l");
+    private static final Set<String> MIN_YEAR_LOOKUP = expand("minimum", "mi");
+    private static final Set<String> MAX_YEAR_LOOKUP = expand("maximum", "ma");
+    private static final Set<String> ONLY_YEAR_LOOKUP = expand("only", "o");
+    private static final Map<String, Integer> MONTH_LOOKUP = new HashMap<String, Integer>();
+    static {
+        put(expand("january", "ja"), 1, MONTH_LOOKUP);
+        put(expand("february", "f"), 2, MONTH_LOOKUP);
+        put(expand("march", "mar"), 3, MONTH_LOOKUP);
+        put(expand("april", "ap"), 4, MONTH_LOOKUP);
+        put(expand("may", "may"), 5, MONTH_LOOKUP);
+        put(expand("june", "jun"), 6, MONTH_LOOKUP);
+        put(expand("july", "jul"), 7, MONTH_LOOKUP);
+        put(expand("august", "au"), 8, MONTH_LOOKUP);
+        put(expand("september", "s"), 9, MONTH_LOOKUP);
+        put(expand("october", "o"), 10, MONTH_LOOKUP);
+        put(expand("november", "n"), 11, MONTH_LOOKUP);
+        put(expand("december", "d"), 12, MONTH_LOOKUP);
+    }
+    private static final Map<String, Integer> DOW_LOOKUP = new HashMap<String, Integer>();
+    static {
+        put(expand("monday", "m"), 1, DOW_LOOKUP);
+        put(expand("tuesday", "tu"), 2, DOW_LOOKUP);
+        put(expand("wednesday", "w"), 3, DOW_LOOKUP);
+        put(expand("thursday", "th"), 4, DOW_LOOKUP);
+        put(expand("friday", "f"), 5, DOW_LOOKUP);
+        put(expand("saturday", "sa"), 6, DOW_LOOKUP);
+        put(expand("sunday", "su"), 7, DOW_LOOKUP);
+    }
+
+    private static void put(Set<String> strs, int value, Map<String, Integer> map) {
+        for (Iterator<String> it = strs.iterator(); it.hasNext();) {
+            map.put(it.next(), value);
+        }
+    }
+
+    private static Set<String> expand(String whole, String shortest) {
+        Set<String> set = new HashSet<String>();
+        String code = whole;
+        while (!code.equals(shortest)) {
+            set.add(code);
+            code = code.substring(0, code.length() - 1);
+        }
+        set.add(code);
+        return set;
     }
 
     /**
@@ -655,7 +705,7 @@ final class TzdbZoneRulesCompiler {
                 } else {
                     if (st.hasMoreTokens()) {
                         String first = st.nextToken();
-                        if (first.equals("Zone")) {
+                        if (ZONE_LOOKUP.contains(first)) {
                             if (st.countTokens() < 3) {
                                 printVerbose("Invalid Zone line in file: " + file + ", line: " + line);
                                 throw new IllegalArgumentException("Invalid Zone line");
@@ -667,14 +717,14 @@ final class TzdbZoneRulesCompiler {
                             }
                         } else {
                             openZone = null;
-                            if (first.equals("Rule")) {
+                            if (RULE_LOOKUP.contains(first)) {
                                 if (st.countTokens() < 9) {
                                     printVerbose("Invalid Rule line in file: " + file + ", line: " + line);
                                     throw new IllegalArgumentException("Invalid Rule line");
                                 }
                                 parseRuleLine(st);
 
-                            } else if (first.equals("Link")) {
+                            } else if (LINK_LOOKUP.contains(first)) {
                                 if (st.countTokens() < 2) {
                                     printVerbose("Invalid Link line in file: " + file + ", line: " + line);
                                     throw new IllegalArgumentException("Invalid Link line");
@@ -798,39 +848,31 @@ final class TzdbZoneRulesCompiler {
     }
 
     private int parseYear(String str, int defaultYear) {
-        str = str.toLowerCase();
-        if (matches(str, "minimum")) {
+        String lower = str.toLowerCase(Locale.ENGLISH);
+        if (MIN_YEAR_LOOKUP.contains(lower)) {
             return Year.MIN_VALUE;
-        } else if (matches(str, "maximum")) {
+        } else if (MAX_YEAR_LOOKUP.contains(lower)) {
             return Year.MAX_VALUE;
-        } else if (str.equals("only")) {
+        } else if (ONLY_YEAR_LOOKUP.contains(lower)) {
             return defaultYear;
         }
         return Integer.parseInt(str);
     }
 
     private Month parseMonth(String str) {
-        str = str.toLowerCase();
-        for (Month moy : Month.values()) {
-            if (matches(str, moy.name().toLowerCase())) {
-                return moy;
-            }
+        Integer value = MONTH_LOOKUP.get(str.toLowerCase(Locale.ENGLISH));
+        if (value == null) {
+            throw new IllegalArgumentException("Unknown month: " + str);
         }
-        throw new IllegalArgumentException("Unknown month: " + str);
+        return Month.of(value);
     }
 
     private DayOfWeek parseDayOfWeek(String str) {
-        str = str.toLowerCase();
-        for (DayOfWeek dow : DayOfWeek.values()) {
-            if (matches(str, dow.name().toLowerCase())) {
-                return dow;
-            }
+        Integer value = DOW_LOOKUP.get(str.toLowerCase(Locale.ENGLISH));
+        if (value == null) {
+            throw new IllegalArgumentException("Unknown day-of-week: " + str);
         }
-        throw new IllegalArgumentException("Unknown day-of-week: " + str);
-    }
-
-    private boolean matches(String str, String search) {
-        return str.startsWith(search.substring(0, 3)) && search.startsWith(str) && str.length() <= search.length();
+        return DayOfWeek.of(value);
     }
 
     private String parseOptional(String str) {
