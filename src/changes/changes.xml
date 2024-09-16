@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.7.0" date="SNAPSHOT" description="v1.7.0">
+      <action dev="jodastephen" type="fix" >
+        Enhance TZDB parsing, handling more shortened forms.
+      </action>
+    </release>
     <release version="1.6.9" date="2024-03-25" description="v1.6.9">
       <action dev="jodastephen" type="update" >
         Update to time-zone data 2024agtz.

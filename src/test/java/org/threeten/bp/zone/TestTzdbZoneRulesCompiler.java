@@ -66,40 +66,21 @@ public class TestTzdbZoneRulesCompiler {
     }
 
     @Test
-    public void test_parseYear_min() throws Exception {
-        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
-        assertEquals(parseYear(test, "min", 2000), Year.MIN_VALUE);
-    }
-
-    @Test
-    public void test_parseYear_mini() throws Exception {
-        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
-        assertEquals(parseYear(test, "mini", 2000), Year.MIN_VALUE);
-    }
-
-    @Test
-    public void test_parseYear_minim() throws Exception {
-        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
-        assertEquals(parseYear(test, "minim", 2000), Year.MIN_VALUE);
-    }
-
-    @Test
-    public void test_parseYear_minimu() throws Exception {
-        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
-        assertEquals(parseYear(test, "minimu", 2000), Year.MIN_VALUE);
-    }
-
-    @Test
     public void test_parseYear_minimum() throws Exception {
         TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        assertEquals(parseYear(test, "mi", 2000), Year.MIN_VALUE);
+        assertEquals(parseYear(test, "min", 2000), Year.MIN_VALUE);
+        assertEquals(parseYear(test, "mini", 2000), Year.MIN_VALUE);
+        assertEquals(parseYear(test, "minim", 2000), Year.MIN_VALUE);
+        assertEquals(parseYear(test, "MINIMU", 2000), Year.MIN_VALUE);
         assertEquals(parseYear(test, "minimum", 2000), Year.MIN_VALUE);
     }
 
 
     @Test(expectedExceptions=NumberFormatException.class)
-    public void test_parseYear_minTooShort() throws Exception {
+    public void test_parseYear_minimumTooShort() throws Exception {
         TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
-        parseYear(test, "mi", 2000);
+        parseYear(test, "m", 2000);
     }
 
     @Test(expectedExceptions=NumberFormatException.class)
@@ -109,39 +90,20 @@ public class TestTzdbZoneRulesCompiler {
     }
 
     @Test
-    public void test_parseYear_max() throws Exception {
-        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
-        assertEquals(parseYear(test, "max", 2000), Year.MAX_VALUE);
-    }
-
-    @Test
-    public void test_parseYear_maxi() throws Exception {
-        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
-        assertEquals(parseYear(test, "maxi", 2000), Year.MAX_VALUE);
-    }
-
-    @Test
-    public void test_parseYear_maxim() throws Exception {
-        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
-        assertEquals(parseYear(test, "maxim", 2000), Year.MAX_VALUE);
-    }
-
-    @Test
-    public void test_parseYear_maximu() throws Exception {
-        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
-        assertEquals(parseYear(test, "maximu", 2000), Year.MAX_VALUE);
-    }
-
-    @Test
     public void test_parseYear_maximum() throws Exception {
         TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        assertEquals(parseYear(test, "ma", 2000), Year.MAX_VALUE);
+        assertEquals(parseYear(test, "max", 2000), Year.MAX_VALUE);
+        assertEquals(parseYear(test, "maxi", 2000), Year.MAX_VALUE);
+        assertEquals(parseYear(test, "maxim", 2000), Year.MAX_VALUE);
+        assertEquals(parseYear(test, "MAXIMU", 2000), Year.MAX_VALUE);
         assertEquals(parseYear(test, "maximum", 2000), Year.MAX_VALUE);
     }
 
     @Test(expectedExceptions=NumberFormatException.class)
-    public void test_parseYear_maxTooShort() throws Exception {
+    public void test_parseYear_maximumTooShort() throws Exception {
         TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
-        parseYear(test, "ma", 2000);
+        parseYear(test, "m", 2000);
     }
 
     @Test(expectedExceptions=NumberFormatException.class)
@@ -218,13 +180,31 @@ public class TestTzdbZoneRulesCompiler {
         assertEquals(parseMonth(test, "October"), Month.OCTOBER);
         assertEquals(parseMonth(test, "November"), Month.NOVEMBER);
         assertEquals(parseMonth(test, "December"), Month.DECEMBER);
+        assertEquals(parseMonth(test, "Ja"), Month.JANUARY);
         assertEquals(parseMonth(test, "Janu"), Month.JANUARY);
         assertEquals(parseMonth(test, "Janua"), Month.JANUARY);
         assertEquals(parseMonth(test, "Januar"), Month.JANUARY);
+        assertEquals(parseMonth(test, "F"), Month.FEBRUARY);
+        assertEquals(parseMonth(test, "MAR"), Month.MARCH);
+        assertEquals(parseMonth(test, "AP"), Month.APRIL);
+        assertEquals(parseMonth(test, "MAY"), Month.MAY);
+        assertEquals(parseMonth(test, "JUN"), Month.JUNE);
+        assertEquals(parseMonth(test, "JUL"), Month.JULY);
+        assertEquals(parseMonth(test, "AU"), Month.AUGUST);
+        assertEquals(parseMonth(test, "S"), Month.SEPTEMBER);
+        assertEquals(parseMonth(test, "O"), Month.OCTOBER);
+        assertEquals(parseMonth(test, "N"), Month.NOVEMBER);
+        assertEquals(parseMonth(test, "D"), Month.DECEMBER);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
-    public void test_parseMonth_invalidMonth() throws Exception {
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_parseMonth_TooShort() throws Exception {
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        parseMonth(test, "J");
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_parseMonth_invalid() throws Exception {
         TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         parseMonth(test, "ABC");
     }
@@ -269,12 +249,20 @@ public class TestTzdbZoneRulesCompiler {
         assertEquals(parseDayOfWeek(test, "Friday"), DayOfWeek.FRIDAY);
         assertEquals(parseDayOfWeek(test, "Saturday"), DayOfWeek.SATURDAY);
         assertEquals(parseDayOfWeek(test, "Sunday"), DayOfWeek.SUNDAY);
+        assertEquals(parseDayOfWeek(test, "M"), DayOfWeek.MONDAY);
+        assertEquals(parseDayOfWeek(test, "Mo"), DayOfWeek.MONDAY);
         assertEquals(parseDayOfWeek(test, "Mond"), DayOfWeek.MONDAY);
         assertEquals(parseDayOfWeek(test, "Monda"), DayOfWeek.MONDAY);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
-    public void test_parseDayOfWeek_invalidMonth() throws Exception {
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_parseDayOfWeek_tooShort() throws Exception {
+        TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        parseMonth(test, "T");
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_parseDayOfWeek_invalid() throws Exception {
         TzdbZoneRulesCompiler test = new TzdbZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         parseMonth(test, "ABC");
     }
