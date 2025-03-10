@@ -17,7 +17,7 @@
   <!-- ==================================================================== -->
   <issueManagement>
     <system>GitHub</system>
-    <url>https://github.com/ThreeTen/threetenbp/issues</url>
+    <url>https://github.com/ThreeTen/threetenbp/issues/</url>
   </issueManagement>
   <inceptionYear>2007</inceptionYear>
 
@@ -699,10 +699,13 @@
                 <goals>
                   <goal>sign</goal>
                 </goals>
+                <configuration>
+                  <signer>bc</signer>
+                </configuration>
               </execution>
             </executions>
           </plugin>
-          <!-- Release to GitHub -->
+          <!-- Release dist files to GitHub -->
           <!-- This will create a tag on GitHub on deploy -->
           <!-- The release commit must have been pushed first -->
           <plugin>
@@ -733,9 +736,10 @@
             <extensions>true</extensions>
             <configuration>
               <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-              <serverId>sonatype-joda-staging</serverId>
+              <serverId>sonatype-threeten-staging</serverId>
               <autoReleaseAfterClose>true</autoReleaseAfterClose>
               <keepStagingRepositoryOnCloseRuleFailure>true</keepStagingRepositoryOnCloseRuleFailure>
+              <stagingProgressTimeoutMinutes>20</stagingProgressTimeoutMinutes>
             </configuration>
           </plugin>
         </plugins>
@@ -854,6 +858,7 @@
     <maven.compiler.source>1.6</maven.compiler.source>
     <maven.compiler.target>1.6</maven.compiler.target>
     <maven.compiler.fork>true</maven.compiler.fork>
+
     <!-- Properties for maven-javadoc-plugin -->
     <author>false</author>
     <notimestamp>true</notimestamp>

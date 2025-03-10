@@ -16,15 +16,20 @@ jobs:
       contents: write  # for peter-evans/create-pull-request to create branch
       pull-requests: write  # for peter-evans/create-pull-request to create a PR
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout
-      uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  #v3.0.2
+      uses: actions/checkout@v4
       with:
-        token: ${{ secrets.PERSONAL_TOKEN_GH }}
+        token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+        fetch-tags: true
+
+    - name: Setup git
+      run: |
+        git config --global user.name "Stephen Colebourne (CI)"
+        git config --global user.email "scolebourne@joda.org"
 
     - name: Set up JDK
-      uses: actions/setup-java@2c7a4878f5d120bd643426d54ae1209b29cc01a3  #v3.4.1
+      uses: actions/setup-java@v4
       with:
         java-version: 8
         distribution: 'temurin'
@@ -33,10 +38,16 @@ jobs:
     - name: Maven version
       run: |
         mkdir -p ./.mvn
-        echo '-e -B -DtrimStackTrace=false' > ./.mvn/maven.config
+        echo "-e" >> ./.mvn/maven.config
+        echo "-B" >> ./.mvn/maven.config
+        echo "-ntp" >> ./.mvn/maven.config
+        echo "-DtrimStackTrace=false" >> ./.mvn/maven.config
+        echo "--settings" >> ./.mvn/maven.config
+        echo "$( pwd )/.github/maven-settings.xml" >> ./.mvn/maven.config
         mvn --version
         mkdir -p target
 
+    #------------------------------------------------------------------------
     - name: Get current version
       run: |
         CURRENT_TZDB=$(mvn help:evaluate -Dexpression=tz.database.version -q -DforceStdout)
@@ -90,11 +101,11 @@ jobs:
     - name: Create Pull Request
       if: env.NOOP != 'true'
       id: createpr
-      uses: peter-evans/create-pull-request@7380612b49221684fefa025244f2ef4008ae50ad  #v3.10.1
+      uses: peter-evans/create-pull-request@v3
       env:
-        GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN_GH }}
+        GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
         base: main
         commit-message: 'Update time zone data to ${{ env.LATEST_TZDB }}'
         committer: Stephen Colebourne (CI) <scolebourne@joda.org>
@@ -104,3 +115,9 @@ jobs:
         assignees: jodastephen
         labels: TZDB
         branch: bot/update-tzdb
+
+    - name: Delete tzdb tag
+      if: "startsWith(github.ref, 'refs/tags/tzdb')"
+      run: |
+        git tag --delete "${GITHUB_REF_NAME}" || true
+        git push --delete origin "${GITHUB_REF_NAME}" || true

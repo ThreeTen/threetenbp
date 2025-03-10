@@ -70,5 +70,10 @@ Tidelift will coordinate the fix and disclosure.
 
 * Update version (index.md, changes.xml - checking tzdb version)
 * Commit and push
-* Run `mvn clean release:clean release:prepare release:perform` on Java 11
-* Website will be built and released by GitHub Actions
+* `git push origin HEAD:refs/tags/release`
+* Code and Website will be built and released by GitHub Actions
+
+Release from local:
+
+* Turn off gpg "bc" signer
+* `mvn clean release:clean release:prepare release:perform`

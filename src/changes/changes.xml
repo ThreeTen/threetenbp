@@ -9,50 +9,50 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="1.7.0" date="2024-09-17" description="v1.7.0">
-      <action dev="jodastephen" type="fix" >
+      <action dev="jodastephen" type="fix">
         Enhance TZDB parsing, handling more shortened forms.
       </action>
-      <action dev="jodastephen" type="update" >
+      <action dev="jodastephen" type="update">
         Update to time-zone data 2024bgtz.
       </action>
     </release>
     <release version="1.6.9" date="2024-03-25" description="v1.6.9">
-      <action dev="jodastephen" type="update" >
+      <action dev="jodastephen" type="update">
         Update to time-zone data 2024agtz.
       </action>
     </release>
     <release version="1.6.8" date="2023-03-30" description="v1.6.8">
-      <action dev="jodastephen" type="update" >
+      <action dev="jodastephen" type="update">
         Update to time-zone data 2023cgtz.
       </action>
     </release>
     <release version="1.6.7" date="2023-03-24" description="v1.6.7">
-      <action dev="jodastephen" type="update" >
+      <action dev="jodastephen" type="update">
         Update to time-zone data 2023bgtz.
       </action>
     </release>
     <release version="1.6.6" date="2023-03-23" description="v1.6.6">
-      <action dev="jodastephen" type="update" >
+      <action dev="jodastephen" type="update">
         Update to time-zone data 2023agtz.
       </action>
     </release>
     <release version="1.6.5" date="2022-12-06" description="v1.6.5">
-      <action dev="jodastephen" type="update" >
+      <action dev="jodastephen" type="update">
         Update to time-zone data 2022ggtz.
       </action>
     </release>
     <release version="1.6.4" date="2022-10-29" description="v1.6.4">
-      <action dev="jodastephen" type="update" >
+      <action dev="jodastephen" type="update">
         Update to time-zone data 2022fgtz.
       </action>
     </release>
     <release version="1.6.3" date="2022-10-13" description="v1.6.3">
-      <action dev="jodastephen" type="update" >
+      <action dev="jodastephen" type="update">
         Update to time-zone data 2022egtz.
       </action>
     </release>
     <release version="1.6.2" date="2022-09-25" description="v1.6.2">
-      <action dev="jodastephen" type="update" >
+      <action dev="jodastephen" type="update">
         Update to time-zone data 2022dgtz.
       </action>
       <action dev="jodastephen" type="update">
@@ -63,201 +63,195 @@
       </action>
     </release>
     <release version="1.6.1" date="2022-08-12" description="v1.6.1">
-      <action dev="jodastephen" type="update" >
+      <action dev="jodastephen" type="update">
         Update to time-zone data 2022bgtz.
         ThreeTen-Backport now uses global-tz for time zone data.
         https://github.com/JodaOrg/global-tz
       </action>
     </release>
     <release version="1.6.0" date="2022-03-20" description="v1.6.0">
-      <action dev="jodastephen" type="update" >
+      <action dev="jodastephen" type="update">
         Update to time-zone data 2022agtz.
         ThreeTen-Backport now uses global-tz for time zone data.
         https://github.com/JodaOrg/global-tz
       </action>
     </release>
     <release version="1.5.2" date="2021-11-08" description="v1.5.2">
-      <action dev="jodastephen" type="update" >
+      <action dev="jodastephen" type="update">
         Update to time-zone data 2021efork.
 		ThreeTen-Backport now follows a fork of tzdb.
 		The fork provides better comaptibility of data compared to the original tzdb.
       </action>
-      <action dev="foal" type="fix" >
+      <action dev="foal" type="fix">
         Fix ZoneRules when there are no historic transitions.
         Fixes #148, #149, #150, #151.
       </action>
     </release>
     <release version="1.5.1" date="2021-04-20" description="v1.5.1">
-      <action dev="jodastephen" type="update" >
+      <action dev="jodastephen" type="update">
         Update to time-zone data 2021a.
       </action>
     </release>
     <release version="1.5.0" date="2020-10-23" description="v1.5.0">
-      <action dev="raupachz" type="add" >
+      <action dev="raupachz" type="add" issue="76">
         Add Duration.toXxxPart() methods from Java 9.
-        Fixes #76.
       </action>
-      <action dev="jodastephen" type="update" >
+      <action dev="jodastephen" type="update">
         Update to time-zone data 2020d.
       </action>
     </release>
     <release version="1.4.5" date="2020-10-07" description="v1.4.5">
-      <action dev="jodastephen" type="update" >
+      <action dev="jodastephen" type="update">
         Update to time-zone data 2020b.
       </action>
-      <action dev="jodastephen" type="fix" >
+      <action dev="jodastephen" type="fix" issue="133">
         Fix parsing of fixed zone offsets.
-        Fixes #133.
       </action>
-      <action dev="jodastephen" type="fix">
+      <action dev="jodastephen" type="fix" issue="97">
         Ensure narrow text is accurate for Chinese/Japanese/Arabbic.
         Hard code a reasonable answer.
-        Fixes #97.
       </action>
-      <action dev="tomislavhofman" type="fix" >
+      <action dev="tomislavhofman" type="fix" issue="128">
         Fix Javadoc nit.
-        Fixes #128.
       </action>
     </release>
     <release version="1.4.4" date="2020-04-24" description="v1.4.4">
-      <action dev="jodastephen" type="update" >
+      <action dev="jodastephen" type="update">
         Update to time-zone data 2020a.
       </action>
     </release>
     <release version="1.4.3" date="2020-04-04" description="v1.4.3">
-      <action dev="ericksli" type="ericksli" >
+      <action dev="ericksli" type="ericksli">
         Add Japanese Reiwa era.
       </action>
     </release>
     <release version="1.4.2" date="2020-03-20" description="v1.4.2">
-      <action dev="jodastephen" type="update" >
+      <action dev="jodastephen" type="update">
         Add ProGuard configuration file for Android users.
       </action>
     </release>
     <release version="1.4.1" date="2020-01-13" description="v1.4.1">
-      <action dev="jodastephen" type="update" >
+      <action dev="jodastephen" type="update">
         Update to time-zone data 2019c.
       </action>
     </release>
     <release version="1.4.0" date="2019-05-08" description="v1.4.0">
-      <action dev="dlew" type="update" >
+      <action dev="dlew" type="update">
         Update to time-zone data 2019a.
       </action>
-      <action dev="GrahamBorland" type="fix">
+      <action dev="GrahamBorland" type="fix" issue="102">
         Fix Javadoc.
-        Fixes #102.
       </action>
       <action dev="jodastephen" type="add">
         Add Tidelift commercial support and security policy.
       </action>
     </release>
     <release version="1.3.8" date="2018-10-27" description="v1.3.8">
-      <action dev="Kiskae" type="fix" >
+      <action dev="Kiskae" type="fix" issue="95">
         Handle time of 25:00 in TZDB.
-        Fixes #95.
       </action>
-      <action dev="Kiskae" type="update" >
+      <action dev="Kiskae" type="update">
         Update to time-zone data 2018f.
       </action>
-      <action dev="jodastephen" type="update" >
+      <action dev="jodastephen" type="update">
         Update to time-zone data 2018g.
       </action>
     </release>
     <release version="1.3.7" date="2018-08-19" description="v1.3.7">
-      <action dev="jodastephen" type="update" >
+      <action dev="jodastephen" type="update">
         Update to time-zone data 2018e.
       </action>
-      <action dev="jodastephen" type="add" >
+      <action dev="jodastephen" type="add">
         Add no-tzdb source/javadoc jar files.
         See #86.
       </action>
-      <action dev="jodastephen" type="add" >
+      <action dev="jodastephen" type="add">
         Add Automatic-Module-Name for Java 9.
       </action>
-      <action dev="pithu" type="fix" >
+      <action dev="pithu" type="fix">
         Fix for parsing during DST overlap.
         See #77.
       </action>
-      <action dev="jodastephen" type="fix" >
+      <action dev="jodastephen" type="fix">
         Fix for parsing in later JDK 8 versions.
         Problem caused by TZDB data.
         See #90.
       </action>
     </release>
     <release version="1.3.6" date="2017-07-10" description="v1.3.6">
-      <action dev="pamalyshev" type="fix" >
+      <action dev="pamalyshev" type="fix">
         Remove time-zone jar files from release.
         See #71.
       </action>
     </release>
     <release version="1.3.5" date="2017-06-07" description="v1.3.5">
-      <action dev="pamalyshev" type="add" >
+      <action dev="pamalyshev" type="add">
         Add DateTimeTextProvider.setInstance() to allow the provider to be replaced.
         See #69 and #70.
       </action>
-      <action dev="jodastephen" type="update" >
+      <action dev="jodastephen" type="update">
         Update to time-zone data 2017b.
       </action>
     </release>
     <release version="1.3.4" date="2017-05-16" description="v1.3.4">
-      <action dev="jodastephen" type="add" >
+      <action dev="jodastephen" type="add">
         Add ZoneRulesInitializer to allow the service loader initialization to be replaced.
         See #63 and #65.
       </action>
-      <action dev="jodastephen" type="fix" >
+      <action dev="jodastephen" type="fix">
         Avoid copying the set of available time-zone IDs (performance).
       </action>
     </release>
     <release version="1.3.3" date="2016-12-19" description="v1.3.3">
-      <action dev="jodastephen" type="update" >
+      <action dev="jodastephen" type="update">
         Update to time-zone data 2016j.
       </action>
-      <action dev="jodastephen" type="fix" >
+      <action dev="jodastephen" type="fix">
         Avoid referring to JDK internal packages.
       </action>
-      <action dev="jodastephen" type="update" >
+      <action dev="jodastephen" type="update">
         Update to time-zone data 2016f.
       </action>
-      <action dev="jodastephen" type="fix" >
+      <action dev="jodastephen" type="fix">
         Chronology.resolveDate() should be abstract.
         Fixes #48.
       </action>
-      <action dev="kemokid" type="fix" >
+      <action dev="kemokid" type="fix">
         Fix HijrahDate aligned-day-of-month field.
         Fixes #47.
       </action>
     </release>
     <release version="1.3.2" date="2016-06-30" description="v1.3.2">
-      <action dev="jodastephen" type="update" >
+      <action dev="jodastephen" type="update">
         Update to time-zone data 2016e.
       </action>
-      <action dev="jodastephen" type="fix" >
+      <action dev="jodastephen" type="fix">
         Graceful fallback when printing time-zone name.
         Fixes #44.
       </action>
-      <action dev="jodastephen" type="fix" >
+      <action dev="jodastephen" type="fix">
         Ensure LocalDate.ofEpochDay() is correctly validated.
         Fixes #39.
       </action>
-      <action dev="jodastephen" type="fix" >
+      <action dev="jodastephen" type="fix">
         Remove unnecessary code.
         Fixes #41.
       </action>
     </release>
     <release version="1.3.1" date="2015-09-01" description="v1.3.1">
-      <action dev="jodastephen" type="update" >
+      <action dev="jodastephen" type="update">
         Update to time-zone data 2015f.
       </action>
-      <action dev="sschaap" type="fix" >
+      <action dev="sschaap" type="fix">
         Avoid exceptions when querying time-zone transitions on certain zones.
         Fixes #34.
       </action>
     </release>
     <release version="1.3" date="2015-07-15" description="v1.3">
-      <action dev="jodastephen" type="update" >
+      <action dev="jodastephen" type="update">
         Update to time-zone data 2015e.
       </action>
-      <action dev="jodastephen" type="add" >
+      <action dev="jodastephen" type="add">
         Produce a no-tzdb jar file.
         A second jar file is now located in Maven Central with the classifier "no-tzdb".
         This is the same as the main threetenbp jar file, except that the tzdb data and TZDB compiler are omitted.
@@ -265,65 +259,65 @@
         The default behaviour in the standard jar file is unchanged, with time-zone data included in the jar file.
         Fixes #29.
       </action>
-      <action dev="jodastephen" type="fix" >
+      <action dev="jodastephen" type="fix">
         Remove leap seconds data, as not in the JDK.
       </action>
-      <action dev="paplorinc" type="fix" >
+      <action dev="paplorinc" type="fix">
         Fix loading of multiple versions of tzdb data.
         Fixes #28.
       </action>
-      <action dev="jodastephen" type="fix" >
+      <action dev="jodastephen" type="fix">
         Fix Javadoc in Duration.
         Fixes #24.
       </action>
     </release>
     <release version="1.2" date="2014-12-09" description="v1.2">
-      <action dev="jodastephen" type="update" >
+      <action dev="jodastephen" type="update">
         Update to time-zone data 2015d.
       </action>
-      <action dev="jodastephen" type="fix" >
+      <action dev="jodastephen" type="fix">
         Fix parsing of Etc/GMT+1 and similar zones which have a longer form like Etc/GMT+10.
         Fixes #21.
       </action>
-      <action dev="jodastephen" type="fix" >
+      <action dev="jodastephen" type="fix">
         Remove references to LocaleServiceProvider.
         Fixes #22.
       </action>
     </release>
     <release version="1.1" date="2014-10-24" description="v1.1">
-      <action dev="jodastephen" type="update" >
+      <action dev="jodastephen" type="update">
         Update to time-zone data 2014i.
         Fixes #19.
       </action>
-      <action dev="jodastephen" type="fix" >
+      <action dev="jodastephen" type="fix">
         Be more OSGi friendly wrt JDK internal packages.
         Fixes #14, #15.
       </action>
-      <action dev="jodastephen" type="fix" >
+      <action dev="jodastephen" type="fix">
         Fix parsing of Durations between 0 and -1 seconds.
       </action>
     </release>
     <release version="1.0" date="2014-07-01" description="v1.0">
-      <action dev="jodastephen" type="fix" >
+      <action dev="jodastephen" type="fix">
         Fix Chronology text missing from jar.
       </action>
-      <action dev="jodastephen" type="fix" >
+      <action dev="jodastephen" type="fix">
         Try to be more OSGi friendly.
         Fixes #4.
       </action>
-      <action dev="jodastephen" type="add" >
+      <action dev="jodastephen" type="add">
         Backport to JDK 6.
         Fixes #11.
       </action>
-      <action dev="jodastephen" type="add" >
+      <action dev="jodastephen" type="add">
         Add DateTimeUtils to simulate methods added to JDK classes.
         Fixes #5.
       </action>
-      <action dev="jodastephen" type="fix" >
+      <action dev="jodastephen" type="fix">
         Fix Instant parsing.
         Fixes #10.
       </action>
-      <action dev="jodastephen" type="add" >
+      <action dev="jodastephen" type="add">
         Ensure OSGi information is in pom.
         Fixes #9.
       </action>

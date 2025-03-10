@@ -27,3 +27,4 @@
 **/TempTest.java
 /.idea/
 /threetenbp.iml
+*.DS_Store

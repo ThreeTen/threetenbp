@@ -1,30 +1,22 @@
-name: Build
+name: Release
 
-on: 
+on:
   push:
-    branches:
-      - '*'
-  pull_request:
-    branches:
-      - 'main'
+    tags:
+      - 'release*'
 
 permissions:
   contents: write
 
 jobs:
   build:
-    permissions:
-      security-events: write  # for github/codeql-action
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        java: [8, 11]
-    
     steps:
     - name: Checkout
       uses: actions/checkout@v4
       with:
         token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+        ref: "main"
         fetch-tags: true
 
     - name: Setup git
@@ -35,7 +27,7 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@v4
       with:
-        java-version: ${{ matrix.java }}
+        java-version: 11
         distribution: 'temurin'
         cache: 'maven'
 
@@ -52,16 +44,27 @@ jobs:
         mkdir -p target
 
     #------------------------------------------------------------------------
-    - name: Initialize CodeQL
-      if: matrix.java == '11'
-      uses: github/codeql-action/init@v3
-      with:
-        languages: java
-
-    - name: Maven build
+    - name: Maven install
       run: |
-        mvn install site
+        mvn clean install
 
-    - name: Perform CodeQL Analysis
-      if: matrix.java == '11'
-      uses: github/codeql-action/analyze@v3
+    - name: Maven release
+      env:
+        OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+        OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
+        MAVEN_GPG_PASSPHRASE: ${{ secrets.RELEASES_GPG_PASSPHRASE }}
+        MAVEN_GPG_KEY: ${{ secrets.RELEASES_GPG_PRIVATE_KEY }}
+        GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+      run: |
+        mvn release:clean release:prepare release:perform
+
+    - name: Update website
+      run: |
+        git tag websiterelease
+        git push origin websiterelease
+
+    - name: Delete release tag
+      if: "always()"
+      run: |
+        git tag --delete "${GITHUB_REF_NAME}" || true
+        git push --delete origin "${GITHUB_REF_NAME}" || true

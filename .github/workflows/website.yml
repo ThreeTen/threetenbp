@@ -1,25 +1,16 @@
-name: Build
+name: Website
 
-on: 
+on:
   push:
-    branches:
-      - '*'
-  pull_request:
-    branches:
-      - 'main'
+    tags:
+      - 'website*'
 
 permissions:
   contents: write
 
 jobs:
   build:
-    permissions:
-      security-events: write  # for github/codeql-action
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        java: [8, 11]
-    
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -35,7 +26,7 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@v4
       with:
-        java-version: ${{ matrix.java }}
+        java-version: 11
         distribution: 'temurin'
         cache: 'maven'
 
@@ -52,16 +43,34 @@ jobs:
         mkdir -p target
 
     #------------------------------------------------------------------------
-    - name: Initialize CodeQL
-      if: matrix.java == '11'
-      uses: github/codeql-action/init@v3
-      with:
-        languages: java
-
-    - name: Maven build
+    - name: Maven site
       run: |
         mvn install site
 
-    - name: Perform CodeQL Analysis
-      if: matrix.java == '11'
-      uses: github/codeql-action/analyze@v3
+    - name: Checkout website
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+        repository: ThreeTen/threeten.github.io
+        path: target/threeten.github.io
+        ref: "main"
+
+    - name: Update website
+      run: |
+        cd target/threeten.github.io
+        git status
+  
+        rm -rf threetenbp/
+        cp -R ../site threetenbp/
+  
+        git add -A
+        git status
+        git commit --message "Update threetenbp from CI: $GITHUB_ACTION"
+  
+        git push origin main
+
+    - name: Delete website tag
+      if: "always()"
+      run: |
+        git tag --delete "${GITHUB_REF_NAME}" || true
+        git push --delete origin "${GITHUB_REF_NAME}" || true
