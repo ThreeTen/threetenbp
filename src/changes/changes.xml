@@ -8,6 +8,14 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.7.1" date="SNAPSHOT" description="v1.7.1">
+      <action dev="jodastephen" type="fix" issue="198">
+        Fix implementation of `SimpleDateTimeTextProvider`.
+      </action>
+      <action dev="jodastephen" type="update">
+        Update to time-zone data 2025agtz.
+      </action>
+    </release>
     <release version="1.7.0" date="2024-09-17" description="v1.7.0">
       <action dev="jodastephen" type="fix">
         Enhance TZDB parsing, handling more shortened forms.

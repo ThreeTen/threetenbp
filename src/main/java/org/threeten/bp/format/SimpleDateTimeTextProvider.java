@@ -426,11 +426,12 @@ final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
             this.valueTextMap = valueTextMap;
             Map<TextStyle, List<Entry<String, Long>>> map = new HashMap<TextStyle, List<Entry<String,Long>>>();
             List<Entry<String, Long>> allList = new ArrayList<Map.Entry<String,Long>>();
+            outer:
             for (TextStyle style : valueTextMap.keySet()) {
                 Map<String, Entry<String, Long>> reverse = new HashMap<String, Map.Entry<String,Long>>();
                 for (Map.Entry<Long, String> entry : valueTextMap.get(style).entrySet()) {
                     if (reverse.put(entry.getValue(), createEntry(entry.getValue(), entry.getKey())) != null) {
-                        continue;  // not parsable, try next style
+                        continue outer;  // not parsable, try next style
                     }
                 }
                 List<Entry<String, Long>> list = new ArrayList<Map.Entry<String,Long>>(reverse.values());
