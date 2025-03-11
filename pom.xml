@@ -737,7 +737,7 @@
             <configuration>
               <nexusUrl>https://oss.sonatype.org/</nexusUrl>
               <serverId>sonatype-threeten-staging</serverId>
-              <autoReleaseAfterClose>false</autoReleaseAfterClose>
+              <autoReleaseAfterClose>true</autoReleaseAfterClose>
               <keepStagingRepositoryOnCloseRuleFailure>true</keepStagingRepositoryOnCloseRuleFailure>
               <stagingProgressTimeoutMinutes>20</stagingProgressTimeoutMinutes>
             </configuration>
