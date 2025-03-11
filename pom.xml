@@ -832,7 +832,7 @@
     <maven-deploy-plugin.version>3.0.0</maven-deploy-plugin.version>
     <maven-dependency-plugin.version>3.4.0</maven-dependency-plugin.version>
     <maven-enforcer-plugin.version>3.1.0</maven-enforcer-plugin.version>
-    <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
+    <maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
     <maven-install-plugin.version>3.1.0</maven-install-plugin.version>
     <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
     <maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
@@ -851,7 +851,7 @@
     <!-- Other plugins -->
     <github-api.version>1.314</github-api.version>
     <github-release-plugin.version>1.4.0</github-release-plugin.version>
-    <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
+    <nexus-staging-maven-plugin.version>1.7.0</nexus-staging-maven-plugin.version>
     <reflow-velocity-tools.version>1.2</reflow-velocity-tools.version>
     <!-- Properties for maven-compiler-plugin -->
     <maven.compiler.compilerVersion>1.6</maven.compiler.compilerVersion>
