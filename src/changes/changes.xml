@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.7.2" date="2025-08-12" description="v1.7.2">
+      <action dev="jodastephen" type="update">
+        Update to time-zone data 2025bgtz.
+      </action>
+    </release>
     <release version="1.7.1" date="2025-03-11" description="v1.7.1">
       <action dev="jodastephen" type="fix" issue="198">
         Fix implementation of `SimpleDateTimeTextProvider`.
