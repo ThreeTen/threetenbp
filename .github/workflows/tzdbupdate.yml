@@ -116,6 +116,12 @@ jobs:
         labels: TZDB
         branch: bot/update-tzdb
 
+    - name: Auto-merge the Pull Request
+      if: steps.createpr.outputs.pull-request-number
+      run: gh pr merge --squash --auto "${{ steps.createpr.outputs.pull-request-number }}"
+      env:
+        GH_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+
     - name: Delete tzdb tag
       if: "startsWith(github.ref, 'refs/tags/tzdb')"
       run: |
