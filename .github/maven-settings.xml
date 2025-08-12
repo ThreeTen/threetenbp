@@ -4,13 +4,13 @@
                           https://maven.apache.org/xsd/settings-1.0.0.xsd">
   <servers>
     <server>
-      <id>sonatype-threeten-staging</id>
-      <username>${env.OSSRH_USERNAME}</username>
-      <password>${env.OSSRH_TOKEN}</password>
+      <id>central-publish</id>
+      <username>${env.MAVEN_CENTRAL_USERNAME}</username>
+      <password>${env.MAVEN_CENTRAL_PASSWORD}</password>
     </server>
     <server>
       <id>github</id>
-      <privateKey>${env.GITHUB_TOKEN}</privateKey>
+      <password>${env.GITHUB_TOKEN}</password>
     </server>
   </servers>
 </settings>

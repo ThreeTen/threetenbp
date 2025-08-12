@@ -75,5 +75,5 @@ Tidelift will coordinate the fix and disclosure.
 
 Release from local:
 
-* Turn off gpg "bc" signer
+* Ensure `gpg-agent` is running
 * `mvn clean release:clean release:prepare release:perform`
