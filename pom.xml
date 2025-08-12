@@ -593,24 +593,6 @@
   </reporting>
 
   <!-- ==================================================================== -->
-  <distributionManagement>
-    <repository>
-      <id>sonatype-threeten-staging</id>
-      <name>Sonatype OSS staging repository</name>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-      <layout>default</layout>
-    </repository>
-    <snapshotRepository>
-      <uniqueVersion>false</uniqueVersion>
-      <id>sonatype-threeten-snapshot</id>
-      <name>Sonatype OSS snapshot repository</name>
-      <url>https://oss.sonatype.org/content/repositories/threeten-snapshots</url>
-      <layout>default</layout>
-    </snapshotRepository>
-    <downloadUrl>https://oss.sonatype.org/content/repositories/threeten-releases</downloadUrl>
-  </distributionManagement>
-
-  <!-- ==================================================================== -->
   <profiles>
     <!-- Setup for Java 9+ -->
     <profile>
@@ -658,6 +640,19 @@
         </plugins>
       </build>
     </profile>
+    <!-- Set environment when running on GitHub Actions -->
+    <profile>
+      <id>github-action</id>
+      <activation>
+        <property>
+          <name>env.GITHUB_ACTIONS</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <properties>
+        <gpg.signer>bc</gpg.signer>
+      </properties>
+    </profile>
     <!-- Deployment profile, activated by -Doss.repo -->
     <profile>
       <id>release-artifacts</id>
@@ -699,9 +694,6 @@
                 <goals>
                   <goal>sign</goal>
                 </goals>
-                <configuration>
-                  <signer>bc</signer>
-                </configuration>
               </execution>
             </executions>
           </plugin>
@@ -728,18 +720,17 @@
               </execution>
             </executions>
           </plugin>
-          <!-- Use nexus plugin to directly release -->
+          <!-- Use central plugin to directly release -->
           <plugin>
-            <groupId>org.sonatype.plugins</groupId>
-            <artifactId>nexus-staging-maven-plugin</artifactId>
-            <version>${nexus-staging-maven-plugin.version}</version>
+            <groupId>org.sonatype.central</groupId>
+            <artifactId>central-publishing-maven-plugin</artifactId>
+            <version>${central-publishing-maven-plugin.version}</version>
             <extensions>true</extensions>
             <configuration>
-              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-              <serverId>sonatype-threeten-staging</serverId>
-              <autoReleaseAfterClose>true</autoReleaseAfterClose>
-              <keepStagingRepositoryOnCloseRuleFailure>true</keepStagingRepositoryOnCloseRuleFailure>
-              <stagingProgressTimeoutMinutes>20</stagingProgressTimeoutMinutes>
+              <publishingServerId>central-publish</publishingServerId>
+              <deploymentName>${project.name}</deploymentName>
+              <autoPublish>${joda.publish.auto}</autoPublish>
+              <waitUntil>${joda.publish.wait}</waitUntil>
             </configuration>
           </plugin>
         </plugins>
@@ -849,9 +840,9 @@
     <maven-surefire-report-plugin.version>3.0.0-M7</maven-surefire-report-plugin.version>
     <maven-toolchains-plugin.version>3.1.0</maven-toolchains-plugin.version>
     <!-- Other plugins -->
+    <central-publishing-maven-plugin.version>0.8.0</central-publishing-maven-plugin.version>
     <github-api.version>1.314</github-api.version>
     <github-release-plugin.version>1.4.0</github-release-plugin.version>
-    <nexus-staging-maven-plugin.version>1.7.0</nexus-staging-maven-plugin.version>
     <reflow-velocity-tools.version>1.2</reflow-velocity-tools.version>
     <!-- Properties for maven-compiler-plugin -->
     <maven.compiler.compilerVersion>1.6</maven.compiler.compilerVersion>
@@ -867,6 +858,8 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <linkXRef>false</linkXRef>
+    <joda.publish.auto>true</joda.publish.auto><!-- false/true -->
+    <joda.publish.wait>published</joda.publish.wait><!-- validated/published -->
     <tz.database.version>2025bgtz</tz.database.version>
   </properties>
 </project>

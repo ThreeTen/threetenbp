@@ -9,7 +9,7 @@ on:
       - 'main'
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build:
@@ -23,14 +23,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
-        fetch-tags: true
-
-    - name: Setup git
-      run: |
-        git config --global user.name "Stephen Colebourne (CI)"
-        git config --global user.email "scolebourne@joda.org"
 
     - name: Set up JDK
       uses: actions/setup-java@v4
