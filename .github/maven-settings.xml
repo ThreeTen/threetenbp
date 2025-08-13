@@ -10,7 +10,7 @@
     </server>
     <server>
       <id>github</id>
-      <password>${env.GITHUB_TOKEN}</password>
+      <privateKey>${env.GITHUB_TOKEN}</privateKey>
     </server>
   </servers>
 </settings>
