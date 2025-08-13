@@ -859,7 +859,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <linkXRef>false</linkXRef>
     <joda.publish.auto>true</joda.publish.auto><!-- false/true -->
-    <joda.publish.wait>published</joda.publish.wait><!-- validated/published -->
+    <joda.publish.wait>validated</joda.publish.wait><!-- validated/published -->
     <tz.database.version>2025bgtz</tz.database.version>
   </properties>
 </project>
