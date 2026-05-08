@@ -4,12 +4,13 @@ on:
   push:
     tags:
       - 'website*'
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  build:
+  website:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -60,18 +61,19 @@ jobs:
       run: |
         cd target/threeten.github.io
         git status
-  
+
         rm -rf threetenbp/
         cp -R ../site threetenbp/
-  
+
         git add -A
         git status
         git commit --message "Update threetenbp from CI: $GITHUB_RUN_ID"
-  
+
         git push origin main
 
+    # delete the initiating tag, but not if the build is manually initialized by workflow_dispatch
     - name: Delete website tag
-      if: "always()"
+      if: "always() && github.ref != 'refs/heads/main'"
       run: |
         git tag --delete "${GITHUB_REF_NAME}" || true
         git push --delete origin "${GITHUB_REF_NAME}" || true

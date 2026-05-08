@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'release*'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -63,8 +64,9 @@ jobs:
         git tag websiterelease
         git push origin websiterelease
 
+    # delete the initiating tag, but not if the build is manually initialized by workflow_dispatch
     - name: Delete release tag
-      if: "always()"
+      if: "always() && github.ref != 'refs/heads/main'"
       run: |
         git tag --delete "${GITHUB_REF_NAME}" || true
         git push --delete origin "${GITHUB_REF_NAME}" || true
