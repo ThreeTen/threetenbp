@@ -860,6 +860,6 @@
     <linkXRef>false</linkXRef>
     <joda.publish.auto>true</joda.publish.auto><!-- false/true -->
     <joda.publish.wait>validated</joda.publish.wait><!-- published is too slow to use -->
-    <tz.database.version>2026bgtz</tz.database.version>
+    <tz.database.version>2026cgtz</tz.database.version>
   </properties>
 </project>
