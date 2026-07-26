@@ -56,22 +56,36 @@ jobs:
 
     - name: Update changes.xml
       run: |
-        python3 - <<EOF
+        python3 - <<'EOF'
         import os
+        import re
+        import sys
+
         version = os.environ['RELEASE_VERSION']
         date = os.environ['RELEASE_DATE']
-        entry = (
-          f'<!-- types are add, fix, remove, update -->\n'
-          f'    <release version="{version}" date="{date}" description="v{version}">\n'
-          f'      <action dev="jodastephen" type="update">\n'
-          f'        Prepare release {version}.\n'
-          f'      </action>\n'
-          f'    </release>'
-        )
         path = 'src/changes/changes.xml'
+
         with open(path) as f:
             text = f.read()
-        text = text.replace('<!-- types are add, fix, remove, update -->', entry, 1)
+
+        m = re.search(r'(?m)^(?P<indent>\s*)<!-- types are add, fix, remove, update -->\s*$', text)
+        if not m:
+            sys.exit('Anchor comment not found in src/changes/changes.xml')
+        indent = m.group('indent')
+
+        if f'<release version="{version}"' in text:
+            sys.exit(f'Release {version} already present in changes.xml')
+
+        entry = (
+            f'{indent}<!-- types are add, fix, remove, update -->\n'
+            f'{indent}<release version="{version}" date="{date}" description="v{version}">\n'
+            f'{indent}  <action dev="jodastephen" type="update">\n'
+            f'{indent}    Prepare release {version}.\n'
+            f'{indent}  </action>\n'
+            f'{indent}</release>'
+        )
+
+        text = text[:m.start()] + entry + text[m.end():]
         with open(path, 'w') as f:
             f.write(text)
         EOF
