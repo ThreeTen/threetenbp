@@ -1,0 +1,109 @@
+name: Prepare Release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    permissions:
+      contents: write  # for peter-evans/create-pull-request to create branch
+      pull-requests: write  # for peter-evans/create-pull-request to create a PR
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+        ref: "main"
+        fetch-tags: true
+
+    - name: Setup git
+      run: |
+        git config --global user.name "Stephen Colebourne (CI)"
+        git config --global user.email "scolebourne@joda.org"
+
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        java-version: 11
+        distribution: 'temurin'
+        cache: 'maven'
+
+    - name: Maven version
+      run: |
+        mkdir -p ./.mvn
+        echo "-e" >> ./.mvn/maven.config
+        echo "-B" >> ./.mvn/maven.config
+        echo "-ntp" >> ./.mvn/maven.config
+        echo "-DtrimStackTrace=false" >> ./.mvn/maven.config
+        echo "--settings" >> ./.mvn/maven.config
+        echo "$( pwd )/.github/maven-settings.xml" >> ./.mvn/maven.config
+        mvn --version
+
+    #------------------------------------------------------------------------
+    - name: Get current version
+      run: |
+        SNAPSHOT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+        RELEASE_VERSION="${SNAPSHOT_VERSION%-SNAPSHOT}"
+        RELEASE_DATE=$(date +%Y-%m-%d)
+        echo "snapshot: $SNAPSHOT_VERSION"
+        echo "release:  $RELEASE_VERSION"
+        echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
+        echo "RELEASE_DATE=$RELEASE_DATE" >> $GITHUB_ENV
+
+    - name: Update changes.xml
+      run: |
+        python3 - <<'EOF'
+        import os
+        import re
+        import sys
+
+        version = os.environ['RELEASE_VERSION']
+        date = os.environ['RELEASE_DATE']
+        path = 'src/changes/changes.xml'
+
+        with open(path) as f:
+            text = f.read()
+
+        m = re.search(r'(?m)^(?P<indent>\s*)<!-- types are add, fix, remove, update -->\s*$', text)
+        if not m:
+            sys.exit('Anchor comment not found in src/changes/changes.xml')
+        indent = m.group('indent')
+
+        if f'<release version="{version}"' in text:
+            sys.exit(f'Release {version} already present in changes.xml')
+
+        entry = (
+            f'{indent}<!-- types are add, fix, remove, update -->\n'
+            f'{indent}<release version="{version}" date="{date}" description="v{version}">\n'
+            f'{indent}  <action dev="jodastephen" type="update">\n'
+            f'{indent}    Prepare release {version}.\n'
+            f'{indent}  </action>\n'
+            f'{indent}</release>'
+        )
+
+        text = text[:m.start()] + entry + text[m.end():]
+        with open(path, 'w') as f:
+            f.write(text)
+        EOF
+
+    - name: Update index.md
+      run: |
+        sed -i "s|^Release [0-9][^ ]* is the latest release\.|Release ${RELEASE_VERSION} is the latest release.|" src/site/markdown/index.md
+        sed -i "s|<version>[0-9][^<]*</version>|<version>${RELEASE_VERSION}</version>|" src/site/markdown/index.md
+
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v3
+      with:
+        token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+        base: main
+        commit-message: 'Prepare for release v${{ env.RELEASE_VERSION }}'
+        committer: Stephen Colebourne (CI) <scolebourne@joda.org>
+        author: Stephen Colebourne (CI) <scolebourne@joda.org>
+        title: 'Prepare for release v${{ env.RELEASE_VERSION }}'
+        body: 'Prepare for release v${{ env.RELEASE_VERSION }}'
+        assignees: jodastephen
+        branch: bot/prepare-release
