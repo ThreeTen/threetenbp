@@ -77,11 +77,11 @@ jobs:
             sys.exit(f'Release {version} already present in changes.xml')
 
         entry = (
-            f'{indent}<!-- types are add, fix, remove, update -->\n'
-            f'{indent}<release version="{version}" date="{date}" description="v{version}">\n'
-            f'{indent}  <action dev="jodastephen" type="update">\n'
-            f'{indent}    Prepare release {version}.\n'
-            f'{indent}  </action>\n'
+            f'{indent}<!-- types are add, fix, remove, update -->'
+            f'{indent}<release version="{version}" date="{date}" description="v{version}">'
+            f'{indent}  <action dev="jodastephen" type="update">'
+            f'{indent}    Prepare release {version}.'
+            f'{indent}  </action>'
             f'{indent}</release>'
         )
 
