@@ -39,6 +39,8 @@ import static org.threeten.bp.temporal.ChronoField.YEAR;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.InvalidObjectException;
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 
 import org.threeten.bp.Clock;
@@ -360,6 +362,15 @@ public final class MinguoDate
     //-----------------------------------------------------------------------
     private Object writeReplace() {
         return new Ser(Ser.MINGUO_DATE_TYPE, this);
+    }
+
+    /**
+     * Defend against malicious streams.
+     * @return never
+     * @throws InvalidObjectException always
+     */
+    private Object readResolve() throws ObjectStreamException {
+        throw new InvalidObjectException("Deserialization via serialization delegate");
     }
 
     void writeExternal(DataOutput out) throws IOException {

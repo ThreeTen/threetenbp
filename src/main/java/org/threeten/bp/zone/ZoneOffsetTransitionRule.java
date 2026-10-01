@@ -37,6 +37,8 @@ import static org.threeten.bp.temporal.TemporalAdjusters.previousOrSame;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.InvalidObjectException;
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 
 import org.threeten.bp.DayOfWeek;
@@ -210,6 +212,15 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      */
     private Object writeReplace() {
         return new Ser(Ser.ZOTRULE, this);
+    }
+
+    /**
+     * Defend against malicious streams.
+     * @return never
+     * @throws InvalidObjectException always
+     */
+    private Object readResolve() throws ObjectStreamException {
+        throw new InvalidObjectException("Deserialization via serialization delegate");
     }
 
     /**
