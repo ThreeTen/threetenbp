@@ -9,6 +9,10 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="1.7.5" date="2026-10-03" description="v1.7.5">
+      <action dev="neeraj1235476" type="fix">
+        Block direct deserialization of six classes.
+        Fixes #217.
+      </action>
       <action dev="jodastephen" type="update">
         Update to time-zone data 2026egtz.
       </action>
