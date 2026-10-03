@@ -48,10 +48,12 @@ jobs:
       run: |
         SNAPSHOT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
         RELEASE_VERSION="${SNAPSHOT_VERSION%-SNAPSHOT}"
+        TZ_DATABASE_VERSION=$(mvn help:evaluate -Dexpression=tz.database.version -q -DforceStdout)
         RELEASE_DATE=$(date +%Y-%m-%d)
         echo "snapshot: $SNAPSHOT_VERSION"
         echo "release:  $RELEASE_VERSION"
         echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
+        echo "TZ_DATABASE_VERSION=$TZ_DATABASE_VERSION" >> $GITHUB_ENV
         echo "RELEASE_DATE=$RELEASE_DATE" >> $GITHUB_ENV
 
     - name: Update changes.xml
@@ -62,6 +64,7 @@ jobs:
         import sys
 
         version = os.environ['RELEASE_VERSION']
+        tz_database_version = os.environ['TZ_DATABASE_VERSION']
         date = os.environ['RELEASE_DATE']
         path = 'src/changes/changes.xml'
 
@@ -80,7 +83,7 @@ jobs:
             f'{indent}<!-- types are add, fix, remove, update -->'
             f'{indent}<release version="{version}" date="{date}" description="v{version}">'
             f'{indent}  <action dev="jodastephen" type="update">'
-            f'{indent}    Prepare release {version}.'
+            f'{indent}    Update to time-zone data {tz_database_version}.'
             f'{indent}  </action>'
             f'{indent}</release>'
         )
