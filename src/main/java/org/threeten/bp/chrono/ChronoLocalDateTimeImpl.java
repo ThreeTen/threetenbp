@@ -34,8 +34,10 @@ package org.threeten.bp.chrono;
 import static org.threeten.bp.temporal.ChronoField.EPOCH_DAY;
 
 import java.io.IOException;
+import java.io.InvalidObjectException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 
 import org.threeten.bp.LocalTime;
@@ -350,6 +352,15 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate>
     //-----------------------------------------------------------------------
     private Object writeReplace() {
         return new Ser(Ser.CHRONO_LOCALDATETIME_TYPE, this);
+    }
+
+    /**
+     * Defend against malicious streams.
+     * @return never
+     * @throws InvalidObjectException always
+     */
+    private Object readResolve() throws ObjectStreamException {
+        throw new InvalidObjectException("Deserialization via serialization delegate");
     }
 
     void writeExternal(ObjectOutput out) throws IOException {

@@ -34,6 +34,8 @@ package org.threeten.bp.zone;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.InvalidObjectException;
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
@@ -145,6 +147,15 @@ public final class ZoneOffsetTransition
      */
     private Object writeReplace() {
         return new Ser(Ser.ZOT, this);
+    }
+
+    /**
+     * Defend against malicious streams.
+     * @return never
+     * @throws InvalidObjectException always
+     */
+    private Object readResolve() throws ObjectStreamException {
+        throw new InvalidObjectException("Deserialization via serialization delegate");
     }
 
     /**
