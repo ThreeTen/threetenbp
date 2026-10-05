@@ -254,6 +254,9 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
      */
     static StandardZoneRules readExternal(DataInput in) throws IOException, ClassNotFoundException {
         int stdSize = in.readInt();
+        if (stdSize > 1024) {
+            throw new InvalidObjectException("Too many transitions");
+        }
         long[] stdTrans = new long[stdSize];
         for (int i = 0; i < stdSize; i++) {
             stdTrans[i] = Ser.readEpochSec(in);
@@ -263,6 +266,9 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
             stdOffsets[i] = Ser.readOffset(in);
         }
         int savSize = in.readInt();
+        if (savSize > 1024) {
+            throw new InvalidObjectException("Too many saving offsets");
+        }
         long[] savTrans = new long[savSize];
         for (int i = 0; i < savSize; i++) {
             savTrans[i] = Ser.readEpochSec(in);
@@ -272,6 +278,9 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
             savOffsets[i] = Ser.readOffset(in);
         }
         int ruleSize = in.readByte();
+        if (ruleSize > 16) {
+            throw new InvalidObjectException("Too many transition rules");
+        }
         ZoneOffsetTransitionRule[] rules = new ZoneOffsetTransitionRule[ruleSize];
         for (int i = 0; i < ruleSize; i++) {
             rules[i] = ZoneOffsetTransitionRule.readExternal(in);
