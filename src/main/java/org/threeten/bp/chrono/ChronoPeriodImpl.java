@@ -48,6 +48,7 @@ import org.threeten.bp.temporal.TemporalAmount;
 import org.threeten.bp.temporal.TemporalQueries;
 import org.threeten.bp.temporal.TemporalUnit;
 import org.threeten.bp.temporal.UnsupportedTemporalTypeException;
+import org.threeten.bp.temporal.ValueRange;
 
 /**
  * An implementation of {@code ChronoPeriod}.
@@ -157,11 +158,17 @@ final class ChronoPeriodImpl
         if (temporalChrono != null && chronology.equals(temporalChrono) == false) {
             throw new DateTimeException("Invalid chronology, required: " + chronology.getId() + ", but was: " + temporalChrono.getId());
         }
-        if (years != 0) {
-            temporal = temporal.plus(years, YEARS);
-        }
-        if (months != 0) {
-            temporal = temporal.plus(months, MONTHS);
+        ValueRange monthRange = chronology.range(ChronoField.MONTH_OF_YEAR);
+        if (months != 0 && monthRange.isFixed()) {
+            long monthsPerYear = monthRange.getMaximum() - monthRange.getMinimum() + 1;
+            temporal = temporal.plus(years * monthsPerYear + months, MONTHS);
+        } else {
+            if (years != 0) {
+                temporal = temporal.plus(years, YEARS);
+            }
+            if (months != 0) {
+                temporal = temporal.plus(months, MONTHS);
+            }
         }
         if (days != 0) {
             temporal = temporal.plus(days, DAYS);
@@ -176,11 +183,17 @@ final class ChronoPeriodImpl
         if (temporalChrono != null && chronology.equals(temporalChrono) == false) {
             throw new DateTimeException("Invalid chronology, required: " + chronology.getId() + ", but was: " + temporalChrono.getId());
         }
-        if (years != 0) {
-            temporal = temporal.minus(years, YEARS);
-        }
-        if (months != 0) {
-            temporal = temporal.minus(months, MONTHS);
+        ValueRange monthRange = chronology.range(ChronoField.MONTH_OF_YEAR);
+        if (months != 0 && monthRange.isFixed()) {
+            long monthsPerYear = monthRange.getMaximum() - monthRange.getMinimum() + 1;
+            temporal = temporal.minus(years * monthsPerYear + months, MONTHS);
+        } else {
+            if (years != 0) {
+                temporal = temporal.minus(years, YEARS);
+            }
+            if (months != 0) {
+                temporal = temporal.minus(months, MONTHS);
+            }
         }
         if (days != 0) {
             temporal = temporal.minus(days, DAYS);
