@@ -54,13 +54,43 @@ import org.threeten.bp.chrono.IsoChronology;
 import org.threeten.bp.chrono.JapaneseChronology;
 import org.threeten.bp.chrono.MinguoChronology;
 import org.threeten.bp.chrono.ThaiBuddhistChronology;
+import org.threeten.bp.LocalDate;
 import org.threeten.bp.temporal.ChronoField;
+import org.threeten.bp.temporal.ChronoUnit;
 
 /**
  * Test Chrono class.
  */
 @Test
 public class TestChronology {
+
+    @DataProvider(name = "periodLeapDay")
+    Object[][] data_periodLeapDay() {
+        return new Object[][] {
+            {ThaiBuddhistChronology.INSTANCE, 1, 1},
+            {MinguoChronology.INSTANCE, 1, 1},
+            {ThaiBuddhistChronology.INSTANCE, 1, -12},
+            {MinguoChronology.INSTANCE, 1, -12},
+            {ThaiBuddhistChronology.INSTANCE, 1, 0},
+            {ThaiBuddhistChronology.INSTANCE, 0, 1},
+        };
+    }
+
+    @Test(dataProvider = "periodLeapDay")
+    public void test_period_addTo_leapDay(Chronology chronology, int years, int months) {
+        ChronoLocalDate date = chronology.date(LocalDate.of(2020, 2, 29));
+        ChronoPeriod period = chronology.period(years, months, 2);
+        ChronoLocalDate expected = date.plus(years * 12L + months, ChronoUnit.MONTHS).plus(2, ChronoUnit.DAYS);
+        assertEquals(date.plus(period), expected);
+    }
+
+    @Test(dataProvider = "periodLeapDay")
+    public void test_period_subtractFrom_leapDay(Chronology chronology, int years, int months) {
+        ChronoLocalDate date = chronology.date(LocalDate.of(2020, 2, 29));
+        ChronoPeriod period = chronology.period(years, months, 2);
+        ChronoLocalDate expected = date.minus(years * 12L + months, ChronoUnit.MONTHS).minus(2, ChronoUnit.DAYS);
+        assertEquals(date.minus(period), expected);
+    }
 
     @BeforeMethod
     public void setUp() {
