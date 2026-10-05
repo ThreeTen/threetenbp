@@ -39,6 +39,9 @@ import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -98,6 +101,42 @@ public class TestStandardZoneRules {
         assertEquals(result, test);
     }
     
+    @Test(expectedExceptions=InvalidObjectException.class)
+    public void test_serialization_tooManyStandardTransitions() throws Exception {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        DataOutputStream out = new DataOutputStream(baos);
+        out.writeByte(Ser.SZR);
+        out.writeInt(1025);  // standard transitions
+        out.close();
+        Ser.read(new DataInputStream(new ByteArrayInputStream(baos.toByteArray())));
+    }
+
+    @Test(expectedExceptions=InvalidObjectException.class)
+    public void test_serialization_tooManySavingsTransitions() throws Exception {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        DataOutputStream out = new DataOutputStream(baos);
+        out.writeByte(Ser.SZR);
+        out.writeInt(0);  // standard transitions
+        out.writeByte(0);  // base standard offset
+        out.writeInt(1025);  // savings transitions
+        out.close();
+        Ser.read(new DataInputStream(new ByteArrayInputStream(baos.toByteArray())));
+    }
+
+    @Test(expectedExceptions=InvalidObjectException.class)
+    public void test_serialization_tooManyLastRules() throws Exception {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        DataOutputStream out = new DataOutputStream(baos);
+        out.writeByte(Ser.SZR);
+        out.writeInt(0);  // standard transitions
+        out.writeByte(0);  // base standard offset
+        out.writeInt(0);  // savings transitions
+        out.writeByte(0);  // base wall offset
+        out.writeByte(17);  // last rules
+        out.close();
+        Ser.read(new DataInputStream(new ByteArrayInputStream(baos.toByteArray())));
+    }
+
     //-----------------------------------------------------------------------
     // Etc/GMT
     //-----------------------------------------------------------------------
