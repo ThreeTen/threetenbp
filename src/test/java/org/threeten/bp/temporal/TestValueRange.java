@@ -35,8 +35,11 @@ import static org.testng.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.ObjectStreamConstants;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -67,6 +70,54 @@ public class TestValueRange extends AbstractTest {
         oos.close();
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
         assertEquals(ois.readObject(), obj);
+    }
+
+    @DataProvider(name="serializationInvalid")
+    Object[][] data_serializationInvalid() {
+        return new Object[][] {
+            {2, 1, 28, 31},   // minSmallest > minLargest
+            {1, 1, 31, 28},   // maxSmallest > maxLargest
+            {1, 31, 40, 28},  // minLargest > maxLargest
+        };
+    }
+
+    @Test(dataProvider="serializationInvalid", expectedExceptions=InvalidObjectException.class)
+    public void test_serialization_invalid(long minSmallest, long minLargest, long maxSmallest, long maxLargest) throws Exception {
+        byte[] bytes = invalidRangeStream(minSmallest, minLargest, maxSmallest, maxLargest);
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes));
+        try {
+            ois.readObject();
+        } finally {
+            ois.close();
+        }
+    }
+
+    /**
+     * Builds a stream with field values that the factory methods reject.
+     */
+    private static byte[] invalidRangeStream(long minSmallest, long minLargest, long maxSmallest, long maxLargest) throws Exception {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        DataOutputStream out = new DataOutputStream(baos);
+        out.writeShort(ObjectStreamConstants.STREAM_MAGIC);
+        out.writeShort(ObjectStreamConstants.STREAM_VERSION);
+        out.writeByte(ObjectStreamConstants.TC_OBJECT);
+        out.writeByte(ObjectStreamConstants.TC_CLASSDESC);
+        out.writeUTF(ValueRange.class.getName());
+        out.writeLong(-7317881728594519368L);  // serialVersionUID
+        out.writeByte(ObjectStreamConstants.SC_SERIALIZABLE);
+        out.writeShort(4);  // number of fields
+        out.writeByte('J'); out.writeUTF("maxLargest");
+        out.writeByte('J'); out.writeUTF("maxSmallest");
+        out.writeByte('J'); out.writeUTF("minLargest");
+        out.writeByte('J'); out.writeUTF("minSmallest");
+        out.writeByte(ObjectStreamConstants.TC_ENDBLOCKDATA);  // end of classdesc
+        out.writeByte(ObjectStreamConstants.TC_NULL);  // no superclasses
+        out.writeLong(maxLargest);
+        out.writeLong(maxSmallest);
+        out.writeLong(minLargest);
+        out.writeLong(minSmallest);
+        out.close();
+        return baos.toByteArray();
     }
 
     //-----------------------------------------------------------------------

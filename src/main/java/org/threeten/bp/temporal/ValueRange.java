@@ -31,6 +31,9 @@
  */
 package org.threeten.bp.temporal;
 
+import java.io.IOException;
+import java.io.InvalidObjectException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 import org.threeten.bp.DateTimeException;
@@ -154,6 +157,27 @@ public final class ValueRange implements Serializable {
         this.minLargest = minLargest;
         this.maxSmallest = maxSmallest;
         this.maxLargest = maxLargest;
+    }
+
+    /**
+     * Validates the deserialized values, as the factory methods are bypassed.
+     *
+     * @param in  the stream to read
+     * @throws InvalidObjectException if the values breach the constraints of the factory methods
+     * @throws ClassNotFoundException if a class cannot be resolved
+     */
+    private void readObject(ObjectInputStream in)
+            throws IOException, ClassNotFoundException, InvalidObjectException {
+        in.defaultReadObject();
+        if (minSmallest > minLargest) {
+            throw new InvalidObjectException("Smallest minimum value must be less than largest minimum value");
+        }
+        if (maxSmallest > maxLargest) {
+            throw new InvalidObjectException("Smallest maximum value must be less than largest maximum value");
+        }
+        if (minLargest > maxLargest) {
+            throw new InvalidObjectException("Minimum value must be less than maximum value");
+        }
     }
 
     //-----------------------------------------------------------------------
